@@ -1,13 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.trait.Spawned;
 
@@ -30,8 +31,8 @@ public class DespawnCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
-                scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC()));
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
             else
                 throw new InvalidArgumentsException("Must specify a valid list of NPCs!");
         }
@@ -52,7 +53,7 @@ public class DespawnCommand extends AbstractCommand {
         for (dNPC npc : npcs) {
             if (npc.isSpawned()) {
                 if (npc.getCitizen().hasTrait(Spawned.class))
-                        npc.getCitizen().getTrait(Spawned.class).setSpawned(false);
+                    npc.getCitizen().getTrait(Spawned.class).setSpawned(false);
                 npc.getCitizen().despawn(DespawnReason.PLUGIN);
             }
         }

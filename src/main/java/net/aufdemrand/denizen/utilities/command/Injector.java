@@ -23,23 +23,28 @@ public class Injector {
             Constructor<?> ctr = clazz.getConstructor(argClasses);
             ctr.setAccessible(true);
             return ctr.newInstance(args);
-        } catch (NoSuchMethodException e) {
+        }
+        catch (NoSuchMethodException e) {
             try {
                 return clazz.newInstance();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 dB.echoError("Error initializing commands class " + clazz + ": ");
                 dB.echoError(ex);
                 return null;
             }
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             dB.echoError("Error initializing commands class " + clazz + ": ");
             dB.echoError(e);
             return null;
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             dB.echoError("Error initializing commands class " + clazz + ": ");
             dB.echoError(e);
             return null;
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             dB.echoError("Error initializing commands class " + clazz + ": ");
             dB.echoError(e);
             return null;

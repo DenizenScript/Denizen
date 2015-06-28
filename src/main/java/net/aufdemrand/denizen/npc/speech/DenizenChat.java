@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.npc.speech;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.ai.speech.SpeechContext;
 import net.citizensnpcs.api.ai.speech.Talkable;
 import net.citizensnpcs.api.ai.speech.VocalChord;

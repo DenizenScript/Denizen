@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.DenizenCore;
+import net.aufdemrand.denizencore.objects.Duration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 public class DebugSubmit extends Thread {
     public String recording;
     public String Result = null;
+
     @Override
     public void run() {
         BufferedReader in = null;
@@ -36,8 +37,8 @@ public class DebugSubmit extends Thread {
             StringBuilder pluginlist = new StringBuilder();
             int newlineLength = 0;
             int pluginCount = Bukkit.getPluginManager().getPlugins().length;
-            for (Plugin pl: Bukkit.getPluginManager().getPlugins()) {
-                String temp = ((char)0x01) + (pl.isEnabled() ? "2": "4") + pl.getName() + ": " + pl.getDescription().getVersion() + ", ";
+            for (Plugin pl : Bukkit.getPluginManager().getPlugins()) {
+                String temp = ((char) 0x01) + (pl.isEnabled() ? "2" : "4") + pl.getName() + ": " + pl.getDescription().getVersion() + ", ";
                 pluginlist.append(temp);
                 newlineLength += temp.length();
                 if (newlineLength > 80) {
@@ -49,7 +50,7 @@ public class DebugSubmit extends Thread {
             StringBuilder worldlist = new StringBuilder();
             newlineLength = 0;
             int worldCount = Bukkit.getWorlds().size();
-            for (World w: Bukkit.getWorlds()) {
+            for (World w : Bukkit.getWorlds()) {
                 String temp = w.getName() + ", ";
                 worldlist.append(temp);
                 newlineLength += temp.length();
@@ -62,8 +63,8 @@ public class DebugSubmit extends Thread {
             StringBuilder playerlist = new StringBuilder();
             newlineLength = 0;
             int playerCount = Bukkit.getOnlinePlayers().size();
-            for (Player pla: Bukkit.getOnlinePlayers()) {
-                String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char)0x01) + ((char)0x01) + "7(" + pla.getName() + "), ";
+            for (Player pla : Bukkit.getOnlinePlayers()) {
+                String temp = pla.getDisplayName().replace(ChatColor.COLOR_CHAR, (char) 0x01) + ((char) 0x01) + "7(" + pla.getName() + "), ";
                 playerlist.append(temp);
                 newlineLength += temp.length();
                 if (newlineLength > 80) {
@@ -76,18 +77,18 @@ public class DebugSubmit extends Thread {
                 playerlist.append("No Online Players, ");
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
-                        + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
-                        + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
-                        + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
-                        + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
-                        + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().getImplementationVersion()
-                        + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
-                        + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
-                        + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
-                        + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
-                        + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online": "offline")
-                        + "\n\n") + recording)
-                        .getBytes("UTF-8"));
+                    + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
+                    + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
+                    + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
+                    + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
+                    + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().getImplementationVersion()
+                    + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
+                    + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
+                    + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
+                    + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
+                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline")
+                    + "\n\n") + recording)
+                    .getBytes("UTF-8"));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             // Record the response
@@ -100,8 +101,8 @@ public class DebugSubmit extends Thread {
         }
         finally {
             try {
-            if (in != null)
-                in.close();
+                if (in != null)
+                    in.close();
             }
             catch (Exception e) {
                 dB.echoError(e);

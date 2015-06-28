@@ -12,7 +12,6 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
     /**
      * Contains required options for a Requirement in a single class for the
      * ability to add optional options in the future.
-     *
      */
     public class RequirementOptions {
         public String USAGE_HINT = "";
@@ -62,10 +61,9 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
 
     /**
      * Part of the Plugin disable sequence.
-     *
+     * <p/>
      * Can be '@Override'n by a Requirement which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
-     *
      */
     public void onDisable() {
 
@@ -74,10 +72,9 @@ public abstract class AbstractRequirement implements RegistrationableInstance {
     /**
      * Part of the Plugin enable sequence. This is called when the requirement is
      * instanced by the RequirementRegistry, which is generally on a server startup.
-     *
+     * <p/>
      * Can be '@Override'n by a Requirement which requires a method when starting, such
      * as registering as a Bukkit Listener.
-     *
      */
     public void onEnable() {
 

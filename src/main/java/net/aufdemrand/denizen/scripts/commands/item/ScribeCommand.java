@@ -1,17 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -83,7 +85,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
     // -->
 
 
-    private enum BookAction { GIVE, DROP, EQUIP, NONE }
+    private enum BookAction {GIVE, DROP, EQUIP, NONE}
 
     @Override
     public void onEnable() {
@@ -97,7 +99,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesEnum(BookAction.values())
-                && !scriptEntry.hasObject("action"))
+                    && !scriptEntry.hasObject("action"))
                 scriptEntry.addObject("action", BookAction.valueOf(arg.getValue().toUpperCase()));
 
             else if (!scriptEntry.hasObject("script")
@@ -114,7 +116,8 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                     && arg.matchesArgumentType(dItem.class)) {
                 scriptEntry.addObject("item", arg.asType(dItem.class));
 
-            } else arg.reportUnhandled();
+            }
+            else arg.reportUnhandled();
         }
 
         scriptEntry.defaultObject("action", BookAction.GIVE);
@@ -137,7 +140,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 
-        book = bookScript.writeBookTo(book, ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData)scriptEntry.entryData).getNPC());
+        book = bookScript.writeBookTo(book, ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
 
         // Post-write action? Can be NONE.
         switch (action) {
@@ -146,15 +149,15 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                 break;
 
             case GIVE:
-                giveBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
+                giveBook(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case EQUIP:
-                equipBook(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
+                equipBook(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
+                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
                 break;
 
             case NONE:
@@ -174,7 +177,7 @@ public class ScribeCommand extends AbstractCommand implements Listener {
         }
     }
 
-    private void equipBook (Player player, ItemStack book) {
+    private void equipBook(Player player, ItemStack book) {
         ItemStack currItem = player.getItemInHand();
         Inventory inv = player.getInventory();
         int emptySpot = inv.firstEmpty();
@@ -220,13 +223,14 @@ public class ScribeCommand extends AbstractCommand implements Listener {
         // -->
         if (e.matches("P")) {
             e.setReplaced("\n \u00A7r \n");
-        // <--[tag]
-        // @attribute <N>
-        // @returns Element
-        // @description
-        // Returns a newline symbol, for use in books.
-        // -->
-        } else if (e.matches("N")) {
+            // <--[tag]
+            // @attribute <N>
+            // @returns Element
+            // @description
+            // Returns a newline symbol, for use in books.
+            // -->
+        }
+        else if (e.matches("N")) {
             e.setReplaced("\n");
         }
     }

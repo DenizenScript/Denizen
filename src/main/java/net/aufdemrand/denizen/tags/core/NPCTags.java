@@ -2,25 +2,26 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
-import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.citizensnpcs.api.ai.TargetType;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
 import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-
 import net.citizensnpcs.api.ai.event.NavigationStuckEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class NPCTags implements Listener {
         Attribute attribute = event.getAttributes();
 
         // NPCTags require a... dNPC!
-        dNPC n = ((BukkitTagContext)event.getContext()).npc;
+        dNPC n = ((BukkitTagContext) event.getContext()).npc;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
@@ -58,7 +59,8 @@ public class NPCTags implements Listener {
             if (dNPC.matches(attribute.getContext(1)))
                 n = dNPC.valueOf(attribute.getContext(1));
             else {
-                if (!event.hasAlternative()) dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
+                if (!event.hasAlternative())
+                    dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
                 return;
             }
 
@@ -161,7 +163,7 @@ public class NPCTags implements Listener {
             // If the NPC has an entity target, is aggressive towards it
             // and that entity is not dead, trigger "on attack" command
             if (event.getNPC().getNavigator().getEntityTarget().isAggressive()
-                && !entity.isDead()) {
+                    && !entity.isDead()) {
 
                 dPlayer player = null;
 
@@ -248,13 +250,13 @@ public class NPCTags implements Listener {
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 
-        context.put("action", new Element(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport": "none"));
+        context.put("action", new Element(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
 
         // Do world script event 'On NPC stuck'
         if (NPCNavigationSmartEvent.IsActive()) {
             List<String> determinations = OldEventManager.doEvents(Arrays.asList
                     ("npc stuck"), new BukkitScriptEntryData(null, npc), context);
-            for (String determination: determinations) {
+            for (String determination : determinations) {
                 if (determination.equalsIgnoreCase("none"))
                     event.setAction(null);
                 if (determination.equalsIgnoreCase("teleport"))

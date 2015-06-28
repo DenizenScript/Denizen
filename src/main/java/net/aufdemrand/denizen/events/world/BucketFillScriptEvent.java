@@ -1,7 +1,10 @@
 package net.aufdemrand.denizen.events.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -58,8 +61,8 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return lower.endsWith(" bucket")
-                || lower.endsWith(" "+item.identifyNoIdentifier())
-                || lower.endsWith(" "+item.identifySimpleNoIdentifier());
+                || lower.endsWith(" " + item.identifyNoIdentifier())
+                || lower.endsWith(" " + item.identifySimpleNoIdentifier());
     }
 
     @Override
@@ -85,8 +88,8 @@ public class BucketFillScriptEvent extends ScriptEvent implements Listener {
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()): null,
-                entity.isNPC() ? entity.getDenizenNPC(): null);
+        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null,
+                entity.isNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override

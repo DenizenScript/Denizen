@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.scripts.triggers;
 
-import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
-import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
-import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -41,10 +41,9 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     /**
      * Part of the Plugin disable sequence.
-     *
+     * <p/>
      * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
-     *
      */
     @Override
     public void onDisable() {
@@ -54,10 +53,9 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     /**
      * Part of the Plugin enable sequence.
-     *
+     * <p/>
      * Can be '@Override'n by a Trigger which requires a method when bukkit sends a
      * onEnable() to Denizen. (ie. Server shuts down or restarts)
-     *
      */
     @Override
     public void onEnable() {
@@ -67,10 +65,9 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
 
     /**
      * Part of the Plugin enable sequence.
-     *
+     * <p/>
      * Can be '@Override'n by a Trigger which requires a method when being enabled via
      * the Trigger Registry, usually upon startup.
-     *
      */
     @Override
     public AbstractTrigger activate() {
@@ -117,22 +114,21 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      *
      * @param location the location to search around
      * @param maxRange how far to search
-     *
-     * @return    The Set of NPCs that are
+     * @return The Set of NPCs that are
      */
     // TODO: Delete?
-    public Set<NPC> getActiveNPCsWithinRangeWithTrigger (Location location, int maxRange) {
-        Set<NPC> closestNPCs = new HashSet<NPC> ();
+    public Set<NPC> getActiveNPCsWithinRangeWithTrigger(Location location, int maxRange) {
+        Set<NPC> closestNPCs = new HashSet<NPC>();
 
-        Iterator<NPC>    it = CitizensAPI.getNPCRegistry().iterator();
-        while (it.hasNext ()) {
-            NPC    npc = it.next ();
+        Iterator<NPC> it = CitizensAPI.getNPCRegistry().iterator();
+        while (it.hasNext()) {
+            NPC npc = it.next();
             if (npc.isSpawned()
                     && npc.getEntity().getLocation().getWorld().equals(location.getWorld())
                     && npc.getEntity().getLocation().distance(location) < maxRange
                     && npc.hasTrait(TriggerTrait.class)
                     && npc.getTrait(TriggerTrait.class).isEnabled(name)) {
-                closestNPCs.add (npc);
+                closestNPCs.add(npc);
             }
         }
 

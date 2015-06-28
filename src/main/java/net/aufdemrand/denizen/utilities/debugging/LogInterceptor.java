@@ -20,8 +20,7 @@ public class LogInterceptor extends PrintStream {
     boolean redirected = false;
     public PrintStream standardOut;
 
-    public LogInterceptor()
-    {
+    public LogInterceptor() {
         super(System.out, true);
     }
 
@@ -44,8 +43,8 @@ public class LogInterceptor extends PrintStream {
         HashMap<String, dObject> context = new HashMap<String, dObject>();
         context.put("message", new Element(cleanse(s)));
         List<String> Determinations = OldEventManager.doEvents(Arrays.asList("console output"),
-                new BukkitScriptEntryData(null ,null), context);
-        for (String str: Determinations) {
+                new BukkitScriptEntryData(null, null), context);
+        for (String str : Determinations) {
             if (str.equalsIgnoreCase("cancelled")) {
                 return;
             }
@@ -56,8 +55,7 @@ public class LogInterceptor extends PrintStream {
     public String cleanse(String input) {
         String esc = String.valueOf((char) 0x1b);
         String repc = String.valueOf(ChatColor.COLOR_CHAR);
-        if (input.contains(esc))
-        {
+        if (input.contains(esc)) {
             input = StringUtils.replace(input, esc + "[0;30;22m", repc + "0");
             input = StringUtils.replace(input, esc + "[0;34;22m", repc + "1");
             input = StringUtils.replace(input, esc + "[0;32;22m", repc + "2");

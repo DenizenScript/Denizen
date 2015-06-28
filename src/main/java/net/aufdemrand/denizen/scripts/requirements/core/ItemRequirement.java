@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
+
+import java.util.List;
 
 public class ItemRequirement extends AbstractRequirement {
 
@@ -32,7 +32,8 @@ public class ItemRequirement extends AbstractRequirement {
             dB.echoDebug(context.getScriptContainer(), "...player has " + contains.identify() + ".");
             return true;
 
-        } else {
+        }
+        else {
             dB.echoDebug(context.getScriptContainer(), "...player doesn't have " + contains.identify() + ".");
             return false;
         }

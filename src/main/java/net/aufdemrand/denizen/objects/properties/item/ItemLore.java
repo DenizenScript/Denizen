@@ -1,9 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -20,7 +23,7 @@ public class ItemLore implements Property {
 
     public static ItemLore getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemLore((dItem)_item);
+        else return new ItemLore((dItem) _item);
     }
 
     public boolean hasLore() {
@@ -94,7 +97,7 @@ public class ItemLore implements Property {
                     output.append(EscapeTags.Escape(itemLore)).append("|");
                 }
             }
-            return (output.length() == 0) ? null: output.substring(0, output.length() - 1);
+            return (output.length() == 0) ? null : output.substring(0, output.length() - 1);
         }
         else {
             return null;

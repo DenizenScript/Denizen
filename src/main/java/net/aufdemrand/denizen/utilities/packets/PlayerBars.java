@@ -1,9 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.PacketPlayOutExperience;
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateHealth;
-
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -32,7 +31,8 @@ public class PlayerBars {
             xp_current.set(experiencePacket, exp);
             // xp_total.set(experiencePacket, totalExp);
             xp_level.set(experiencePacket, level);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return experiencePacket;
@@ -45,7 +45,8 @@ public class PlayerBars {
             health_food.set(healthPacket, food);
             health_saturation.set(healthPacket, food_saturation);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return healthPacket;

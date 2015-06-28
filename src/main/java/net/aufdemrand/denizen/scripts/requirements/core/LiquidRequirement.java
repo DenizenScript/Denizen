@@ -4,13 +4,13 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import org.bukkit.block.Block;
 
 import java.util.List;
 
-public class LiquidRequirement extends AbstractRequirement{
+public class LiquidRequirement extends AbstractRequirement {
 
     @Override
     public void onEnable() {
@@ -22,7 +22,7 @@ public class LiquidRequirement extends AbstractRequirement{
         boolean outcome = false;
         Block blockToCheck = null;
 
-        if(args.size() < 1)
+        if (args.size() < 1)
             throw new RequirementCheckException("Must provide a BOOKMARK:block of the block to be checked!");
 
         /* Get arguments */

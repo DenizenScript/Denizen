@@ -17,16 +17,19 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BlockLight {
 
     private static final Method playerChunkMethod;
     private static final Field dirtyCountField;
     private static final Map<Location, BlockLight> lightsByLocation = new HashMap<Location, BlockLight>();
-    private static final Map<Chunk, List<BlockLight>> lightsByChunk  = new HashMap<Chunk, List<BlockLight>>();
+    private static final Map<Chunk, List<BlockLight>> lightsByChunk = new HashMap<Chunk, List<BlockLight>>();
     private static final BukkitTask bukkitTask;
-    private static final BlockFace[] adjacentFaces = new BlockFace[] {
+    private static final BlockFace[] adjacentFaces = new BlockFace[]{
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
 
@@ -38,7 +41,8 @@ public class BlockLight {
             pcm.setAccessible(true);
             dcf = pcm.getReturnType().getDeclaredField("dirtyCount");
             dcf.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         playerChunkMethod = pcm;
@@ -195,7 +199,8 @@ public class BlockLight {
     private static Object getPlayerChunk(PlayerChunkMap map, int x, int z) {
         try {
             return playerChunkMethod.invoke(map, x, z, false);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return null;
@@ -207,7 +212,8 @@ public class BlockLight {
             if (dirtyCount > 0 && dirtyCount < 64) {
                 dirtyCountField.set(playerChunk, 64);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }

@@ -1,14 +1,18 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 
@@ -17,7 +21,7 @@ import java.util.List;
 
 public class DropCommand extends AbstractCommand {
 
-    enum Action { DROP_ITEM, DROP_EXP, DROP_ENTITY }
+    enum Action {DROP_ITEM, DROP_EXP, DROP_ENTITY}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -41,7 +45,8 @@ public class DropCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ENTITY.toString()).setPrefix("action"));
-                scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));  }
+                scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));
+            }
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
@@ -68,11 +73,12 @@ public class DropCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify something to drop!");
 
         if (!scriptEntry.hasObject("location"))
-            if (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null && ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()) {
-                scriptEntry.addObject("location", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation().setPrefix("location"));
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null && ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()) {
+                scriptEntry.addObject("location", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation().setPrefix("location"));
                 dB.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
 
-            } else throw new InvalidArgumentsException("Must specify a location!");
+            }
+            else throw new InvalidArgumentsException("Must specify a location!");
 
         if (!scriptEntry.hasObject("qty"))
             scriptEntry.addObject("qty", Element.valueOf("1").setPrefix("qty"));
@@ -111,13 +117,13 @@ public class DropCommand extends AbstractCommand {
                 break;
 
             case DROP_ITEM:
-                for (dItem item: items) {
+                for (dItem item : items) {
                     if (qty.asInt() > 1 && item.isUnique())
                         dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
                     for (int x = 0; x < qty.asInt(); x++) {
                         dEntity e = new dEntity(location.getWorld().dropItemNaturally(location, item.getItemStack()));
                         if (e.isValid())
-                            e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble(): 1d));
+                            e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble() : 1d));
                         entityList.add(e.toString());
                     }
                 }
@@ -132,7 +138,7 @@ public class DropCommand extends AbstractCommand {
                 }
                 for (int x = 0; x < qty.asInt(); x++) {
                     ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
-                    for (Mechanism mechanism: entity.getWaitingMechanisms()) {
+                    for (Mechanism mechanism : entity.getWaitingMechanisms()) {
                         mechanisms.add(new Mechanism(new Element(mechanism.getName()), mechanism.getValue()));
                     }
                     dEntity ent = new dEntity(entity.getEntityType(), mechanisms);

@@ -11,7 +11,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,13 +63,13 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String biome_test = lower.substring(lower.lastIndexOf(" ")+1);
-        String direction = lower.substring(lower.indexOf(" ")+1, lower.lastIndexOf(" ")-1);
+        String biome_test = lower.substring(lower.lastIndexOf(" ") + 1);
+        String direction = lower.substring(lower.indexOf(" ") + 1, lower.lastIndexOf(" ") - 1);
 
         return !(old_biome.toString().toLowerCase().equals(new_biome.toString().toLowerCase()))
                 && (biome_test.equals("biome")
-                    || (direction.equals("enters") && biome_test.equals(new_biome.toString().toLowerCase()))
-                    || (direction.equals("exits") && biome_test.equals(old_biome.toString().toLowerCase())));
+                || (direction.equals("enters") && biome_test.equals(new_biome.toString().toLowerCase()))
+                || (direction.equals("exits") && biome_test.equals(old_biome.toString().toLowerCase())));
     }
 
     @Override

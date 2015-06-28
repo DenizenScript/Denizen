@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class DisengageCommand extends AbstractCommand {
 
@@ -21,7 +21,7 @@ public class DisengageCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Make sure NPC is available
-        if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null)
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
     }
@@ -31,9 +31,9 @@ public class DisengageCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().toString()));
+                aH.debugObj("NPC", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().toString()));
 
         // Set Disengaged
-        EngageCommand.setEngaged(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen(), false);
+        EngageCommand.setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), false);
     }
 }

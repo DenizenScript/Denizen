@@ -4,11 +4,9 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -105,7 +103,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        new_material =  dMaterial.getMaterialFrom(event.getChangedType());
+        new_material = dMaterial.getMaterialFrom(event.getChangedType());
         old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;

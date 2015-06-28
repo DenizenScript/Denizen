@@ -1,17 +1,16 @@
 package net.aufdemrand.denizen.scripts.requirements.core;
 
-import java.util.List;
-
-import org.bukkit.World;
-
 import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.objects.aH;
+import org.bukkit.World;
 
-public class InGroupRequirement extends AbstractRequirement{
+import java.util.List;
+
+public class InGroupRequirement extends AbstractRequirement {
 
     @Override
     public void onEnable() {
@@ -21,38 +20,29 @@ public class InGroupRequirement extends AbstractRequirement{
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 
-        if(context.getPlayer() != null)
-        {
-            if(Depends.permissions != null)
-            {
+        if (context.getPlayer() != null) {
+            if (Depends.permissions != null) {
                 boolean outcome = false;
                 boolean global = false;
 
-                for(String arg : args)
-                {
+                for (String arg : args) {
                     if (aH.matchesArg("GLOBAL", arg))
                         global = true;
-                    else
-                    {
-                        if (global)
-                        {
-                            if (Depends.permissions.playerInGroup((World) null, context.getPlayer().getName(), arg))
-                            {
+                    else {
+                        if (global) {
+                            if (Depends.permissions.playerInGroup((World) null, context.getPlayer().getName(), arg)) {
                                 dB.echoDebug(context.getScriptContainer(), "...player is in global group: " + arg);
                                 outcome = true;
                             }
                             else
                                 dB.echoDebug(context.getScriptContainer(), "...player is not in global group: " + arg + "!");
                         }
-                        else
-                        {
-                            if (Depends.permissions.playerInGroup(context.getPlayer().getPlayerEntity(), arg))
-                            {
+                        else {
+                            if (Depends.permissions.playerInGroup(context.getPlayer().getPlayerEntity(), arg)) {
                                 dB.echoDebug(context.getScriptContainer(), "...player is in group: " + arg);
                                 outcome = true;
                             }
-                            else
-                            {
+                            else {
                                 dB.echoDebug(context.getScriptContainer(), "...player is not in group: " + arg + "!");
                             }
                         }

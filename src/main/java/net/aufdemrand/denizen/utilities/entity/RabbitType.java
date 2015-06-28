@@ -5,13 +5,13 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftRabbit;
 import org.bukkit.entity.Rabbit;
 
 public enum RabbitType {
-    BROWN(0,0),
-    WHITE(1,1),
-    BLACK(2,2),
-    WHITE_SPLOTCHED(3,3),
-    GOLD(4,4),
-    SALT(5,5),
-    KILLER(6,99);
+    BROWN(0, 0),
+    WHITE(1, 1),
+    BLACK(2, 2),
+    WHITE_SPLOTCHED(3, 3),
+    GOLD(4, 4),
+    SALT(5, 5),
+    KILLER(6, 99);
 
     public static RabbitType getRabbitType(Rabbit rabbit) {
         return RabbitType.getType(getEntityRabbit(rabbit).getRabbitType());

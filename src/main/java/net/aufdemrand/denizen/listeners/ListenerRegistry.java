@@ -4,18 +4,16 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.bukkit.ListenerCancelEvent;
 import net.aufdemrand.denizen.events.bukkit.ListenerFinishEvent;
-import net.aufdemrand.denizencore.interfaces.dRegistry;
-import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.listeners.core.*;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.containers.core.TaskScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.dRegistry;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.containers.core.TaskScriptContainer;
 import net.citizensnpcs.api.CitizensAPI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,9 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * of the API. Also provides some methods for adding/finishing/removing listeners
  * for players.
  *
- * @version 1.0
  * @author Jeremy Schroeder
- *
+ * @version 1.0
  */
 public class ListenerRegistry implements dRegistry, Listener {
 
@@ -61,9 +58,9 @@ public class ListenerRegistry implements dRegistry, Listener {
     /**
      * Adds a new listener to the 'listeners' hash-map.
      *
-     * @param player  the dPlayer
-     * @param instance  the listener instance
-     * @param id  the id of the listener instance
+     * @param player   the dPlayer
+     * @param instance the listener instance
+     * @param id       the id of the listener instance
      */
     public void addListenerFor(dPlayer player,
                                AbstractListener instance,
@@ -85,8 +82,8 @@ public class ListenerRegistry implements dRegistry, Listener {
      * Removes a listener instance from a Player. Cancelling an already-in-progress
      * instance? Use cancel() instead.
      *
-     * @param player  the dPlayer
-     * @param id  the id of the listener instance
+     * @param player the dPlayer
+     * @param id     the id of the listener instance
      */
     public void removeListenerFor(dPlayer player, String id) {
         if (player == null || id == null) return;
@@ -107,8 +104,8 @@ public class ListenerRegistry implements dRegistry, Listener {
      * Listeners in progress that are needing to be 'cancelled' should call
      * this method as it fires a bukkit/world script event, as well.
      *
-     * @param player  the dPlayer
-     * @param id id of the listener to cancel
+     * @param player the dPlayer
+     * @param id     id of the listener to cancel
      */
     public void cancel(dPlayer player, String id) {
         if (player == null || id == null) return;
@@ -124,10 +121,10 @@ public class ListenerRegistry implements dRegistry, Listener {
      * Finishes a listener, effectively removing and destroying the instance, but
      * calls the optional finish_script and bukkit/world script events associated.
      *
-     * @param player  the dPlayer
-     * @param npc  dNPC attached from the listen command (can be null)
-     * @param id  id of the listener
-     * @param on_finish  dScript to run on finish
+     * @param player    the dPlayer
+     * @param npc       dNPC attached from the listen command (can be null)
+     * @param id        id of the listener
+     * @param on_finish dScript to run on finish
      */
     public void finish(dPlayer player,
                        dNPC npc,
@@ -142,7 +139,8 @@ public class ListenerRegistry implements dRegistry, Listener {
                 // TODO: Add context to this
                 ((TaskScriptContainer) on_finish.getContainer())
                         .runTaskScript(new BukkitScriptEntryData(player, npc), null);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Hm, not a valid task script?
                 dB.echoError("Tried to run the finish task for: " + id + "/" + player.getName() + ","
                         + "but it seems not to be valid!");
@@ -154,7 +152,8 @@ public class ListenerRegistry implements dRegistry, Listener {
     public AbstractListener getListenerFor(dPlayer player, String listenerId) {
         if (listeners.containsKey(player.getName())) {
             Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-            if (playerListeners.containsKey(listenerId.toLowerCase())) return playerListeners.get(listenerId.toLowerCase());
+            if (playerListeners.containsKey(listenerId.toLowerCase()))
+                return playerListeners.get(listenerId.toLowerCase());
         }
         return null;
     }
@@ -201,7 +200,8 @@ public class ListenerRegistry implements dRegistry, Listener {
         for (RegistrationableInstance member : types.values())
             try {
                 member.onDisable();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
@@ -254,7 +254,8 @@ public class ListenerRegistry implements dRegistry, Listener {
                 if (get(type) == null) return;
                 dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
                 get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.log(event.getPlayer() + " has a saved listener named '" + listenerId + "' that may be corrupt. Skipping for now, but perhaps check the contents of your saves.yml for problems?");
             }
         }

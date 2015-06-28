@@ -18,11 +18,11 @@ public class TeamCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
-        
+
         String name = null;
         String prefix = null;
         String suffix = null;
-        
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesPrefix("id")
@@ -36,33 +36,33 @@ public class TeamCommand extends AbstractCommand {
                 name = nameElement.asString();
                 scriptEntry.addObject("name", nameElement);
             }
-            
+
             else if (arg.matchesPrefix("add")
                     && !scriptEntry.hasObject("add")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("add", arg.asType(dList.class));
             }
-            
+
             else if (arg.matchesPrefix("remove")
                     && !scriptEntry.hasObject("remove")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("remove", arg.asType(dList.class));
             }
-            
+
             else if (arg.matchesPrefix("prefix")
                     && !scriptEntry.hasObject("prefix")) {
                 Element prefixElement = arg.asElement();
                 prefix = prefixElement.asString();
                 scriptEntry.addObject("prefix", prefixElement);
             }
-            
+
             else if (arg.matchesPrefix("suffix")
                     && !scriptEntry.hasObject("suffix")) {
                 Element suffixElement = arg.asElement();
                 suffix = suffixElement.asString();
                 scriptEntry.addObject("suffix", suffixElement);
             }
-            
+
         }
 
         if (name == null || name.length() == 0 || name.length() > 16)
@@ -77,7 +77,7 @@ public class TeamCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("id", new Element("main"));
     }
-    
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
@@ -90,11 +90,11 @@ public class TeamCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 id.debug() +
-                name.debug() +
-                (add != null ? add.debug() : "") +
-                (remove != null ? remove.debug() : "") +
-                (prefix != null ? prefix.debug() : "") +
-                (suffix != null ? suffix.debug() : ""));
+                        name.debug() +
+                        (add != null ? add.debug() : "") +
+                        (remove != null ? remove.debug() : "") +
+                        (prefix != null ? prefix.debug() : "") +
+                        (suffix != null ? suffix.debug() : ""));
 
         Scoreboard board;
 
@@ -114,7 +114,7 @@ public class TeamCommand extends AbstractCommand {
         if (team == null) {
             team = board.registerNewTeam(name.asString());
         }
-        
+
         if (add != null) {
             for (dPlayer player : add.filter(dPlayer.class)) {
                 OfflinePlayer offlinePlayer = player.getOfflinePlayer();

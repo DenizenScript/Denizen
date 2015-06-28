@@ -1,19 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+
+import java.util.List;
 
 public class MountCommand extends AbstractCommand {
 
@@ -48,8 +48,8 @@ public class MountCommand extends AbstractCommand {
         // Use the NPC or player's locations as the location if one is not specified
 
         scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null,
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null,
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null);
 
         // Check to make sure required arguments have been filled
 
@@ -71,8 +71,8 @@ public class MountCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                             aH.debugObj("location", location) +
-                             aH.debugObj("entities", entities.toString()));
+                aH.debugObj("location", location) +
+                aH.debugObj("entities", entities.toString()));
 
         // Mount or dismount all of the entities
         if (!cancel) {

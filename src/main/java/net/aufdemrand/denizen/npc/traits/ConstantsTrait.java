@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 import org.bukkit.command.CommandSender;
@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConstantsTrait extends Trait {
 
     // Saved to C2 saves.yml
-    @Persist(value="", collectionType = ConcurrentHashMap.class)
+    @Persist(value = "", collectionType = ConcurrentHashMap.class)
     private Map<String, String> constants = new HashMap<String, String>();
 
     // Used internally
@@ -51,7 +51,7 @@ public class ConstantsTrait extends Trait {
                     new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         else if (getAssignmentConstants().containsKey(name.toLowerCase()))
             return TagManager.tag(assignmentConstants.get(name.toLowerCase()),
-        new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         return null;
     }
 
@@ -142,15 +142,16 @@ public class ConstantsTrait extends Trait {
         if (npc.getTrait(AssignmentTrait.class).getAssignment() != null) {
             assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
             assignmentConstants.clear();
-        } else return assignmentConstants;
+        }
+        else return assignmentConstants;
 
         try {
             if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
                 for (StringHolder constant : ScriptRegistry.getScriptContainer(assignment)
                         .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
                     assignmentConstants.put(constant.str.toLowerCase(),
-                        ScriptRegistry.getScriptContainer(assignment)
-                                .getString("DEFAULT CONSTANTS." + constant.str.toUpperCase(), ""));
+                            ScriptRegistry.getScriptContainer(assignment)
+                                    .getString("DEFAULT CONSTANTS." + constant.str.toUpperCase(), ""));
         }
         catch (NullPointerException e) {
             dB.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)
@@ -163,7 +164,6 @@ public class ConstantsTrait extends Trait {
 
     /**
      * Rebuilds assignment constants on a script reload
-     *
      */
     @EventHandler
     public void onScriptsReload(ScriptReloadEvent event) {
@@ -190,7 +190,8 @@ public class ConstantsTrait extends Trait {
                 // change formatting to indicate so.
                 if (constants.containsKey(constant.getKey()))
                     paginator.addLine("<m>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<r>  <m>" + constant.getValue());
-                else paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
+                else
+                    paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
             }
             paginator.addLine("");
         }

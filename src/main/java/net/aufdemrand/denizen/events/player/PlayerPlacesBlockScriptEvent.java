@@ -42,6 +42,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     public PlayerPlacesBlockScriptEvent() {
         instance = this;
     }
+
     public static PlayerPlacesBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -64,7 +65,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("block")
                 && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))
-                    && !mat.equals(item_in_hand.identifyNoIdentifier()) && !mat.equals(item_in_hand.identifySimpleNoIdentifier())) {
+                && !mat.equals(item_in_hand.identifyNoIdentifier()) && !mat.equals(item_in_hand.identifySimpleNoIdentifier())) {
             return false;
         }
 
@@ -115,7 +116,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

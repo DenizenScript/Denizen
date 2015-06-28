@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 public class BukkitTagContext extends TagContext {
     public final dPlayer player;
     public final dNPC npc;
+
     public BukkitTagContext(dPlayer player, dNPC npc, boolean instant, ScriptEntry entry, boolean debug, dScript script) {
         super(instant, debug, entry, script);
         this.player = player;
@@ -18,9 +19,9 @@ public class BukkitTagContext extends TagContext {
     }
 
     public BukkitTagContext(ScriptEntry entry, boolean instant) {
-        super(instant, entry != null ? entry.shouldDebug(): true, entry, entry != null ? entry.getScript(): null);
-        player = entry != null ? ((BukkitScriptEntryData)entry.entryData).getPlayer(): null;
-        npc = entry != null ? ((BukkitScriptEntryData)entry.entryData).getNPC(): null;
+        super(instant, entry != null ? entry.shouldDebug() : true, entry, entry != null ? entry.getScript() : null);
+        player = entry != null ? ((BukkitScriptEntryData) entry.entryData).getPlayer() : null;
+        npc = entry != null ? ((BukkitScriptEntryData) entry.entryData).getNPC() : null;
     }
 
     @Override

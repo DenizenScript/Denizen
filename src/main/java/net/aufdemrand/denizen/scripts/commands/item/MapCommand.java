@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.containers.core.MapScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
@@ -12,6 +10,11 @@ import net.aufdemrand.denizen.utilities.maps.MapAnimatedImage;
 import net.aufdemrand.denizen.utilities.maps.MapImage;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapRenderer;
@@ -45,7 +48,7 @@ public class MapCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("image")
-                    && arg.matchesPrefix("i", "img","image")) {
+                    && arg.matchesPrefix("i", "img", "image")) {
                 scriptEntry.addObject("image", arg.asElement());
             }
 

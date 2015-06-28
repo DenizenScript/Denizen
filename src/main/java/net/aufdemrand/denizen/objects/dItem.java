@@ -1,19 +1,19 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.objects.notable.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
+import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
-import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.tags.TagContext;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -67,13 +67,12 @@ public class dItem implements dObject, Notable, Adjustable {
     /**
      * Gets a Item Object from a string form.
      *
-     * @param string  The string or dScript argument String
-     * @param player  The dPlayer to be used for player contexts
-     *                where applicable.
-     * @param npc     The dNPC to be used for NPC contexts
-     *                where applicable.
-     * @return  an Item, or null if incorrectly formatted
-     *
+     * @param string The string or dScript argument String
+     * @param player The dPlayer to be used for player contexts
+     *               where applicable.
+     * @param npc    The dNPC to be used for NPC contexts
+     *               where applicable.
+     * @return an Item, or null if incorrectly formatted
      */
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
         if (string == null) return null;
@@ -85,7 +84,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dItem.class,  string, new BukkitTagContext(player, npc, false, null, true, null));
+            return ObjectFetcher.getObjectFrom(dItem.class, string, new BukkitTagContext(player, npc, false, null, true, null));
         }
 
         ////////
@@ -225,7 +224,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public dItem(dMaterial material, int qty) {
-        this(new ItemStack(material.getMaterial(), qty, (short)0, material.getData()));
+        this(new ItemStack(material.getMaterial(), qty, (short) 0, material.getData()));
     }
 
     public dItem(int type, int qty) {
@@ -337,7 +336,8 @@ public class dItem implements dObject, Notable, Adjustable {
         if (isRepairable()) {
             if (compared.getDurability() < compared_to.getDurability())
                 determination++;
-        } else
+        }
+        else
             // Check data
             if (getItemStack().getData().getData() != item.getData().getData()) return -1;
 
@@ -354,9 +354,8 @@ public class dItem implements dObject, Notable, Adjustable {
      * Check whether this item contains a lore that starts
      * with a certain prefix.
      *
-     * @param prefix  The prefix
-     * @return  True if it does, otherwise false
-     *
+     * @param prefix The prefix
+     * @return True if it does, otherwise false
      */
     public boolean containsLore(String prefix) {
 
@@ -375,9 +374,8 @@ public class dItem implements dObject, Notable, Adjustable {
      * Get the lore from this item that starts with a
      * certain prefix.
      *
-     * @param prefix  The prefix
-     * @return  String  The lore
-     *
+     * @param prefix The prefix
+     * @return String  The lore
      */
     public String getLore(String prefix) {
         for (String itemLore : getItemStack().getItemMeta().getLore()) {
@@ -393,8 +391,7 @@ public class dItem implements dObject, Notable, Adjustable {
      * Check whether this item contains the lore specific
      * to item scripts.
      *
-     * @return  True if it does, otherwise false
-     *
+     * @return True if it does, otherwise false
      */
     public boolean isItemscript() {
         return ItemScriptHelper.isItemscript(item);
@@ -494,7 +491,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // Else, return the material name
         if ((item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
-            return "i@" + getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
+            return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
@@ -541,18 +538,18 @@ public class dItem implements dObject, Notable, Adjustable {
 
             // If saved item, return that
             if (isUnique()) {
-                return NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+                return NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "" : "[quantity=" + item.getAmount() + "]");
             }
 
             // If not a saved item, but is a custom item, return the script id
             else if (isItemscript()) {
-                return getScriptName() + (item.getAmount() == 1 ? "": "[quantity=" + item.getAmount() + "]");
+                return getScriptName() + (item.getAmount() == 1 ? "" : "[quantity=" + item.getAmount() + "]");
             }
         }
 
         // Else, return the material name
         if (item.getDurability() >= 16 || item.getDurability() < 0) {
-            return getMaterial().realName() + "," + item.getDurability()  + PropertyParser.getPropertiesString(this);
+            return getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
         return getMaterial().identifyNoIdentifier() + PropertyParser.getPropertiesString(this);
     }
@@ -578,7 +575,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getFullString() {
-        return "i@" + (isItemscript() ? getScriptName(): getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return "i@" + (isItemscript() ? getScriptName() : getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -602,7 +599,9 @@ public class dItem implements dObject, Notable, Adjustable {
 
 
     @Override
-    public void makeUnique(String id) { NotableManager.saveAs(this, id); }
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
+    }
 
 
     @Override
@@ -755,7 +754,8 @@ public class dItem implements dObject, Notable, Adjustable {
                 return new Element(id + "s")
                         .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
 
-            }   else {
+            }
+            else {
                 if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(1));
                 if (id.endsWith("s")) return new Element(id).getAttribute(attribute.fulfill(1));
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")

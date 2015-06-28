@@ -4,13 +4,13 @@ import net.aufdemrand.denizen.exceptions.RequirementCheckException;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import org.bukkit.block.Block;
 
 import java.util.List;
 
-public class PoweredRequirement extends AbstractRequirement{
+public class PoweredRequirement extends AbstractRequirement {
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
@@ -29,7 +29,7 @@ public class PoweredRequirement extends AbstractRequirement{
             else dB.echoError("Could not match argument '" + thisArg + "'");
         }
 
-        if(blockToCheck != null) {
+        if (blockToCheck != null) {
             if (blockToCheck.isBlockPowered()) outcome = true;
             else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
         }

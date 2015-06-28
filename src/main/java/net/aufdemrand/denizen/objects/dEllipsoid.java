@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -37,8 +37,7 @@ public class dEllipsoid implements dObject, Notable {
     /**
      * Gets an Ellipsoid Object from a string form.
      *
-     * @param string  the string
-     *
+     * @param string the string
      */
     @Fetchable("ellipsoid")
     public static dEllipsoid valueOf(String string, TagContext context) {
@@ -64,9 +63,8 @@ public class dEllipsoid implements dObject, Notable {
     /**
      * Determines whether a string is a valid ellipsoid.
      *
-     * @param arg  the string
-     * @return  true if matched, otherwise false
-     *
+     * @param arg the string
+     * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
 
@@ -102,7 +100,7 @@ public class dEllipsoid implements dObject, Notable {
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(materials);
         dList list = new dList();
-        for (dLocation loc: initial) {
+        for (dLocation loc : initial) {
             if (contains(loc)) {
                 list.add(loc.identify());
             }
@@ -117,7 +115,7 @@ public class dEllipsoid implements dObject, Notable {
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(null);
         List<dLocation> locations = new ArrayList<dLocation>();
-        for (dLocation loc: initial) {
+        for (dLocation loc : initial) {
             if (contains(loc)) {
                 locations.add(loc);
             }
@@ -130,8 +128,8 @@ public class dEllipsoid implements dObject, Notable {
         double ybase = test.getY() - loc.getY();
         double zbase = test.getZ() - loc.getZ();
         return ((xbase * xbase) / (size.getX() * size.getX())
-            + (ybase * ybase) / (size.getY() * size.getY())
-            + (zbase * zbase) / (size.getZ() * size.getZ()) < 1);
+                + (ybase * ybase) / (size.getY() * size.getY())
+                + (zbase * zbase) / (size.getZ() * size.getZ()) < 1);
     }
 
     String prefix = "ellipsoid";

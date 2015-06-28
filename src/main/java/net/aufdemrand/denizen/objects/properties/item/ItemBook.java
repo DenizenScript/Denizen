@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -17,13 +17,13 @@ public class ItemBook implements Property {
         return item instanceof dItem
                 && (
                 ((dItem) item).getItemStack().getType().equals(Material.WRITTEN_BOOK)
-                || ((dItem) item).getItemStack().getType().equals(Material.BOOK_AND_QUILL)
-                );
+                        || ((dItem) item).getItemStack().getType().equals(Material.BOOK_AND_QUILL)
+        );
     }
 
     public static ItemBook getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemBook((dItem)_item);
+        else return new ItemBook((dItem) _item);
     }
 
 
@@ -91,16 +91,16 @@ public class ItemBook implements Property {
             // -->
             if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
 
             // Deprecated in favor of pages.escape_contents
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
-                for (String page: bookInfo.getPages()) {
+                for (String page : bookInfo.getPages()) {
                     output.append(EscapeTags.Escape(page)).append("|");
                 }
                 return new dList(output.length() > 0 ?
-                        output.substring(0, output.length() - 1): output.toString())
+                        output.substring(0, output.length() - 1) : output.toString())
                         .getAttribute(attribute.fulfill(2));
             }
 
@@ -150,7 +150,7 @@ public class ItemBook implements Property {
         }
         output.append("pages|");
         if (bookInfo.hasPages()) {
-            for (String page: bookInfo.getPages()) {
+            for (String page : bookInfo.getPages()) {
                 output.append(EscapeTags.Escape(page)).append("|");
             }
         }

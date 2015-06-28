@@ -7,14 +7,14 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
 
-public class ProcedureRequirement extends AbstractRequirement{
+public class ProcedureRequirement extends AbstractRequirement {
 
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
 
         // Deprecated
-         dB.log("This requirement is deprecated! Use instead: valueof <proc[name_of_procedure_script]>");
+        dB.log("This requirement is deprecated! Use instead: valueof <proc[name_of_procedure_script]>");
 
         return false;
     }

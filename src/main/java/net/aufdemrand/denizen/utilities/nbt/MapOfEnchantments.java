@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
 

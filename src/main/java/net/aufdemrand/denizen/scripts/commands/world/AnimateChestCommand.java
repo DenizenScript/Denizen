@@ -1,18 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.minecraft.server.v1_8_R3.Block;
-import net.minecraft.server.v1_8_R3.PacketPlayOutBlockAction;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import org.bukkit.Sound;
-
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.minecraft.server.v1_8_R3.Block;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.PacketPlayOutBlockAction;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class AnimateChestCommand extends AbstractCommand {
 
-    enum ChestAction { OPEN, CLOSE }
+    enum ChestAction {OPEN, CLOSE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -59,8 +61,8 @@ public class AnimateChestCommand extends AbstractCommand {
             scriptEntry.addObject("sound", Element.TRUE);
 
         if (!scriptEntry.hasObject("players")) {
-            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-                scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()));
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
             else // TODO: Perhaps instead add all players in sight range?
                 throw new InvalidArgumentsException("Missing 'players' argument!");
         }
@@ -75,26 +77,27 @@ public class AnimateChestCommand extends AbstractCommand {
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         dB.report(scriptEntry, getName(), location.debug()
-                                          + action.debug()
-                                          + sound.debug()
-                                          + aH.debugObj("players", players.toString()));
+                + action.debug()
+                + sound.debug()
+                + aH.debugObj("players", players.toString()));
 
         BlockPosition blockPosition = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         Block block = ((CraftWorld) location.getWorld()).getHandle().getType(blockPosition).getBlock();
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
-                for (dPlayer player: players) {
+                for (dPlayer player : players) {
                     if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
-                    ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                    ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
                 }
                 break;
 
             case CLOSE:
-                for (dPlayer player: players) {
-                    if (sound.asBoolean()) player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
-                    ((CraftPlayer)player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
+                for (dPlayer player : players) {
+                    if (sound.asBoolean())
+                        player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                    ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 0));
                 }
                 break;

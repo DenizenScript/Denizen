@@ -38,6 +38,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     public ItemDespawnsScriptEvent() {
         instance = this;
     }
+
     public static ItemDespawnsScriptEvent instance;
     public dItem item;
     public dLocation location;

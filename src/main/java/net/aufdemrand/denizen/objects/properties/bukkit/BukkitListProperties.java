@@ -65,7 +65,7 @@ public class BukkitListProperties implements Property {
                 }
 
                 if (n == list.size() - 2) {
-                    dScriptArg.append(n == 0 ? " and ": ", and ");
+                    dScriptArg.append(n == 0 ? " and " : ", and ");
                 }
                 else {
                     dScriptArg.append(", ");

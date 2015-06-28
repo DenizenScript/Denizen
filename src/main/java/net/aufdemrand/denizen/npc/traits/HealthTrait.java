@@ -1,16 +1,21 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -84,7 +89,7 @@ public class HealthTrait extends Trait implements Listener {
     private String respawnDelay = Settings.healthTraitRespawnDelay();
 
     @Persist("respawnlocation")
-    private String respawnLocation =  "<npc.flag[respawn_location] || <npc.location>>";
+    private String respawnLocation = "<npc.flag[respawn_location] || <npc.location>>";
 
     // internal
     private dPlayer player = null;
@@ -142,7 +147,6 @@ public class HealthTrait extends Trait implements Listener {
     /**
      * Listens for spawn of an NPC and updates its health with the max health
      * information for this trait.
-     *
      */
     @Override
     public void onSpawn() {
@@ -176,7 +180,6 @@ public class HealthTrait extends Trait implements Listener {
      * Gets the current health of this NPC.
      *
      * @return current health points
-     *
      */
     public double getHealth() {
         if (!npc.isSpawned()) return 0;
@@ -187,7 +190,6 @@ public class HealthTrait extends Trait implements Listener {
      * Sets the maximum health for this NPC. Default max is 20.
      *
      * @param newMax new maximum health
-     *
      */
     public void setMaxhealth(int newMax) {
         ((LivingEntity) npc.getEntity()).setMaxHealth(newMax);
@@ -213,7 +215,6 @@ public class HealthTrait extends Trait implements Listener {
 
     /**
      * Sets the NPCs health to maximum.
-     *
      */
     public void setHealth() {
         setHealth(((LivingEntity) npc.getEntity()).getMaxHealth());
@@ -281,8 +282,7 @@ public class HealthTrait extends Trait implements Listener {
 
 
         // Check if the entity has been killed by another entity
-        if (event instanceof EntityDamageByEntityEvent)
-        {
+        if (event instanceof EntityDamageByEntityEvent) {
             Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
             context.put("killer", new dEntity(killerEntity));
 
@@ -293,8 +293,7 @@ public class HealthTrait extends Trait implements Listener {
 
                 // If the damager was a projectile, take its shooter into
                 // account as well
-            else if (killerEntity instanceof Projectile)
-            {
+            else if (killerEntity instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
                 if (shooter != null && shooter instanceof LivingEntity) {
 
@@ -314,8 +313,7 @@ public class HealthTrait extends Trait implements Listener {
 
         }
         // If not, check if the entity has been killed by a block
-        else if (event instanceof EntityDamageByBlockEvent)
-        {
+        else if (event instanceof EntityDamageByBlockEvent) {
             DenizenAPI.getDenizenNPC(npc).action("death by block", player, context);
 
             // TODO:
@@ -359,7 +357,7 @@ public class HealthTrait extends Trait implements Listener {
                             if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) return;
                             else npc.spawn(loc);
                         }
-                    } , (Duration.valueOf(respawnDelay).getTicks()));
+                    }, (Duration.valueOf(respawnDelay).getTicks()));
         }
 
     }

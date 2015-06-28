@@ -29,7 +29,7 @@ public class ItemSkullskin implements Property {
 
     public static ItemSkullskin getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemSkullskin((dItem)_item);
+        else return new ItemSkullskin((dItem) _item);
     }
 
 
@@ -138,7 +138,7 @@ public class ItemSkullskin implements Property {
         // TODO: use Bukkit SkullMeta method when updated
         if (mechanism.matches("skull_skin")) {
             if (item.getItemStack().getDurability() != 3)
-                item.getItemStack().setDurability((short)3);
+                item.getItemStack().setDurability((short) 3);
             dList list = mechanism.getValue().asType(dList.class);
             String idString = list.get(0);
             ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());

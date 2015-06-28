@@ -7,16 +7,15 @@ public class Velocity {
 
     /**
      * Calculates the vector between two locations' vectors
-     *
+     * <p/>
      * Original code by SethBling, edited to be a bit
      * more accurate.
      *
-     * @param  from     The origin's vector
-     * @param  to     The destination's vector
-     * @param  gravity     The gravity value of the entity
-     * @param  heightGain     The gain in height
-     *
-     * @return  A vector
+     * @param from       The origin's vector
+     * @param to         The destination's vector
+     * @param gravity    The gravity value of the entity
+     * @param heightGain The gain in height
+     * @return A vector
      */
 
     public static Vector calculate(Vector from, Vector to, double gravity, double heightGain) {
@@ -65,10 +64,10 @@ public class Velocity {
     public static Vector spread(Vector from, double yaw, double pitch) {
         Vector vec = from.clone();
 
-        float cosyaw = (float)Math.cos(yaw);
-        float cospitch = (float)Math.cos(pitch);
-        float sinyaw = (float)Math.sin(yaw);
-        float sinpitch = (float)Math.sin(pitch);
+        float cosyaw = (float) Math.cos(yaw);
+        float cospitch = (float) Math.cos(pitch);
+        float sinyaw = (float) Math.sin(yaw);
+        float sinpitch = (float) Math.sin(pitch);
         float bX = (float) (vec.getY() * sinpitch + vec.getX() * cospitch);
         float bY = (float) (vec.getY() * cospitch - vec.getX() * sinpitch);
         return new Vector(bX * cosyaw - vec.getZ() * sinyaw, bY, bX * sinyaw + vec.getZ() * cosyaw);
@@ -77,10 +76,10 @@ public class Velocity {
     public static double launchAngle(Location from, Vector to, double v, double elev, double g) {
         Vector victor = from.toVector().subtract(to);
         Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
-        double v2 = Math.pow(v,2);
-        double v4 = Math.pow(v,4);
+        double v2 = Math.pow(v, 2);
+        double v4 = Math.pow(v, 4);
         double derp = g * (g * Math.pow(dist, 2) + 2 * elev * v2);
-        if( v4 < derp) {
+        if (v4 < derp) {
             // Max optimal (won't hit!)
             return Math.atan((2 * g * elev + v2) / (2 * g * elev + 2 * v2));
         }
@@ -91,8 +90,8 @@ public class Velocity {
 
     public static double hangtime(double launchAngle, double v, double elev, double g) {
         double a = v * Math.sin(launchAngle);
-        double b = -2*g*elev;
-        if(Math.pow(a, 2) + b < 0){
+        double b = -2 * g * elev;
+        if (Math.pow(a, 2) + b < 0) {
             return 0;
         }
         return (a + Math.sqrt(Math.pow(a, 2) + b)) / g;

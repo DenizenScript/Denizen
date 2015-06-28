@@ -1,18 +1,18 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ResetCommand extends AbstractCommand {
 
-    private enum Type { FINISH, FAIL, PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES }
+    private enum Type {FINISH, FAIL, PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -43,14 +43,14 @@ public class ResetCommand extends AbstractCommand {
 
             else if (arg.matchesArgumentList(dPlayer.class))
                 scriptEntry.addObject("players", arg.asType(dList.class));
-            // TODO: Reset NPCs option too!
+                // TODO: Reset NPCs option too!
 
             else arg.reportUnhandled();
         }
 
         // Use attached player if none is specified, and we're not resetting GLOBAL_COOLDOWN
         if (!scriptEntry.getObject("type").equals(Type.GLOBAL_COOLDOWN))
-            scriptEntry.defaultObject("players", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+            scriptEntry.defaultObject("players", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
 
         // Must specify a script unless resetting SAVES
         if (!scriptEntry.hasObject("script") && !scriptEntry.getObject("type").equals(Type.SAVES))
@@ -67,7 +67,7 @@ public class ResetCommand extends AbstractCommand {
             players = new dList(player.identify());
         else players = scriptEntry.getdObject("players");
 
-        Type type = (Type)scriptEntry.getObject("type");
+        Type type = (Type) scriptEntry.getObject("type");
         dScript script = scriptEntry.getdObject("script");
 
         dB.report(scriptEntry, getName(),

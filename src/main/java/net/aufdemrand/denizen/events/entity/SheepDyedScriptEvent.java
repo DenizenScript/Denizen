@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.event.EventHandler;
@@ -45,6 +44,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public SheepDyedScriptEvent() {
         instance = this;
     }
+
     public static SheepDyedScriptEvent instance;
     public dEntity entity;
     public DyeColor color;
@@ -63,9 +63,9 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String new_color = CoreUtilities.getXthArg(1, lower).equals("dyes") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
-        if (new_color.length() > 0){
-            if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))){
+        String new_color = CoreUtilities.getXthArg(1, lower).equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        if (new_color.length() > 0) {
+            if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
                 return false;
             }
         }
@@ -94,7 +94,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             try {
                 color = DyeColor.valueOf(determination.toUpperCase());
                 return true;
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
             }
         }
         return super.applyDetermination(container, determination);
@@ -102,8 +103,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

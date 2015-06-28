@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.npc.traits.FishingTrait;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +48,7 @@ public class FishCommand extends AbstractCommand {
                 .defaultObject("stop", Element.FALSE)
                 .defaultObject("percent", new Element(65));
 
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned())
             throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
 
     }
@@ -61,7 +61,7 @@ public class FishCommand extends AbstractCommand {
         Element stop = scriptEntry.getElement("stop");
         Element percent = scriptEntry.getElement("percent");
 
-        dNPC npc = ((BukkitScriptEntryData)scriptEntry.entryData).getNPC();
+        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
         FishingTrait trait = npc.getFishingTrait();
 
         dB.report(scriptEntry, getName(), location.debug() + katch.debug() + percent.debug() + stop.debug());

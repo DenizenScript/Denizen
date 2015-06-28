@@ -1,40 +1,42 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
-
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
-import org.bukkit.event.enchantment.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.inventory.*;
 import org.bukkit.event.vehicle.*;
-import org.bukkit.event.weather.*;
+import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.*;
-import org.bukkit.event.entity.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
+
+import java.util.*;
 
 public class BukkitWorldScriptHelper implements Listener {
 
@@ -55,7 +57,7 @@ public class BukkitWorldScriptHelper implements Listener {
         else {
             determ = OldEventManager.doEvents(events, new BukkitScriptEntryData(player, npc), context);
         }
-        return determ.size() > 0 ? determ.get(0): "none";
+        return determ.size() > 0 ? determ.get(0) : "none";
     }
 
     /////////////////////
@@ -122,10 +124,10 @@ public class BukkitWorldScriptHelper implements Listener {
                 context.put("world", currentWorld);
 
                 doEvents(Arrays.asList
-                        ("time changes",
-                                "time changes in " + currentWorld.identifySimple(),
-                                String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
-                                "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
+                                ("time changes",
+                                        "time changes in " + currentWorld.identifySimple(),
+                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
+                                        "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
                 current_time.put(currentWorld.identifySimple(), hour);
@@ -172,9 +174,9 @@ public class BukkitWorldScriptHelper implements Listener {
         try {
             BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
                     projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
-            while(bi.hasNext()) {
+            while (bi.hasNext()) {
                 block = bi.next();
-                if(block.getTypeId() != 0) {
+                if (block.getTypeId() != 0) {
                     break;
                 }
             }
@@ -219,8 +221,12 @@ public class BukkitWorldScriptHelper implements Listener {
             //
             // -->
 
-            if (shooter.isCitizensNPC()) { npc = shooter.getDenizenNPC(); }
-            else if (shooter.isPlayer()) { player = shooter.getDenizenPlayer(); }
+            if (shooter.isCitizensNPC()) {
+                npc = shooter.getDenizenNPC();
+            }
+            else if (shooter.isPlayer()) {
+                player = shooter.getDenizenPlayer();
+            }
 
             events.add("entity shoots block");
             events.add("entity shoots block with " + projectile.identifyType());
@@ -446,16 +452,16 @@ public class BukkitWorldScriptHelper implements Listener {
             if (event.getCursor() != null) {
                 holding = new dItem(event.getCursor());
 
-                final String[] itemStrings = new String[] {
+                final String[] itemStrings = new String[]{
                         item.identifySimple(),
                         item.identifyMaterial()
                 };
-                final String[] inventoryStrings = new String[] {
+                final String[] inventoryStrings = new String[]{
                         "inventory",
                         type,
                         inventory.identifySimple()
                 };
-                final String[] holdingStrings = new String[] {
+                final String[] holdingStrings = new String[]{
                         holding.identifySimple(),
                         holding.identifyMaterial()
                 };
@@ -643,13 +649,13 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (dScript.matches(determination)) {
             dScript script = dScript.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
-                dItem book = ((BookScriptContainer)script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
+                dItem book = ((BookScriptContainer) script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
                 event.setNewBookMeta((BookMeta) book.getItemStack().getItemMeta());
                 if (book.getItemStack().getType() == Material.BOOK_AND_QUILL)
                     event.setSigning(false);
             }
             else {
-                dB.echoError("Script '"  + determination + "' is valid, but not of type 'book'!");
+                dB.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
             }
         }
     }
@@ -678,15 +684,15 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("item", item);
 
         String determination = doEvents(Arrays.asList
-                ("player breaks item",
-                        "player breaks " + item.identifySimple(),
-                        "player breaks " + item.identifyMaterial()),
+                        ("player breaks item",
+                                "player breaks " + item.identifySimple(),
+                                "player breaks " + item.identifyMaterial()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
 
         if (determination.startsWith("CANCELLED")) {
             // The ItemStack isn't really gone yet, only set to stack size 0.
             // So just add 1 more item to the stack.
-            itemstack.setAmount(itemstack.getAmount()+1);
+            itemstack.setAmount(itemstack.getAmount() + 1);
             // The event automatically resets durability to 0... instead,
             // let's delay a tick and set it back to what it was before.
             final Player player = event.getPlayer();
@@ -724,8 +730,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("animation", new Element(animation));
 
         String determination = doEvents(Arrays.asList
-                ("player animates",
-                        "player animates " + animation),
+                        ("player animates",
+                                "player animates " + animation),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -780,7 +786,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getBed().getLocation()));
 
         doEvents(Arrays.asList
-                ("player leaves bed"),
+                        ("player leaves bed"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
     }
 
@@ -810,11 +816,11 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("destination_world", destinationWorld);
 
         doEvents(Arrays.asList
-                ("player changes world",
-                        "player changes world from " + originWorld.identifySimple(),
-                        "player changes world to " + destinationWorld.identifySimple(),
-                        "player changes world from " + originWorld.identifySimple() +
-                                " to " + destinationWorld.identifySimple()),
+                        ("player changes world",
+                                "player changes world from " + originWorld.identifySimple(),
+                                "player changes world to " + destinationWorld.identifySimple(),
+                                "player changes world from " + originWorld.identifySimple() +
+                                        " to " + destinationWorld.identifySimple()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
     }
 
@@ -885,7 +891,7 @@ public class BukkitWorldScriptHelper implements Listener {
         events.add("player throws egg");
 
         if (event.isHatching()) events.add("player throws hatching egg");
-        else                    events.add("player throws non-hatching egg");
+        else events.add("player throws non-hatching egg");
 
         String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
@@ -921,7 +927,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("amount", new Element(event.getAmount()));
 
         String determination = doEvents(Arrays.asList
-                ("player changes xp"),
+                        ("player changes xp"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
 
         if (determination.equals("CANCELLED")) {
@@ -1008,8 +1014,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("gamemode", new Element(event.getNewGameMode().name()));
 
         String determination = doEvents(Arrays.asList
-                ("player changes gamemode",
-                        "player changes gamemode to " + event.getNewGameMode().name()),
+                        ("player changes gamemode",
+                                "player changes gamemode to " + event.getNewGameMode().name()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         // Handle message
@@ -1200,7 +1206,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("cuboids", cuboid_context);
         List<String> determinations = OldEventManager.doEvents(events,
                 new BukkitScriptEntryData(dEntity.getPlayerFrom(event.getPlayer()), npc), context, true);
-        for (String determination: determinations) {
+        for (String determination : determinations) {
             if (determination.equalsIgnoreCase("CANCELLED")) {
                 event.setCancelled(true);
             }
@@ -1357,8 +1363,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getJoinMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player joins",
-                        "player join"),
+                        ("player joins",
+                                "player join"),
                 null, dEntity.getPlayerFrom(player), context);
 
         // Handle message
@@ -1397,7 +1403,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getLeaveMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player kicked"),
+                        ("player kicked"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (!determination.equals("none")) {
@@ -1432,8 +1438,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("holder", new dEntity(event.getLeashHolder()));
 
         String determination = doEvents(Arrays.asList
-                ("player leashes entity",
-                        "player leashes " + entity.identifyType()),
+                        ("player leashes entity",
+                                "player leashes " + entity.identifyType()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
         if (determination.equalsIgnoreCase("CANCELLED"))
@@ -1459,9 +1465,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("level", new Element(event.getNewLevel()));
 
         doEvents(Arrays.asList
-                ("player levels up",
-                        "player levels up to " + event.getNewLevel(),
-                        "player levels up from " + event.getOldLevel()),
+                        ("player levels up",
+                                "player levels up to " + event.getNewLevel(),
+                                "player levels up from " + event.getOldLevel()),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
     }
 
@@ -1502,7 +1508,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7): determination);
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7) : determination);
     }
 
     // <--[event]
@@ -1529,10 +1535,10 @@ public class BukkitWorldScriptHelper implements Listener {
             context.put("notable", new Element(name));
 
             String determination = doEvents(Arrays.asList
-                    ("player walks over notable",
-                            "player walks over " + name,
-                            "walked over notable",
-                            "walked over " + name),
+                            ("player walks over notable",
+                                    "player walks over " + name,
+                                    "walked over notable",
+                                    "walked over " + name),
                     null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
             if (determination.toUpperCase().startsWith("CANCELLED") ||
@@ -1608,8 +1614,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("message", new Element(event.getQuitMessage()));
 
         String determination = doEvents(Arrays.asList
-                ("player quits",
-                        "player quit"),
+                        ("player quits",
+                                "player quit"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (!determination.equals("none")) {
@@ -1642,7 +1648,7 @@ public class BukkitWorldScriptHelper implements Listener {
         events.add("player respawns");
 
         if (event.isBedSpawn()) events.add("player respawns at bed");
-        else                    events.add("player respawns elsewhere");
+        else events.add("player respawns elsewhere");
 
         String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
@@ -1717,8 +1723,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isFlying()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles flight",
-                        "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
+                        ("player toggles flight",
+                                "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1749,8 +1755,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isSneaking()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles sneak",
-                        "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
+                        ("player toggles sneak",
+                                "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1781,8 +1787,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("state", new Element(event.isSprinting()));
 
         String determination = doEvents(Arrays.asList
-                ("player toggles sprint",
-                        "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
+                        ("player toggles sprint",
+                                "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -1815,9 +1821,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("vehicle", vehicle);
 
         doEvents(Arrays.asList
-                ("vehicle created",
-                        vehicle.identifyType() + " created",
-                        vehicle.identifySimple() + " created"),
+                        ("vehicle created",
+                                vehicle.identifyType() + " created",
+                                vehicle.identifySimple() + " created"),
                 null, null, context, true);
     }
 
@@ -1980,15 +1986,15 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         String determination = doEvents(Arrays.asList
-                ("entity enters vehicle",
-                        entity.identifyType() + " enters vehicle",
-                        entity.identifySimple() + " enters vehicle",
-                        "entity enters " + vehicle.identifyType(),
-                        "entity enters " + vehicle.identifySimple(),
-                        entity.identifyType() + " enters " + vehicle.identifyType(),
-                        entity.identifySimple() + " enters " + vehicle.identifyType(),
-                        entity.identifyType() + " enters " + vehicle.identifySimple(),
-                        entity.identifySimple() + " enters " + vehicle.identifySimple()),
+                        ("entity enters vehicle",
+                                entity.identifyType() + " enters vehicle",
+                                entity.identifySimple() + " enters vehicle",
+                                "entity enters " + vehicle.identifyType(),
+                                "entity enters " + vehicle.identifySimple(),
+                                entity.identifyType() + " enters " + vehicle.identifyType(),
+                                entity.identifySimple() + " enters " + vehicle.identifyType(),
+                                entity.identifyType() + " enters " + vehicle.identifySimple(),
+                                entity.identifySimple() + " enters " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2029,14 +2035,14 @@ public class BukkitWorldScriptHelper implements Listener {
         else if (entity.isPlayer()) player = entity.getDenizenPlayer();
 
         String determination = doEvents(Arrays.asList
-                ("entity exits vehicle",
-                        "entity exits " + vehicle.identifyType(),
-                        "entity exits " + vehicle.identifySimple(),
-                        entity.identifyType() + " exits vehicle",
-                        entity.identifyType() + " exits " + vehicle.identifyType(),
-                        entity.identifyType() + " exits " + vehicle.identifySimple(),
-                        entity.identifySimple() + " exits " + vehicle.identifyType(),
-                        entity.identifySimple() + " exits " + vehicle.identifySimple()),
+                        ("entity exits vehicle",
+                                "entity exits " + vehicle.identifyType(),
+                                "entity exits " + vehicle.identifySimple(),
+                                entity.identifyType() + " exits vehicle",
+                                entity.identifyType() + " exits " + vehicle.identifyType(),
+                                entity.identifyType() + " exits " + vehicle.identifySimple(),
+                                entity.identifySimple() + " exits " + vehicle.identifyType(),
+                                entity.identifySimple() + " exits " + vehicle.identifySimple()),
                 npc, player, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2070,8 +2076,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("location", new dLocation(event.getLightning().getLocation()));
 
         String determination = doEvents(Arrays.asList
-                ("lightning strikes",
-                        "lightning strikes in " + world.identifySimple()),
+                        ("lightning strikes",
+                                "lightning strikes in " + world.identifySimple()),
                 null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2149,16 +2155,16 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("reason", new Element(reason));
 
         dList list = new dList();
-        for (Block block: event.getBlocks()) {
+        for (Block block : event.getBlocks()) {
             list.add(new dLocation(block.getLocation()).identify());
         }
         context.put("blocks", list);
 
         String determination = doEvents(Arrays.asList
-                ("portal created",
-                        "portal created because " + reason,
-                        "portal created in " + world.identifySimple(),
-                        "portal created in " + world.identifySimple() + " because " + reason),
+                        ("portal created",
+                                "portal created because " + reason,
+                                "portal created in " + world.identifySimple(),
+                                "portal created in " + world.identifySimple() + " because " + reason),
                 null, null, context, true);
 
         if (determination.toUpperCase().startsWith("CANCELLED"))
@@ -2187,8 +2193,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("new_location", new dLocation(world.getWorld().getSpawnLocation()));
 
         doEvents(Arrays.asList
-                ("spawn changes",
-                        "spawn changes in " + world.identifySimple()),
+                        ("spawn changes",
+                                "spawn changes in " + world.identifySimple()),
                 null, null, context, true);
     }
 
@@ -2222,7 +2228,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
         dList structure = new dList();
         dList mats = new dList();
-        for (BlockState state: event.getBlocks()) {
+        for (BlockState state : event.getBlocks()) {
             structure.add(new dLocation(state.getLocation()).identify());
             mats.add(dMaterial.getMaterialFrom(state.getType(), state.getRawData()).identify());
         }
@@ -2273,8 +2279,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world initializes",
-                        world.identifySimple() + " initializes"),
+                        ("world initializes",
+                                world.identifySimple() + " initializes"),
                 null, null, context, true);
     }
 
@@ -2297,8 +2303,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world loads",
-                        world.identifySimple() + " loads"),
+                        ("world loads",
+                                world.identifySimple() + " loads"),
                 null, null, context, true);
     }
 
@@ -2321,8 +2327,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world saves",
-                        world.identifySimple() + " saves"),
+                        ("world saves",
+                                world.identifySimple() + " saves"),
                 null, null, context, true);
     }
 
@@ -2345,8 +2351,8 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("world", world);
 
         doEvents(Arrays.asList
-                ("world unloads",
-                        world.identifySimple() + " unloads"),
+                        ("world unloads",
+                                world.identifySimple() + " unloads"),
                 null, null, context, true);
     }
 }

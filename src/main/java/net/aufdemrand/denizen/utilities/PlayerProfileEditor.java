@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.*;
+import static net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 
 public class PlayerProfileEditor {
 
@@ -58,7 +58,8 @@ public class PlayerProfileEditor {
             pidGameProfile.setAccessible(true);
             pidDisplayName = PacketPlayOutPlayerInfo.PlayerInfoData.class.getDeclaredField("e");
             pidDisplayName.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         playerGameProfile = profileField;
@@ -85,7 +86,8 @@ public class PlayerProfileEditor {
                     playerInfoData_gameProfile.set(data, fakeProfiles.get(gameProfile.getId()));
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -158,7 +160,8 @@ public class PlayerProfileEditor {
     private static GameProfile getPlayerProfile(Player player) {
         try {
             return (GameProfile) playerGameProfile.get(((CraftPlayer) player).getHandle());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
             return null;
         }
@@ -167,7 +170,8 @@ public class PlayerProfileEditor {
     public static void setProfileName(GameProfile gameProfile, String name) {
         try {
             gameProfileName.set(gameProfile, name);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -175,7 +179,8 @@ public class PlayerProfileEditor {
     public static void setProfileId(GameProfile gameProfile, UUID uuid) {
         try {
             gameProfileId.set(gameProfile, uuid);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }

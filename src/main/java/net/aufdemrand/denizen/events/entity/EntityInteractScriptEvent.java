@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
@@ -40,6 +43,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public EntityInteractScriptEvent() {
         instance = this;
     }
+
     public static EntityInteractScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -98,8 +102,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -115,7 +119,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public void onEntityInteract(EntityInteractEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

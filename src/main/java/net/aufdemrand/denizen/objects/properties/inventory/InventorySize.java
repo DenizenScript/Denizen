@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;

@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -13,7 +13,7 @@ import org.bukkit.entity.Painting;
 public class EntityPainting implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.PAINTING;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PAINTING;
     }
 
     public static EntityPainting getFrom(dObject entity) {
@@ -38,7 +38,7 @@ public class EntityPainting implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Painting)painting.getBukkitEntity()).getArt().name();
+        return ((Painting) painting.getBukkitEntity()).getArt().name();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class EntityPainting implements Property {
         // If the entity is a painting, returns its width.
         // -->
         if (attribute.startsWith("painting_width"))
-            return new Element(((Painting)painting.getBukkitEntity()).getArt().getBlockWidth())
+            return new Element(((Painting) painting.getBukkitEntity()).getArt().getBlockWidth())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -76,7 +76,7 @@ public class EntityPainting implements Property {
         // If the entity is a painting, returns its height.
         // -->
         if (attribute.startsWith("painting_height"))
-            return new Element(((Painting)painting.getBukkitEntity()).getArt().getBlockHeight())
+            return new Element(((Painting) painting.getBukkitEntity()).getArt().getBlockHeight())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -88,7 +88,7 @@ public class EntityPainting implements Property {
         // If the entity is a painting, returns what art it shows.
         // -->
         if (attribute.startsWith("painting"))
-            return new Element(((Painting)painting.getBukkitEntity()).getArt().name())
+            return new Element(((Painting) painting.getBukkitEntity()).getArt().name())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -108,7 +108,7 @@ public class EntityPainting implements Property {
         // -->
 
         if (mechanism.matches("painting") && mechanism.requireEnum(false, Art.values())) {
-            ((Painting)painting.getBukkitEntity()).setArt(Art.valueOf(mechanism.getValue().asString().toUpperCase()));
+            ((Painting) painting.getBukkitEntity()).setArt(Art.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }

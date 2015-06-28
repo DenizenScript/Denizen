@@ -49,10 +49,11 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     protected void a(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception {
-        if(oldManager.channel.isOpen()) {
+        if (oldManager.channel.isOpen()) {
             try {
                 packet.a(this.packetListener);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError(e);
             }
         }
@@ -70,7 +71,7 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public void a(Packet packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
-       oldManager.a(packet, genericfuturelistener, agenericfuturelistener);
+        oldManager.a(packet, genericfuturelistener, agenericfuturelistener);
     }
 
     public void a() {
@@ -141,7 +142,8 @@ public class DenizenNetworkManager extends NetworkManager {
             directionField.setAccessible(true);
             managerField = PlayerConnection.class.getDeclaredField("networkManager");
             managerField.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         protocolDirectionField = directionField;
@@ -152,7 +154,8 @@ public class DenizenNetworkManager extends NetworkManager {
         EnumProtocolDirection direction = null;
         try {
             direction = (EnumProtocolDirection) protocolDirectionField.get(networkManager);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return direction;
@@ -161,7 +164,8 @@ public class DenizenNetworkManager extends NetworkManager {
     private static void setNetworkManager(PlayerConnection playerConnection, NetworkManager networkManager) {
         try {
             networkManagerField.set(playerConnection, networkManager);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }

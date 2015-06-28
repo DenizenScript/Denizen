@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,10 +38,11 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public EntityCreatePortalScriptEvent() {
         instance = this;
     }
+
     public static EntityCreatePortalScriptEvent instance;
     public dEntity entity;
     public Element portal_type;
-//    public dList blocks;
+    //    public dList blocks;
     public EntityCreatePortalEvent event;
 
     @Override
@@ -58,7 +58,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)){
+        if (!entity.matchesEntity(entName)) {
             return false;
         }
 
@@ -91,8 +91,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

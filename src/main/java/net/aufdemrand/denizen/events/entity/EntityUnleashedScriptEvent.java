@@ -99,7 +99,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     @EventHandler
     public void onEntityUnleashed(EntityUnleashEvent event) {
         entity = new dEntity(event.getEntity());
-        reason= new Element(event.getReason().toString());
+        reason = new Element(event.getReason().toString());
         this.event = event;
         fire();
     }

@@ -59,7 +59,8 @@ public class CraftItemProjectile extends CraftItem implements DenizenCustomEntit
             if (shooter instanceof CraftHumanEntity) {
                 getHandle().shooterName = ((CraftHumanEntity) shooter).getName();
             }
-        } else {
+        }
+        else {
             getHandle().shooter = null;
             getHandle().shooterName = null;
         }

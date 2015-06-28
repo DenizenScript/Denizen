@@ -23,7 +23,8 @@ public class DisplayHeaderFooter {
         try {
             tab_header.set(headerFooterPacket, new ChatComponentText(header));
             tab_footer.set(headerFooterPacket, new ChatComponentText(footer));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return headerFooterPacket;

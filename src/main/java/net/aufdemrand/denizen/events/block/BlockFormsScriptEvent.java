@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,6 +35,7 @@ public class BlockFormsScriptEvent extends ScriptEvent implements Listener {
     public BlockFormsScriptEvent() {
         instance = this;
     }
+
     public static BlockFormsScriptEvent instance;
     public dLocation location;
     public dMaterial material;

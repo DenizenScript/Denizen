@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Wolf;
 public class EntityAngry implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity)entity).getBukkitEntityType() == EntityType.WOLF;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.WOLF;
     }
 
     public static EntityAngry getFrom(dObject entity) {
@@ -37,7 +37,7 @@ public class EntityAngry implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!((Wolf)entity.getBukkitEntity()).isAngry())
+        if (!((Wolf) entity.getBukkitEntity()).isAngry())
             return null;
         else
             return "true";
@@ -66,7 +66,7 @@ public class EntityAngry implements Property {
         // If the entity is a wolf, returns whether the wolf is angry.
         // -->
         if (attribute.startsWith("angry"))
-            return new Element(((Wolf)entity.getBukkitEntity()).isAngry())
+            return new Element(((Wolf) entity.getBukkitEntity()).isAngry())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -86,7 +86,7 @@ public class EntityAngry implements Property {
         // -->
 
         if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            ((Wolf)entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
+            ((Wolf) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
         }
     }
 }

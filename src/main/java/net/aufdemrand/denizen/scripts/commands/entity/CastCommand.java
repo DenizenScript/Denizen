@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -26,26 +26,26 @@ public class CastCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("remove")
-                && arg.matches("remove", "cancel"))
+                    && arg.matches("remove", "cancel"))
                 scriptEntry.addObject("remove", Element.TRUE);
 
             else if (!scriptEntry.hasObject("duration")
-                     && arg.matchesPrefix("duration", "d")
-                     && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesPrefix("duration", "d")
+                    && arg.matchesArgumentType(Duration.class))
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
 
             else if (!scriptEntry.hasObject("amplifier")
-                     && arg.matchesPrefix("power", "p", "amplifier", "a")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrefix("power", "p", "amplifier", "a")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
                 scriptEntry.addObject("amplifier", arg.asElement());
 
             else if (!scriptEntry.hasObject("effect")
-                     && PotionEffectType.getByName(arg.asElement().asString()) != null) {
+                    && PotionEffectType.getByName(arg.asElement().asString()) != null) {
                 scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
             }
@@ -55,8 +55,8 @@ public class CastCommand extends AbstractCommand {
         }
 
         // No targets specified, let's use defaults if available
-        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
 
         // No potion specified? Problem!
         if (!scriptEntry.hasObject("effect"))

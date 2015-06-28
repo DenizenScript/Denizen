@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
@@ -44,6 +47,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public EntityChangesBlockScriptEvent() {
         instance = this;
     }
+
     public static EntityChangesBlockScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -67,7 +71,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)){
+        if (!entity.matchesEntity(entName)) {
             return false;
         }
 
@@ -117,8 +121,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -139,7 +143,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         new_material = dMaterial.getMaterialFrom(event.getTo());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

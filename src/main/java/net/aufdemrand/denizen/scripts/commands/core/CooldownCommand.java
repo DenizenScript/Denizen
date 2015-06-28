@@ -1,24 +1,25 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 /**
  * <p>Sets a 'cooldown' period on a script. Can be per-player or globally.</p>
  *
  * @author Jeremy Schroeder
- *
  */
 public class CooldownCommand extends AbstractCommand {
 
-    private enum Type { GLOBAL, PLAYER }
+    private enum Type {GLOBAL, PLAYER}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -71,13 +72,13 @@ public class CooldownCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
                 + script.debug()
-                + (type.name().equalsIgnoreCase("player") ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().debug() : "")
+                + (type.name().equalsIgnoreCase("player") ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
                 + duration.debug());
 
         // Perform cooldown
         switch (type) {
             case PLAYER:
-                setCooldown(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer(),
+                setCooldown(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(),
                         duration,
                         script.getName(),
                         false);
@@ -96,10 +97,8 @@ public class CooldownCommand extends AbstractCommand {
     /**
      * Gets the duration of a script cool-down.
      *
-     * @param player
-     *         the Player to check, null if only checking Global.
-     * @param scriptName
-     *         the name of the script to check
+     * @param player     the Player to check, null if only checking Global.
+     * @param scriptName the name of the script to check
      * @return a Duration of the time remaining
      */
     public static Duration getCooldownDuration(dPlayer player, String scriptName) {
@@ -143,10 +142,8 @@ public class CooldownCommand extends AbstractCommand {
      * its requirements will fail and it will not trigger. If the script is being cooled down
      * globally, this will also return false.
      *
-     * @param player
-     *         the Player to check, null if only checking Global.
-     * @param scriptName
-     *         the name of the script to check
+     * @param player     the Player to check, null if only checking Global.
+     * @param scriptName the name of the script to check
      * @return true if the script is cool
      */
     public static boolean checkCooldown(dPlayer player, String scriptName) {
@@ -173,7 +170,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
-                >= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))    {
+                >= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time", null);
             return true;
         }
@@ -185,14 +182,10 @@ public class CooldownCommand extends AbstractCommand {
     /**
      * Sets a cooldown for a Denizen Script. Can be for a specific Player, or GLOBAL.
      *
-     * @param player
-     *         if not a global cooldown, the Player to set the cooldown for
-     * @param duration
-     *         the duration of the cooldown period, in seconds
-     * @param scriptName
-     *         the name of the script to cooldown
-     * @param global
-     *         whether the script should be cooled down globally
+     * @param player     if not a global cooldown, the Player to set the cooldown for
+     * @param duration   the duration of the cooldown period, in seconds
+     * @param scriptName the name of the script to cooldown
+     * @param global     whether the script should be cooled down globally
      */
     public static void setCooldown(dPlayer player, Duration duration, String scriptName, boolean global) {
         scriptName = scriptName.toUpperCase();
@@ -203,7 +196,8 @@ public class CooldownCommand extends AbstractCommand {
                             + (duration.getSecondsAsInt() * 1000));
 
             // or set Player cooldown
-        }   else {
+        }
+        else {
             DenizenAPI._saves().set("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time",
                     System.currentTimeMillis()
                             + (duration.getSecondsAsInt() * 1000));

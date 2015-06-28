@@ -131,7 +131,8 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 byte[] bytes = teamName.getBytes("UTF-8");
                 md.update(bytes, 0, bytes.length);
                 hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError(e);
             }
             if (hash != null) {

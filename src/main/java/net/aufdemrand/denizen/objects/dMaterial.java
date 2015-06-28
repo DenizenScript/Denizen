@@ -1,25 +1,24 @@
 package net.aufdemrand.denizen.objects;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Fetchable;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
-import net.aufdemrand.denizencore.tags.Attribute;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dMaterial implements dObject {
 
@@ -36,7 +35,8 @@ public class dMaterial implements dObject {
     // dMaterial 'extra materials' for making 'data variety' materials easier to work with. Register materials
     // that aren't included in the bukkit Material enum here to make lookup easier.
 
-    public static enum dMaterials { WHITE_WOOL, ORANGE_WOOL, MAGENTA_WOOL, LIGHT_BLUE_WOOL, YELLOW_WOOL,
+    public static enum dMaterials {
+        WHITE_WOOL, ORANGE_WOOL, MAGENTA_WOOL, LIGHT_BLUE_WOOL, YELLOW_WOOL,
         LIME_WOOL, PINK_WOOL, GRAY_WOOL, LIGHT_GRAY_WOOL, CYAN_WOOL, PURPLE_WOOL, BLUE_WOOL, BROWN_WOOL,
         GREEN_WOOL, RED_WOOL, BLACK_WOOL, WHITE_CARPET, ORANGE_CARPET, MAGENTA_CARPET, LIGHT_BLUE_CARPET,
         YELLOW_CARPET, LIME_CARPET, PINK_CARPET, GRAY_CARPET, LIGHT_GRAY_CARPET, CYAN_CARPET, PURPLE_CARPET,
@@ -79,7 +79,8 @@ public class dMaterial implements dObject {
         QUARTZ_DOUBLESLAB, OAK_WOOD_DOUBLESLAB, SPRUCE_WOOD_DOUBLESLAB, BIRCH_WOOD_DOUBLESLAB, JUNGLE_WOOD_DOUBLESLAB,
         ACACIA_WOOD_DOUBLESLAB, DARKOAK_WOOD_DOUBLESLAB, SKELETON_EGG, RAW_FISH, RAW_SALMON, RAW_CLOWNFISH,
         RAW_PUFFERFISH, COOKED_FISH, COOKED_SALMON, COOKED_CLOWNFISH, COOKED_PUFFERFISH,
-        GRANITE, POLISHED_GRANITE, DIORITE, POLISHED_DIORITE, ANDESITE, POLISHED_ANDESITE, COARSE_DIRT }
+        GRANITE, POLISHED_GRANITE, DIORITE, POLISHED_DIORITE, ANDESITE, POLISHED_ANDESITE, COARSE_DIRT
+    }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
@@ -117,7 +118,7 @@ public class dMaterial implements dObject {
     public final static dMaterial BLUE_CARPET = new dMaterial(Material.CARPET, 11).forceIdentifyAs("BLUE_CARPET");
     public final static dMaterial BROWN_CARPET = new dMaterial(Material.CARPET, 12).forceIdentifyAs("BROWN_CARPET");
     public final static dMaterial GREEN_CARPET = new dMaterial(Material.CARPET, 13).forceIdentifyAs("GREEN_CARPET");
-    public final static dMaterial RED_CARPET =  new dMaterial(Material.CARPET, 14).forceIdentifyAs("RED_CARPET");
+    public final static dMaterial RED_CARPET = new dMaterial(Material.CARPET, 14).forceIdentifyAs("RED_CARPET");
     public final static dMaterial BLACK_CARPET = new dMaterial(Material.CARPET, 15).forceIdentifyAs("BLACK_CARPET");
 
     // Colored Clay
@@ -410,7 +411,7 @@ public class dMaterial implements dObject {
      * Registers a dMaterial as a 'variety'. Upon construction of a dMaterial, this
      * registry will be checked to see if a variety can be used instead of the traditional
      * enum/data format.
-     *
+     * <p/>
      * dMaterials in this list should probably 'forceIdentifyAs'.
      *
      * @param material the dMaterial variety
@@ -437,7 +438,8 @@ public class dMaterial implements dObject {
                 Field field = dMaterial.class.getField(material.name());
                 dMaterial mat = (dMaterial) field.get(null);
                 registerVariety(mat);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError(e);
             }
         }
@@ -479,7 +481,7 @@ public class dMaterial implements dObject {
      * Example: wool,1 would return the ORANGE_WOOL dMaterial.
      *
      * @param material the base Bukkit material
-     * @param data the datavalue to use
+     * @param data     the datavalue to use
      * @return a dMaterial representation of the input Bukkit material
      */
     public static dMaterial getMaterialFrom(Material material, int data) {
@@ -504,9 +506,8 @@ public class dMaterial implements dObject {
     /**
      * Gets a Material Object from a string form.
      *
-     * @param string  the string
-     * @return  a Material, or null if incorrectly formatted
-     *
+     * @param string the string
+     * @return a Material, or null if incorrectly formatted
      */
     @Fetchable("m")
     public static dMaterial valueOf(String string, TagContext context) {
@@ -553,9 +554,8 @@ public class dMaterial implements dObject {
     /**
      * Determine whether a string is a valid material.
      *
-     * @param arg  the string
-     * @return  true if matched, otherwise false
-     *
+     * @param arg the string
+     * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
 
@@ -667,7 +667,7 @@ public class dMaterial implements dObject {
         if (hasData())
             return (material == data.getItemType() && this.data == data.getData());
 
-        // Else, return matched itemType/materialType
+            // Else, return matched itemType/materialType
         else return material == data.getItemType();
     }
 
@@ -705,7 +705,7 @@ public class dMaterial implements dObject {
     }
 
     public String identifyFull() {
-        if (forcedIdentity != null) return "m@" + forcedIdentityLow + (getData() != null ? "," +  getData(): "");
+        if (forcedIdentity != null) return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
         if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
         return "m@" + material.name().toLowerCase();
     }
@@ -728,7 +728,7 @@ public class dMaterial implements dObject {
     }
 
     public String identifyFullNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentityLow + (getData() != null ? "," +  getData(): "");
+        if (forcedIdentity != null) return forcedIdentityLow + (getData() != null ? "," + getData() : "");
         if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
         return material.name().toLowerCase();
     }
@@ -905,8 +905,8 @@ public class dMaterial implements dObject {
         // Returns the name of the material.
         // -->
         if (attribute.startsWith("name"))
-            return new Element(forcedIdentity != null ? forcedIdentityLow:
-                                material.name().toLowerCase())
+            return new Element(forcedIdentity != null ? forcedIdentityLow :
+                    material.name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

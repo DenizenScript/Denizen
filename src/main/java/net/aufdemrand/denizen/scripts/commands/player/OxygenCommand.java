@@ -1,19 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class OxygenCommand extends AbstractCommand {
 
-    public enum Type { MAXIMUM, REMAINING }
-    public enum Mode { SET, ADD, REMOVE }
+    public enum Type {MAXIMUM, REMAINING}
+
+    public enum Mode {SET, ADD, REMOVE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -39,7 +40,7 @@ public class OxygenCommand extends AbstractCommand {
 
         }
 
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isValid())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");
 
         if (!scriptEntry.hasObject("amount"))
@@ -58,11 +59,11 @@ public class OxygenCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
 
-        dPlayer player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer();
+        dPlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer();
 
         switch (Type.valueOf(type.asString().toUpperCase())) {
             case MAXIMUM:
-                switch(Mode.valueOf(type.asString().toUpperCase())) {
+                switch (Mode.valueOf(type.asString().toUpperCase())) {
                     case SET:
                         player.setMaximumAir(amount.asInt());
                         break;
@@ -75,7 +76,7 @@ public class OxygenCommand extends AbstractCommand {
                 }
                 return;
             case REMAINING:
-                switch(Mode.valueOf(type.asString().toUpperCase())) {
+                switch (Mode.valueOf(type.asString().toUpperCase())) {
                     case SET:
                         player.setRemainingAir(amount.asInt());
                         break;

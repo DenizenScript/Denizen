@@ -16,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ItemChangeMessage implements Listener {
 
@@ -35,12 +37,13 @@ public class ItemChangeMessage implements Listener {
 
     public static PacketPlayOutSetSlot getSlotPacket(UUID player, int nmsSlot, ItemStack item) {
         PacketPlayOutSetSlot slotPacket = new PacketPlayOutSetSlot();
-        try{
+        try {
             slot_inventoryId.set(slotPacket, 0);
             slotChanged.put(player, nmsSlot);
             slot_slotId.set(slotPacket, nmsSlot);
             slot_item.set(slotPacket, CraftItemStack.asNMSCopy(item));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return slotPacket;

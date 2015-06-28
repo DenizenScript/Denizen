@@ -1,21 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+
+import java.util.List;
 
 public class SpawnCommand extends AbstractCommand {
 
@@ -25,20 +24,20 @@ public class SpawnCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
-                && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             else if (!scriptEntry.hasObject("location")
-                     && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(dLocation.class)) {
 
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("target")
-                     && arg.matchesArgumentType(dEntity.class)
-                     && arg.matchesPrefix("target")) {
+                    && arg.matchesArgumentType(dEntity.class)
+                    && arg.matchesPrefix("target")) {
 
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
@@ -59,8 +58,8 @@ public class SpawnCommand extends AbstractCommand {
 
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null,
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null,
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null);
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities"))
@@ -83,10 +82,10 @@ public class SpawnCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
-                              location.debug() +
-                             (spread != null  ?spread.debug() : "") +
-                             (target != null ? target.debug() : "") +
-                             (persistent ? aH.debugObj("persistent", "true") : ""));
+                location.debug() +
+                (spread != null ? spread.debug() : "") +
+                (target != null ? target.debug() : "") +
+                (persistent ? aH.debugObj("persistent", "true") : ""));
 
         // Keep a dList of entities that can be called using <entry[name].spawned_entities>
         // later in the script queue

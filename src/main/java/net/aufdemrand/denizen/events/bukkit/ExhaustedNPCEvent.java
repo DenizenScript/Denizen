@@ -11,7 +11,6 @@ import org.bukkit.event.HandlerList;
  * provided by Denizen.
  *
  * @author Jeremy Schroeder
- *
  */
 public class ExhaustedNPCEvent extends NPCEvent implements Cancellable {
 

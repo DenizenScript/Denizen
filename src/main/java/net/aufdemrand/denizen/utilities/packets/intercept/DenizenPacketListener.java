@@ -60,7 +60,8 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                     event.fire();
                 }
             });
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         super.a(packet);

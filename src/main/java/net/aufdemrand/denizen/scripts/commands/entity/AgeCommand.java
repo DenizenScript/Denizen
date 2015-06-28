@@ -1,17 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 
 /**
@@ -75,7 +75,7 @@ public class AgeCommand extends AbstractCommand {
     // -->
 
 
-    private enum AgeType { ADULT, BABY }
+    private enum AgeType {ADULT, BABY}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

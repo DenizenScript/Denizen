@@ -1,17 +1,16 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Fetchable;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.tags.TagContext;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.tags.TagContext;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 public class dPlugin implements dObject {
 
@@ -26,15 +25,11 @@ public class dPlugin implements dObject {
     }
 
     /**
-     *
      * Gets a dPlugin from a string format.
      *
-     * @param string
-     *          The plugin in string form. (pl@PluginName)
-     * @return
-     *          The dPlugin value. If the string is incorrectly formatted or
-     *          the specified plugin is invalid, this is null.
-     *
+     * @param string The plugin in string form. (pl@PluginName)
+     * @return The dPlugin value. If the string is incorrectly formatted or
+     * the specified plugin is invalid, this is null.
      */
     @Fetchable("pl")
     public static dPlugin valueOf(String string, TagContext context) {

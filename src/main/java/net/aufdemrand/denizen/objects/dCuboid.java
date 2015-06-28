@@ -1,26 +1,18 @@
 package net.aufdemrand.denizen.objects;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.BlockData;
+import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -31,6 +23,13 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
@@ -63,14 +62,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     final static Pattern cuboid_by_saved = Pattern.compile("(cu@)?(.+)");
+
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
      * this location will persist and can be recalled at any time.
      *
-     * @param string  the string or dScript argument String
-     * @return  a Location, or null if incorrectly formatted
-     *
+     * @param string the string or dScript argument String
+     * @return a Location, or null if incorrectly formatted
      */
     @Fetchable("cu")
     public static dCuboid valueOf(String string, TagContext context) {
@@ -398,7 +397,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (materials == null)
             return true;
         dMaterial mat = dMaterial.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
-        for (dMaterial material: materials) {
+        for (dMaterial material : materials) {
             if (mat.equals(material)) {
                 return true;
             }
@@ -409,7 +408,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public dList getBlocks(List<dMaterial> materials) {
         List<dLocation> locs = getBlocks_internal(materials);
         dList list = new dList();
-        for (dLocation loc: locs) {
+        for (dLocation loc : locs) {
             list.add(loc.identify());
         }
         return list;
@@ -438,8 +437,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
                             for (dObject material : filter) {
-                                if (((dMaterial)material).matchesMaterialData(
-                                new MaterialData(loc.getBlock().getType(), loc.getBlock().getData()))) {
+                                if (((dMaterial) material).matchesMaterialData(
+                                        new MaterialData(loc.getBlock().getType(), loc.getBlock().getData()))) {
                                     if (matchesMaterialList(loc, materials)) {
                                         list.add(loc);
                                     }
@@ -558,7 +557,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      * that are safe for players and similar entities to spawn in,
      * but ignoring blocks in midair
      *
-     * @return  The dList
+     * @return The dList
      */
 
     public dList getSpawnableBlocks(List<dMaterial> mats) {
@@ -640,7 +639,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     @Override
-    public void makeUnique(String id) { NotableManager.saveAs(this, id); }
+    public void makeUnique(String id) {
+        NotableManager.saveAs(this, id);
+    }
 
     @Override
     public void forget() {
@@ -678,7 +679,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public String debug() {
         return (isUnique()
                 ? "<G>" + prefix + "='<A>" + NotableManager.getSavedId(this)
-                + "(<Y>" + identify()+ "<A>)<G>'  "
+                + "(<Y>" + identify() + "<A>)<G>'  "
                 : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
     }
 
@@ -824,8 +825,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
             if (cub2 != null) {
                 boolean intersects = false;
-                whole_loop: for (LocationPair pair: pairs) {
-                    for (LocationPair pair2: cub2.pairs) {
+                whole_loop:
+                for (LocationPair pair : pairs) {
+                    for (LocationPair pair2 : cub2.pairs) {
                         if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
                             return new Element("false").getAttribute(attribute.fulfill(1));
                         }
@@ -855,9 +857,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
             if (cub2 != null) {
                 boolean contains = true;
-                for (LocationPair pair2: pairs) {
+                for (LocationPair pair2 : pairs) {
                     boolean contained = false;
-                    for (LocationPair pair: cub2.pairs) {
+                    for (LocationPair pair : cub2.pairs) {
                         if (!pair.low.getWorld().getName().equalsIgnoreCase(pair2.low.getWorld().getName())) {
                             if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
                                 dB.log("Worlds don't match!");
@@ -1092,15 +1094,15 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             for (LocationPair pair : pairs) {
                 int minY = pair.low.getBlockY();
                 Chunk minChunk = pair.low.getChunk();
-                if (isInsideCuboid(new Location(getWorld(), minChunk.getX()*16, minY, minChunk.getZ()*16)))
+                if (isInsideCuboid(new Location(getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16)))
                     chunks.add(minChunk);
                 Chunk maxChunk = pair.high.getChunk();
-                if (isInsideCuboid(new Location(getWorld(), maxChunk.getX()*16+15, minY, maxChunk.getZ()*16+15)))
+                if (isInsideCuboid(new Location(getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15)))
                     chunks.add(maxChunk);
                 dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
                 dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
-                for(int x = minChunk.getX()+1; x <= maxChunk.getX()-1; x++) {
-                    for(int z = minChunk.getZ()+1; z <= maxChunk.getZ()-1; z++) {
+                for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
+                    for (int z = minChunk.getZ() + 1; z <= maxChunk.getZ() - 1; z++) {
                         chunks.add(getWorld().getChunkAt(x, z));
                     }
                 }

@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
@@ -18,7 +20,7 @@ public class ItemPotion implements Property {
 
     public static ItemPotion getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemPotion((dItem)_item);
+        else return new ItemPotion((dItem) _item);
     }
 
     private ItemPotion(dItem item) {
@@ -35,7 +37,7 @@ public class ItemPotion implements Property {
         // World record winning stupidest necessary workaround for a Bukkit issue
         if ((item.getItemStack().getDurability() & 0x40) != 0
                 && PotionType.getByDamageValue(item.getItemStack().getDurability() & 0xF).isInstant()) {
-            item.getItemStack().setDurability((short)(item.getItemStack().getDurability() & ~0x40));
+            item.getItemStack().setDurability((short) (item.getItemStack().getDurability() & ~0x40));
         }
         Potion pot = Potion.fromItemStack(item.getItemStack());
         if (pot == null || pot.getType() == null)
@@ -172,7 +174,7 @@ public class ItemPotion implements Property {
             String[] data = mechanism.getValue().asString().split(",", 4);
             if (data.length < 4) {
                 if (mechanism.getValue().isInt())
-                    item.getItemStack().setDurability((short)mechanism.getValue().asInt());
+                    item.getItemStack().setDurability((short) mechanism.getValue().asInt());
                 else
                     dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
             }
@@ -212,7 +214,7 @@ public class ItemPotion implements Property {
                 if (!pot.getType().isInstant())
                     pot.setHasExtendedDuration(data2.asBoolean());
                 pot.setSplash(data3.asBoolean());
-                item.setDurability((short)0);
+                item.setDurability((short) 0);
                 pot.apply(item.getItemStack());
             }
         }

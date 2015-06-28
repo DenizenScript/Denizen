@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.objects.dItem;
-
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;

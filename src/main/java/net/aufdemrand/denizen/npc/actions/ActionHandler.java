@@ -3,16 +3,16 @@ package net.aufdemrand.denizen.npc.actions;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class ActionHandler {
 
         // Check the determination by asking the DetermineCommand
         if (DetermineCommand.hasOutcome(id))
-            determination =  DetermineCommand.getOutcome(id).get(0);
+            determination = DetermineCommand.getOutcome(id).get(0);
         // TODO: Multiple determination system
         return determination;
     }

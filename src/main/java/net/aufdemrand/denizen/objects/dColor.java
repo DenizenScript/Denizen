@@ -1,22 +1,21 @@
 package net.aufdemrand.denizen.objects;
 
-import java.lang.reflect.Field;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Fetchable;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Color;
-
-import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.DyeColor;
+
+import java.lang.reflect.Field;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class dColor implements dObject {
 
@@ -33,9 +32,8 @@ public class dColor implements dObject {
     /**
      * Gets a Color Object from a string form.
      *
-     * @param string  the string
-     * @return  a Color, or null if incorrectly formatted
-     *
+     * @param string the string
+     * @return a Color, or null if incorrectly formatted
      */
     @Fetchable("co")
     public static dColor valueOf(String string, TagContext context) {
@@ -61,9 +59,11 @@ public class dColor implements dObject {
 
         try {
             colorField = Color.class.getField(string.toUpperCase());
-        } catch (SecurityException e1) {
+        }
+        catch (SecurityException e1) {
             dB.echoError("Security exception getting color field!");
-        } catch (NoSuchFieldException e1) {
+        }
+        catch (NoSuchFieldException e1) {
             dB.echoError("No such color field!");
         }
 
@@ -77,9 +77,8 @@ public class dColor implements dObject {
     /**
      * Determines whether a string is a valid color.
      *
-     * @param arg  the string
-     * @return  true if matched, otherwise false
-     *
+     * @param arg the string
+     * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
 
@@ -111,7 +110,8 @@ public class dColor implements dObject {
     public dColor(Field field) {
         try {
             color = (Color) field.get(null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError("Exception trying to fetch color!");
         }
     }
@@ -165,7 +165,8 @@ public class dColor implements dObject {
             try {
                 if (((Color) field.get(null)).asRGB() == getColor().asRGB())
                     return "co@" + field.getName();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError("Exception trying to fetch color!");
             }
         }
@@ -313,6 +314,6 @@ public class dColor implements dObject {
 
     int[] ToHSB() {
         float[] base = java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-        return new int[] { (int)(base[0] * 255), (int)(base[1] * 255), (int)(base[2] * 255)};
+        return new int[]{(int) (base[0] * 255), (int) (base[1] * 255), (int) (base[2] * 255)};
     }
 }

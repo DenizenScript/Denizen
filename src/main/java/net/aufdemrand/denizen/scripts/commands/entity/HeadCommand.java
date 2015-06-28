@@ -1,22 +1,24 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.citizensnpcs.api.trait.trait.Equipment;
+import java.util.Arrays;
+import java.util.List;
 
 public class HeadCommand extends AbstractCommand {
 
@@ -36,8 +38,8 @@ public class HeadCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matches("player")
-                    && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()));
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class))
@@ -48,8 +50,8 @@ public class HeadCommand extends AbstractCommand {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entities",
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
 
         if (!scriptEntry.hasObject("skin") && !scriptEntry.hasObject("material"))
             throw new InvalidArgumentsException("Must specify a skin or material!");
@@ -77,7 +79,8 @@ public class HeadCommand extends AbstractCommand {
             ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", ""));
             item.setItemMeta(itemMeta);
 
-        } else if (material != null)
+        }
+        else if (material != null)
             item = new ItemStack(material.getMaterial());
 
         // Loop through entities, apply the item/skin
@@ -89,10 +92,12 @@ public class HeadCommand extends AbstractCommand {
                 Equipment trait = entity.getDenizenNPC().getCitizen().getTrait(Equipment.class);
                 trait.set(1, item);
 
-            } else if (entity.isPlayer()) {
+            }
+            else if (entity.isPlayer()) {
                 entity.getPlayer().getInventory().setHelmet(item);
 
-            } else {
+            }
+            else {
                 if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null)
                     entity.getLivingEntity().getEquipment().setHelmet(item);
 

@@ -1,13 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.ObjectFetcher;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.notable.Notable;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 
 public class NoteCommand extends AbstractCommand {
@@ -80,7 +83,8 @@ public class NoteCommand extends AbstractCommand {
             if (arg instanceof Notable)
                 ((Notable) arg).makeUnique(id.asString());
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(scriptEntry.getResidingQueue(), "Uh oh! Report this to the Denizen developers! Err: NoteCommandObjectReflection");
             dB.echoError(scriptEntry.getResidingQueue(), e);
         }

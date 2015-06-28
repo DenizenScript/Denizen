@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +38,7 @@ public class FurnaceSmeltsItemScriptEvent extends ScriptEvent implements Listene
     public FurnaceSmeltsItemScriptEvent() {
         instance = this;
     }
+
     public static FurnaceSmeltsItemScriptEvent instance;
     public dItem source_item;
     public dItem result_item;
@@ -53,12 +53,12 @@ public class FurnaceSmeltsItemScriptEvent extends ScriptEvent implements Listene
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String srcItem = CoreUtilities.getXthArg(2,lower);
+        String srcItem = CoreUtilities.getXthArg(2, lower);
         if (!srcItem.equals("item") && (!dItem.matches(srcItem) && !srcItem.equals(source_item.identifyNoIdentifier()))) {
-                return false;
+            return false;
         }
 
-        String resItem = CoreUtilities.getXthArg(4,lower);
+        String resItem = CoreUtilities.getXthArg(4, lower);
         if (!resItem.equals("item") && (!dItem.matches(resItem)) && !resItem.equals(result_item.identifyNoIdentifier())) {
             return false;
         }

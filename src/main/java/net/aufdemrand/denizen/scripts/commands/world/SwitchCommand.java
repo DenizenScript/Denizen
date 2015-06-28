@@ -1,18 +1,23 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_8_R3.Block;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.EnumDirection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,12 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SwitchCommand extends AbstractCommand {
 
-    private enum SwitchState { ON, OFF, TOGGLE }
+    private enum SwitchState {ON, OFF, TOGGLE}
 
     private Map<Location, Integer> taskMap = new ConcurrentHashMap<Location, Integer>(8, 0.9f, 1);
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException  {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("locations") &&
@@ -59,14 +64,14 @@ public class SwitchCommand extends AbstractCommand {
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         final dList interactLocations = scriptEntry.getdObject("locations");
-        long duration = ((Duration)scriptEntry.getObject("duration")).getTicks();
+        long duration = ((Duration) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
-        final Player player = ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getPlayerEntity(): null;
+        final Player player = ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity() : null;
         // Switch the Block
         dB.report(scriptEntry, getName(), interactLocations.debug()
-                                          + aH.debugObj("duration", duration + "t")
-                                          + aH.debugObj("switchstate", switchState.name()));
+                + aH.debugObj("duration", duration + "t")
+                + aH.debugObj("switchstate", switchState.name()));
 
         for (final dLocation interactLocation : interactLocations.filter(dLocation.class)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
@@ -75,7 +80,11 @@ public class SwitchCommand extends AbstractCommand {
             if (duration > 0) {
                 // If this block already had a delayed task, cancel it.
                 if (taskMap.containsKey(interactLocation))
-                    try { DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation)); } catch (Exception e) { }
+                    try {
+                        DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation));
+                    }
+                    catch (Exception e) {
+                    }
                 dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
                 taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
@@ -104,7 +113,7 @@ public class SwitchCommand extends AbstractCommand {
             }
             else if (Depends.citizens != null) {
                 // If there are no players, link any Human NPC
-                for (NPC npc: CitizensAPI.getNPCRegistry()) {
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.isSpawned() && npc.getEntity() instanceof Player) {
                         craftPlayer = (CraftPlayer) npc.getEntity();
                         break;
@@ -115,8 +124,8 @@ public class SwitchCommand extends AbstractCommand {
         }
 
         if ((state.equals("ON") && !currentState) ||
-            (state.equals("OFF") && currentState) ||
-             state.equals("TOGGLE")) {
+                (state.equals("OFF") && currentState) ||
+                state.equals("TOGGLE")) {
 
             try {
                 if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
@@ -135,16 +144,17 @@ public class SwitchCommand extends AbstractCommand {
                                     interactLocation.getBlockY(),
                                     interactLocation.getBlockZ());
                     Block.getById(interactLocation.getBlock().getType().getId())
-                        .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
-                                pos,
-                                ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                                craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+                            .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
+                                    pos,
+                                    ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
+                                    craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
                 }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
                         ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
 
-            } catch (NullPointerException e) {
+            }
+            catch (NullPointerException e) {
                 dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
             }
         }

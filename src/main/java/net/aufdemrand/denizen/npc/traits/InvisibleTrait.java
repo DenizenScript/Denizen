@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.npc.traits;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.Toggleable;
-
 import net.citizensnpcs.util.NMS;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -40,8 +39,8 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
         this.invisible = invisible;
         if (invisible) setInvisible();
         else if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity)
-            if (((LivingEntity)npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY))
-                ((LivingEntity)npc.getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
+            if (((LivingEntity) npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY))
+                ((LivingEntity) npc.getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 
 
@@ -52,7 +51,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
                 npc.data().setPersistent("removefromplayerlist", false);
                 NMS.addOrRemoveFromPlayerList(npc.getEntity(), false);
             }
-            invis.apply((LivingEntity)npc.getEntity());
+            invis.apply((LivingEntity) npc.getEntity());
         }
     }
 

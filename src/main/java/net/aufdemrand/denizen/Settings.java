@@ -18,7 +18,7 @@ public class Settings {
 
     public static String getAlternateScriptPath() {
         return DenizenAPI.getCurrentInstance().getConfig()
-        .getString("Scripts location.Alternative folder path", "plugins/Denizen");
+                .getString("Scripts location.Alternative folder path", "plugins/Denizen");
     }
 
 
@@ -95,7 +95,7 @@ public class Settings {
 
     public static boolean healthTraitRespawnEnabled() {
         return DenizenAPI.getCurrentInstance().getConfig()
-               .getBoolean("Traits.Health.Respawn.Enabled", true);
+                .getBoolean("Traits.Health.Respawn.Enabled", true);
     }
 
     /*
@@ -106,7 +106,7 @@ public class Settings {
 
     public static boolean healthTraitAnimatedDeathEnabled() {
         return DenizenAPI.getCurrentInstance().getConfig()
-               .getBoolean("Traits.Health.Animated death.Enabled", true);
+                .getBoolean("Traits.Health.Animated death.Enabled", true);
     }
 
     /*
@@ -117,7 +117,7 @@ public class Settings {
 
     public static String healthTraitRespawnDelay() {
         return DenizenAPI.getCurrentInstance().getConfig()
-               .getString("Traits.Health.Respawn.Delay", "10s");
+                .getString("Traits.Health.Respawn.Delay", "10s");
     }
 
     /*

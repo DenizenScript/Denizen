@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 public class RequirementsMode {
 
 
-    public enum Mode { ALL, NONE, ANY_NUM, FIRST_AND_ANY_NUM }
+    public enum Mode {ALL, NONE, ANY_NUM, FIRST_AND_ANY_NUM}
+
     private static Pattern intsOnly = Pattern.compile("(\\d+)");
 
     protected Mode mode;
@@ -18,7 +19,7 @@ public class RequirementsMode {
 
     /**
      * <p>Uses a dScript Requirements Mode argument to build this object.</p>
-     *
+     * <p/>
      * Valid: <br/>
      * ALL <br/>
      * NONE <br/>

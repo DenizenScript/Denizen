@@ -1,23 +1,23 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
+import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class AnnounceCommand extends AbstractCommand {
 
-    enum AnnounceType { ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE }
+    enum AnnounceType {ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -78,7 +78,7 @@ public class AnnounceCommand extends AbstractCommand {
                 aH.debugObj("Message", text)
                         + (format != null ? aH.debugObj("Format", format.getName()) : "")
                         + aH.debugObj("Type", type.name())
-                        + (flag != null? aH.debugObj("Flag_Name", flag) : ""));
+                        + (flag != null ? aH.debugObj("Flag_Name", flag) : ""));
 
         String message = format != null ? format.getFormattedText(scriptEntry) : text.asString();
 

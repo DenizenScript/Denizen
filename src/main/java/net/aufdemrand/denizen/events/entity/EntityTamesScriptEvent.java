@@ -55,11 +55,11 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String ownerTest = cmd.equals("tames") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(2, lower);
-        String tamed = cmd.equals("tamed") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(2, lower);
+        String ownerTest = cmd.equals("tames") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
+        String tamed = cmd.equals("tamed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
         if (ownerTest.length() > 0) {
             if (owner != null) {
-                if(!owner.matchesEntity(ownerTest)) {
+                if (!owner.matchesEntity(ownerTest)) {
                     return false;
                 }
             }
@@ -96,7 +96,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
         return new BukkitScriptEntryData(owner.isPlayer() ? owner.getDenizenPlayer() : null,
-                owner.isCitizensNPC() ? owner.getDenizenNPC(): null);
+                owner.isCitizensNPC() ? owner.getDenizenNPC() : null);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     @EventHandler
     public void onEntityTames(EntityTameEvent event) {
         entity = new dEntity(event.getEntity());
-        owner = new dEntity((Entity)event.getOwner());
+        owner = new dEntity((Entity) event.getOwner());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

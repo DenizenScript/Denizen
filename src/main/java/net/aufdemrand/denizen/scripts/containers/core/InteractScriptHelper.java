@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import org.bukkit.ChatColor;
 
@@ -20,12 +20,10 @@ public class InteractScriptHelper {
      * Gets the InteractScript from a NPC Denizen for a Player and returns the appropriate ScriptContainer.
      * Returns null if no script found.
      *
-     * @param npc  the NPC involved
+     * @param npc     the NPC involved
      * @param player  the Player involved
-     * @param trigger  the class of the trigger being used
-     *
-     * @return  the highest priority InteractScriptContainer that meets requirements, if any.
-     *
+     * @param trigger the class of the trigger being used
+     * @return the highest priority InteractScriptContainer that meets requirements, if any.
      */
     public static InteractScriptContainer getInteractScript(dNPC npc, dPlayer player,
                                                             Class<? extends AbstractTrigger> trigger) {
@@ -72,11 +70,13 @@ public class InteractScriptHelper {
                 try {
                     priority = Integer.valueOf(entry.split(" ", 2)[0]);
                     name = entry.split(" ", 2)[1].replace("^", "");
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoError("Invalid Interact assignment for '" + entry + "'. Is the script name missing?");
                     continue;
                 }
-            } else {
+            }
+            else {
                 dB.echoError("Script '" + name + "' has an invalid priority! Assuming '0'.");
                 name = entry;
                 entry = "0 " + entry;
@@ -103,17 +103,20 @@ public class InteractScriptHelper {
                                 dB.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
                         }
 
-                    } else {
+                    }
+                    else {
                         // Does not meet requirements, alert the console!
                         if (dB.shouldDebug(interactScript))
                             dB.log("'" + entry + "' does not meet requirements.");
                     }
 
-                } else {
+                }
+                else {
                     // Alert the console
                     dB.echoError("'" + entry + "' is not a valid Interact Script. Is there a duplicate script by this name?");
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Had a problem checking requirements, most likely a Legacy Requirement with bad syntax. Alert the console!
                 dB.echoError(ChatColor.RED + "'" + entry + "' has a bad requirement, skipping.");
                 dB.echoError(e);
@@ -210,21 +213,19 @@ public class InteractScriptHelper {
      * step is used, 'Default', unless another default (used by ending the step-name with a '*') is specified
      * in the script. For the sake of compatibility from v0.76, '1' can also be used.
      *
-     * @param player the Player to check
+     * @param player     the Player to check
      * @param scriptName the name of the interact script container to check
-     *
      * @return the current, or default, step name
-     *
      */
     public static String getCurrentStep(dPlayer player, String scriptName) {
         if (scriptName == null) return null;
         // Probe 'saves.yml' for the current step
         if (DenizenAPI._saves().contains("Players." + player.getSaveName()
-                        + "." + "Scripts." + scriptName.toUpperCase()
-                        + "." + "Current Step")) {
+                + "." + "Scripts." + scriptName.toUpperCase()
+                + "." + "Current Step")) {
             return DenizenAPI._saves().getString("Players." + player.getSaveName()
-                            + "." + "Scripts." + scriptName.toUpperCase()
-                            + "." + "Current Step").toUpperCase();
+                    + "." + "Scripts." + scriptName.toUpperCase()
+                    + "." + "Current Step").toUpperCase();
         }
         // No saved step found, so we'll just use the default
         return ScriptRegistry.getScriptContainerAs(scriptName, InteractScriptContainer.class).getDefaultStepName().toUpperCase();
@@ -234,7 +235,6 @@ public class InteractScriptHelper {
     /**
      * Used with the getInteractScript method. Overrides Java's compareTo to allow comparisons of
      * possible interact scripts' priorities.
-     *
      */
     private static class PriorityPair implements Comparable<PriorityPair> {
         int priority;

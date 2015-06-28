@@ -1,20 +1,15 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-
+import net.aufdemrand.denizencore.interfaces.dExternal;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 import org.bukkit.ChatColor;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RuntimeCompiler {
 
@@ -52,11 +47,12 @@ public class RuntimeCompiler {
         dependencies = new ArrayList<String>();
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals" + File.separator + "dependencies");
-            for (File f : file.listFiles(jarFilter)){
+            for (File f : file.listFiles(jarFilter)) {
                 dependencies.add(f.getPath());
                 dB.log("Loaded  " + f.getName());
             }
-        } catch (Exception error) {
+        }
+        catch (Exception error) {
             dB.log("No dependencies to load or error loading dependencies: " + error.getMessage());
         }
         dB.log("Loading plugins as dependencies for run-time compiler.");
@@ -71,7 +67,8 @@ public class RuntimeCompiler {
                 dependencies.add(f.getPath());
                 dB.log("Loaded  " + f.getName());
             }
-        } catch (Exception error) {
+        }
+        catch (Exception error) {
             dB.log("Could not find CraftBukkit jar or error reading it: " + error.getMessage());
         }
 
@@ -81,7 +78,7 @@ public class RuntimeCompiler {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
             File[] files = file.listFiles(javaFilter);
             if (files != null && files.length > 0) {
-                for (File f : files){
+                for (File f : files) {
                     String fileName = f.getName();
 
                     dB.log("Processing '" + fileName + "'... ");
@@ -97,7 +94,8 @@ public class RuntimeCompiler {
                         dExternal loadedClass = load.newInstance();
                         loadedClass.load();
                         loadedExternals.add(loadedClass);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         if (e instanceof IllegalStateException) {
                             dB.echoError("No JDK found! External .java files will not be loaded.");
                             dB.echoError(e);
@@ -110,7 +108,8 @@ public class RuntimeCompiler {
                 }
                 dB.echoApproval("All externals loaded!");
             }
-        } catch (Exception error) {
+        }
+        catch (Exception error) {
             dB.echoError(error);
         }
     }

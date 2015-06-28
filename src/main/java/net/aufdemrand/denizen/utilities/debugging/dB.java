@@ -1,66 +1,63 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-
-import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
-import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
+
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
  * denizen-related plugins.
- *
+ * <p/>
  * Attempts to unify the style of reporting information to the Console and
  * player with the use of color, headers, footers, and formatting.
- *
- *
+ * <p/>
+ * <p/>
  * Example, this code:
- *
+ * <p/>
  * dB.echoDebug(DebugElement.Header, "Sample debug information");
  * dB.echoDebug("This is an example of a piece of debug information. Parts and pieces " +
- *         "of an entire debug sequence may be in completely different classes, so making " +
- *         "a unified way to output to the console can make a world of difference with " +
- *         "debugging and usability.");
+ * "of an entire debug sequence may be in completely different classes, so making " +
+ * "a unified way to output to the console can make a world of difference with " +
+ * "debugging and usability.");
  * dB.echoDebug(DebugElement.Spacer);
  * dB.echoDebug("Here are some examples of a few different ways to log with the logger.");
  * dB.echoApproval("Notable events can nicely show success or approval.");
  * dB.echoError("Your users will be able to easily distinguish problems.");
  * dB.info("...and important pieces of information can be easily spotted.");
  * dB.echoDebug(DebugElement.Footer);
- *
- *
+ * <p/>
+ * <p/>
  * will produce this output (with color):
- *
+ * <p/>
  * 16:05:05 [INFO] +- Sample debug information ------+
  * 16:05:05 [INFO] This is an example of a piece of debug information. Parts
- *                   and pieces of an entire debug sequence may be in completely
- *                   different classes, so making a unified way to output to the
- *                   console can make a world of difference with debugging and
- *                   usability.
+ * and pieces of an entire debug sequence may be in completely
+ * different classes, so making a unified way to output to the
+ * console can make a world of difference with debugging and
+ * usability.
  * 16:05:05 [INFO]
  * 16:05:05 [INFO] Here are some examples of a few different ways to log with the
- *                      logger.
+ * logger.
  * 16:05:05 [INFO]  OKAY! Notable events can nicely show success or approval.
  * 16:05:05 [INFO]  ERROR! Your users will be able to easily distinguish problems.
  * 16:05:05 [INFO] +> ...and important pieces of information can easily be spotted.
  * 16:05:05 [INFO] +---------------------+
- *
- *
  */
 public class dB {
 
@@ -74,6 +71,7 @@ public class dB {
     public static boolean shouldTrim = true;
     public static boolean record = false;
     public static StringBuilder Recording = new StringBuilder();
+
     public static void toggle() {
         showDebug = !showDebug;
     }
@@ -107,7 +105,7 @@ public class dB {
      * applicable objects used by the Command.
      *
      * @param caller the object calling this debug
-     * @param name the name of the command
+     * @param name   the name of the command
      * @param report all the debug information related to the command
      */
     public static void report(Debuggable caller, String name, String report) {
@@ -116,13 +114,13 @@ public class dB {
                 + trimMessage(report), caller);
 
         if (caller instanceof ScriptEntry) {
-            if (((BukkitScriptEntryData)((ScriptEntry) caller).entryData).hasPlayer()) {
-                if (FlagManager.playerHasFlag(((BukkitScriptEntryData)((ScriptEntry) caller).entryData)
+            if (((BukkitScriptEntryData) ((ScriptEntry) caller).entryData).hasPlayer()) {
+                if (FlagManager.playerHasFlag(((BukkitScriptEntryData) ((ScriptEntry) caller).entryData)
                         .getPlayer(), "show_command_reports")) {
                     String message = "<Y>+> <G>Executing '<Y>" + name + "<G>': "
                             + trimMessage(report);
 
-                    ((BukkitScriptEntryData)((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
+                    ((BukkitScriptEntryData) ((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
                             .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
                                     .replace("<G>", ChatColor.DARK_GRAY.toString())
                                     .replace("<A>", ChatColor.AQUA.toString())
@@ -146,7 +144,7 @@ public class dB {
         if (!showDebug) return;
         StringBuilder sb = new StringBuilder(24);
 
-        switch(element) {
+        switch (element) {
             case Footer:
                 sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
                 break;
@@ -189,6 +187,7 @@ public class dB {
     /**
      * Shows an approval message (always shows, regardless of script debug mode, excluding debug fully off - use sparingly)
      * Prefixed with "OKAY! "
+     *
      * @param message the message to debug
      */
     public static void echoApproval(String message) {
@@ -235,18 +234,18 @@ public class dB {
             events.add("script generates error");
             if (script != null)
                 events.add(script.identifySimple() + " generates error");
-            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(events,
-                    entry != null ? entry.entryData: new BukkitScriptEntryData(null, null), context, true);
+                    entry != null ? entry.entryData : new BukkitScriptEntryData(null, null), context, true);
             ThrowErrorEvent = true;
-            for (String Determination: Determinations) {
+            for (String Determination : Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED"))
                     return;
             }
         }
         if (!showDebug) return;
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
-                (script != null ? " in script '" + script.getName() + "'": "") + "! "
+                (script != null ? " in script '" + script.getName() + "'" : "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
     }
 
@@ -280,11 +279,11 @@ public class dB {
             context.put("message", new Element(thrown.getMessage()));
             context.put("type", new Element(thrown.getClass().getSimpleName()));
             context.put("queue", source);
-            ScriptEntry entry = (source != null ? source.getLastEntryExecuted(): null);
+            ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
-                    entry == null ? new BukkitScriptEntryData(null, null): entry.entryData, context);
+                    entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);
             ThrowErrorEvent = true;
-            for (String Determination: Determinations) {
+            for (String Determination : Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED"))
                     return;
             }
@@ -300,8 +299,8 @@ public class dB {
                 String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
                 boolean first = true;
                 while (ex != null) {
-                    dB.Recording.append(URLEncoder.encode(prefix + (first ? "": "Caused by: ") + ex.toString() + "\n"));
-                    for (StackTraceElement ste: ex.getStackTrace()) {
+                    dB.Recording.append(URLEncoder.encode(prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n"));
+                    for (StackTraceElement ste : ex.getStackTrace()) {
                         dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
                     }
                     if (ex.getCause() == ex) {
@@ -332,7 +331,7 @@ public class dB {
         if (!showDebug) return;
         StringBuilder sb = new StringBuilder(24);
 
-        switch(element) {
+        switch (element) {
             case Footer:
                 sb.append(ChatColor.LIGHT_PURPLE).append("+---------------------+");
                 break;
@@ -386,7 +385,8 @@ public class dB {
                         }
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 // Had a problem determining whether it should debug, assume true.
                 should_send = true;
             }
@@ -428,8 +428,11 @@ public class dB {
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
                 if (!skipFooter) skipFooter = true;
-                else { return; }
-            } else skipFooter = false;
+                else {
+                    return;
+                }
+            }
+            else skipFooter = false;
 
             // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
             String[] words = string.split(" ");
@@ -438,10 +441,11 @@ public class dB {
             int width = Settings.consoleWidth();
             for (String word : words) { // # of total chars * # of lines - timestamp
                 int strippedLength = ChatColor.stripColor(word).length() + 1;
-                if (length + strippedLength  < width) {
+                if (length + strippedLength < width) {
                     buffer.append(word).append(" ");
                     length = length + strippedLength;
-                } else {
+                }
+                else {
                     // Increase # of lines to account for
                     length = strippedLength;
                     // Leave spaces to account for timestamp and indent
@@ -452,7 +456,7 @@ public class dB {
             String result = buffer.toString();
             // Record current buffer to the to-be-submitted buffer
             if (dB.record) dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
-                    + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char)0x01) + "\n"));
+                    + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
 
             // Send buffer to the player
             commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));

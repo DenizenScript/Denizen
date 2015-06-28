@@ -1,20 +1,24 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InventoryScriptContainer extends ScriptContainer {
 
@@ -81,7 +85,7 @@ public class InventoryScriptContainer extends ScriptContainer {
         try {
             return InventoryType.valueOf(typeStr.toUpperCase());
         }
-        catch(Exception e) {
+        catch (Exception e) {
             return InventoryType.CHEST;
         }
     }
@@ -119,17 +123,17 @@ public class InventoryScriptContainer extends ScriptContainer {
                         dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
-                        size = (int) Math.ceil(size/9)*9;
+                        size = (int) Math.ceil(size / 9) * 9;
                         dB.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
                     }
                     if (size < 0) {
-                        size = size*-1;
+                        size = size * -1;
                         dB.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
                     }
 
                     inventory = new dInventory(size,
                             contains("TITLE") ? TagManager.tag(getString("TITLE"),
-                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
+                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }
@@ -153,13 +157,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                         if (contains("DEFINITIONS." + m.group(2)) &&
                                 dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
-                                    (getString("DEFINITIONS." + m.group(2)),
-                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                            (getString("DEFINITIONS." + m.group(2)),
+                                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
                                     player, npc).getItemStack();
                         }
                         else if (dItem.matches(m.group(2))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(m.group(2),
-                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
+                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
                                     player, npc).getItemStack();
                         }
                         else {
@@ -173,8 +177,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                 }
                 if (inventory == null) {
-                    size = finalItems.length%9==0?finalItems.length:Math.round(finalItems.length/9)*9;
-                    inventory = new dInventory(size==0?9:size,
+                    size = finalItems.length % 9 == 0 ? finalItems.length : Math.round(finalItems.length / 9) * 9;
+                    inventory = new dInventory(size == 0 ? 9 : size,
                             contains("TITLE") ? TagManager.tag(getString("TITLE"),
                                     new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
                 }

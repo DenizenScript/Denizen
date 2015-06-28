@@ -73,8 +73,8 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(entity.getBukkitEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(entity.getBukkitEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(entity.getBukkitEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(entity.getBukkitEntity()) : null);
     }
 
     @Override

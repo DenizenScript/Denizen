@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -12,7 +11,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -53,6 +51,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     public PlayerBreaksBlockScriptEvent() {
         instance = this;
     }
+
     public static PlayerBreaksBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
@@ -150,7 +149,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

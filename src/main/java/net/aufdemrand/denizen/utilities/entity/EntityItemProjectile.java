@@ -7,7 +7,6 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.inventory.*;
 
 import java.util.List;
 
@@ -88,7 +87,8 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
             if (movingobjectposition.entity != null && movingobjectposition.entity instanceof EntityLiving) {
                 movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0F);
                 this.die();
-            } else if (movingobjectposition.a() != null) {
+            }
+            else if (movingobjectposition.a() != null) {
                 if (block.getMaterial() != Material.AIR) {
                     motX = ((float) (movingobjectposition.pos.a - locX));
                     motY = ((float) (movingobjectposition.pos.b - locY));

@@ -1,19 +1,18 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.List;
-
-import org.bukkit.EntityEffect;
-import org.bukkit.entity.Player;
-
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.util.PlayerAnimation;
+import org.bukkit.EntityEffect;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class AnimateCommand extends AbstractCommand {
 
@@ -81,7 +80,8 @@ public class AnimateCommand extends AbstractCommand {
                         entity.getBukkitEntity().playEffect(effect);
                     }
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
                 } // We tried!
             }

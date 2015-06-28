@@ -1,14 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.DisplayTitle;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.Arrays;
 import java.util.List;
@@ -65,11 +68,11 @@ public class TitleCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 (title != null ? title.debug() : "") +
-                (subtitle != null ? subtitle.debug() : "") +
-                fade_in.debug() +
-                stay.debug() +
-                fade_out.debug() +
-                aH.debugObj("targets", targets));
+                        (subtitle != null ? subtitle.debug() : "") +
+                        fade_in.debug() +
+                        stay.debug() +
+                        fade_out.debug() +
+                        aH.debugObj("targets", targets));
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline())

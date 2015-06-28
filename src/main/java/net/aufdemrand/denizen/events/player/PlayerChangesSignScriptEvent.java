@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -10,7 +13,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -48,6 +50,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public PlayerChangesSignScriptEvent() {
         instance = this;
     }
+
     public static PlayerChangesSignScriptEvent instance;
     public dLocation location;
     public dList new_sign;
@@ -72,7 +75,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("sign")
                 && (!(event.getBlock().getState() instanceof Sign)
-                    && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
+                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifyFullNoIdentifier())))) {
             return false;
         }
 
@@ -129,7 +132,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         old_sign = new dList(Arrays.asList(sign.getLines()));

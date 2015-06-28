@@ -20,7 +20,7 @@ public class ItemFlags implements Property {
 
     public static ItemFlags getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemFlags((dItem)_item);
+        else return new ItemFlags((dItem) _item);
     }
 
     private ItemFlags(dItem _item) {
@@ -96,7 +96,7 @@ public class ItemFlags implements Property {
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.removeItemFlags(ItemFlag.values());
             dList new_flags = mechanism.getValue().asType(dList.class);
-            for (String str: new_flags) {
+            for (String str : new_flags) {
                 meta.addItemFlags(ItemFlag.valueOf(str));
             }
             item.getItemStack().setItemMeta(meta);

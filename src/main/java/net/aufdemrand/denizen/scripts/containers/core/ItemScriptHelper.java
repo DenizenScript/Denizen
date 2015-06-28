@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -113,7 +116,7 @@ public class ItemScriptHelper implements Listener {
 
         // Proceed only if a CRAFTING or RESULT slot was clicked
         if (slotType.equals(InventoryType.SlotType.CRAFTING) ||
-            slotType.equals(InventoryType.SlotType.RESULT)) {
+                slotType.equals(InventoryType.SlotType.RESULT)) {
 
             CraftingInventory inventory = (CraftingInventory) event.getInventory();
             Player player = (Player) event.getWhoClicked();
@@ -122,7 +125,7 @@ public class ItemScriptHelper implements Listener {
             // shift click behavior for it
             boolean clicked;
             if (slotType.equals(InventoryType.SlotType.RESULT) &&
-                event.isShiftClick()) {
+                    event.isShiftClick()) {
                 clicked = emulateSpecialRecipeResultShiftClick(inventory, player);
             }
             // Otherwise check for special recipe matches
@@ -145,7 +148,8 @@ public class ItemScriptHelper implements Listener {
                             if (matrix[i] != null) {
                                 if (matrix[i].getAmount() == 0) {
                                     matrix[i] = null;
-                                } else {
+                                }
+                                else {
                                     matrix[i].setAmount(matrix[i].getAmount() - 1);
                                     if (matrix[i].getAmount() == 0) {
                                         matrix[i] = null;
@@ -203,56 +207,56 @@ public class ItemScriptHelper implements Listener {
         // Run a task 1 tick later than the event from which this method
         // was called, to check the new state of the CraftingInventory's matrix
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
-        new Runnable() {
-            @Override
-            public void run() {
-                // Store the current matrix
-                ItemStack[] matrix = inventory.getMatrix();
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        // Store the current matrix
+                        ItemStack[] matrix = inventory.getMatrix();
 
-                // Get the result of the special recipe that this matrix matches,
-                // if any
-                dItem result = getSpecialRecipeResult(matrix);
+                        // Get the result of the special recipe that this matrix matches,
+                        // if any
+                        dItem result = getSpecialRecipeResult(matrix);
 
-                // Proceed only if the result was not null
-                if (result != null) {
-                    Map<String, dObject> context = new HashMap<String, dObject>();
-                    context.put("inventory", new dInventory(inventory));
-                    context.put("item", result);
+                        // Proceed only if the result was not null
+                        if (result != null) {
+                            Map<String, dObject> context = new HashMap<String, dObject>();
+                            context.put("inventory", new dInventory(inventory));
+                            context.put("item", result);
 
-                    dList recipeList = new dList();
-                    for (ItemStack item : inventory.getMatrix()) {
-                        if (item != null)
-                            recipeList.add(new dItem(item).identify());
-                        else
-                            recipeList.add(new dItem(Material.AIR).identify());
-                    }
-                    context.put("recipe", recipeList);
+                            dList recipeList = new dList();
+                            for (ItemStack item : inventory.getMatrix()) {
+                                if (item != null)
+                                    recipeList.add(new dItem(item).identify());
+                                else
+                                    recipeList.add(new dItem(Material.AIR).identify());
+                            }
+                            context.put("recipe", recipeList);
 
-                    List<String> determinations = OldEventManager.doEvents(Arrays.asList
-                            ("item crafted",
-                                    result.identifySimple() + " crafted",
-                                    result.identifyMaterial() + " crafted"),
-                            new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context, true);
+                            List<String> determinations = OldEventManager.doEvents(Arrays.asList
+                                            ("item crafted",
+                                                    result.identifySimple() + " crafted",
+                                                    result.identifyMaterial() + " crafted"),
+                                    new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context, true);
 
-                    for (String determination: determinations) {
-                        if (determination.toUpperCase().startsWith("CANCELLED"))
-                            return;
-                        else if (dItem.matches(determination)) {
-                            result = dItem.valueOf(determination);
+                            for (String determination : determinations) {
+                                if (determination.toUpperCase().startsWith("CANCELLED"))
+                                    return;
+                                else if (dItem.matches(determination)) {
+                                    result = dItem.valueOf(determination);
+                                }
+                            }
+
+                            // If this was a valid match, set the crafting's result
+                            inventory.setResult(result.getItemStack());
+
+                            // Update the player's inventory
+                            //
+                            // TODO: Replace with non-deprecated method once one
+                            // is added to Bukkit
+                            player.updateInventory();
                         }
                     }
-
-                    // If this was a valid match, set the crafting's result
-                    inventory.setResult(result.getItemStack());
-
-                    // Update the player's inventory
-                    //
-                    // TODO: Replace with non-deprecated method once one
-                    // is added to Bukkit
-                    player.updateInventory();
-                }
-            }
-        }, 0);
+                }, 0);
 
         return returnme;
     }
@@ -262,7 +266,8 @@ public class ItemScriptHelper implements Listener {
     public dItem getSpecialRecipeResult(ItemStack[] matrix) {
 
         // Iterate through all the special recipes
-        master: for (Map.Entry<dItem, dList> entry :
+        master:
+        for (Map.Entry<dItem, dList> entry :
                 ItemScriptContainer.specialrecipesMap.entrySet()) {
 
             // Check if the two sets of items match each other
@@ -271,15 +276,15 @@ public class ItemScriptHelper implements Listener {
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison
                 dItem valueN = dItem.valueOf(entry.getValue().get(n));
-                dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR): new dItem(matrix[n].clone());
+                dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR) : new dItem(matrix[n].clone());
 
                 // If one's an item script and the other's not, it's a fail
                 if (valueN.isItemscript() != matrixN.isItemscript())
                     continue master;
                 // If they're both item scripts, and they are different scripts, it's a fail
                 if (valueN.isItemscript() && matrixN.isItemscript()) {
-                        if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName()))
-                    continue master;
+                    if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName()))
+                        continue master;
                 }
                 // If they're both not item scripts, and the materials are different, it's a fail
                 else if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData()))
@@ -290,7 +295,8 @@ public class ItemScriptHelper implements Listener {
             return entry.getKey();
         }
 
-        primary: for (Map.Entry<dItem, dList> entry :
+        primary:
+        for (Map.Entry<dItem, dList> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
             for (int i = 0; i < entry.getValue().size(); i++) {
                 if (!containsAny(dItem.valueOf(entry.getValue().get(i)), matrix)) {
@@ -338,8 +344,8 @@ public class ItemScriptHelper implements Listener {
             // found that isn't zero
             for (int n = 0; n < matrix.length - 1; n++) {
                 if ((matrix[n].getAmount() > 0 &&
-                     matrix[n].getAmount() < lowestAmount) || lowestAmount == 0) {
-                        lowestAmount = matrix[n].getAmount();
+                        matrix[n].getAmount() < lowestAmount) || lowestAmount == 0) {
+                    lowestAmount = matrix[n].getAmount();
                 }
             }
 
@@ -398,7 +404,7 @@ public class ItemScriptHelper implements Listener {
             return;
         }
 
-        if (!((Player)event.getInventory().getHolder()).getName().equalsIgnoreCase(event.getWhoClicked().getName())) {
+        if (!((Player) event.getInventory().getHolder()).getName().equalsIgnoreCase(event.getWhoClicked().getName())) {
             event.setCancelled(true);
             return;
         }

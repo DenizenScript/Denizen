@@ -39,7 +39,7 @@ public class EntityMovement {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient))
             return;
-        nmsEntity.getDataWatcher().watch(15, (byte)(hasAI ? 0 : 1));
+        nmsEntity.getDataWatcher().watch(15, (byte) (hasAI ? 0 : 1));
     }
 
     public static boolean isAIDisabled(Entity entity) {
@@ -88,7 +88,7 @@ public class EntityMovement {
 
             private boolean inRadius = false;
 
-            public void run(){
+            public void run() {
                 if (!target.isValid() || !follower.isValid()) {
                     this.cancel();
                 }

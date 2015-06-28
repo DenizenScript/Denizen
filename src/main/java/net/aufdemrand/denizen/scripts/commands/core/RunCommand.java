@@ -1,31 +1,26 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.Duration;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+
+import java.util.List;
 
 /**
  * Runs a task script in a new ScriptQueue.
  * This replaces the now-deprecated runtask command with queue argument.
  *
  * @author Jeremy Schroeder
- *
  */
 
 public class RunCommand extends AbstractCommand implements Holdable {
@@ -101,13 +96,13 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dPlayer.class)) {
-                ((BukkitScriptEntryData)scriptEntry.entryData).setPlayer(arg.asType(dPlayer.class));
+                ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(arg.asType(dPlayer.class));
                 dB.echoError(scriptEntry.getResidingQueue(), "Run as:<player> is outdated, use player:<player>");
             }
 
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dNPC.class)) {
-                ((BukkitScriptEntryData)scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
+                ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
                 dB.echoError(scriptEntry.getResidingQueue(), "Run as:<npc> is outdated, use npc:<npc>");
             }
 
@@ -157,7 +152,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
                         + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : "")
                         + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : "")
                         + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : "")
-                        + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug(): ""));
+                        + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug() : ""));
 
         // Get the script
         dScript script = scriptEntry.getdObject("script");
@@ -171,7 +166,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
             script = scriptEntry.getScript();
         }
 
-            // If it has a path
+        // If it has a path
         else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
             entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
@@ -206,8 +201,11 @@ public class RunCommand extends AbstractCommand implements Holdable {
             int x = 1;
             dList definitions = (dList) scriptEntry.getObject("definitions");
             String[] definition_names = null;
-            try { definition_names = script.getContainer().getString("definitions").split("\\|"); }
-            catch (Exception e) { }
+            try {
+                definition_names = script.getContainer().getString("definitions").split("\\|");
+            }
+            catch (Exception e) {
+            }
             for (String definition : definitions) {
                 String name = definition_names != null && definition_names.length >= x ?
                         definition_names[x - 1].trim() : String.valueOf(x);

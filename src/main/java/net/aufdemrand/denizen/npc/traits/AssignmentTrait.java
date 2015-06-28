@@ -3,16 +3,16 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
+import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 import org.bukkit.ChatColor;
@@ -36,7 +36,6 @@ public class AssignmentTrait extends Trait {
 
     /**
      * Checks to see if the NPCs assignment is still a valid script on load of NPC.
-     *
      */
     @Override
     public void load(DataKey key) throws NPCLoadException {
@@ -57,15 +56,14 @@ public class AssignmentTrait extends Trait {
     // None
     //
     // -->
+
     /**
      * Sets the NPCs Assignment Script and fires an 'On Assignment:' action. Can specify a player for
      * context with the action.
      *
      * @param assignment the name of the Assignment Script, case in-sensitive
-     * @param player the player adding the assignment, can be null
-     *
+     * @param player     the player adding the assignment, can be null
      * @return false if the assignment is invalid
-     *
      */
     public boolean setAssignment(String assignment, dPlayer player) {
         if (ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
@@ -89,7 +87,6 @@ public class AssignmentTrait extends Trait {
      * Gets the name of the current Assignment Script assigned to this NPC.
      *
      * @return assignment script name, null if not set or assignment is invalid
-     *
      */
     public AssignmentScriptContainer getAssignment() {
         if (hasAssignment() && ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class))
@@ -101,7 +98,6 @@ public class AssignmentTrait extends Trait {
      * Checks to see if this NPC currently has an assignment.
      *
      * @return true if NPC has an assignment and it is valid
-     *
      */
     public boolean hasAssignment() {
         if (assignment == null || assignment.equals("")) return false;
@@ -118,14 +114,14 @@ public class AssignmentTrait extends Trait {
     // None
     //
     // -->
+
     /**
      * Removes the current assignment and fires an 'On Remove Assignment:' action. Can specify a player for
      * context with the action.
      *
      * @param player the player removing the assignment, can be null
-     *
      */
-    public void removeAssignment (dPlayer player) {
+    public void removeAssignment(dPlayer player) {
         dNPCRegistry.getDenizen(npc).action("remove assignment", player);
         assignment = "";
     }
@@ -151,7 +147,8 @@ public class AssignmentTrait extends Trait {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS"))
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
-        } if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
+        }
+        if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
         paginator.addLine("");
 
         if (!entriesPresent) {
@@ -168,7 +165,8 @@ public class AssignmentTrait extends Trait {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES"))
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
-        } if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
+        }
+        if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
         paginator.addLine("");
 
         // Actions

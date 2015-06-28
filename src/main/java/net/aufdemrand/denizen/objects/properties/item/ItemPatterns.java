@@ -112,7 +112,8 @@ public class ItemPatterns implements Property {
                     split = CoreUtilities.split(string, '/', 2);
                     patterns.add(new Pattern(DyeColor.valueOf(split.get(0).toUpperCase()),
                             PatternType.valueOf(split.get(1).toUpperCase())));
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoError("Could not apply pattern to banner: " + string);
                 }
             }

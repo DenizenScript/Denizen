@@ -21,7 +21,6 @@ package net.aufdemrand.denizen.utilities.jnbt;
 
 /**
  * The {@code TAG_Long} tag.
- *
  */
 public final class LongTag extends Tag {
 

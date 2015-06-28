@@ -8,7 +8,6 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,7 +60,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String lower = CoreUtilities.toLowerCase(s);
         String arg1 = CoreUtilities.getXthArg(0, lower);
         String arg2 = CoreUtilities.getXthArg(1, lower);
-        String tamed = arg2.equals("jumps")? arg1: arg2;
+        String tamed = arg2.equals("jumps") ? arg1 : arg2;
 
         if (!entity.matchesEntity(tamed)) {
             return false;

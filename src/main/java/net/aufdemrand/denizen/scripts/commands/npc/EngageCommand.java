@@ -2,13 +2,13 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.npc.NPC;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class EngageCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Check for NPC
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("This command requires a linked NPC!");
 
         // Parse arguments
@@ -49,9 +49,9 @@ public class EngageCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), duration.debug());
 
         if (duration.getSecondsAsInt() > 0)
-            setEngaged(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen(), duration.getSecondsAsInt());
+            setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), duration.getSecondsAsInt());
         else
-            setEngaged(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen(), true);
+            setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), true);
 
     }
 
@@ -64,8 +64,8 @@ public class EngageCommand extends AbstractCommand {
      * Checks if the dNPC is ENGAGED. Engaged NPCs do not respond to
      * Player interaction.
      *
-     * @param npc       the Denizen NPC being checked
-     * @return  if the dNPC is currently engaged
+     * @param npc the Denizen NPC being checked
+     * @return if the dNPC is currently engaged
      */
     public static boolean getEngaged(NPC npc) {
         if (currentlyEngaged.containsKey(npc))
@@ -79,12 +79,12 @@ public class EngageCommand extends AbstractCommand {
      * interaction. Note: Denizen NPC will automatically disengage after the
      * engage_timeout_in_seconds which is set in the Denizen config.yml.
      *
-     * @param npc       the dNPC affected
-     * @param engaged   true sets the dNPC engaged, false sets the dNPC as disengaged
+     * @param npc     the dNPC affected
+     * @param engaged true sets the dNPC engaged, false sets the dNPC as disengaged
      */
     public static void setEngaged(NPC npc, boolean engaged) {
         if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
-                + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000 );
+                + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
         if (!engaged) currentlyEngaged.remove(npc);
     }
 
@@ -93,10 +93,10 @@ public class EngageCommand extends AbstractCommand {
      * respond to Player interaction. If the NPC is previously engaged, using this will
      * over-ride the previously set duration.
      *
-     * @param npc       the dNPC to set as engaged
-     * @param duration  the number of seconds to engage the dNPC
+     * @param npc      the dNPC to set as engaged
+     * @param duration the number of seconds to engage the dNPC
      */
     public static void setEngaged(NPC npc, int duration) {
-        currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000 );
+        currentlyEngaged.put(npc, System.currentTimeMillis() + duration * 1000);
     }
 }

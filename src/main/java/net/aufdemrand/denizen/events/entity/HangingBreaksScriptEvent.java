@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
@@ -10,7 +12,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,6 +46,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     public HangingBreaksScriptEvent() {
         instance = this;
     }
+
     public static HangingBreaksScriptEvent instance;
     public Element cause;
     public dEntity entity;
@@ -66,11 +68,11 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         String lower = CoreUtilities.toLowerCase(s);
         String hangCheck = CoreUtilities.getXthArg(0, lower);
         if (!hangCheck.equals("hanging")
-                && hanging.matchesEntity(hangCheck)){
+                && hanging.matchesEntity(hangCheck)) {
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "because")){
+        if (CoreUtilities.xthArgEquals(2, lower, "because")) {
             if (!CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
                 return false;
             }
@@ -105,8 +107,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -123,13 +125,13 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onHangingBreaks(HangingBreakEvent event) {
         hanging = new dEntity(event.getEntity());
-        cause =  new Element(event.getCause().name());
+        cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
         if (event instanceof HangingBreakByEntityEvent) {
             entity = new dEntity(((HangingBreakByEntityEvent) event).getRemover());
         }
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

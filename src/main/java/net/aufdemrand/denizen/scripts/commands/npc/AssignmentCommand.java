@@ -1,18 +1,18 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class AssignmentCommand extends AbstractCommand {
 
-    private enum Action { SET, REMOVE }
+    private enum Action {SET, REMOVE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -40,7 +40,7 @@ public class AssignmentCommand extends AbstractCommand {
         }
 
         // Check required arguments
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
 
         if (!scriptEntry.hasObject("action"))
@@ -61,11 +61,11 @@ public class AssignmentCommand extends AbstractCommand {
 
         // Perform desired action
         if (scriptEntry.getObject("action").equals(Action.SET))
-            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .setAssignment(script.getName(), ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+            ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
+                    .setAssignment(script.getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
 
         else if (scriptEntry.getObject("action").equals(Action.REMOVE))
-            ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
-                    .removeAssignment(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+            ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
+                    .removeAssignment(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
     }
 }

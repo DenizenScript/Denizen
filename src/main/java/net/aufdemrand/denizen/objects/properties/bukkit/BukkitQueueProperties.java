@@ -1,12 +1,14 @@
 package net.aufdemrand.denizen.objects.properties.bukkit;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class BukkitQueueProperties implements Property {
 
@@ -38,10 +40,10 @@ public class BukkitQueueProperties implements Property {
         if (attribute.startsWith("npc")) {
             dNPC npc = null;
             if (queue.getLastEntryExecuted() != null) {
-                npc = ((BukkitScriptEntryData)queue.getLastEntryExecuted().entryData).getNPC();
+                npc = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getNPC();
             }
             else if (queue.getEntries().size() > 0) {
-                npc = ((BukkitScriptEntryData)queue.getEntries().get(0).entryData).getNPC();
+                npc = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getNPC();
             }
             else {
                 dB.echoError(queue, "Can't determine a linked NPC.");
@@ -61,10 +63,10 @@ public class BukkitQueueProperties implements Property {
         if (attribute.startsWith("player")) {
             dPlayer player = null;
             if (queue.getLastEntryExecuted() != null) {
-                player = ((BukkitScriptEntryData)queue.getLastEntryExecuted().entryData).getPlayer();
+                player = ((BukkitScriptEntryData) queue.getLastEntryExecuted().entryData).getPlayer();
             }
             else if (queue.getEntries().size() > 0) {
-                player = ((BukkitScriptEntryData)queue.getEntries().get(0).entryData).getPlayer();
+                player = ((BukkitScriptEntryData) queue.getEntries().get(0).entryData).getPlayer();
             }
             else {
                 dB.echoError(queue, "Can't determine a linked player.");

@@ -14,7 +14,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -65,7 +64,7 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entOne = CoreUtilities.getXthArg(0, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         List<String> types = Arrays.asList("entity", "player", "npc");
         return ((types.contains(entOne) || dEntity.matches(entOne))
                 && cmd.equals("shoots"));
@@ -142,8 +141,8 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

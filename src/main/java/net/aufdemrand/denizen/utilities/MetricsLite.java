@@ -35,13 +35,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
@@ -177,7 +171,8 @@ public class MetricsLite {
                         // After the first post we set firstPost to false
                         // Each post thereafter will be a ping
                         firstPost = false;
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         if (debug) {
                             Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
                         }
@@ -199,12 +194,14 @@ public class MetricsLite {
             try {
                 // Reload the metrics file
                 configuration.load(getConfigFile());
-            } catch (IOException ex) {
+            }
+            catch (IOException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
                 return true;
-            } catch (InvalidConfigurationException ex) {
+            }
+            catch (InvalidConfigurationException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
@@ -335,7 +332,8 @@ public class MetricsLite {
         // It does not reroute POST requests so we need to go around it
         if (isMineshafterPresent()) {
             connection = url.openConnection(Proxy.NO_PROXY);
-        } else {
+        }
+        else {
             connection = url.openConnection();
         }
 
@@ -373,7 +371,8 @@ public class MetricsLite {
         if (response == null || response.startsWith("ERR") || response.startsWith("7")) {
             if (response == null) {
                 response = "null";
-            } else if (response.startsWith("7")) {
+            }
+            else if (response.startsWith("7")) {
                 response = response.substring(response.startsWith("7,") ? 2 : 1);
             }
 
@@ -394,12 +393,15 @@ public class MetricsLite {
         try {
             gzos = new GZIPOutputStream(baos);
             gzos.write(input.getBytes("UTF-8"));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             if (gzos != null) try {
                 gzos.close();
-            } catch (IOException ignore) {
+            }
+            catch (IOException ignore) {
             }
         }
 
@@ -415,7 +417,8 @@ public class MetricsLite {
         try {
             Class.forName("mineshafter.MineServer");
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return false;
         }
     }
@@ -423,8 +426,8 @@ public class MetricsLite {
     /**
      * Appends a json encoded key/value pair to the given string builder.
      *
-     * @param json json
-     * @param key key
+     * @param json  json
+     * @param key   key
      * @param value value
      * @throws UnsupportedEncodingException
      */
@@ -436,7 +439,8 @@ public class MetricsLite {
                 Double.parseDouble(value);
                 isValueNumeric = true;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             isValueNumeric = false;
         }
 
@@ -449,7 +453,8 @@ public class MetricsLite {
 
         if (isValueNumeric) {
             json.append(value);
-        } else {
+        }
+        else {
             json.append(escapeJSON(value));
         }
     }
@@ -489,7 +494,8 @@ public class MetricsLite {
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
                         builder.append("\\u" + t.substring(t.length() - 4));
-                    } else {
+                    }
+                    else {
                         builder.append(chr);
                     }
                     break;

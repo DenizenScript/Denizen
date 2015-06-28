@@ -1,13 +1,18 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Age;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ageable;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Zombie;
 
 public class EntityAge implements Property {
 
@@ -98,7 +103,7 @@ public class EntityAge implements Property {
 
     @Override
     public String getPropertyString() {
-        return getAge() + (getLock() ? "|locked": "");
+        return getAge() + (getLock() ? "|locked" : "");
     }
 
     @Override

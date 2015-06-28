@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.events.world;
 
 import net.aufdemrand.denizen.objects.dChunk;
-import net.aufdemrand.denizen.objects.dWorld; // Deprecated in favor of context.chunk.world
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

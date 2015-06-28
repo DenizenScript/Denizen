@@ -1,12 +1,11 @@
 package net.aufdemrand.denizen.listeners;
 
 
+import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
+import org.bukkit.Bukkit;
 
 public abstract class AbstractListenerType implements RegistrationableInstance {
 
@@ -33,9 +32,11 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
         try {
             denizen.getListenerRegistry().addListenerFor(player, instanceClass.newInstance(), listenerId);
             return denizen.getListenerRegistry().getListenerFor(player, listenerId);
-        } catch (InstantiationException e) {
+        }
+        catch (InstantiationException e) {
             dB.echoError(e);
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             dB.echoError(e);
         }
         return null;
@@ -48,10 +49,9 @@ public abstract class AbstractListenerType implements RegistrationableInstance {
 
     /**
      * Part of the Plugin disable sequence.
-     *
+     * <p/>
      * Can be '@Override'n by a Listener which requires a method when bukkit sends a
      * onDisable() to Denizen. (ie. Server shuts down or restarts)
-     *
      */
     public void onDisable() {
 

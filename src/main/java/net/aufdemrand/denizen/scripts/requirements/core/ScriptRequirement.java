@@ -5,15 +5,15 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.requirements.AbstractRequirement;
 import net.aufdemrand.denizen.scripts.requirements.RequirementsContext;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.aH.ArgumentType;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.List;
 
-public class ScriptRequirement extends AbstractRequirement{
+public class ScriptRequirement extends AbstractRequirement {
 
-    private enum Type { FINISHED, FAILED, STEP }
+    private enum Type {FINISHED, FAILED, STEP}
 
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
@@ -31,7 +31,8 @@ public class ScriptRequirement extends AbstractRequirement{
             if (aH.matchesArg("FINISHED, FAILED", thisArg))
                 try {
                     type = Type.valueOf(aH.getStringFrom(thisArg).toUpperCase());
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoError("Invalid check type. Valid: FINISHED, FAILED, STEP.");
                 }
 
@@ -60,7 +61,8 @@ public class ScriptRequirement extends AbstractRequirement{
                     int finishes = FinishCommand.getScriptCompletes(context.getPlayer().getName(), checkScript);
                     if (exactly) {
                         if (quantity == finishes) outcome = true;
-                    } else {
+                    }
+                    else {
                         if (finishes >= quantity) outcome = true;
                     }
                     break;
@@ -69,7 +71,8 @@ public class ScriptRequirement extends AbstractRequirement{
                     int fails = FailCommand.getScriptFails(context.getPlayer().getName(), checkScript);
                     if (exactly) {
                         if (quantity == fails) outcome = true;
-                    } else {
+                    }
+                    else {
                         if (fails >= quantity) outcome = true;
                     }
                     break;

@@ -1,18 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+
+import java.util.List;
 
 
 public class RandomCommand extends BracedCommand {
@@ -94,7 +92,7 @@ public class RandomCommand extends BracedCommand {
 
                 else {
                     dB.echoDebug(scriptEntry, "...selected '" + queue.getEntry(0).getCommandName() + ": "
-                        + queue.getEntry(0).getArguments() + "'.");
+                            + queue.getEntry(0).getArguments() + "'.");
                     keeping = queue.getEntry(0);
                     queue.removeEntry(0);
                 }

@@ -1,29 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
-
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.*;
 
 public class RotateCommand extends AbstractCommand implements Holdable {
 
@@ -35,47 +28,47 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                && (arg.matches("cancel") || arg.matches("stop"))) {
+                    && (arg.matches("cancel") || arg.matches("stop"))) {
 
-                    scriptEntry.addObject("cancel", "");
+                scriptEntry.addObject("cancel", "");
             }
 
             else if (!scriptEntry.hasObject("infinite")
-                     && arg.matches("infinite")) {
+                    && arg.matches("infinite")) {
 
-                    scriptEntry.addObject("infinite", "");
+                scriptEntry.addObject("infinite", "");
             }
 
             else if (!scriptEntry.hasObject("duration")
-                     && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("duration", "d")) {
+                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesPrefix("duration", "d")) {
 
-               scriptEntry.addObject("duration", arg.asType(Duration.class));
+                scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("frequency")
-                     && arg.matchesArgumentType(Duration.class)
-                     && arg.matchesPrefix("frequency", "f")) {
+                    && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesPrefix("frequency", "f")) {
 
                 scriptEntry.addObject("frequency", arg.asType(Duration.class));
             }
 
             else if (!scriptEntry.hasObject("yaw")
-                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrefix("yaw", "y", "rotation", "r")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
-               scriptEntry.addObject("yaw", arg.asElement());
+                scriptEntry.addObject("yaw", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("pitch")
-                     && arg.matchesPrefix("pitch", "p", "tilt", "t")
-                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
+                    && arg.matchesPrefix("pitch", "p", "tilt", "t")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
-               scriptEntry.addObject("pitch", arg.asElement());
+                scriptEntry.addObject("pitch", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("entities")
-                     && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
@@ -85,8 +78,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entities",
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
-                (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
 
         scriptEntry.defaultObject("yaw", new Element(10));
         scriptEntry.defaultObject("pitch", new Element(0));
@@ -112,17 +105,17 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                             aH.debugObj("entities", entities.toString()) +
-                             (infinite ? aH.debugObj("duration", "infinite") : duration.debug()) +
-                             frequency.debug() +
-                             yaw.debug() +
-                             pitch.debug());
+                aH.debugObj("entities", entities.toString()) +
+                (infinite ? aH.debugObj("duration", "infinite") : duration.debug()) +
+                frequency.debug() +
+                yaw.debug() +
+                pitch.debug());
 
         // Add entities to the rotatingEntities list or remove
         // them from it
         for (dEntity entity : entities)
             if (cancel) rotatingEntities.remove(entity.getUUID());
-            else        rotatingEntities.add(entity.getUUID());
+            else rotatingEntities.add(entity.getUUID());
 
         // Go no further if we are canceling a rotation
         if (cancel) return;

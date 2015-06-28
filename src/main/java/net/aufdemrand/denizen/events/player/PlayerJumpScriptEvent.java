@@ -50,9 +50,9 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
                 // Did player move vertically?
                 && (event.getTo().getBlockY() > event.getFrom().getBlockY()
                 // and also that the player has a high velocity (jump instead of walking up stairs)
-                    && Math.abs(event.getPlayer().getVelocity().getY()) > 0.1
+                && Math.abs(event.getPlayer().getVelocity().getY()) > 0.1
                 // and that the player isn't in any form of fast moving vehicle
-                    && event.getPlayer().getVehicle() == null);
+                && event.getPlayer().getVehicle() == null);
     }
 
     @Override

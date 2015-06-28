@@ -6,7 +6,6 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 
@@ -14,7 +13,7 @@ public class EntityChestCarrier implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity
-                && ((dEntity)entity).getBukkitEntityType() == EntityType.HORSE;
+                && ((dEntity) entity).getBukkitEntityType() == EntityType.HORSE;
     }
 
     public static EntityChestCarrier getFrom(dObject entity) {
@@ -39,7 +38,7 @@ public class EntityChestCarrier implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Horse)entity.getBukkitEntity()).isCarryingChest() ? "true": "false";
+        return ((Horse) entity.getBukkitEntity()).isCarryingChest() ? "true" : "false";
     }
 
     @Override
@@ -65,7 +64,7 @@ public class EntityChestCarrier implements Property {
         // If the entity is a horse, returns whether it is carrying a chest.
         // -->
         if (attribute.startsWith("carries_chest"))
-            return new Element(((Horse)entity.getBukkitEntity()).isCarryingChest())
+            return new Element(((Horse) entity.getBukkitEntity()).isCarryingChest())
                     .getAttribute(attribute.fulfill(1));
 
         return null;
@@ -85,7 +84,7 @@ public class EntityChestCarrier implements Property {
         // -->
 
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
-            ((Horse)entity.getBukkitEntity()).setCarryingChest(mechanism.getValue().asBoolean());
+            ((Horse) entity.getBukkitEntity()).setCarryingChest(mechanism.getValue().asBoolean());
         }
     }
 }

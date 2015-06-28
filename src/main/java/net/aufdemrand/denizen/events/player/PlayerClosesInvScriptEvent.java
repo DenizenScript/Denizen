@@ -93,8 +93,8 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
     @Override
     public ScriptEntryData getScriptEntryData() {
         // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer(): null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC(): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override

@@ -2,15 +2,15 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptFailEvent;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
 /**
@@ -51,7 +51,7 @@ public class FailCommand extends AbstractCommand {
         }
 
         // Check for required args
-        scriptEntry.defaultObject("player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+        scriptEntry.defaultObject("player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
         scriptEntry.defaultObject("script", scriptEntry.getScript());
     }
 
@@ -78,10 +78,8 @@ public class FailCommand extends AbstractCommand {
     /**
      * Increases a scripts 'failed' counter for a specified Player.
      *
-     * @param playerName
-     *         name of the Player
-     * @param scriptName
-     *         name of the Script
+     * @param playerName name of the Player
+     * @param scriptName name of the Script
      */
     public static void failScript(String playerName, String scriptName) {
         scriptName = scriptName.toUpperCase();
@@ -99,12 +97,9 @@ public class FailCommand extends AbstractCommand {
     /**
      * Gets the number of times a Player has 'failed' a script.
      *
-     * @param playerName
-     *         name of the Player
-     * @param scriptName
-     *         name of the Script
-     * @return
-     *         number of times the Player has failed the specified script
+     * @param playerName name of the Player
+     * @param scriptName name of the Script
+     * @return number of times the Player has failed the specified script
      */
     public static int getScriptFails(String playerName, String scriptName) {
         return DenizenAPI.getCurrentInstance().getSaves()

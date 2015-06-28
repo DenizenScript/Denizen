@@ -2,7 +2,9 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
@@ -10,7 +12,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,6 +50,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public EntityTargetsScriptEvent() {
         instance = this;
     }
+
     public static EntityTargetsScriptEvent instance;
     public dEntity entity;
     public Element reason;
@@ -87,7 +89,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
         Integer pos = lower.indexOf(" because ") + 9;
         if (pos > 9) {
-            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length(): lower.indexOf(" ", pos);
+            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length() : lower.indexOf(" ", pos);
             if (!lower.substring(pos, end).equals(reason.toString().toLowerCase())) {
                 return false;
             }
@@ -120,8 +122,8 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -140,10 +142,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public void onEntityTargets(EntityTargetEvent event) {
         entity = new dEntity(event.getEntity());
         reason = new Element(event.getReason().toString());
-        target = event.getTarget() != null ? new dEntity(event.getTarget()): null;
+        target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

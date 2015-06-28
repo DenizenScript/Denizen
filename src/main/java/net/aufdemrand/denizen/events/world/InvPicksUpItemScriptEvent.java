@@ -38,6 +38,7 @@ public class InvPicksUpItemScriptEvent extends ScriptEvent implements Listener {
     public InvPicksUpItemScriptEvent() {
         instance = this;
     }
+
     public static InvPicksUpItemScriptEvent instance;
     public dInventory inventory;
     public dItem item;

@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,6 +38,7 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
     public PlayerPlacesHangingScriptEvent() {
         instance = this;
     }
+
     public static PlayerPlacesHangingScriptEvent instance;
     public dEntity hanging;
     public dList cuboids;
@@ -58,7 +58,7 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
         String lower = CoreUtilities.toLowerCase(s);
         String hangCheck = CoreUtilities.getXthArg(2, lower);
         if (!hangCheck.equals("hanging")
-                && (!hanging.identifySimple().equals(hangCheck) && !hanging.identifySimpleType().equals(hangCheck))){
+                && (!hanging.identifySimple().equals(hangCheck) && !hanging.identifySimpleType().equals(hangCheck))) {
             return false;
         }
         String notable = null;
@@ -126,7 +126,7 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
         hanging = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

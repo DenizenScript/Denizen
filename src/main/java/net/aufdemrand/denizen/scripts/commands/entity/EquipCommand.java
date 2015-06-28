@@ -1,13 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.entity.LivingEntity;
 
@@ -21,45 +24,45 @@ public class EquipCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Map<String, dItem> equipment = new HashMap<String,dItem>();
+        Map<String, dItem> equipment = new HashMap<String, dItem>();
 
         // Initialize necessary fields
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
-                && arg.matchesArgumentList(dEntity.class)) {
+                    && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("head", "helmet")) {
+                    && arg.matchesPrefix("head", "helmet")) {
                 equipment.put("head", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("chest", "chestplate")) {
+                    && arg.matchesPrefix("chest", "chestplate")) {
                 equipment.put("chest", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("legs", "leggings")) {
+                    && arg.matchesPrefix("legs", "leggings")) {
                 equipment.put("legs", dItem.valueOf(arg.getValue()));
             }
 
             else if (arg.matchesArgumentType(dItem.class)
-                     && arg.matchesPrefix("boots", "feet")) {
+                    && arg.matchesPrefix("boots", "feet")) {
                 equipment.put("boots", dItem.valueOf(arg.getValue()));
             }
 
             // Default to item in hand if no prefix is used
             else if (arg.matchesArgumentType(dItem.class)) {
-               equipment.put("hand", dItem.valueOf(arg.getValue()));
+                equipment.put("hand", dItem.valueOf(arg.getValue()));
             }
 
-            else if (arg.matches("player") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer()) {
+            else if (arg.matches("player") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 // Player arg for compatibility with old scripts
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()));
+                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
 
             else arg.reportUnhandled();
@@ -72,8 +75,8 @@ public class EquipCommand extends AbstractCommand {
         scriptEntry.addObject("equipment", equipment);
 
         // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
-                                              (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
+                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
 
     }
 
@@ -87,7 +90,7 @@ public class EquipCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
-                             aH.debugObj("equipment", equipment.toString()));
+                aH.debugObj("equipment", equipment.toString()));
 
         for (dEntity entity : entities) {
 
@@ -102,10 +105,10 @@ public class EquipCommand extends AbstractCommand {
 
                     Equipment trait = npc.getEquipmentTrait();
 
-                    if (equipment.get("hand")  != null) trait.set(0, equipment.get("hand").getItemStack());
-                    if (equipment.get("head")  != null) trait.set(1, equipment.get("head").getItemStack());
+                    if (equipment.get("hand") != null) trait.set(0, equipment.get("hand").getItemStack());
+                    if (equipment.get("head") != null) trait.set(1, equipment.get("head").getItemStack());
                     if (equipment.get("chest") != null) trait.set(2, equipment.get("chest").getItemStack());
-                    if (equipment.get("legs")  != null) trait.set(3, equipment.get("legs").getItemStack());
+                    if (equipment.get("legs") != null) trait.set(3, equipment.get("legs").getItemStack());
                     if (equipment.get("boots") != null) trait.set(4, equipment.get("boots").getItemStack());
                 }
 
@@ -116,11 +119,16 @@ public class EquipCommand extends AbstractCommand {
 
                 if (livingEntity != null) {
 
-                    if (equipment.get("hand")  != null) livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
-                    if (equipment.get("head")  != null) livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
-                    if (equipment.get("chest") != null) livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
-                    if (equipment.get("legs")  != null) livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
-                    if (equipment.get("boots") != null) livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
+                    if (equipment.get("hand") != null)
+                        livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
+                    if (equipment.get("head") != null)
+                        livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
+                    if (equipment.get("chest") != null)
+                        livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
+                    if (equipment.get("legs") != null)
+                        livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
+                    if (equipment.get("boots") != null)
+                        livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
                 }
             }
         }

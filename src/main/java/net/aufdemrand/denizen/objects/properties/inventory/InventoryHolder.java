@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.Bukkit;
@@ -157,7 +159,7 @@ public class InventoryHolder implements Property {
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
             if (value.matchesEnum(InventoryType.values())) setHolder(value);
-            else if(value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
+            else if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
             else if (value.matchesType(dNPC.class)) setHolder(value.asType(dNPC.class));
             else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
             else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));

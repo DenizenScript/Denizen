@@ -120,8 +120,8 @@ public class dEntity implements dObject, Adjustable {
      * zombie will return an unspawned Zombie dEntity </br>
      * super_creeper will return an unspawned custom 'Super_Creeper' dEntity </br>
      *
-     * @param string  the string or dScript argument String
-     * @return  a dEntity, or null
+     * @param string the string or dScript argument String
+     * @return a dEntity, or null
      */
     @Fetchable("e")
     public static dEntity valueOf(String string, TagContext context) {
@@ -318,7 +318,8 @@ public class dEntity implements dObject, Adjustable {
             if (isCitizensNPC(entity)) {
                 this.npc = getNPCFrom(entity);
             }
-        } else dB.echoError("Entity referenced is null!");
+        }
+        else dB.echoError("Entity referenced is null!");
     }
 
     @Deprecated
@@ -326,7 +327,8 @@ public class dEntity implements dObject, Adjustable {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
-        } else dB.echoError("Entity_type referenced is null!");
+        }
+        else dB.echoError("Entity_type referenced is null!");
     }
 
     @Deprecated
@@ -341,7 +343,8 @@ public class dEntity implements dObject, Adjustable {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
             this.data1 = data1;
-        } else dB.echoError("Entity_type referenced is null!");
+        }
+        else dB.echoError("Entity_type referenced is null!");
     }
 
     @Deprecated
@@ -351,14 +354,16 @@ public class dEntity implements dObject, Adjustable {
             this.entity_type = DenizenEntityType.getByName(entityType.name());
             this.data1 = data1;
             this.data2 = data2;
-        } else dB.echoError("Entity_type referenced is null!");
+        }
+        else dB.echoError("Entity_type referenced is null!");
     }
 
     public dEntity(DenizenEntityType entityType) {
         if (entityType != null) {
             this.entity = null;
             this.entity_type = entityType;
-        } else dB.echoError("DenizenEntityType referenced is null!");
+        }
+        else dB.echoError("DenizenEntityType referenced is null!");
     }
 
     public dEntity(DenizenEntityType entityType, ArrayList<Mechanism> mechanisms) {
@@ -381,7 +386,8 @@ public class dEntity implements dObject, Adjustable {
             this.entity_type = entityType;
             this.data1 = data1;
             this.data2 = data2;
-        } else dB.echoError("DenizenEntityType referenced is null!");
+        }
+        else dB.echoError("DenizenEntityType referenced is null!");
     }
 
     public dEntity(dNPC npc) {
@@ -396,7 +402,8 @@ public class dEntity implements dObject, Adjustable {
                 this.entity_type = DenizenEntityType.getByName(npc.getEntityType().name());
                 this.uuid = entity.getUniqueId();
             }
-        } else dB.echoError("NPC referenced is null!");
+        }
+        else dB.echoError("NPC referenced is null!");
 
     }
 
@@ -433,7 +440,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Returns the unique UUID of this entity
      *
-     * @return  The UUID
+     * @return The UUID
      */
 
     public UUID getUUID() {
@@ -450,7 +457,7 @@ public class dEntity implements dObject, Adjustable {
      * useful for automatically saving dEntities to contexts as
      * dNPCs and dPlayers
      *
-     * @return  The dObject
+     * @return The dObject
      */
 
     public dObject getDenizenObject() {
@@ -478,7 +485,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the living entity corresponding to this dEntity
      *
-     * @return  The living entity
+     * @return The living entity
      */
 
     public LivingEntity getLivingEntity() {
@@ -490,19 +497,21 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Check whether this dEntity is a living entity
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean isLivingEntity() {
         return (entity instanceof LivingEntity);
     }
 
-    public boolean hasInventory() { return getBukkitEntity() instanceof InventoryHolder || isCitizensNPC(); }
+    public boolean hasInventory() {
+        return getBukkitEntity() instanceof InventoryHolder || isCitizensNPC();
+    }
 
     /**
      * Get the dNPC corresponding to this dEntity
      *
-     * @return  The dNPC
+     * @return The dNPC
      */
 
     public dNPC getDenizenNPC() {
@@ -515,7 +524,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Check whether this dEntity is an NPC
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean isNPC() {
@@ -529,7 +538,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the Player corresponding to this dEntity
      *
-     * @return  The Player
+     * @return The Player
      */
 
     public Player getPlayer() {
@@ -542,7 +551,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the dPlayer corresponding to this dEntity
      *
-     * @return  The dPlayer
+     * @return The dPlayer
      */
 
     public dPlayer getDenizenPlayer() {
@@ -555,7 +564,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Check whether this dEntity is a Player
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean isPlayer() {
@@ -565,7 +574,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get this dEntity as a Projectile
      *
-     * @return  The Projectile
+     * @return The Projectile
      */
 
     public Projectile getProjectile() {
@@ -576,7 +585,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Check whether this dEntity is a Projectile
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean isProjectile() {
@@ -586,7 +595,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get this Projectile entity's shooter
      *
-     * @return  A dEntity of the shooter
+     * @return A dEntity of the shooter
      */
 
     public dEntity getShooter() {
@@ -598,7 +607,6 @@ public class dEntity implements dObject, Adjustable {
 
     /**
      * Set this Projectile entity's shooter
-     *
      */
 
     public void setShooter(dEntity shooter) {
@@ -609,7 +617,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Check whether this entity has a shooter.
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean hasShooter() {
@@ -628,7 +636,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Returns this entity's dInventory.
      *
-     * @return  the entity's dInventory
+     * @return the entity's dInventory
      */
 
     public dInventory getInventory() {
@@ -656,7 +664,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Returns this entity's equipment
      *
-     * @return  the entity's equipment
+     * @return the entity's equipment
      */
 
     public dList getEquipment() {
@@ -676,7 +684,7 @@ public class dEntity implements dObject, Adjustable {
      * entity type, for instance "e@cow", instead of
      * a spawned entity
      *
-     * @return  true or false
+     * @return true or false
      */
 
     public boolean isGeneric() {
@@ -686,7 +694,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the location of this entity
      *
-     * @return  The Location
+     * @return The Location
      */
 
     public dLocation getLocation() {
@@ -701,7 +709,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Get the eye location of this entity
      *
-     * @return  The location
+     * @return The location
      */
 
     public dLocation getEyeLocation() {
@@ -722,7 +730,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Gets the velocity of this entity
      *
-     * @return  The velocity's vector
+     * @return The velocity's vector
      */
 
     public Vector getVelocity() {
@@ -735,7 +743,6 @@ public class dEntity implements dObject, Adjustable {
 
     /**
      * Sets the velocity of this entity
-     *
      */
 
     public void setVelocity(Vector vector) {
@@ -753,7 +760,7 @@ public class dEntity implements dObject, Adjustable {
     /**
      * Gets the world of this entity
      *
-     * @return  The entity's world
+     * @return The entity's world
      */
 
     public World getWorld() {
@@ -939,7 +946,8 @@ public class dEntity implements dObject, Adjustable {
                                     setSubtype("org.bukkit.entity.Villager", "org.bukkit.entity.Villager$Profession", "setProfession", data1);
                                 }
 
-                            } catch (Exception e) {
+                            }
+                            catch (Exception e) {
                                 dB.echoError("Error setting custom entity data.");
                                 dB.echoError(e);
                             }
@@ -955,7 +963,7 @@ public class dEntity implements dObject, Adjustable {
                 return;
             }
 
-            for (Mechanism mechanism: mechanisms) {
+            for (Mechanism mechanism : mechanisms) {
                 adjust(mechanism);
             }
             mechanisms.clear();
@@ -999,7 +1007,7 @@ public class dEntity implements dObject, Adjustable {
      * Make this entity target another living entity, attempting both
      * old entity AI and new entity AI targeting methods
      *
-     * @param target  The LivingEntity target
+     * @param target The LivingEntity target
      */
 
     public void target(LivingEntity target) {
@@ -1025,16 +1033,16 @@ public class dEntity implements dObject, Adjustable {
      * this Bukkit entity's class and:
      * 1) using a random subtype if value is "RANDOM"
      * 2) looping through the entity's subtypes until one matches the value string
-     *
+     * <p/>
      * Example: setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", "SIAMESE_CAT");
      *
-     * @param entityName  The name of the entity's class.
-     * @param typeName  The name of the entity class' Enum with subtypes.
-     * @param method  The name of the method used to set the subtype of this entity.
-     * @param value  The value of the subtype.
+     * @param entityName The name of the entity's class.
+     * @param typeName   The name of the entity class' Enum with subtypes.
+     * @param method     The name of the method used to set the subtype of this entity.
+     * @param value      The value of the subtype.
      */
 
-    public void setSubtype (String entityName, String typeName, String method, String value)
+    public void setSubtype(String entityName, String typeName, String method, String value)
             throws Exception {
 
         Class<?> entityClass = Class.forName(entityName);
@@ -1160,8 +1168,8 @@ public class dEntity implements dObject, Adjustable {
         if (entity_type != null) {
             // Build the pseudo-property-string, if any
             StringBuilder properties = new StringBuilder();
-            for (Mechanism mechanism: mechanisms) {
-                properties.append(mechanism.getName()).append("=").append(mechanism.getValue().asString().replace(';', (char)0x2011)).append(";");
+            for (Mechanism mechanism : mechanisms) {
+                properties.append(mechanism.getName()).append("=").append(mechanism.getValue().asString().replace(';', (char) 0x2011)).append(";");
             }
             String propertyOutput = "";
             if (properties.length() > 0) {
@@ -1386,7 +1394,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the name of the entity script that spawned this entity, if any.
         // -->
         if (attribute.startsWith("script")) {
-            return new Element(entityScript == null ? "null": entityScript)
+            return new Element(entityScript == null ? "null" : entityScript)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1422,7 +1430,7 @@ public class dEntity implements dObject, Adjustable {
             if (FlagManager.entityHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getEntityFlag(this, flag_name);
-                return new dList(flag.toString(),true, flag.values())
+                return new dList(flag.toString(), true, flag.values())
                         .getAttribute(attribute.fulfill(1));
             }
             return new Element(identify()).getAttribute(attribute);
@@ -1447,7 +1455,8 @@ public class dEntity implements dObject, Adjustable {
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         dB.echoError(e);
                     }
                 }
@@ -1558,7 +1567,7 @@ public class dEntity implements dObject, Adjustable {
         // Each coordinate is in the range of 0 to 128.
         // -->
         if (attribute.startsWith("map_trace")) {
-            Rotation.MapTraceResult mtr  = Rotation.mapTrace(getLivingEntity(), 200);
+            Rotation.MapTraceResult mtr = Rotation.mapTrace(getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
                 double y = 0;
@@ -1849,7 +1858,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                 }
             }
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()){
+            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) {
                 returnElement = true;
             }
             return new Element(returnElement).getAttribute(attribute.fulfill(1));
@@ -1878,7 +1887,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the animal entity is capable of mating with another of its kind.
         // -->
         if (attribute.startsWith("can_breed"))
-            return new Element(((Ageable)getLivingEntity()).canBreed())
+            return new Element(((Ageable) getLivingEntity()).canBreed())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -1889,7 +1898,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("is_breeding"))
-            return new Element(((CraftAnimals)getLivingEntity()).getHandle().ce())
+            return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -2169,7 +2178,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("describe")) {
             String escript = getEntityScript();
-            return new Element("e@" + (escript != null && escript.length() > 0 ? escript:getEntityType().getLowercaseName())
+            return new Element("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
                     + PropertyParser.getPropertiesString(this))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2297,7 +2306,7 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.can_breed>
         // -->
         if (mechanism.matches("can_breed") && mechanism.requireBoolean())
-            ((Ageable)getLivingEntity()).setBreed(true);
+            ((Ageable) getLivingEntity()).setBreed(true);
 
         // <--[mechanism]
         // @object dEntity
@@ -2313,9 +2322,9 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true"))
-                    ((CraftAnimals)getLivingEntity()).getHandle().a((EntityHuman) null);
+                    ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
                 else
-                    ((CraftAnimals)getLivingEntity()).getHandle().cq();
+                    ((CraftAnimals) getLivingEntity()).getHandle().cq();
             }
         }
 
@@ -2409,7 +2418,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
             dLocation interactLocation = value.asType(dLocation.class);
-            CraftPlayer craftPlayer = (CraftPlayer)getPlayer();
+            CraftPlayer craftPlayer = (CraftPlayer) getPlayer();
             BlockPosition pos =
                     new BlockPosition(interactLocation.getBlockX(),
                             interactLocation.getBlockY(),

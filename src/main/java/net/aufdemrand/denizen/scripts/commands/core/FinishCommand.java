@@ -2,15 +2,15 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptFinishEvent;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 
 /**
@@ -51,7 +51,7 @@ public class FinishCommand extends AbstractCommand {
         }
 
         // Check for required args
-        scriptEntry.defaultObject("player", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer());
+        scriptEntry.defaultObject("player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
         scriptEntry.defaultObject("script", scriptEntry.getScript());
     }
 

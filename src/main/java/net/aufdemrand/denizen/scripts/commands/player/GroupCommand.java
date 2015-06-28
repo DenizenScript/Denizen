@@ -1,21 +1,21 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 public class GroupCommand extends AbstractCommand {
 
-    private enum Action { ADD, REMOVE }
+    private enum Action {ADD, REMOVE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -38,7 +38,7 @@ public class GroupCommand extends AbstractCommand {
 
         }
 
-        if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isValid())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid())
             throw new InvalidArgumentsException("Must have player context!");
 
         if (!scriptEntry.hasObject("action"))
@@ -57,27 +57,27 @@ public class GroupCommand extends AbstractCommand {
         Element group = scriptEntry.getElement("group");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug(): "") + group.debug());
+        dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
 
         World bukkitWorld = null;
         if (world != null)
             bukkitWorld = world.getWorld();
 
-        OfflinePlayer player = ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getOfflinePlayer();
-        boolean inGroup = Depends.permissions.playerInGroup((bukkitWorld == null ? null: bukkitWorld.getName()), player, group.asString());
+        OfflinePlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer();
+        boolean inGroup = Depends.permissions.playerInGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
 
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case ADD:
                 if (inGroup)
                     dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
                 else
-                    Depends.permissions.playerAddGroup((bukkitWorld == null ? null: bukkitWorld.getName()), player, group.asString());
+                    Depends.permissions.playerAddGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
                 return;
             case REMOVE:
                 if (!inGroup)
                     dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
                 else
-                    Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null: bukkitWorld.getName()), player, group.asString());
+                    Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
                 return;
         }
 

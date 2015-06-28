@@ -6,7 +6,10 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -46,6 +49,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
     public EntityExplodesScriptEvent() {
         instance = this;
     }
+
     public static EntityExplodesScriptEvent instance;
     public dEntity entity;
     public dList blocks;
@@ -66,7 +70,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
         List<String> types = Arrays.asList("entity", "player", "npc");
         return (types.contains(target) || entity.matchesEntity(target));
     }
@@ -96,7 +100,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
         if (dList.matches(determination)) {
             blocks = new dList();
             blockSet = true;
-            for (String loc: dList.valueOf(determination)) {
+            for (String loc : dList.valueOf(determination)) {
                 dLocation location = dLocation.valueOf(loc);
                 if (location == null) {
                     dB.echoError("Invalid location '" + loc + "' check [" + getName() + "]: '  for " + container.getName());
@@ -112,8 +116,8 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

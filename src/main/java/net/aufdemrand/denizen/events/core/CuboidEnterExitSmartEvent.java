@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
-import net.aufdemrand.denizencore.events.OldSmartEvent;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -190,7 +193,6 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     /**
      * Fires world events for the Cuboid Enter/Exit Smart Event.
-     *
      */
     private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName) {
         List<String> events = new ArrayList<String>();

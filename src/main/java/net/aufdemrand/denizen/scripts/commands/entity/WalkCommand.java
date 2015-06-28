@@ -71,13 +71,13 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             throw new InvalidArgumentsException("Must specify a location!");
 
         if (!scriptEntry.hasObject("entities")) {
-            if (((BukkitScriptEntryData)scriptEntry.entryData).getNPC() == null
-                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isValid()
-                    || !((BukkitScriptEntryData)scriptEntry.entryData).getNPC().isSpawned())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null
+                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid()
+                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned())
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             else
                 scriptEntry.addObject("entities",
-                        Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()));
+                        Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
         scriptEntry.defaultObject("stop", new Element(false));
@@ -102,7 +102,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         dB.report(scriptEntry, getName(), loc.debug()
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : "")
-                + (radius != null ? radius.debug(): "")
+                + (radius != null ? radius.debug() : "")
                 + stop.debug()
                 + (aH.debugObj("entities", entities)));
 

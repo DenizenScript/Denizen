@@ -1,12 +1,16 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Tameable;
 
 public class EntityTame implements Property {
 
@@ -119,11 +123,11 @@ public class EntityTame implements Property {
                 return;
             }
             if (new Element(list.get(0)).isBoolean())
-                ((Tameable)entity.getBukkitEntity()).setTamed(mechanism.getValue().asBoolean());
+                ((Tameable) entity.getBukkitEntity()).setTamed(mechanism.getValue().asBoolean());
             else
                 dB.echoError("Invalid boolean value!");
             if (list.size() > 1 && new Element(list.get(1)).matchesType(dPlayer.class))
-                ((Tameable)entity.getBukkitEntity()).setOwner(new Element(list.get(1)).asType(dPlayer.class).getOfflinePlayer());
+                ((Tameable) entity.getBukkitEntity()).setOwner(new Element(list.get(1)).asType(dPlayer.class).getOfflinePlayer());
         }
 
         // <--[mechanism]
@@ -141,9 +145,9 @@ public class EntityTame implements Property {
 
         if (mechanism.matches("owner")) {
             if (mechanism.hasValue() && mechanism.requireObject(dPlayer.class))
-                ((Tameable)entity.getBukkitEntity()).setOwner(mechanism.getValue().asType(dPlayer.class).getOfflinePlayer());
+                ((Tameable) entity.getBukkitEntity()).setOwner(mechanism.getValue().asType(dPlayer.class).getOfflinePlayer());
             else
-                ((Tameable)entity.getBukkitEntity()).setOwner(null);
+                ((Tameable) entity.getBukkitEntity()).setOwner(null);
         }
 
     }

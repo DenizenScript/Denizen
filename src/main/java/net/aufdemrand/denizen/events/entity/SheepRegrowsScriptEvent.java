@@ -32,6 +32,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     public SheepRegrowsScriptEvent() {
         instance = this;
     }
+
     public static SheepRegrowsScriptEvent instance;
     public dEntity entity;
     private dLocation location;

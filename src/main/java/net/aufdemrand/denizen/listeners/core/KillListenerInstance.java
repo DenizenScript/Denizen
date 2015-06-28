@@ -1,21 +1,23 @@
 package net.aufdemrand.denizen.listeners.core;
 
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizen.listeners.AbstractListener;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.EventHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
 
 public class KillListenerInstance extends AbstractListener implements Listener {
 
-    public static enum KillType { NPC, PLAYER, GROUP, ENTITY }
+    public static enum KillType {NPC, PLAYER, GROUP, ENTITY}
 
     //
     // The type of Kill
@@ -59,7 +61,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // to server-operators about the current status of this listener.
         return player.getName() + " currently has quest listener '" + id
                 + "' active and must kill " + Arrays.toString(targets.toArray())
-                + " '" + type.name() +  "'(s) named " + Arrays.toString(names.toArray()) + ". Current progress '" + kills_so_far + "/" + required + "'.";
+                + " '" + type.name() + "'(s) named " + Arrays.toString(names.toArray()) + ". Current progress '" + kills_so_far + "/" + required + "'.";
     }
 
 
@@ -86,7 +88,7 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
             else if (arg.matchesPrefix("targets, target, t, name, names"))
                 targets = arg.asType(dList.class);
-             else if (arg.matchesPrefix("mobnames, mn")) {
+            else if (arg.matchesPrefix("mobnames, mn")) {
                 names = arg.asType(dList.class);
             }
 
@@ -343,16 +345,16 @@ public class KillListenerInstance extends AbstractListener implements Listener {
 
         else if (event.getValue().equalsIgnoreCase("targets")) {
             String targetList = "";
-            for (String curTar : targets){
+            for (String curTar : targets) {
                 targetList = targetList + curTar + ", ";
                 targetList = targetList.substring(0, targetList.length() - 1);
             }
             event.setReplaced(targetList);
         }
 
-        else if (event.getValue().equalsIgnoreCase("mobnames")){
+        else if (event.getValue().equalsIgnoreCase("mobnames")) {
             String namesList = "";
-            for (String curNam : names){
+            for (String curNam : names) {
                 namesList = namesList + curNam + ", ";
                 namesList = namesList.substring(0, namesList.length() - 1);
             }

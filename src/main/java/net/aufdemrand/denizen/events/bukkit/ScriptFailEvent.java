@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
  * Bukkit event for when a dScript FAIL command is executed.
  *
  * @author Jeremy Schroeder
- *
  */
 
 public class ScriptFailEvent extends Event {

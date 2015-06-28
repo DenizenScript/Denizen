@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -18,7 +18,7 @@ public class ItemDisplayname implements Property {
 
     public static ItemDisplayname getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemDisplayname((dItem)_item);
+        else return new ItemDisplayname((dItem) _item);
     }
 
     private ItemDisplayname(dItem _item) {
@@ -48,7 +48,7 @@ public class ItemDisplayname implements Property {
         if (attribute.startsWith("display")) {
             if (hasDisplayName()) {
                 return new Element(item.getItemStack().getItemMeta().getDisplayName())
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 

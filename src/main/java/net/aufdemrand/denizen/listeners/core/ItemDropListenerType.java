@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.listeners.AbstractListenerType;
 
 public class ItemDropListenerType extends AbstractListenerType {
 
-    enum ItemDropType { MOBKILL, BLOCKBREAK, BLOCKPLACE }
+    enum ItemDropType {MOBKILL, BLOCKBREAK, BLOCKPLACE}
 
     @Override
     public void onEnable() {

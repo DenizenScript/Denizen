@@ -1,14 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class FollowCommand extends AbstractCommand {
 
@@ -53,13 +56,13 @@ public class FollowCommand extends AbstractCommand {
                 arg.reportUnhandled();
         }
         if (!scriptEntry.hasObject("target")) {
-            if (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-                scriptEntry.addObject("target", ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity());
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
             else
                 throw new InvalidArgumentsException("This command requires a linked player!");
         }
         if (!scriptEntry.hasObject("entities")) {
-            if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
                 throw new InvalidArgumentsException("This command requires a linked NPC!");
             else
                 scriptEntry.addObject("entities",
@@ -82,7 +85,7 @@ public class FollowCommand extends AbstractCommand {
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                        (((BukkitScriptEntryData)scriptEntry.entryData).getPlayer() != null ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().debug() : "")
+                (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
                         + (!stop.asBoolean() ? aH.debugObj("Action", "FOLLOW") : aH.debugObj("Action", "STOP"))
                         + (lead != null ? lead.debug() : "")
                         + (maxRange != null ? maxRange.debug() : "")
@@ -109,8 +112,8 @@ public class FollowCommand extends AbstractCommand {
                     EntityMovement.stopFollowing(entity.getBukkitEntity());
                 else
                     EntityMovement.follow(target.getBukkitEntity(), entity.getBukkitEntity(),
-                            speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble(): 5,
-                            maxRange != null? maxRange.asDouble() : 8, allowWander.asBoolean());
+                            speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble() : 5,
+                            maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean());
             }
         }
 

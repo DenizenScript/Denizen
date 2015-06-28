@@ -178,7 +178,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public dPlayer(Player player) {
-        this((OfflinePlayer)player);
+        this((OfflinePlayer) player);
         if (dEntity.isNPC(player))
             throw new IllegalStateException("NPCs are not allowed as dPlayer objects!");
     }
@@ -302,56 +302,65 @@ public class dPlayer implements dObject, Adjustable {
 
     public void decrementStatistic(Statistic statistic, int amount) {
         if (isOnline()) getPlayerEntity().decrementStatistic(statistic, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void decrementStatistic(Statistic statistic, EntityType entity, int amount) {
         if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
             getPlayerEntity().decrementStatistic(statistic, entity, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void decrementStatistic(Statistic statistic, Material material, int amount) {
         if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
                 || statistic.getType() == Statistic.Type.ITEM))
             getPlayerEntity().decrementStatistic(statistic, material, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void incrementStatistic(Statistic statistic, int amount) {
         if (isOnline()) getPlayerEntity().incrementStatistic(statistic, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void incrementStatistic(Statistic statistic, EntityType entity, int amount) {
         if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
             getPlayerEntity().incrementStatistic(statistic, entity, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void incrementStatistic(Statistic statistic, Material material, int amount) {
         if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
                 || statistic.getType() == Statistic.Type.ITEM))
             getPlayerEntity().incrementStatistic(statistic, material, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void setStatistic(Statistic statistic, int amount) {
         if (isOnline()) getPlayerEntity().setStatistic(statistic, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void setStatistic(Statistic statistic, EntityType entity, int amount) {
         if (isOnline() && statistic.getType() == Statistic.Type.ENTITY)
             getPlayerEntity().setStatistic(statistic, entity, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public void setStatistic(Statistic statistic, Material material, int amount) {
         if (isOnline() && (statistic.getType() == Statistic.Type.BLOCK
                 || statistic.getType() == Statistic.Type.ITEM))
             getPlayerEntity().setStatistic(statistic, material, amount);
-        else {}// TODO: write to JSON?
+        else {
+        }// TODO: write to JSON?
     }
 
     public boolean isOnline() {
@@ -582,8 +591,8 @@ public class dPlayer implements dObject, Adjustable {
             if (FlagManager.playerHasFlag(this, flag_name)) {
                 FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
                         .getPlayerFlag(this, flag_name);
-                return new dList(flag.toString(),true, flag.values())
-                .getAttribute(attribute.fulfill(1));
+                return new dList(flag.toString(), true, flag.values())
+                        .getAttribute(attribute.fulfill(1));
             }
             return new Element(identify()).getAttribute(attribute);
         }
@@ -622,7 +631,8 @@ public class dPlayer implements dObject, Adjustable {
                         for (String flag : allFlags)
                             if (pattern.matcher(flag).matches())
                                 searchFlags.add(flag);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         dB.echoError(e);
                     }
                 }
@@ -644,7 +654,8 @@ public class dPlayer implements dObject, Adjustable {
                 try {
                     outcome = DenizenAPI.getCurrentInstance().getSaves().getString("Players." + getName() + ".Scripts."
                             + dScript.valueOf(attribute.getContext(1)).getName() + ".Current Step");
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     outcome = "null";
                 }
             }
@@ -665,7 +676,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
 
         if (attribute.startsWith("money")) {
-            if(Depends.economy != null) {
+            if (Depends.economy != null) {
 
                 // <--[tag]
                 // @attribute <p@player.money.currency_singular>
@@ -692,7 +703,8 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(Depends.economy.getBalance(getName())) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(1));
 
-            } else {
+            }
+            else {
                 if (!attribute.hasAlternative())
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 return null;
@@ -742,7 +754,7 @@ public class dPlayer implements dObject, Adjustable {
                         String context = attribute.getContext(1);
                         if (context.toLowerCase().startsWith("li@"))
                             context = context.substring(3);
-                        for (String ent: context.split("\\|")) {
+                        for (String ent : context.split("\\|")) {
                             boolean valid = false;
 
                             if (ent.equalsIgnoreCase("npc") && dEntity.isCitizensNPC(entity)) {
@@ -761,7 +773,8 @@ public class dPlayer implements dObject, Adjustable {
                             }
                             if (valid) possibleTargets.add((LivingEntity) entity);
                         }
-                    } else { // no entity type specified
+                    }
+                    else { // no entity type specified
                         possibleTargets.add((LivingEntity) entity);
                         entity.getType();
                     }
@@ -840,7 +853,7 @@ public class dPlayer implements dObject, Adjustable {
             // If you need it anywhere else, use <server.list_online_players>**
             // -->
             if (attribute.startsWith("list.online")) {
-                for(Player player : Bukkit.getOnlinePlayers())
+                for (Player player : Bukkit.getOnlinePlayers())
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
@@ -853,14 +866,14 @@ public class dPlayer implements dObject, Adjustable {
             // ** NOTE: This tag is old. Please instead use <server.list_offline_players> **
             // -->
             else if (attribute.startsWith("list.offline")) {
-                for(OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!player.isOnline())
                         players.add("p@" + player.getUniqueId().toString());
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
             else {
-                for(OfflinePlayer player : Bukkit.getOfflinePlayers())
+                for (OfflinePlayer player : Bukkit.getOfflinePlayers())
                     players.add("p@" + player.getUniqueId().toString());
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }
@@ -1062,7 +1075,7 @@ public class dPlayer implements dObject, Adjustable {
                 return null;
             }
             dList list = new dList();
-            for (String group: Depends.permissions.getGroups()) {
+            for (String group : Depends.permissions.getGroups()) {
                 if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
                     list.add(group);
                 }
@@ -1115,7 +1128,7 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(Depends.permissions.playerInGroup(attribute.getContext(2), getName(), group)) // TODO: Vault UUID support?
                         .getAttribute(attribute.fulfill(2));
 
-            // Permission in current world
+                // Permission in current world
             else if (isOnline())
                 return new Element(Depends.permissions.playerInGroup(getPlayerEntity(), group))
                         .getAttribute(attribute.fulfill(1));
@@ -1155,17 +1168,17 @@ public class dPlayer implements dObject, Adjustable {
                         .getAttribute(attribute.fulfill(2));
             }
 
-                // <--[tag]
-                // @attribute <p@player.has_permission[permission.node].world[<world name>]>
-                // @returns Element(Boolean)
-                // @description
-                // returns whether the player has the specified node in regards to the
-                // specified world.
-                // (Works with offline players)
-                // (Note: This may or may not be functional with your permissions system.)
-                // -->
+            // <--[tag]
+            // @attribute <p@player.has_permission[permission.node].world[<world name>]>
+            // @returns Element(Boolean)
+            // @description
+            // returns whether the player has the specified node in regards to the
+            // specified world.
+            // (Works with offline players)
+            // (Note: This may or may not be functional with your permissions system.)
+            // -->
 
-                // Permission in certain world
+            // Permission in certain world
             else if (attribute.getAttribute(2).startsWith("world")) {
                 if (Depends.permissions == null) {
                     if (!attribute.hasAlternative()) {
@@ -1513,7 +1526,7 @@ public class dPlayer implements dObject, Adjustable {
         // returns the player's current ping.
         // -->
         if (attribute.startsWith("ping")) {
-            return new Element(((CraftPlayer)getPlayerEntity()).getHandle().ping)
+            return new Element(((CraftPlayer) getPlayerEntity()).getHandle().ping)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1753,7 +1766,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         // TODO: Player achievement/statistics tags.
-        if (mechanism.matches("award_achievement")&& mechanism.requireEnum(false, Achievement.values())) {
+        if (mechanism.matches("award_achievement") && mechanism.requireEnum(false, Achievement.values())) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
         }
 
@@ -2078,7 +2091,7 @@ public class dPlayer implements dObject, Adjustable {
         // Shows the player an entity. (Must be a player or player NPC).
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().showPlayer((Player)value.asType(dEntity.class).getLivingEntity());
+            getPlayerEntity().showPlayer((Player) value.asType(dEntity.class).getLivingEntity());
         }
 
         // <--[mechanism]
@@ -2089,7 +2102,7 @@ public class dPlayer implements dObject, Adjustable {
         // Hides an entity from the player. (Must be a player or player NPC).
         // -->
         if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().hidePlayer((Player)value.asType(dEntity.class).getLivingEntity());
+            getPlayerEntity().hidePlayer((Player) value.asType(dEntity.class).getLivingEntity());
         }
 
         // <--[mechanism]
@@ -2258,8 +2271,8 @@ public class dPlayer implements dObject, Adjustable {
         // Shows the player the end credits.
         // -->
         if (mechanism.matches("show_endcredits")) {
-            ((CraftPlayer)getPlayerEntity()).getHandle().viewingCredits = true;
-            ((CraftPlayer)getPlayerEntity()).getHandle().playerConnection
+            ((CraftPlayer) getPlayerEntity()).getHandle().viewingCredits = true;
+            ((CraftPlayer) getPlayerEntity()).getHandle().playerConnection
                     .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
         }
 

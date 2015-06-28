@@ -96,7 +96,7 @@ public class EntityInventory implements Property {
             dInventory inv = entity.getInventory();
             inv.clear();
             int i = 0;
-            for (String str: list) {
+            for (String str : list) {
                 inv.setSlots(i, dItem.valueOf(str).getItemStack());
                 i++;
             }

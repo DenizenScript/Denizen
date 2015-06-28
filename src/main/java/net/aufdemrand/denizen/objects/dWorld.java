@@ -1,15 +1,12 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.citizensnpcs.api.CitizensAPI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
@@ -448,7 +445,7 @@ public class dWorld implements dObject, Adjustable {
         // Returns the world's ticks per animal spawn value.
         // -->
         if (attribute.startsWith("ticks_per_animal_spawn"))
-            return new Duration(getWorld().getTicksPerAnimalSpawns() )
+            return new Duration(getWorld().getTicksPerAnimalSpawns())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -458,7 +455,7 @@ public class dWorld implements dObject, Adjustable {
         // Returns the world's ticks per monster spawn value.
         // -->
         if (attribute.startsWith("ticks_per_monster_spawn"))
-            return new Duration(getWorld().getTicksPerMonsterSpawns() )
+            return new Duration(getWorld().getTicksPerMonsterSpawns())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]

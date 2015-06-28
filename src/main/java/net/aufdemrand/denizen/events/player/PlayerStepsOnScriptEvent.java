@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,6 +41,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public PlayerStepsOnScriptEvent() {
         instance = this;
     }
+
     public static PlayerStepsOnScriptEvent instance;
     public dLocation location;
     public dLocation previous_location;
@@ -115,7 +115,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

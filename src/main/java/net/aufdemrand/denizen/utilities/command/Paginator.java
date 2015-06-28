@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Paginator {
 

@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -20,7 +19,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import java.util.ArrayList;
 
-public class SittingTrait extends Trait implements Listener  {
+public class SittingTrait extends Trait implements Listener {
 
     @Persist("sitting")
     private boolean sitting = false;
@@ -58,6 +57,7 @@ public class SittingTrait extends Trait implements Listener  {
     // None
     //
     // -->
+
     /**
      * Makes the NPC sit
      */
@@ -125,6 +125,7 @@ public class SittingTrait extends Trait implements Listener  {
     // None
     //
     // -->
+
     /**
      * Makes the NPC stand
      */
@@ -160,7 +161,6 @@ public class SittingTrait extends Trait implements Listener  {
     /**
      * If someone tries to break the poor
      * NPC's chair, we need to stop them!
-     *
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {

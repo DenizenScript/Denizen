@@ -34,6 +34,7 @@ public class BlockFadesScriptEvent extends ScriptEvent implements Listener {
     public BlockFadesScriptEvent() {
         instance = this;
     }
+
     public static BlockFadesScriptEvent instance;
     public dLocation location;
     public dMaterial material;

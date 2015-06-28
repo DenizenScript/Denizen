@@ -1,16 +1,13 @@
 package net.aufdemrand.denizen.events.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,6 +37,7 @@ public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Lis
     public EntityExplosionPrimesScriptEvent() {
         instance = this;
     }
+
     public static EntityExplosionPrimesScriptEvent instance;
     public dEntity entity;
     public Float radius;
@@ -57,7 +55,7 @@ public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
         List<String> types = Arrays.asList("entity", "player", "npc");
         return (types.contains(target) || entity.matchesEntity(target));
     }

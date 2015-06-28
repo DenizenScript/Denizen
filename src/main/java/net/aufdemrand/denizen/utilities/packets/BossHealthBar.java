@@ -3,12 +3,7 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R3.PacketPlayInClientCommand;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSpawnEntityLiving;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R3.DataWatcher;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -17,11 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 // Retrieved from https://forums.bukkit.org/threads/tutorial-utilizing-the-boss-health-bar.158018/
 // Modified for usage by Denizen
@@ -50,8 +41,8 @@ public class BossHealthBar {
             for (int i = 0; i < playersWithHealthBar.size(); i++) {
                 Player player = playersWithHealthBar.get(i);
                 if (!player.isDead() && player.isValid()) {
-                        PacketHelper.sendPacket(player, getTeleportPacket(player.getLocation().clone()
-                                .add(player.getLocation().getDirection().multiply(30))));
+                    PacketHelper.sendPacket(player, getTeleportPacket(player.getLocation().clone()
+                            .add(player.getLocation().getDirection().multiply(30))));
                 }
                 else {
                     hasHealthBar.put(player.getName(), false);
@@ -113,7 +104,8 @@ public class BossHealthBar {
             spawn_pitch.set(mobPacket, (byte) 0);
             spawn_headPitch.set(mobPacket, (byte) 0);
             spawn_data.set(mobPacket, getWatcher(text, health));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return mobPacket;
@@ -123,7 +115,8 @@ public class BossHealthBar {
         PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy();
         try {
             destroy_entityList.set(destroyPacket, new int[]{ENTITY_ID});
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return destroyPacket;
@@ -134,7 +127,8 @@ public class BossHealthBar {
         try {
             metadata_entityId.set(metaPacket, ENTITY_ID);
             metadata_data.set(metaPacket, watcher.c());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return metaPacket;
@@ -150,7 +144,8 @@ public class BossHealthBar {
             teleport_yaw.set(teleportPacket, (byte) 0);
             teleport_pitch.set(teleportPacket, (byte) 0);
             teleport_onGround.set(teleportPacket, false);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return teleportPacket;
@@ -160,7 +155,8 @@ public class BossHealthBar {
         PacketPlayInClientCommand ccommandPacket = new PacketPlayInClientCommand();
         try {
             ccommand_command.set(ccommandPacket, PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return ccommandPacket;
@@ -208,10 +204,12 @@ public class BossHealthBar {
                     PacketHelper.sendPacket(player, metaPacket);
                     if (loadUp) {
                         health += healthAdd;
-                    } else {
+                    }
+                    else {
                         health -= healthAdd;
                     }
-                } else {
+                }
+                else {
                     DataWatcher watcher = getWatcher(text, (loadUp ? 300 : 0));
                     PacketPlayOutEntityMetadata metaPacket = getMetadataPacket(watcher);
                     PacketPlayOutEntityDestroy destroyEntityPacket = getDestroyEntityPacket();

@@ -1,10 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
@@ -19,12 +22,12 @@ public class ItemFirework implements Property {
     public static boolean describes(dObject item) {
         return item instanceof dItem
                 && ((((dItem) item).getItemStack().getItemMeta() instanceof FireworkMeta)
-                 || (((dItem) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
+                || (((dItem) item).getItemStack().getItemMeta() instanceof FireworkEffectMeta));
     }
 
     public static ItemFirework getFrom(dObject _item) {
         if (!describes(_item)) return null;
-        else return new ItemFirework((dItem)_item);
+        else return new ItemFirework((dItem) _item);
     }
 
 
@@ -41,17 +44,17 @@ public class ItemFirework implements Property {
             effects = ((FireworkMeta) item.getItemStack().getItemMeta()).getEffects();
             int power = ((FireworkMeta) item.getItemStack().getItemMeta()).getPower();
             if (power != 0)
-            list.add(String.valueOf(power));
+                list.add(String.valueOf(power));
         }
         else {
             effects = Arrays.asList(((FireworkEffectMeta) item.getItemStack().getItemMeta()).getEffect());
         }
         if (effects != null) {
-            for (FireworkEffect effect: effects) {
+            for (FireworkEffect effect : effects) {
                 if (effect == null)
                     continue;
-                Color ColOne = effect.getColors() != null && effect.getColors().size() > 0 ? effect.getColors().get(0): Color.BLUE;
-                Color ColTwo = effect.getFadeColors() != null && effect.getFadeColors().size() > 0 ? effect.getFadeColors().get(0): ColOne;
+                Color ColOne = effect.getColors() != null && effect.getColors().size() > 0 ? effect.getColors().get(0) : Color.BLUE;
+                Color ColTwo = effect.getFadeColors() != null && effect.getFadeColors().size() > 0 ? effect.getFadeColors().get(0) : ColOne;
                 list.add(effect.hasTrail() + "," + effect.hasFlicker() + "," + effect.getType().name() + "," +
                         ColOne.getRed() + "," + ColOne.getGreen() + "," + ColOne.getBlue() + "," +
                         ColTwo.getRed() + "," + ColTwo.getGreen() + "," + ColTwo.getBlue());
@@ -85,7 +88,7 @@ public class ItemFirework implements Property {
     @Override
     public String getPropertyString() {
         dList data = getFireworkData();
-        return data.size() > 0 ? data.identify(): null;
+        return data.size() > 0 ? data.identify() : null;
     }
 
     @Override
@@ -112,7 +115,7 @@ public class ItemFirework implements Property {
         if (mechanism.matches("firework")) {
             dList fireworks = mechanism.getValue().asType(dList.class);
             ItemMeta meta = item.getItemStack().getItemMeta();
-            for (String effect: fireworks) {
+            for (String effect : fireworks) {
                 String[] data = effect.split(",");
                 if (data.length == 9) {
                     FireworkEffect.Builder builder = FireworkEffect.builder();

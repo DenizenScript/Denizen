@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -75,7 +74,7 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entOne = CoreUtilities.getXthArg(0, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower): CoreUtilities.getXthArg(2, lower);
+        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         List<String> types = Arrays.asList("entity", "player", "npc");
         return ((types.contains(entOne) || dEntity.matches(entOne))
                 && (cmd.equals("killed") || cmd.equals("kills"))
@@ -92,22 +91,22 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         }
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("kills") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
-        String target = cmd.equals("kills") ? CoreUtilities.getXthArg(2, lower): CoreUtilities.getXthArg(0, lower);
+        String attacker = cmd.equals("kills") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
+        String target = cmd.equals("kills") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
         if (attacker.length() > 0) {
             if (damager != null) {
-                if( !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                if (!damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
                     return false;
                 }
             }
-            else if(!cause.asString().equals(attacker)) {
+            else if (!cause.asString().equals(attacker)) {
                 return false;
             }
         }
         if (target.length() > 0) {
-                if (!entity.matchesEntity(target)) {
-                    return false;
-                }
+            if (!entity.matchesEntity(target)) {
+                return false;
+            }
         }
 
 
@@ -140,8 +139,8 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): dEntity.getPlayerFrom(damager.getBukkitEntity()),
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): dEntity.getNPCFrom(damager.getBukkitEntity()));
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : dEntity.getPlayerFrom(damager.getBukkitEntity()),
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : dEntity.getNPCFrom(damager.getBukkitEntity()));
     }
 
     @Override
@@ -157,8 +156,8 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         if (projectile != null) {
             context.put("projectile", projectile);
         }
-        for (EntityDamageEvent.DamageModifier dm: EntityDamageEvent.DamageModifier.values()) {
-            context.put("damage_" +  dm.name(), new Element(event.getDamage(dm)));
+        for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+            context.put("damage_" + dm.name(), new Element(event.getDamage(dm)));
         }
 
         return context;

@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.requirements;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizencore.interfaces.dRegistry;
-import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizen.scripts.requirements.core.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
+import net.aufdemrand.denizencore.interfaces.dRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ public class RequirementRegistry implements dRegistry {
     private Map<String, AbstractRequirement> instances = new HashMap<String, AbstractRequirement>();
 
     private Map<Class<? extends AbstractRequirement>, String> classes = new HashMap<Class<? extends AbstractRequirement>, String>();
+
     public RequirementRegistry(Denizen denizen) {
         this.denizen = denizen;
     }
@@ -25,7 +26,8 @@ public class RequirementRegistry implements dRegistry {
         for (RegistrationableInstance member : instances.values())
             try {
                 member.onDisable();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
@@ -443,7 +445,8 @@ public class RequirementRegistry implements dRegistry {
     private <T extends AbstractRequirement> void registerCoreMember(Class<T> requirement, String name, String hint, int args) {
         try {
             requirement.newInstance().activate().as(name).withOptions("(-)" + hint, args);
-        } catch(Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError("Could not register requirement " + name + ": " + e.getMessage());
             dB.echoError(e);
         }

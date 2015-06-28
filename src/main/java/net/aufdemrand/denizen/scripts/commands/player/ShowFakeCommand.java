@@ -1,14 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
-import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.List;
 
@@ -44,7 +49,7 @@ public class ShowFakeCommand extends AbstractCommand {
             }
 
             else if (locations.isEmpty()
-                && arg.matchesArgumentType(dLocation.class)) {
+                    && arg.matchesArgumentType(dLocation.class)) {
                 locations.add(arg.getValue());
             }
 
@@ -63,14 +68,14 @@ public class ShowFakeCommand extends AbstractCommand {
 
         }
 
-        if (entities.isEmpty() && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
-            entities.add(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify());
+        if (entities.isEmpty() && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify());
 
         if (locations.isEmpty())
             throw new InvalidArgumentsException("Must specify at least one valid location!");
 
-        if (!added_entities && (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer()
-                || !((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().isOnline()))
+        if (!added_entities && (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()
+                || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()))
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
 
         if (entities.isEmpty() && added_entities)

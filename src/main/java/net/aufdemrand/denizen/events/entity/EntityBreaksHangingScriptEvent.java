@@ -47,6 +47,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public EntityBreaksHangingScriptEvent() {
         instance = this;
     }
+
     public static EntityBreaksHangingScriptEvent instance;
     public Element cause;
     public dEntity entity;
@@ -68,7 +69,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)){
+        if (!entity.matchesEntity(entName)) {
             return false;
         }
 
@@ -76,7 +77,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "because")){
+        if (CoreUtilities.xthArgEquals(3, lower, "because")) {
             if (!CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
                 return false;
             }
@@ -106,8 +107,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()) : null);
     }
 
     @Override
@@ -124,11 +125,11 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     @EventHandler
     public void onHangingBreaks(HangingBreakByEntityEvent event) {
         hanging = new dEntity(event.getEntity());
-        cause =  new Element(event.getCause().name());
+        cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
         entity = new dEntity(event.getRemover());
         cuboids = new dList();
-        for (dCuboid cuboid: dCuboid.getNotableCuboidsContaining(location)) {
+        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
         cancelled = event.isCancelled();

@@ -1,17 +1,19 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEllipsoid;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -33,7 +35,7 @@ import java.util.List;
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
     @Override
-    public void parseArgs(ScriptEntry scriptEntry)throws InvalidArgumentsException {
+    public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -146,26 +148,26 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         final List<dMaterial> materialList = materials.filter(dMaterial.class);
 
-        dB.report(scriptEntry, getName(), (locations == null ? location_list.debug(): aH.debugList("locations", locations))
-                                          + materials.debug()
-                                          + physics.debug()
-                                          + radiusElement.debug()
-                                          + heightElement.debug()
-                                          + depthElement.debug()
-                                          + natural.debug()
-                                          + delayed.debug()
-                                          + (script != null ? script.debug(): "")
-                                          + (percents != null ? percents.debug(): ""));
+        dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
+                + materials.debug()
+                + physics.debug()
+                + radiusElement.debug()
+                + heightElement.debug()
+                + depthElement.debug()
+                + natural.debug()
+                + delayed.debug()
+                + (script != null ? script.debug() : "")
+                + (percents != null ? percents.debug() : ""));
 
         final boolean doPhysics = physics.asBoolean();
-        final  boolean isNatural = natural.asBoolean();
+        final boolean isNatural = natural.asBoolean();
         final int radius = radiusElement.asInt();
         final int height = heightElement.asInt();
         final int depth = depthElement.asInt();
         List<Float> percentages = null;
         if (percents != null) {
             percentages = new ArrayList<Float>();
-            for (String str: percents) {
+            for (String str : percents) {
                 percentages.add(new Element(str).asFloat());
             }
         }
@@ -180,12 +182,13 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         if (delayed.asBoolean()) {
             new BukkitRunnable() {
                 int index = 0;
+
                 @Override
                 public void run() {
                     long start = System.currentTimeMillis();
                     dLocation loc;
                     if (locations != null) {
-                       loc = locations.get(0);
+                        loc = locations.get(0);
                     }
                     else {
                         loc = dLocation.valueOf(location_list.get(0));
@@ -249,7 +252,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     boolean preSetup(dLocation loc0) {
         // Freeze the first world in the list.
         // TODO: make this do all worlds from the locations in the list
-        CraftWorld craftWorld = (CraftWorld)loc0.getWorld();
+        CraftWorld craftWorld = (CraftWorld) loc0.getWorld();
         boolean was_static = craftWorld.getHandle().isClientSide;
         if (no_physics)
             setWorldIsStatic(loc0.getWorld(), true);
@@ -270,14 +273,15 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         try {
             CraftWorld craftWorld = (CraftWorld) world;
             if (isStaticField == null) {
-                    isStaticField = craftWorld.getHandle().getClass().getField("isClientSide");
-                    isStaticField.setAccessible(true);
-                    Field modifiersField = Field.class.getDeclaredField("modifiers");
-                    modifiersField.setAccessible(true);
-                    modifiersField.setInt(isStaticField, isStaticField.getModifiers() & ~Modifier.FINAL);
+                isStaticField = craftWorld.getHandle().getClass().getField("isClientSide");
+                isStaticField.setAccessible(true);
+                Field modifiersField = Field.class.getDeclaredField("modifiers");
+                modifiersField.setAccessible(true);
+                modifiersField.setInt(isStaticField, isStaticField.getModifiers() & ~Modifier.FINAL);
             }
             isStaticField.set(craftWorld.getHandle(), isStatic);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
     }
@@ -310,16 +314,16 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         location.setZ(location.getBlockZ());
         setBlock(location, material, doPhysics, isNatural);
 
-        if (radius != 0){
-            for (int x = 0; x  < 2 * radius + 1;  x++) {
+        if (radius != 0) {
+            for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
                     setBlock(new Location(world, location.getX() + x - radius, location.getY(), location.getZ() + z - radius), material, doPhysics, isNatural);
                 }
             }
         }
 
-        if (height != 0){
-            for (int x = 0; x  < 2 * radius + 1;  x++) {
+        if (height != 0) {
+            for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
                     for (int y = 1; y < height + 1; y++) {
                         setBlock(new Location(world, location.getX() + x - radius, location.getY() + y, location.getZ() + z - radius), material, doPhysics, isNatural);
@@ -328,8 +332,8 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             }
         }
 
-        if (depth != 0){
-            for (int x = 0; x  < 2 * radius + 1;  x++) {
+        if (depth != 0) {
+            for (int x = 0; x < 2 * radius + 1; x++) {
                 for (int z = 0; z < 2 * radius + 1; z++) {
                     for (int y = 1; y < depth + 1; y++) {
                         setBlock(new Location(world, location.getX() + x - radius, location.getY() - y, location.getZ() + z - radius), material, doPhysics, isNatural);
@@ -388,7 +392,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     public void blockPhysics(BlockPhysicsEvent event) {
         if (no_physics)
             event.setCancelled(true);
-        for (Location loc: block_physics) {
+        for (Location loc : block_physics) {
             if (compareloc(event.getBlock().getLocation(), loc))
                 event.setCancelled(true);
         }
@@ -400,7 +404,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             return;
         if (no_physics)
             event.setCancelled(true);
-        for (Location loc: block_physics) {
+        for (Location loc : block_physics) {
             if (compareloc(event.getBlock().getLocation(), loc))
                 event.setCancelled(true);
         }

@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,10 +33,11 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     public PigZappedScriptEvent() {
         instance = this;
     }
+
     public static PigZappedScriptEvent instance;
     public dEntity pig;
-    public dEntity  pig_zombie;
-    private dEntity  lightning;
+    public dEntity pig_zombie;
+    private dEntity lightning;
     public PigZapEvent event;
 
     @Override
@@ -83,7 +83,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     @EventHandler
     public void onPigZapped(PigZapEvent event) {
         pig = new dEntity(event.getEntity());
-        pig_zombie= new dEntity(event.getPigZombie());
+        pig_zombie = new dEntity(event.getPigZombie());
         lightning = new dEntity(event.getLightning());
         cancelled = event.isCancelled();
         this.event = event;

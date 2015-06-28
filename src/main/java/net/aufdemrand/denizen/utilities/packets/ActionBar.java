@@ -23,7 +23,8 @@ public class ActionBar {
         try {
             chat_message.set(actionBarPacket, new ChatComponentText(message));
             chat_type.set(actionBarPacket, (byte) 2);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         return actionBarPacket;

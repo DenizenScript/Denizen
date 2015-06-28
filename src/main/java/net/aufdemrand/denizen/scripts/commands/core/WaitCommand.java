@@ -1,19 +1,17 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.Delayable;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 /**
- *
  * @author aufdemrand
- *
  */
 public class WaitCommand extends AbstractCommand {
 
@@ -52,7 +50,7 @@ public class WaitCommand extends AbstractCommand {
 
         // Tell the queue to delay
         if (queue instanceof Delayable)
-               ((Delayable) queue).delayFor(delay);
+            ((Delayable) queue).delayFor(delay);
         else {
             scriptEntry.setInstant(false);
             dB.echoDebug(scriptEntry, "Forcing queue " + queue.id + " into a timed queue...");

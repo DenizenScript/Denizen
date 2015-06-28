@@ -38,6 +38,7 @@ public class EntityExitsPortalScriptEvent extends ScriptEvent implements Listene
     public EntityExitsPortalScriptEvent() {
         instance = this;
     }
+
     public static EntityExitsPortalScriptEvent instance;
     public dEntity entity;
     public dLocation location;
@@ -55,7 +56,7 @@ public class EntityExitsPortalScriptEvent extends ScriptEvent implements Listene
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0,lower);
+        String target = CoreUtilities.getXthArg(0, lower);
         List<String> types = Arrays.asList("entity", "npc");
         return types.contains(target) || entity.matchesEntity(target);
     }
@@ -82,8 +83,8 @@ public class EntityExitsPortalScriptEvent extends ScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()): null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()): null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

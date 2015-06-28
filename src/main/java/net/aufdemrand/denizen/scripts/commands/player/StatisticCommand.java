@@ -1,20 +1,24 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
 
 public class StatisticCommand extends AbstractCommand {
 
-    private enum Action { ADD, TAKE, SET }
+    private enum Action {ADD, TAKE, SET}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -70,8 +74,8 @@ public class StatisticCommand extends AbstractCommand {
                 throw new InvalidArgumentsException("Must specify a valid ENTITY!");
         }
 
-        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() && !specified_players)
-            scriptEntry.addObject("players", new dList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().identify()));
+        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_players)
+            scriptEntry.addObject("players", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
 
         if (!scriptEntry.hasObject("players"))
             throw new InvalidArgumentsException("Must specify valid players!");

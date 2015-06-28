@@ -1,14 +1,14 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 public class ExplodeCommand extends AbstractCommand {
 
@@ -50,8 +50,8 @@ public class ExplodeCommand extends AbstractCommand {
         // Use default values if necessary
         scriptEntry.defaultObject("power", new Element(1.0));
         scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getLocation() : null,
-                ((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getLocation() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null,
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null);
 
         if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
@@ -70,12 +70,12 @@ public class ExplodeCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(),
                 (aH.debugObj("location", location.toString()) +
-                 aH.debugObj("power", power) +
-                 aH.debugObj("breakblocks", breakblocks) +
-                 aH.debugObj("fire", fire)));
+                        aH.debugObj("power", power) +
+                        aH.debugObj("breakblocks", breakblocks) +
+                        aH.debugObj("fire", fire)));
 
         location.getWorld().createExplosion
-                    (location.getX(), location.getY(), location.getZ(),
-                     power.asFloat(), fire, breakblocks);
+                (location.getX(), location.getY(), location.getZ(),
+                        power.asFloat(), fire, breakblocks);
     }
 }

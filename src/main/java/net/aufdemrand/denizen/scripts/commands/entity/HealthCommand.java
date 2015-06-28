@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.npc.traits.HealthTrait;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.npc.traits.HealthTrait;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +27,9 @@ public class HealthCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
-                if (!((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer())
+                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
                     throw new InvalidArgumentsException("No player attached!");
-                scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer().getDenizenEntity()));
+                scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
 
             else if (!scriptEntry.hasObject("qty")
@@ -53,9 +53,9 @@ public class HealthCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action"))
             throw new InvalidArgumentsException("Must specify a quantity!");
         if (!scriptEntry.hasObject("target")) {
-            if (!((BukkitScriptEntryData)scriptEntry.entryData).hasNPC())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
                 throw new InvalidArgumentsException("Missing NPC!");
-            scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getNPC().getDenizenEntity()));
+            scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
     }
@@ -69,8 +69,8 @@ public class HealthCommand extends AbstractCommand {
         List<dEntity> targets = (List<dEntity>) scriptEntry.getObject("target");
 
         dB.report(scriptEntry, getName(), (qty != null ? qty.debug() : "") +
-                                          (action != null ? action.debug() : "") +
-                                          aH.debugObj("target", targets.toString()));
+                (action != null ? action.debug() : "") +
+                aH.debugObj("target", targets.toString()));
 
         if (qty == null && action == null)
             dB.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
@@ -78,7 +78,7 @@ public class HealthCommand extends AbstractCommand {
         if (action == null)
             action = Element.TRUE;
 
-        for (dEntity target: targets) {
+        for (dEntity target : targets) {
             if (target.isCitizensNPC()) {
                 if (action.asString().equalsIgnoreCase("true"))
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
@@ -93,7 +93,7 @@ public class HealthCommand extends AbstractCommand {
             if (qty != null) {
                 if (target.isCitizensNPC()) {
                     if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
-                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int)qty.asFloat());
+                        target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int) qty.asFloat());
                     else
                         dB.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
                 }

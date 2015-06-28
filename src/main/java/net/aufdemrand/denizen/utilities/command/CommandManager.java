@@ -37,27 +37,21 @@ public class CommandManager {
     }
 
     /**
-     *
      * Attempt to execute a command using the root {@link Command} given. A list
      * of method arguments may be used when calling the command handler method.
-     *
+     * <p/>
      * A command handler method should follow the form
      * <code>command(CommandContext args, CommandSender sender)</code> where
      * {@link CommandSender} can be replaced with {@link Player} to only accept
      * players. The method parameters must include the method args given, if
      * any.
      *
-     * @param command
-     *            The command to execute
-     * @param args
-     *            The arguments of the command
-     * @param sender
-     *            The sender of the command
-     * @param methodArgs
-     *            The method arguments to be used when calling the command
-     *            handler
-     * @throws CommandException
-     *             Any exceptions caused from execution of the command
+     * @param command    The command to execute
+     * @param args       The arguments of the command
+     * @param sender     The sender of the command
+     * @param methodArgs The method arguments to be used when calling the command
+     *                   handler
+     * @throws CommandException Any exceptions caused from execution of the command
      */
     public void execute(org.bukkit.command.Command command, String[] args, CommandSender sender, Object... methodArgs)
             throws CommandException {
@@ -77,7 +71,8 @@ public class CommandManager {
         int page = 1;
         try {
             page = args.length == 3 ? Integer.parseInt(args[2]) : page;
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             sendSpecificHelp(sender, args[0], args[2]);
             return;
         }
@@ -133,11 +128,14 @@ public class CommandManager {
         Object instance = instances.get(method);
         try {
             method.invoke(instance, methodArgs);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             dB.echoError(e);
-        } catch (IllegalAccessException e) {
+        }
+        catch (IllegalAccessException e) {
             dB.echoError(e);
-        } catch (InvocationTargetException e) {
+        }
+        catch (InvocationTargetException e) {
             if (e.getCause() instanceof CommandException)
                 throw (CommandException) e.getCause();
             throw new WrappedCommandException(e.getCause());
@@ -149,29 +147,36 @@ public class CommandManager {
      * that occur. Returns whether the command handler should print usage or
      * not.
      *
-     * @see #execute(org.bukkit.command.Command, String[], CommandSender, Object...)
      * @return Whether further usage should be printed
+     * @see #execute(org.bukkit.command.Command, String[], CommandSender, Object...)
      */
     public boolean executeSafe(org.bukkit.command.Command command, String[] args, CommandSender sender,
                                Object... methodArgs) {
         try {
             try {
                 execute(command, args, sender, methodArgs);
-            } catch (ServerCommandException ex) {
+            }
+            catch (ServerCommandException ex) {
                 Messaging.send(sender, "You must be ingame to use that command.");
-            } catch (CommandUsageException ex) {
+            }
+            catch (CommandUsageException ex) {
                 Messaging.sendError(sender, ex.getMessage());
                 Messaging.sendError(sender, ex.getUsage());
-            } catch (UnhandledCommandException ex) {
+            }
+            catch (UnhandledCommandException ex) {
                 return false;
-            } catch (WrappedCommandException ex) {
+            }
+            catch (WrappedCommandException ex) {
                 throw ex.getCause();
-            } catch (CommandException ex) {
+            }
+            catch (CommandException ex) {
                 Messaging.sendError(sender, ex.getMessage());
-            } catch (NumberFormatException ex) {
+            }
+            catch (NumberFormatException ex) {
                 Messaging.sendError(sender, "That is not a valid number.");
             }
-        } catch (Throwable ex) {
+        }
+        catch (Throwable ex) {
             ex.printStackTrace();
             if (sender instanceof Player) {
                 Messaging.sendError(sender, "Please report this error: [See console]");
@@ -185,10 +190,8 @@ public class CommandManager {
      * Searches for the closest modifier using Levenshtein distance to the given
      * top level command and modifier.
      *
-     * @param command
-     *            The top level command
-     * @param modifier
-     *            The modifier to use as the base
+     * @param command  The top level command
+     * @param modifier The modifier to use as the base
      * @return The closest modifier, or empty
      */
     public String getClosestCommandModifier(String command, String modifier) {
@@ -213,10 +216,8 @@ public class CommandManager {
      * Gets the {@link CommandInfo} for the given top level command and
      * modifier, or null if not found.
      *
-     * @param rootCommand
-     *            The top level command
-     * @param modifier
-     *            The modifier (may be empty)
+     * @param rootCommand The top level command
+     * @param modifier    The modifier (may be empty)
      * @return The command info for the command
      */
     public CommandInfo getCommand(String rootCommand, String modifier) {
@@ -238,8 +239,7 @@ public class CommandManager {
      * defined, calling <code>getCommands("npc")</code> would return
      * {@link CommandInfo}s for both commands.
      *
-     * @param command
-     *            The root level command
+     * @param command The root level command
      * @return The list of {@link CommandInfo}s
      */
     public List<CommandInfo> getCommands(String command) {
@@ -280,10 +280,8 @@ public class CommandManager {
      * Checks to see whether there is a command handler for the given command at
      * the root level. This will check aliases as well.
      *
-     * @param cmd
-     *            The command to check
-     * @param modifier
-     *            The modifier to check (may be empty)
+     * @param cmd      The command to check
+     * @param modifier The modifier to check (may be empty)
      * @return Whether the command is handled
      */
     public boolean hasCommand(org.bukkit.command.Command cmd, String modifier) {
@@ -309,9 +307,8 @@ public class CommandManager {
      * instances the command class will be created and instance methods will be
      * called.
      *
+     * @param clazz The class to scan
      * @see #setInjector(Injector)
-     * @param clazz
-     *            The class to scan
      */
     public void register(Class<?> clazz) {
         registerMethods(clazz, null);
@@ -320,7 +317,7 @@ public class CommandManager {
     /**
      * Registers an {@link CommandAnnotationProcessor} that can process
      * annotations before a command is executed.
-     *
+     * <p/>
      * Methods with the {@link Command} annotation will have the rest of their
      * annotations scanned and stored if there is a matching
      * {@link CommandAnnotationProcessor}. Annotations that do not have a
@@ -328,8 +325,7 @@ public class CommandManager {
      * declaring class as a base before narrowing using the method's
      * annotations.
      *
-     * @param processor
-     *            The annotation processor
+     * @param processor The annotation processor
      */
     public void registerAnnotationProcessor(CommandAnnotationProcessor processor) {
         annotationProcessors.put(processor.getAnnotationClass(), processor);
@@ -441,7 +437,8 @@ public class CommandManager {
                 if (other.commandAnnotation != null) {
                     return false;
                 }
-            } else if (!commandAnnotation.equals(other.commandAnnotation)) {
+            }
+            else if (!commandAnnotation.equals(other.commandAnnotation)) {
                 return false;
             }
             return true;
@@ -464,7 +461,7 @@ public class CommandManager {
     }
 
     private static String format(Command command, String alias) {
-        return String.format(COMMAND_FORMAT, alias,(command.usage().isEmpty() ? "" : " " + command.usage()),
+        return String.format(COMMAND_FORMAT, alias, (command.usage().isEmpty() ? "" : " " + command.usage()),
                 command.desc());
     }
 

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.properties.bukkit;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
@@ -11,7 +12,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.scripts.commands.core.Comparable;
 import org.bukkit.ChatColor;
 
 public class BukkitElementProperties implements Property {
@@ -67,7 +67,8 @@ public class BukkitElementProperties implements Property {
             if (attribute.getContext(1).startsWith("!")) {
                 operator = attribute.getContext(1).substring(1);
                 com.setNegativeLogic();
-            } else operator = attribute.getContext(1);
+            }
+            else operator = attribute.getContext(1);
 
             // Operator is the value of the .is[] context. Valid are Comparable.Operators, same
             // as used by the IF command.
@@ -77,7 +78,8 @@ public class BukkitElementProperties implements Property {
                         .replace(">=", "OR_MORE").replace("<=", "OR_LESS").replace("<", "LESS")
                         .replace(">", "MORE").replace("=", "EQUALS").toUpperCase());
             }
-            catch (IllegalArgumentException e) { }
+            catch (IllegalArgumentException e) {
+            }
 
             if (comparableOperator != null) {
                 com.setOperator(comparableOperator);
@@ -119,7 +121,7 @@ public class BukkitElementProperties implements Property {
         if (attribute.startsWith("ascolor")
                 || attribute.startsWith("as_color")) {
             dObject object = Element.handleNull(element.asString(), dColor.valueOf(element.asString(),
-            new BukkitTagContext(attribute.getScriptEntry(), false)), "dColor", attribute.hasAlternative());
+                    new BukkitTagContext(attribute.getScriptEntry(), false)), "dColor", attribute.hasAlternative());
             if (object != null)
                 return object.getAttribute(attribute.fulfill(1));
         }
@@ -314,8 +316,8 @@ public class BukkitElementProperties implements Property {
             }
             else {
                 return new Element(format.getFormattedText(element.asString(),
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getNPC(): null,
-                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData)attribute.getScriptEntry().entryData).getPlayer(): null))
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null,
+                        attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null))
                         .getAttribute(attribute.fulfill(1));
             }
         }

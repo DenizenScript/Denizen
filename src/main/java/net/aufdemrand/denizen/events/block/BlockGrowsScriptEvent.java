@@ -35,6 +35,7 @@ public class BlockGrowsScriptEvent extends ScriptEvent implements Listener {
     public BlockGrowsScriptEvent() {
         instance = this;
     }
+
     public static BlockGrowsScriptEvent instance;
     public dLocation location;
     public dMaterial material;

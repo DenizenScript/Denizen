@@ -26,7 +26,7 @@ public class BlockData {
     }
 
     public void setBlock(Block block) {
-        block.setTypeIdAndData(material.getId(), (byte)data, false);
+        block.setTypeIdAndData(material.getId(), (byte) data, false);
     }
 
     public String toCompressedFormat() {

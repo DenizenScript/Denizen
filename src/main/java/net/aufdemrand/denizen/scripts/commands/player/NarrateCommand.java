@@ -1,20 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Bukkit;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class NarrateCommand extends AbstractCommand {
 
@@ -44,7 +46,7 @@ public class NarrateCommand extends AbstractCommand {
 
             // Use raw_value as to not accidentally strip a value before any :'s.
             else if (!scriptEntry.hasObject("text"))
-                    scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
+                scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
 
             else
                 arg.reportUnhandled();
@@ -55,7 +57,7 @@ public class NarrateCommand extends AbstractCommand {
         // to the targets
         if (!scriptEntry.hasObject("targets"))
             scriptEntry.addObject("targets",
-                    (((BukkitScriptEntryData)scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()) : null));
+                    (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) : null));
 
         if (!scriptEntry.hasObject("text"))
             throw new InvalidArgumentsException("Missing any text!");

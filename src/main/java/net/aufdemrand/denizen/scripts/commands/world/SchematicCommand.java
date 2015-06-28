@@ -1,26 +1,26 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.blocks.BlockData;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
-import net.aufdemrand.denizencore.scripts.ScriptHelper;
-import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.aufdemrand.denizencore.scripts.commands.Holdable;
-import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
-import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
+import net.aufdemrand.denizencore.tags.TagManager;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
     }
 
 
-    private enum Type { CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE }
+    private enum Type {CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE}
+
     public static Map<String, CuboidBlockSet> schematics;
 
     @Override
@@ -91,10 +92,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
 
         dB.report(scriptEntry, getName(), type.debug()
                 + name.debug()
-                + (location != null ? location.debug(): "")
-                + (cuboid != null ? cuboid.debug(): "")
-                + (angle != null ? angle.debug(): "")
-                + (delayed != null ? delayed.debug(): ""));
+                + (location != null ? location.debug() : "")
+                + (cuboid != null ? cuboid.debug() : "")
+                + (angle != null ? angle.debug() : "")
+                + (delayed != null ? delayed.debug() : ""));
 
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());
@@ -230,6 +231,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                 break;
         }
     }
+
     @TagManager.TagEvents
     public void schematicTags(ReplaceableTagEvent event) {
 
@@ -251,7 +253,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                 return;
             }
 
-            dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue(): null, "Schematic file " + id + " is not loaded.");
+            dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null, "Schematic file " + id + " is not loaded.");
             return;
         }
 
