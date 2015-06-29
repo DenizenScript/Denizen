@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -13,7 +14,6 @@ import java.util.List;
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
-
         List<String> data = CoreUtilities.split(lower, ' ');
 
         int index;
@@ -55,4 +55,42 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return false;
         }
     }
+
+    public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
+        String with = getSwitch(s, "with");
+        if (with != null) {
+            dItem it = dItem.valueOf(with);
+            if (it == null) {
+                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+                return false;
+            }
+            if (held == null || !tryItem(held, with)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean tryItem(dItem item, String comparedto) {
+        item = new dItem(item.getItemStack().clone());
+        item.setAmount(1);
+        if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (item.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        item.setDurability((short)0);
+        if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        return false;
+    }
+
 }
