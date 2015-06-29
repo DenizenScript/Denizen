@@ -25,9 +25,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns (in <area>) (because <cause>)
+    // entity spawns (because <cause>) (in <area>)
     // <entity> spawns
-    // <entity> spawns (in <area>) (because <cause>)
+    // <entity> spawns (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
@@ -73,8 +73,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(4, lower, "because")) {
-            return CoreUtilities.getXthArg(5, lower).equals(reason.toString());
+        if (CoreUtilities.xthArgEquals(2, lower, "because")) {
+            return CoreUtilities.getXthArg(3, lower).equalsIgnoreCase(reason.toString());
         }
         return true;
     }
