@@ -365,16 +365,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.navigator.target_location>
 
         // @Usage
-        // Use to make a npc break a block in an interact script.
+        // Use to make a npc break a block
         // - break <location>
 
         // @Usage
-        // Use to make a npc with the id 12 break a block at 17,64,-87
-        // - break l@17,64,-87 entity:n@12
+        // Use to make a npc with the id 12 break a block at 17,64,-87 in world
+        // - break l@17,64,-87,world entity:n@12
 
         // @Usage
         // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
-        // - break l@17,64,-87 entity:n@bob radius:5
+        // - break l@17,64,-87,world entity:n@bob radius:5
 
         // -->
         if (Depends.citizens != null)
