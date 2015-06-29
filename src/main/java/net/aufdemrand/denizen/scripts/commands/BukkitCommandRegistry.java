@@ -217,23 +217,23 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // @Usage
         // Use to animate a chest to open at 15,89,-45 in world: world
-        // - animatechest 15,89,-45,world
+        // - animatechest l@15,89,-45,world
 
         // @Usage
         // To then close the chest at 15,89,-45 in world: world
-        // - animatechest 15,89,-45,world close
+        // - animatechest l@15,89,-45,world close
 
         // @Usage
         // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
-        // - animatechest 12,12,-64,peter sound:false
+        // - animatechest l@12,12,-64,peter sound:false
 
         // @Usage
         // If only a player by the name of Morphan1 should see the chest open
-        // - animatechest 12,12,-64,peter sound:false p@Morphan1
+        // - animatechest l@12,12,-64,peter sound:false p@Morphan1
 
         // @Usage
         // The command also accepts a list of players to view the animation
-        // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
+        // - animatechest l@12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
@@ -370,11 +370,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to make a npc with the id 12 break a block at 17,64,-87
-        // - break 17,64,-87 entity:n@12
+        // - break l@17,64,-87 entity:n@12
 
         // @Usage
         // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
-        // - break 17,64,-87 entity:n@bob radius:5
+        // - break l@17,64,-87 entity:n@bob radius:5
 
         // -->
         if (Depends.citizens != null)
@@ -755,16 +755,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <entry[saveName].dropped> returns a dEntity of the spawned item.
         // @Usage
         // Use to display a stone block dropped at a players location
-        // - displayitem stone <player.location>
+        // - displayitem i@stone <player.location>
         // @Usage
         // Use to display a diamond sword dropped at 12,64,-847 in world survival
-        // - displayitem diamond_sword 12,64,-847,survival
+        // - displayitem i@diamond_sword l@12,64,-847,survival
         // @Usage
         // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
-        // - displayitem redstone -54,100,-87,creative duration:10s
+        // - displayitem i@redstone l@-54,100,-87,creative duration:10s
         // @Usage
         // Use to save the dropped item to save entry 'item_dropped'
-        // - displayitem redstone -54,100,-87,creative duration:10s save:item_dropped
+        // - displayitem i@redstone l@-54,100,-87,creative duration:10s save:item_dropped
         // -->
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
@@ -874,13 +874,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.equipment>
         // @Usage
         // Use to equip a stone block on a player's head
-        // - equip <player> head:stone
+        // - equip <player> head:i@stone
         // @Usage
         // Use to equip a diamond sword into the hand of an npc named bob
-        // - equip <n@bob> hand:diamond_sword
+        // - equip <n@bob> hand:i@diamond_sword
         // @Usage
-        // Use to equip an iron helmet on the head of all players on the server
-        // - equip <server.list_online_players> head:iron_helmet
+        // Use to equip a iron helmet on two players named Bob and Steve
+        // - equip p@bob|p@steve head:i@iron_helmet
         // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
@@ -959,11 +959,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use give give a player 1 level
         // - experience give level 1
         // @Usage
-        // Use to give a player with the name Morphan1 10 experience points.
-        // - experience give 10 player<p@Morphan1>
+        // Use to take 1 level from a player
+        // - experience take level 1
         // @Usage
-        // Use to take 1 level from a specific player
-        // - experience take level 1 player:<player>
+        // Use to give a player with the name Morphan1 10 experience points.
+        // - experience give 10 player:p@Morphan1
         // -->
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
@@ -1094,8 +1094,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to launch a firework which leaves a trail
         // - firework <player.location> random trail
         // @Usage
-        // Use to launch a firework which leaves a trail and explodes with a flicker effect
-        // - firework <player.location> random trail flicker
+        // Use to launch a firework which leaves a trail and explodes with a flicker effect at 10,43,-76 in world
+        // - firework l@10,43,-76,world random trail flicker
         // -->
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
@@ -1279,11 +1279,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // This command heals a player, list of players, entity or list of entities. If no amount is specified it will
+        // heal the specified player(s)/entity(s) fully.
         // @Tags
         // <e@entity.health>
         // @Usage
-        // TODO: Document Command Details
+        // Use to fully heal a player
+        // - heal
+        // @Usage
+        // Use to heal a player 5 hearts
+        // - heal 10
+        // @Usage
+        // Use to heal a player by the name of Morphan1 fully
+        // - heal p@Morphan1
         // -->
         registerCoreMember(HealCommand.class,
                 "HEAL", "heal (<#.#>) ({player}/<entity>|...)", 0);
