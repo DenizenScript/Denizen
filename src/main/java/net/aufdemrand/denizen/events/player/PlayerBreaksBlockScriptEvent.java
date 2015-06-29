@@ -24,12 +24,10 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player breaks block (in <area>)
-    // player breaks <material> (in <area>)
-    // player breaks block with <item> (in <area>)
-    // player breaks <material> with <item> (in <area>)
-    // player breaks block with <material> (in <area>)
-    // player breaks <material> with <material> (in <area>)
+    // player breaks block (with:<item>) (in <area>)
+    // player breaks <material> (with:<item>) (in <area>)
+    // player breaks block (with:<material>) (in <area>)
+    // player breaks <material> (with:<material>) (in <area>)
     //
     // @Cancellable true
     //
@@ -79,10 +77,15 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
+        if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {
+            return false;
+        }
+        // Deprecated in favor of with: format
         if (CoreUtilities.xthArgEquals(3, lower, "with")) {
             String tool = CoreUtilities.getXthArg(4, lower);
             dItem item = new dItem(event.getPlayer().getItemInHand());
-            if (!tool.equals(item.identifyNoIdentifier())) {
+            if (!tool.equals(item.identifyNoIdentifier()) && !tool.equals(item.identifySimpleNoIdentifier())
+                    && tool.equals(item.identifyMaterialNoIdentifier())) {
                 return false;
             }
         }
