@@ -208,11 +208,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command animates a chest in the world to open or close at a specified location.
+        // The command by default will open the chest. It accepts a sound argument which specifies whether
+        // the open or close sound will play aswell as the animation. The sound plays by default and
+        // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
+        // allowing only selected players to see the chest animate as opened or closed.
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to animate a chest to open at 15,89,-45 in world: world
+        // - animatechest 15,89,-45,world
+
+        // @Usage
+        // To then close the chest at 15,89,-45 in world: world
+        // - animatechest 15,89,-45,world close
+
+        // @Usage
+        // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
+        // - animatechest 12,12,-64,peter sound:false
+
+        // @Usage
+        // If only a player by the name of Morphan1 should see the chest open
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1
+
+        // @Usage
+        // The command also accepts a list of players to view the animation
+        // - animatechest 12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
         // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
@@ -333,11 +354,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // By itself, the 'break' command will act as a NPC command in the sense that an attached
+        // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
+        // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
+        // breaking the block from within. To specify the npc, prefix the npc with 'entity:'. To specify the
+        // radius, prefix the radius with 'radius:'.
+
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.navigator.is_navigating>
+        // <n@npc.navigator.target_location>
+
         // @Usage
-        // TODO: Document Command Details
+        // Use to make a npc break a block in an interact script.
+        // - break <location>
+
+        // @Usage
+        // Use to make a npc with the id 12 break a block at 17,64,-87
+        // - break 17,64,-87 entity:n@12
+
+        // @Usage
+        // Use to make a npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away
+        // - break 17,64,-87 entity:n@bob radius:5
+
         // -->
         if (Depends.citizens != null)
             registerCoreMember(BreakCommand.class,
@@ -389,6 +427,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
+        // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
+        // of 1639s (1639 seconds) or greater. While it may display as infinite, it will still wear off.
 
         // @Tags
         // <e@entity.has_effect[<effect>]>
@@ -470,9 +510,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author spaceemotion, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command forces a chunk to load and keeps the chunk loaded until it is removed,
+        // the server shuts down or the duration expires. All normal events such as redstone,
+        // NPC actions, mob spawning and weather effects will continue to take place while
+        // the chunk is loaded.
         // @Tags
-        // TODO: Document Command Details
+        // <w@world.loaded_chunks>
+        // <ch@chunk.is_loaded>
         // @Usage
         // Use to load a chunk.
         // - chunkload ch@0,0,world
@@ -604,11 +648,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, mcmonkey
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command creates a new minecraft world with the specified name.
+        // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
+        // TODO: Document Command Details (generator)
+        // It accepts a world type which can be specified with 'worldtype:'.
+        // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
+        // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
+        // mountain-like terrain)
         // @Tags
         // <server.list_worlds>
         // @Usage
-        // TODO: Document Command Details
+        // Use to create a normal world with name survival
+        // - createworld survival
+        // @Usage
+        // Use to create a flat world with the name superflat
+        // - createworld superflat worldtype:FLAT
         // -->
         registerCoreMember(CreateWorldCommand.class,
                 "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>)", 1);
@@ -693,12 +747,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, mcmonkey
         // @Group item
         // @Description
-        // TODO: Document Command Details
+        // This command drops an item at the specified location which cannot be picked up by players.
+        // It accepts a duration which determines how long the item will stay for until disappearing.
+        // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
         // @Tags
         // TODO: Document Command Details
         // <entry[saveName].dropped> returns a dEntity of the spawned item.
         // @Usage
-        // TODO: Document Command Details
+        // Use to display a stone block dropped at a players location
+        // - displayitem stone <player.location>
+        // @Usage
+        // Use to display a diamond sword dropped at 12,64,-847 in world survival
+        // - displayitem diamond_sword 12,64,-847,survival
+        // @Usage
+        // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
+        // - displayitem redstone -54,100,-87,creative duration:10s
+        // @Usage
+        // Use to save the dropped item to save entry 'item_dropped'
+        // - displayitem redstone -54,100,-87,creative duration:10s save:item_dropped
         // -->
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
@@ -802,11 +868,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // This command equips an item or armor to an entity or list of entities to the specified slot.
+        // It allows or blocks to be equipped in an entity's armor/hand slots, this inclueds horses.
         // @Tags
         // <e@entity.equipment>
         // @Usage
-        // TODO: Document Command Details
+        // Use to equip a stone block on a player's head
+        // - equip <player> head:stone
+        // @Usage
+        // Use to equip a diamond sword into the hand of an npc named bob
+        // - equip <n@bob> hand:diamond_sword
+        // @Usage
+        // Use to equip an iron helmet on the head of all players on the server
+        // - equip <server.list_online_players> head:iron_helmet
         // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
@@ -839,8 +913,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to trigger multiple custom events with context
         // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
-        // @Usage
-        // TODO: Document command details
         // -->
         registerCoreMember(EventCommand.class,
                 "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
@@ -881,7 +953,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.xp.total>
         // <p@player.xp.level>
         // @Usage
-        // TODO: Document Command Details
+        // Use to set a player's experience to 0
+        // - experience 0
+        // @Usage
+        // Use give give a player 1 level
+        // - experience give level 1
+        // @Usage
+        // Use to give a player with the name Morphan1 10 experience points.
+        // - experience give 10 player<p@Morphan1>
+        // @Usage
+        // Use to take 1 level from a specific player
+        // - experience take level 1 player:<player>
         // -->
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
@@ -896,14 +978,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Alain Blanquet
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command causes an explosion at the location specified (or the npc / player location) which does not
+        // destroy blocks or set fire to blocks within the explosion. It accepts a 'fire' option which will set blocks
+        // on fire within the explosion radius. It also accepts a 'breakblocks' option which will cause the explosion to
+        // break blocks within the power radius as well as creating an animation and sounds.
         // Default power: 1
         // Default location: npc.location, or if no NPC link, player.location.
         // It is highly recommended you specify a location to be safe.
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to create an explosion at a player's location
+        // - explode <player.location>
+
+        // @Usage
+        // Use to create an explosion with a power radius of 3 at a NPC's location
+        // - explode power:3 <npc.location>
+
+        // @Usage
+        // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks
+        // - explode power:3 12,12,-1297,survival breakblocks
+
+        // @Usage
+        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5
+        // - explode power:5 <player.location> fire breakblocks
         // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
