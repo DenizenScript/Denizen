@@ -61,7 +61,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return s.toLowerCase().startsWith("player breaks");
+        return CoreUtilities.toLowerCase(s).startsWith("player breaks");
     }
 
     @Override
@@ -69,8 +69,10 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
-            return false;
+        if (!mat.equals("block")
+                && !mat.equals(material.identifySimpleNoIdentifier())
+                && !mat.equals(material.identifyFullNoIdentifier())) {
+                return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, location)) {
