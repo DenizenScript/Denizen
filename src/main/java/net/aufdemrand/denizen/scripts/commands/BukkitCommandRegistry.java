@@ -365,8 +365,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.navigator.target_location>
 
         // @Usage
-        // Use to make a npc break a block
-        // - break <location>
+        // Use to make a npc break a block at 17,64,-87 in world
+        // - break l@17,64,-87,world
 
         // @Usage
         // Use to make a npc with the id 12 break a block at 17,64,-87 in world
@@ -990,6 +990,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to create an explosion at a player's location
         // - explode <player.location>
+        
+        // @Usage
+        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5
+        // - explode power:5 <player.location> fire breakblocks
 
         // @Usage
         // Use to create an explosion with a power radius of 3 at a NPC's location
@@ -997,11 +1001,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks
-        // - explode power:3 12,12,-1297,survival breakblocks
+        // - explode power:3 l@12,12,-1297,survival breakblocks
 
-        // @Usage
-        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5
-        // - explode power:5 <player.location> fire breakblocks
         // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
