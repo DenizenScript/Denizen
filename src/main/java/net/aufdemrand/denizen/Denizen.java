@@ -72,7 +72,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.AsyncCatcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -358,7 +357,12 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             return;
         }
 
-        AsyncCatcher.enabled = false;
+        try {
+            org.spigotmc.AsyncCatcher.enabled = false;
+        }
+        catch (Exception e) {
+            dB.echoError("Running not-Spigot?!");
+        }
 
         try {
             versionTag = this.getDescription().getVersion();
