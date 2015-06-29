@@ -133,7 +133,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
                 return false;
             }
-            if (!it.identify().equalsIgnoreCase(held.identify())) {
+            if (held == null || !it.identify().equalsIgnoreCase(held.identify())) {
                 return false;
             }
         }
@@ -210,7 +210,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             }
             if (damager != null) {
                 held = damager.getItemInHand();
-                held.setAmount(1);
+                if (held != null) {
+                    held.setAmount(1);
+                }
             }
         }
         cancelled = event.isCancelled();
