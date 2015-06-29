@@ -510,10 +510,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author spaceemotion, mcmonkey
         // @Group world
         // @Description
-        // This command forces a chunk to load and keeps the chunk loaded until it is removed,
-        // the server shuts down or the duration expires. All normal events such as redstone,
-        // NPC actions, mob spawning and weather effects will continue to take place while
-        // the chunk is loaded.
+        // TODO Document Command Details
         // @Tags
         // <w@world.loaded_chunks>
         // <ch@chunk.is_loaded>
