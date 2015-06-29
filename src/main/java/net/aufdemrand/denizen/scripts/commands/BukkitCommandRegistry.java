@@ -1076,11 +1076,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // This command launches a firework from the specified location. The power option, which defaults to 1
+        // if left empty, specifies how high the firework will go before exploding. The type option
+        // which specifies the shape the firework will explode with. The primary option specifies what colour the
+        // firework will initially explode as. The fade option specifies what colour the firework will
+        // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
+        // flicker option means the firework will explode with a flicker effect.
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
+        // - firework <player.location> star primary:yellow fade:white
+        // @Usage
+        // Use to make the firework launch double the height before exploding
+        // - firework <player.location> power:2 star primary:yellow fade:white
+        // @Usage
+        // Use to launch a firework which leaves a trail
+        // - firework <player.location> random trail
+        // @Usage
+        // Use to launch a firework which leaves a trail and explodes with a flicker effect
+        // - firework <player.location> random trail flicker
         // -->
         registerCoreMember(FireworkCommand.class,
                 "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
