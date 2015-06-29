@@ -990,7 +990,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to create an explosion at a player's location
         // - explode <player.location>
-        
+
         // @Usage
         // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5
         // - explode power:5 <player.location> fire breakblocks
