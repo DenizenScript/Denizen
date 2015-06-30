@@ -377,4 +377,9 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Chat history.Max messages", 10);
     }
+
+    public static int tagTimeout() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Tags.Timeout", 10);
+    }
 }

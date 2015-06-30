@@ -102,7 +102,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         // finish this
         String lower = CoreUtilities.toLowerCase(determination);
 
-        // Deprecated??  This isn't listed in the meta
+        // Deprecated
         if (lower.startsWith("drops ")) {
             lower = lower.substring(6);
         }
@@ -138,10 +138,8 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         }
 
         // String containing new Death Message
-        else if (!lower.equals("none")) {
-            if (event instanceof PlayerDeathEvent) {
-                message = new Element(determination);
-            }
+        else if (event instanceof PlayerDeathEvent) {
+            message = new Element(determination);
         }
         else {
             return super.applyDetermination(container, determination);
@@ -237,7 +235,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
                 }
             }
         }
-        if (message != null) {
+        if (message != null && subEvent != null) {
             subEvent.setDeathMessage(message.asString());
         }
     }
