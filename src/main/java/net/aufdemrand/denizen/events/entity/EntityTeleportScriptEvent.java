@@ -45,19 +45,12 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
     public EntityTeleportScriptEvent() {
         instance = this;
     }
-
     public static EntityTeleportScriptEvent instance;
-
     public dEntity entity;
-
     public dLocation from;
-
     public dLocation to;
-
     public String cause;
-
     public EntityTeleportEvent event;
-
     public PlayerTeleportEvent pEvent;
 
     @Override
@@ -68,8 +61,7 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String ent = CoreUtilities.getXthArg(0, s);
-        return entity.matchesEntity(ent);
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     @Override

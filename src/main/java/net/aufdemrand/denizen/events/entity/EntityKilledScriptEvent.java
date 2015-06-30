@@ -73,12 +73,7 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return ((types.contains(entOne) || dEntity.matches(entOne))
-                && (cmd.equals("killed") || cmd.equals("kills"))
-                && ((entTwo.length() == 0) || (types.contains(entTwo) || dEntity.matches(entTwo))));
+        return cmd.equals("killed") || cmd.equals("kills");
     }
 
     @Override

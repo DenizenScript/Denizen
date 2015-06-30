@@ -82,10 +82,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         // Deprecated in favor of with: format
         if (CoreUtilities.xthArgEquals(3, lower, "with")) {
-            String tool = CoreUtilities.getXthArg(4, lower);
-            dItem item = new dItem(event.getPlayer().getItemInHand());
-            if (!tool.equals(item.identifyNoIdentifier()) && !tool.equals(item.identifySimpleNoIdentifier())
-                    && tool.equals(item.identifyMaterialNoIdentifier())) {
+            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(4, lower))) {
                 return false;
             }
         }

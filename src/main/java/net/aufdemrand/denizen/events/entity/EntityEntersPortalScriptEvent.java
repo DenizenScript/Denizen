@@ -46,19 +46,12 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "npc");
-        return (types.contains(entOne) || dEntity.matches(entOne))
-                && lower.contains("enters portal");
+        return CoreUtilities.toLowerCase(s).contains("enters portal");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "npc");
-        return types.contains(target) || entity.matchesEntity(target);
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     @Override

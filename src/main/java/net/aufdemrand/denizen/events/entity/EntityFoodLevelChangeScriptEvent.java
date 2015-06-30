@@ -48,13 +48,12 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return (lower.endsWith("changes food level"));
+        return (CoreUtilities.toLowerCase(s).endsWith("changes food level"));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     @Override

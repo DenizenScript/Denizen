@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 import java.util.HashMap;
 
-public class ItemMoveScriptEvent extends ScriptEvent implements Listener {
+public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -60,18 +60,24 @@ public class ItemMoveScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String itemName = item.getMaterialName();
-        String originType = origin.getInventoryType().name();
-        String destinationType = destination.getInventoryType().name();
+        String iCheck = CoreUtilities.getXthArg(0, lower);
+        String oCheck = CoreUtilities.getXthArg(3, lower);
+        String dCheck = CoreUtilities.getXthArg(5, lower);
+        String originType = CoreUtilities.toLowerCase(origin.getInventoryType().name());
+        String destinationType = CoreUtilities.toLowerCase(destination.getInventoryType().name());
 
-        return lower.equals("item moves from inventory")
-                || lower.equals(itemName + " moves from inventory")
-                || lower.equals(itemName + " moves from " + originType)
-                || lower.equals(itemName + " moves from " + originType + " to " + destinationType)
-                || lower.equals(itemName + " moves from inventory to " + destinationType)
-                || lower.equals("item moves from " + originType)
-                || lower.equals("item moves from " + originType + " to " + destinationType)
-                || lower.equals("item moves from inventory to " + destinationType);
+        if (!tryItem(item, iCheck)) {
+            return false;
+        }
+        if (!oCheck.equals(originType)) {
+            return false;
+        }
+        if (dCheck.length() > 0) {
+            if (!dCheck.equals(destinationType)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
