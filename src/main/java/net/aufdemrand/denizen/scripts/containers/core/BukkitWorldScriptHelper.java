@@ -2131,33 +2131,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // spawn changes (in <world>)
-    //
-    // @Triggers when the world's spawn point changes.
-    // @Context
-    // <context.world> returns the dWorld that the spawn point changed in.
-    // <context.old_location> returns the dLocation of the old spawn point.
-    // <context.new_location> returns the dLocation of the new spawn point.
-    //
-    // -->
-    @EventHandler
-    public void spawnChange(SpawnChangeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-
-        context.put("world", world);
-        context.put("old_location", new dLocation(event.getPreviousLocation()));
-        context.put("new_location", new dLocation(world.getWorld().getSpawnLocation()));
-
-        doEvents(Arrays.asList
-                        ("spawn changes",
-                                "spawn changes in " + world.identifySimple()),
-                null, null, context, true);
-    }
-
-    // <--[event]
-    // @Events
     // structure grows (naturally/from bonemeal) (in <world>)
     // <structure> grows (naturally/from bonemeal) (in <world>)
     //
