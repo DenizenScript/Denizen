@@ -2266,28 +2266,4 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, null, context, true);
     }
 
-    // <--[event]
-    // @Events
-    // world saves
-    // <world> saves
-    //
-    // @Triggers when a world is saved.
-    // @Context
-    // <context.world> returns the dWorld that was saved.
-    //
-    // -->
-    @EventHandler
-    public void worldSave(WorldSaveEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-
-        context.put("world", world);
-
-        doEvents(Arrays.asList
-                        ("world saves",
-                                world.identifySimple() + " saves"),
-                null, null, context, true);
-    }
-
 }
