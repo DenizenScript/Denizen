@@ -64,8 +64,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("block")
-                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))
-                && !mat.equals(item_in_hand.identifyNoIdentifier()) && !mat.equals(item_in_hand.identifySimpleNoIdentifier())) {
+                && !tryItem(item_in_hand, mat)
+                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))) {
             return false;
         }
 

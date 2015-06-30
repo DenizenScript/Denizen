@@ -71,7 +71,9 @@ public class ItemEnchantedScriptEvent extends ScriptEvent implements Listener {
         String itemTest = CoreUtilities.getXthArg(0, lower);
 
         if (!itemTest.equals("item")
-                && (!itemTest.equals(item.identifyNoIdentifier()) && !itemTest.equals(item.identifySimpleNoIdentifier()))) {
+                && (!itemTest.equals(item.identifyNoIdentifier())
+                    && !itemTest.equals(item.identifySimpleNoIdentifier()))
+                    && !itemTest.equals(CoreUtilities.toLowerCase(item.getScriptName()))) {
             return false;
         }
 

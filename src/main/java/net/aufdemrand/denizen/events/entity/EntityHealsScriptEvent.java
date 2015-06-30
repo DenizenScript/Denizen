@@ -53,20 +53,13 @@ public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(entOne) || dEntity.matches(entOne))
-                && cmd.equals("heals");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("heals");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        if (!types.contains(target) && !entity.matchesEntity(target)) {
+        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
         String cause = CoreUtilities.getXthArg(3, lower);

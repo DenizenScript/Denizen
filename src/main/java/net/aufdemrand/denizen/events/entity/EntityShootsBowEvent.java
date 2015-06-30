@@ -61,13 +61,7 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return ((types.contains(entOne) || dEntity.matches(entOne))
-                && cmd.equals("shoots"));
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("shoots");
     }
 
     @Override
@@ -81,7 +75,9 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
         }
 
         if (!item.equals("bow")
-                && (!item.equals(bow.identifyNoIdentifier()) && !item.equals(bow.identifySimpleNoIdentifier()))) {
+                && (!item.equals(bow.identifyNoIdentifier())
+                    && !item.equals(bow.identifySimpleNoIdentifier()))
+                    && !item.equals(CoreUtilities.toLowerCase(bow.getScriptName()))) {
             return false;
         }
 

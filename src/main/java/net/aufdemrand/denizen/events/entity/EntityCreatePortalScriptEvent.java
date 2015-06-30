@@ -47,18 +47,13 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return lower.contains("creates portal")
-                && (types.contains(entOne) || dEntity.matches(entOne));
+        return CoreUtilities.toLowerCase(s).contains("creates portal");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)) {
+        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
