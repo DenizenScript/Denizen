@@ -71,15 +71,13 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("dies")
-                || lower.contains("death");
+        String cmd = CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s));
+        return cmd.equals("dies") || cmd.equals("death");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String ent = CoreUtilities.getXthArg(0, s);
-        return entity.matchesEntity(ent);
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     @Override

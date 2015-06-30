@@ -44,8 +44,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("launched")
-                && (entTest.equals("projectile") || dEntity.matches(entTest));
+        return cmd.equals("launched") && (entTest.equals("projectile"));
     }
 
     @Override

@@ -52,8 +52,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("interacts with");
+        return CoreUtilities.toLowerCase(s).contains("interacts with");
     }
 
     @Override

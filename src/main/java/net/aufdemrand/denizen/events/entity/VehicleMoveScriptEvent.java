@@ -52,8 +52,7 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String ent = CoreUtilities.getXthArg(0, s);
-        return vehicle.matchesEntity(ent);
+        return vehicle.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     // TODO: Can the vehicle be an NPC?

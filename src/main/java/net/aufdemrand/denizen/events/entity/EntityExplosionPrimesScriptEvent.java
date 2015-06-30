@@ -46,18 +46,13 @@ public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Lis
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(entOne) || dEntity.matches(entOne))
-                && lower.contains("explosion primes");
+        return CoreUtilities.toLowerCase(s).contains("explosion primes");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(target) || entity.matchesEntity(target));
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+
     }
 
     @Override
