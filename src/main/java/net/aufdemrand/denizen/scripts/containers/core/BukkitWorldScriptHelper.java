@@ -2090,47 +2090,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // portal created (in <world>) (because <reason>)
-    //
-    // @Triggers when a portal is created in a world.
-    // @Context
-    // <context.world> returns the dWorld the portal was created in.
-    // <context.reason> returns an Element of the reason the portal was created. (FIRE or OBC_DESTINATION)
-    // <context.list> returns a dList of all the blocks that will become portal blocks.
-    //
-    // @Determine
-    // "CANCELLED" to stop the portal from being created.
-    //
-    // -->
-    @EventHandler
-    public void portalCreate(PortalCreateEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-        String reason = event.getReason().name();
-
-        context.put("world", world);
-        context.put("reason", new Element(reason));
-
-        dList list = new dList();
-        for (Block block : event.getBlocks()) {
-            list.add(new dLocation(block.getLocation()).identify());
-        }
-        context.put("blocks", list);
-
-        String determination = doEvents(Arrays.asList
-                        ("portal created",
-                                "portal created because " + reason,
-                                "portal created in " + world.identifySimple(),
-                                "portal created in " + world.identifySimple() + " because " + reason),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // structure grows (naturally/from bonemeal) (in <world>)
     // <structure> grows (naturally/from bonemeal) (in <world>)
     //
