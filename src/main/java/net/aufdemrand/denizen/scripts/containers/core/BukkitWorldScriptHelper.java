@@ -2218,28 +2218,4 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // world initializes
-    // <world> initializes
-    //
-    // @Triggers when a world is initialized.
-    // @Context
-    // <context.world> returns the dWorld that was initialized.
-    //
-    // -->
-    @EventHandler
-    public void worldInit(WorldInitEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-
-        context.put("world", world);
-
-        doEvents(Arrays.asList
-                        ("world initializes",
-                                world.identifySimple() + " initializes"),
-                null, null, context, true);
-    }
-
 }
