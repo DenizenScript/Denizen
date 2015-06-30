@@ -83,7 +83,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (item.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
             return true;
         }
-        item.setDurability((short)0);
+        item.setDurability((short) 0);
         if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
             return true;
         }

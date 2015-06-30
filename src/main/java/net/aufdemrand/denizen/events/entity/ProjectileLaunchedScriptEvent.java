@@ -18,8 +18,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // projectile launched (in <notable area>)
-    // <entity> launched (in <notable area>)
+    // projectile launched (in <area>)
+    // <entity> launched (in <area>)
     //
     // @Cancellable true
     //

@@ -38,7 +38,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Context
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
-    // <context.cuboids> returns a dList of notable cuboids surrounding the block broken. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
@@ -72,7 +72,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!mat.equals("block")
                 && !mat.equals(material.identifySimpleNoIdentifier())
                 && !mat.equals(material.identifyFullNoIdentifier())) {
-                return false;
+            return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, location)) {

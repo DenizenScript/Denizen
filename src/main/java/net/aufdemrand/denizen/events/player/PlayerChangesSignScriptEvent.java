@@ -40,7 +40,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
     // <context.material> returns the dMaterial of the sign.
-    // <context.cuboids> returns a dList of notable cuboids surrounding the sign. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // dList to change the lines (Uses escaping, see <@link language Property Escaping>)

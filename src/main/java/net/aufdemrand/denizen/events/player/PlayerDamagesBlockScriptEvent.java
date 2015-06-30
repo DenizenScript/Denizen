@@ -23,10 +23,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // player damages block
-    // player damages <material>
-    // player damages block in <area>
-    // player damages <material> in <area>
+    // player damages block (in <area>)
+    // player damages <material> (in <area>)
     //
     // @Cancellable true
     //
@@ -35,7 +33,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Context
     // <context.location> returns the dLocation the block that was damaged.
     // <context.material> returns the dMaterial of the block that was damaged.
-    // <context.cuboids> returns a dList of notable cuboids which the damaged block is contained. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // "INSTABREAK" to make the block get broken instantly.

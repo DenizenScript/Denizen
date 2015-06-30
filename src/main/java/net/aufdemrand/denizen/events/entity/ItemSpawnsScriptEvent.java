@@ -21,9 +21,9 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // item spawns (in <notable area>)
-    // <item> spawns (in <notable area>)
-    // <material> spawns (in <notable area>)
+    // item spawns (in <area>)
+    // <item> spawns (in <area>)
+    // <material> spawns (in <area>)
     //
     // @Cancellable true
     //

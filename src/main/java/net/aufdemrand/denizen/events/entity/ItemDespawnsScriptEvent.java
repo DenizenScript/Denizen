@@ -20,9 +20,9 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // item despawns (in <notable area>)
-    // <item> despawns (in <notable area>)
-    // <material> despawns (in <notable area>)
+    // item despawns (in <area>)
+    // <item> despawns (in <area>)
+    // <material> despawns (in <area>)
     //
     // @Cancellable true
     //
