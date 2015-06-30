@@ -120,8 +120,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         HashMap<String, dObject> context = super.getContext();
         context.put("location", location);
         context.put("material", material);
-        context.put("new_sign", new_sign);
-        context.put("old_sign", old_sign);
+        context.put("new", new_sign);
+        context.put("old", old_sign);
         context.put("cuboids", cuboids);
         return context;
     }
