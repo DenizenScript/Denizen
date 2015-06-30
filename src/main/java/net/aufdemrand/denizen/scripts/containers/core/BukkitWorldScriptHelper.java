@@ -2290,27 +2290,4 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, null, context, true);
     }
 
-    // <--[event]
-    // @Events
-    // world unloads
-    // <world> unloads
-    //
-    // @Triggers when a world is unloaded.
-    // @Context
-    // <context.world> returns the dWorld that was unloaded.
-    //
-    // -->
-    @EventHandler
-    public void worldUnload(WorldUnloadEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-
-        context.put("world", world);
-
-        doEvents(Arrays.asList
-                        ("world unloads",
-                                world.identifySimple() + " unloads"),
-                null, null, context, true);
-    }
 }
