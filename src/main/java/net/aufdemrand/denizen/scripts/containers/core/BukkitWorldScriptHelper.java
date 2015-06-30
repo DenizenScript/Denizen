@@ -2242,28 +2242,4 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, null, context, true);
     }
 
-    // <--[event]
-    // @Events
-    // world loads
-    // <world> loads
-    //
-    // @Triggers when a world is loaded.
-    // @Context
-    // <context.world> returns the dWorld that was loaded.
-    //
-    // -->
-    @EventHandler
-    public void worldLoad(WorldLoadEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-
-        context.put("world", world);
-
-        doEvents(Arrays.asList
-                        ("world loads",
-                                world.identifySimple() + " loads"),
-                null, null, context, true);
-    }
-
 }
