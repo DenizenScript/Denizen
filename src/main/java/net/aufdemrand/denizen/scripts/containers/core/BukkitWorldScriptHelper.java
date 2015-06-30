@@ -1299,48 +1299,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player consumes item
-    // player consumes <item>
-    //
-    // @Triggers when a player consumes an item.
-    // @Context
-    // <context.item> returns the dItem.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being consumed.
-    // dItem to change the item being consumed.
-    //
-    // -->
-    @EventHandler
-    public void playerItemConsume(PlayerItemConsumeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        dItem item = new dItem(event.getItem());
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("item", item);
-
-        List<String> events = new ArrayList<String>();
-        events.add("player consumes item");
-        events.add("player consumes " + item.identifySimple());
-        events.add("player consumes " + item.identifyMaterial());
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-
-        else if (dItem.matches(determination)) {
-            dItem newitem = dItem.valueOf(determination, dEntity.getPlayerFrom(event.getPlayer()), null);
-            if (newitem != null)
-                event.setItem(newitem.getItemStack());
-        }
-    }
-
-    // <--[event]
-    // @Events
     // player joins
     // player join
     //
