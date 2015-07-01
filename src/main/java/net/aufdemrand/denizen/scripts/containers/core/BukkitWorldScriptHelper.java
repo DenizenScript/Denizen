@@ -2042,45 +2042,5 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // weather changes/rains/clears (in <world>)
-    //
-    // @Triggers when weather changes in a world.
-    // @Context
-    // <context.world> returns the dWorld the weather changed in.
-    // <context.weather> returns an Element with the name of the new weather. (rain or clear).
-    //
-    // @Determine
-    // "CANCELLED" to stop the weather from changing.
-    //
-    // -->
-    @EventHandler
-    public void weatherChange(WeatherChangeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-        context.put("world", world);
-
-        List<String> events = new ArrayList<String>();
-        events.add("weather changes");
-        events.add("weather changes in " + world.identifySimple());
-
-        if (event.toWeatherState()) {
-            context.put("weather", new Element("rain"));
-            events.add("weather rains");
-            events.add("weather rains in " + world.identifySimple());
-        }
-        else {
-            context.put("weather", new Element("clear"));
-            events.add("weather clears");
-            events.add("weather clears in " + world.identifySimple());
-        }
-
-        String determination = doEvents(events, null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
 
 }
