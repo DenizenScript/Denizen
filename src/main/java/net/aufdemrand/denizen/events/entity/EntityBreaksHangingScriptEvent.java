@@ -17,9 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -103,8 +101,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override
