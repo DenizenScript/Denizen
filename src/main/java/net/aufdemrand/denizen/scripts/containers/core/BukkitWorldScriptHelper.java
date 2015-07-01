@@ -2007,40 +2007,4 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-
-    /////////////////////
-    //   WEATHER EVENTS
-    /////////////////
-
-    // <--[event]
-    // @Events
-    // lightning strikes (in <world>)
-    //
-    // @Triggers when lightning strikes in a world.
-    // @Context
-    // <context.world> returns the dWorld the lightning struck in.
-    // <context.location> returns the dLocation where the lightning struck.
-    //
-    // @Determine
-    // "CANCELLED" to stop the lightning from striking.
-    //
-    // -->
-    @EventHandler
-    public void lightningStrike(LightningStrikeEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld world = new dWorld(event.getWorld());
-        context.put("world", world);
-        context.put("location", new dLocation(event.getLightning().getLocation()));
-
-        String determination = doEvents(Arrays.asList
-                        ("lightning strikes",
-                                "lightning strikes in " + world.identifySimple()),
-                null, null, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-
 }
