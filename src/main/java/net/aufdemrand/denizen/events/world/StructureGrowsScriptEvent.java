@@ -24,10 +24,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // structure grows (naturally/from bonemeal) (in <world>)
-    // <structure> grows (naturally/from bonemeal) (in <world>)
-    // plant grows (naturally/from bonemeal) (in <world>)
-    // <plant> grows (naturally/from bonemeal) (in <world>)
+    // structure grows (naturally/from bonemeal) (in area)
+    // <structure> grows (naturally/from bonemeal) (in area)
+    // plant grows (naturally/from bonemeal) (in area)
+    // <plant> grows (naturally/from bonemeal) (in area)
     //
     // @Cancellable true
     //

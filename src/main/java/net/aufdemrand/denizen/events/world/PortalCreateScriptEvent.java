@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.world;
 
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -18,15 +18,15 @@ import org.bukkit.event.world.PortalCreateEvent;
 
 import java.util.HashMap;
 
-public class PortalCreateScriptEvent extends ScriptEvent implements Listener {
+public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // portal created (in <world>) (because <reason>)
+    // portal created (in area) (because <reason>)
     //
     // @Cancellable true
     //
-    // @Triggers when a portal is created in a world.
+    // @Triggers when a portal is created.
     //
     // @Context
     // <context.world> returns the dWorld the portal was created in.
@@ -53,8 +53,7 @@ public class PortalCreateScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String wCheck = CoreUtilities.getXthArg(3,lower);
-        if (wCheck.length() > 0 && !wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+        if (!runInCheck(scriptContainer, s, lower, dLocation.valueOf(blocks.get(0)))) {
             return false;
         }
         String rCheck = CoreUtilities.getXthArg(2,lower).equals("because") ? CoreUtilities.getXthArg(3,lower):CoreUtilities.getXthArg(5,lower);
