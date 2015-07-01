@@ -20,14 +20,15 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // spawn changes (in area)
+    // lightning strikes (in <area>)
     //
     // @Cancellable true
     //
     // @Triggers when lightning strikes in a world.
     //
     // @Context
-    // <context.world> returns the dWorld the lightning struck in.
+    // <context.world> DEPRECATED
+    // <context.lightning> returns the dEntity of the lightning.
     // <context.location> returns the dLocation where the lightning struck.
     //
     // -->
@@ -75,6 +76,7 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("lightning", lightning);
+        context.put("world", new dWorld(location.getWorld()));
         context.put("location", location);
         return context;
     }
