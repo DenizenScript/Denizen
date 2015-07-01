@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
@@ -1056,7 +1057,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             inventory.setItem(slot + i, item);
         }
-        if (dNPC.matches(idHolder)) { // TODO: Directly store holder
+        if (Depends.citizens != null && dNPC.matches(idHolder)) { // TODO: Directly store holder
             dNPC.valueOf(idHolder).getInventoryTrait().setContents(inventory.getContents());
         }
         return this;
