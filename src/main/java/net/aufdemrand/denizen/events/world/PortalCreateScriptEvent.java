@@ -89,7 +89,7 @@ public class PortalCreateScriptEvent extends ScriptEvent implements Listener {
         HashMap<String, dObject> context = super.getContext();
         context.put("world", world);
         context.put("reason", reason);
-        context.put("list", blocks);
+        context.put("blocks", blocks);
         return context;
     }
 
