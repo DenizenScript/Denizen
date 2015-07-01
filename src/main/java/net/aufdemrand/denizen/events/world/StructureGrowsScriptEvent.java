@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.events.world;
 
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -20,12 +20,14 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import java.util.HashMap;
 
-public class StructureGrowsScriptEvent extends ScriptEvent implements Listener {
+public class StructureGrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // structure grows (naturally/from bonemeal) (in <world>)
     // <structure> grows (naturally/from bonemeal) (in <world>)
+    // plant grows (naturally/from bonemeal) (in <world>)
+    // <plant> grows (naturally/from bonemeal) (in <world>)
     //
     // @Cancellable true
     //
@@ -61,12 +63,12 @@ public class StructureGrowsScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String struct = CoreUtilities.getXthArg(0, lower);
-        if (!struct.equals("structure") && !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
+        if (!struct.equals("structure") && !struct.equals("plant") &&
+                !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
             return false;
         }
 
-        String wCheck = lower.indexOf(" in ") > 0 ? CoreUtilities.getXthArg(1,lower.substring(lower.indexOf(" in ")+4)):"";
-        if (wCheck.length() > 0 && !wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
+        if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
         if (CoreUtilities.getXthArg(2,lower).equals("from") && !event.isFromBonemeal()) {
