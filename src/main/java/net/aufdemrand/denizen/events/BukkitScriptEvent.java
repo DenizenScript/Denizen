@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -41,6 +42,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + s + "' for " + scriptContainer.getName());
                 return false;
             }
+        }
+        else if (dWorld.matches(it)) {
+            return location.getWorld().getName().equalsIgnoreCase(it);
         }
         else if (dCuboid.matches(it)) {
             dCuboid cuboid = dCuboid.valueOf(it);
