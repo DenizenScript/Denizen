@@ -143,6 +143,15 @@ public class Rotation {
         return null;
     }
 
+    public static Location getImpactNormal(Location start, Vector direction, double range) {
+        Vector startVec = start.toVector();
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
+        if (l != null && l.direction != null) {
+            return new Location(start.getWorld(), l.direction.getAdjacentX(), l.direction.getAdjacentY(), l.direction.getAdjacentZ());
+        }
+        return null;
+    }
+
     /**
      * Gets the precise location a LivingEntity is looking at.
      *
