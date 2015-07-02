@@ -91,8 +91,9 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("i", "id"))
+            if (arg.matchesPrefix("i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
 
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dPlayer.class)) {
@@ -107,39 +108,49 @@ public class RunCommand extends AbstractCommand implements Holdable {
             }
 
             // Catch invalid entry for 'as' argument
-            else if (arg.matchesPrefix("a", "as"))
+            else if (arg.matchesPrefix("a", "as")) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
+            }
 
-            else if (arg.matchesPrefix("d", "def", "define", "c", "context"))
+            else if (arg.matchesPrefix("d", "def", "define", "c", "context")) {
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
+            }
 
-            else if (arg.matches("instant", "instantly"))
+            else if (arg.matches("instant", "instantly")) {
                 scriptEntry.addObject("instant", new Element(true));
+            }
 
             else if (arg.matchesPrefix("delay")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
+            }
 
-            else if (arg.matches("local", "locally"))
-                scriptEntry.addObject("local", new Element(true));
+            else if (arg.matches("local", "locally")) {
+                scriptEntry.addObject("local", new Element("true"));
+                scriptEntry.addObject("script", scriptEntry.getScript());
+            }
 
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("p", "path"))
+                    && !arg.matchesPrefix("p", "path")) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
-            else if (!scriptEntry.hasObject("path"))
+            else if (!scriptEntry.hasObject("path")) {
                 scriptEntry.addObject("path", arg.asElement());
+            }
 
             else arg.reportUnhandled();
 
         }
 
-        if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local"))
+        if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local")) {
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
+        }
 
-        if (!scriptEntry.hasObject("path") && scriptEntry.hasObject("local"))
+        if (!scriptEntry.hasObject("path") && scriptEntry.hasObject("local")) {
             throw new InvalidArgumentsException("Must specify a PATH.");
+        }
 
     }
 
@@ -205,6 +216,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 definition_names = script.getContainer().getString("definitions").split("\\|");
             }
             catch (Exception e) {
+                // TODO: less lazy handling
             }
             for (String definition : definitions) {
                 String name = definition_names != null && definition_names.length >= x ?

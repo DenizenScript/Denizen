@@ -42,7 +42,7 @@ public class RenameCommand extends AbstractCommand {
 
         Location prev = npc.isSpawned() ? npc.getEntity().getLocation() : null;
         npc.despawn(DespawnReason.PENDING_RESPAWN);
-        npc.setName(name.asString().length() > 100 ? name.asString().substring(0, 100) : name.asString());
+        npc.setName(name.asString().length() > 128 ? name.asString().substring(0, 128) : name.asString());
         if (prev != null)
             npc.spawn(prev);
 

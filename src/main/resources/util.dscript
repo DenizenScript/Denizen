@@ -1,21 +1,23 @@
 
 # Load Tester
 
-Load Tester:
+BUILTIN_Load_Tester:
     type: command
     name: testload
     debug: false
     description: Tests server load.
     usage: /testload <&lt>power<&gt>
     allowed help:
-    - determine <player.has_permission[denizen.testload]||<player.is_op>>
+    - determine <player.has_permission[denizen.testload]||<player.is_op||<context.server>>>
+    permission: denizen.testload
     script:
 
-    # ops only!
-    - if !<player.has_permission[denizen.testload]||<player.is_op>> queue clear
+    # double check the permission
+    - if !<player.has_permission[denizen.testload]||<player.is_op||<context.server>>> queue clear
 
-    - if <c.args.size> == 1
-      define n <c.args.get[1]>
+    - if <context.args.size> >= 1 {
+      - define n <context.args.get[1]||null>
+      }
 
     # if no number specified, stress test with 100 queues
     - if %n% == null {
@@ -40,11 +42,10 @@ Load Tester:
     - define end_time <server.current_time_millis>
 
     - narrate 'Completed <server.flag[stress_test_counter].as_int> of %n%
-      total queues in <m:(%end_time% - %start_time%) / 1000> seconds.'
+      total queues in <def[end_time].sub_int[<def[start_time]>].div[1000]> seconds.'
 
     # cleanup
     - flag server stress_test_counter:!
-    - determine fulfilled
 
 
     test:
