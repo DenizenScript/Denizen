@@ -15,7 +15,8 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
-import net.citizensnpcs.npc.ai.BlockBreaker;
+import net.citizensnpcs.api.npc.BlockBreaker;
+import net.citizensnpcs.npc.ai.CitizensBlockBreaker;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -81,11 +82,10 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
         context.put("location", location);
         context.put("material", material);
 
-
         dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
 
         final ScriptEntry se = scriptEntry;
-        BlockBreaker.Configuration config = new BlockBreaker.Configuration();
+        BlockBreaker.BlockBreakerConfiguration config = new BlockBreaker.BlockBreakerConfiguration();
         config.item(entity.getLivingEntity().getEquipment().getItemInHand());
         config.radius(radius.asDouble());
         config.callback(new Runnable() {
@@ -98,8 +98,7 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
             }
         });
 
-
-        final BlockBreaker breaker = BlockBreaker.createWithConfiguration(entity.getLivingEntity(),
+        final CitizensBlockBreaker breaker = new CitizensBlockBreaker(entity.getLivingEntity(),
                 location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
