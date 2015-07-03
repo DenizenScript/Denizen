@@ -108,7 +108,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPlayerStepsOn(PlayerMoveEvent event) {
-        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getWorld())) {
+        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getLocation())) {
             return;
         }
         location = new dLocation(event.getTo().clone().subtract(0, 1, 0));

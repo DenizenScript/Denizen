@@ -1073,7 +1073,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // -->
 
         if (cmdName.equalsIgnoreCase("ex")) {
-            List<String> entries = new ArrayList<String>();
+            List<Object> entries = new ArrayList<Object>();
             String entry = "";
             for (String arg : args)
                 entry = entry + arg + " ";
