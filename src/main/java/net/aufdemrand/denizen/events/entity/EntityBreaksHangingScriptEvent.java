@@ -25,8 +25,12 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // @Events
     // entity breaks hanging (in <area>)
     // entity breaks hanging because <cause> (in <area>)
+    // entity breaks <hanging> (in <area>)
+    // entity breaks <hanging> because <cause> (in <area>)
     // <entity> breaks hanging (in <area>)
     // <entity> breaks hanging because <cause> (in <area>)
+    // <entity> breaks <hanging> (in <area>)
+    // <entity> breaks <hanging> because <cause> (in <area>)
     //
     // @Cancellable true
     //
@@ -56,17 +60,27 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("breaks hanging");
+        String lower = CoreUtilities.toLowerCase(s);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String ent = CoreUtilities.getXthArg(0, lower);
+        String hang = CoreUtilities.getXthArg(2, lower);
+        return (cmd.equals("breaks") ||
+                dEntity.matches(ent))
+                &&(hang.equals("hanging") ||
+                dEntity.matches(hang));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
+        String hang = CoreUtilities.getXthArg(2, lower);
         if (!entity.matchesEntity(entName)) {
             return false;
         }
-
+        if (!hang.equals("hanging") && !hanging.matchesEntity(hang)) {
+            return false;
+        }
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
