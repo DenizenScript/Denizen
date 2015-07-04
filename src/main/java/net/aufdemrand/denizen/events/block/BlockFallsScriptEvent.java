@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 
 import java.util.HashMap;
 
-public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
+public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block falls
-    // <material> falls
+    // block falls (in <area>)
+    // <material> falls (in <area>)
     //
     // @Cancellable true
     //
@@ -37,21 +37,25 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     public static BlockFallsScriptEvent instance;
 
     public dLocation location;
+    private dMaterial material;
     public EntityChangeBlockEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.equals("block falls")
-                || (lower.equals(mat + " falls") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("falls");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("block falls")
-                || CoreUtilities.getXthArg(0, lower).equals(event.getBlock().getType().name().toLowerCase());
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return tryMaterial(material, mat);
     }
 
     @Override
@@ -84,6 +88,7 @@ public class BlockFallsScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onBlockFalls(EntityChangeBlockEvent event) {
         location = new dLocation(event.getBlock().getLocation());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

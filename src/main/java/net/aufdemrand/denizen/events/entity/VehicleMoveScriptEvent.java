@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,7 +14,7 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.HashMap;
 
-public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
+public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -25,6 +25,7 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     //
     // @Triggers when a vehicle moves in the slightest.
     // @Context
+    // <context.vehicle> returns the dEntity of the vehicle.
     // <context.from> returns the location of where the vehicle was.
     // <context.to> returns the location of where the vehicle is.
     //
@@ -35,13 +36,9 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
     }
 
     public static VehicleMoveScriptEvent instance;
-
     public dEntity vehicle;
-
     public dLocation from;
-
     public dLocation to;
-
     public VehicleMoveEvent event;
 
     @Override
@@ -52,7 +49,17 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return vehicle.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String veh = CoreUtilities.getXthArg(0, lower);
+        if (!vehicle.matchesEntity(veh)) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     // TODO: Can the vehicle be an NPC?
@@ -82,13 +89,12 @@ public class VehicleMoveScriptEvent extends ScriptEvent implements Listener {
         HashMap<String, dObject> context = super.getContext();
         context.put("from", from);
         context.put("to", to);
-        context.put("entity", vehicle);
+        context.put("vehicle", vehicle);
         return context;
     }
 
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
-        // TODO: Cuboids?
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         vehicle = new dEntity(event.getVehicle());

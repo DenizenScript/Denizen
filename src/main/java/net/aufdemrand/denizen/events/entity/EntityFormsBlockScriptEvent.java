@@ -51,9 +51,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String matTest = CoreUtilities.getXthArg(2, lower);
-        return CoreUtilities.getXthArg(1, lower).equals("forms")
-                && (matTest.equals("block") || dMaterial.matches(matTest));
+        return CoreUtilities.getXthArg(1, lower).equals("forms");
     }
 
     @Override
@@ -65,8 +63,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
         }
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block")
-                && !mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier())) {
+        if (!tryMaterial(material, mat)) {
             return false;
         }
 

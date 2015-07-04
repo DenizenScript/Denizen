@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -17,14 +18,14 @@ import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 
 import java.util.HashMap;
 
-public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Listener {
+public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // vehicle collides with entity
-    // vehicle collides with <entity>
-    // <vehicle> collides with entity
-    // <vehicle> collides with <entity>
+    // vehicle collides with entity (in <area>)
+    // vehicle collides with <entity> (in <area>)
+    // <vehicle> collides with entity (in <area>)
+    // <vehicle> collides with <entity> (in <area>)
     //
     // @Cancellable true
     //
@@ -49,25 +50,33 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
 
     public dEntity vehicle;
     public dEntity entity;
-    public Boolean pickup_cancel;
+    private Boolean pickup_cancel;
     public VehicleEntityCollisionEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String arg = lower.substring(lower.lastIndexOf("with ") + 5);
-        return lower.contains(" collides with ");
+        return lower.contains("collides with");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        if (!vehicle.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        String veh = CoreUtilities.getXthArg(0, lower);
+        if (!vehicle.matchesEntity(veh)) {
             return false;
         }
 
-        return entity.matchesEntity(CoreUtilities.getXthArg(3, lower));
+        String ent = CoreUtilities.getXthArg(3, lower);
+        if (!entity.matchesEntity(ent)) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

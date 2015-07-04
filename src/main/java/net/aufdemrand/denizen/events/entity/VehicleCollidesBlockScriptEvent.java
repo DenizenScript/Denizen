@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -15,14 +15,14 @@ import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 
 import java.util.HashMap;
 
-public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements Listener {
+public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // vehicle collides with block
-    // vehicle collides with <material>
-    // <vehicle> collides with block
-    // <vehicle> collides with <material>
+    // vehicle collides with block (in <area>)
+    // vehicle collides with <material> (in <area>)
+    // <vehicle> collides with block (in <area>)
+    // <vehicle> collides with <material> (in <area>)
     //
     // @Triggers when a vehicle collides with a block.
     //
@@ -40,32 +40,33 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
 
     public dEntity vehicle;
     public dLocation location;
+    private dMaterial material;
     public VehicleBlockCollisionEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String arg = lower.substring(lower.lastIndexOf("with ") + 5);
-        return lower.contains(" collides with ") && (arg.equals("block") || dMaterial.matches(arg));
+        return lower.contains("collides with");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        String block = lower.substring(lower.lastIndexOf(" ") + 1);
-        String mat = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData()).identifyNoIdentifier();
-
-        if (mat.equals("m@air") || (mat.equals("air"))) {
-            return false;
-        }
-        if (!block.equals("block")
-                && !block.equals(mat)) {
+        String ent = CoreUtilities.getXthArg(0, lower);
+        if (!vehicle.matchesEntity(ent)) {
             return false;
         }
 
-        String ent = CoreUtilities.getXthArg(0, s);
-        return vehicle.matchesEntity(ent);
+        String mat = CoreUtilities.getXthArg(3, lower);
+        if (tryMaterial(material, mat)) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -100,6 +101,7 @@ public class VehicleCollidesBlockScriptEvent extends ScriptEvent implements List
     public void onVehicleCollidesBlock(VehicleBlockCollisionEvent event) {
         vehicle = new dEntity(event.getVehicle());
         location = new dLocation(event.getBlock().getLocation());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         this.event = event;
         fire();
     }

@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.BlockFadeEvent;
 
 import java.util.HashMap;
 
-public class BlockFadesScriptEvent extends ScriptEvent implements Listener {
+public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block fades
-    // <block> fades
+    // block fades (in <area>)
+    // <block> fades (in <area>)
     //
     // @Cancellable true
     //
@@ -27,7 +27,7 @@ public class BlockFadesScriptEvent extends ScriptEvent implements Listener {
     //
     // @Context
     // <context.location> returns the dLocation the block faded at.
-    // <context.material> returns the dMaterial of the block that faded.
+    // <context.material> DEPRECATED
     //
     // -->
 
@@ -43,17 +43,19 @@ public class BlockFadesScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.contains("block fades")
-                || (lower.equals(mat + " fades") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("fades");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
         String mat = CoreUtilities.getXthArg(0, lower);
-        return mat.equals("block")
-                || (material.identifySimpleNoIdentifier().toLowerCase().equals(mat));
+        return tryMaterial(material, mat);
     }
 
     @Override
