@@ -740,29 +740,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player leaves bed
-    //
-    // @Triggers when a player leaves a bed.
-    // @Context
-    // <context.location> returns the dLocation of the bed.
-    //
-    // -->
-    @EventHandler
-    public void playerBedLeave(PlayerBedLeaveEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("location", new dLocation(event.getBed().getLocation()));
-
-        doEvents(Arrays.asList
-                        ("player leaves bed"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-    }
-
-    // <--[event]
-    // @Events
     // player changes world
     // player changes world from <world>
     // player changes world to <world>
