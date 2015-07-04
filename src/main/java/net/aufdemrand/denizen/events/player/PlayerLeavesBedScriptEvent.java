@@ -84,7 +84,7 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @EventHandler
-    public void onEntityLeavesPortal(PlayerBedLeaveEvent event) {
+    public void onEntityLeavesBed(PlayerBedLeaveEvent event) {
         location = new dLocation(event.getBed().getLocation());
         this.event = event;
         fire();
