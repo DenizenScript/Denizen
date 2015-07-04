@@ -740,40 +740,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes world
-    // player changes world from <world>
-    // player changes world to <world>
-    // player changes world from <world> to <world>
-    //
-    // @Triggers when a player moves to a different world.
-    // @Context
-    // <context.origin_world> returns the dWorld that the player was previously on.
-    // <context.destination_world> returns the dWorld that the player is now in.
-    //
-    // -->
-    @EventHandler
-    public void playerChangedWorld(PlayerChangedWorldEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dWorld originWorld = new dWorld(event.getFrom());
-        dWorld destinationWorld = new dWorld(event.getPlayer().getWorld());
-        context.put("origin_world", originWorld);
-        context.put("destination_world", destinationWorld);
-
-        doEvents(Arrays.asList
-                        ("player changes world",
-                                "player changes world from " + originWorld.identifySimple(),
-                                "player changes world to " + destinationWorld.identifySimple(),
-                                "player changes world from " + originWorld.identifySimple() +
-                                        " to " + destinationWorld.identifySimple()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-    }
-
-    // <--[event]
-    // @Events
     // player drops item
     // player drops <item>
     //
