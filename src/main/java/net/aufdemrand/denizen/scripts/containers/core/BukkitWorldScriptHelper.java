@@ -740,35 +740,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player enters bed
-    //
-    // @Triggers when a player enters a bed.
-    // @Context
-    // <context.location> returns the dLocation of the bed.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from entering the bed.
-    //
-    // -->
-    @EventHandler
-    public void playerBedEnter(PlayerBedEnterEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("location", new dLocation(event.getBed().getLocation()));
-
-        String determination = doEvents
-                (Arrays.asList("player enters bed"),
-                        null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player leaves bed
     //
     // @Triggers when a player leaves a bed.
