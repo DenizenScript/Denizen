@@ -95,6 +95,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean tryMaterial(dMaterial mat, String comparedto) {
+        if (comparedto == null || comparedto.length() == 0) {
+            return false;
+        }
         if (comparedto.equalsIgnoreCase("block") || comparedto.equalsIgnoreCase("material")) {
             return true;
         }
