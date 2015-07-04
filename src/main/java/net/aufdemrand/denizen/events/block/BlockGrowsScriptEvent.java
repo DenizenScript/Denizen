@@ -27,8 +27,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     //           e.g. when wheat, sugar canes, cacti,
     //           watermelons or pumpkins grow
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> DEPRECATED
+    // <context.location> returns the dLocation of the block that grew.
+    // <context.material> returns the dMaterial of the block that grew.
     //
     // -->
 

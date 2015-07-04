@@ -27,8 +27,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     // E.G. when snow forms in a snow storm or ice forms in a snowy biome
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> DEPRECATED
+    // <context.location> returns the dLocation the block that formed.
+    // <context.material> returns the dMaterial of the block that formed.
     //
     // -->
 

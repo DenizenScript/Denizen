@@ -27,8 +27,8 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     //           e.g. when fire spreads, when mushrooms spread
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> DEPRECATED
+    // <context.location> returns the dLocation of the block that spread.
+    // <context.material> returns the dMaterial of the block that spread.
     //
     // -->
 

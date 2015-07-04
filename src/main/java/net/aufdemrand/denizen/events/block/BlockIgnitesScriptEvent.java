@@ -28,8 +28,8 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // @Triggers when a block is set on fire.
     //
     // @Context
-    // <context.location> returns the dLocation the block was set on fire at.
-    // <context.material> DEPRECATED
+    // <context.location> returns the dLocation of the block was set on fire at.
+    // <context.material> returns the dMaterial of the block that was set on fire.
     // <context.entity> returns the dEntity of the entity that ignited the block.
     // <context.origin_location> returns the dLocation of the fire block that ignited this block.
     // <context.cause> returns an Element of the cause of the event: ENDER_CRYSTAL, EXPLOSION, FIREBALL, FLINT_AND_STEEL, LAVA, or SPREAD.

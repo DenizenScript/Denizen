@@ -27,7 +27,7 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Context
     // <context.location> returns the dLocation the block faded at.
-    // <context.material> DEPRECATED
+    // <context.material> returns the dMaterial of the block that faded.
     //
     // -->
 

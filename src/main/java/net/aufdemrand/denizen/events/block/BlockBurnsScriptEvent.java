@@ -28,7 +28,7 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Context
     // <context.location> returns the dLocation the block was burned at.
-    // <context.material> DEPRECATED
+    // <context.material> returns the dMaterial of the block that was burned.
     //
     // -->
 
