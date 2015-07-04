@@ -709,37 +709,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player animates (<animation>)
-    //
-    // @Triggers when a player performs an animation.
-    // @Context
-    // <context.animation> returns the name of the animation.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from animating.
-    //
-    // -->
-    @EventHandler
-    public void playerAnimation(PlayerAnimationEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        String animation = event.getAnimationType().name();
-        context.put("animation", new Element(animation));
-
-        String determination = doEvents(Arrays.asList
-                        ("player animates",
-                                "player animates " + animation),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player throws (hatching/non-hatching) egg
     //
     // @Triggers when a player throws an egg.
