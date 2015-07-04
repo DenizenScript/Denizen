@@ -1,9 +1,6 @@
 package net.aufdemrand.denizen.events;
 
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -92,6 +89,22 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean tryMaterial(dMaterial mat, String comparedto) {
+        if (comparedto.equalsIgnoreCase("block") || comparedto.equalsIgnoreCase("material")) {
+            return true;
+        }
+        if (mat.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (mat.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (mat.identifyFullNoIdentifier().equalsIgnoreCase(comparedto)) {
             return true;
         }
         return false;
