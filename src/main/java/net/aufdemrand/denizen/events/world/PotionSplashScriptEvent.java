@@ -50,9 +50,8 @@ public class PotionSplashScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.equals("potion splash")
-                || (lower.equals(mat + " splashes") && dItem.matches(mat));
+        String splash = CoreUtilities.getXthArg(1, lower);
+        return splash.equals("splash") || splash.equals("splashes");
     }
 
     @Override

@@ -46,13 +46,14 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     public dEntity entity;
     public ItemSpawnEvent event;
 
+    // TODO: De-collide with 'entity spawns'
+
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("spawns")
-                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
+        return cmd.equals("spawns");
     }
 
     @Override
@@ -60,7 +61,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         String lower = CoreUtilities.toLowerCase(s);
         String item_test = CoreUtilities.getXthArg(0, lower);
 
-        if (!item_test.equals("item")
+        if (!item_test.equals("item") // TODO: tryItem
                 && !item_test.equals(item.identifyNoIdentifier()) && !item_test.equals(item.identifySimpleNoIdentifier())) {
             return false;
         }

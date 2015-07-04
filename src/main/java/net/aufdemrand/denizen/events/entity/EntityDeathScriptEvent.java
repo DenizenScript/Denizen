@@ -164,7 +164,9 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         if (inventory != null) {
             context.put("inventory", inventory);
         }
-        context.put("cause", cause);
+        if (cause != null) {
+            context.put("cause", cause);
+        }
         if (drops != null) {
             context.put("drops", drops);
         }
