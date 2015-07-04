@@ -60,7 +60,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
         String mat = CoreUtilities.getXthArg(3, lower);
         dMaterial material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+        if (!tryMaterial(material, mat)) {
             return false;
         }
 
