@@ -59,6 +59,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
         String with = getSwitch(s, "with");
+        if (with.equalsIgnoreCase("item")) {
+            return true;
+        }
         if (with != null) {
             dItem it = dItem.valueOf(with);
             if (it == null) {
@@ -73,6 +76,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean tryItem(dItem item, String comparedto) {
+        if (comparedto.equalsIgnoreCase("item")) {
+            return true;
+        }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
