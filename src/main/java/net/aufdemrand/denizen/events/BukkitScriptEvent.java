@@ -59,10 +59,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
         String with = getSwitch(s, "with");
-        if (with.equalsIgnoreCase("item")) {
-            return true;
-        }
         if (with != null) {
+            if (with.equalsIgnoreCase("item")) {
+                return true;
+            }
             dItem it = dItem.valueOf(with);
             if (it == null) {
                 dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());

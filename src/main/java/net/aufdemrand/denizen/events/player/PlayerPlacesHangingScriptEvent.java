@@ -31,7 +31,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     //
     // @Context
     // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> DEPRECATED
+    // <context.location> returns the dLocation of the block the hanging was placed on.
     // <context.cuboids> DEPRECATED.
     //
     // -->
