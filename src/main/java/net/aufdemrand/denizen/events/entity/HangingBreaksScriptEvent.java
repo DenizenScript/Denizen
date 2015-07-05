@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Hanging;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
@@ -24,21 +25,19 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // hanging breaks (in <area>)
-    // hanging breaks because <cause> (in <area>)
-    // <hanging> breaks (in <area>)
-    // <hanging> breaks because <cause> (in <area>)
+    // hanging breaks (because <cause>) (in <area>)
+    // <hanging> breaks (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is broken.
+    // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.
     //
     // @Context
     // <context.cause> returns the cause of the entity breaking.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
     // <context.cuboids> DEPRECATED.
-    // <context.location> returns a dLocation of the hanging.
+    // <context.location> DEPRECATED.
     // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
     // -->
@@ -57,7 +56,9 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("breaks");
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.getXthArg(1, lower).equals("breaks")
+                && !CoreUtilities.getXthArg(2, lower).equals("hanging");
     }
 
     @Override
@@ -65,7 +66,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         String lower = CoreUtilities.toLowerCase(s);
         String hangCheck = CoreUtilities.getXthArg(0, lower);
         if (!hangCheck.equals("hanging")
-                && hanging.matchesEntity(hangCheck)) {
+                && !hanging.matchesEntity(hangCheck)) {
             return false;
         }
 

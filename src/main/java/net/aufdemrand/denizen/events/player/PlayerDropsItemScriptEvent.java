@@ -1,10 +1,10 @@
-package net.aufdemrand.denizen.events.entity;
+package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -13,70 +13,63 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.EntityBlockFormEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
 import java.util.HashMap;
 
-public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity forms block (in <area>)
-    // entity forms <block> (in <area>)
-    // <entity> forms block (in <area>)
-    // <entity> forms <block> (in <area>)
+    // player drops item (in <area>)
+    // player drops <item> (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block is formed by an entity.
-    // For example, when a snowman forms snow.
+    // @Triggers when a player drops an item.
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
-    // <context.entity> returns the dEntity that formed the block.
+    // <context.item> returns the dItem.
+    // <context.entity> returns a dEntity of the item.
+    // <context.location> returns a dLocation of the item's location.
     //
     // -->
 
-    public EntityFormsBlockScriptEvent() {
+    public PlayerDropsItemScriptEvent() {
         instance = this;
     }
 
-    public static EntityFormsBlockScriptEvent instance;
-    public dMaterial material;
-    public dLocation location;
+    public static PlayerDropsItemScriptEvent instance;
+    public dItem item;
     public dEntity entity;
-    public EntityBlockFormEvent event;
+    public dLocation location;
+    public PlayerDropItemEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.getXthArg(1, lower).equals("forms");
+        return CoreUtilities.toLowerCase(s).startsWith("player drops");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        if (dEntity.isNPC(event.getPlayer())) {
             return false;
         }
-
-        String mat = CoreUtilities.getXthArg(2, lower);
-        if (!tryMaterial(material, mat)) {
+        String iCheck = CoreUtilities.getXthArg(2, lower);
+        if (!iCheck.equals("item") && !tryItem(item, iCheck)) {
             return false;
         }
-
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
-
         return true;
     }
 
     @Override
     public String getName() {
-        return "EntityFormsBlock";
+        return "PlayerDropsItem";
     }
 
     @Override
@@ -86,7 +79,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public void destroy() {
-        EntityBlockFormEvent.getHandlerList().unregister(this);
+        PlayerDropItemEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -96,24 +89,23 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
+        context.put("item", item);
         context.put("entity", entity);
+        context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void onEntityFormsBlock(EntityBlockFormEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        entity = new dEntity(event.getEntity());
+    public void onPlayerDropsItem(PlayerDropItemEvent event) {
+        location = new dLocation(event.getPlayer().getLocation());
+        item = new dItem(event.getItemDrop().getItemStack());
+        entity = new dEntity(event.getItemDrop());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

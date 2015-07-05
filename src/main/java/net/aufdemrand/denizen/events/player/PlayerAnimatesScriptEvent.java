@@ -1,66 +1,69 @@
-package net.aufdemrand.denizen.events.block;
+package net.aufdemrand.denizen.events.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.player.PlayerAnimationEvent;
 
 import java.util.HashMap;
 
-public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block falls (in <area>)
-    // <material> falls (in <area>)
+    // player animates (<animation>) (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block falls.
+    // @Triggers when a player performs an animation.
     //
     // @Context
-    // <context.location> returns the location of the block.
+    // <context.animation> returns the name of the animation.
     //
     // -->
 
-    public BlockFallsScriptEvent() {
+    public PlayerAnimatesScriptEvent() {
         instance = this;
     }
 
-    public static BlockFallsScriptEvent instance;
-
-    public dLocation location;
-    private dMaterial material;
-    public EntityChangeBlockEvent event;
+    public static PlayerAnimatesScriptEvent instance;
+    public String animation;
+    private dLocation location;
+    public PlayerAnimationEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("falls");
+        return CoreUtilities.toLowerCase(s).startsWith("player animates");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (dEntity.isNPC(event.getPlayer())) {
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return tryMaterial(material, mat);
+        String ani = CoreUtilities.getXthArg(2, lower);
+        if (ani.length() > 0 && !ani.equals("in") && !ani.equals(animation)) {
+            return false;
+        }
+
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override
     public String getName() {
-        return "BlockFalls";
+        return "PlayerAnimates";
     }
 
     @Override
@@ -70,7 +73,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public void destroy() {
-        EntityChangeBlockEvent.getHandlerList().unregister(this);
+        PlayerAnimationEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -79,16 +82,21 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+    }
+
+    @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
+        context.put("animation", new Element(animation));
         return context;
     }
 
     @EventHandler
-    public void onBlockFalls(EntityChangeBlockEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+    public void onEntityAnimates(PlayerAnimationEvent event) {
+        location = new dLocation(event.getPlayer().getLocation());
+        animation = event.getAnimationType().name();
         cancelled = event.isCancelled();
         this.event = event;
         fire();

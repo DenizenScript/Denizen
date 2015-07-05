@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,14 +14,12 @@ import org.bukkit.event.block.BlockCanBuildEvent;
 
 import java.util.HashMap;
 
-public class BlockBuiltScriptEvent extends ScriptEvent implements Listener {
+public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block being built
-    // block being built on <material>
-    // <material> being built
-    // <material> being built on <material>
+    // block being built (on <material>) (in <area>)
+    // <material> being built (on <material>) (in <area>)
     //
     // @Cancellable true
     //
@@ -56,10 +54,21 @@ public class BlockBuiltScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String arg1 = CoreUtilities.getXthArg(0, lower);
-        String arg2 = CoreUtilities.getXthArg(4, lower);
-        return (arg1.equals("block") || arg1.equals(new_material.identifyNoIdentifier()))
-                && (!lower.contains(" on ") || (arg2.equals("block") || arg2.equals(old_material.identifyNoIdentifier())));
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        String mat1 = CoreUtilities.getXthArg(0, lower);
+        if (!tryMaterial(old_material, mat1)) {
+            return false;
+        }
+
+        String mat2 = CoreUtilities.getXthArg(4, lower);
+        if (mat2.length() > 0 && !tryMaterial(new_material, mat2)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

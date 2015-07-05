@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -17,12 +18,12 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 
 import java.util.HashMap;
 
-public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Listener {
+public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player places hanging (in <notable>)
-    // player places <hanging> (in <notable>)
+    // player places hanging (in <area>)
+    // player places <hanging> (in <area>)
     //
     // @Cancellable true
     //
@@ -30,7 +31,7 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
     //
     // @Context
     // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
+    // <context.location> DEPRECATED
     // <context.cuboids> DEPRECATED.
     //
     // -->
@@ -48,40 +49,19 @@ public class PlayerPlacesHangingScriptEvent extends ScriptEvent implements Liste
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(2, lower);
-        return lower.startsWith("player places")
-                && (mat.equals("hanging") || mat.equals("painting") || mat.equals("item_frame"));
+        return lower.startsWith("player places");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String hangCheck = CoreUtilities.getXthArg(2, lower);
-        if (!hangCheck.equals("hanging")
-                && (!hanging.identifySimple().equals(hangCheck) && !hanging.identifySimpleType().equals(hangCheck))) {
+        if (!hanging.matchesEntity(hangCheck)) {
             return false;
         }
-        String notable = null;
-        if (CoreUtilities.xthArgEquals(3, lower, "in")) {
-            notable = CoreUtilities.getXthArg(4, lower);
-        }
-        if (notable != null) {
-            if (dCuboid.matches(notable)) {
-                dCuboid cuboid = dCuboid.valueOf(notable);
-                if (!cuboid.isInsideCuboid(location)) {
-                    return false;
-                }
-            }
-            else if (dEllipsoid.matches(notable)) {
-                dEllipsoid ellipsoid = dEllipsoid.valueOf(notable);
-                if (!ellipsoid.contains(location)) {
-                    return false;
-                }
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
         }
 
         return true;

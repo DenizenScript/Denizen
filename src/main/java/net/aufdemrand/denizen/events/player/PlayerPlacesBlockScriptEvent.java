@@ -20,12 +20,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player places block
-    // player places <material>
-    // player places block in notable cuboid
-    // player places <material> in notable cuboid
-    // player places block in <area>
-    // player places <material> in <area>
+    // player places block (in <area>)
+    // player places <material> (in <area>)
     //
     // @Cancellable true
     //
@@ -55,7 +51,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(2, lower);
         return lower.startsWith("player places")
-                && (!mat.equals("hanging") && !mat.equals("painting") && !mat.equals("item_frame"));
+                && (!mat.equals("hanging") && !mat.equals("painting") && !mat.equals("item_frame") && !mat.equals("leash_hitch"));
     }
 
     @Override
@@ -63,9 +59,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block")
-                && !tryItem(item_in_hand, mat)
-                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))) {
+        if (!tryItem(item_in_hand, mat) && !tryMaterial(material, mat)) {
             return false;
         }
 

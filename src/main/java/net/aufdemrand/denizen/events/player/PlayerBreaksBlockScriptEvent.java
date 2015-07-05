@@ -67,9 +67,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block")
-                && !mat.equals(material.identifySimpleNoIdentifier())
-                && !mat.equals(material.identifyFullNoIdentifier())) {
+        if (!tryMaterial(material, mat)) {
             return false;
         }
 

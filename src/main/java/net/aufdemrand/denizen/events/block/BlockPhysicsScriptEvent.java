@@ -41,35 +41,27 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     public dLocation location;
     public dMaterial new_material;
-    public dMaterial old_material;
+    public dMaterial material;
     public BlockPhysicsEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("physics");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("physics");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (lower.equals("block physics")) {
-            return true;
-        }
-
-        if (!lower.startsWith("block")) {
-            dMaterial mat = dMaterial.valueOf(CoreUtilities.getXthArg(0, lower));
-            if (!old_material.matchesMaterialData(mat.getMaterialData())) {
-                return false;
-            }
-        }
-
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
 
-        return true;
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return tryMaterial(material, mat);
+
     }
 
     @Override
@@ -104,7 +96,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         new_material = dMaterial.getMaterialFrom(event.getChangedType());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

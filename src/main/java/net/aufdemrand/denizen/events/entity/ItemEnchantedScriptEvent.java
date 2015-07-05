@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -20,12 +20,12 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 
 import java.util.HashMap;
 
-public class ItemEnchantedScriptEvent extends ScriptEvent implements Listener {
+public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // item enchanted
-    // <item> enchanted
+    // item enchanted (in <area>)
+    // <item> enchanted (in <area>)
     //
     // @Cancellable true
     //
@@ -67,11 +67,11 @@ public class ItemEnchantedScriptEvent extends ScriptEvent implements Listener {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String itemTest = CoreUtilities.getXthArg(0, lower);
+        if (!itemTest.equals("item") && !tryItem(item, itemTest)) {
+            return false;
+        }
 
-        if (!itemTest.equals("item")
-                && (!itemTest.equals(item.identifyNoIdentifier())
-                    && !itemTest.equals(item.identifySimpleNoIdentifier()))
-                    && !itemTest.equals(CoreUtilities.toLowerCase(item.getScriptName()))) {
+        if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
 

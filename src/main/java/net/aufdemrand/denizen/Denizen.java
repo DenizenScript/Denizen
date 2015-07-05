@@ -632,16 +632,23 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
+            ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
             ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
             ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
             ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerAnimatesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerChangesWorldScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerDropsItemScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
@@ -649,16 +656,24 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
+            ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
             ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
             ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
             ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
             ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
             ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
+            ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
+            ScriptEvent.registerScriptEvent(new StructureGrowsScriptEvent());
             ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
+            ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());
+            ScriptEvent.registerScriptEvent(new WorldInitsScriptEvent());
+            ScriptEvent.registerScriptEvent(new WorldLoadsScriptEvent());
+            ScriptEvent.registerScriptEvent(new WorldSavesScriptEvent());
+            ScriptEvent.registerScriptEvent(new WorldUnloadsScriptEvent());
 
 
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@

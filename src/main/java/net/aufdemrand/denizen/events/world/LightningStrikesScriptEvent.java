@@ -1,8 +1,10 @@
-package net.aufdemrand.denizen.events.block;
+package net.aufdemrand.denizen.events.world;
+
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -10,58 +12,49 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 
 import java.util.HashMap;
 
-public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener {
+public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block grows (in <area>)
-    // <block> grows (in <area>)
+    // lightning strikes (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a block grows naturally in the world,
-    //           e.g. when wheat, sugar canes, cacti,
-    //           watermelons or pumpkins grow
+    // @Triggers when lightning strikes in a world.
+    //
     // @Context
-    // <context.location> returns the dLocation of the block that grew.
-    // <context.material> returns the dMaterial of the block that grew.
+    // <context.world> DEPRECATED
+    // <context.lightning> returns the dEntity of the lightning.
+    // <context.location> returns the dLocation where the lightning struck.
     //
     // -->
 
-    public BlockGrowsScriptEvent() {
+    public LightningStrikesScriptEvent() {
         instance = this;
     }
 
-    public static BlockGrowsScriptEvent instance;
+    public static LightningStrikesScriptEvent instance;
+    public dEntity lightning;
     public dLocation location;
-    public dMaterial material;
-    public BlockGrowEvent event;
+    public LightningStrikeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("grows");
+        return CoreUtilities.toLowerCase(s).startsWith("lightning strikes");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return tryMaterial(material, mat);
+        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), location);
     }
 
     @Override
     public String getName() {
-        return "BlockGrows";
+        return "LightningStrikes";
     }
 
     @Override
@@ -71,7 +64,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public void destroy() {
-        BlockGrowEvent.getHandlerList().unregister(this);
+        LightningStrikeEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -82,17 +75,18 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
+        context.put("lightning", lightning);
+        context.put("world", new dWorld(location.getWorld()));
         context.put("location", location);
-        context.put("material", material);
         return context;
     }
 
     @EventHandler
-    public void onBlockGrows(BlockGrowEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        cancelled = event.isCancelled();
+    public void onLightningStrikes(LightningStrikeEvent event) {
+        lightning = new dEntity(event.getLightning());
+        location = new dLocation(event.getLightning().getLocation());
         this.event = event;
+        cancelled = event.isCancelled();
         fire();
         event.setCancelled(cancelled);
     }
