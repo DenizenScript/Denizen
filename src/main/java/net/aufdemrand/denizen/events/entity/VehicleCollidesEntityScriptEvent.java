@@ -56,22 +56,18 @@ public class VehicleCollidesEntityScriptEvent extends ScriptEvent implements Lis
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String arg = lower.substring(lower.lastIndexOf("with ") + 5);
-        return lower.contains(" collides with ")
-                && (arg.equals("entity")
-                || dEntity.matches(arg));
+        return lower.contains(" collides with ");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        String ent = CoreUtilities.getXthArg(0, s);
-        if (!vehicle.matchesEntity(ent)) {
+        if (!vehicle.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        ent = CoreUtilities.getXthArg(0, s);
-        return entity.matchesEntity(ent);
+        return entity.matchesEntity(CoreUtilities.getXthArg(3, lower));
     }
 
     @Override

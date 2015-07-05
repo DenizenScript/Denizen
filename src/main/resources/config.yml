@@ -106,6 +106,8 @@ Commands:
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
 
 Tags:
+  # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
+  Timeout: 10
   # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place

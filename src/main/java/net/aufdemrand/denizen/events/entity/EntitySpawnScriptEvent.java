@@ -25,9 +25,9 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns (in <area>) (because <cause>)
+    // entity spawns (because <cause>) (in <area>)
     // <entity> spawns
-    // <entity> spawns (in <area>) (because <cause>)
+    // <entity> spawns (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
@@ -38,7 +38,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.entity> returns the dEntity that spawned.
     // <context.location> returns the location the entity will spawn at.
-    // <context.cuboids> returns a list of cuboids that the entity spawned inside. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.reason> returns the reason the entity spawned.
     // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
@@ -73,8 +73,8 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(4, lower, "because")) {
-            return CoreUtilities.getXthArg(5, lower).equals(reason.toString());
+        if (CoreUtilities.xthArgEquals(2, lower, "because")) {
+            return CoreUtilities.getXthArg(3, lower).equalsIgnoreCase(reason.toString());
         }
         return true;
     }

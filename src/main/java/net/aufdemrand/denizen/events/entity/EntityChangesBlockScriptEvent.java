@@ -59,11 +59,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String entOne = CoreUtilities.getXthArg(0, lower);
         String mat = CoreUtilities.getXthArg(2, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
         return CoreUtilities.xthArgEquals(1, lower, "changes")
-                && (types.contains(entOne) || dEntity.matches(entOne))
                 && (mat.equals("block") || dMaterial.matches(mat));
     }
 

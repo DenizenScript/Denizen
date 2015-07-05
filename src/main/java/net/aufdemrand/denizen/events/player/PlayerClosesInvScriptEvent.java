@@ -64,7 +64,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
 
         String inv = CoreUtilities.getXthArg(2, lower);
         if (!inv.equals("inventory")
-                && !inv.equals(inventory.getInventoryType().name().toLowerCase())) {
+                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
             return false;
         }
         return true;

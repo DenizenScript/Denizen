@@ -60,9 +60,7 @@ public class ItemEnchantedScriptEvent extends ScriptEvent implements Listener {
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        return ((entOne.equals("item") || dItem.matches(entOne))
-                && cmd.equals("enchanted"));
+        return cmd.equals("enchanted");
     }
 
     @Override
@@ -71,7 +69,9 @@ public class ItemEnchantedScriptEvent extends ScriptEvent implements Listener {
         String itemTest = CoreUtilities.getXthArg(0, lower);
 
         if (!itemTest.equals("item")
-                && (!itemTest.equals(item.identifyNoIdentifier()) && !itemTest.equals(item.identifySimpleNoIdentifier()))) {
+                && (!itemTest.equals(item.identifyNoIdentifier())
+                    && !itemTest.equals(item.identifySimpleNoIdentifier()))
+                    && !itemTest.equals(CoreUtilities.toLowerCase(item.getScriptName()))) {
             return false;
         }
 

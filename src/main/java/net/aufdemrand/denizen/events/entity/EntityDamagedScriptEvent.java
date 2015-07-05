@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -86,12 +85,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
         String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return ((types.contains(entOne) || dEntity.matches(entOne))
-                && (cmd.equals("damaged") || cmd.equals("damages"))
-                && ((entTwo.length() == 0) || (types.contains(entTwo) || dEntity.matches(entTwo))));
+        return cmd.equals("damaged") || cmd.equals("damages");
     }
 
     @Override
@@ -126,16 +121,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        String with = getSwitch(s, "with");
-        if (with != null) {
-            dItem it = dItem.valueOf(with);
-            if (it == null) {
-                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
-                return false;
-            }
-            if (!it.identify().equalsIgnoreCase(held.identify())) {
-                return false;
-            }
+        if (!runWithCheck(scriptContainer, s, lower, held)) {
+            return false;
         }
 
         return true;
@@ -167,8 +154,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(damager.isPlayer() ? damager.getDenizenPlayer() : entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(damager != null && damager.isPlayer() ? damager.getDenizenPlayer() : entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                damager != null && damager.isCitizensNPC() ? damager.getDenizenNPC() : entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -210,7 +197,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             }
             if (damager != null) {
                 held = damager.getItemInHand();
-                held.setAmount(1);
+                if (held != null) {
+                    held.setAmount(1);
+                }
             }
         }
         cancelled = event.isCancelled();

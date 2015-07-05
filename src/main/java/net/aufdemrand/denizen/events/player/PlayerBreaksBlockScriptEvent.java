@@ -24,12 +24,10 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player breaks block (in <area>)
-    // player breaks <material> (in <area>)
-    // player breaks block with <item> (in <area>)
-    // player breaks <material> with <item> (in <area>)
-    // player breaks block with <material> (in <area>)
-    // player breaks <material> with <material> (in <area>)
+    // player breaks block (with:<item>) (in <area>)
+    // player breaks <material> (with:<item>) (in <area>)
+    // player breaks block (with:<material>) (in <area>)
+    // player breaks <material> (with:<material>) (in <area>)
     //
     // @Cancellable true
     //
@@ -38,7 +36,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Context
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
-    // <context.cuboids> returns a dList of notable cuboids surrounding the block broken. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
@@ -61,7 +59,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return s.toLowerCase().startsWith("player breaks");
+        return CoreUtilities.toLowerCase(s).startsWith("player breaks");
     }
 
     @Override
@@ -69,7 +67,9 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         String lower = CoreUtilities.toLowerCase(s);
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (!mat.equals("block") && !mat.equals(material.identifyNoIdentifier())) {
+        if (!mat.equals("block")
+                && !mat.equals(material.identifySimpleNoIdentifier())
+                && !mat.equals(material.identifyFullNoIdentifier())) {
             return false;
         }
 
@@ -77,10 +77,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
+        if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {
+            return false;
+        }
+        // Deprecated in favor of with: format
         if (CoreUtilities.xthArgEquals(3, lower, "with")) {
-            String tool = CoreUtilities.getXthArg(4, lower);
-            dItem item = new dItem(event.getPlayer().getItemInHand());
-            if (!tool.equals(item.identifyNoIdentifier())) {
+            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(4, lower))) {
                 return false;
             }
         }

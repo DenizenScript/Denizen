@@ -60,12 +60,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String entOne = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(entOne) || dEntity.matches(entOne))
-                && cmd.equals("explodes");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("explodes");
     }
 
     @Override

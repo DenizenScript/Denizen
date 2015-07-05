@@ -37,7 +37,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // <context.cause> returns the cause of the entity breaking.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
-    // <context.cuboids> returns a dList of the cuboids the hanging is in. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.location> returns a dLocation of the hanging.
     // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
@@ -57,10 +57,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return CoreUtilities.getXthArg(1, lower).equals("breaks")
-                && (mat.equals("hanging") || mat.equals("painting") || mat.equals("item_frame"));
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("breaks");
     }
 
     @Override

@@ -40,7 +40,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     // <context.entity> returns the targeting entity.
     // <context.reason> returns the reason the entity changed targets.
     // <context.target> returns the targeted entity.
-    // <context.cuboids> returns dList of cuboids event happened in. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // dEntity to make the entity target a different entity instead.
@@ -61,12 +61,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String attacker = CoreUtilities.getXthArg(0, lower);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return cmd.equals("targets")
-                && (types.contains(attacker) || dEntity.matches(attacker));
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("targets");
     }
 
     @Override

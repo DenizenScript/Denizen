@@ -53,17 +53,18 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String entTest = CoreUtilities.getXthArg(0, lower);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        List<String> types = Arrays.asList("sheep", "player", "npc");
-        return (cmd.equals("dyed") || cmd.equals("dyes"))
-                && types.contains(entTest);
+        return (cmd.equals("dyed") || cmd.equals("dyes"));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String new_color = CoreUtilities.getXthArg(1, lower).equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        if (cmd.equals("dyes") && !entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+            return false;
+        }
+        String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         if (new_color.length() > 0) {
             if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
                 return false;

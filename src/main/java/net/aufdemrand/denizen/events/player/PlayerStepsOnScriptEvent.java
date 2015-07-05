@@ -32,7 +32,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.location> returns a dLocation of the block the player is stepping on.
-    // <context.cuboids> returns a dList of all cuboids the player is inside. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.previous_location> returns a dLocation of where the player was before stepping onto the block.
     // <context.new_location> returns a dLocation of where the player is now.
     //
@@ -108,7 +108,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @EventHandler
     public void onPlayerStepsOn(PlayerMoveEvent event) {
-        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getWorld())) {
+        if (event.getTo().getBlock().getLocation().equals(event.getFrom().getBlock().getLocation())) {
             return;
         }
         location = new dLocation(event.getTo().clone().subtract(0, 1, 0));

@@ -71,15 +71,13 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains("dies")
-                || lower.contains("death");
+        String cmd = CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s));
+        return cmd.equals("dies") || cmd.equals("death");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String ent = CoreUtilities.getXthArg(0, s);
-        return entity.matchesEntity(ent);
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
     }
 
     @Override
@@ -102,7 +100,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         // finish this
         String lower = CoreUtilities.toLowerCase(determination);
 
-        // Deprecated??  This isn't listed in the meta
+        // Deprecated
         if (lower.startsWith("drops ")) {
             lower = lower.substring(6);
         }
@@ -138,10 +136,8 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         }
 
         // String containing new Death Message
-        else if (!lower.equals("none")) {
-            if (event instanceof PlayerDeathEvent) {
-                message = new Element(determination);
-            }
+        else if (event instanceof PlayerDeathEvent) {
+            message = new Element(determination);
         }
         else {
             return super.applyDetermination(container, determination);
@@ -168,7 +164,9 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
         if (inventory != null) {
             context.put("inventory", inventory);
         }
-        context.put("cause", cause);
+        if (cause != null) {
+            context.put("cause", cause);
+        }
         if (drops != null) {
             context.put("drops", drops);
         }
@@ -237,7 +235,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
                 }
             }
         }
-        if (message != null) {
+        if (message != null && subEvent != null) {
             subEvent.setDeathMessage(message.asString());
         }
     }

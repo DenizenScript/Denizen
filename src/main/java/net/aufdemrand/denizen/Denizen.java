@@ -358,6 +358,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
+            org.spigotmc.AsyncCatcher.enabled = false;
+        }
+        catch (Exception e) {
+            dB.echoError("Running not-Spigot?!");
+        }
+
+        try {
             versionTag = this.getDescription().getVersion();
 
             // Load Denizen's core
@@ -1056,7 +1063,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // -->
 
         if (cmdName.equalsIgnoreCase("ex")) {
-            List<String> entries = new ArrayList<String>();
+            List<Object> entries = new ArrayList<Object>();
             String entry = "";
             for (String arg : args)
                 entry = entry + arg + " ";
@@ -1277,6 +1284,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         ItemScriptHelper.item_scripts.clear();
         ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();
+        tT = Integer.MAX_VALUE;
     }
 
     @Override
@@ -1374,6 +1382,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public ScriptEntryData getEmptyScriptEntryData() {
         return new BukkitScriptEntryData(null, null);
+    }
+
+    int tT = Integer.MAX_VALUE;
+
+    @Override
+    public int getTagTimeout() {
+        if (tT == Integer.MAX_VALUE) {
+            tT = Settings.tagTimeout();
+        }
+        return tT;
     }
 }
 

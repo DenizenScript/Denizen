@@ -13,10 +13,6 @@ commands:
     description: Lists notable commands.
     usage: /notable help
     permission: denizen.notable
-  dscript:
-    description: Lists dScript commands.
-    usage: /dScript help
-    permission: denizen.dscript
   ex:
     description: Executes a dScript command.
     usage: Use /ex in front of a normal script entry.

@@ -34,7 +34,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // @Context
     // <context.location> returns the dLocation of the block that was placed.
     // <context.material> returns the dMaterial of the block that was placed.
-    // <context.cuboids> returns a dList of notable cuboids surrounding the placed block. DEPRECATED.
+    // <context.cuboids> DEPRECATED.
     // <context.item_in_hand> returns the dItem of the item in hand.
     //
     // -->
@@ -64,8 +64,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("block")
-                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))
-                && !mat.equals(item_in_hand.identifyNoIdentifier()) && !mat.equals(item_in_hand.identifySimpleNoIdentifier())) {
+                && !tryItem(item_in_hand, mat)
+                && (!mat.equals(material.identifyNoIdentifier()) && !mat.equals(material.identifySimpleNoIdentifier()))) {
             return false;
         }
 

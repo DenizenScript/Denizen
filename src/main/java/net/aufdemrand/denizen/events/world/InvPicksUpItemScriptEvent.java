@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -12,11 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-public class InvPicksUpItemScriptEvent extends ScriptEvent implements Listener {
+public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -46,11 +44,7 @@ public class InvPicksUpItemScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(0, lower);
-        List<String> types = Arrays.asList("inventory", "hopper", "hopper_minecart");
-        return lower.contains("picks up")
-                && types.contains(inv);
+        return CoreUtilities.toLowerCase(s).contains("picks up");
     }
 
     @Override
@@ -59,12 +53,12 @@ public class InvPicksUpItemScriptEvent extends ScriptEvent implements Listener {
         String inv = CoreUtilities.getXthArg(0, lower);
         String itemName = CoreUtilities.getXthArg(3, lower);
         if (!inv.equals("inventory")) {
-            if (!inventory.getInventoryType().toString().toLowerCase().equals(inv)) {
+            if (!inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().toString()))) {
                 return false;
             }
         }
         if (!itemName.equals("item")) {
-            if (!itemName.equals(item.identifySimpleNoIdentifier()) && !itemName.equals(inventory.identifySimple())) {
+            if (!tryItem(item, itemName)) {
                 return false;
             }
         }
