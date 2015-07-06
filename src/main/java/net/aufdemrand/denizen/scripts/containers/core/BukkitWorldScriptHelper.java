@@ -979,41 +979,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player leashes entity
-    // player leashes <entity>
-    //
-    // @Triggers when a player leashes an entity.
-    // @Context
-    // <context.entity> returns the dEntity of the leashed entity.
-    // <context.holder> returns the dEntity that is holding the leash.
-    //
-    // @Determine
-    // "CANCELLED" to cancel the leashing.
-    //
-    // -->
-    @EventHandler
-    public void playerLeashEntity(PlayerLeashEntityEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-        context.put("holder", new dEntity(event.getLeashHolder()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player leashes entity",
-                                "player leashes " + entity.identifyType()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.equalsIgnoreCase("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player levels up (from <level>/to <level>)
     //
     // @Triggers when a player levels up.
