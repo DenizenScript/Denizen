@@ -979,36 +979,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player kicked
-    //
-    // @Triggers when a player is kicked from the server.
-    // @Context
-    // <context.message> returns an Element of the kick message.
-    //
-    // @Determine
-    // Element(String) to change the kick message.
-    //
-    // -->
-    @EventHandler
-    public void playerKick(PlayerKickEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getLeaveMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player kicked"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (!determination.equals("none")) {
-            event.setLeaveMessage(determination);
-        }
-    }
-
-    // <--[event]
-    // @Events
     // player leashes entity
     // player leashes <entity>
     //
