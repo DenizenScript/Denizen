@@ -705,60 +705,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player fishes (<entity>) (while <state>)
-    //
-    // @Triggers when a player uses a fishing rod.
-    // @Context
-    // <context.hook> returns a dEntity of the hook.
-    // <context.state> returns an Element of the fishing state.
-    // <context.entity> returns a dEntity of the entity that got caught.
-    // <context.item> returns a dItem of the item gotten, if any.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from fishing.
-    //
-    // -->
-    @EventHandler
-    public void playerFish(PlayerFishEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        dNPC npc = null;
-        String state = event.getState().name();
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("hook", new dEntity(event.getHook()));
-        context.put("state", new Element(state));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player fishes");
-        events.add("player fishes while " + state);
-
-        if (event.getCaught() != null) {
-
-            Entity caught = event.getCaught();
-            dEntity entity = new dEntity(caught);
-            context.put("entity", entity.getDenizenObject());
-            if (caught instanceof Item) {
-                context.put("item", new dItem(((Item) caught).getItemStack()));
-            }
-
-            if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-
-            events.add("player fishes " + entity.identifyType());
-            events.add("player fishes " + entity.identifyType() + " while " + state);
-        }
-
-        String determination = doEvents(events, npc, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player changes gamemode (to <gamemode>)
     //
     // @Triggers when a player's gamemode is changed.
