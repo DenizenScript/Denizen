@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
@@ -19,7 +18,6 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -29,7 +27,6 @@ import org.bukkit.event.vehicle.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
@@ -1051,50 +1048,6 @@ public class BukkitWorldScriptHelper implements Listener {
                     determination.toUpperCase().startsWith("FROZEN"))
                 event.setCancelled(true);
         }
-    }
-
-    // <--[event]
-    // @Events
-    // player picks up item
-    // player picks up <item>
-    // player takes item
-    // player takes <item>
-    //
-    // @Triggers when a player picks up an item.
-    // @Context
-    // <context.item> returns the dItem.
-    // <context.entity> returns a dEntity of the item.
-    // <context.location> returns a dLocation of the item's location.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from picked up.
-    //
-    // -->
-    @EventHandler
-    public void playerPickupItem(PlayerPickupItemEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getItem().getItemStack());
-        context.put("item", item);
-        context.put("entity", new dEntity(event.getItem()));
-        context.put("location", new dLocation(event.getItem().getLocation()));
-
-        List<String> events = new ArrayList<String>();
-
-        events.add("player picks up item");
-        events.add("player picks up " + item.identifySimple());
-        events.add("player picks up " + item.identifyMaterial());
-        events.add("player takes item");
-        events.add("player takes " + item.identifySimple());
-        events.add("player takes " + item.identifyMaterial());
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
     }
 
     // <--[event]
