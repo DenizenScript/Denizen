@@ -979,48 +979,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player joins
-    // player join
-    //
-    // @Triggers when a player joins the server.
-    // @Context
-    // <context.message> returns an Element of the join message.
-    //
-    // @Determine
-    // Element(String) to change the join message.
-    //
-    // -->
-    @EventHandler
-    public void playerJoinEvent(PlayerJoinEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Player player = event.getPlayer();
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getJoinMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player joins",
-                                "player join"),
-                null, dEntity.getPlayerFrom(player), context);
-
-        // Handle message
-        if (!determination.equals("none")) {
-            event.setJoinMessage(determination);
-        }
-
-        // As a tie-in with ScoreboardHelper, make this player view
-        // the scoreboard he/she is supposed to view
-        if (ScoreboardHelper.viewerMap.containsKey(player.getName())) {
-            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(player.getName()));
-            if (score != null)
-                player.setScoreboard(score);
-        }
-    }
-
-    // <--[event]
-    // @Events
     // player kicked
     //
     // @Triggers when a player is kicked from the server.
