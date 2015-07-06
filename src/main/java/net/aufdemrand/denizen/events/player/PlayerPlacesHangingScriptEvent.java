@@ -103,6 +103,9 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @EventHandler
     public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         hanging = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();

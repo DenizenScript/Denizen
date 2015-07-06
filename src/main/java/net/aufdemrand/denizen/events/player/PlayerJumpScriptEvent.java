@@ -90,6 +90,9 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onPlayerJumps(PlayerMoveEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         location = new dLocation(event.getFrom());
         this.event = event;
         fire();

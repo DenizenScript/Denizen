@@ -54,9 +54,6 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (dEntity.isNPC(event.getPlayer())) {
-            return false;
-        }
         String iCheck = CoreUtilities.getXthArg(2, lower);
         if (!iCheck.equals("item") && !tryItem(item, iCheck)) {
             return false;
@@ -103,6 +100,9 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @EventHandler
     public void onPlayerDropsItem(PlayerDropItemEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         location = new dLocation(event.getPlayer().getLocation());
         item = new dItem(event.getItemDrop().getItemStack());
         entity = new dEntity(event.getItemDrop());

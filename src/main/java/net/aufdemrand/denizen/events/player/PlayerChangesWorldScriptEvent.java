@@ -52,10 +52,6 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (dEntity.isNPC(event.getPlayer())) {
-            return false;
-        }
-
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 3; index < data.size(); index++) {
             if (data.get(index).equals("from")) {
@@ -108,6 +104,9 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onPlayerChangesWorld(PlayerChangedWorldEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         origin_world = new dWorld(event.getFrom());
         destination_world = new dWorld(event.getPlayer().getWorld());
         this.event = event;

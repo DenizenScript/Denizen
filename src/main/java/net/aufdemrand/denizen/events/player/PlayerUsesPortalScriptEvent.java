@@ -80,7 +80,7 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null, null);
     }
 
     @Override
@@ -93,7 +93,10 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
     }
 
     @EventHandler
-    public void onEntityEntersPortal(PlayerPortalEvent event) {
+    public void onPlayerEntersPortal(PlayerPortalEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         entity = new dEntity(event.getPlayer());
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());

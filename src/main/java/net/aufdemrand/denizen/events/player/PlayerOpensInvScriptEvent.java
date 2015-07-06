@@ -91,6 +91,9 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onPlayerOpensInv(InventoryOpenEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         this.event = event;
         cancelled = event.isCancelled();

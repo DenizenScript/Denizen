@@ -94,7 +94,10 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @EventHandler
-    public void onEntityAnimates(PlayerAnimationEvent event) {
+    public void onPlayerAnimates(PlayerAnimationEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         location = new dLocation(event.getPlayer().getLocation());
         animation = event.getAnimationType().name();
         cancelled = event.isCancelled();
