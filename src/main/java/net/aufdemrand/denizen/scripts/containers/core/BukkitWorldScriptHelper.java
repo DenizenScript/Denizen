@@ -979,31 +979,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player levels up (from <level>/to <level>)
-    //
-    // @Triggers when a player levels up.
-    // @Context
-    // <context.level> returns an Element of the player's new level.
-    //
-    // -->
-    @EventHandler
-    public void playerLevelChange(PlayerLevelChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("level", new Element(event.getNewLevel()));
-
-        doEvents(Arrays.asList
-                        ("player levels up",
-                                "player levels up to " + event.getNewLevel(),
-                                "player levels up from " + event.getOldLevel()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-    }
-
-    // <--[event]
-    // @Events
     // player logs in (for the first time)
     // player (first) login
     //
