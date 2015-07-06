@@ -1050,37 +1050,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // player quits
-    // player quit
-    //
-    // @Triggers when a player quit the server.
-    // @Context
-    // <context.message> returns an Element of the quit message.
-    //
-    // @Determine
-    // Element(String) to change the quit message.
-    //
-    // -->
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getQuitMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player quits",
-                                "player quit"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (!determination.equals("none")) {
-            event.setQuitMessage(determination);
-        }
-    }
 
     // <--[event]
     // @Events
