@@ -1050,43 +1050,6 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-
-    // <--[event]
-    // @Events
-    // player respawns (at bed/elsewhere)
-    //
-    // @Triggers when a player respawns.
-    // @Context
-    // <context.location> returns a dLocation of the respawn location.
-    //
-    // @Determine
-    // dLocation to change the respawn location.
-    //
-    // -->
-    @EventHandler
-    public void playerRespawn(PlayerRespawnEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("location", new dLocation(event.getRespawnLocation()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player respawns");
-
-        if (event.isBedSpawn()) events.add("player respawns at bed");
-        else events.add("player respawns elsewhere");
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (dLocation.matches(determination)) {
-            dLocation location = dLocation.valueOf(determination);
-
-            if (location != null) event.setRespawnLocation(location);
-        }
-    }
-
     // <--[event]
     // @Events
     // player shears entity
