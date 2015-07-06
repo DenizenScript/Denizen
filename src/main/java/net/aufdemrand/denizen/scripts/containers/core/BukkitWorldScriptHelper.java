@@ -15,7 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,9 +26,6 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.*;
-import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.world.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -705,48 +701,6 @@ public class BukkitWorldScriptHelper implements Listener {
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
 
-    }
-
-    // <--[event]
-    // @Events
-    // player throws (hatching/non-hatching) egg
-    //
-    // @Triggers when a player throws an egg.
-    // @Context
-    // <context.egg> returns the dEntity of the egg.
-    // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the hatching.
-    // dEntity to set the type of the hatching entity.
-    //
-    // -->
-    @EventHandler
-    public void playerEggThrow(PlayerEggThrowEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity egg = new dEntity(event.getEgg());
-        context.put("egg", egg);
-        context.put("is_hatching", new Element(event.isHatching()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player throws egg");
-
-        if (event.isHatching()) events.add("player throws hatching egg");
-        else events.add("player throws non-hatching egg");
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.equalsIgnoreCase("CANCELLED")) {
-            event.setHatching(false);
-        }
-        else if (dEntity.matches(determination)) {
-            event.setHatching(true);
-            event.setHatchingType(dEntity.valueOf(determination).getBukkitEntityType());
-        }
     }
 
     // <--[event]
