@@ -1052,46 +1052,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player shears entity
-    // player shears <entity>
-    // player shears <color> sheep
-    //
-    // @Triggers when a player shears an entity.
-    // @Context
-    // <context.state> returns the dEntity of the sheep.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from shearing the entity.
-    //
-    // -->
-    @EventHandler
-    public void playerShearEntity(PlayerShearEntityEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-
-        List<String> events = new ArrayList<String>();
-        events.add("player shears entity");
-        events.add("player shears " + entity.identifyType());
-
-        if (entity.getEntityType().equals(EntityType.SHEEP)) {
-            String color = ((Sheep) entity.getBukkitEntity()).getColor().name();
-            events.add("player shears " + color + " sheep");
-        }
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player toggles flight
     // player starts flying
     // player stops flying
