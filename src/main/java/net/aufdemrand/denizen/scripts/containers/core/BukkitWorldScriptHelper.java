@@ -974,44 +974,17 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // player logs in (for the first time)
-    // player (first) login
+
     //
-    // @Triggers when a player logs in to the server.
-    // @Context
-    // <context.hostname> returns an Element of the player's hostname.
+    // Left this here because mcmonkey told me to
     //
-    // @Determine
-    // "KICKED" to kick the player from the server.
-    // "KICKED Element(String)" to kick the player and specify a message to show.
-    //
-    // -->
     @EventHandler
     public void playerLogin(PlayerLoginEvent event) {
 
         if (dEntity.isNPC(event.getPlayer()))
             return;
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        List<String> events = new ArrayList<String>();
-        context.put("hostname", new Element(event.getHostname()));
-
-        if (!dPlayer.isNoted(event.getPlayer())) {
-            events.add("player logs in for the first time");
-            events.add("player first login");
-        }
-
         dPlayer.notePlayer(event.getPlayer());
-
-        events.add("player logs in");
-        events.add("player login");
-        String determination = doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7) : determination);
     }
 
     // <--[event]
