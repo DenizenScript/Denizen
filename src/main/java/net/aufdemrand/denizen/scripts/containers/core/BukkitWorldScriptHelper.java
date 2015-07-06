@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -978,7 +979,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // Left this here because mcmonkey told me to
     //
-    @EventHandler
+    @EventHandler(priority= EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {
 
         if (dEntity.isNPC(event.getPlayer()))
