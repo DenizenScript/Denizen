@@ -705,40 +705,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes xp
-    //
-    // @Triggers when a player's experience amount changes.
-    // @Context
-    // <context.amount> returns the amount of changed experience.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from changing experience.
-    // Element(Number) to set the amount of changed experience.
-    //
-    // -->
-    @EventHandler
-    public void playerExpChange(PlayerExpChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("amount", new Element(event.getAmount()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player changes xp"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
-
-        if (determination.equals("CANCELLED")) {
-            event.setAmount(0);
-        }
-        else if (Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setAmount(Integer.valueOf(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
     // player fishes (<entity>) (while <state>)
     //
     // @Triggers when a player uses a fishing rod.
