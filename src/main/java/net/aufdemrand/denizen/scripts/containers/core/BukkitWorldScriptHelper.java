@@ -705,37 +705,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player changes gamemode (to <gamemode>)
-    //
-    // @Triggers when a player's gamemode is changed.
-    // @Context
-    // <context.gamemode> returns an Element of the gamemode.
-    //
-    // @Determine
-    // "CANCELLED" to stop the gamemode from being changed.
-    //
-    // -->
-    @EventHandler
-    public void playerGameModeChange(PlayerGameModeChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("gamemode", new Element(event.getNewGameMode().name()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player changes gamemode",
-                                "player changes gamemode to " + event.getNewGameMode().name()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player clicks block
     // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
