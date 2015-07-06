@@ -1326,52 +1326,5 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // entity exits vehicle
-    // entity exits <vehicle>
-    // <entity> exits vehicle
-    // <entity> exits <vehicle>
-    //
-    // @Triggers when an entity exits a vehicle.
-    // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the exiting entity.
-    //
-    // @Determine
-    // "CANCELLED" to stop the entity from exiting the vehicle.
-    //
-    // -->
-    @EventHandler
-    public void vehicleExit(VehicleExitEvent event) {
-
-        dPlayer player = null;
-        dNPC npc = null;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dEntity vehicle = new dEntity(event.getVehicle());
-        dEntity entity = new dEntity(event.getExited());
-
-        context.put("vehicle", vehicle);
-        context.put("entity", entity.getDenizenObject());
-
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-        else if (entity.isPlayer()) player = entity.getDenizenPlayer();
-
-        String determination = doEvents(Arrays.asList
-                        ("entity exits vehicle",
-                                "entity exits " + vehicle.identifyType(),
-                                "entity exits " + vehicle.identifySimple(),
-                                entity.identifyType() + " exits vehicle",
-                                entity.identifyType() + " exits " + vehicle.identifyType(),
-                                entity.identifyType() + " exits " + vehicle.identifySimple(),
-                                entity.identifySimple() + " exits " + vehicle.identifyType(),
-                                entity.identifySimple() + " exits " + vehicle.identifySimple()),
-                npc, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
 
 }
