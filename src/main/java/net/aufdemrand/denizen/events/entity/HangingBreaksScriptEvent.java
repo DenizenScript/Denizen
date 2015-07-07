@@ -58,7 +58,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         return CoreUtilities.getXthArg(1, lower).equals("breaks")
-                && !CoreUtilities.getXthArg(2, lower).equals("hanging");
+                && !CoreUtilities.getXthArg(2, lower).equals("hanging")
+                && !CoreUtilities.getXthArg(0, lower).equals("player");
     }
 
     @Override
