@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -72,14 +73,35 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
 
-        String it = "l@"+CoreUtilities.getXthArg(index + 1, s);
-        if (dLocation.matches(it)) {
-            return dLocation.valueOf(it).getBlock().equals(location.getBlock());
+        String it = CoreUtilities.getXthArg(index + 1, s);
+        if (it.equals("notable")) {
+            return true;
         }
-        else {
-            dB.echoError("Invalid event 'AT ...' check [" + getName() + "] ('at ???'): '" + s + "' for " + scriptContainer.getName());
+        if (dLocation.valueOf(it) == null) {
+            dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
             return false;
         }
+        if (location == null || !tryLocation((dLocation)location, it)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean tryLocation(dLocation location, String comparedto) {
+        if (comparedto == null || comparedto.length() == 0) {
+            dB.echoError("Null or empty location string to compare");
+            return false;
+        }
+        if (comparedto.equals("notable")) {
+            return true;
+        }
+        comparedto = "l@"+comparedto;
+        dLocation loc = dLocation.valueOf(comparedto);
+        if (loc == null) {
+            dB.echoError("Invalid location in location comparison string: "+comparedto);
+            return false;
+        }
+        return loc.getBlock().equals(location.getBlock());
     }
 
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
