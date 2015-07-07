@@ -57,6 +57,31 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
+    public boolean runAtCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
+        List<String> data = CoreUtilities.split(lower, ' ');
+
+        int index;
+
+        for (index = 0; index < data.size(); index++) {
+            if (data.get(index).equals("at")) {
+                break;
+            }
+        }
+        if (index >= data.size()) {
+            // No 'at ...' specified
+            return true;
+        }
+
+        String it = "l@"+CoreUtilities.getXthArg(index + 1, s);
+        if (dLocation.matches(it)) {
+            return dLocation.valueOf(it).getBlock().equals(location.getBlock());
+        }
+        else {
+            dB.echoError("Invalid event 'AT ...' check [" + getName() + "] ('at ???'): '" + s + "' for " + scriptContainer.getName());
+            return false;
+        }
+    }
+
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
         String with = getSwitch(s, "with");
         if (with != null) {
