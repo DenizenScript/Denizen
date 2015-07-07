@@ -18,9 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -59,9 +57,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(2, lower);
-        return CoreUtilities.xthArgEquals(1, lower, "changes")
-                && (mat.equals("block") || dMaterial.matches(mat));
+        return CoreUtilities.xthArgEquals(1, lower, "changes");
     }
 
     @Override
@@ -72,19 +68,18 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(1, lower);
-        if (!mat.equals("block")
-                && !mat.equals(old_material.identifySimpleNoIdentifier()) && !mat.equals(old_material.identifyFullNoIdentifier())) {
+        String mat1 = CoreUtilities.getXthArg(2, lower);
+        if (!tryMaterial(old_material, mat1)) {
             return false;
         }
 
         if (CoreUtilities.xthArgEquals(3, lower, "into")) {
-            mat = CoreUtilities.getXthArg(4, lower);
-            if (mat.length() == 0) {
+            String mat2 = CoreUtilities.getXthArg(4, lower);
+            if (mat2.length() == 0) {
                 dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
                 return false;
             }
-            else if (!mat.equals("block") && !mat.equals(new_material.identifySimpleNoIdentifier())) {
+            else if (!tryMaterial(new_material, mat2)) {
                 return false;
             }
         }
@@ -126,7 +121,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("entity", entity);
-        context.put("cuboids", cuboids);
+        context.put("cuboids", cuboids);  //DEPRECATED
         context.put("location", location);
         context.put("new_material", new_material);
         context.put("old_material", old_material);

@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -52,7 +51,6 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTest = CoreUtilities.getXthArg(0, lower);
         return cmd.equals("spawns");
     }
 
@@ -61,8 +59,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         String lower = CoreUtilities.toLowerCase(s);
         String item_test = CoreUtilities.getXthArg(0, lower);
 
-        if (!item_test.equals("item") // TODO: tryItem
-                && !item_test.equals(item.identifyNoIdentifier()) && !item_test.equals(item.identifySimpleNoIdentifier())) {
+        if (!item_test.equals("item") && !tryItem(item, item_test)) {
             return false;
         }
 

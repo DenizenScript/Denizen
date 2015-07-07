@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,19 +16,19 @@ import org.bukkit.event.block.BlockIgniteEvent;
 
 import java.util.HashMap;
 
-public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
+public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block ignites
-    // <material> ignites
+    // block ignites (in <area>)
+    // <material> ignites (in <area>)
     //
     // @Cancellable true
     //
     // @Triggers when a block is set on fire.
     //
     // @Context
-    // <context.location> returns the dLocation the block was set on fire at.
+    // <context.location> returns the dLocation of the block was set on fire at.
     // <context.material> returns the dMaterial of the block that was set on fire.
     // <context.entity> returns the dEntity of the entity that ignited the block.
     // <context.origin_location> returns the dLocation of the fire block that ignited this block.
@@ -51,16 +51,19 @@ public class BlockIgnitesScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.equals("block ignites")
-                || (lower.equals(mat + " ignites") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("ignites");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("block ignites")
-                || CoreUtilities.getXthArg(0, lower).equals(material.identifySimpleNoIdentifier());
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return tryMaterial(material, mat);
     }
 
     @Override

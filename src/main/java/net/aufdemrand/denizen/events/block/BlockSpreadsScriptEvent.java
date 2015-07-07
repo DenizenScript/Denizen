@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.BlockSpreadEvent;
 
 import java.util.HashMap;
 
-public class BlockSpreadsScriptEvent extends ScriptEvent implements Listener {
+public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block spreads
-    // <material> spreads
+    // block spreads (in <area>)
+    // <material> spreads (in <area>)
     //
     // @Cancellable true
     //
@@ -27,8 +27,8 @@ public class BlockSpreadsScriptEvent extends ScriptEvent implements Listener {
     //           e.g. when fire spreads, when mushrooms spread
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
+    // <context.location> returns the dLocation of the block that spread.
+    // <context.material> returns the dMaterial of the block that spread.
     //
     // -->
 
@@ -44,16 +44,21 @@ public class BlockSpreadsScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.equals("block spreads")
-                || (lower.equals(mat + " spreads") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("spreads");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("block spreads")
-                || CoreUtilities.getXthArg(0, lower).equals(event.getBlock().getType().name().toLowerCase());
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return tryMaterial(material, mat);
+
     }
 
     @Override

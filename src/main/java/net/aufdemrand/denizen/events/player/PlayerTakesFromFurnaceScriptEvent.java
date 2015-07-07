@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
@@ -20,7 +21,7 @@ import org.bukkit.event.inventory.FurnaceExtractEvent;
 
 import java.util.HashMap;
 
-public class PlayerTakesFromFurnaceScriptEvent extends ScriptEvent implements Listener {
+public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -60,7 +61,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends ScriptEvent implements Li
         String itemTest = CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s));
 
         return (itemTest.equals("block")
-                || !itemTest.equals(item.identifySimpleNoIdentifier()));
+                || !tryItem(item, itemTest));
     }
 
     @Override

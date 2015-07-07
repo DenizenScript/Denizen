@@ -17,29 +17,27 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity breaks hanging (in <area>)
-    // entity breaks hanging because <cause> (in <area>)
-    // <entity> breaks hanging (in <area>)
-    // <entity> breaks hanging because <cause> (in <area>)
+    // entity breaks hanging (because <cause>) (in <area>)
+    // entity breaks <hanging> (because <cause>) (in <area>)
+    // <entity> breaks hanging (because <cause>) (in <area>)
+    // <entity> breaks <hanging> (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is broken.
+    // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.
     //
     // @Context
     // <context.cause> returns the cause of the entity breaking.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
     // <context.cuboids> DEPRECATED.
-    // <context.location> returns a dLocation of the hanging.
+    // <context.location> DEPRECATED.
     // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
     // -->
@@ -58,17 +56,25 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("breaks hanging");
+        String lower = CoreUtilities.toLowerCase(s);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String ent = CoreUtilities.getXthArg(0, lower);
+        String hang = CoreUtilities.getXthArg(2, lower);
+        return cmd.equals("breaks") && dEntity.matches(ent)
+                && (hang.equals("hanging") || dEntity.matches(hang));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
+        String hang = CoreUtilities.getXthArg(2, lower);
         if (!entity.matchesEntity(entName)) {
             return false;
         }
-
+        if (!hang.equals("hanging") && !hanging.matchesEntity(hang)) {
+            return false;
+        }
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
@@ -103,8 +109,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getRemover()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getRemover()) : null);
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
     }
 
     @Override

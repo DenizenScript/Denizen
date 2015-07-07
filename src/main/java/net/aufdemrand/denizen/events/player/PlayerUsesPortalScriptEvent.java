@@ -46,7 +46,7 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("player uses portal");
+        return CoreUtilities.toLowerCase(s).startsWith("player uses portal");
     }
 
     @Override

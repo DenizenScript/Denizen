@@ -1,9 +1,10 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -12,19 +13,18 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 
 
-public class BlockDispensesScriptEvent extends ScriptEvent implements Listener {
+public class BlockDispensesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block dispenses item
-    // block dispenses <item>
-    // <block> dispenses item
-    // <block> dispenses <item>
+    // block dispenses item (in <area>)
+    // block dispenses <item> (in <area>)
+    // <block> dispenses item (in <area>)
+    // <block> dispenses <item> (in <area>)
     //
     // @Cancellable true
     //
@@ -46,23 +46,27 @@ public class BlockDispensesScriptEvent extends ScriptEvent implements Listener {
     public static BlockDispensesScriptEvent instance;
     public dLocation location;
     public dItem item;
-    public Vector velocity;
-    public Double power;
+    private Double power;
+    private dMaterial material;
     public BlockDispenseEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.contains(" dispenses ");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("dispenses") && lower.length() >= 3;
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String arg1 = CoreUtilities.getXthArg(0, lower);
-        String arg2 = CoreUtilities.getXthArg(2, lower);
-        return (arg1.equals("block") || arg1.equals(item.identifyNoIdentifier()))
-                && (arg2.equals("item") || arg2.equals(item.identifyNoIdentifier()));
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        String dispenser = CoreUtilities.getXthArg(0, lower);
+        String iTest = CoreUtilities.getXthArg(2, lower);
+        return tryMaterial(material, dispenser) && (iTest.equals("item") || tryItem(item, iTest));
     }
 
     @Override
@@ -100,14 +104,14 @@ public class BlockDispensesScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onBlockDispenses(BlockDispenseEvent event) {
         location = new dLocation(event.getBlock().getLocation());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         item = new dItem(event.getItem());
-        velocity = event.getVelocity();
         cancelled = event.isCancelled();
         power = null;
         this.event = event;
         fire();
         if (power != null) {
-            event.setVelocity(velocity.multiply(power));
+            event.setVelocity(event.getVelocity().multiply(power));
         }
         event.setCancelled(cancelled);
     }

@@ -59,8 +59,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
         String item_test = CoreUtilities.getXthArg(0, lower);
 
-        if (!item_test.equals("item")
-                && !item_test.equals(item.identifyNoIdentifier()) && !item_test.equals(item.identifySimpleNoIdentifier())) {
+        if (!tryItem(item, item_test)) {
             return false;
         }
 

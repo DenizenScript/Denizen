@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.block;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.BlockFormEvent;
 
 import java.util.HashMap;
 
-public class BlockFormsScriptEvent extends ScriptEvent implements Listener {
+public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block forms
-    // <block> forms
+    // block forms (in <area>)
+    // <block> forms (in <area>)
     //
     // @Cancellable true
     //
@@ -27,8 +27,8 @@ public class BlockFormsScriptEvent extends ScriptEvent implements Listener {
     // E.G. when snow forms in a snow storm or ice forms in a snowy biome
     //
     // @Context
-    // <context.location> returns the dLocation the block.
-    // <context.material> returns the dMaterial of the block.
+    // <context.location> returns the dLocation the block that formed.
+    // <context.material> returns the dMaterial of the block that formed.
     //
     // -->
 
@@ -44,17 +44,19 @@ public class BlockFormsScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.contains("block forms")
-                || (lower.equals(mat + " forms") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("forms");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
         String mat = CoreUtilities.getXthArg(0, lower);
-        return mat.equals("block")
-                || (material.identifySimpleNoIdentifier().toLowerCase().equals(mat));
+        return tryMaterial(material, mat);
     }
 
     @Override

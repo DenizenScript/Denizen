@@ -1,66 +1,61 @@
-package net.aufdemrand.denizen.events.block;
+package net.aufdemrand.denizen.events.world;
 
-import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
+
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 
 import java.util.HashMap;
 
-public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener {
+public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // block falls (in <area>)
-    // <material> falls (in <area>)
+    // world unloads
+    // <world> unloads
     //
     // @Cancellable true
     //
-    // @Triggers when a block falls.
+    // @Triggers when a world is unloaded.
     //
     // @Context
-    // <context.location> returns the location of the block.
+    // <context.world> returns the dWorld that was unloaded.
     //
     // -->
 
-    public BlockFallsScriptEvent() {
+    public WorldUnloadsScriptEvent() {
         instance = this;
     }
 
-    public static BlockFallsScriptEvent instance;
-
-    public dLocation location;
-    private dMaterial material;
-    public EntityChangeBlockEvent event;
+    public static WorldUnloadsScriptEvent instance;
+    public dWorld world;
+    public WorldUnloadEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("falls");
+        return CoreUtilities.getXthArg(1,CoreUtilities.toLowerCase(s)).equals("unloads");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        String wCheck = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }
-
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return tryMaterial(material, mat);
+        return true;
     }
 
     @Override
     public String getName() {
-        return "BlockFalls";
+        return "WorldUnloads";
     }
 
     @Override
@@ -70,7 +65,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public void destroy() {
-        EntityChangeBlockEvent.getHandlerList().unregister(this);
+        WorldUnloadEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -81,14 +76,13 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
+        context.put("world", world);
         return context;
     }
 
     @EventHandler
-    public void onBlockFalls(EntityChangeBlockEvent event) {
-        location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+    public void onWorldUnloads(WorldUnloadEvent event) {
+        world = new dWorld(event.getWorld());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

@@ -2,11 +2,10 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,62 +13,63 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
 import java.util.HashMap;
 
-public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player places hanging (in <area>)
-    // player places <hanging> (in <area>)
+    // player drops item (in <area>)
+    // player drops <item> (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is placed.
+    // @Triggers when a player drops an item.
     //
     // @Context
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
-    // <context.cuboids> DEPRECATED.
+    // <context.item> returns the dItem.
+    // <context.entity> returns a dEntity of the item.
+    // <context.location> returns a dLocation of the item's location.
     //
     // -->
 
-    public PlayerPlacesHangingScriptEvent() {
+    public PlayerDropsItemScriptEvent() {
         instance = this;
     }
 
-    public static PlayerPlacesHangingScriptEvent instance;
-    public dEntity hanging;
-    public dList cuboids;
+    public static PlayerDropsItemScriptEvent instance;
+    public dItem item;
+    public dEntity entity;
     public dLocation location;
-    public HangingPlaceEvent event;
+    public PlayerDropItemEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player places");
+        return CoreUtilities.toLowerCase(s).startsWith("player drops");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String hangCheck = CoreUtilities.getXthArg(2, lower);
-        if (!hanging.matchesEntity(hangCheck)) {
+
+        if (dEntity.isNPC(event.getPlayer())) {
             return false;
         }
-
+        String iCheck = CoreUtilities.getXthArg(2, lower);
+        if (!iCheck.equals("item") && !tryItem(item, iCheck)) {
+            return false;
+        }
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
-
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerPlacesHanging";
+        return "PlayerDropsItem";
     }
 
     @Override
@@ -79,7 +79,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public void destroy() {
-        HangingPlaceEvent.getHandlerList().unregister(this);
+        PlayerDropItemEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -89,26 +89,23 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
+        context.put("item", item);
+        context.put("entity", entity);
         context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
-        hanging = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+    public void onPlayerDropsItem(PlayerDropItemEvent event) {
+        location = new dLocation(event.getPlayer().getLocation());
+        item = new dItem(event.getItemDrop().getItemStack());
+        entity = new dEntity(event.getItemDrop());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

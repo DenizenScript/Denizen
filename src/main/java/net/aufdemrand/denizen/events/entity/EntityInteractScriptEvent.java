@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -47,6 +46,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public static EntityInteractScriptEvent instance;
     public dEntity entity;
     public dLocation location;
+    private dMaterial material;
     public dList cuboids;
     public EntityInteractEvent event;
 
@@ -64,11 +64,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         }
 
         String mat = CoreUtilities.getXthArg(2, lower);
-        if (mat.length() == 0) {
-            dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
-            return false;
-        }
-        else if (!mat.equals("block") && !mat.equals(dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData()).identifySimpleNoIdentifier())) {
+        if (!tryMaterial(material, mat)) {
             return false;
         }
 
@@ -118,6 +114,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public void onEntityInteract(EntityInteractEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
+        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }

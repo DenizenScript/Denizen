@@ -85,7 +85,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTwo = lower.contains(" by ") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         return cmd.equals("damaged") || cmd.equals("damages");
     }
 

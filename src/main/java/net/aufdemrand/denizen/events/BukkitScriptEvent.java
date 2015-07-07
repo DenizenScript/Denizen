@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.events;
 
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dEllipsoid;
-import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -42,6 +40,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return false;
             }
         }
+        else if (dWorld.matches(it)) {
+            return location.getWorld().getName().equalsIgnoreCase(it);
+        }
         else if (dCuboid.matches(it)) {
             dCuboid cuboid = dCuboid.valueOf(it);
             return cuboid.isInsideCuboid(location);
@@ -59,6 +60,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
         String with = getSwitch(s, "with");
         if (with != null) {
+            if (with.equalsIgnoreCase("item")) {
+                return true;
+            }
             dItem it = dItem.valueOf(with);
             if (it == null) {
                 dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
@@ -72,6 +76,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean tryItem(dItem item, String comparedto) {
+        if (comparedto.equalsIgnoreCase("item")) {
+            return true;
+        }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
@@ -88,6 +95,25 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
         if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean tryMaterial(dMaterial mat, String comparedto) {
+        if (comparedto == null || comparedto.length() == 0) {
+            return false;
+        }
+        if (comparedto.equalsIgnoreCase("block") || comparedto.equalsIgnoreCase("material")) {
+            return true;
+        }
+        if (mat.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (mat.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
+            return true;
+        }
+        if (mat.identifyFullNoIdentifier().equalsIgnoreCase(comparedto)) {
             return true;
         }
         return false;
