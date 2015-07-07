@@ -1024,36 +1024,4 @@ public class BukkitWorldScriptHelper implements Listener {
         }
     }
 
-    // <--[event]
-    // @Events
-    // player toggles flight
-    // player starts flying
-    // player stops flying
-    //
-    // @Triggers when a player starts or stops flying.
-    // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now flying and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from toggling flying.
-    //
-    // -->
-    @EventHandler
-    public void playerToggleFlight(PlayerToggleFlightEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("state", new Element(event.isFlying()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player toggles flight",
-                                "player " + (event.isFlying() ? "starts" : "stops") + " flying"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
 }
