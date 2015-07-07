@@ -656,53 +656,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player breaks item
-    // player breaks <item>
-    //
-    // @Triggers when a player breaks the item they are holding.
-    // @Context
-    // <context.item> returns the item that broke.
-    //
-    // @Determine
-    // "CANCELLED" to prevent the item from breaking, restoring it with one usage left.
-    // -->
-    @EventHandler
-    public void playerBreakItem(PlayerItemBreakEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        final ItemStack itemstack = event.getBrokenItem();
-        dItem item = new dItem(itemstack);
-        context.put("item", item);
-
-        String determination = doEvents(Arrays.asList
-                        ("player breaks item",
-                                "player breaks " + item.identifySimple(),
-                                "player breaks " + item.identifyMaterial()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
-
-        if (determination.startsWith("CANCELLED")) {
-            // The ItemStack isn't really gone yet, only set to stack size 0.
-            // So just add 1 more item to the stack.
-            itemstack.setAmount(itemstack.getAmount() + 1);
-            // The event automatically resets durability to 0... instead,
-            // let's delay a tick and set it back to what it was before.
-            final Player player = event.getPlayer();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    itemstack.setDurability(itemstack.getType().getMaxDurability());
-                    player.updateInventory();
-                }
-            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
-        }
-
-    }
-
-    // <--[event]
-    // @Events
     // player clicks block
     // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
