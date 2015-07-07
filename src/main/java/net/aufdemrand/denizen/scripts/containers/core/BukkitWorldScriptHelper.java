@@ -988,40 +988,4 @@ public class BukkitWorldScriptHelper implements Listener {
         dPlayer.notePlayer(event.getPlayer());
     }
 
-    // <--[event]
-    // @Events
-    // player walks over notable
-    // player walks over <location>
-    //
-    // @Triggers when a player walks over a notable location.
-    // @Context
-    // <context.notable> returns an Element of the notable location's name.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from moving to the notable location.
-    //
-    // -->
-    @EventHandler
-    public void playerMove(PlayerMoveEvent event) {
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
-
-        String name = NotableManager.getSavedId(new dLocation(event.getTo().getBlock().getLocation()));
-
-        if (name != null) {
-            Map<String, dObject> context = new HashMap<String, dObject>();
-            context.put("notable", new Element(name));
-
-            String determination = doEvents(Arrays.asList
-                            ("player walks over notable",
-                                    "player walks over " + name,
-                                    "walked over notable",
-                                    "walked over " + name),
-                    null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-            if (determination.toUpperCase().startsWith("CANCELLED") ||
-                    determination.toUpperCase().startsWith("FROZEN"))
-                event.setCancelled(true);
-        }
-    }
-
 }
