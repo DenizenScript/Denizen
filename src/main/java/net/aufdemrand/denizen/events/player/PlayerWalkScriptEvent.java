@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -90,6 +91,9 @@ public class PlayerWalkScriptEvent extends ScriptEvent implements Listener {
 
     @EventHandler
     public void onPlayerMoves(PlayerMoveEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         old_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
         cancelled = event.isCancelled();

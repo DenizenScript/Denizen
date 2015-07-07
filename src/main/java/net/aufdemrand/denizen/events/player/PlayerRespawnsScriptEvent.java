@@ -2,11 +2,9 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,62 +12,57 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.HashMap;
 
-public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player places hanging (in <area>)
-    // player places <hanging> (in <area>)
+    // player respawns (at bed/elsewhere)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is placed.
+    // @Triggers when a player respawns.
     //
     // @Context
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
-    // <context.cuboids> DEPRECATED.
+    // <context.location> returns a dLocation of the respawn location.
+    //
+    // @Determine
+    // dLocation to change the respawn location.
     //
     // -->
 
-    public PlayerPlacesHangingScriptEvent() {
+    public PlayerRespawnsScriptEvent() {
         instance = this;
     }
 
-    public static PlayerPlacesHangingScriptEvent instance;
-    public dEntity hanging;
-    public dList cuboids;
+    public static PlayerRespawnsScriptEvent instance;
     public dLocation location;
-    public HangingPlaceEvent event;
+    public PlayerRespawnEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player places");
+        return CoreUtilities.toLowerCase(s).startsWith("player respawns");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String hangCheck = CoreUtilities.getXthArg(2, lower);
-        if (!hanging.matchesEntity(hangCheck)) {
+        String loc = CoreUtilities.getXthArg(2, lower);
+        if (loc.equals("at") && !event.isBedSpawn()) {
             return false;
         }
-
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (loc.equals("elsewhere") && event.isBedSpawn()) {
             return false;
         }
-
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerPlacesHanging";
+        return "PlayerRespawns";
     }
 
     @Override
@@ -79,42 +72,41 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public void destroy() {
-        HangingPlaceEvent.getHandlerList().unregister(this);
+        PlayerRespawnEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (!CoreUtilities.toLowerCase(determination).equals("none")) {
+            dLocation loc = dLocation.valueOf(determination);
+            if (loc != null) {
+                location = loc;
+                return true;
+            }
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
         context.put("location", location);
         return context;
     }
 
     @EventHandler
-    public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
+    public void onPlayerRespawns(PlayerRespawnEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        hanging = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
-        cancelled = event.isCancelled();
+        location = new dLocation(event.getRespawnLocation());
         this.event = event;
         fire();
-        event.setCancelled(cancelled);
+        event.setRespawnLocation(location);
     }
 }

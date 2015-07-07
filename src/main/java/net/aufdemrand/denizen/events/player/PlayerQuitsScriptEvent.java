@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -12,53 +12,50 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
 
-public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
+public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player opens inventory
-    // player opens <inventory type>
+    // player quits
+    // player quit
     //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
+    // @Cancellable false
+    //
+    // @Triggers when a player quit the server.
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.message> returns an Element of the quit message.
+    //
+    // @Determine
+    // Element(String) to change the quit message.
     //
     // -->
 
-    public PlayerOpensInvScriptEvent() {
+    public PlayerQuitsScriptEvent() {
         instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
-
-    public dInventory inventory;
-    public InventoryOpenEvent event;
+    public static PlayerQuitsScriptEvent instance;
+    public String message;
+    public PlayerQuitEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player opens");
+        return CoreUtilities.toLowerCase(s).startsWith("player quit");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(2, lower);
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerQuits";
     }
 
     @Override
@@ -68,36 +65,39 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
+        PlayerQuitEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (!CoreUtilities.toLowerCase(determination).equals("none")) {
+            message = determination;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
+        context.put("message", new Element(message));
         return context;
     }
 
     @EventHandler
-    public void onPlayerOpensInv(InventoryOpenEvent event) {
+    public void onPlayerQuits(PlayerQuitEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        message = event.getQuitMessage();
         this.event = event;
-        cancelled = event.isCancelled();
         fire();
-        event.setCancelled(cancelled);
+        event.setQuitMessage(message);
+
     }
 }

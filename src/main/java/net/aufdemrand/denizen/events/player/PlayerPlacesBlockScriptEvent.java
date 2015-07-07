@@ -107,6 +107,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     @EventHandler
     public void onPlayerPlacesBlock(BlockPlaceEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
