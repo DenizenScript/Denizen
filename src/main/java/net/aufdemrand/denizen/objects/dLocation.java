@@ -866,6 +866,60 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <l@location.rotate_around_x[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the x axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_x") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double y = (getY() * cos) - (getZ() * sin);
+            double z = (getY() * sin) + (getZ() * cos);
+            Location location = clone();
+            location.setY(y);
+            location.setZ(z);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.rotate_around_y[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the y axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_y") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double x = (getX() * cos) + (getZ() * sin);
+            double z = (getX() * -sin) + (getZ() * cos);
+            Location location = clone();
+            location.setX(x);
+            location.setZ(z);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.rotate_around_z[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the z axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_z") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double x = (getX() * cos) - (getY() * sin);
+            double y = (getZ() * sin) + (getY() * cos);
+            Location location = clone();
+            location.setX(x);
+            location.setY(y);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
+        }
+
 
         /////////////////////
         //   ENTITY AND BLOCK LIST ATTRIBUTES
