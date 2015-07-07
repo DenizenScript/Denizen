@@ -43,8 +43,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("launched") && (entTest.equals("projectile"));
+        return cmd.equals("launched");
     }
 
     @Override
