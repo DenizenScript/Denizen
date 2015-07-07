@@ -209,16 +209,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return null;
     }
 
-    final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
-
     public static boolean matches(String string) {
-        if (string == null || string.length() == 0)
+        if (string == null || string.length() == 0) {
             return false;
+        }
 
         if (string.startsWith("l@")) {
             return true;
         }
-
 
         return dLocation.valueOf(string, new BukkitTagContext(null, null, false, null, false, null)) != null;
     }
