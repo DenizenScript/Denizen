@@ -1120,36 +1120,4 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-
-    /////////////////////
-    //   VEHICLE EVENTS
-    /////////////////
-
-
-    // <--[event]
-    // @Events
-    // vehicle created
-    // <vehicle> created
-    //
-    // @Triggers when a vehicle is created.
-    // @Context
-    // <context.vehicle> returns the dEntity of the vehicle.
-    //
-    // -->
-    @EventHandler
-    public void vehicleCreate(VehicleCreateEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-
-        dEntity vehicle = new dEntity(event.getVehicle());
-
-        context.put("vehicle", vehicle);
-
-        doEvents(Arrays.asList
-                        ("vehicle created",
-                                vehicle.identifyType() + " created",
-                                vehicle.identifySimple() + " created"),
-                null, null, context, true);
-    }
-
 }
