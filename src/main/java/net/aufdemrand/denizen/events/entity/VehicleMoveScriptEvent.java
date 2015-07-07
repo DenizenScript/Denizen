@@ -18,12 +18,13 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // vehicle moves
-    // <vehicle> moves
+    // vehicle moves (in <area>)
+    // <vehicle> moves (in <area>)
     //
     // @Warning This event fires very very rapidly!
     //
     // @Triggers when a vehicle moves in the slightest.
+    //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
     // <context.from> returns the location of where the vehicle was.
