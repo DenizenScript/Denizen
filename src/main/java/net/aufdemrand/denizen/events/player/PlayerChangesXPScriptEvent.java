@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -12,53 +14,49 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 
 import java.util.HashMap;
 
-public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
+public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player opens inventory
-    // player opens <inventory type>
+    // player changes xp
     //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
+    // @Cancellable true
+    //
+    // @Triggers when a player's experience amount changes.
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.amount> returns the amount of changed experience.
+    //
+    // @Determine
+    // Element(Number) to set the amount of changed experience.
     //
     // -->
 
-    public PlayerOpensInvScriptEvent() {
+    public PlayerChangesXPScriptEvent() {
         instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
-
-    public dInventory inventory;
-    public InventoryOpenEvent event;
+    public static PlayerChangesXPScriptEvent instance;
+    public int amount;
+    public PlayerExpChangeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player opens");
+        return CoreUtilities.toLowerCase(s).startsWith("player changes xp");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(2, lower);
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerChangesXP";
     }
 
     @Override
@@ -68,36 +66,43 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
+        PlayerExpChangeEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (aH.matchesInteger(determination)) {
+            amount = aH.getIntegerFrom(determination);
+            return true;
+        }
+        if (lower.equals("cancelled")) {
+            amount = 0;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
+        context.put("amount", new Element(amount));
         return context;
     }
 
     @EventHandler
-    public void onPlayerOpensInv(InventoryOpenEvent event) {
+    public void onPlayerChangesXP(PlayerExpChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        amount = event.getAmount();
         this.event = event;
-        cancelled = event.isCancelled();
         fire();
-        event.setCancelled(cancelled);
+        event.setAmount(amount);
     }
 }

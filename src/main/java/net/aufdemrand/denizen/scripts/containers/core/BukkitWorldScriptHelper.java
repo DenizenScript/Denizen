@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
@@ -15,25 +14,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.*;
-import org.bukkit.event.weather.LightningStrikeEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.world.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
@@ -709,167 +703,6 @@ public class BukkitWorldScriptHelper implements Listener {
 
     // <--[event]
     // @Events
-    // player throws (hatching/non-hatching) egg
-    //
-    // @Triggers when a player throws an egg.
-    // @Context
-    // <context.egg> returns the dEntity of the egg.
-    // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the hatching.
-    // dEntity to set the type of the hatching entity.
-    //
-    // -->
-    @EventHandler
-    public void playerEggThrow(PlayerEggThrowEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity egg = new dEntity(event.getEgg());
-        context.put("egg", egg);
-        context.put("is_hatching", new Element(event.isHatching()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player throws egg");
-
-        if (event.isHatching()) events.add("player throws hatching egg");
-        else events.add("player throws non-hatching egg");
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.equalsIgnoreCase("CANCELLED")) {
-            event.setHatching(false);
-        }
-        else if (dEntity.matches(determination)) {
-            event.setHatching(true);
-            event.setHatchingType(dEntity.valueOf(determination).getBukkitEntityType());
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player changes xp
-    //
-    // @Triggers when a player's experience amount changes.
-    // @Context
-    // <context.amount> returns the amount of changed experience.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from changing experience.
-    // Element(Number) to set the amount of changed experience.
-    //
-    // -->
-    @EventHandler
-    public void playerExpChange(PlayerExpChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("amount", new Element(event.getAmount()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player changes xp"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
-
-        if (determination.equals("CANCELLED")) {
-            event.setAmount(0);
-        }
-        else if (Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer)) {
-            event.setAmount(Integer.valueOf(determination));
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player fishes (<entity>) (while <state>)
-    //
-    // @Triggers when a player uses a fishing rod.
-    // @Context
-    // <context.hook> returns a dEntity of the hook.
-    // <context.state> returns an Element of the fishing state.
-    // <context.entity> returns a dEntity of the entity that got caught.
-    // <context.item> returns a dItem of the item gotten, if any.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from fishing.
-    //
-    // -->
-    @EventHandler
-    public void playerFish(PlayerFishEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        dNPC npc = null;
-        String state = event.getState().name();
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("hook", new dEntity(event.getHook()));
-        context.put("state", new Element(state));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player fishes");
-        events.add("player fishes while " + state);
-
-        if (event.getCaught() != null) {
-
-            Entity caught = event.getCaught();
-            dEntity entity = new dEntity(caught);
-            context.put("entity", entity.getDenizenObject());
-            if (caught instanceof Item) {
-                context.put("item", new dItem(((Item) caught).getItemStack()));
-            }
-
-            if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
-
-            events.add("player fishes " + entity.identifyType());
-            events.add("player fishes " + entity.identifyType() + " while " + state);
-        }
-
-        String determination = doEvents(events, npc, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // player changes gamemode (to <gamemode>)
-    //
-    // @Triggers when a player's gamemode is changed.
-    // @Context
-    // <context.gamemode> returns an Element of the gamemode.
-    //
-    // @Determine
-    // "CANCELLED" to stop the gamemode from being changed.
-    //
-    // -->
-    @EventHandler
-    public void playerGameModeChange(PlayerGameModeChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("gamemode", new Element(event.getNewGameMode().name()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player changes gamemode",
-                                "player changes gamemode to " + event.getNewGameMode().name()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        // Handle message
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
     // player clicks block
     // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
@@ -1142,176 +975,17 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // player joins
-    // player join
+
     //
-    // @Triggers when a player joins the server.
-    // @Context
-    // <context.message> returns an Element of the join message.
+    // Left this here because mcmonkey told me to
     //
-    // @Determine
-    // Element(String) to change the join message.
-    //
-    // -->
-    @EventHandler
-    public void playerJoinEvent(PlayerJoinEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Player player = event.getPlayer();
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getJoinMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player joins",
-                                "player join"),
-                null, dEntity.getPlayerFrom(player), context);
-
-        // Handle message
-        if (!determination.equals("none")) {
-            event.setJoinMessage(determination);
-        }
-
-        // As a tie-in with ScoreboardHelper, make this player view
-        // the scoreboard he/she is supposed to view
-        if (ScoreboardHelper.viewerMap.containsKey(player.getName())) {
-            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(player.getName()));
-            if (score != null)
-                player.setScoreboard(score);
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player kicked
-    //
-    // @Triggers when a player is kicked from the server.
-    // @Context
-    // <context.message> returns an Element of the kick message.
-    //
-    // @Determine
-    // Element(String) to change the kick message.
-    //
-    // -->
-    @EventHandler
-    public void playerKick(PlayerKickEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getLeaveMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player kicked"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (!determination.equals("none")) {
-            event.setLeaveMessage(determination);
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player leashes entity
-    // player leashes <entity>
-    //
-    // @Triggers when a player leashes an entity.
-    // @Context
-    // <context.entity> returns the dEntity of the leashed entity.
-    // <context.holder> returns the dEntity that is holding the leash.
-    //
-    // @Determine
-    // "CANCELLED" to cancel the leashing.
-    //
-    // -->
-    @EventHandler
-    public void playerLeashEntity(PlayerLeashEntityEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-        context.put("holder", new dEntity(event.getLeashHolder()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player leashes entity",
-                                "player leashes " + entity.identifyType()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.equalsIgnoreCase("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // player levels up (from <level>/to <level>)
-    //
-    // @Triggers when a player levels up.
-    // @Context
-    // <context.level> returns an Element of the player's new level.
-    //
-    // -->
-    @EventHandler
-    public void playerLevelChange(PlayerLevelChangeEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("level", new Element(event.getNewLevel()));
-
-        doEvents(Arrays.asList
-                        ("player levels up",
-                                "player levels up to " + event.getNewLevel(),
-                                "player levels up from " + event.getOldLevel()),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-    }
-
-    // <--[event]
-    // @Events
-    // player logs in (for the first time)
-    // player (first) login
-    //
-    // @Triggers when a player logs in to the server.
-    // @Context
-    // <context.hostname> returns an Element of the player's hostname.
-    //
-    // @Determine
-    // "KICKED" to kick the player from the server.
-    // "KICKED Element(String)" to kick the player and specify a message to show.
-    //
-    // -->
-    @EventHandler
+    @EventHandler(priority= EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {
 
         if (dEntity.isNPC(event.getPlayer()))
             return;
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        List<String> events = new ArrayList<String>();
-        context.put("hostname", new Element(event.getHostname()));
-
-        if (!dPlayer.isNoted(event.getPlayer())) {
-            events.add("player logs in for the first time");
-            events.add("player first login");
-        }
-
         dPlayer.notePlayer(event.getPlayer());
-
-        events.add("player logs in");
-        events.add("player login");
-        String determination = doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("KICKED"))
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, determination.length() > 7 ? determination.substring(7) : determination);
     }
 
     // <--[event]
@@ -1348,158 +1022,6 @@ public class BukkitWorldScriptHelper implements Listener {
                     determination.toUpperCase().startsWith("FROZEN"))
                 event.setCancelled(true);
         }
-    }
-
-    // <--[event]
-    // @Events
-    // player picks up item
-    // player picks up <item>
-    // player takes item
-    // player takes <item>
-    //
-    // @Triggers when a player picks up an item.
-    // @Context
-    // <context.item> returns the dItem.
-    // <context.entity> returns a dEntity of the item.
-    // <context.location> returns a dLocation of the item's location.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from picked up.
-    //
-    // -->
-    @EventHandler
-    public void playerPickupItem(PlayerPickupItemEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = new dItem(event.getItem().getItemStack());
-        context.put("item", item);
-        context.put("entity", new dEntity(event.getItem()));
-        context.put("location", new dLocation(event.getItem().getLocation()));
-
-        List<String> events = new ArrayList<String>();
-
-        events.add("player picks up item");
-        events.add("player picks up " + item.identifySimple());
-        events.add("player picks up " + item.identifyMaterial());
-        events.add("player takes item");
-        events.add("player takes " + item.identifySimple());
-        events.add("player takes " + item.identifyMaterial());
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
-    // <--[event]
-    // @Events
-    // player quits
-    // player quit
-    //
-    // @Triggers when a player quit the server.
-    // @Context
-    // <context.message> returns an Element of the quit message.
-    //
-    // @Determine
-    // Element(String) to change the quit message.
-    //
-    // -->
-    @EventHandler
-    public void playerQuit(PlayerQuitEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(event.getQuitMessage()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player quits",
-                                "player quit"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (!determination.equals("none")) {
-            event.setQuitMessage(determination);
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player respawns (at bed/elsewhere)
-    //
-    // @Triggers when a player respawns.
-    // @Context
-    // <context.location> returns a dLocation of the respawn location.
-    //
-    // @Determine
-    // dLocation to change the respawn location.
-    //
-    // -->
-    @EventHandler
-    public void playerRespawn(PlayerRespawnEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("location", new dLocation(event.getRespawnLocation()));
-
-        List<String> events = new ArrayList<String>();
-        events.add("player respawns");
-
-        if (event.isBedSpawn()) events.add("player respawns at bed");
-        else events.add("player respawns elsewhere");
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (dLocation.matches(determination)) {
-            dLocation location = dLocation.valueOf(determination);
-
-            if (location != null) event.setRespawnLocation(location);
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player shears entity
-    // player shears <entity>
-    // player shears <color> sheep
-    //
-    // @Triggers when a player shears an entity.
-    // @Context
-    // <context.state> returns the dEntity of the sheep.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from shearing the entity.
-    //
-    // -->
-    @EventHandler
-    public void playerShearEntity(PlayerShearEntityEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dEntity entity = new dEntity(event.getEntity());
-
-        context.put("entity", entity);
-
-        List<String> events = new ArrayList<String>();
-        events.add("player shears entity");
-        events.add("player shears " + entity.identifyType());
-
-        if (entity.getEntityType().equals(EntityType.SHEEP)) {
-            String color = ((Sheep) entity.getBukkitEntity()).getColor().name();
-            events.add("player shears " + color + " sheep");
-        }
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(event.getPlayer()), context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
     }
 
     // <--[event]

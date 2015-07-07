@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
@@ -105,6 +102,9 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @EventHandler
     public void onPlayerTakesFromFurnace(FurnaceExtractEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         item = new dItem(dMaterial.getMaterialFrom(event.getItemType()), event.getItemAmount());
         location = new dLocation(event.getBlock().getLocation());
         xp = new Element(event.getExpToDrop());

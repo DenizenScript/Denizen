@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -12,53 +13,62 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 import java.util.HashMap;
+import java.util.List;
 
-public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
+public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player opens inventory
-    // player opens <inventory type>
+    // player levels up (from <level>/to <level>)
     //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
+    // @Cancellable false
+    //
+    // @Triggers when a player levels an entity.
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.level> returns an Element of the player's new level.
     //
     // -->
 
-    public PlayerOpensInvScriptEvent() {
+    public PlayerLevelsScriptEvent() {
         instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
-
-    public dInventory inventory;
-    public InventoryOpenEvent event;
+    public static PlayerLevelsScriptEvent instance;
+    public int level;
+    public PlayerLevelChangeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player opens");
+        return CoreUtilities.toLowerCase(s).startsWith("player levels up");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(2, lower);
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
-            return false;
+        List<String> data = CoreUtilities.split(lower, ' ');
+        for (int index = 0; index < data.size(); index++) {
+            if (data.get(index).equals("from")) {
+                if (aH.getIntegerFrom(data.get(index+1)) != event.getOldLevel()){
+                    return false;
+                }
+            }
+            if (data.get(index).equals("to")) {
+                if (aH.getIntegerFrom(data.get(index+1)) != event.getNewLevel()){
+                    return false;
+                }
+            }
         }
+
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerLevels";
     }
 
     @Override
@@ -68,7 +78,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
+        PlayerLevelChangeEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -78,26 +88,24 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        dEntity player = new dEntity(event.getPlayer());
+        return new BukkitScriptEntryData(player.isPlayer() ? player.getDenizenPlayer() : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
+        context.put("level", new Element(level));
         return context;
     }
 
     @EventHandler
-    public void onPlayerOpensInv(InventoryOpenEvent event) {
+    public void onPlayerLevels(PlayerLevelChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        level = event.getNewLevel();
         this.event = event;
-        cancelled = event.isCancelled();
         fire();
-        event.setCancelled(cancelled);
     }
 }

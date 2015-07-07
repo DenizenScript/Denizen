@@ -53,9 +53,6 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        if (dEntity.isNPC(event.getPlayer())) {
-            return false;
-        }
         String iCheck = CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s));
         return iCheck.equals("item") || tryItem(item, iCheck);
     }
@@ -106,6 +103,9 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onPlayerConsumes(PlayerItemConsumeEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         item = new dItem(event.getItem());
         this.event = event;
         fire();

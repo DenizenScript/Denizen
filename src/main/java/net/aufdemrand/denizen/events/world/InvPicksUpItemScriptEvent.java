@@ -44,7 +44,8 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("picks up");
+        String lower = CoreUtilities.toLowerCase(s);
+        return lower.contains("picks up") && !CoreUtilities.getXthArg(0, lower).equals("player");
     }
 
     @Override

@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -12,53 +12,56 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
 
 import java.util.HashMap;
 
-public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
+public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player opens inventory
-    // player opens <inventory type>
+    // player leashes entity
+    // player leashes <entity>
     //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
+    // @Cancellable true
+    //
+    // @Triggers when a player leashes an entity.
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.entity> returns the dEntity of the leashed entity.
+    // <context.holder> returns the dEntity that is holding the leash.
     //
     // -->
 
-    public PlayerOpensInvScriptEvent() {
+    public PlayerLeashesScriptEvent() {
         instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
-
-    public dInventory inventory;
-    public InventoryOpenEvent event;
+    public static PlayerLeashesScriptEvent instance;
+    public dEntity entity;
+    public dEntity holder;
+    public PlayerLeashEntityEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player opens");
+        return CoreUtilities.toLowerCase(s).startsWith("player leashes");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(2, lower);
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
-            return false;
+        String target = CoreUtilities.getXthArg(2, lower);
+        if (target.length() > 0) {
+            if (!target.equals(CoreUtilities.toLowerCase(entity.getName()))) {
+                return false;
+            }
         }
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerLeashes";
     }
 
     @Override
@@ -68,7 +71,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
+        PlayerLeashEntityEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -78,23 +81,24 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(holder.isPlayer() ? holder.getDenizenPlayer() : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
+        context.put("holder", holder);
+        context.put("entity", entity);
         return context;
     }
 
     @EventHandler
-    public void onPlayerOpensInv(InventoryOpenEvent event) {
+    public void onPlayerLeashes(PlayerLeashEntityEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        holder = new dEntity(event.getPlayer());
+        entity = new dEntity(event.getEntity());
         this.event = event;
         cancelled = event.isCancelled();
         fire();
