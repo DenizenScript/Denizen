@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -102,8 +103,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return valueOf(string, null);
     }
 
-    final static Pattern item_by_saved = Pattern.compile("(l@)(.+)");
-
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -116,20 +115,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     public static dLocation valueOf(String string, TagContext context) {
         if (string == null) return null;
 
-        ////////
-        // Match @object format for saved dLocations
-        Matcher m;
+        if (string.startsWith("l@")) {
+            string = string.substring(2);
+        }
 
-        m = item_by_saved.matcher(string);
-
-        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dLocation.class))
-            return (dLocation) NotableManager.getSavedObject(m.group(2));
+        if (NotableManager.isSaved(string) && NotableManager.isType(string, dLocation.class)) {
+            return (dLocation) NotableManager.getSavedObject(string);
+        }
 
         ////////
         // Match location formats
 
         // Split values
-        String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
+        String[] split = StringUtils.split(string, ',');
 
         if (split.length == 2)
             // If 4 values, wordless 2D location format
@@ -217,13 +215,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (string == null || string.length() == 0)
             return false;
 
-        Matcher m = location_by_saved.matcher(string);
-        if (m.matches())
+        if (string.startsWith("l@")) {
             return true;
+        }
 
-        String[] data = string.split(",");
-        return data.length >= 2 && new Element(data[0]).isDouble()
-                && new Element(data[1]).isDouble();
+
+        return dLocation.valueOf(string, new BukkitTagContext(null, null, false, null, false, null)) != null;
     }
 
 
