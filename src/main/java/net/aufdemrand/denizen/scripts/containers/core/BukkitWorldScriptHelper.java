@@ -1088,36 +1088,4 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // player toggles sprint
-    // player starts sprinting
-    // player stops sprinting
-    //
-    // @Triggers when a player starts or stops sprinting.
-    // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from toggling sprinting.
-    //
-    // -->
-    @EventHandler
-    public void playerToggleSprint(PlayerToggleSprintEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("state", new Element(event.isSprinting()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player toggles sprint",
-                                "player " + (event.isSprinting() ? "starts" : "stops") + " sprinting"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
 }
