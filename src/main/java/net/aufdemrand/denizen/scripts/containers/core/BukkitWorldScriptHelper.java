@@ -1056,36 +1056,4 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
     }
 
-    // <--[event]
-    // @Events
-    // player toggles sneak
-    // player starts sneaking
-    // player stops sneaking
-    //
-    // @Triggers when a player starts or stops sneaking.
-    // @Context
-    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from toggling sneaking.
-    //
-    // -->
-    @EventHandler
-    public void playerToggleSneak(PlayerToggleSneakEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer()))
-            return;
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        context.put("state", new Element(event.isSneaking()));
-
-        String determination = doEvents(Arrays.asList
-                        ("player toggles sneak",
-                                "player " + (event.isSneaking() ? "starts" : "stops") + " sneaking"),
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED"))
-            event.setCancelled(true);
-    }
-
 }
