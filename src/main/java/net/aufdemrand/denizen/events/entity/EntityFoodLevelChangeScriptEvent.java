@@ -73,7 +73,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer)) {
+        if (aH.matchesInteger(determination)) {
             food = aH.getIntegerFrom(determination);
             return true;
         }

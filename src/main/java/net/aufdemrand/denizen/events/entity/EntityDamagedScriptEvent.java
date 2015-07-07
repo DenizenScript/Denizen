@@ -17,9 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -144,7 +142,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Double)) {
+        if (aH.matchesDouble(determination)) {
             damage = new Element(aH.getDoubleFrom(determination));
             return true;
         }

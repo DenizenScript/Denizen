@@ -111,7 +111,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
         }
-        else if (aH.Argument.valueOf(lower).matchesPrimitive(aH.PrimitiveType.Integer)) {
+        else if (aH.matchesInteger(determination)) {
             xp = aH.Argument.valueOf(lower).asElement();
         }
         else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
