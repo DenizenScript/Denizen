@@ -1241,6 +1241,9 @@ public class dEntity implements dObject, Adjustable {
         if (ent.equalsIgnoreCase("vehicle")) {
             return entity instanceof Vehicle;
         }
+        if (ent.equalsIgnoreCase("projectile")) {
+            return entity instanceof Projectile;
+        }
         if (ent.equalsIgnoreCase(getName())) {
             return true;
         }
