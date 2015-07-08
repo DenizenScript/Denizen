@@ -58,6 +58,35 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
+    public boolean runAtCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
+        List<String> data = CoreUtilities.split(lower, ' ');
+
+        int index;
+
+        for (index = 0; index < data.size(); index++) {
+            if (data.get(index).equals("at")) {
+                break;
+            }
+        }
+        if (index >= data.size()) {
+            // No 'at ...' specified
+            return true;
+        }
+
+        String it = CoreUtilities.getXthArg(index + 1, s);
+        if (it.equals("notable")) {
+            return true;
+        }
+        if (dLocation.valueOf(it) == null) {
+            dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+            return false;
+        }
+        if (location == null || !tryLocation((dLocation)location, it)) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean tryLocation(dLocation location, String comparedto) {
         if (comparedto == null || comparedto.length() == 0) {
             dB.echoError("Null or empty location string to compare");
