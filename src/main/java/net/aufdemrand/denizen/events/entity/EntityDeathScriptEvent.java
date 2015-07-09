@@ -117,8 +117,7 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
             xp = 0;
         }
         // Change xp value only
-        else if (aH.Argument.valueOf(lower)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+        else if (aH.matchesInteger(determination)) {
             xp = aH.Argument.valueOf(lower).asElement().asInt();
         }
 

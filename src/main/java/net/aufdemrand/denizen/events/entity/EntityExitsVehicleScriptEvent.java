@@ -1,73 +1,68 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 
 import java.util.HashMap;
 
-public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listener {
+public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // vehicle moves (in <area>)
-    // <vehicle> moves (in <area>)
+    // entity exits vehicle (in <area>)
+    // entity exits <vehicle> (in <area>)
+    // <entity> exits vehicle (in <area>)
+    // <entity> exits <vehicle> (in <area>)
     //
-    // @Warning This event fires very very rapidly!
+    // @Cancellable true
     //
-    // @Triggers when a vehicle moves in the slightest.
+    // @Triggers when an entity exits a vehicle.
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.from> returns the location of where the vehicle was.
-    // <context.to> returns the location of where the vehicle is.
+    // <context.entity> returns the dEntity of the exiting entity.
     //
     // -->
 
-    public VehicleMoveScriptEvent() {
+    public EntityExitsVehicleScriptEvent() {
         instance = this;
     }
 
-    public static VehicleMoveScriptEvent instance;
+    public static EntityExitsVehicleScriptEvent instance;
     public dEntity vehicle;
-    public dLocation from;
-    public dLocation to;
-    public VehicleMoveEvent event;
+    public dEntity entity;
+    public VehicleExitEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "moves");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("exits");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String veh = CoreUtilities.getXthArg(0, lower);
-        if (!vehicle.matchesEntity(veh)) {
+        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
-
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+        if (!vehicle.matchesEntity(CoreUtilities.getXthArg(2, lower))) {
             return false;
         }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, vehicle.getLocation());
     }
-
-    // TODO: Can the vehicle be an NPC?
 
     @Override
     public String getName() {
-        return "VehicleMoves";
+        return "EntityExitsVehicle";
     }
 
     @Override
@@ -77,7 +72,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public void destroy() {
-        VehicleMoveEvent.getHandlerList().unregister(this);
+        VehicleExitEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -86,20 +81,26 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
+                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+    }
+
+    @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("from", from);
-        context.put("to", to);
         context.put("vehicle", vehicle);
+        context.put("entity", entity);
         return context;
     }
 
     @EventHandler
-    public void onVehicleMove(VehicleMoveEvent event) {
-        to = new dLocation(event.getTo());
-        from = new dLocation(event.getFrom());
+    public void onEntityExitsVehicle(VehicleExitEvent event) {
         vehicle = new dEntity(event.getVehicle());
+        entity = new dEntity(event.getExited());
         this.event = event;
+        cancelled = event.isCancelled();
         fire();
+        event.setCancelled(cancelled);
     }
 }

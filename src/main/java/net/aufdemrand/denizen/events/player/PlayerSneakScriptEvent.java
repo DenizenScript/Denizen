@@ -1,69 +1,68 @@
-package net.aufdemrand.denizen.events.entity;
+package net.aufdemrand.denizen.events.player;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import java.util.HashMap;
 
-public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // projectile launched (in <area>)
-    // <entity> launched (in <area>)
+    // player toggles sneaking (in <area>)
+    // player starts sneaking (in <area>)
+    // player stops sneaking (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a projectile is launched.
+    // @Triggers when a player starts or stops sneaking.
     //
     // @Context
-    // <context.entity> returns the projectile.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sneaking and "false" otherwise.
     //
     // -->
 
-    public ProjectileLaunchedScriptEvent() {
+    public PlayerSneakScriptEvent() {
         instance = this;
     }
 
-    public static ProjectileLaunchedScriptEvent instance;
-    public dEntity entity;
-    private dLocation location;
-    public ProjectileLaunchEvent event;
+    public static PlayerSneakScriptEvent instance;
+    public Boolean state;
+    public PlayerToggleSneakEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("launched");
+        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sneak");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String projTest = CoreUtilities.getXthArg(0, lower);
-        if (!projTest.equals("projectile") && !entity.matchesEntity(projTest)) {
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        if (cmd.equals("starts") && !state) {
+            return false;
+        }
+        if (cmd.equals("stops") && state) {
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
     }
 
     @Override
     public String getName() {
-        return "ProjectileLaunched";
+        return "PlayerSpring";
     }
 
     @Override
@@ -73,7 +72,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public void destroy() {
-        ProjectileLaunchEvent.getHandlerList().unregister(this);
+        PlayerToggleSneakEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -82,16 +81,23 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+    }
+
+    @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
+        context.put("state", new Element(state));
         return context;
     }
 
     @EventHandler
-    public void onProjectileLaunched(ProjectileLaunchEvent event) {
-        entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getEntity().getLocation());
+    public void onPlayerSneak(PlayerToggleSneakEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        state = event.isSneaking();
         cancelled = event.isCancelled();
         this.event = event;
         fire();

@@ -73,8 +73,7 @@ public class FurnaceBurnsItemScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+        if (aH.matchesInteger(determination)) {
             burntime = aH.getIntegerFrom(determination);
             return true;
         }

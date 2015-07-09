@@ -95,8 +95,8 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Integer)) {
-            cost = Integer.valueOf(determination);
+        if (aH.matchesInteger(determination)) {
+            cost = aH.getIntegerFrom(determination);
         }
 
         return super.applyDetermination(container, determination);

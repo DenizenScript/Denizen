@@ -24,10 +24,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player breaks block (with:<item>) (in <area>)
-    // player breaks <material> (with:<item>) (in <area>)
-    // player breaks block (with:<material>) (in <area>)
-    // player breaks <material> (with:<material>) (in <area>)
+    // player breaks block (in <area>)
+    // player breaks <material> (in <area>)
+    // player breaks block (in <area>)
+    // player breaks <material> (in <area>)
+    //
+    // @Switch with <item>|<material>
     //
     // @Cancellable true
     //
@@ -111,7 +113,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
         }
-        else if (aH.Argument.valueOf(lower).matchesPrimitive(aH.PrimitiveType.Integer)) {
+        else if (aH.matchesInteger(determination)) {
             xp = aH.Argument.valueOf(lower).asElement();
         }
         else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {

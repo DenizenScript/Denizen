@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -43,7 +42,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     public static PlayerTakesFromFurnaceScriptEvent instance;
     public dLocation location;
     public dItem item;
-    public Element xp;
+    private int xp;
     public FurnaceExtractEvent event;
 
     @Override
@@ -78,10 +77,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        String lower = CoreUtilities.toLowerCase(determination);
-
-        if (aH.Argument.valueOf(lower).matchesPrimitive(aH.PrimitiveType.Integer)) {
-            xp = aH.Argument.valueOf(lower).asElement();
+        if (aH.matchesInteger(determination)) {
+            xp = aH.getIntegerFrom(determination);
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -107,10 +104,10 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         }
         item = new dItem(dMaterial.getMaterialFrom(event.getItemType()), event.getItemAmount());
         location = new dLocation(event.getBlock().getLocation());
-        xp = new Element(event.getExpToDrop());
+        xp = event.getExpToDrop();
         this.event = event;
         fire();
-        event.setExpToDrop(xp.asInt());
+        event.setExpToDrop(xp);
     }
 
 }

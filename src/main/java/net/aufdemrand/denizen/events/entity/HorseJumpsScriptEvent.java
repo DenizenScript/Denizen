@@ -92,8 +92,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Float)) {
+        if (aH.matchesDouble(determination)) {
             power = aH.getFloatFrom(determination);
             return true;
         }

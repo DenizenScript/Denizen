@@ -17,9 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -35,10 +33,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity damaged (in <area>) (with:<item>)
-    // entity damaged by <cause> (in <area>) (with:<item>)
-    // <entity> damaged (in <area>) (with:<item>)
-    // <entity> damaged by <cause> (in <area>) (with:<item>)
+    // entity damaged (by <cause>) (in <area>) (with:<item>)
+    // <entity> damaged (by <cause>) (in <area>) (with:<item>)
     // entity damages entity (in <area>) (with:<item>)
     // entity damages <entity> (in <area>) (with:<item>)
     // entity damaged by entity (in <area>) (with:<item>)
@@ -92,8 +88,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
+        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) :
+                CoreUtilities.getXthArg(2, lower).equals("by") ? CoreUtilities.getXthArg(3, lower) : "";
         String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
+
         if (attacker.length() > 0) {
             if (damager != null) {
                 boolean projectileMatched = false;
@@ -144,7 +142,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Double)) {
+        if (aH.matchesDouble(determination)) {
             damage = new Element(aH.getDoubleFrom(determination));
             return true;
         }

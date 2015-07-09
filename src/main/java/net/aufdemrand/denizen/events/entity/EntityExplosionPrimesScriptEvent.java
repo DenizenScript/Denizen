@@ -13,9 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Listener {
 
@@ -72,8 +70,7 @@ public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Lis
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Float)) {
+        if (aH.matchesDouble(determination)) {
             radius = aH.getFloatFrom(determination);
             return true;
         }
