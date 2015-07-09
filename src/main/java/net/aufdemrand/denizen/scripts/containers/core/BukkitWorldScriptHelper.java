@@ -823,14 +823,12 @@ public class BukkitWorldScriptHelper implements Listener {
     }
 
 
-    //
-    // Left this here because mcmonkey told me to
-    //
-    @EventHandler(priority= EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         dPlayer.notePlayer(event.getPlayer());
     }

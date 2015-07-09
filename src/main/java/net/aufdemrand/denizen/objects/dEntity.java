@@ -1253,14 +1253,10 @@ public class dEntity implements dObject, Adjustable {
         if (entity != null && getEntityScript() != null) {
             return ent.equalsIgnoreCase(getEntityScript());
         }
-        dEntity e = dEntity.valueOf(ent, new BukkitTagContext(null, null, false, null, false, null));
-        if (e == null) {
-            return false;
+        if (uuid != null && uuid.toString().equals(ent)) {
+            return true;
         }
-        if (entity == null) {
-            return e.entity == null && entity_type == e.entity_type;
-        }
-        return e.entity != null && getUUID().equals(e.getUUID());
+        return false;
     }
 
     @Override

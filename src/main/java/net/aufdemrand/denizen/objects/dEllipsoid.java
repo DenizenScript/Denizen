@@ -68,7 +68,12 @@ public class dEllipsoid implements dObject, Notable {
      */
     public static boolean matches(String arg) {
 
-        return arg.startsWith("ellipsoid@");
+        try {
+            return dEllipsoid.valueOf(arg) != null;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
 

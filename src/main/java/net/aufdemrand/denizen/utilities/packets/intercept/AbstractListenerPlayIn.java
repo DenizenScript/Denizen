@@ -72,7 +72,7 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     @Override
     public void a(PacketPlayInChat packet) {
-        oldListener.a(packet);
+        super.a(packet);
     }
 
     @Override
