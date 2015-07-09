@@ -99,7 +99,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         // Debug the execution
 
-        dB.report(scriptEntry, getName(), loc.debug()
+        dB.report(scriptEntry, getName(), (loc!= null ? loc.debug() : "")
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : "")
                 + (radius != null ? radius.debug() : "")
