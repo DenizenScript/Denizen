@@ -19,9 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
