@@ -76,7 +76,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public String getName() {
-        return "VehicleDestroyed";
+        return "VehicleDamaged";
     }
 
     @Override
