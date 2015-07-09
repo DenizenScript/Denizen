@@ -1,64 +1,64 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
 
-public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
+public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player opens inventory
-    // player opens <inventory type>
+    // player joins
+    // player join
     //
-    // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
+    // @Cancellable false
+    //
+    // @Triggers when a player joins the server.
     //
     // @Context
-    // <context.inventory> returns the dInventory.
+    // <context.message> returns an Element of the join message.
+    //
+    // @Determine
+    // Element(String) to change the join message.
     //
     // -->
 
-    public PlayerOpensInvScriptEvent() {
+    public PlayerJoinsScriptEvent() {
         instance = this;
     }
 
-    public static PlayerOpensInvScriptEvent instance;
-
-    public dInventory inventory;
-    public InventoryOpenEvent event;
+    public static PlayerJoinsScriptEvent instance;
+    public String message;
+    public PlayerJoinEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player opens");
+        return CoreUtilities.toLowerCase(s).startsWith("player join");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        String inv = CoreUtilities.getXthArg(2, lower);
-        if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerOpensInv";
+        return "PlayerJoins";
     }
 
     @Override
@@ -68,36 +68,44 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
+        PlayerJoinEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (!CoreUtilities.toLowerCase(determination).equals("none")) {
+            message = determination;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(event != null ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
+        context.put("message", new Element(message));
         return context;
     }
 
     @EventHandler
-    public void onPlayerOpensInv(InventoryOpenEvent event) {
+    public void onPlayerJoins(PlayerJoinEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        inventory = dInventory.mirrorBukkitInventory(event.getInventory());
+        message = event.getJoinMessage();
+        Player player = event.getPlayer();
         this.event = event;
-        cancelled = event.isCancelled();
         fire();
-        event.setCancelled(cancelled);
+        event.setJoinMessage(message);
+        if (ScoreboardHelper.viewerMap.containsKey(player.getName())) {
+            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(player.getName()));
+            if (score != null)
+                player.setScoreboard(score);
+        }
     }
 }

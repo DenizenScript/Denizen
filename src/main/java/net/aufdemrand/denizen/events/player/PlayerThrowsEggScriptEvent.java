@@ -3,67 +3,72 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerAnimationEvent;
+import org.bukkit.event.player.PlayerEggThrowEvent;
 
 import java.util.HashMap;
 
-public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player animates (<animation>) (in <area>)
+    // player throws (hatching/non-hatching) egg (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a player performs an animation.
+    // @Triggers when a player throws an egg.
     //
     // @Context
-    // <context.animation> returns the name of the animation.
+    // <context.egg> returns the dEntity of the egg.
+    // <context.is_hatching> returns an Element with a value of "true" if the egg will hatch and "false" otherwise.
+    //
+    // @Determine
+    // dEntity to set the type of the hatching entity.
     //
     // -->
 
-    public PlayerAnimatesScriptEvent() {
+    public PlayerThrowsEggScriptEvent() {
         instance = this;
     }
 
-    public static PlayerAnimatesScriptEvent instance;
-    public String animation;
-    private dLocation location;
-    public PlayerAnimationEvent event;
+    public static PlayerThrowsEggScriptEvent instance;
+    public dEntity egg;
+    public Boolean is_hatching;
+    private EntityType type;
+    public PlayerEggThrowEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player animates");
+        String lower = CoreUtilities.toLowerCase(s);
+        return lower.startsWith("player throws") && lower.contains("egg");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        if (dEntity.isNPC(event.getPlayer())) {
+        if (CoreUtilities.getXthArg(2, lower).equals("hatching") && !is_hatching) {
+            return false;
+        }
+        if (CoreUtilities.getXthArg(2, lower).equals("non-hatching") && is_hatching) {
             return false;
         }
 
-        String ani = CoreUtilities.getXthArg(2, lower);
-        if (ani.length() > 0 && !ani.equals("in") && !ani.equals(animation)) {
-            return false;
-        }
-
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(scriptContainer, s, lower, egg.getLocation());
     }
 
     @Override
     public String getName() {
-        return "PlayerAnimates";
+        return "PlayerThrowsEgg";
     }
 
     @Override
@@ -73,11 +78,21 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public void destroy() {
-        PlayerAnimationEvent.getHandlerList().unregister(this);
+        PlayerEggThrowEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (dEntity.matches(lower)) {
+            is_hatching = true;
+            type = dEntity.valueOf(determination).getBukkitEntityType();
+            return true;
+        }
+        if (lower.equals("cancelled")) {
+            is_hatching = false;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -89,20 +104,23 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("animation", new Element(animation));
+        context.put("is_hatching", new Element(is_hatching));
+        context.put("egg", egg);
         return context;
     }
 
     @EventHandler
-    public void onPlayerAnimates(PlayerAnimationEvent event) {
+    public void onPlayerThrowsEgg(PlayerEggThrowEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getPlayer().getLocation());
-        animation = event.getAnimationType().name();
-        cancelled = event.isCancelled();
+        dB.log("Is this even firing?");
+        is_hatching = event.isHatching();
+        egg = new dEntity(event.getEgg());
+        type = event.getHatchingType();
         this.event = event;
         fire();
-        event.setCancelled(cancelled);
+        event.setHatching(is_hatching);
+        event.setHatchingType(type);
     }
 }

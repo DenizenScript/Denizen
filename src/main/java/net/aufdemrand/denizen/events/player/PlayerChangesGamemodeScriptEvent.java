@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,62 +14,53 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
 import java.util.HashMap;
 
-public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player places hanging (in <area>)
-    // player places <hanging> (in <area>)
+    // player changes gamemode (to <gamemode>)
     //
     // @Cancellable true
     //
-    // @Triggers when a hanging entity (painting or itemframe) is placed.
+    // @Triggers when a player's gamemode is changed.
     //
     // @Context
-    // <context.hanging> returns the dEntity of the hanging.
-    // <context.location> returns the dLocation of the block the hanging was placed on.
-    // <context.cuboids> DEPRECATED.
-    //
+    // <context.gamemode> returns an Element of the gamemode.
+    // Game Modes: <@link url http://bit.ly/1KHab43>
     // -->
 
-    public PlayerPlacesHangingScriptEvent() {
+    public PlayerChangesGamemodeScriptEvent() {
         instance = this;
     }
 
-    public static PlayerPlacesHangingScriptEvent instance;
-    public dEntity hanging;
-    public dList cuboids;
-    public dLocation location;
-    public HangingPlaceEvent event;
+    public static PlayerChangesGamemodeScriptEvent instance;
+    public Element gamemode;
+    public PlayerGameModeChangeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player places");
+        return CoreUtilities.toLowerCase(s).startsWith("player changes gamemode");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String hangCheck = CoreUtilities.getXthArg(2, lower);
-        if (!hanging.matchesEntity(hangCheck)) {
-            return false;
+        String mode = CoreUtilities.getXthArg(4, lower);
+        if (mode.length() > 0) {
+            if (!CoreUtilities.toLowerCase(gamemode.asString()).equals(mode)) {
+                return false;
+            }
         }
-
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
         return true;
     }
 
     @Override
     public String getName() {
-        return "PlayerPlacesHanging";
+        return "PlayerChangesGamemode";
     }
 
     @Override
@@ -79,7 +70,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public void destroy() {
-        HangingPlaceEvent.getHandlerList().unregister(this);
+        PlayerGameModeChangeEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -89,29 +80,22 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
-        context.put("location", location);
+        context.put("gamemode", gamemode);
         return context;
     }
 
     @EventHandler
-    public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
+    public void onPlayerChangesGamemode(PlayerGameModeChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        hanging = new dEntity(event.getEntity());
-        location = new dLocation(event.getBlock().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        gamemode = new Element(event.getNewGameMode().name());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.ItemSkullskin;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
@@ -102,8 +103,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return valueOf(string, null);
     }
 
-    final static Pattern item_by_saved = Pattern.compile("(l@)(.+)");
-
     /**
      * Gets a Location Object from a string form of id,x,y,z,world
      * or a dScript argument (location:)x,y,z,world. If including an Id,
@@ -116,20 +115,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     public static dLocation valueOf(String string, TagContext context) {
         if (string == null) return null;
 
-        ////////
-        // Match @object format for saved dLocations
-        Matcher m;
+        if (string.startsWith("l@")) {
+            string = string.substring(2);
+        }
 
-        m = item_by_saved.matcher(string);
-
-        if (m.matches() && NotableManager.isSaved(m.group(2)) && NotableManager.isType(m.group(2), dLocation.class))
-            return (dLocation) NotableManager.getSavedObject(m.group(2));
+        if (NotableManager.isSaved(string) && NotableManager.isType(string, dLocation.class)) {
+            return (dLocation) NotableManager.getSavedObject(string);
+        }
 
         ////////
         // Match location formats
 
         // Split values
-        String[] split = StringUtils.split(string.startsWith("l@") ? string.substring(2) : string, ',');
+        String[] split = StringUtils.split(string, ',');
 
         if (split.length == 2)
             // If 4 values, wordless 2D location format
@@ -211,19 +209,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return null;
     }
 
-    final static Pattern location_by_saved = Pattern.compile("(l@)(.+)");
-
     public static boolean matches(String string) {
-        if (string == null || string.length() == 0)
+        if (string == null || string.length() == 0) {
             return false;
+        }
 
-        Matcher m = location_by_saved.matcher(string);
-        if (m.matches())
+        if (string.startsWith("l@")) {
             return true;
+        }
 
-        String[] data = string.split(",");
-        return data.length >= 2 && new Element(data[0]).isDouble()
-                && new Element(data[1]).isDouble();
+        return dLocation.valueOf(string, new BukkitTagContext(null, null, false, null, false, null)) != null;
     }
 
 
@@ -864,6 +859,60 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("yaw")) {
             return new Element(Rotation.normalizeYaw(getYaw()))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.rotate_around_x[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the x axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_x") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double y = (getY() * cos) - (getZ() * sin);
+            double z = (getY() * sin) + (getZ() * cos);
+            Location location = clone();
+            location.setY(y);
+            location.setZ(z);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.rotate_around_y[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the y axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_y") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double x = (getX() * cos) + (getZ() * sin);
+            double z = (getX() * -sin) + (getZ() * cos);
+            Location location = clone();
+            location.setX(x);
+            location.setZ(z);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.rotate_around_z[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location rotated around the z axis by a specified angle.
+        // -->
+        if (attribute.startsWith("rotate_around_z") && attribute.hasContext(1)) {
+            double angle = attribute.getDoubleContext(1);
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+            double x = (getX() * cos) - (getY() * sin);
+            double y = (getZ() * sin) + (getY() * cos);
+            Location location = clone();
+            location.setX(x);
+            location.setY(y);
+            return new dLocation(location).getAttribute(attribute.fulfill(1));
         }
 
 

@@ -2,10 +2,7 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.dCuboid;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -114,6 +111,9 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler
     public void onPlayerDamagesBlock(BlockDamageEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
