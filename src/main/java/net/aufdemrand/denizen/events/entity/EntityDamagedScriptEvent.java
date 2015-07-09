@@ -33,10 +33,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity damaged (in <area>) (with:<item>)
-    // entity damaged by <cause> (in <area>) (with:<item>)
-    // <entity> damaged (in <area>) (with:<item>)
-    // <entity> damaged by <cause> (in <area>) (with:<item>)
+    // entity damaged (by <cause>) (in <area>) (with:<item>)
+    // <entity> damaged (by <cause>) (in <area>) (with:<item>)
     // entity damages entity (in <area>) (with:<item>)
     // entity damages <entity> (in <area>) (with:<item>)
     // entity damaged by entity (in <area>) (with:<item>)
@@ -90,8 +88,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
+        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) :
+                CoreUtilities.getXthArg(2, lower).equals("by") ? CoreUtilities.getXthArg(3, lower) : "";
         String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
+
         if (attacker.length() > 0) {
             if (damager != null) {
                 boolean projectileMatched = false;
