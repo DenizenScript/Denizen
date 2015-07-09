@@ -3,74 +3,64 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.List;
 
-public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player changes world (from <world>) (to <world>)
+    // player breaks item (in <area>)
+    // player breaks <item> (in <area>)
     //
-    // @Cancellable false
+    // @Cancellable true
     //
-    // @Triggers when a player moves to a different world.
+    // @Triggers when a player breaks the item they are holding.
     //
     // @Context
-    // <context.origin_world> returns the dWorld that the player was previously on.
-    // <context.destination_world> returns the dWorld that the player is now in.
+    // <context.item> returns the item that broke.
     //
     // -->
 
-    public PlayerChangesWorldScriptEvent() {
+    public PlayerBreaksItemScriptEvent() {
         instance = this;
     }
 
-    public static PlayerChangesWorldScriptEvent instance;
-    public dWorld origin_world;
-    public dWorld destination_world;
-    public PlayerChangedWorldEvent event;
+    public static PlayerBreaksItemScriptEvent instance;
+    public dItem item;
+    public PlayerItemBreakEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).startsWith("player changes world");
+        return CoreUtilities.toLowerCase(s).startsWith("player breaks");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
-        List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 3; index < data.size(); index++) {
-            if (data.get(index).equals("from")) {
-                if (!data.get(index+1).equals(origin_world.getName().toLowerCase())){
-                    return false;
-                }
-            }
-            else if (data.get(index).equals("to")) {
-                if (!data.get(index+1).equals(destination_world.getName().toLowerCase())){
-                    return false;
-                }
-            }
+        String iCheck = CoreUtilities.getXthArg(2, lower);
+        if (!tryItem(item, iCheck)) {
+            return false;
         }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
     }
 
     @Override
     public String getName() {
-        return "PlayerChangesWorld";
+        return "PlayerItemBreak";
     }
 
     @Override
@@ -80,11 +70,15 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public void destroy() {
-        PlayerChangedWorldEvent.getHandlerList().unregister(this);
+        PlayerItemBreakEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        if (CoreUtilities.toLowerCase(determination).startsWith("cancelled")) {
+            cancelled = true;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -96,19 +90,29 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("origin_world", origin_world);
-        context.put("destination_world", destination_world);
+        context.put("item", item);
         return context;
     }
 
     @EventHandler
-    public void onPlayerChangesWorld(PlayerChangedWorldEvent event) {
+    public void onPlayerItemBreak(PlayerItemBreakEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        origin_world = new dWorld(event.getFrom());
-        destination_world = new dWorld(event.getPlayer().getWorld());
+        item = new dItem((ItemStack) event.getBrokenItem());
         this.event = event;
         fire();
+        if (cancelled) {
+            final Player player = event.getPlayer();
+            final ItemStack itemstack = event.getBrokenItem();
+            itemstack.setAmount(itemstack.getAmount() + 1);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    itemstack.setDurability(itemstack.getType().getMaxDurability());
+                    player.updateInventory();
+                }
+            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+        }
     }
 }

@@ -84,8 +84,7 @@ public class SlimeSplitsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+        if (aH.matchesInteger(determination)) {
             count = aH.getIntegerFrom(determination);
             return true;
         }
