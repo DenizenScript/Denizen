@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,11 +16,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
 
-public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
+public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player jumps
+    // player jumps (in <area>)
     //
     // @Triggers when a player jumps.
     //
@@ -40,19 +40,19 @@ public class PlayerJumpScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).equals("player jumps");
-
+        return CoreUtilities.toLowerCase(s).startsWith("player jumps");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).equals("player jumps")
-                // Did player move vertically?
-                && (event.getTo().getBlockY() > event.getFrom().getBlockY()
+        String lower = CoreUtilities.toLowerCase(s);
+        return // Did player move vertically?
+                (event.getTo().getBlockY() > event.getFrom().getBlockY()
                 // and also that the player has a high velocity (jump instead of walking up stairs)
                 && Math.abs(event.getPlayer().getVelocity().getY()) > 0.1
                 // and that the player isn't in any form of fast moving vehicle
-                && event.getPlayer().getVehicle() == null);
+                && event.getPlayer().getVehicle() == null)
+                && runInCheck(scriptContainer, s, lower, event.getFrom());
     }
 
     @Override

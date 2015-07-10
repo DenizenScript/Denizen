@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -20,8 +19,8 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // player leashes entity
-    // player leashes <entity>
+    // player leashes entity (in <area>)
+    // player leashes <entity> (in <area>)
     //
     // @Cancellable true
     //
@@ -56,7 +55,7 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
                 return false;
             }
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

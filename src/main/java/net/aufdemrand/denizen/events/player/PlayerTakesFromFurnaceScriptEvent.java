@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -21,9 +20,9 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     // <--[event]
     // @Events
-    // player takes item from furnace
-    // player takes <item> from furnace
-    // player takes <material> from furnace
+    // player takes item from furnace (in <area>)
+    // player takes <item> from furnace (in <area>)
+    // player takes <material> from furnace (in <area>)
     //
     // @Triggers when a player takes an item from a furnace.
     // @Context
@@ -54,10 +53,10 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String itemTest = CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s));
+        String lower = CoreUtilities.toLowerCase(s);
+        String itemTest = CoreUtilities.getXthArg(2, lower);
 
-        return (itemTest.equals("block")
-                || !tryItem(item, itemTest));
+        return tryItem(item, itemTest) && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,11 +16,11 @@ import org.bukkit.event.player.PlayerPortalEvent;
 
 import java.util.HashMap;
 
-public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener {
+public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player uses portal
+    // player uses portal (in <area>)
     //
     // @Cancellable false
     //
@@ -51,7 +51,8 @@ public class PlayerUsesPortalScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        String lower = CoreUtilities.toLowerCase(s);
+        return runInCheck(scriptContainer, s, lower, to) || runInCheck(scriptContainer, s, lower, from);
     }
 
     @Override

@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -17,11 +17,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
 
-public class PlayerWalkScriptEvent extends ScriptEvent implements Listener {
+public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player walks
+    // player walks (in <area>)
     //
     // @Warning This event fires very very rapidly!
     //
@@ -48,12 +48,13 @@ public class PlayerWalkScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("player walks");
+        return lower.startsWith("player walks");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        String lower = CoreUtilities.toLowerCase(s);
+        return runInCheck(scriptContainer, s, lower, old_location) || runInCheck(scriptContainer, s, lower, new_location);
     }
 
     @Override
