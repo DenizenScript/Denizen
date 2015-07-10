@@ -161,7 +161,15 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("offset", "o")) {
 
-                scriptEntry.addObject("offset", arg.asElement());
+                double offset = arg.asElement().asDouble();
+                scriptEntry.addObject("offset", new dLocation(null, offset, offset, offset));
+            }
+
+            else if (!scriptEntry.hasObject("offset")
+                    && arg.matchesArgumentType(dLocation.class)
+                    && arg.matchesPrefix("offset", "o")) {
+
+                scriptEntry.addObject("offset", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("targets")
@@ -182,7 +190,7 @@ public class PlayEffectCommand extends AbstractCommand {
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("radius", new Element(15));
         scriptEntry.defaultObject("qty", new Element(1));
-        scriptEntry.defaultObject("offset", new Element(0.5));
+        scriptEntry.defaultObject("offset", new dLocation(null, 0.5, 0.5, 0.5));
 
         // Check to make sure required arguments have been filled
 
@@ -207,7 +215,7 @@ public class PlayEffectCommand extends AbstractCommand {
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
         Element qty = scriptEntry.getElement("qty");
-        Element offset = scriptEntry.getElement("offset");
+        dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
@@ -218,8 +226,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 radius.debug() +
                 data.debug() +
                 qty.debug() +
-                offset.debug() +
-                (effect != null ? "" : offset.debug()));
+                offset.debug());
 
         for (dLocation location : locations) {
             // Slightly increase the location's Y so effects don't seem to come out of the ground
@@ -241,7 +248,9 @@ public class PlayEffectCommand extends AbstractCommand {
 
             // Play a ParticleEffect
             else if (particleEffect != null) {
-                float os = offset.asFloat();
+                float osX = (float) offset.getX();
+                float osY = (float) offset.getY();
+                float osZ = (float) offset.getZ();
                 List<Player> players = new ArrayList<Player>();
                 if (targets == null) {
                     float rad = radius.asFloat();
@@ -256,7 +265,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
                 PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, false, (float) location.getX(),
-                        (float) location.getY(), (float) location.getZ(), os, os, os, data.asFloat(), qty.asInt());
+                        (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt());
                 for (Player player : players) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
                 }
@@ -264,7 +273,9 @@ public class PlayEffectCommand extends AbstractCommand {
 
             // Play an iconcrack (item break) effect
             else {
-                float os = offset.asFloat();
+                float osX = (float) offset.getX();
+                float osY = (float) offset.getY();
+                float osZ = (float) offset.getZ();
                 List<Player> players = new ArrayList<Player>();
                 if (targets == null) {
                     float rad = radius.asFloat();
@@ -279,7 +290,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
                 PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, false, (float) location.getX(),
-                        (float) location.getY(), (float) location.getZ(), os, os, os, data.asFloat(), qty.asInt(),
+                        (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
                         iconcrack.asInt(), iconcrack.asInt()); // TODO: ???
                 for (Player player : players) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
