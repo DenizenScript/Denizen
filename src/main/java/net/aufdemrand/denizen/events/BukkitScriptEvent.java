@@ -96,6 +96,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equalsIgnoreCase("item")) {
             return true;
         }
+        if (comparedto.length() == 0) {
+            dB.echoError("tryItem missing item value when compared to " + item.identifyNoIdentifier());
+            return false;
+        }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
