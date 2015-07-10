@@ -54,13 +54,9 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
         if (CoreUtilities.getXthArg(2, lower).equals("because")
                 && !reason.equals(CoreUtilities.toLowerCase(cause.toString()))) {
-
-        }
-        if (!runInCheck(scriptContainer, s, lower, event.getEntity().getLocation())) {
             return false;
         }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, event.getEntity().getLocation());
     }
 
     @Override

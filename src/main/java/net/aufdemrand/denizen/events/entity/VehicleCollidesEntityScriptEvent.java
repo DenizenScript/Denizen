@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.events.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -72,11 +71,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
-            return false;
-        }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, vehicle.getLocation());
     }
 
     @Override
