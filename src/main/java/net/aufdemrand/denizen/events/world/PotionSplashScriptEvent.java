@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -17,12 +17,12 @@ import org.bukkit.event.entity.PotionSplashEvent;
 
 import java.util.HashMap;
 
-public class PotionSplashScriptEvent extends ScriptEvent implements Listener {
+public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // potion splash
-    // <item> splashes
+    // potion splash (in <area>)
+    // <item> splashes (in <area>)
     //
     // @Cancellable true
     //
@@ -50,15 +50,15 @@ public class PotionSplashScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String splash = CoreUtilities.getXthArg(1, lower);
-        return splash.equals("splash") || splash.equals("splashes");
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("splash") || cmd.equals("splashes");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("potion splash")
-                || CoreUtilities.getXthArg(0, lower).equals(potion.identifyNoIdentifier());
+        String iTest = CoreUtilities.getXthArg(0, lower);
+        return tryItem(potion, iTest) && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

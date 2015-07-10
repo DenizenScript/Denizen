@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.BlockFromToEvent;
 
 import java.util.HashMap;
 
-public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener {
+public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // liquid spreads
-    // <liquid block> spreads
+    // liquid spreads (in <area>)
+    // <liquid block> spreads (in <area>)
     //
     // @Cancellable true
     //
@@ -27,7 +27,7 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener {
     //
     // @Context
     // <context.destination> returns the dLocation the block spread to.
-    // <context.location> returns the dLocation the block spread from.
+    // <context.location> returns the dLocation the block spread location.
     // <context.material> returns the dMaterial of the block that spread.
     //
     // -->
@@ -39,8 +39,8 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener {
 
     public static LiquidSpreadScriptEvent instance;
     public dMaterial material;
-    public dLocation from;
-    public dLocation to;
+    public dLocation location;
+    public dLocation destination;
     public BlockFromToEvent event;
 
     @Override
@@ -52,8 +52,10 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("liquid")
-                || CoreUtilities.getXthArg(0, lower).equals(event.getBlock().getType().getData().getName().toLowerCase());
+        String mat = CoreUtilities.getXthArg(0, lower);
+        return (mat.equals("liquid") || tryMaterial(material, mat))
+                && (runInCheck(scriptContainer, s, lower, location)
+                    || runInCheck(scriptContainer, s, lower, destination));
     }
 
     @Override
@@ -79,16 +81,16 @@ public class LiquidSpreadScriptEvent extends ScriptEvent implements Listener {
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("location", from);
-        context.put("destination", to);
+        context.put("location", location);
+        context.put("destination", destination);
         context.put("material", material);
         return context;
     }
 
     @EventHandler
     public void onLiquidSpreads(BlockFromToEvent event) {
-        to = new dLocation(event.getToBlock().getLocation());
-        from = new dLocation(event.getBlock().getLocation());
+        destination = new dLocation(event.getToBlock().getLocation());
+        location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;

@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,11 +14,11 @@ import org.bukkit.event.inventory.BrewEvent;
 
 import java.util.HashMap;
 
-public class BrewsScriptEvent extends ScriptEvent implements Listener {
+public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // brewing stand brews
+    // brewing stand brews (in <area>)
     //
     // @Cancellable true
     //
@@ -41,12 +41,12 @@ public class BrewsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).equals("brewing stand brews");
+        return CoreUtilities.toLowerCase(s).startsWith("brewing stand brews");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), location);
     }
 
     @Override

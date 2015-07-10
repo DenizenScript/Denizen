@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -15,12 +15,12 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 
 import java.util.HashMap;
 
-public class FurnaceBurnsItemScriptEvent extends ScriptEvent implements Listener {
+public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // furnace burns item
-    // furnace burns <item>
+    // furnace burns item (in <area>)
+    // furnace burns <item> (in <area>)
     //
     // @Cancellable true
     //
@@ -52,8 +52,10 @@ public class FurnaceBurnsItemScriptEvent extends ScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String itemName = CoreUtilities.getXthArg(2, s.toLowerCase());
-        return itemName.equals("item") || itemName.equals(item.identifyNoIdentifier());
+        String lower = CoreUtilities.toLowerCase(s);
+        String iTest = CoreUtilities.getXthArg(2, lower);
+        return tryItem(item, iTest)
+                && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override
