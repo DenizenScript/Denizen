@@ -17,7 +17,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // pig zapped
+    // pig zapped (in <area>)
     //
     // @Cancellable true
     //
@@ -48,7 +48,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), pig.getLocation());
     }
 
     @Override

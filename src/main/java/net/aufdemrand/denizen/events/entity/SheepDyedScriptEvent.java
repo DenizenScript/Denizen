@@ -21,8 +21,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // sheep dyed (<color>)
-    // player dyes sheep (<color>)
+    // sheep dyed (<color>) (in <area>)
+    // player dyes sheep (<color>) (in <area>)
     //
     // @Cancellable true
     //
@@ -59,9 +59,11 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        if (cmd.equals("dyes") && !entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        String sheep = cmd.equals("dyed") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
+        if (!entity.matchesEntity(sheep)) {
             return false;
         }
+
         String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
         if (new_color.length() > 0) {
             if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
@@ -69,7 +71,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             }
         }
 
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override
@@ -102,8 +104,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(null, null);
     }
 
     @Override

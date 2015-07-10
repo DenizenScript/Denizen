@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.entity.Position;
@@ -27,10 +28,10 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // entity shoots bow
-    // <entity> shoots bow
-    // entity shoots <item>
-    // <entity> shoots <item>
+    // entity shoots bow (in <area>)
+    // <entity> shoots bow (in <area>)
+    // entity shoots <item> (in <area>)
+    // <entity> shoots <item> (in <area>)
     //
     // @Cancellable true
     //
@@ -77,7 +78,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

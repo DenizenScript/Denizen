@@ -18,8 +18,8 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity unleashed (because <reason>)
-    // <entity> unleashed (because <reason>)
+    // entity unleashed (because <reason>) (in <area>)
+    // <entity> unleashed (because <reason>) (in <area>)
     //
     // @Cancellable true
     //
@@ -64,7 +64,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
             }
         }
 
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
