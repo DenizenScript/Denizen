@@ -607,6 +607,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityEntersVehicleScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExplodesScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityExplosionPrimesScriptEvent());
@@ -615,6 +616,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+            ScriptEvent.registerScriptEvent(new EntityExitsVehicleScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
@@ -640,6 +642,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerAnimatesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerBreaksItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerChangesGamemodeScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerChangesWorldScriptEvent());
@@ -650,6 +653,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerDropsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());
@@ -664,12 +668,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerSneakScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerWalksOverScriptEvent());
             ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
+            ScriptEvent.registerScriptEvent(new ProjectileHitsScriptEvent());
             ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
             ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
             ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
@@ -681,6 +689,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleCreatedScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleDamagedScriptEvent());
+            ScriptEvent.registerScriptEvent(new VehicleDestroyedScriptEvent());
             ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());
             ScriptEvent.registerScriptEvent(new WorldInitsScriptEvent());

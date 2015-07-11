@@ -15,9 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
 
@@ -86,8 +84,7 @@ public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+        if (aH.matchesInteger(determination)) {
             amount = new Element(aH.getDoubleFrom(determination));
             return true;
         }

@@ -1,11 +1,12 @@
-package net.aufdemrand.denizen.events.entity;
+package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -13,52 +14,49 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
 
-public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes food level
-    // <entity> changes food level
+    // player walks over notable
+    // player walks over <location>
     //
     // @Cancellable true
     //
-    // @Triggers when an entity's food level changes.
+    // @Triggers when a player walks over a notable location.
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.food> returns an Element(Number) of the entity's new food level.
-    //
-    // @Determine
-    // Element(Decimal) to set the entity's new food level.
+    // <context.notable> returns an Element of the notable location's name.
     //
     // -->
 
-    public EntityFoodLevelChangeScriptEvent() {
+    public PlayerWalksOverScriptEvent() {
         instance = this;
     }
 
-    public static EntityFoodLevelChangeScriptEvent instance;
-    public dEntity entity;
-    public Integer food;
-    public FoodLevelChangeEvent event;
+    public static PlayerWalksOverScriptEvent instance;
+    public String notable;
+    public PlayerMoveEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return (CoreUtilities.toLowerCase(s).endsWith("changes food level"));
+        return CoreUtilities.toLowerCase(s).startsWith("player walks over");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String loc = CoreUtilities.getXthArg(3, lower);
+        return loc.equals(CoreUtilities.toLowerCase(notable)) || tryLocation(new dLocation(event.getPlayer().getLocation()), loc);
     }
 
     @Override
     public String getName() {
-        return "FoodLevelChanged";
+        return "PlayerWalksOver";
     }
 
     @Override
@@ -68,40 +66,41 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public void destroy() {
-        FoodLevelChangeEvent.getHandlerList().unregister(this);
+        PlayerMoveEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            food = aH.getIntegerFrom(determination);
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("food", new Element(food));
+        context.put("notable", new Element(notable));
         return context;
     }
 
     @EventHandler
-    public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
-        entity = new dEntity(event.getEntity());
-        food = event.getFoodLevel();
+    public void onPlayerWalksOver(PlayerMoveEvent event) {
+        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+            return;
+        }
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        notable = NotableManager.getSavedId(new dLocation(event.getTo().getBlock().getLocation()));
+        if (notable == null) {
+            return;
+        }
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
-        event.setFoodLevel(food);
     }
 }

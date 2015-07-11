@@ -86,7 +86,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination).matchesPrimitive(aH.PrimitiveType.Double)) {
+        if (aH.matchesDouble(determination)) {
             power = aH.getDoubleFrom(determination);
             return true;
         }

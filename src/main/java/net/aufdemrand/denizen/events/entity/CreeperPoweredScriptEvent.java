@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,11 +14,11 @@ import org.bukkit.event.entity.CreeperPowerEvent;
 
 import java.util.HashMap;
 
-public class CreeperPoweredScriptEvent extends ScriptEvent implements Listener {
+public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // creeper powered (because <cause>)
+    // creeper powered (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
@@ -49,8 +49,18 @@ public class CreeperPoweredScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String reason = CoreUtilities.getXthArg(3, CoreUtilities.toLowerCase(s));
-        return reason.length() == 0 || reason.equals(cause.toString());
+        String lower = CoreUtilities.toLowerCase(s);
+        String reason = CoreUtilities.getXthArg(3, lower);
+
+        if (CoreUtilities.getXthArg(2, lower).equals("because")
+                && !reason.equals(CoreUtilities.toLowerCase(cause.toString()))) {
+
+        }
+        if (!runInCheck(scriptContainer, s, lower, event.getEntity().getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

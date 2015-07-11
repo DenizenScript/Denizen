@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -55,6 +56,23 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in ???'): '" + s + "' for " + scriptContainer.getName());
             return false;
         }
+    }
+
+    public boolean tryLocation(dLocation location, String comparedto) {
+        if (comparedto == null || comparedto.length() == 0) {
+            dB.echoError("Null or empty location string to compare");
+            return false;
+        }
+        if (comparedto.equals("notable")) {
+            return true;
+        }
+        comparedto = "l@"+comparedto;
+        dLocation loc = dLocation.valueOf(comparedto);
+        if (loc == null) {
+            dB.echoError("Invalid location in location comparison string: "+comparedto);
+            return false;
+        }
+        return loc.getBlock().equals(location.getBlock());
     }
 
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {

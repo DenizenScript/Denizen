@@ -1,11 +1,10 @@
-package net.aufdemrand.denizen.events.entity;
+package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -13,52 +12,57 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.PlayerToggleSprintEvent;
 
 import java.util.HashMap;
 
-public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity changes food level
-    // <entity> changes food level
-    //
+    // player toggles sprinting (in <area>)
+    // player starts sprinting (in <area>)
+    // player stops sprinting (in <area>)
+    // 
     // @Cancellable true
     //
-    // @Triggers when an entity's food level changes.
+    // @Triggers when a player starts or stops sprinting.
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.food> returns an Element(Number) of the entity's new food level.
-    //
-    // @Determine
-    // Element(Decimal) to set the entity's new food level.
+    // <context.state> returns an Element(Boolean) with a value of "true" if the player is now sprinting and "false" otherwise.
     //
     // -->
 
-    public EntityFoodLevelChangeScriptEvent() {
+    public PlayerSprintScriptEvent() {
         instance = this;
     }
 
-    public static EntityFoodLevelChangeScriptEvent instance;
-    public dEntity entity;
-    public Integer food;
-    public FoodLevelChangeEvent event;
+    public static PlayerSprintScriptEvent instance;
+    public Boolean state;
+    public PlayerToggleSprintEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return (CoreUtilities.toLowerCase(s).endsWith("changes food level"));
+        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sprint");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        if (cmd.equals("starts") && !state) {
+            return false;
+        }
+        if (cmd.equals("stops") && state) {
+            return false;
+        }
+
+        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
     }
 
     @Override
     public String getName() {
-        return "FoodLevelChanged";
+        return "PlayerSpring";
     }
 
     @Override
@@ -68,40 +72,35 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public void destroy() {
-        FoodLevelChangeEvent.getHandlerList().unregister(this);
+        PlayerToggleSprintEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.matchesInteger(determination)) {
-            food = aH.getIntegerFrom(determination);
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("food", new Element(food));
+        context.put("state", new Element(state));
         return context;
     }
 
     @EventHandler
-    public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
-        entity = new dEntity(event.getEntity());
-        food = event.getFoodLevel();
+    public void onPlayerSprint(PlayerToggleSprintEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        state = event.isSprinting();
         cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
-        event.setFoodLevel(food);
     }
 }

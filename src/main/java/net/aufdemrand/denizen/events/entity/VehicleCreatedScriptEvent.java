@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -10,20 +9,18 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.event.vehicle.VehicleCreateEvent;
 
 import java.util.HashMap;
 
-public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listener {
+public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // vehicle moves (in <area>)
-    // <vehicle> moves (in <area>)
+    // vehicle created (in <area>)
+    // <vehicle> created (in <area>)
     //
-    // @Warning This event fires very very rapidly!
-    //
-    // @Triggers when a vehicle moves in the slightest.
+    // @Triggers when a vehicle created in the slightest.
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
@@ -32,20 +29,18 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     //
     // -->
 
-    public VehicleMoveScriptEvent() {
+    public VehicleCreatedScriptEvent() {
         instance = this;
     }
 
-    public static VehicleMoveScriptEvent instance;
+    public static VehicleCreatedScriptEvent instance;
     public dEntity vehicle;
-    public dLocation from;
-    public dLocation to;
-    public VehicleMoveEvent event;
+    public VehicleCreateEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return CoreUtilities.xthArgEquals(1, lower, "moves");
+        return CoreUtilities.xthArgEquals(1, lower, "created");
     }
 
     @Override
@@ -67,7 +62,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public String getName() {
-        return "VehicleMoves";
+        return "VehicleCreated";
     }
 
     @Override
@@ -77,7 +72,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public void destroy() {
-        VehicleMoveEvent.getHandlerList().unregister(this);
+        VehicleCreateEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -88,16 +83,12 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("from", from);
-        context.put("to", to);
         context.put("vehicle", vehicle);
         return context;
     }
 
     @EventHandler
-    public void onVehicleMove(VehicleMoveEvent event) {
-        to = new dLocation(event.getTo());
-        from = new dLocation(event.getFrom());
+    public void onVehicleMove(VehicleCreateEvent event) {
         vehicle = new dEntity(event.getVehicle());
         this.event = event;
         fire();

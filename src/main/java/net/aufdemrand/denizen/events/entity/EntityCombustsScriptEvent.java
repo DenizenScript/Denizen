@@ -15,9 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
@@ -76,8 +74,7 @@ public class EntityCombustsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Integer)) {
+        if (aH.matchesInteger(determination)) {
             burntime = aH.getIntegerFrom(determination);
             return true;
         }

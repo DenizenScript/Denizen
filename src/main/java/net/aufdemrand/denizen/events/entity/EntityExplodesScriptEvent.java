@@ -19,9 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
@@ -66,8 +64,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        List<String> types = Arrays.asList("entity", "player", "npc");
-        return (types.contains(target) || entity.matchesEntity(target));
+        return entity.matchesEntity(target);
     }
 
     @Override
@@ -87,8 +84,7 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (aH.Argument.valueOf(determination)
-                .matchesPrimitive(aH.PrimitiveType.Float)) {
+        if (aH.matchesDouble(determination)) {
             strength = aH.getFloatFrom(determination);
             return true;
         }

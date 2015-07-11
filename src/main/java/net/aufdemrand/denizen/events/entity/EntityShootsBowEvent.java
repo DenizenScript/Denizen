@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -20,11 +20,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class EntityShootsBowEvent extends ScriptEvent implements Listener {
+public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -40,7 +39,7 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
     // @Context
     // <context.entity> returns the dEntity that shot the bow.
     // <context.projectile> returns a dEntity of the projectile.
-    // <context.bow> returns the bow item used to shoot.
+    // <context.bow> returns the dItem of the bow used to shoot.
     // <context.force> returns the force of the shot.
     //
     // @Determine
@@ -74,10 +73,7 @@ public class EntityShootsBowEvent extends ScriptEvent implements Listener {
             return false;
         }
 
-        if (!item.equals("bow")
-                && (!item.equals(bow.identifyNoIdentifier())
-                    && !item.equals(bow.identifySimpleNoIdentifier()))
-                    && !item.equals(CoreUtilities.toLowerCase(bow.getScriptName()))) {
+        if (!item.equals("bow") && !tryItem(bow, item)) {
             return false;
         }
 

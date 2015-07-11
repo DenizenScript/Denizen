@@ -11,6 +11,7 @@ import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.Entity;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.IWorldAccess;
+import org.bukkit.entity.LivingEntity;
 
 public class DenizenWorldAccess implements IWorldAccess {
     @Override
@@ -46,6 +47,9 @@ public class DenizenWorldAccess implements IWorldAccess {
     public void b(Entity entity) {
         try {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+                return;
+            }
+            if (entity.getBukkitEntity() instanceof LivingEntity && !((LivingEntity) entity.getBukkitEntity()).getRemoveWhenFarAway()) {
                 return;
             }
             EntityDespawnScriptEvent.instance.entity = new dEntity(entity.getBukkitEntity());
