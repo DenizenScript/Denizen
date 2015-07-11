@@ -73,7 +73,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        if (!item.equals("bow") && !tryItem(bow, item)){
+        if (!item.equals("bow") && !tryItem(bow, item)) {
             return false;
         }
 
