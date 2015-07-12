@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -14,15 +14,16 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 
 import java.util.HashMap;
 
-public class RedstoneScriptEvent extends ScriptEvent implements Listener {
+public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // redstone recalculated
+    // redstone recalculated (in <area>)
     //
     // @Warning This event fires very very rapidly!
     //
     // @Triggers when a redstone wire is recalculated.
+    //
     // @Context
     // <context.location> returns the location of the block.
     // <context.old_current> returns what the redstone power level was.
@@ -52,7 +53,7 @@ public class RedstoneScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), location);
     }
 
     @Override

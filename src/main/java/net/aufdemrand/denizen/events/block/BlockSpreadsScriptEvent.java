@@ -45,7 +45,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("spreads");
+        return cmd.equals("spreads") && !lower.startsWith("liquid");
     }
 
     @Override

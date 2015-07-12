@@ -24,10 +24,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // structure grows (naturally/from bonemeal) (in area)
-    // <structure> grows (naturally/from bonemeal) (in area)
-    // plant grows (naturally/from bonemeal) (in area)
-    // <plant> grows (naturally/from bonemeal) (in area)
+    // structure grows (naturally/from bonemeal) (in <area>)
+    // <structure> grows (naturally/from bonemeal) (in <area>)
+    // plant grows (naturally/from bonemeal) (in <area>)
+    // <plant> grows (naturally/from bonemeal) (in <area>)
     //
     // @Cancellable true
     //
@@ -67,16 +67,12 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
                 !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
             return false;
         }
-
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
         if (CoreUtilities.getXthArg(2,lower).equals("from") && !event.isFromBonemeal()) {
             return false;
         } else if (CoreUtilities.getXthArg(2,lower).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

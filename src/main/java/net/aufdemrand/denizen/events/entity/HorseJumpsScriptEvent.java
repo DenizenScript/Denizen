@@ -19,8 +19,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // horse jumps
-    // (<color>) (<type>) jumps
+    // horse jumps (in <area>)
+    // (<color>) (<type>) jumps (in <area>)
     //
     // @Cancellable true
     //
@@ -62,17 +62,17 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String arg2 = CoreUtilities.getXthArg(1, lower);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
 
-        if (!entity.matchesEntity(tamed)) {
+        if (!entity.matchesEntity(tamed) || !tamed.equals(variant.toString().toLowerCase())) {
             return false;
         }
 
-        if (CoreUtilities.getXthArg(2, lower).length() > 0) {
-            if (!arg1.equals(color.toString().toLowerCase()) || !arg2.equals(variant.toString().toLowerCase())) {
+        if (CoreUtilities.getXthArg(2, lower).equals("jumps")) {
+            if (!arg1.equals(color.toString().toLowerCase())) {
                 return false;
             }
         }
 
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

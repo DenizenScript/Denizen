@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -21,12 +21,12 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.HashMap;
 
-public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
+public class EntityExplodesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity explodes
-    // <entity> explodes
+    // entity explodes (in <area>)
+    // <entity> explodes (in <area>)
     //
     // @Cancellable true
     //
@@ -63,8 +63,9 @@ public class EntityExplodesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String target = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
-        return entity.matchesEntity(target);
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0, lower);
+        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

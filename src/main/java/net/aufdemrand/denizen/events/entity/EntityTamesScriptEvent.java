@@ -20,10 +20,10 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity tamed
-    // <entity> tamed
-    // player tames entity
-    // player tames <entity>
+    // entity tamed (in <area>)
+    // <entity> tamed (in <area>)
+    // player tames entity (in <area>)
+    // player tames <entity> (in <area>)
     //
     // @Cancellable true
     //
@@ -69,7 +69,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
                 return false;
             }
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

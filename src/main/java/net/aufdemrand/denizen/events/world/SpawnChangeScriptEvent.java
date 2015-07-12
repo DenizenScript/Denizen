@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.world;
 
 
-import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -15,11 +15,11 @@ import org.bukkit.event.world.SpawnChangeEvent;
 
 import java.util.HashMap;
 
-public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listener {
+public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // spawn changes (in area)
+    // spawn changes
     //
     // @Triggers when the world's spawn point changes.
     //
@@ -47,7 +47,7 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), new_location);
+        return true;
     }
 
     @Override

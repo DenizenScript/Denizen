@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -15,11 +15,11 @@ import org.bukkit.event.entity.SlimeSplitEvent;
 
 import java.util.HashMap;
 
-public class SlimeSplitsScriptEvent extends ScriptEvent implements Listener {
+public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // slime splits (into <#>)
+    // slime splits (into <#>) (in <area>)
     //
     // @Cancellable true
     //
@@ -52,11 +52,11 @@ public class SlimeSplitsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String counts = CoreUtilities.getXthArg(3, s);
-        if (counts.length() > 0) {
+        String lower = CoreUtilities.toLowerCase(s);
+        String counts = CoreUtilities.getXthArg(3, lower);
+        if (CoreUtilities.getXthArg(2, lower).equals("into") && counts.length() > 0) {
             try {
-                int test = Integer.parseInt(counts);
-                if (test != count) {
+                if (Integer.parseInt(counts) != count) {
                     return false;
                 }
             }
@@ -64,7 +64,7 @@ public class SlimeSplitsScriptEvent extends ScriptEvent implements Listener {
                 return false;
             }
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

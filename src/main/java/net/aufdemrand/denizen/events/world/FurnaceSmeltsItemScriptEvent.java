@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
 import java.util.HashMap;
 
-public class FurnaceSmeltsItemScriptEvent extends ScriptEvent implements Listener {
+public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // furnace smelts item (into <item>)
-    // furnace smelts <item> (into <item>)
+    // furnace smelts item (into <item>) (in <area>)
+    // furnace smelts <item> (into <item>) (in <area>)
     //
     // @Cancellable true
     //
@@ -54,15 +54,17 @@ public class FurnaceSmeltsItemScriptEvent extends ScriptEvent implements Listene
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String srcItem = CoreUtilities.getXthArg(2, lower);
-        if (!srcItem.equals("item") && (!dItem.matches(srcItem) && !srcItem.equals(source_item.identifyNoIdentifier()))) {
+        if (!tryItem(source_item, srcItem)) {
             return false;
         }
 
-        String resItem = CoreUtilities.getXthArg(4, lower);
-        if (!resItem.equals("item") && (!dItem.matches(resItem)) && !resItem.equals(result_item.identifyNoIdentifier())) {
-            return false;
+        if (CoreUtilities.getXthArg(3, lower).equals("into")) {
+            String resItem = CoreUtilities.getXthArg(4, lower);
+            if (!tryItem(result_item, resItem)) {
+                return false;
+            }
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

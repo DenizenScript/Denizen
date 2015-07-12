@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -96,6 +95,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public boolean tryItem(dItem item, String comparedto) {
         if (comparedto.equalsIgnoreCase("item")) {
             return true;
+        }
+        if (comparedto.length() == 0) {
+            dB.echoError("tryItem missing item value when compared to " + item.identifyNoIdentifier());
+            return false;
         }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
