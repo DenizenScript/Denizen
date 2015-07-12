@@ -18,7 +18,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // sheep regrows wool
+    // sheep regrows wool (in <area>)
     //
     // @Cancellable true
     //
@@ -48,11 +48,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

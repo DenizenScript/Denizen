@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,12 +16,12 @@ import org.bukkit.event.entity.EntityPortalEnterEvent;
 
 import java.util.HashMap;
 
-public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listener {
+public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity enters portal
-    // <entity> enters portal
+    // entity enters portal (in <area>)
+    // <entity> enters portal (in <area>)
     //
     // @Cancellable false
     //
@@ -49,7 +49,9 @@ public class EntityEntersPortalScriptEvent extends ScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0, lower);
+        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

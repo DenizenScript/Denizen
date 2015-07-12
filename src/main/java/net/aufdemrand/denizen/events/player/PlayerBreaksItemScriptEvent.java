@@ -99,7 +99,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem((ItemStack) event.getBrokenItem());
+        item = new dItem(event.getBrokenItem());
         this.event = event;
         fire();
         if (cancelled) {
@@ -107,7 +107,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
             final ItemStack itemstack = event.getBrokenItem();
             itemstack.setAmount(itemstack.getAmount() + 1);
             new BukkitRunnable() {
-                @Override
                 public void run() {
                     itemstack.setDurability(itemstack.getType().getMaxDurability());
                     player.updateInventory();

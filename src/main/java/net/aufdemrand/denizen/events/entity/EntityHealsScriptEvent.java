@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -17,12 +17,12 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 import java.util.HashMap;
 
-public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
+public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity heals (because <cause>)
-    // <entity> heals (because <cause>)
+    // entity heals (because <cause>) (in <area>)
+    // <entity> heals (because <cause>) (in <area>)
     //
     // @Cancellable true
     //
@@ -64,7 +64,7 @@ public class EntityHealsScriptEvent extends ScriptEvent implements Listener {
         if (cause.length() > 0 && !cause.equals(CoreUtilities.toLowerCase(reason.toString()))) {
             return false;
         }
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

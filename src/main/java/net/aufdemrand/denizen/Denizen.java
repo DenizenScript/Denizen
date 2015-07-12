@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.events.entity.*;
+import net.aufdemrand.denizen.events.entity.ItemMergesScriptEvent;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;
@@ -630,6 +631,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new InvPicksUpItemScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());

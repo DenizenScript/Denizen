@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -17,12 +17,12 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 
 import java.util.HashMap;
 
-public class PistonExtendsScriptEvent extends ScriptEvent implements Listener {
+public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // piston extends
-    // <block> extends
+    // piston extends (in <area>)
+    // <block> extends (in <area>)
     //
     // @Cancellable true
     //
@@ -54,17 +54,16 @@ public class PistonExtendsScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.contains("piston extends")
-                || (lower.equals(mat + " extends") && dMaterial.matches(mat));
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        return cmd.equals("extends");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(0, lower);
-        return mat.equals("piston")
-                || (material.identifySimpleNoIdentifier().toLowerCase().equals(mat));
+        return (mat.equals("piston") || tryMaterial(material, mat))
+                && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override
