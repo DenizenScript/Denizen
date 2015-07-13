@@ -1081,7 +1081,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
         // flicker option means the firework will explode with a flicker effect.
         // @Tags
-        // TODO: Document Command Details
+        // <e@entity.firework_item> returns the firework item which was used to launch the firework.
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
         // - firework <player.location> star primary:yellow fade:white
@@ -1194,8 +1194,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // TODO: Document Command Details
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.navigator.target_entity> returns the entity the npc is following
         // @Usage
+        // To make an NPC follow the player in an interact script
+        // - follow followers:<npc> target:<player>
         // TODO: Document Command Details
         // -->
         registerCoreMember(FollowCommand.class,
