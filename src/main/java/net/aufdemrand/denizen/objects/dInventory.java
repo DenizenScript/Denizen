@@ -1564,7 +1564,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
         if (attribute.startsWith("inventory_type"))
-            return new Element(getInventory().getType().name())
+            return new Element(inventory instanceof HorseInventory ? "HORSE" : getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
