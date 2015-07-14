@@ -21,9 +21,9 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // item merges (in <notable area>)
-    // <item> merges (in <notable area>)
-    // <material> merges (in <notable area>)
+    // item merges (in <area>)
+    // <item> merges (in <area>)
+    // <material> merges (in <area>)
     //
     // @Cancellable true
     //

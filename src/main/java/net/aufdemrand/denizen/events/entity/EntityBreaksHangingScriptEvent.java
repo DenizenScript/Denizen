@@ -58,10 +58,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String ent = CoreUtilities.getXthArg(0, lower);
-        String hang = CoreUtilities.getXthArg(2, lower);
-        return cmd.equals("breaks") && dEntity.matches(ent)
-                && (hang.equals("hanging") || dEntity.matches(hang));
+        return cmd.equals("breaks");
     }
 
     @Override
