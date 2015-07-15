@@ -15,7 +15,7 @@ import org.bukkit.World;
 
 public class GroupCommand extends AbstractCommand {
 
-    private enum Action {ADD, REMOVE}
+    private enum Action {ADD, REMOVE, SET}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -79,7 +79,11 @@ public class GroupCommand extends AbstractCommand {
                 else
                     Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
                 return;
+            case SET:
+                for (String grp : Depends.permissions.getPlayerGroups((bukkitWorld == null ? null : bukkitWorld.getName()), player)) {
+                    Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, grp);
+                }
+                Depends.permissions.playerAddGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
         }
-
     }
 }
