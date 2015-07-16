@@ -293,6 +293,21 @@ public class dColor implements dObject {
         }
 
         // <--[tag]
+        // @attribute <co@color.to_particle_offset>
+        // @returns dLocation
+        // @description
+        // Returns the color as a particle offset, for use with PlayEffect.
+        // -->
+        if (attribute.startsWith("to_particle_offset")) {
+            Color valid = color;
+            if (valid.asRGB() == 0) {
+                valid = Color.fromRGB(1, 0, 0);
+            }
+            return new dLocation(null, valid.getRed()/255F, valid.getGreen()/255F, valid.getBlue()/255F)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <co@color.type>
         // @returns Element
         // @description
