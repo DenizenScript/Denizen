@@ -87,13 +87,18 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
     }
 
     @Override
-    public void a(PacketPlayInArmAnimation packet) {
-        oldListener.a(packet);
+    public void a(PacketPlayInChat packet) {
+        super.a(packet);
     }
 
     @Override
-    public void a(PacketPlayInChat packet) {
+    public void a(PacketPlayInKeepAlive packet) {
         super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInArmAnimation packet) {
+        oldListener.a(packet);
     }
 
     @Override
@@ -138,11 +143,6 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     @Override
     public void a(PacketPlayInUseEntity packet) {
-        oldListener.a(packet);
-    }
-
-    @Override
-    public void a(PacketPlayInKeepAlive packet) {
         oldListener.a(packet);
     }
 
