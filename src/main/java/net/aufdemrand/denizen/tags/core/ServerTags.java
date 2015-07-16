@@ -26,6 +26,7 @@ import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -883,6 +884,20 @@ public class ServerTags implements Listener {
             dNPC npc = dNPC.valueOf(attribute.getContext(1));
             event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.recent_tps>
+        // @returns dList(Element(Decimal))
+        // @description
+        // Returns the 3 most recent ticks per second measurements.
+        // -->
+        else if (attribute.startsWith("recent_tps")) {
+            dList list = new dList();
+            for (double tps : MinecraftServer.getServer().recentTps) {
+                list.add(new Element(tps).identify());
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
         }
 
         // TODO: Add everything else from Bukkit.getServer().*

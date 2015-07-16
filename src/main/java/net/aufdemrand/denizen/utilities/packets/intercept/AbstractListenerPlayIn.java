@@ -1,18 +1,38 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     protected final PlayerConnection oldListener;
+    private volatile int chatThrottle;
+    private final Field chatThrottleField;
 
     public AbstractListenerPlayIn(NetworkManager networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
         this.oldListener = oldListener;
+        Field chatThrottle = null;
+        try {
+            Field chatSpamField = PlayerConnection.class.getDeclaredField("chatSpamField");
+            chatSpamField.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(chatSpamField, chatSpamField.getModifiers() & ~Modifier.FINAL);
+            chatSpamField.set(null, AtomicIntegerFieldUpdater.newUpdater(AbstractListenerPlayIn.class, "chatThrottle"));
+            chatThrottle = PlayerConnection.class.getDeclaredField("chatThrottle");
+            chatThrottle.setAccessible(true);
+        } catch (Exception e) {
+            dB.echoError(e);
+        }
+        this.chatThrottleField = chatThrottle;
     }
 
     @Override
@@ -62,12 +82,8 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     @Override
     public void c() {
-        oldListener.c();
-    }
-
-    @Override
-    public void a(PacketPlayInArmAnimation packet) {
-        oldListener.a(packet);
+        super.c();
+        chatThrottle -= 1;
     }
 
     @Override
@@ -76,8 +92,18 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
     }
 
     @Override
-    public void a(PacketPlayInTabComplete packet) {
+    public void a(PacketPlayInKeepAlive packet) {
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInArmAnimation packet) {
         oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInTabComplete packet) {
+        super.a(packet);
     }
 
     @Override
@@ -117,11 +143,6 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     @Override
     public void a(PacketPlayInUseEntity packet) {
-        oldListener.a(packet);
-    }
-
-    @Override
-    public void a(PacketPlayInKeepAlive packet) {
         oldListener.a(packet);
     }
 

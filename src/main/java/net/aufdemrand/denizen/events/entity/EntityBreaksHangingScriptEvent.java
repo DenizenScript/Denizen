@@ -33,12 +33,11 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.
     //
     // @Context
-    // <context.cause> returns the cause of the entity breaking.
-    // <context.entity> returns the dEntity that broke the hanging entity, if any.
+    // <context.cause> returns the cause of the entity breaking. Causes list: <@link url http://bit.ly/1BeqxPX>
+    // <context.breaker> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
     // <context.cuboids> DEPRECATED.
     // <context.location> DEPRECATED.
-    // Causes list: <@link url http://bit.ly/1BeqxPX>
     //
     // -->
 
@@ -48,7 +47,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     public static EntityBreaksHangingScriptEvent instance;
     public Element cause;
-    public dEntity entity;
+    public dEntity breaker;
     public dEntity hanging;
     public dList cuboids;
     public dLocation location;
@@ -58,10 +57,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String ent = CoreUtilities.getXthArg(0, lower);
-        String hang = CoreUtilities.getXthArg(2, lower);
-        return cmd.equals("breaks") && dEntity.matches(ent)
-                && (hang.equals("hanging") || dEntity.matches(hang));
+        return cmd.equals("breaks");
     }
 
     @Override
@@ -69,7 +65,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
         String hang = CoreUtilities.getXthArg(2, lower);
-        if (!entity.matchesEntity(entName)) {
+        if (!breaker.matchesEntity(entName)) {
             return false;
         }
         if (!hang.equals("hanging") && !hanging.matchesEntity(hang)) {
@@ -109,15 +105,17 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+        // TODO: What if the hanging is an NPC?
+        return new BukkitScriptEntryData(breaker.isPlayer() ? breaker.getDenizenPlayer() : null,
+                breaker.isCitizensNPC() ? breaker.getDenizenNPC() : null);
     }
 
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
         context.put("cause", cause);
-        context.put("entity", entity);
+        context.put("entity", breaker); // NOTE: Deprecated
+        context.put("breaker", breaker);
         context.put("hanging", hanging);
         context.put("cuboids", cuboids);
         context.put("location", location);
@@ -129,7 +127,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         hanging = new dEntity(event.getEntity());
         cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
-        entity = new dEntity(event.getRemover());
+        breaker = new dEntity(event.getRemover());
         cuboids = new dList();
         for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());

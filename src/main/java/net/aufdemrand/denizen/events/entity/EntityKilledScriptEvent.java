@@ -3,6 +3,8 @@ package net.aufdemrand.denizen.events.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -132,8 +134,15 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : dEntity.getPlayerFrom(damager.getBukkitEntity()),
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : dEntity.getNPCFrom(damager.getBukkitEntity()));
+        dPlayer player = entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null;
+        if (damager != null && player == null && damager.isPlayer()) {
+            player = dEntity.getPlayerFrom(damager.getBukkitEntity());
+        }
+        dNPC npc = entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null;
+        if (damager != null && npc == null && damager.isCitizensNPC()) {
+            npc = dEntity.getNPCFrom(damager.getBukkitEntity());
+        }
+        return new BukkitScriptEntryData(player, npc);
     }
 
     @Override
