@@ -1230,10 +1230,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Group
-        // @Syntax group [add/remove] [<group>] (<world>)
+        // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable TODO: Document Command Details
-        // @Short Adds a player to or removes a player from a permissions group.
+        // @Short Adds a player to or removes a player from or sets a players permissions group.
         // @Author GnomeffinWay
         // @Group player
         // @Description
@@ -1246,7 +1246,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(GroupCommand.class,
-                "GROUP", "group [add/remove] [<group>] (<world>)", 2);
+                "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
 
 
         // <--[command]

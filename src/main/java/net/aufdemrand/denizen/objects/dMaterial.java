@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
+import org.bukkit.TreeType;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
@@ -673,6 +674,23 @@ public class dMaterial implements dObject {
 
     public MaterialData getMaterialData() {
         return new MaterialData(material, data != null ? data : 0);
+    }
+
+    public boolean isStructure() {
+        try {
+            TreeType.valueOf(material.toString());
+            return true;
+        }
+        catch (Exception e){
+            switch(material) {
+                case SAPLING:
+                case HUGE_MUSHROOM_1:
+                case HUGE_MUSHROOM_2:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 
     String prefix = "material";
