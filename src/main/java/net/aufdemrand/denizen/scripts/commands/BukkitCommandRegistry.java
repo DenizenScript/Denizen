@@ -2322,7 +2322,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // lines and it will show each player specified their name on that line.
         //
         // @Tags
-        // None
+        // <p@player.sidebar.lines>
+        // <p@player.sidebar.title>
+        // <p@player.sidebar.scores>
+        // <p@player.sidebar.start>
+        // <p@player.sidebar.increment>
         //
         // @Usage
         // Show all online players a sidebar.

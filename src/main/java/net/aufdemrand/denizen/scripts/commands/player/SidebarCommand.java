@@ -186,7 +186,7 @@ public class SidebarCommand extends AbstractCommand {
 
             case ADD:
                 for (dPlayer player : players.filter(dPlayer.class)) {
-                    Sidebar sidebar = getSidebar(player);
+                    Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
                     }
@@ -221,7 +221,7 @@ public class SidebarCommand extends AbstractCommand {
 
             case REMOVE:
                 for (dPlayer player : players.filter(dPlayer.class)) {
-                    Sidebar sidebar = getSidebar(player);
+                    Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
                     }
@@ -284,7 +284,7 @@ public class SidebarCommand extends AbstractCommand {
 
             case SET:
                 for (dPlayer player : players.filter(dPlayer.class)) {
-                    Sidebar sidebar = getSidebar(player);
+                    Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
                     }
@@ -353,7 +353,7 @@ public class SidebarCommand extends AbstractCommand {
 
     private static final Map<UUID, Sidebar> sidebars = new HashMap<UUID, Sidebar>();
 
-    public static Sidebar getSidebar(dPlayer denizenPlayer) {
+    private static Sidebar createSidebar(dPlayer denizenPlayer) {
         if (!denizenPlayer.isOnline()) {
             return null;
         }
@@ -363,6 +363,13 @@ public class SidebarCommand extends AbstractCommand {
             sidebar = new Sidebar(player);
         }
         return sidebar;
+    }
+
+    public static Sidebar getSidebar(dPlayer denizenPlayer) {
+        if (!denizenPlayer.isOnline()) {
+            return null;
+        }
+        return sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId());
     }
 
     private static final Scoreboard dummyScoreboard = new Scoreboard();
@@ -390,8 +397,24 @@ public class SidebarCommand extends AbstractCommand {
             sidebars.put(player.getUniqueId(), this);
         }
 
+        public String getTitle() {
+            return title;
+        }
+
         public List<String> getLines() {
             return new ArrayList<String>(Arrays.asList(lines));
+        }
+
+        public int[] getScores() {
+            return scores;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getIncrement() {
+            return increment;
         }
 
         public void setTitle(String title) {
