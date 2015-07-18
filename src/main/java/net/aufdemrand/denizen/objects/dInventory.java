@@ -1168,6 +1168,22 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
         }
 
+        // <--[tag]
+        // @attribute <in@inventory.is_empty>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory is empty.
+        // -->
+        if (attribute.startsWith("is_empty")) {
+            boolean empty = true;
+            for (ItemStack item : getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    empty = false;
+                    break;
+                }
+            }
+            return new Element(empty).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.contains.display[(strict:)<element>]>
