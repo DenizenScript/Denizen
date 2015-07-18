@@ -27,7 +27,9 @@ public class SidebarCommand extends AbstractCommand {
 
     private enum Action {ADD, REMOVE, SET}
 
-    static {
+    @Override
+    public void onEnable() {
+        setParseArgs(false);
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(new SidebarEvents(), DenizenAPI.getCurrentInstance());
     }
