@@ -2290,7 +2290,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Sidebar
-        // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...)
+        // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
         // @Required 1
         // @Stable stable
         // @Short Controls clientside-only sidebars.
@@ -2316,12 +2316,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // between each score and the default is -1. Using the default values of these, the sidebar displays each
         // line in order with the score counting down from the total number of lines to 1.
         //
+        // The per_player argument is also available, and helps to reduce the number of loops required for
+        // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
+        // on each individual player in the players list. So, for example, you could have <player.name> on a
+        // lines and it will show each player specified their name on that line.
+        //
         // @Tags
         // None
         //
         // @Usage
         // Show all online players a sidebar.
         // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
+        //
+        // @Usage
+        // Show a few players their ping.
+        // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
         //
         // @Usage
         // Set a line on the sidebar a player is viewing.
@@ -2340,7 +2349,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - sidebar remove
         // -->
         registerCoreMember(SidebarCommand.class,
-                "SIDEBAR", "sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...)", 0);
+                "SIDEBAR", "sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)", 1);
 
 
         // <--[command]

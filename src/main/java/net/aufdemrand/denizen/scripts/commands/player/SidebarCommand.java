@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
@@ -12,8 +13,9 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.tags.TagManager;
 import net.minecraft.server.v1_8_R3.*;
-import org.bukkit.craftbukkit.v1_8_R3.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,7 +37,7 @@ public class SidebarCommand extends AbstractCommand {
 
         Action action = Action.SET;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpret(scriptEntry.getOriginalArguments())) {
 
             if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
@@ -49,30 +51,32 @@ public class SidebarCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("lines")
                     && arg.matchesPrefix("lines", "line", "l")) {
-                scriptEntry.addObject("lines", arg.asType(dList.class));
+                scriptEntry.addObject("lines", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesPrefix("value", "values", "val", "v")) {
-                scriptEntry.addObject("value", arg.asType(dList.class));
+                scriptEntry.addObject("value", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("increment")
-                    && arg.matchesPrefix("increment", "inc", "i")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("increment", "inc", "i")) {
                 scriptEntry.addObject("increment", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("start")
-                    && arg.matchesPrefix("start", "s")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("start", "s")) {
                 scriptEntry.addObject("start", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("players")
-                    && arg.matchesPrefix("players", "player", "p")
-                    && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class));
+                    && arg.matchesPrefix("players", "player", "p")) {
+                scriptEntry.addObject("players", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("per_player")
+                    && arg.matches("per_player")) {
+                scriptEntry.addObject("per_player", new Element(true));
             }
         }
 
@@ -91,29 +95,90 @@ public class SidebarCommand extends AbstractCommand {
 
         scriptEntry.addObject("action", new Element(action.name()));
 
-        scriptEntry.defaultObject("players", new dList(Arrays.asList
-                (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer())));
+        scriptEntry.defaultObject("per_player", new Element(false)).defaultObject("players",
+                new Element(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element action = scriptEntry.getElement("action");
-        Element title = scriptEntry.getElement("title");
-        dList lines = scriptEntry.getdObject("lines");
-        dList value = scriptEntry.getdObject("value");
-        Element increment = scriptEntry.getElement("increment");
-        Element start = scriptEntry.getElement("start");
-        dList players = scriptEntry.getdObject("players");
+        Element elTitle = scriptEntry.getElement("title");
+        Element elLines = scriptEntry.getElement("lines");
+        Element elValue = scriptEntry.getElement("value");
+        Element elIncrement = scriptEntry.getElement("increment");
+        Element elStart = scriptEntry.getElement("start");
+        Element elPlayers = scriptEntry.getElement("players");
+        Element elPerPlayer = scriptEntry.getElement("per_player");
 
-        dB.report(scriptEntry, getName(),
-                action.debug() +
-                        (title != null ? title.debug() : "") +
-                        (lines != null ? lines.debug() : "") +
-                        (value != null ? value.debug() : "") +
-                        (increment != null ? increment.debug() : "") +
-                        (start != null ? start.debug() : "") +
-                        players.debug());
+        dList players = dList.valueOf(TagManager.tag(elPlayers.asString(), new BukkitTagContext(scriptEntry, false)));
+        boolean per_player = elPerPlayer.asBoolean();
+
+        String perTitle = null;
+        String perLines = null;
+        String perValue = null;
+        String perIncrement = null;
+        String perStart = null;
+
+        Element title = null;
+        dList lines = null;
+        dList value = null;
+        Element increment = null;
+        Element start = null;
+
+        String debug;
+
+        if (per_player) {
+            if (elTitle != null) {
+                perTitle = elTitle.asString();
+            }
+            if (elLines != null) {
+                perLines = elLines.asString();
+            }
+            if (elValue != null) {
+                perValue = elValue.asString();
+            }
+            if (elIncrement != null) {
+                perIncrement = elIncrement.asString();
+            }
+            if (elStart != null) {
+                perStart = start.asString();
+            }
+            debug = action.debug() +
+                    (elTitle != null ? elTitle.debug() : "") +
+                    (elLines != null ? elLines.debug() : "") +
+                    (elValue != null ? elValue.debug() : "") +
+                    (elIncrement != null ? elIncrement.debug() : "") +
+                    (elStart != null ? elStart.debug() : "") +
+                    players.debug();
+        }
+        else {
+            BukkitTagContext context = new BukkitTagContext(scriptEntry, false);
+            if (elTitle != null) {
+                title = new Element(TagManager.tag(elTitle.asString(), context));
+            }
+            if (elLines != null) {
+                lines = dList.valueOf(TagManager.tag(elLines.asString(), context));
+            }
+            if (elValue != null) {
+                value = dList.valueOf(TagManager.tag(elValue.asString(), context));
+            }
+            if (elIncrement != null) {
+                increment = new Element(TagManager.tag(elIncrement.asString(), context));
+            }
+            if (elStart != null) {
+                start = new Element(TagManager.tag(elStart.asString(), context));
+            }
+            debug = action.debug() +
+                    (title != null ? title.debug() : "") +
+                    (lines != null ? lines.debug() : "") +
+                    (value != null ? value.debug() : "") +
+                    (increment != null ? increment.debug() : "") +
+                    (start != null ? start.debug() : "") +
+                    players.debug();
+        }
+
+        dB.report(scriptEntry, getName(), debug);
 
         switch (Action.valueOf(action.asString())) {
 
@@ -124,6 +189,14 @@ public class SidebarCommand extends AbstractCommand {
                         continue;
                     }
                     List<String> current = sidebar.getLines();
+                    if (per_player) {
+                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
+                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        value = dList.valueOf(TagManager.tag(perValue, context));
+                        if (perLines != null) {
+                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        }
+                    }
                     if (lines != null) {
                         try {
                             for (int i = 0; i < lines.size(); i++) {
@@ -151,6 +224,16 @@ public class SidebarCommand extends AbstractCommand {
                         continue;
                     }
                     List<String> current = sidebar.getLines();
+                    if (per_player) {
+                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
+                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        if (perValue != null) {
+                            value = dList.valueOf(TagManager.tag(perValue, context));
+                        }
+                        if (perLines != null) {
+                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        }
+                    }
                     if (lines != null) {
                         try {
                             int offset = 0;
@@ -205,6 +288,25 @@ public class SidebarCommand extends AbstractCommand {
                     }
                     List<String> current = sidebar.getLines();
                     boolean currEdited = false;
+                    if (per_player) {
+                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
+                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        if (perValue != null) {
+                            value = dList.valueOf(TagManager.tag(perValue, context));
+                        }
+                        if (perLines != null) {
+                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        }
+                        if (perStart != null) {
+                            start = new Element(TagManager.tag(perStart, context));
+                        }
+                        if (perIncrement != null) {
+                            increment = new Element(TagManager.tag(perIncrement, context));
+                        }
+                        if (perTitle != null) {
+                            title = new Element(TagManager.tag(perTitle, context));
+                        }
+                    }
                     if (lines != null) {
                         try {
                             for (int i = 0; i < lines.size(); i++) {
@@ -271,7 +373,6 @@ public class SidebarCommand extends AbstractCommand {
         private int[] scores;
         private int start;
         private int increment;
-        private ScoreboardObjective titleObjective;
         private ScoreboardObjective obj1;
         private ScoreboardObjective obj2;
 
@@ -292,9 +393,11 @@ public class SidebarCommand extends AbstractCommand {
         }
 
         public void setTitle(String title) {
+            if (title.length() > 32) {
+                title = title.substring(0, 32);
+            }
             if (this.title == null || !this.title.equals(title)) {
                 this.title = title;
-                this.titleObjective = new ScoreboardObjective(dummyScoreboard, title, dummyCriteria);
                 this.obj1.setDisplayName(title);
                 this.obj2.setDisplayName(title);
             }
@@ -317,7 +420,11 @@ public class SidebarCommand extends AbstractCommand {
                 score = lines.size();
             }
             for (int i = 0; i < lines.size() && i < this.lines.length; i++, score += this.increment) {
-                this.lines[i] = lines.get(i);
+                String line = lines.get(i);
+                if (line.length() > 48) {
+                    line = line.substring(0, 48);
+                }
+                this.lines[i] = line;
                 this.scores[i] = score;
             }
         }
