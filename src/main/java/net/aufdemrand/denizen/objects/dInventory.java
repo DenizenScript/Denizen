@@ -1132,6 +1132,44 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
+        // @attribute <in@inventory.can_fit[<item>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory can fit 1 of an item.
+        // -->
+        if (attribute.startsWith("can_fit")) {
+            if (attribute.hasContext(1)) {
+                int attribs = 1;
+                int qty = 1;
+
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getSize()));
+                dummyInv.setContents(getContents());
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                if (item == null) return null;
+
+                // <--[tag]
+                // @attribute <in@inventory.can_fit[<item>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory can fit a certain quantity of an item.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+                item.setAmount(qty);
+                ItemStack stack = item.getItemStack();
+
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, stack);
+                return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
+
+            }
+        }
+
+
+        // <--[tag]
         // @attribute <in@inventory.contains.display[(strict:)<element>]>
         // @returns Element(Boolean)
         // @description
