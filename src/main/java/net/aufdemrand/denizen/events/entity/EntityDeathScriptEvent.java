@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -25,14 +25,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
+public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity death
-    // entity dies
-    // <entity> dies
-    // <entity> death
+    // entity death (in <area>)
+    // entity dies (in <area>)
+    // <entity> dies (in <area>)
+    // <entity> death (in <area>)
     //
     // @Triggers when an entity dies.
     //
@@ -77,7 +77,9 @@ public class EntityDeathScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0, lower);
+        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -18,22 +20,22 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
 
-public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
+public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity killed
-    // entity killed by <cause>
-    // entity killed by entity
-    // entity killed by <entity>
-    // <entity> killed
-    // <entity> killed by <cause>
-    // <entity> killed by entity
-    // <entity> killed by <entity>
-    // entity kills entity
-    // entity kills <entity>
-    // <entity> kills entity
-    // <entity> kills <entity>
+    // entity killed (in <area>)
+    // entity killed by <cause> (in <area>)
+    // entity killed by entity (in <area>)
+    // entity killed by <entity> (in <area>)
+    // <entity> killed (in <area>)
+    // <entity> killed by <cause> (in <area>)
+    // <entity> killed by entity (in <area>)
+    // <entity> killed by <entity> (in <area>)
+    // entity kills entity (in <area>)
+    // entity kills <entity> (in <area>)
+    // <entity> kills entity (in <area>)
+    // <entity> kills <entity> (in <area>)
     //
     // @Cancellable true
     //
@@ -84,8 +86,11 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
         }
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("kills") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
-        String target = cmd.equals("kills") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
+        String arg0 = CoreUtilities.getXthArg(0, lower);
+        String arg2 = CoreUtilities.getXthArg(2, lower);
+        String arg3 = CoreUtilities.getXthArg(3, lower);
+        String attacker = cmd.equals("kills") ? arg0 : arg2.equals("by") ? arg3 : "";
+        String target = cmd.equals("kills") ? arg2 : arg0;
         if (attacker.length() > 0) {
             if (damager != null) {
                 if (!damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
@@ -96,14 +101,11 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
                 return false;
             }
         }
-        if (target.length() > 0) {
-            if (!entity.matchesEntity(target)) {
-                return false;
-            }
+        if (!entity.matchesEntity(target)) {
+            return false;
         }
 
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override
@@ -132,8 +134,15 @@ public class EntityKilledScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : dEntity.getPlayerFrom(damager.getBukkitEntity()),
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : dEntity.getNPCFrom(damager.getBukkitEntity()));
+        dPlayer player = entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null;
+        if (damager != null && player == null && damager.isPlayer()) {
+            player = dEntity.getPlayerFrom(damager.getBukkitEntity());
+        }
+        dNPC npc = entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null;
+        if (damager != null && npc == null && damager.isCitizensNPC()) {
+            npc = dEntity.getNPCFrom(damager.getBukkitEntity());
+        }
+        return new BukkitScriptEntryData(player, npc);
     }
 
     @Override

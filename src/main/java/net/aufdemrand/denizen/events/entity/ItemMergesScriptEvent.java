@@ -1,69 +1,80 @@
-package net.aufdemrand.denizen.events.world;
+package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ItemMergeEvent;
 
 import java.util.HashMap;
 
-public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listener {
+public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // potion splash (in <area>)
-    // <item> splashes (in <area>)
+    // item merges (in <area>)
+    // <item> merges (in <area>)
+    // <material> merges (in <area>)
     //
     // @Cancellable true
     //
-    // @Triggers when a splash potion breaks open
+    // @Triggers when an item entity merges into another item entity.
     //
     // @Context
-    // <context.potion> returns a dItem of the potion that broke open.
-    // <context.entities> returns a dList of effected entities.
-    // <context.location> returns the dLocation the splash potion broke open at.
-    // <context.entity> returns a dEntity of the splash potion.
+    // <context.item> returns the dItem of the entity.
+    // <context.entity> returns the dEntity.
+    // <context.target> returns the dEntity being merged into.
+    // <context.location> returns the location of the entity to be spawned.
     //
     // -->
 
-    public PotionSplashScriptEvent() {
+    public ItemMergesScriptEvent() {
         instance = this;
     }
-
-    public static PotionSplashScriptEvent instance;
-    public dItem potion;
-    public dList entities;
+    public static ItemMergesScriptEvent instance;
+    public dItem item;
     public dLocation location;
     public dEntity entity;
-    public PotionSplashEvent event;
+    public ItemMergeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("splash") || cmd.equals("splashes");
+        String entTest = CoreUtilities.getXthArg(0, lower);
+        return cmd.equals("merges")
+                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String iTest = CoreUtilities.getXthArg(0, lower);
-        return tryItem(potion, iTest) && runInCheck(scriptContainer, s, lower, location);
+        String item_test = CoreUtilities.getXthArg(0, lower);
+
+        if (!item_test.equals("item")
+                && !item_test.equals(item.identifyNoIdentifier()) && !item_test.equals(item.identifySimpleNoIdentifier())) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public String getName() {
-        return "PotionSplash";
+        return "ItemMerges";
     }
 
     @Override
@@ -73,7 +84,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public void destroy() {
-        PotionSplashEvent.getHandlerList().unregister(this);
+        ItemMergeEvent.getHandlerList().unregister(this);
     }
 
     @Override
@@ -84,22 +95,20 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public HashMap<String, dObject> getContext() {
         HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("entities", entities);
         context.put("location", location);
-        context.put("potion", potion);
+        context.put("item", item);
+        context.put("entity", entity);
+        context.put("target", new dEntity(event.getTarget()));
         return context;
     }
 
     @EventHandler
-    public void onPotionSplash(PotionSplashEvent event) {
-        entity = new dEntity(event.getEntity());
-        potion = new dItem(event.getPotion().getItem());
-        location = new dLocation(entity.getLocation());
-        entities = new dList();
-        for (Entity e : event.getAffectedEntities()) {
-            entities.add(new dEntity(e).identify());
-        }
+    public void onItemMerges(ItemMergeEvent event) {
+        Item entity = event.getEntity();
+        Item target = event.getTarget();
+        location = new dLocation(target.getLocation());
+        item = new dItem(entity.getItemStack());
+        this.entity = new dEntity(entity);
         cancelled = event.isCancelled();
         this.event = event;
         fire();

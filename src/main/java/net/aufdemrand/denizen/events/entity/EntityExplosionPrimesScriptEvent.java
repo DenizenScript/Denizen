@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.events.entity;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -15,12 +15,12 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 
 import java.util.HashMap;
 
-public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Listener {
+public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity explosion primes
-    // <entity> explosion primes
+    // entity explosion primes (in <area>)
+    // <entity> explosion primes (in <area>)
     //
     // @Cancellable true
     //
@@ -49,7 +49,8 @@ public class EntityExplosionPrimesScriptEvent extends ScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, lower)) && runInCheck(scriptContainer, s, lower, entity.getLocation());
 
     }
 

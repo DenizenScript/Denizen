@@ -21,8 +21,8 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // entity changes food level
-    // <entity> changes food level
+    // entity changes food level (in <area>)
+    // <entity> changes food level (in <area>)
     //
     // @Cancellable true
     //
@@ -53,7 +53,9 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        String lower = CoreUtilities.toLowerCase(s);
+        String target = CoreUtilities.getXthArg(0, lower);
+        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

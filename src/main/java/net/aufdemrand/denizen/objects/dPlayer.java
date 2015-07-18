@@ -21,6 +21,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -414,6 +415,11 @@ public class dPlayer implements dObject, Adjustable {
             getPlayerEntity().setGameMode(mode);
         else
             getNBTEditor().setGameMode(mode);
+    }
+
+    public boolean hasChunkLoaded(Chunk chunk) {
+        return ((CraftWorld) chunk.getWorld()).getHandle().getPlayerChunkMap()
+                .a(((CraftPlayer) getPlayerEntity()).getHandle(), chunk.getX(), chunk.getZ());
     }
 
 
@@ -1399,6 +1405,17 @@ public class dPlayer implements dObject, Adjustable {
             return new dLocation(getPlayerEntity().getCompassTarget())
                     .getAttribute(attribute.fulfill(2));
 
+        // <--[tag]
+        // @attribute <p@player.chunk_loaded[<chunk>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the player has the chunk loaded on their client.
+        // -->
+        if (attribute.startsWith("chunk_loaded") && attribute.hasContext(1)) {
+            dChunk chunk = dChunk.valueOf(attribute.getContext(1));
+            return new Element(hasChunkLoaded(chunk.chunk)).getAttribute(attribute.fulfill(1));
+        }
+
 
         /////////////////////
         //   STATE ATTRIBUTES
@@ -1743,11 +1760,17 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element(Number)
         // @description
         // Sets the inventory slot that the player has selected.
+        // Works with offline players.
         // @tags
         // <player.item_in_hand.slot>
         // -->
         if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
-            getPlayerEntity().getInventory().setHeldItemSlot(mechanism.getValue().asInt() - 1);
+            if (isOnline()) {
+                getPlayerEntity().getInventory().setHeldItemSlot(value.asInt() - 1);
+            }
+            else {
+                getNBTEditor().setItemInHand(value.asInt() - 1);
+            }
         }
 
         // <--[mechanism]

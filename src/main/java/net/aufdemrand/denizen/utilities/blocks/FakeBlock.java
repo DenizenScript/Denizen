@@ -100,6 +100,9 @@ public class FakeBlock {
         if (currentTask != null)
             currentTask.cancel();
         this.material = material;
+        if (!player.hasChunkLoaded(location.getChunk())) {
+            return;
+        }
         player.getPlayerEntity().sendBlockChange(location, material.getMaterial(),
                 material.getMaterialData().getData());
         if (ticks > 0) {

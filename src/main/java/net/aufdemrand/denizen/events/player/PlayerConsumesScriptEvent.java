@@ -21,8 +21,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player consumes item
-    // player consumes <item>
+    // player consumes item (in <area>)
+    // player consumes <item> (in <area>)
     //
     // @Cancellable true
     //
@@ -48,13 +48,13 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         return CoreUtilities.toLowerCase(s).startsWith("player consumes");
-
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String iCheck = CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s));
-        return iCheck.equals("item") || tryItem(item, iCheck);
+        String lower = CoreUtilities.toLowerCase(s);
+        String iCheck = CoreUtilities.getXthArg(2, lower);
+        return tryItem(item, iCheck) && runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
     }
 
     @Override

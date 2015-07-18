@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,12 +14,12 @@ import org.bukkit.event.block.LeavesDecayEvent;
 
 import java.util.HashMap;
 
-public class LeafDecaysScriptEvent extends ScriptEvent implements Listener {
+public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // leaves decay
-    // <block> decay
+    // leaves decay (in <area>)
+    // <block> decay (in <area>)
     //
     // @Cancellable true
     //
@@ -43,17 +43,15 @@ public class LeafDecaysScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return lower.contains("leaves decay")
-                || (lower.equals(mat + " decay") && dMaterial.matches(mat));
+        return CoreUtilities.getXthArg(1, lower).equals("decay");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String mat = CoreUtilities.getXthArg(0, lower);
-        return mat.equals("leaves")
-                || (material.identifySimpleNoIdentifier().toLowerCase().equals(mat));
+        return (mat.equals("leaves") || (tryMaterial(material, mat)))
+                && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

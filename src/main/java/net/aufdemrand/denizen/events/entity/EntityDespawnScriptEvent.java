@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -11,12 +11,12 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import java.util.HashMap;
 
-public class EntityDespawnScriptEvent extends ScriptEvent {
+public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     // <--[event]
     // @Events
-    // entity despawns
-    // <entity> despawns
+    // entity despawns (in <area>)
+    // <entity> despawns (in <area>)
     //
     // @Warning this event fires very rapidly.
     //
@@ -47,8 +47,10 @@ public class EntityDespawnScriptEvent extends ScriptEvent {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, s))
-                && checkSwitch(lower, "cause", CoreUtilities.toLowerCase(cause.asString()));
+        String target = CoreUtilities.getXthArg(0, lower);
+        return entity.matchesEntity(target)
+                && checkSwitch(lower, "cause", CoreUtilities.toLowerCase(cause.asString()))
+                && runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

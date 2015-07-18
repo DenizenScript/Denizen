@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.events.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -18,12 +18,12 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 
 import java.util.HashMap;
 
-public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
+public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // player empties bucket
-    // player empties <bucket>
+    // player empties bucket (in <area>)
+    // player empties <bucket> (in <area>)
     //
     // @Triggers when a player empties a bucket.
     //
@@ -60,9 +60,9 @@ public class BucketEmptyScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.endsWith(" bucket")
-                || lower.endsWith(" " + item.identifyNoIdentifier())
-                || lower.endsWith(" " + item.identifySimpleNoIdentifier());
+        String iTest = CoreUtilities.getXthArg(2, lower);
+        return tryItem(item, iTest)
+                && runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override

@@ -27,10 +27,10 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // entity shoots bow
-    // <entity> shoots bow
-    // entity shoots <item>
-    // <entity> shoots <item>
+    // entity shoots bow (in <area>)
+    // <entity> shoots bow (in <area>)
+    // entity shoots <item> (in <area>)
+    // <entity> shoots <item> (in <area>)
     //
     // @Cancellable true
     //
@@ -77,7 +77,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        return true;
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override

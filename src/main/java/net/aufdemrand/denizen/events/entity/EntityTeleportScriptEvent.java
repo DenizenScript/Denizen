@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -18,12 +18,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 
-public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
+public class EntityTeleportScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // entity teleports
-    // <entity> teleports
+    // entity teleports (in <area>)
+    // <entity> teleports (in <area>)
     //
     // @Triggers when an entity teleports.
     //
@@ -61,7 +61,8 @@ public class EntityTeleportScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)));
+        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)))
+                && runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), from);
     }
 
     @Override
