@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptBuilder;
@@ -65,9 +66,9 @@ public class ActionHandler {
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(assignment.getName())).addEntries(script);
 
         if (context != null) {
-            for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
+            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+            oecs.contexts = context;
+            queue.setContextSource(oecs);
         }
 
         // Start the queue!

@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
@@ -149,9 +150,9 @@ public class CommandScriptContainer extends ScriptContainer {
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
-            for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
+            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+            oecs.contexts = context;
+            queue.setContextSource(oecs);
         }
         queue.start();
         return queue;
@@ -165,9 +166,9 @@ public class CommandScriptContainer extends ScriptContainer {
 
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
-            for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
+            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+            oecs.contexts = context;
+            queue.setContextSource(oecs);
         }
         queue.start();
         return DetermineCommand.hasOutcome(id) && DetermineCommand.getOutcome(id).get(0).equalsIgnoreCase("true");
@@ -181,9 +182,9 @@ public class CommandScriptContainer extends ScriptContainer {
 
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
-            for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
+            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+            oecs.contexts = context;
+            queue.setContextSource(oecs);
         }
         queue.start();
         if (DetermineCommand.hasOutcome(id))

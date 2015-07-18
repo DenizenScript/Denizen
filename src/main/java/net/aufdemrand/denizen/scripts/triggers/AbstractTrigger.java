@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -98,9 +99,9 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
         queue.addEntries(entries);
         // Add context
         if (context != null) {
-            for (Map.Entry<String, dObject> entry : context.entrySet()) {
-                queue.addContext(entry.getKey(), entry.getValue());
-            }
+            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+            oecs.contexts = context;
+            queue.setContextSource(oecs);
         }
         // Start it
         queue.start();
