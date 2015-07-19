@@ -136,21 +136,24 @@ public class EntityMovement {
         if (!(nmsEntityEntity instanceof EntityInsentient))
             return;
         final EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
-        final NavigationAbstract followerNavigation = nmsEntity.getNavigation();
+        final NavigationAbstract entityNavigation = nmsEntity.getNavigation();
 
         final PathEntity path;
-        path = followerNavigation.a(location.getX(), location.getY(), location.getZ());
-        if (path != null) {
-            final boolean aiDisabled = isAIDisabled(entity);
+        final boolean aiDisabled = isAIDisabled(entity);
+        if (aiDisabled) {
             toggleAI(entity, true);
-            followerNavigation.a(path, 1D);
-            followerNavigation.a(2D);
+            nmsEntity.onGround = true;
+        }
+        path = entityNavigation.a(location.getX(), location.getY(), location.getZ());
+        if (path != null) {
+            entityNavigation.a(path, 1D);
+            entityNavigation.a(2D);
             final double oldSpeed = nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).b();
             nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (followerNavigation.m() || path.b()) {
+                    if (entityNavigation.m() || path.b()) {
                         if (callback != null)
                             callback.run();
                         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
@@ -161,7 +164,9 @@ public class EntityMovement {
                 }
             }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
-        if (!Utilities.checkLocation(location, entity.getLocation(), 20)) {
+        //if (!Utilities.checkLocation(location, entity.getLocation(), 20)) {
+        // TODO: generate waypoints to the target location?
+        else {
             entity.teleport(location);
         }
     }

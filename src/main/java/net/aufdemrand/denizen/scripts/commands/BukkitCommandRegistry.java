@@ -2971,7 +2971,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
 
         // @Usage
-        // Create a sign that shows the location of a player on a wall
+        // Create a sign that shows the location of a player on a wall.
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
 
         // -->
@@ -3068,10 +3068,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
 
         // @Tags
-        // <def[loop_index]> to get the number of loops so far
+        // <def[loop_index]> to get the number of loops so far.
 
         // @Usage
-        // Use loop through a command several times
+        // Use loop through a command several times.
         // - define value 1
         // - while <def[value].is[OR_LESS].than[5]> {
         //     - announce "Loop <def[loop_index]> value <def[value]>"
@@ -3107,25 +3107,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <yaml[<idname>].read[<path>].as_list>
         // <yaml[<idname>].list_keys[<path>]>
         // @Usage
-        // Use to create a new YAML file
+        // Use to create a new YAML file.
         // - yaml create id:myfile
         // @Usage
-        // Use to load a YAML file from disk
+        // Use to load a YAML file from disk.
         // - yaml load:myfile.yml id:myfile
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:HelloWorld
         // @Usage
-        // Use to save a YAML file to disk
+        // Use to save a YAML file to disk.
         // - yaml savefile:myfile.yml id:myfile
         // @Usage
-        // Use to unload a YAML file from memory
+        // Use to unload a YAML file from memory.
         // - yaml unload id:myfile
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:+:2
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
@@ -3144,7 +3144,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to change the step to 2
+        // - zap 2
+        // @Usage
+        // Use to change the step to 3 in a script called Interact_Example.
+        // - zap 3 s@Interact_Example
+        // @Usage
+        // Use to change the step to 1 for player bob in a script called InteractScript.
+        // - zap 1 s@InteractScript player:p@bob
         // -->
         registerCoreMember(ZapCommand.class,
                 "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
