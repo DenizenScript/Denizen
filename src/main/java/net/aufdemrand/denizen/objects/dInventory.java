@@ -1135,7 +1135,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @attribute <in@inventory.can_fit[<item>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the inventory can fit 1 of an item.
+        // Returns whether the inventory can fit an item.
         // -->
         if (attribute.startsWith("can_fit")) {
             if (attribute.hasContext(1)) {
@@ -1183,6 +1183,23 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
             }
             return new Element(empty).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.is_full>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory is completely full.
+        // -->
+        if (attribute.startsWith("is_full")) {
+            boolean full = false;
+            for (ItemStack item : getContents()) {
+                if (item != null && ( item.getType() == Material.AIR ) || ( item.getAmount() < item.getMaxStackSize() ) ) {
+                    full = true;
+                    break;
+                }
+            }
+            return new Element(full).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
