@@ -1169,6 +1169,41 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.include[<item>]>
+        // @returns dInventory
+        // @description
+        // Returns the dInventory with an item added.
+        // -->
+        if (attribute.startsWith("include")) {
+            if (attribute.hasContext(1)) {
+                int attribs = 1;
+                int qty = 1;
+
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getSize()));
+                dummyInv.setContents(getContents());
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                if (item == null) return null;
+
+                // <--[tag]
+                // @attribute <in@inventory.include[<item>].qty[<#>]>
+                // @returns dInventory
+                // @description
+                // Returns the dInventory with a certain quantity of the item.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+                item.setAmount(qty);
+                ItemStack stack = item.getItemStack();
+                dummyInv.add(0, stack);
+                return dummyInv.getAttribute(attribute.fulfill(attribs));
+            }
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.is_empty>
         // @returns Element(Boolean)
         // @description
