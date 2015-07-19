@@ -1338,16 +1338,36 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Hurt
-        // @Syntax hurt (<#.#>) ({player}/<entity>|...)
+        // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
         // @Required 0
         // @Stable stable
         // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Group entity
         // @Description
+        // Does damage to a list of entities, or to any single entity.
+        //
+        // If no entities are specified: if there is a linked player, the command targets that. If there is no linked
+        // player but there is a linked NPC, the command targets the NPC. If neither is available, the command will error.
+        //
+        // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
+        // (half a heart).
+        //
         // TODO: Document Command Details
+        //
+        // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
+        // be warned this does not always work as intended, and is liable to glitch.
+        // Optionally, specify a damage cause to fire a proper damage event with the given cause,
+        // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
+        // than using the raw damage input number. See <@link language damage cause> for damage causes.
         // @Tags
         // <e@entity.health>
+        // @Usage
+        // Use to hurt the player for 1HP.
+        // - hurt
+        // @Usage
+        // Use to hurt the NPC for 5 HP.
+        // - hurt 5 <npc>
         // @Usage
         // TODO: Document Command Details
         // -->
