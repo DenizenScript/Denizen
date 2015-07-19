@@ -1192,10 +1192,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory is completely full.
         // -->
         if (attribute.startsWith("is_full")) {
-            boolean full = false;
+            boolean full = true;
+
             for (ItemStack item : getContents()) {
-                if (item != null && ( item.getType() == Material.AIR ) || ( item.getAmount() < item.getMaxStackSize() ) ) {
-                    full = true;
+                if ((item == null) ||
+                        (item.getType() == Material.AIR) ||
+                        (item.getAmount() < item.getMaxStackSize())) {
+                    full = false;
                     break;
                 }
             }
