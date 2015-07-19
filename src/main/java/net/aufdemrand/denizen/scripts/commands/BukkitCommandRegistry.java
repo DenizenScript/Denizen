@@ -900,6 +900,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
         // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+        //
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
@@ -1016,6 +1018,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1035,9 +1038,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group entity
         // @Description
         // TODO: Document Command Details
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <p@player.food_level>
         // <p@player.food_level.formatted>
+        // @Usage
+        // Use to feed the player for 5 foodpoints.
+        // feed amt:5
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1056,6 +1063,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1192,8 +1200,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, Morphan1
         // @Group entity
         // @Description
-        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // TODO: Document Command Details
+        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // @Tags
         // <n@npc.navigator.target_entity> returns the entity the npc is following.
         // @Usage
@@ -1214,6 +1222,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss
         // @Group item
         // @Description
+        // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
         // TODO: Document Command Details
         // @Tags
         // <p@player.money>
@@ -1254,7 +1263,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Head
-        // @Syntax head (<entity>|...) [skin:<player>]
+        // @Syntax head (<entity>|...) [skin:<player_name>]
         // @Required 1
         // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
@@ -1265,10 +1274,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
+        // Use to stick an awesome head on your head with the head command.
+        // - skin <player> skin:mcmonkey4eva
+        // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(HeadCommand.class,
-                "HEAD", "head (<entity>|...) [skin:<player>]", 1);
+                "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
 
 
         // <--[command]
@@ -1369,10 +1381,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to hurt the NPC for 5 HP.
         // - hurt 5 <npc>
         // @Usage
-        // TODO: Document Command Details
+        // Use to cause the player to hurt the NPC for all its health (if unarmored).
+        // hurt <npc.health> <npc> cause:CUSTOM source:<player>
         // -->
         registerCoreMember(HurtCommand.class,
-                "HURT", "hurt (<#.#>) (<entity>|...)", 0);
+                "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
 
 
         // <--[command]
