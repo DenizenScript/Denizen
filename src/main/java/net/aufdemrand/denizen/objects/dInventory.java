@@ -1142,7 +1142,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 1;
                 int qty = 1;
 
-                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getSize()));
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+                if (inventory.getType() == InventoryType.CHEST)
+                        dummyInv.setSize(inventory.getSize());
                 dummyInv.setContents(getContents());
                 dItem item = dItem.valueOf(attribute.getContext(1));
                 if (item == null) return null;
@@ -1160,9 +1162,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                     attribs = 2;
                 }
                 item.setAmount(qty);
-                ItemStack stack = item.getItemStack();
 
-                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, stack);
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
                 return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
 
             }
@@ -1179,7 +1180,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 1;
                 int qty = 1;
 
-                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType()));
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+                if (inventory.getType() == InventoryType.CHEST)
+                    dummyInv.setSize(inventory.getSize());
                 dummyInv.setContents(getContents());
                 dItem item = dItem.valueOf(attribute.getContext(1));
                 if (item == null) return null;
@@ -1188,7 +1191,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // @attribute <in@inventory.include[<item>].qty[<#>]>
                 // @returns dInventory
                 // @description
-                // Returns the dInventory with a certain quantity of the item.
+                // Returns the dInventory with a certain quantity of an item added.
                 // -->
                 if (attribute.getAttribute(2).startsWith("qty") &&
                         attribute.hasContext(2) &&
@@ -1197,8 +1200,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     attribs = 2;
                 }
                 item.setAmount(qty);
-                ItemStack stack = item.getItemStack();
-                dummyInv.add(0, stack);
+                dummyInv.add(0, item.getItemStack());
                 return dummyInv.getAttribute(attribute.fulfill(attribs));
             }
         }
