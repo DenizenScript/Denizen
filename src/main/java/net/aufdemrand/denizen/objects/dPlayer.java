@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
+import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
@@ -1267,6 +1268,81 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("item_in_hand.slot")) {
             return new Element(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
                     .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.sidebar.lines>
+        // @returns dList
+        // @description
+        // Returns the current lines set on the player's Sidebar via the Sidebar command.
+        // -->
+        if (attribute.startsWith("sidebar.lines")) {
+            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            if (sidebar == null) {
+                return null;
+            }
+            return new dList(sidebar.getLines()).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.sidebar.title>
+        // @returns Element
+        // @description
+        // Returns the current title set on the player's Sidebar via the Sidebar command.
+        // -->
+        if (attribute.startsWith("sidebar.title")) {
+            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            if (sidebar == null) {
+                return null;
+            }
+            return new Element(sidebar.getTitle()).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.sidebar.scores>
+        // @returns dList(Element(Number))
+        // @description
+        // Returns the current scores set on the player's Sidebar via the Sidebar command,
+        // in the same order as <@link tag p@player.sidebar.lines>.
+        // -->
+        if (attribute.startsWith("sidebar.scores")) {
+            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            if (sidebar == null) {
+                return null;
+            }
+            dList scores = new dList();
+            for (int score : sidebar.getScores()) {
+                scores.add(String.valueOf(score));
+            }
+            return scores.getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.sidebar.start>
+        // @returns Element(Number)
+        // @description
+        // Returns the current start score set on the player's Sidebar via the Sidebar command.
+        // -->
+        if (attribute.startsWith("sidebar.start")) {
+            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            if (sidebar == null) {
+                return null;
+            }
+            return new Element(sidebar.getStart()).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.sidebar.increment>
+        // @returns Element(Number)
+        // @description
+        // Returns the current score increment set on the player's Sidebar via the Sidebar command.
+        // -->
+        if (attribute.startsWith("sidebar.increment")) {
+            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            if (sidebar == null) {
+                return null;
+            }
+            return new Element(sidebar.getIncrement()).getAttribute(attribute.fulfill(2));
         }
 
 

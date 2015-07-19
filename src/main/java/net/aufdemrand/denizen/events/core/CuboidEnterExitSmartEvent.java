@@ -13,9 +13,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -122,6 +120,28 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         playerMoveEvent(evt);
         if (evt.isCancelled())
             event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        double pos = 10000000d;
+        PlayerMoveEvent pme = new PlayerMoveEvent(event.getPlayer(), event.getPlayer().getLocation(),
+                new Location(event.getPlayer().getWorld(), pos, pos, pos));
+        playerMoveEvent(pme);
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        double pos = 10000000d;
+        PlayerMoveEvent pme = new PlayerMoveEvent(event.getPlayer(),
+                new Location(event.getPlayer().getWorld(), pos, pos, pos), event.getPlayer().getLocation());
+        playerMoveEvent(pme);
     }
 
     public void onWorldChange(PlayerChangedWorldEvent event) {

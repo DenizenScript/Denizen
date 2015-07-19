@@ -10,6 +10,9 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Bukkit;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +52,11 @@ public class HurtCommand extends AbstractCommand {
                 specified_targets = true;
             }
 
+            else if (!scriptEntry.hasObject("cause")
+                    && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
+                scriptEntry.addObject("cause", arg.asElement());
+            }
+
             else arg.reportUnhandled();
         }
 
@@ -75,9 +83,11 @@ public class HurtCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dEntity source = (dEntity) scriptEntry.getObject("source");
         Element amountElement = scriptEntry.getElement("amount");
+        Element cause = scriptEntry.getElement("cause");
 
         dB.report(scriptEntry, getName(), amountElement.debug()
                 + aH.debugList("entities", entities)
+                + (cause == null ? "": cause.debug())
                 + (source == null ? "" : source.debug()));
 
         double amount = amountElement.asDouble();
@@ -86,11 +96,29 @@ public class HurtCommand extends AbstractCommand {
                 dB.echoDebug(scriptEntry, entity + " is not a living entity!");
                 continue;
             }
-            if (source == null)
-                entity.getLivingEntity().damage(amount);
-            else
-                entity.getLivingEntity().damage(amount, source.getBukkitEntity());
+            if (cause == null) {
+                if (source == null) {
+                    entity.getLivingEntity().damage(amount);
+                }
+                else {
+                    entity.getLivingEntity().damage(amount, source.getBukkitEntity());
+                }
+            }
+            else {
+                EntityDamageEvent ede = source == null ? new EntityDamageEvent(entity.getBukkitEntity(),
+                        EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount):
+                        new EntityDamageByEntityEvent(source.getBukkitEntity(),
+                        entity.getBukkitEntity(), EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount);
+                Bukkit.getPluginManager().callEvent(ede);
+                if (!ede.isCancelled()) {
+                    if (source == null) {
+                        entity.getLivingEntity().damage(ede.getFinalDamage());
+                    }
+                    else {
+                        entity.getLivingEntity().damage(ede.getFinalDamage(), source.getBukkitEntity());
+                    }
+                }
+            }
         }
-
     }
 }

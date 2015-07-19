@@ -56,8 +56,12 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("grows");
-    }
+        String lower = CoreUtilities.toLowerCase(s);
+        String cmd = CoreUtilities.getXthArg(1, lower);
+        String block = CoreUtilities.getXthArg(0, lower);
+        dMaterial mat = dMaterial.valueOf(block);
+        return cmd.equals("grows")
+                && (block.equals("structure") || (mat != null && mat.isStructure()));    }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {

@@ -900,6 +900,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
         // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+        //
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
@@ -1016,6 +1018,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1035,9 +1038,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group entity
         // @Description
         // TODO: Document Command Details
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <p@player.food_level>
         // <p@player.food_level.formatted>
+        // @Usage
+        // Use to feed the player for 5 foodpoints.
+        // feed amt:5
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1056,6 +1063,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1192,8 +1200,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, Morphan1
         // @Group entity
         // @Description
-        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // TODO: Document Command Details
+        // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
         // @Tags
         // <n@npc.navigator.target_entity> returns the entity the npc is following.
         // @Usage
@@ -1214,6 +1222,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss
         // @Group item
         // @Description
+        // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
         // TODO: Document Command Details
         // @Tags
         // <p@player.money>
@@ -1233,10 +1242,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Group
-        // @Syntax group [add/remove] [<group>] (<world>)
+        // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable TODO: Document Command Details
-        // @Short Adds a player to or removes a player from a permissions group.
+        // @Short Adds a player to or removes a player from or sets a players permissions group.
         // @Author GnomeffinWay
         // @Group player
         // @Description
@@ -1249,12 +1258,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(GroupCommand.class,
-                "GROUP", "group [add/remove] [<group>] (<world>)", 2);
+                "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
 
 
         // <--[command]
         // @Name Head
-        // @Syntax head (<entity>|...) [skin:<player>]
+        // @Syntax head (<entity>|...) [skin:<player_name>]
         // @Required 1
         // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
@@ -1265,10 +1274,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
+        // Use to stick an awesome head on your head with the head command.
+        // - skin <player> skin:mcmonkey4eva
+        // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(HeadCommand.class,
-                "HEAD", "head (<entity>|...) [skin:<player>]", 1);
+                "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
 
 
         // <--[command]
@@ -1338,21 +1350,42 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Hurt
-        // @Syntax hurt (<#.#>) ({player}/<entity>|...)
+        // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
         // @Required 0
         // @Stable stable
         // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Group entity
         // @Description
+        // Does damage to a list of entities, or to any single entity.
+        //
+        // If no entities are specified: if there is a linked player, the command targets that. If there is no linked
+        // player but there is a linked NPC, the command targets the NPC. If neither is available, the command will error.
+        //
+        // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
+        // (half a heart).
+        //
         // TODO: Document Command Details
+        //
+        // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
+        // be warned this does not always work as intended, and is liable to glitch.
+        // Optionally, specify a damage cause to fire a proper damage event with the given cause,
+        // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
+        // than using the raw damage input number. See <@link language damage cause> for damage causes.
         // @Tags
         // <e@entity.health>
         // @Usage
-        // TODO: Document Command Details
+        // Use to hurt the player for 1HP.
+        // - hurt
+        // @Usage
+        // Use to hurt the NPC for 5 HP.
+        // - hurt 5 <npc>
+        // @Usage
+        // Use to cause the player to hurt the NPC for all its health (if unarmored).
+        // hurt <npc.health> <npc> cause:CUSTOM source:<player>
         // -->
         registerCoreMember(HurtCommand.class,
-                "HURT", "hurt (<#.#>) (<entity>|...)", 0);
+                "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
 
 
         // <--[command]
@@ -2286,6 +2319,74 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(SchematicCommand.class,
                 "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)", 2);
+
+
+        // <--[command]
+        // @Name Sidebar
+        // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
+        // @Required 1
+        // @Stable stable
+        // @Short Controls clientside-only sidebars.
+        // @Author Morphan1
+        // @Group player
+        // @Description
+        // This command was created as a simpler replacement for using the Scoreboard command to display
+        // per-player sidebars. By using packets and dummies, it enables you to have non-flickering, fully
+        // functional sidebars without wasting processing speed and memory on creating new Scoreboards for
+        // every single player.
+        //
+        // Using this command, you can add, remove, or set lines on the scoreboard. The 'lines' parameter
+        // is used to specify which line you want to set using 'values:' or remove. It can also be used to
+        // add lines in between existing lines. To change multiple lines at once, simply use a list in both
+        // the 'lines:' and 'values:' arguments and have each index correspond with the other.
+        //
+        // Setting the title of the sidebar is extremely simple, and can be done by using the 'title:'
+        // parameter in any case where the action is 'set'.
+        //
+        // To control which score numbers are shown, use the 'start:' and 'increment:' arguments in any case
+        // where the action is 'set'. 'Start' is the score where the first line will be shown with. The default
+        // 'start' value is determined by how many items are specified in 'values:'. 'Increment' is the difference
+        // between each score and the default is -1. Using the default values of these, the sidebar displays each
+        // line in order with the score counting down from the total number of lines to 1.
+        //
+        // The per_player argument is also available, and helps to reduce the number of loops required for
+        // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
+        // on each individual player in the players list. So, for example, you could have <player.name> on a
+        // lines and it will show each player specified their name on that line.
+        //
+        // @Tags
+        // <p@player.sidebar.lines>
+        // <p@player.sidebar.title>
+        // <p@player.sidebar.scores>
+        // <p@player.sidebar.start>
+        // <p@player.sidebar.increment>
+        //
+        // @Usage
+        // Show all online players a sidebar.
+        // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
+        //
+        // @Usage
+        // Show a few players their ping.
+        // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
+        //
+        // @Usage
+        // Set a line on the sidebar a player is viewing.
+        // - sidebar set "line:2" "value:This is my line now!"
+        //
+        // @Usage
+        // Add a line to the bottom of the sidebar.
+        // - sidebar add "value:This is the bottom!"
+        //
+        // @Usage
+        // Remove multiple lines from the sidebar.
+        // - sidebar remove "lines:2|4|6"
+        //
+        // @Usage
+        // Stop showing the sidebar.
+        // - sidebar remove
+        // -->
+        registerCoreMember(SidebarCommand.class,
+                "SIDEBAR", "sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)", 1);
 
 
         // <--[command]
