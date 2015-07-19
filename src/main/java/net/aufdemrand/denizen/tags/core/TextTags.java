@@ -469,7 +469,7 @@ public class TextTags implements Listener {
             event.setReplaced(new Element(String.valueOf(' ')).getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
-            // @attribute <&sp>
+            // @attribute <&nbsp>
             // @returns Element
             // @description
             // Returns a non-breaking space symbol.
