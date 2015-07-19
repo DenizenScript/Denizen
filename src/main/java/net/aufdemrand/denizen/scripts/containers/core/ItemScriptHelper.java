@@ -379,8 +379,7 @@ public class ItemScriptHelper implements Listener {
 
                 // Update the player's inventory
                 //
-                // TODO: Replace with non-deprecated method once one
-                // is added to Bukkit
+                // TODO: Replace with non-deprecated method once one is added to Bukkit
                 player.updateInventory();
             }
             return true;
