@@ -23,7 +23,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block is formed based on world conditions, E.G. when snow forms in a snow storm or ice forms in a cold biome.
+    // @Triggers when a block is formed based on world conditions, EG, when snow forms in a snow storm or ice forms in a cold biome.
     //
     // @Context
     // <context.location> returns the dLocation the block that is forming.
