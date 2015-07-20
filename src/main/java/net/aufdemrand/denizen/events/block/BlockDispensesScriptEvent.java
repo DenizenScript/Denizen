@@ -5,6 +5,9 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Velocity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -33,9 +36,12 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.location> returns the dLocation of the dispenser.
     // <context.item> returns the dItem of the item being dispensed.
+    // <context.velocity> returns a dLocation vector of the velocity the item will be shot at.
     //
     // @Determine
-    // Element(Decimal) to set the power with which the item is shot.
+    // Element(Decimal) (DEPRECATED) to multiply the velocity by the given amount.
+    // dLocation to set the velocity the item will be shot at.
+    // dItem to set the item being shot.
     //
     // -->
 
@@ -46,7 +52,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     public static BlockDispensesScriptEvent instance;
     public dLocation location;
     public dItem item;
-    private Double power;
+    private dLocation velocity;
     private dMaterial material;
     public BlockDispenseEvent event;
 
@@ -87,8 +93,26 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
-            power = aH.getDoubleFrom(determination);
+            velocity = new dLocation(velocity.multiply(aH.getDoubleFrom(determination)));
             return true;
+        }
+        else if (dLocation.matches(determination)) {
+            dLocation vel = dLocation.valueOf(determination);
+            if (vel == null) {
+                dB.echoError("[" + getName() + "] Invalid velocity!");
+            }
+            else {
+                velocity = vel;
+            }
+        }
+        else if (dItem.matches(determination)) {
+            dItem it = dItem.valueOf(determination);
+            if (it == null) {
+                dB.echoError("[" + getName() + "] Invalid item!");
+            }
+            else {
+                item = it;
+            }
         }
         return super.applyDetermination(container, determination);
     }
@@ -101,18 +125,31 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
+    @Override
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("velocity")) {
+            return velocity;
+        }
+        return super.getContext(name);
+    }
+
     @EventHandler
     public void onBlockDispenses(BlockDispenseEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         item = new dItem(event.getItem());
         cancelled = event.isCancelled();
-        power = null;
+        velocity = new dLocation(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());
         this.event = event;
         fire();
-        if (power != null) {
-            event.setVelocity(event.getVelocity().multiply(power));
-        }
+        event.setVelocity(velocity.toVector());
+        event.setItem(item.getItemStack());
         event.setCancelled(cancelled);
     }
 }
