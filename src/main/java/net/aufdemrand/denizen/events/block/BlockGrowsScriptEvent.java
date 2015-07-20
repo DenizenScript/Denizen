@@ -83,11 +83,14 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler

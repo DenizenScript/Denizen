@@ -96,12 +96,17 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("new_material", new_material); // Deprecated because it doesn't have proper data
-        context.put("old_material", old_material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("new_material")) {
+            return new_material;
+        }
+        else if (name.equals("old_material")) {
+            return old_material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler
