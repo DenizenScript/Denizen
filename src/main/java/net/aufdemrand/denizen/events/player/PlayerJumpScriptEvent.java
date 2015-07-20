@@ -25,7 +25,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Triggers when a player jumps.
     //
     // @Context
-    // <context.location> returns the location the player jumped at.
+    // <context.location> returns the location the player jumped from (not particularly accurate).
     //
     // -->
 
@@ -46,13 +46,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return // Did player move vertically?
-                (event.getTo().getBlockY() > event.getFrom().getBlockY()
-                // and also that the player has a high velocity (jump instead of walking up stairs)
-                && Math.abs(event.getPlayer().getVelocity().getY()) > 0.1
-                // and that the player isn't in any form of fast moving vehicle
-                && event.getPlayer().getVehicle() == null)
-                && runInCheck(scriptContainer, s, lower, event.getFrom());
+        return runInCheck(scriptContainer, s, lower, event.getFrom());
     }
 
     @Override
@@ -82,10 +76,11 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler
@@ -93,8 +88,16 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getFrom());
-        this.event = event;
-        fire();
+        // Check that the block level changed (Upward)
+        if (event.getTo().getBlockY() > event.getFrom().getBlockY()
+                // and also that the player has a high velocity (jump instead of walking up stairs)
+                && Math.abs(event.getPlayer().getVelocity().getY()) > 0.1
+                // and that the player isn't in any form of fast moving vehicle
+                && event.getPlayer().getVehicle() == null) {
+            // Not perfect checking, but close enough until Bukkit adds a proper event
+            location = new dLocation(event.getFrom());
+            this.event = event;
+            fire();
+        }
     }
 }
