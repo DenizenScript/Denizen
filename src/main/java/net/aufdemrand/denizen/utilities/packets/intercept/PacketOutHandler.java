@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
+import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -68,6 +69,47 @@ public class PacketOutHandler {
             else if (packet instanceof PacketPlayOutPlayerInfo) {
                 PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
             }
+            else if (packet instanceof PacketPlayOutCustomPayload) {
+                PacketPlayOutCustomPayload cPacket = (PacketPlayOutCustomPayload) packet;
+                String name = (String) custom_name.get(cPacket);
+                if (name.equals("MC|TrList")) {
+                    PacketDataSerializer serializer = (PacketDataSerializer) custom_serializer.get(cPacket);
+                    PacketDataSerializer newSerializer = new PacketDataSerializer(Unpooled.buffer());
+                    // Container number, we don't need this
+                    newSerializer.writeInt(serializer.readInt());
+                    // Number of trades
+                    byte trades = serializer.readByte();
+                    newSerializer.writeByte(trades);
+                    // The trades
+                    for (int i = 0; i < trades; i++) {
+                        // The first item cost
+                        ItemStack buyItem1 = serializer.i();
+                        newSerializer.a(removeItemScriptLore(buyItem1));
+                        // The item to be bought
+                        ItemStack buyItem3 = serializer.i();
+                        newSerializer.a(removeItemScriptLore(buyItem3));
+                        // Whether there is a second item cost
+                        boolean hasItem2 = serializer.readBoolean();
+                        newSerializer.writeBoolean(hasItem2);
+                        // The second item cost, if there is one
+                        ItemStack buyItem2 = null;
+                        if (hasItem2) {
+                            buyItem2 = serializer.i();
+                            newSerializer.a(removeItemScriptLore(buyItem2));
+                        }
+                        // Has used max times
+                        boolean usedMax = serializer.readBoolean();
+                        newSerializer.writeBoolean(usedMax);
+                        // Current uses
+                        int uses = serializer.readInt();
+                        newSerializer.writeInt(uses);
+                        // Max uses
+                        int maxUses = serializer.readInt();
+                        newSerializer.writeInt(maxUses);
+                    }
+                    custom_serializer.set(cPacket, newSerializer);
+                }
+            }
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -110,6 +152,7 @@ public class PacketOutHandler {
     private static final Field set_slot_windowId, set_slot_slotId, set_slot_itemStack;
     private static final Field window_items_windowId, window_items_itemStackArray;
     private static final Field named_spawn_entityId, named_spawn_entityUUID;
+    private static final Field custom_name, custom_serializer;
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
@@ -124,5 +167,9 @@ public class PacketOutHandler {
         fields = PacketHelper.registerFields(PacketPlayOutNamedEntitySpawn.class);
         named_spawn_entityId = fields.get("a");
         named_spawn_entityUUID = fields.get("b");
+
+        fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
+        custom_name = fields.get("a");
+        custom_serializer = fields.get("b");
     }
 }
