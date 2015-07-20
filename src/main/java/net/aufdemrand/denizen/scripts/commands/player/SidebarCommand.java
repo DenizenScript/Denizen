@@ -446,8 +446,8 @@ public class SidebarCommand extends AbstractCommand {
             }
             for (int i = 0; i < lines.size() && i < this.lines.length; i++, score += this.increment) {
                 String line = lines.get(i);
-                if (line.length() > 48) {
-                    line = line.substring(0, 48);
+                if (line.length() > 40) {
+                    line = line.substring(0, 40);
                 }
                 this.lines[i] = line;
                 this.scores[i] = score;
