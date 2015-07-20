@@ -118,14 +118,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("item", item);
-        return context;
-    }
-
-    @Override
     public dObject getContext(String name) {
         if (name.equals("location")) {
             return location;

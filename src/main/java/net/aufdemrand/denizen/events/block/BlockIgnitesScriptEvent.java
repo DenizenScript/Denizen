@@ -110,7 +110,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
             entity = new dEntity(event.getIgnitingEntity());
         }
         origin_location = null;
-        if (event.getIgnitingBlock() != null) {
+        if (event.getIgnitingBlock() != null) { // TODO: Why would this be null?
             origin_location = new dLocation(event.getIgnitingBlock().getLocation());
         }
         cause = new Element(event.getCause().toString());
