@@ -23,11 +23,11 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when a block spreads based on world conditions,
-    //           e.g. when fire spreads, when mushrooms spread
+    // @Triggers when a block spreads based on world conditions, EG, when fire spreads, or when mushrooms spread.
     //
     // @Context
-    // <context.location> returns the dLocation of the block that spread.
+    // <context.source_location> returns the dLocation of the block that spread.
+    // <context.location> returns the dLocation of the new block.
     // <context.material> returns the dMaterial of the block that spread.
     //
     // -->
@@ -38,6 +38,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     public static BlockSpreadsScriptEvent instance;
     public dLocation location;
+    public dLocation source;
     public dMaterial material;
     public BlockSpreadEvent event;
 
@@ -89,8 +90,23 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
+    @Override
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("source_location")) {
+            return source;
+        }
+        return super.getContext(name);
+    }
+
     @EventHandler
     public void onBlockSpreads(BlockSpreadEvent event) {
+        source = new dLocation(event.getBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getSource().getType(), event.getSource().getData());
         cancelled = event.isCancelled();

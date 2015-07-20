@@ -315,6 +315,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         // Return if "Use asynchronous event" is false in config file
         if (!Settings.chatAsynchronous()) return;
 
+        if (!event.isAsynchronous()) {
+            syncChatTrigger(new PlayerChatEvent(event.getPlayer(), event.getMessage(), event.getFormat(), event.getRecipients()));
+            return;
+        }
         FutureTask<ChatContext> futureTask = new FutureTask<ChatContext>(new Callable<ChatContext>() {
             @Override
             public ChatContext call() {

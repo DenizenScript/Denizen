@@ -1132,6 +1132,117 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
+        // @attribute <in@inventory.can_fit[<item>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory can fit an item.
+        // -->
+        if (attribute.startsWith("can_fit")) {
+            if (attribute.hasContext(1)) {
+                int attribs = 1;
+                int qty = 1;
+
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+                if (inventory.getType() == InventoryType.CHEST)
+                        dummyInv.setSize(inventory.getSize());
+                dummyInv.setContents(getContents());
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                if (item == null) return null;
+
+                // <--[tag]
+                // @attribute <in@inventory.can_fit[<item>].qty[<#>]>
+                // @returns Element(Boolean)
+                // @description
+                // Returns whether the inventory can fit a certain quantity of an item.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+                item.setAmount(qty);
+
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
+                return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
+
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.include[<item>]>
+        // @returns dInventory
+        // @description
+        // Returns the dInventory with an item added.
+        // -->
+        if (attribute.startsWith("include")) {
+            if (attribute.hasContext(1)) {
+                int attribs = 1;
+                int qty = 1;
+
+                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+                if (inventory.getType() == InventoryType.CHEST)
+                    dummyInv.setSize(inventory.getSize());
+                dummyInv.setContents(getContents());
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                if (item == null) return null;
+
+                // <--[tag]
+                // @attribute <in@inventory.include[<item>].qty[<#>]>
+                // @returns dInventory
+                // @description
+                // Returns the dInventory with a certain quantity of an item added.
+                // -->
+                if (attribute.getAttribute(2).startsWith("qty") &&
+                        attribute.hasContext(2) &&
+                        aH.matchesInteger(attribute.getContext(2))) {
+                    qty = attribute.getIntContext(2);
+                    attribs = 2;
+                }
+                item.setAmount(qty);
+                dummyInv.add(0, item.getItemStack());
+                return dummyInv.getAttribute(attribute.fulfill(attribs));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.is_empty>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory is empty.
+        // -->
+        if (attribute.startsWith("is_empty")) {
+            boolean empty = true;
+            for (ItemStack item : getContents()) {
+                if (item != null && item.getType() != Material.AIR) {
+                    empty = false;
+                    break;
+                }
+            }
+            return new Element(empty).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.is_full>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory is completely full.
+        // -->
+        if (attribute.startsWith("is_full")) {
+            boolean full = true;
+
+            for (ItemStack item : getContents()) {
+                if ((item == null) ||
+                        (item.getType() == Material.AIR) ||
+                        (item.getAmount() < item.getMaxStackSize())) {
+                    full = false;
+                    break;
+                }
+            }
+            return new Element(full).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.contains.display[(strict:)<element>]>
         // @returns Element(Boolean)
         // @description

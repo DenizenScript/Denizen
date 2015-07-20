@@ -463,9 +463,18 @@ public class TextTags implements Listener {
             // @attribute <&sp>
             // @returns Element
             // @description
-            // Returns a non-breaking space symbol.
+            // Returns a space symbol.
             // -->
         else if (lower.equals("&sp"))
+            event.setReplaced(new Element(String.valueOf(' ')).getAttribute(attribute.fulfill(1)));
+
+            // <--[tag]
+            // @attribute <&nbsp>
+            // @returns Element
+            // @description
+            // Returns a non-breaking space symbol.
+            // -->
+        else if (lower.equals("&nbsp"))
             event.setReplaced(new Element(String.valueOf((char) 0x00A0)).getAttribute(attribute.fulfill(1)));
 
             // <--[tag]

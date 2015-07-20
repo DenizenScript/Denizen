@@ -23,9 +23,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block grows naturally in the world,
-    //           e.g. when wheat, sugar canes, cacti,
-    //           watermelons or pumpkins grow
+    // @Triggers when a block grows naturally in the world, EG, when wheat, sugar canes, cacti, watermelons or pumpkins grow.
     // @Context
     // <context.location> returns the dLocation of the block that grew.
     // <context.material> returns the dMaterial of the block that grew.
@@ -45,18 +43,23 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("grows");
+        String block = CoreUtilities.getXthArg(0, lower);
+        dMaterial mat = dMaterial.valueOf(block);
+        return cmd.equals("grows")
+                && (block.equals("block") || (mat != null && !mat.isStructure()));
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        String mat = CoreUtilities.getXthArg(0, lower);
+        if (!tryMaterial(material, mat)) {
             return false;
         }
-
-        String mat = CoreUtilities.getXthArg(0, lower);
-        return tryMaterial(material, mat);
+        if (material.isStructure()) {
+            return false;
+        }
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override
@@ -90,7 +93,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onBlockGrows(BlockGrowEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

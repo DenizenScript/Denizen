@@ -23,12 +23,11 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Cancellable true
     //
-    // @Triggers when a block is formed based on world conditions,
-    // E.G. when snow forms in a snow storm or ice forms in a snowy biome
+    // @Triggers when a block is formed based on world conditions, EG, when snow forms in a snow storm or ice forms in a cold biome.
     //
     // @Context
-    // <context.location> returns the dLocation the block that formed.
-    // <context.material> returns the dMaterial of the block that formed.
+    // <context.location> returns the dLocation the block that is forming.
+    // <context.material> returns the dMaterial of the block that is forming.
     //
     // -->
 
@@ -89,8 +88,9 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onBlockForms(BlockFormEvent event) {
+
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

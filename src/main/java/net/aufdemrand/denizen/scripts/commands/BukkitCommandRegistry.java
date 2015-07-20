@@ -900,6 +900,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
         // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+        //
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
@@ -1016,6 +1018,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1035,9 +1038,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group entity
         // @Description
         // TODO: Document Command Details
+        // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <p@player.food_level>
         // <p@player.food_level.formatted>
+        // @Usage
+        // Use to feed the player for 5 foodpoints.
+        // feed amt:5
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1056,6 +1063,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         // @Description
         // TODO: Document Command Details
+        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1081,6 +1089,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
         // flicker option means the firework will explode with a flicker effect.
         // @Tags
+        // <e@entity.firework_item> returns the firework item which was used to launch the firework.
         // TODO: Document Command Details
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
@@ -1191,11 +1200,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, Morphan1
         // @Group entity
         // @Description
+        // TODO: Document Command Details
         // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
-        // TODO: Document Command Details
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.navigator.target_entity> returns the entity the npc is following.
         // @Usage
+        // To make an NPC follow the player in an interact script
+        // - follow followers:<npc> target:<player>
         // TODO: Document Command Details
         // -->
         registerCoreMember(FollowCommand.class,
@@ -1211,6 +1222,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Jeebiss
         // @Group item
         // @Description
+        // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
         // TODO: Document Command Details
         // @Tags
         // <p@player.money>
@@ -1230,10 +1242,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Group
-        // @Syntax group [add/remove] [<group>] (<world>)
+        // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable TODO: Document Command Details
-        // @Short Adds a player to or removes a player from a permissions group.
+        // @Short Adds a player to or removes a player from or sets a players permissions group.
         // @Author GnomeffinWay
         // @Group player
         // @Description
@@ -1246,12 +1258,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(GroupCommand.class,
-                "GROUP", "group [add/remove] [<group>] (<world>)", 2);
+                "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
 
 
         // <--[command]
         // @Name Head
-        // @Syntax head (<entity>|...) [skin:<player>]
+        // @Syntax head (<entity>|...) [skin:<player_name>]
         // @Required 1
         // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
@@ -1262,10 +1274,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
+        // Use to stick an awesome head on your head with the head command.
+        // - skin <player> skin:mcmonkey4eva
+        // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(HeadCommand.class,
-                "HEAD", "head (<entity>|...) [skin:<player>]", 1);
+                "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
 
 
         // <--[command]
@@ -1335,21 +1350,42 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Hurt
-        // @Syntax hurt (<#.#>) ({player}/<entity>|...)
+        // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
         // @Required 0
         // @Stable stable
         // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Group entity
         // @Description
+        // Does damage to a list of entities, or to any single entity.
+        //
+        // If no entities are specified: if there is a linked player, the command targets that. If there is no linked
+        // player but there is a linked NPC, the command targets the NPC. If neither is available, the command will error.
+        //
+        // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
+        // (half a heart).
+        //
         // TODO: Document Command Details
+        //
+        // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
+        // be warned this does not always work as intended, and is liable to glitch.
+        // Optionally, specify a damage cause to fire a proper damage event with the given cause,
+        // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
+        // than using the raw damage input number. See <@link language damage cause> for damage causes.
         // @Tags
         // <e@entity.health>
         // @Usage
-        // TODO: Document Command Details
+        // Use to hurt the player for 1HP.
+        // - hurt
+        // @Usage
+        // Use to hurt the NPC for 5 HP.
+        // - hurt 5 <npc>
+        // @Usage
+        // Use to cause the player to hurt the NPC for all its health (if unarmored).
+        // hurt <npc.health> <npc> cause:CUSTOM source:<player>
         // -->
         registerCoreMember(HurtCommand.class,
-                "HURT", "hurt (<#.#>) (<entity>|...)", 0);
+                "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
 
 
         // <--[command]
@@ -2287,7 +2323,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Sidebar
-        // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...)
+        // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
         // @Required 1
         // @Stable stable
         // @Short Controls clientside-only sidebars.
@@ -2313,12 +2349,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // between each score and the default is -1. Using the default values of these, the sidebar displays each
         // line in order with the score counting down from the total number of lines to 1.
         //
+        // The per_player argument is also available, and helps to reduce the number of loops required for
+        // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
+        // on each individual player in the players list. So, for example, you could have <player.name> on a
+        // lines and it will show each player specified their name on that line.
+        //
         // @Tags
-        // None
+        // <p@player.sidebar.lines>
+        // <p@player.sidebar.title>
+        // <p@player.sidebar.scores>
+        // <p@player.sidebar.start>
+        // <p@player.sidebar.increment>
         //
         // @Usage
         // Show all online players a sidebar.
         // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
+        //
+        // @Usage
+        // Show a few players their ping.
+        // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
         //
         // @Usage
         // Set a line on the sidebar a player is viewing.
@@ -2337,7 +2386,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - sidebar remove
         // -->
         registerCoreMember(SidebarCommand.class,
-                "SIDEBAR", "sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...)", 0);
+                "SIDEBAR", "sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)", 1);
 
 
         // <--[command]
@@ -2922,7 +2971,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
 
         // @Usage
-        // Create a sign that shows the location of a player on a wall
+        // Create a sign that shows the location of a player on a wall.
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
 
         // -->
@@ -3019,10 +3068,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
 
         // @Tags
-        // <def[loop_index]> to get the number of loops so far
+        // <def[loop_index]> to get the number of loops so far.
 
         // @Usage
-        // Use loop through a command several times
+        // Use loop through a command several times.
         // - define value 1
         // - while <def[value].is[OR_LESS].than[5]> {
         //     - announce "Loop <def[loop_index]> value <def[value]>"
@@ -3058,25 +3107,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <yaml[<idname>].read[<path>].as_list>
         // <yaml[<idname>].list_keys[<path>]>
         // @Usage
-        // Use to create a new YAML file
+        // Use to create a new YAML file.
         // - yaml create id:myfile
         // @Usage
-        // Use to load a YAML file from disk
+        // Use to load a YAML file from disk.
         // - yaml load:myfile.yml id:myfile
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:HelloWorld
         // @Usage
-        // Use to save a YAML file to disk
+        // Use to save a YAML file to disk.
         // - yaml savefile:myfile.yml id:myfile
         // @Usage
-        // Use to unload a YAML file from memory
+        // Use to unload a YAML file from memory.
         // - yaml unload id:myfile
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:+:2
         // @Usage
-        // Use to modify a YAML file similarly to a flag
+        // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
@@ -3095,7 +3144,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // TODO: Document Command Details
         // @Usage
-        // TODO: Document Command Details
+        // Use to change the step to 2
+        // - zap 2
+        // @Usage
+        // Use to change the step to 3 in a script called Interact_Example.
+        // - zap 3 s@Interact_Example
+        // @Usage
+        // Use to change the step to 1 for player bob in a script called InteractScript.
+        // - zap 1 s@InteractScript player:p@bob
         // -->
         registerCoreMember(ZapCommand.class,
                 "ZAP", "zap (<script>) [<step>] (<duration>)", 0);

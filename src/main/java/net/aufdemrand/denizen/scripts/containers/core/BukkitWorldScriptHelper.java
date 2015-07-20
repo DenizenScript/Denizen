@@ -3,12 +3,11 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.aH.Argument;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,18 +18,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.event.vehicle.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BlockIterator;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.*;
+import java.util.List;
 
 public class BukkitWorldScriptHelper implements Listener {
 
@@ -474,10 +472,19 @@ public class BukkitWorldScriptHelper implements Listener {
     //   PLAYER EVENTS
     /////////////////
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerJoins(PlayerJoinEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
+        if (ScoreboardHelper.viewerMap.containsKey(event.getPlayer().getName())) {
+            Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(event.getPlayer().getName()));
+            if (score != null)
+                event.getPlayer().setScoreboard(score);
+        }
+    }
 
-    // Original chat events moved to smart event, this event just retained
-    // for debug chat recording.
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         final String message = ChatColor.DARK_GREEN + "CHAT: " +
                 event.getPlayer().getName() + ": " + event.getMessage();
