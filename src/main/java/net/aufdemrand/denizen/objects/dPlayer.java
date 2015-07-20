@@ -2486,10 +2486,12 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("name")) {
             String name = value.asString();
-            if (name.length() > 16)
+            if (name.length() > 16) {
                 dB.echoError("Must specify a name with no more than 16 characters.");
-            else
+            }
+            else {
                 PlayerProfileEditor.setPlayerName(getPlayerEntity(), value.asString());
+            }
         }
 
         // <--[mechanism]
@@ -2502,10 +2504,12 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("skin")) {
             String name = value.asString();
-            if (name.length() > 16)
+            if (name.length() > 16) {
                 dB.echoError("Must specify a name with no more than 16 characters.");
-            else
+            }
+            else {
                 PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
+            }
         }
 
         // Iterate through this object's properties' mechanisms
