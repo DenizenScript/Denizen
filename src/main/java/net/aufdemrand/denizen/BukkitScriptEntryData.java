@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.tags.TagContext;
 
@@ -46,12 +47,15 @@ public class BukkitScriptEntryData extends ScriptEntryData {
         }
         player = ((BukkitScriptEntryData) scriptEntryData).getPlayer();
         npc = ((BukkitScriptEntryData) scriptEntryData).getNPC();
+        scriptEntry = scriptEntryData.scriptEntry;
 
     }
 
     @Override
     public TagContext getTagContext() {
-        return new BukkitTagContext(player, npc, false, null, true, null);
+        return new BukkitTagContext(player, npc, false, scriptEntry,
+                scriptEntry != null ? scriptEntry.shouldDebug(): true,
+                scriptEntry != null ? scriptEntry.getScript(): null);
     }
 
     @Override
