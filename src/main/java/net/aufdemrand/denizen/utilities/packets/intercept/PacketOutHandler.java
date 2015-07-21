@@ -92,9 +92,8 @@ public class PacketOutHandler {
                         boolean hasItem2 = serializer.readBoolean();
                         newSerializer.writeBoolean(hasItem2);
                         // The second item cost, if there is one
-                        ItemStack buyItem2 = null;
                         if (hasItem2) {
-                            buyItem2 = serializer.i();
+                            ItemStack buyItem2 = serializer.i();
                             newSerializer.a(removeItemScriptLore(buyItem2));
                         }
                         // Has used max times

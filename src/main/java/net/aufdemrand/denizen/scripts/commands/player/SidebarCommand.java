@@ -97,8 +97,9 @@ public class SidebarCommand extends AbstractCommand {
 
         scriptEntry.addObject("action", new Element(action.name()));
 
+        BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
         scriptEntry.defaultObject("per_player", new Element(false)).defaultObject("players",
-                new Element(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
+                new Element(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
     }
 
     @Override
