@@ -140,5 +140,9 @@ public class TeamCommand extends AbstractCommand {
         if (suffix != null) {
             team.setSuffix(suffix.asString());
         }
+
+        if (team.getPlayers().isEmpty()) {
+            team.unregister();
+        }
     }
 }
