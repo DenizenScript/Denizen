@@ -1434,6 +1434,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
         return tT;
     }
+
+    @Override
+    public boolean allowConsoleRedirection() {
+        return Settings.allowConsoleRedirection();
+    }
+
+    @Override
+    public String cleanseLogString(String input) {
+        return LogInterceptor.cleanse(input);
+    }
 }
 
 

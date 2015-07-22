@@ -88,11 +88,11 @@ public class LogInterceptor extends PrintStream {
 
         // <--[event]
         // @Events
-        // console output
+        // bukkit console output
         //
         // @Warning Disable debug on this event or you'll get an infinite loop!
         //
-        // @Triggers when any message is printed to console. (Requires <@link mechanism server.redirect_logging> be set true.)
+        // @Triggers when any message is printed to the Bukkit-powered portion of the console. (Requires <@link mechanism server.redirect_logging> be set true.)
         // @Context
         // <context.message> returns the message that is being printed to console.
         // <context.level> returns the log level the message is being printed at.
