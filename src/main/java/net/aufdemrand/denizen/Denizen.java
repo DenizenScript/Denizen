@@ -717,6 +717,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
             ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
+            dBiome.registerTags(); // TODO: Automate this once all classes have tag registries
+
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
