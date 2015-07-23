@@ -710,6 +710,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dColor.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
             ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
+            dEllipsoid.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
             ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
             ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
