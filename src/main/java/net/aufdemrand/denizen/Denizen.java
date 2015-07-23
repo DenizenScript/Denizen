@@ -720,6 +720,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 ObjectFetcher.registerWithObjectFetcher(dNPC.class);   // n@
             ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
+            dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
 
 

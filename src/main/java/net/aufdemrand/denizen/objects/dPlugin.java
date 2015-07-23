@@ -1,16 +1,16 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.Fetchable;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+
+import java.util.HashMap;
 
 public class dPlugin implements dObject {
 
@@ -126,6 +126,87 @@ public class dPlugin implements dObject {
         return this;
     }
 
+    public static void registerTags() {
+
+        // <--[tag]
+        // @attribute <pl@plugin.name>
+        // @returns Element
+        // @description
+        // Gets the name of this plugin.
+        // -->
+        registerTag("name", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dPlugin) object).plugin.getName())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <pl@plugin.version>
+        // @returns Element
+        // @description
+        // Gets the version for the plugin specified.
+        // -->
+        registerTag("version", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dPlugin) object).plugin.getDescription().getVersion())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <pl@plugin.description>
+        // @returns Element
+        // @description
+        // Gets the description for the plugin specified.
+        // -->
+        registerTag("description", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dPlugin) object).plugin.getDescription().getDescription())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <pl@plugin.authors>
+        // @returns dList
+        // @description
+        // Gets the list of authors for the plugin specified.
+        // -->
+        registerTag("authors", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new dList(((dPlugin) object).plugin.getDescription().getAuthors())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <pl@plugin.type>
+        // @returns Element
+        // @description
+        // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Plugin").getAttribute(attribute.fulfill(1));
+            }
+        });
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
+        }
+        registeredTags.put(name, runnable);
+    }
 
     /////////////////
     // Attributes
@@ -136,61 +217,16 @@ public class dPlugin implements dObject {
 
         if (attribute == null) return "null";
 
-        // <--[tag]
-        // @attribute <pl@plugin.name>
-        // @returns Element
-        // @description
-        // Gets the name of this plugin.
-        // -->
-        if (attribute.startsWith("name")) {
-            return new Element(plugin.getName())
-                    .getAttribute(attribute.fulfill(1));
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
         }
-
-        // <--[tag]
-        // @attribute <pl@plugin.version>
-        // @returns Element
-        // @description
-        // Gets the version for the plugin specified.
-        // -->
-        if (attribute.startsWith("version")) {
-            return new Element(plugin.getDescription().getVersion())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <pl@plugin.description>
-        // @returns Element
-        // @description
-        // Gets the description for the plugin specified.
-        // -->
-        if (attribute.startsWith("description")) {
-            return new Element(plugin.getDescription().getDescription())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <pl@plugin.authors>
-        // @returns dList
-        // @description
-        // Gets the list of authors for the plugin specified.
-        // -->
-        if (attribute.startsWith("authors")) {
-            return new dList(plugin.getDescription().getAuthors())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <pl@plugin.type>
-        // @returns Element
-        // @description
-        // Always returns 'Plugin' for dPlugin objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        if (attribute.startsWith("type")) {
-            return new Element("Plugin").getAttribute(attribute.fulfill(1));
-        }
-
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
