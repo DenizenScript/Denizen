@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
@@ -17,10 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class dChunk implements dObject, Adjustable {
 
@@ -163,9 +161,7 @@ public class dChunk implements dObject, Adjustable {
         return identify();
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ch@chunk.is_loaded>
@@ -173,8 +169,12 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns true if the chunk is currently loaded into memory.
         // -->
-        if (attribute.startsWith("is_loaded"))
-            return new Element(chunk.isLoaded()).getAttribute(attribute.fulfill(1));
+        registerTag("is_loaded", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dChunk) object).chunk.isLoaded()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.x>
@@ -182,8 +182,12 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns the x coordinate of the chunk.
         // -->
-        if (attribute.startsWith("x"))
-            return new Element(getX()).getAttribute(attribute.fulfill(1));
+        registerTag("x", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dChunk) object).chunk.getX()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.z>
@@ -191,8 +195,12 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns the z coordinate of the chunk.
         // -->
-        if (attribute.startsWith("z"))
-            return new Element(getZ()).getAttribute(attribute.fulfill(1));
+        registerTag("z", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dChunk) object).chunk.getZ()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.world>
@@ -200,8 +208,12 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns the world associated with the chunk.
         // -->
-        if (attribute.startsWith("world"))
-            return dWorld.mirrorBukkitWorld(getWorld()).getAttribute(attribute.fulfill(1));
+        registerTag("world", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return dWorld.mirrorBukkitWorld(((dChunk) object).chunk.getWorld()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.cuboid>
@@ -209,11 +221,15 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns a cuboid of this chunk.
         // -->
-        if (attribute.startsWith("cuboid")) {
-            return new dCuboid(new Location(getWorld(), getX() * 16, 0, getZ() * 16),
-                    new Location(getWorld(), getX() * 16 + 15, 255, getZ() * 16 + 15))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("cuboid", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dChunk chunk = (dChunk) object;
+                return new dCuboid(new Location(chunk.getWorld(), chunk.getX() * 16, 0, chunk.getZ() * 16),
+                        new Location(chunk.getWorld(), chunk.getX() * 16 + 15, 255, chunk.getZ() * 16 + 15))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.entities>
@@ -221,13 +237,16 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns a list of entities in the chunk.
         // -->
-        if (attribute.startsWith("entities")) {
-            dList entities = new dList();
-            for (Entity ent : chunk.getEntities())
-                entities.add(new dEntity(ent).identify());
+        registerTag("entities", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dList entities = new dList();
+                for (Entity ent : ((dChunk) object).chunk.getEntities())
+                    entities.add(new dEntity(ent).identify());
 
-            return entities.getAttribute(attribute.fulfill(1));
-        }
+                return entities.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.living_entities>
@@ -236,14 +255,17 @@ public class dChunk implements dObject, Adjustable {
         // returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
         // dropped items, experience orbs, etc.
         // -->
-        if (attribute.startsWith("living_entities")) {
-            dList entities = new dList();
-            for (Entity ent : chunk.getEntities())
-                if (ent instanceof LivingEntity)
-                    entities.add(new dEntity(ent).identify());
+        registerTag("living_entities", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dList entities = new dList();
+                for (Entity ent : ((dChunk) object).chunk.getEntities())
+                    if (ent instanceof LivingEntity)
+                        entities.add(new dEntity(ent).identify());
 
-            return entities.getAttribute(attribute.fulfill(1));
-        }
+                return entities.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.players>
@@ -251,14 +273,17 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns a list of players in the chunk.
         // -->
-        if (attribute.startsWith("players")) {
-            dList entities = new dList();
-            for (Entity ent : chunk.getEntities())
-                if (dEntity.isPlayer(ent))
-                    entities.add(dEntity.getPlayerFrom(ent).identify());
+        registerTag("players", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dList entities = new dList();
+                for (Entity ent : ((dChunk) object).chunk.getEntities())
+                    if (dEntity.isPlayer(ent))
+                        entities.add(new dEntity(ent).identify());
 
-            return entities.getAttribute(attribute.fulfill(1));
-        }
+                return entities.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.height_map>
@@ -266,12 +291,15 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns a list of the height of each block in the chunk.
         // -->
-        if (attribute.startsWith("height_map")) {
-            List<String> height_map = new ArrayList<String>(chunk.getHandle().heightMap.length);
-            for (int i : chunk.getHandle().heightMap)
-                height_map.add(String.valueOf(i));
-            return new dList(height_map).getAttribute(attribute.fulfill(1));
-        }
+        registerTag("height_map", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                List<String> height_map = new ArrayList<String>(((dChunk) object).chunk.getHandle().heightMap.length);
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap)
+                    height_map.add(String.valueOf(i));
+                return new dList(height_map).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.average_height>
@@ -279,11 +307,14 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns the average height of the blocks in the chunk.
         // -->
-        if (attribute.startsWith("average_height")) {
-            int sum = 0;
-            for (int i : chunk.getHandle().heightMap) sum += i;
-            return new Element(((double) sum) / chunk.getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
-        }
+        registerTag("average_height", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                int sum = 0;
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap) sum += i;
+                return new Element(((double) sum) / ((dChunk) object).chunk.getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.is_flat[#]>
@@ -293,16 +324,19 @@ public class dChunk implements dObject, Adjustable {
         // true if all the blocks are less than 2 blocks apart in height. Specifying a number will modify the number
         // criteria for determining if it is flat.
         // -->
-        if (attribute.startsWith("is_flat")) {
-            int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
-                    Integer.valueOf(attribute.getContext(1)) : 2;
-            int x = chunk.getHandle().heightMap[0];
-            for (int i : chunk.getHandle().heightMap)
-                if (Math.abs(x - i) > tolerance)
-                    return Element.FALSE.getAttribute(attribute.fulfill(1));
+        registerTag("is_flat", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
+                        Integer.valueOf(attribute.getContext(1)) : 2;
+                int x = ((dChunk) object).chunk.getHandle().heightMap[0];
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap)
+                    if (Math.abs(x - i) > tolerance)
+                        return Element.FALSE.getAttribute(attribute.fulfill(1));
 
-            return Element.TRUE.getAttribute(attribute.fulfill(1));
-        }
+                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.surface_blocks>
@@ -310,15 +344,18 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns a list of the highest non-air surface blocks in the chunk.
         // -->
-        if (attribute.startsWith("surface_blocks")) {
-            dList surface_blocks = new dList();
-            for (int x = 0; x < 16; x++)
-                for (int z = 0; z < 16; z++)
-                    surface_blocks.add(new dLocation(chunk.getBlock(x, getSnapshot().getHighestBlockYAt(x, z) - 1, z)
-                            .getLocation()).identify());
+        registerTag("surface_blocks", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dList surface_blocks = new dList();
+                for (int x = 0; x < 16; x++)
+                    for (int z = 0; z < 16; z++)
+                        surface_blocks.add(new dLocation(((dChunk) object).chunk.getBlock(x, ((dChunk) object)
+                                .getSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
 
-            return surface_blocks.getAttribute(attribute.fulfill(1));
-        }
+                return surface_blocks.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.spawn_slimes>
@@ -326,14 +363,18 @@ public class dChunk implements dObject, Adjustable {
         // @description
         // returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
-        if (attribute.startsWith("spawn_slimes")) {
-            Random random = new Random(getWorld().getSeed() +
-                    getX() * getX() * 4987142 +
-                    getX() * 5947611 +
-                    getZ() * getZ() * 4392871L +
-                    getZ() * 389711 ^ 0x3AD8025F);
-            return new Element(random.nextInt(10) == 0).getAttribute(attribute.fulfill(1));
-        }
+        registerTag("spawn_slimes", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dChunk chunk = (dChunk) object;
+                Random random = new Random(chunk.getWorld().getSeed() +
+                        chunk.getX() * chunk.getX() * 4987142 +
+                        chunk.getX() * 5947611 +
+                        chunk.getZ() * chunk.getZ() * 4392871L +
+                        chunk.getZ() * 389711 ^ 0x3AD8025F);
+                return new Element(random.nextInt(10) == 0).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ch@chunk.type>
@@ -342,15 +383,44 @@ public class dChunk implements dObject, Adjustable {
         // Always returns 'Chunk' for dChunk objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        if (attribute.startsWith("type")) {
-            return new Element("Chunk").getAttribute(attribute.fulfill(1));
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Chunk").getAttribute(attribute.fulfill(1));
+            }
+        });
+
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
         }
+        registeredTags.put(name, runnable);
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+        if (attribute == null) return null;
+
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
             if (returned != null) return returned;
         }
-
 
         return new Element(identify()).getAttribute(attribute);
     }

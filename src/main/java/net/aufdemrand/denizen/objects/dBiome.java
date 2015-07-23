@@ -233,7 +233,7 @@ public class dBiome implements dObject, Adjustable {
             }
         });
     }
-    
+
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
 
     public static void registerTag(String name, TagRunnable runnable) {
