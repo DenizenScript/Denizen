@@ -757,7 +757,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @description
         // Returns the number of cuboids defined in the dCuboid.
         // -->
-        registerTag("get_blocks", new TagRunnable() {
+        registerTag("members_size", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(((dCuboid) object).pairs.size())
