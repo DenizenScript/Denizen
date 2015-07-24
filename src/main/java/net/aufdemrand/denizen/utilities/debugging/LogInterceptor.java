@@ -5,7 +5,15 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.v1_8_R3.LoggerOutputStream;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -21,38 +29,11 @@ public class LogInterceptor extends PrintStream {
     public PrintStream standardOut;
 
     public LogInterceptor() {
-        super(System.out, true);
+        super(new LoggerOutputStream(new LoggerOutputIntercept((AbstractLogger) LogManager.getRootLogger()),
+                Level.INFO), true);
     }
 
-    // <--[event]
-    // @Events
-    // console output
-    //
-    // @Warning Disable debug on this event or you'll get an infinite loop!
-    //
-    // @Triggers when any message is printed to console. (Requires <@link mechanism server.redirect_logging> be set true.)
-    // @Context
-    // <context.message> returns the messsage that is being printed to console.
-    //
-    // @Determine
-    // "CANCELLED" to disable the output.
-    //
-    // -->
-    @Override
-    public void print(String s) {
-        HashMap<String, dObject> context = new HashMap<String, dObject>();
-        context.put("message", new Element(cleanse(s)));
-        List<String> Determinations = OldEventManager.doEvents(Arrays.asList("console output"),
-                new BukkitScriptEntryData(null, null), context);
-        for (String str : Determinations) {
-            if (str.equalsIgnoreCase("cancelled")) {
-                return;
-            }
-        }
-        super.print(s);
-    }
-
-    public String cleanse(String input) {
+    public static String cleanse(String input) {
         String esc = String.valueOf((char) 0x1b);
         String repc = String.valueOf(ChatColor.COLOR_CHAR);
         if (input.contains(esc)) {
@@ -95,5 +76,44 @@ public class LogInterceptor extends PrintStream {
             return;
         }
         System.setOut(standardOut);
+    }
+
+    private static class LoggerOutputIntercept extends AbstractLoggerWrapper {
+        private final Logger logger;
+
+        private LoggerOutputIntercept(AbstractLogger logger) {
+            super(logger, logger.getName(), logger.getMessageFactory());
+            this.logger = logger;
+        }
+
+        // <--[event]
+        // @Events
+        // bukkit console output
+        //
+        // @Warning Disable debug on this event or you'll get an infinite loop!
+        //
+        // @Triggers when any message is printed to the Bukkit-powered portion of the console. (Requires <@link mechanism server.redirect_logging> be set true.)
+        // @Context
+        // <context.message> returns the message that is being printed to console.
+        // <context.level> returns the log level the message is being printed at.
+        //
+        // @Determine
+        // "CANCELLED" to disable the output.
+        //
+        // -->
+        @Override
+        public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
+            HashMap<String, dObject> context = new HashMap<String, dObject>();
+            context.put("message", new Element(cleanse(data.getFormattedMessage())));
+            context.put("level", new Element(level.name()));
+            List<String> Determinations = OldEventManager.doEvents(Arrays.asList("console output"),
+                    new BukkitScriptEntryData(null, null), context);
+            for (String str : Determinations) {
+                if (str.equalsIgnoreCase("cancelled")) {
+                    return;
+                }
+            }
+            super.log(marker, fqcn, level, data, t);
+        }
     }
 }

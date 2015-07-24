@@ -85,11 +85,14 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("new_material", new_material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("new_material")) {
+            return new_material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler

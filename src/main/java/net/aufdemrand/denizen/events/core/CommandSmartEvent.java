@@ -53,7 +53,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
                     .matcher(event);
 
             if (m.matches()) {
-                String cmd = m.group(1);
+                String cmd = m.group(2);
                 if (cmd != null) {
                     dList split = dList.valueOf(cmd);
                     for (String str : split) {
@@ -222,8 +222,9 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.
-        if (determination.equals("FULFILLED") || determination.equals("CANCELLED"))
+        if (determination.equals("FULFILLED") || determination.equals("CANCELLED")) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler
@@ -254,7 +255,8 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         String determination = BukkitWorldScriptHelper.doEvents(events, null, null, context);
 
-        if (determination.equalsIgnoreCase("FULFILLED") || determination.equalsIgnoreCase("CANCELLED"))
+        if (determination.equalsIgnoreCase("FULFILLED") || determination.equalsIgnoreCase("CANCELLED")) {
             event.setCommand("denizen do_nothing");
+        }
     }
 }

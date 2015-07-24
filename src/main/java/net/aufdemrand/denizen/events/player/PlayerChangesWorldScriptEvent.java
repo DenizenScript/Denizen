@@ -54,12 +54,12 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 3; index < data.size(); index++) {
             if (data.get(index).equals("from")) {
-                if (!data.get(index+1).equals(origin_world.getName().toLowerCase())){
+                if (!data.get(index + 1).equals(CoreUtilities.toLowerCase(origin_world.getName()))){
                     return false;
                 }
             }
             else if (data.get(index).equals("to")) {
-                if (!data.get(index+1).equals(destination_world.getName().toLowerCase())){
+                if (!data.get(index + 1).equals(CoreUtilities.toLowerCase(destination_world.getName()))) {
                     return false;
                 }
             }

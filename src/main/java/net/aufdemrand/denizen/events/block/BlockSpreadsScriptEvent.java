@@ -83,14 +83,6 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        return context;
-    }
-
-    @Override
     public dObject getContext(String name) {
         if (name.equals("location")) {
             return location;

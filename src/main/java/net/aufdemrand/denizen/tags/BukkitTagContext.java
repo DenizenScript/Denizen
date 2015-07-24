@@ -26,6 +26,8 @@ public class BukkitTagContext extends TagContext {
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(player, npc);
+        BukkitScriptEntryData bsed = new BukkitScriptEntryData(player, npc);
+        bsed.scriptEntry = entry;
+        return bsed;
     }
 }

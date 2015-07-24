@@ -32,11 +32,7 @@ public class ParseTags implements Listener {
                 dB.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            ScriptEntry se = event.getAttributes().getScriptEntry();
-            String read = TagManager.tag(TagManager.cleanOutputFully(event.getValue()), new BukkitTagContext(
-                    (se != null ? ((BukkitScriptEntryData) se.entryData).getPlayer() : null),
-                    (se != null ? ((BukkitScriptEntryData) se.entryData).getNPC() : null), false, se,
-                    se != null ? se.shouldDebug() : true, se != null ? se.getScript() : null));
+            String read = TagManager.tag(TagManager.cleanOutputFully(event.getValue()), event.getContext());
             event.setReplaced(new Element(read).getAttribute(event.getAttributes().fulfill(1)));
         }
     }

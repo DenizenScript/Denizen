@@ -53,9 +53,9 @@ public class GiveCommand extends AbstractCommand {
                 scriptEntry.addObject("unlimit_stack_size", new Element(true));
 
             else if (!scriptEntry.hasObject("items")
-                    && !scriptEntry.hasObject("type")
-                    && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+                    && !scriptEntry.hasObject("type")) {
+                scriptEntry.addObject("items", dList.valueOf(arg.raw_value.startsWith("item:") ?
+                        arg.raw_value.substring("item:".length()): arg.raw_value).filter(dItem.class, scriptEntry));
             }
 
             else if (!scriptEntry.hasObject("inventory")

@@ -62,7 +62,7 @@
         <dependency>
             <groupId>net.aufdemrand</groupId>
             <artifactId>denizencore</artifactId>
-            <version>LATEST</version>
+            <version>1.10</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

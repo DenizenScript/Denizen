@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.*;
@@ -951,18 +952,32 @@ public class ServerTags implements Listener {
             DenizenAPI.getCurrentInstance().runtimeCompiler.runString(mechanism.getValue().asString());
         }
 
+        // Deprecated in favor of SYSTEM.redirect_logging (Core)
+        if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
+            if (!Settings.allowConsoleRedirection()) {
+                dB.echoError("Console redirection disabled by administrator.");
+                return;
+            }
+            if (mechanism.getValue().asBoolean()) {
+                DenizenCore.logInterceptor.redirectOutput();
+            }
+            else {
+                DenizenCore.logInterceptor.standardOutput();
+            }
+        }
+
         // <--[mechanism]
         // @object server
-        // @name redirect_logging
+        // @name redirect_bukkit_logging
         // @input Element(Boolean)
         // @description
-        // Tells the server to redirect logging to a world event or not.
+        // Tells the server to redirect Bukkit-based logging to a world event or not.
         // Note that this redirects *all console output* not just Denizen output.
         // Note: don't enable /denizen debug -e while this is active.
         // @tags
         // None
         // -->
-        if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
+        if (mechanism.matches("redirect_bukkit_logging") && mechanism.hasValue()) {
             if (!Settings.allowConsoleRedirection()) {
                 dB.echoError("Console redirection disabled by administrator.");
                 return;

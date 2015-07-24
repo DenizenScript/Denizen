@@ -189,7 +189,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (stack == null) return null;
 
             ItemMeta meta = stack.getItemStack().getItemMeta();
-            List<String> lore = new ArrayList<String>();
+            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
 
             // Set Id of the first, invisible lore
             boolean hideLore = false;

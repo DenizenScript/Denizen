@@ -87,18 +87,23 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        if (entity != null) {
-            context.put("entity", entity);
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
         }
-        if (origin_location != null) {
-            context.put("origin_location", origin_location);
+        else if (name.equals("material")) {
+            return material;
         }
-        context.put("cause", cause);
-        return context;
+        else if (name.equals("entity") && entity != null) {
+            return entity;
+        }
+        else if (name.equals("origin_location") && origin_location != null) {
+            return origin_location;
+        }
+        else if (name.equals("cause")) {
+            return cause;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler
