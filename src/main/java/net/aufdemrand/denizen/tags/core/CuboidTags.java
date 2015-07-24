@@ -8,10 +8,6 @@ import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
 
 
-/**
- * Location tag is a starting point for getting attributes for a
- */
-
 public class CuboidTags implements Listener {
 
     public CuboidTags(Denizen denizen) {
@@ -30,7 +26,7 @@ public class CuboidTags implements Listener {
         if (event.hasNameContext())
             cuboid = dCuboid.valueOf(context);
 
-        // Check if cuboid is null, return null if it is
+        // Check if cuboid is null, return if it is
         if (cuboid == null) {
             return;
         }

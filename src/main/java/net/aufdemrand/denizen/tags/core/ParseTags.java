@@ -1,16 +1,15 @@
 package net.aufdemrand.denizen.tags.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
 
 public class ParseTags implements Listener {
+
+    // TODO: Move me to the core
 
     public ParseTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);

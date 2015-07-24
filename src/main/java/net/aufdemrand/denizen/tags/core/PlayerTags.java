@@ -71,9 +71,9 @@ public class PlayerTags implements Listener {
         dPlayer p = ((BukkitTagContext) event.getContext()).player;
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
-        if (attribute.hasContext(1))
+        if (attribute.hasContext(1)) {
             p = dPlayer.valueOf(attribute.getContext(1));
-
+        }
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
             return;
