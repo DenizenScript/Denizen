@@ -757,7 +757,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @description
         // Returns the number of cuboids defined in the dCuboid.
         // -->
-        registerTag("get_blocks", new TagRunnable() {
+        registerTag("members_size", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(((dCuboid) object).pairs.size())
@@ -843,7 +843,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag el@element.equals_case_sensitive[...] must have a value.");
+                    dB.echoError("The tag cu@cuboid.intersects[...] must have a value.");
                     return null;
                 }
                 dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
@@ -882,7 +882,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag el@element.equals_case_sensitive[...] must have a value.");
+                    dB.echoError("The tag cu@cuboid.is_within[...] must have a value.");
                     return null;
                 }
                 dCuboid cub2 = dCuboid.valueOf(attribute.getContext(1));
@@ -1030,7 +1030,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (!attribute.hasContext(1)) {
-                    dB.echoError("The tag el@element.equals_case_sensitive[...] must have a value.");
+                    dB.echoError("The tag cu@cuboid.include[...] must have a value.");
                     return null;
                 }
                 try {
@@ -1300,8 +1300,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         Element value = mechanism.getValue();
 
-        // TODO: Should cuboids have mechanisms? Aren't tags sufficient?
-
+        // TODO: Better mechanisms!
+        
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))

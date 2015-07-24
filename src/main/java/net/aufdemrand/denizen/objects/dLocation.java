@@ -1946,7 +1946,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             getBlock().setData((byte) value.asInt());
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
     }
 }
