@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
@@ -22,6 +23,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -609,16 +611,7 @@ public class dItem implements dObject, Notable, Adjustable {
         NotableManager.remove(this);
     }
 
-
-    /////////////////
-    // ATTRIBUTES
-    /////////
-
-
-    @Override
-    public String getAttribute(Attribute attribute) {
-
-        if (attribute == null) return null;
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <i@item.id>
@@ -629,9 +622,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // EG, a stone item will return 1.
         // Note that ID numbers are considered deprecated - you should use the names instead!
         // -->
-        if (attribute.startsWith("id"))
-            return new Element(getItemStack().getTypeId())
-                    .getAttribute(attribute.fulfill(1));
+        registerTag("id", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dItem) object).getItemStack().getTypeId())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.data>
@@ -642,10 +639,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // EG, white wool will return 0, while red wool will return 14.
         // Note that data values are considered deprecated - you should use the names instead!
         // -->
-        if (attribute.startsWith("data")) {
-            return new Element(getItemStack().getData().getData())
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("data", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dItem) object).getItemStack().getData().getData())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.repairable>
@@ -657,9 +657,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // <@link mechanism dItem.durability>, <@link tag i@item.max_durability>,
         // and <@link tag i@item.durability>
         // -->
-        if (attribute.startsWith("repairable"))
-            return new Element(ItemDurability.describes(this))
-                    .getAttribute(attribute.fulfill(1));
+        registerTag("repairable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemDurability.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.is_crop>
@@ -670,9 +674,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism dItem.plant_growth> and <@link tag i@item.plant_growth>
         // -->
-        if (attribute.startsWith("is_crop"))
-            return new Element(ItemPlantgrowth.describes(this))
-                    .getAttribute(attribute.fulfill(1));
+        registerTag("is_crop", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemPlantgrowth.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.is_book>
@@ -686,10 +694,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // <@link tag i@item.book.page_count>, <@link tag i@item.book.get_page[<#>]>,
         // and <@link tag i@item.book.pages>
         // -->
-        if (attribute.startsWith("is_book")) {
-            return new Element(ItemBook.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("is_book", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemBook.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.is_dyeable>
@@ -699,10 +710,13 @@ public class dItem implements dObject, Notable, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism dItem.dye>, and <@link tag i@item.dye_color>
         // -->
-        if (attribute.startsWith("is_dyeable")) {
-            return new Element(ItemDye.describes(this))
-                    .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("is_dyeable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemDye.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <i@item.is_firework>
@@ -712,10 +726,190 @@ public class dItem implements dObject, Notable, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism dItem.firework>, and <@link tag i@item.firework>
         // -->
-        if (attribute.startsWith("is_firework")) {
-            return new Element(ItemFirework.describes(this))
-                    .getAttribute(attribute.fulfill(1));
+        registerTag("is_firework", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemFirework.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.material>
+        // @returns dMaterial
+        // @group conversion
+        // @description
+        // Returns the dMaterial that is the basis of the item.
+        // EG, a stone with lore and a display name, etc. will return only "m@stone".
+        // -->
+        registerTag("material", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return ((dItem) object).getMaterial().getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.json>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns the item converted to a raw JSON object for network transmission.
+        // EG, via /tellraw.
+        // EXAMPLE USAGE: execute as_server "tellraw <player.name>
+        // {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},
+        // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
+        // -->
+        registerTag("json", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).C().getChatModifier().toString();
+                return new Element(JSON.substring(176, JSON.length() - 185))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.full>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a full reusable item identification for this item, with extra, generally useless data.
+        // -->
+        registerTag("full", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dItem) object).getFullString()).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.simple>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a simple reusable item identification for this item, with minimal extra data.
+        // -->
+        registerTag("simple", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dItem) object).identifySimple()).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.notable_name>
+        // @returns Element
+        // @description
+        // Gets the name of a Notable dItem. If the item isn't noted,
+        // this is null.
+        // -->
+        registerTag("notable_name", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(NotableManager.getSavedId((dItem) object)).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.scriptname>
+        // @returns Element
+        // @group scripts
+        // @description
+        // Returns the script name of the item if it was created by an item script.
+        // -->
+        registerTag("scriptname", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (((dItem) object).isItemscript()) {
+                    return new Element(((dItem) object).getScriptName())
+                            .getAttribute(attribute.fulfill(1));
+                }
+                return null;
+            }
+        });
+
+        registerTag("prefix", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dItem) object).prefix)
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        registerTag("debug.log", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dB.log(object.debug());
+                return new Element(Boolean.TRUE.toString())
+                        .getAttribute(attribute.fulfill(2));
+            }
+        });
+
+        registerTag("debug.no_color", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ChatColor.stripColor(object.debug()))
+                        .getAttribute(attribute.fulfill(2));
+            }
+        });
+
+        registerTag("debug", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(object.debug())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.type>
+        // @returns Element
+        // @description
+        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Item").getAttribute(attribute.fulfill(1));
+            }
+        });
+
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
         }
+        registeredTags.put(name, runnable);
+    }
+
+    /////////////////
+    // ATTRIBUTES
+    /////////
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+
+        if (attribute == null) return null;
+
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
+        }
+
+        //
+        // TODO: Replace the next 2 with something saner in the tag section
+        //
 
         // <--[tag]
         // @attribute <i@item.formatted>
@@ -768,108 +962,6 @@ public class dItem implements dObject, Notable, Adjustable {
             }
         }
 
-        // <--[tag]
-        // @attribute <i@item.material>
-        // @returns dMaterial
-        // @group conversion
-        // @description
-        // Returns the dMaterial that is the basis of the item.
-        // EG, a stone with lore and a display name, etc. will return only "m@stone".
-        // -->
-        if (attribute.startsWith("material"))
-            return getMaterial().getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.json>
-        // @returns Element
-        // @group conversion
-        // @description
-        // Returns the item converted to a raw JSON object for network transmission.
-        // EG, via /tellraw.
-        // EXAMPLE USAGE: execute as_server "tellraw <player.name>
-        // {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},
-        // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
-        // -->
-        if (attribute.startsWith("json")) {
-            String JSON = CraftItemStack.asNMSCopy(item).C().getChatModifier().toString();
-            return new Element(JSON.substring(176, JSON.length() - 185))
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <i@item.full>
-        // @returns Element
-        // @group conversion
-        // @description
-        // Returns a full reusable item identification for this item, with extra, generally useless data.
-        // -->
-        if (attribute.startsWith("full"))
-            return new Element(getFullString()).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.simple>
-        // @returns Element
-        // @group conversion
-        // @description
-        // Returns a simple reusable item identification for this item, with minimal extra data.
-        // -->
-        if (attribute.startsWith("simple"))
-            return new Element(identifySimple()).getAttribute(attribute.fulfill(1));
-
-        // <--[tag]
-        // @attribute <i@item.notable_name>
-        // @returns Element
-        // @description
-        // Gets the name of a Notable dItem. If the item isn't noted,
-        // this is null.
-        // -->
-        if (attribute.startsWith("notable_name")) {
-            return new Element(NotableManager.getSavedId(this)).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <i@item.scriptname>
-        // @returns Element
-        // @group scripts
-        // @description
-        // Returns the script name of the item if it was created by an item script.
-        // -->
-        if (attribute.startsWith("scriptname"))
-            if (isItemscript()) {
-                return new Element(getScriptName())
-                        .getAttribute(attribute.fulfill(1));
-            }
-
-        if (attribute.startsWith("prefix"))
-            return new Element(prefix)
-                    .getAttribute(attribute.fulfill(1));
-
-        if (attribute.startsWith("debug.log")) {
-            dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <i@item.type>
-        // @returns Element
-        // @description
-        // Always returns 'Item' for dItem objects. All objects fetchable by the Object Fetcher will return the
-        // type of object that is fulfilling this attribute.
-        // -->
-        if (attribute.startsWith("type")) {
-            return new Element("Item").getAttribute(attribute.fulfill(1));
-        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
