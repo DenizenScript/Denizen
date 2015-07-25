@@ -662,13 +662,14 @@ public class dWorld implements dObject, Adjustable {
         // @name difficulty
         // @input Element
         // @description
-        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // Sets the difficulty level of this world.
+        // Possible values: Peaceful, Easy, Normal, Hard.
         // @tags
         // <w@world.difficulty>
         // -->
         if (mechanism.matches("difficulty") && mechanism.requireEnum(true, Difficulty.values())) {
             String upper = value.asString().toUpperCase();
-            Difficulty diff = null;
+            Difficulty diff;
             if (upper.matches("(PEACEFUL|EASY|NORMAL|HARD)")) {
                 diff = Difficulty.valueOf(upper);
             }

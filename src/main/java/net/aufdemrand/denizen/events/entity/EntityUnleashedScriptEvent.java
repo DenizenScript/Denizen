@@ -28,8 +28,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.entity> returns the dEntity.
     // <context.reason> returns an Element of the reason for the unleashing.
-    //
-    // @Note
     // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
     //
     // -->

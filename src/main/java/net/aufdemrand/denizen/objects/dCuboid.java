@@ -1301,7 +1301,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         Element value = mechanism.getValue();
 
         // TODO: Better mechanisms!
-        
+
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
