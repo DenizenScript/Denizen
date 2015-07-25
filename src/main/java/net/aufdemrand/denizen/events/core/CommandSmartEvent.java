@@ -162,7 +162,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // command
     // <command_name>|... command (in <area>)
     //
-    // @Regex on [^\s]+ command(in \w+)?
+    // @Regex ^on( [^\s]+)? command( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player or console runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.

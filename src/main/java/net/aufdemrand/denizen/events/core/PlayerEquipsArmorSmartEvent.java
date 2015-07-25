@@ -335,7 +335,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     // player (un)equips <item>
     // player (un)equips [helmet/chestplate/leggings/boots]
     //
-    // @Regex on player (un)equips (m@|i@)?\w+
+    // @Regex ^on player (un)?equips [^\s]+$
     //
     // @Triggers when a player (un)equips armor.
     // @Context
