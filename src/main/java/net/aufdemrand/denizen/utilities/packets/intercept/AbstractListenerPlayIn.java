@@ -66,11 +66,6 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
     }
 
     @Override
-    public void teleport(Location dest, Set set) {
-        oldListener.teleport(dest, set);
-    }
-
-    @Override
     public void sendPacket(final Packet packet) {
         oldListener.sendPacket(packet);
     }

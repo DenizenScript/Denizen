@@ -70,13 +70,16 @@ public class dWorld implements dObject, Adjustable {
 
         World returnable = null;
 
-        for (World world : Bukkit.getWorlds())
-            if (world.getName().equalsIgnoreCase(string))
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().equalsIgnoreCase(string)) {
                 returnable = world;
+            }
+        }
 
         if (returnable != null) {
-            if (worlds.containsKey(returnable.getName()))
+            if (worlds.containsKey(returnable.getName())) {
                 return worlds.get(returnable.getName());
+            }
             else return new dWorld(returnable);
         }
         else if (announce) {
@@ -94,9 +97,11 @@ public class dWorld implements dObject, Adjustable {
 
         World returnable = null;
 
-        for (World world : Bukkit.getWorlds())
-            if (world.getName().equalsIgnoreCase(arg))
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().equalsIgnoreCase(arg)) {
                 returnable = world;
+            }
+        }
 
         return returnable != null;
     }
@@ -125,8 +130,9 @@ public class dWorld implements dObject, Adjustable {
         if (prefix == null) this.prefix = "World";
         else this.prefix = prefix;
         this.world_name = world.getName();
-        if (!worlds.containsKey(world.getName()))
+        if (!worlds.containsKey(world.getName())) {
             worlds.put(world.getName(), this);
+        }
     }
 
     @Override
