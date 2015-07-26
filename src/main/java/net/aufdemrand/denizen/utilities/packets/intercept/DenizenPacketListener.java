@@ -36,7 +36,12 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
             if (tag.hasKey("Denizen Item Script")) {
                 NBTTagCompound display = tag.getCompound("display");
                 NBTTagList nbtLore = display.hasKey("Lore") ? (NBTTagList) display.get("Lore") : new NBTTagList();
-                nbtLore.add(new NBTTagString(tag.getString("Denizen Item Script")));
+                if (nbtLore.size() > 0) {
+                    nbtLore.a(0, new NBTTagString(tag.getString("Denizen Item Script")));
+                }
+                else {
+                    nbtLore.add(new NBTTagString(tag.getString("Denizen Item Script")));
+                }
                 display.set("Lore", nbtLore);
                 tag.set("display", display);
                 itemStack.setTag(tag);

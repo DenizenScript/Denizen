@@ -92,18 +92,21 @@ public class ItemChangeMessage implements Listener {
     // sadly, this sends the display name of the real item when that happens.
     // This also occurs when right clicking
     // TODO: find a super hacky way around that?
+    // TODO: Use a packet override for the above
 
     @EventHandler
     public void blockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (player != null && slotChanged.containsKey(player.getUniqueId()))
+        if (player != null && slotChanged.containsKey(player.getUniqueId())) {
             slotChanged.remove(player.getUniqueId());
+        }
     }
 
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (player != null && slotChanged.containsKey(player.getUniqueId()))
+        if (player != null && slotChanged.containsKey(player.getUniqueId())) {
             slotChanged.remove(player.getUniqueId());
+        }
     }
 }

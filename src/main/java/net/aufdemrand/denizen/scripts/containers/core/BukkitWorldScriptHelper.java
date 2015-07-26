@@ -101,7 +101,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // -->
     public void timeEvent() {
         for (World world : Bukkit.getWorlds()) {
-            int hour = Double.valueOf(world.getTime() / 1000).intValue(); // TODO: WTF is this conversion math
+            int hour = Double.valueOf(world.getTime() / 1000).intValue(); // TODO: What is this conversion math
             hour = hour + 6;
             // Get the hour
             if (hour >= 24) hour = hour - 24;
