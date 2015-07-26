@@ -24,6 +24,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // entity heals (because <cause>) (in <area>)
     // <entity> heals (because <cause>) (in <area>)
     //
+    // @Regex ^on [^\s]+ heals( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity heals.

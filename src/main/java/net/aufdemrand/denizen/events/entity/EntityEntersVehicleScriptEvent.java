@@ -24,6 +24,8 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     // <entity> enters vehicle (in <area>)
     // <entity> enters <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ enters [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity enters a vehicle.

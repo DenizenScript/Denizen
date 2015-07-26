@@ -18,11 +18,14 @@ import java.util.HashMap;
 
 public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-colide with entity despawns
     // <--[event]
     // @Events
     // item despawns (in <area>)
     // <item> despawns (in <area>)
     // <material> despawns (in <area>)
+    //
+    // @Regex ^on [^\s]+ despawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -49,9 +52,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("despawns")
-                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
+        return cmd.equals("despawns");
     }
 
     @Override

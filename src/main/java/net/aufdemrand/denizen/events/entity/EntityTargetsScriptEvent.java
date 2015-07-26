@@ -23,10 +23,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity targets (<entity>) (in <area>)
-    // entity targets (<entity>) because <cause> (in <area>)
-    // <entity> targets (<entity>) (in <area>)
-    // <entity> targets (<entity>) because <cause> (in <area>)
+    // entity targets (<entity>) (because <cause>) (in <area>)
+    // <entity> targets (<entity>) (because <cause>) (in <area>)
+    //
+    // @Regex ^on [^\s]+ targets( [^\s]+)?( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //

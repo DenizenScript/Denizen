@@ -28,6 +28,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // <projectile> hits block (in <area>)
     // <projectile> hits <material> (in <area>)
     //
+    // @Regex ^on [^\s]+ hits [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable false
     //
     // @Triggers when a projectile hits a block.

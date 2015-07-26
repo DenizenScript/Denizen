@@ -21,6 +21,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // projectile launched (in <area>)
     // <entity> launched (in <area>)
     //
+    // @Regex ^on [^\s]+ launched( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a projectile is launched.

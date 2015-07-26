@@ -27,6 +27,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // hanging breaks (because <cause>) (in <area>)
     // <hanging> breaks (because <cause>) (in <area>)
     //
+    // @Regex ^on [^\s]+ breaks( because [^\s]+)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.

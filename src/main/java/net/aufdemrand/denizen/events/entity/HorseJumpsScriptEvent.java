@@ -22,6 +22,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // horse jumps (in <area>)
     // (<color>) (<type>) jumps (in <area>)
     //
+    // @Regex ^on [^\s]+( [^\s]+)? jumps( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a horse jumps.

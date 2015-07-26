@@ -25,6 +25,8 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     // <item> merges (in <area>)
     // <material> merges (in <area>)
     //
+    // @Regex ^on [^\s]+ merges( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an item entity merges into another item entity.

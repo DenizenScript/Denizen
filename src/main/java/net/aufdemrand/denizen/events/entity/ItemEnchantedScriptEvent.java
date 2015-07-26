@@ -22,10 +22,13 @@ import java.util.HashMap;
 
 public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: Find more appropriate package than 'entity' for this
     // <--[event]
     // @Events
     // item enchanted (in <area>)
     // <item> enchanted (in <area>)
+    //
+    // @Regex ^on [^\s]+ enchanted( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //

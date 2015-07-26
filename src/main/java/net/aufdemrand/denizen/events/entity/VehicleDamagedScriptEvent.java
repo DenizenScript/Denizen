@@ -27,6 +27,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // entity damages <vehicle> (in <area>)
     // <entity> damages <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ damages [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity enters a vehicle.

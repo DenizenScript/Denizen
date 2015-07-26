@@ -24,6 +24,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // sheep dyed (<color>) (in <area>)
     // player dyes sheep (<color>) (in <area>)
     //
+    // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Warning Determine color will not update the clientside, use - wait 1t and adjust <context.entity> color:YOUR_COLOR to force-update.

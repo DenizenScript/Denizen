@@ -24,6 +24,8 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     // entity changes food level (in <area>)
     // <entity> changes food level (in <area>)
     //
+    // @Regex ^on [^\s]+ changes food level( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity's food level changes.

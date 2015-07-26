@@ -28,6 +28,8 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     // entity explodes (in <area>)
     // <entity> explodes (in <area>)
     //
+    // @Regex ^on [^\s]+ explodes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity explodes.

@@ -20,6 +20,8 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     // vehicle created (in <area>)
     // <vehicle> created (in <area>)
     //
+    // @Regex ^on [^\s]+ created( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a vehicle created in the slightest.
     //
     // @Context

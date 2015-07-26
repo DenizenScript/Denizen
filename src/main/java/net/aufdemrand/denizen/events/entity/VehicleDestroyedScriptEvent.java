@@ -26,6 +26,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // entity destroys <vehicle> (in <area>)
     // <entity> destroys <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ destroys [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity enters a vehicle.

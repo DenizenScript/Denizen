@@ -26,6 +26,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // <vehicle> collides with entity (in <area>)
     // <vehicle> collides with <entity> (in <area>)
     //
+    // @Regex ^on [^\s]+ collides with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a vehicle collides with an entity.

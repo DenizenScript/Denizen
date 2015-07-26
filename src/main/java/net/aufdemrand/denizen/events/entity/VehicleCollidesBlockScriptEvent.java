@@ -17,12 +17,15 @@ import java.util.HashMap;
 
 public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-collide with 'collides with entity'
     // <--[event]
     // @Events
     // vehicle collides with block (in <area>)
     // vehicle collides with <material> (in <area>)
     // <vehicle> collides with block (in <area>)
     // <vehicle> collides with <material> (in <area>)
+    //
+    // @Regex ^on [^\s]+ collides with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a vehicle collides with a block.
     //

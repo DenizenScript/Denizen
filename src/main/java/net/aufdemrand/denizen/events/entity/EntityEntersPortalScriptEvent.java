@@ -23,6 +23,8 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     // entity enters portal (in <area>)
     // <entity> enters portal (in <area>)
     //
+    // @Regex ^on [^\s]+ enters portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable false
     //
     // @Triggers when an entity enters a portal.
