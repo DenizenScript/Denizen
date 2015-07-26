@@ -52,12 +52,15 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "s")) {
 
-                if (arg.matchesArgumentType(dEntity.class))
+                if (arg.matchesArgumentType(dEntity.class)) {
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
-                else if (arg.matchesArgumentType(dLocation.class))
+                }
+                else if (arg.matchesArgumentType(dLocation.class)) {
                     scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
-                else
+                }
+                else {
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+                }
             }
 
             else if (!scriptEntry.hasObject("destination")
@@ -206,15 +209,18 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // Go through all the entities, spawning/teleporting and rotating them
         for (dEntity entity : entities) {
-            entity.spawnAt(originLocation);
+            if (!entity.isSpawned() || !no_rotate) {
+                entity.spawnAt(originLocation);
+            }
 
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
             // instead of "e@57" on it
             entityList.add(entity.toString());
 
-            if (!no_rotate)
+            if (!no_rotate) {
                 Rotation.faceLocation(entity.getBukkitEntity(), destination);
+            }
 
             // If the current entity is a projectile, set its shooter
             // when applicable
