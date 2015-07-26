@@ -20,12 +20,15 @@ import java.util.HashMap;
 
 public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: in area?
     // <--[event]
     // @Events
     // player enters <biome>
     // player exits <biome>
     // player enters biome
     // player exits biome
+    //
+    // @Regex ^on player (enters|exits) [^\s]+$
     //
     // @Warning Cancelling this event will fire a similar event immediately after.
     //

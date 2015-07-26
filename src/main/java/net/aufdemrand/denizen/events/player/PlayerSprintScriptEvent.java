@@ -23,7 +23,9 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // player toggles sprinting (in <area>)
     // player starts sprinting (in <area>)
     // player stops sprinting (in <area>)
-    // 
+    //
+    // @Regex ^on player (toggles|starts\stops) sprinting( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts or stops sprinting.

@@ -22,6 +22,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // player kicked
     //
+    // @Regex ^on player kicked$
+    //
     // @Cancellable true
     //
     // @Triggers when a player kicked the server.

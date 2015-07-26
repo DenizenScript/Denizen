@@ -25,6 +25,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // player fishes (<entity>) (while <state>) (in <area>)
     //
+    // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player uses a fishing rod.

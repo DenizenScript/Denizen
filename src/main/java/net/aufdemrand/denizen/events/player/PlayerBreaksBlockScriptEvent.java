@@ -22,6 +22,7 @@ import java.util.HashMap;
 
 public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-collide with breaks item
     // <--[event]
     // @Events
     // player breaks block (in <area>)
@@ -29,7 +30,9 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // player breaks block (in <area>)
     // player breaks <material> (in <area>)
     //
-    // @Switch with <item>|<material>
+    // @Regex ^on player breaks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
+    // @Switch with <item>
     //
     // @Cancellable true
     //

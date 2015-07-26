@@ -22,6 +22,8 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
     // player leashes entity (in <area>)
     // player leashes <entity> (in <area>)
     //
+    // @Regex ^on player leashes [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player leashes an entity.

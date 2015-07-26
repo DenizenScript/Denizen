@@ -18,10 +18,13 @@ import java.util.HashMap;
 
 public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-collide with places block
     // <--[event]
     // @Events
     // player places hanging (in <area>)
     // player places <hanging> (in <area>)
+    //
+    // @Regex ^on player places [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //

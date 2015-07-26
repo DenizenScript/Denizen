@@ -24,6 +24,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // player starts flying (in <area>)
     // player stops flying (in <area>)
     //
+    // @Regex ^on player (toggles|starts|stops) flying( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts or stops flying.

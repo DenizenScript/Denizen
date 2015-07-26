@@ -22,6 +22,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     // @Events
     // player changes gamemode (to <gamemode>)
     //
+    // @Regex ^on player changes gamemode( to [^\s]+)?$
     // @Cancellable true
     //
     // @Triggers when a player's gamemode is changed.

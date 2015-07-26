@@ -23,6 +23,8 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     // @Events
     // player animates (<animation>) (in <area>)
     //
+    // @Regex ^on player animates [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player performs an animation.

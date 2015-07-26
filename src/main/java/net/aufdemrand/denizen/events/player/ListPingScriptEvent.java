@@ -20,6 +20,8 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
     // @Events
     // server list ping
     //
+    // @Regex ^on server list ping$
+    //
     // @Triggers when the server is pinged for a client's server list.
     // @Context
     // <context.motd> returns the MOTD that will show.

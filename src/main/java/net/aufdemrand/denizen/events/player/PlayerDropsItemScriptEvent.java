@@ -24,6 +24,8 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     // player drops item (in <area>)
     // player drops <item> (in <area>)
     //
+    // @Regex ^on player drops [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player drops an item.

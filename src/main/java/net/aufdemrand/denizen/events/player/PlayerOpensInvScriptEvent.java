@@ -18,10 +18,13 @@ import java.util.HashMap;
 
 public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: in area
     // <--[event]
     // @Events
     // player opens inventory
     // player opens <inventory type>
+    //
+    // @Regex ^on player opens [^\s]+$
     //
     // @Triggers when a player opens an inventory. (EG, chests, not the player's main inventory.)
     //

@@ -26,6 +26,8 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     // player breaks item (in <area>)
     // player breaks <item> (in <area>)
     //
+    // @Regex ^on player breaks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player breaks the item they are holding.

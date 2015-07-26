@@ -29,9 +29,12 @@ import java.util.Set;
 
 public class ChatScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: in area
     // <--[event]
     // @Events
     // player chats
+    //
+    // @Regex ^on player chats$
     //
     // @Cancellable true
     //

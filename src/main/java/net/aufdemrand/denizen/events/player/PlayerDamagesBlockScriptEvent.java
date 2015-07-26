@@ -23,6 +23,8 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // player damages block (in <area>)
     // player damages <material> (in <area>)
     //
+    // @Regex ^on player damages [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block is damaged by a player.

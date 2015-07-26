@@ -24,6 +24,8 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // player shears <entity> (in <area>)
     // player shears <color> sheep (in <area>)
     //
+    // @Regex ^on player shears [^\s]+( sheep)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player shears an entity.

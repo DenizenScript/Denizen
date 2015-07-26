@@ -18,10 +18,14 @@ import java.util.HashMap;
 
 public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: in area
+    // TODO: item:x switch
     // <--[event]
     // @Events
     // player scrolls their hotbar
     // player holds item
+    //
+    // @Regex ^on player (scrolls their hotbar|holds item)$
     //
     // @Cancellable true
     //

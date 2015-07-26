@@ -19,9 +19,12 @@ import java.util.HashMap;
 
 public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: in area
     // <--[event]
     // @Events
     // player changes xp
+    //
+    // @Regex ^on player changes xp$
     //
     // @Cancellable true
     //

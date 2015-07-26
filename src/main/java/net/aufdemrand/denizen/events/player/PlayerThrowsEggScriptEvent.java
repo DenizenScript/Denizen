@@ -24,6 +24,8 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // player throws (hatching/non-hatching) egg (in <area>)
     //
+    // @Regex ^on player throws( (hatching|non-hatching))? egg( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player throws an egg.

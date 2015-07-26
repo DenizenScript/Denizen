@@ -24,6 +24,8 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     // player consumes item (in <area>)
     // player consumes <item> (in <area>)
     //
+    // @Regex ^on player consumes [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player consumes an item.

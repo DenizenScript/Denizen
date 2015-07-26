@@ -26,6 +26,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // player takes item (in <area>)
     // player takes <item> (in <area>)
     //
+    // @Regex ^on player (picks up|takes) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player picks up an item.

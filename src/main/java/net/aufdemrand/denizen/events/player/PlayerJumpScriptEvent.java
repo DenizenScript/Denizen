@@ -22,6 +22,8 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     // @Events
     // player jumps (in <area>)
     //
+    // @Regex ^on player jumps( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a player jumps.
     //
     // @Context

@@ -24,6 +24,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     // player steps on block (in <area>)
     // player steps on <material> (in <area>)
     //
+    // @Regex ^on player steps on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning This event may fire very rapidly.
     //
     // @Cancellable true
