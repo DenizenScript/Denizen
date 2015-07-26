@@ -23,6 +23,8 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     // block ignites (in <area>)
     // <material> ignites (in <area>)
     //
+    // @Regex ^on [^\s]+ ignites( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block is set on fire.

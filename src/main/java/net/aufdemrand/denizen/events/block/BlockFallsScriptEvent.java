@@ -21,6 +21,8 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     // block falls (in <area>)
     // <material> falls (in <area>)
     //
+    // @Regex ^on [^\s]+ falls( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block falls.

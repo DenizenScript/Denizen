@@ -21,6 +21,8 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     // block forms (in <area>)
     // <block> forms (in <area>)
     //
+    // @Regex ^on [^\s]+ forms( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block is formed based on world conditions, EG, when snow forms in a snow storm or ice forms in a cold biome.

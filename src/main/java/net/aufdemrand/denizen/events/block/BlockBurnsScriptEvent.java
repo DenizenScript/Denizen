@@ -22,6 +22,8 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
     // block burns (in <area>)
     // <block> burns (in <area>)
     //
+    // @Regex ^on [^\s]+ burns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block is destroyed by fire.

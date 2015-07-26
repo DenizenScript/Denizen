@@ -29,6 +29,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // <block> dispenses item (in <area>)
     // <block> dispenses <item> (in <area>)
     //
+    // @Regex ^on [^\s]+ dispense [^\s]+ ( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block dispenses an item.

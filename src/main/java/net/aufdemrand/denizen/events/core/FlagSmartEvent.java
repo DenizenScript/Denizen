@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Handler event, actually events are fired in FlagManager.java
+ * Handler event, actual events are fired in FlagManager.java
  */
 public class FlagSmartEvent implements OldSmartEvent, Listener {
 

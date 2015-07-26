@@ -21,6 +21,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     // block physics (in <area>)
     // <material> physics (in <area>)
     //
+    // @Regex ^on [^\s]+ physics( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning This event may fire very rapidly.
     //
     // @Cancellable true

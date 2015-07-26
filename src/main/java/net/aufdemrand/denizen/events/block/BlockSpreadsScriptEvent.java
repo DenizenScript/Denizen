@@ -21,6 +21,8 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
     // block spreads (in <area>)
     // <material> spreads (in <area>)
     //
+    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block spreads based on world conditions, EG, when fire spreads, or when mushrooms spread.

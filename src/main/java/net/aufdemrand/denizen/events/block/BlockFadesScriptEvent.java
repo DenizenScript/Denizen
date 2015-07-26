@@ -21,6 +21,8 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     // block fades (in <area>)
     // <block> fades (in <area>)
     //
+    // @Regex ^on [^\s]+ fades( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block fades, melts or disappears based on world conditions.

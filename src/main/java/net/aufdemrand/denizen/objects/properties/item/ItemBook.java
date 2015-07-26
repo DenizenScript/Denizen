@@ -52,9 +52,10 @@ public class ItemBook implements Property {
                 // @description
                 // Returns the author of the book.
                 // -->
-                if (attribute.startsWith("author"))
+                if (attribute.startsWith("author")) {
                     return new Element(bookInfo.getAuthor())
                             .getAttribute(attribute.fulfill(1));
+                }
 
                 // <--[tag]
                 // @attribute <i@item.book.title>
@@ -64,9 +65,10 @@ public class ItemBook implements Property {
                 // @description
                 // Returns the title of the book.
                 // -->
-                if (attribute.startsWith("title"))
+                if (attribute.startsWith("title")) {
                     return new Element(bookInfo.getTitle())
                             .getAttribute(attribute.fulfill(1));
+                }
             }
 
             // <--[tag]
@@ -77,9 +79,10 @@ public class ItemBook implements Property {
             // @description
             // Returns the number of pages in the book.
             // -->
-            if (attribute.startsWith("page_count"))
+            if (attribute.startsWith("page_count")) {
                 return new Element(bookInfo.getPageCount())
                         .getAttribute(attribute.fulfill(1));
+            }
 
             // <--[tag]
             // @attribute <i@item.book.get_page[<#>]>
@@ -89,9 +92,10 @@ public class ItemBook implements Property {
             // @description
             // Returns the page specified from the book as an element.
             // -->
-            if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1)))
+            if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1))) {
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                         .getAttribute(attribute.fulfill(1));
+            }
 
             // Deprecated in favor of pages.escape_contents
             if (attribute.startsWith("pages.escaped")) {
@@ -112,9 +116,10 @@ public class ItemBook implements Property {
             // @description
             // Returns the pages of the book as a dList.
             // -->
-            if (attribute.startsWith("pages"))
+            if (attribute.startsWith("pages")) {
                 return new dList(bookInfo.getPages())
                         .getAttribute(attribute.fulfill(1));
+            }
 
             // <--[tag]
             // @attribute <i@item.book>
@@ -129,8 +134,9 @@ public class ItemBook implements Property {
             // See <@link language Property Escaping>
             // -->
             String output = getPropertyString();
-            if (output == null)
+            if (output == null) {
                 output = "null";
+            }
             return new Element(output)
                     .getAttribute(attribute);
         }

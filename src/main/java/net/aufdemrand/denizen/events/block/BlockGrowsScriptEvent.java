@@ -21,6 +21,8 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     // block grows (in <area>)
     // <block> grows (in <area>)
     //
+    // @Regex ^on [^\s]+ grows( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a block grows naturally in the world, EG, when wheat, sugar canes, cacti, watermelons or pumpkins grow.
