@@ -1150,12 +1150,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (item == null) return null;
 
                 // <--[tag]
-                // @attribute <in@inventory.can_fit[<item>].qty[<#>]>
+                // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory can fit a certain quantity of an item.
                 // -->
-                if (attribute.getAttribute(2).startsWith("qty") &&
+                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                         attribute.hasContext(2) &&
                         aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
@@ -1188,12 +1188,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (item == null) return null;
 
                 // <--[tag]
-                // @attribute <in@inventory.include[<item>].qty[<#>]>
+                // @attribute <in@inventory.include[<item>].quantity[<#>]>
                 // @returns dInventory
                 // @description
                 // Returns the dInventory with a certain quantity of an item added.
                 // -->
-                if (attribute.getAttribute(2).startsWith("qty") &&
+                if ((attribute.getAttribute(2).startsWith("quantity") ||attribute.getAttribute(2).startsWith("qty")) &&
                         attribute.hasContext(2) &&
                         aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
@@ -1263,7 +1263,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
 
                 // <--[tag]
-                // @attribute <in@inventory.contains.display[(strict:)<element>].qty[<#>]>
+                // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of an item with the
@@ -1271,7 +1271,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // the display name is EXACTLY the search element, otherwise the searching will only
                 // check if the search element is contained in the display name.
                 // -->
-                if (attribute.getAttribute(3).startsWith("qty") &&
+                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
@@ -1338,7 +1338,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 dList lore = dList.valueOf(search_string);
 
                 // <--[tag]
-                // @attribute <in@inventory.contains.lore[(strict:)<element>|...].qty[<#>]>
+                // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of an item
@@ -1346,7 +1346,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // to ensure all lore lines are EXACTLY the search elements, otherwise the
                 // searching will only check if the search elements are contained in the lore.
                 // -->
-                if (attribute.getAttribute(3).startsWith("qty") &&
+                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
@@ -1413,13 +1413,13 @@ public class dInventory implements dObject, Notable, Adjustable {
                 dMaterial material = dMaterial.valueOf(attribute.getContext(2));
 
                 // <--[tag]
-                // @attribute <in@inventory.contains.material[<material>].qty[<#>]>
+                // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of an item with the
                 // specified material.
                 // -->
-                if (attribute.getAttribute(3).startsWith("qty") &&
+                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
                         attribute.hasContext(3) &&
                         aH.matchesInteger(attribute.getContext(3))) {
                     qty = attribute.getIntContext(3);
@@ -1452,12 +1452,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 1;
 
                 // <--[tag]
-                // @attribute <in@inventory.contains_any[<item>|...].qty[<#>]>
+                // @attribute <in@inventory.contains_any[<item>|...].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of any of the specified items.
                 // -->
-                if (attribute.getAttribute(2).startsWith("qty")
+                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
                         && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
                     attribs = 2;
@@ -1483,12 +1483,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 int attribs = 1;
 
                 // <--[tag]
-                // @attribute <in@inventory.contains[<item>|...].qty[<#>]>
+                // @attribute <in@inventory.contains[<item>|...].quantity[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the inventory contains a certain quantity of all of the specified items.
                 // -->
-                if (attribute.getAttribute(2).startsWith("qty")
+                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
                         && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
                     attribs = 2;
@@ -1616,14 +1616,14 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.qty[<item>]>
+        // @attribute <in@inventory.quantity[<item>]>
         // @returns Element(Number)
         // @description
         // Returns the combined quantity of itemstacks that match an item if
         // one if specified, or the combined quantity of all itemstacks
         // if one is not.
         // -->
-        if (attribute.startsWith("qty"))
+        if (attribute.startsWith("quantity") || attribute.startsWith("qty"))
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
                 return new Element(count // TODO: Handle no-script-entry cases
                         (dItem.valueOf(attribute.getContext(1),
