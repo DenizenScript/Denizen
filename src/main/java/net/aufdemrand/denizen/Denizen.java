@@ -360,7 +360,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             org.spigotmc.AsyncCatcher.enabled = false;
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             dB.echoError("Running not-Spigot?!");
         }
 
