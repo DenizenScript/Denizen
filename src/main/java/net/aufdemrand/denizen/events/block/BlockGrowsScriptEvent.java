@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockGrowEvent;
 
-import java.util.HashMap;
-
 public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -57,7 +57,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         }
 
         String color = CoreUtilities.getXthArg(3, lower).equals("sheep") ? CoreUtilities.getXthArg(2, lower) : "";
-        if(color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
+        if (color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
             return false;
         }
 

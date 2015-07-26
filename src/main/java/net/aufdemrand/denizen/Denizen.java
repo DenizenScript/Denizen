@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.events.entity.*;
-import net.aufdemrand.denizen.events.entity.ItemMergesScriptEvent;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;

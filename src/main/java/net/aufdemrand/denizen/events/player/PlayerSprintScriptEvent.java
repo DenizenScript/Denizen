@@ -45,7 +45,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sprint");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).startsWith("sprint");
     }
 
     @Override

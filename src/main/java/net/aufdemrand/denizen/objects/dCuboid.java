@@ -1221,7 +1221,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("notable_name", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(NotableManager.getSavedId((dCuboid)object)).getAttribute(attribute.fulfill(1));
+                return new Element(NotableManager.getSavedId((dCuboid) object)).getAttribute(attribute.fulfill(1));
             }
         });
 

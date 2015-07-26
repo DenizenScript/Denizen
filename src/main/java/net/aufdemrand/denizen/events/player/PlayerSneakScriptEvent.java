@@ -45,7 +45,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sneak");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).startsWith("sneak");
     }
 
     @Override

@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
-import java.util.HashMap;
-
 public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -45,8 +45,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).equals("flying")
-                || CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).equals("flight");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flying")
+                || CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flight");
     }
 
     @Override

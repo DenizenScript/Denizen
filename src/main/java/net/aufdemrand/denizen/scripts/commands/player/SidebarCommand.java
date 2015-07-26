@@ -207,7 +207,8 @@ public class SidebarCommand extends AbstractCommand {
                                 String line = value.get(i);
                                 current.add(index, line);
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             dB.echoError(e);
                             continue;
                         }
@@ -245,7 +246,8 @@ public class SidebarCommand extends AbstractCommand {
                                 current.remove(index);
                                 offset++;
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             dB.echoError(e);
                             continue;
                         }
@@ -270,7 +272,8 @@ public class SidebarCommand extends AbstractCommand {
                                     }
                                 }
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             dB.echoError(e);
                             continue;
                         }
@@ -322,7 +325,8 @@ public class SidebarCommand extends AbstractCommand {
                                     current.set(index, line);
                                 }
                             }
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             dB.echoError(e);
                             continue;
                         }
@@ -438,7 +442,7 @@ public class SidebarCommand extends AbstractCommand {
         }
 
         public void setLines(List<String> lines) {
-            lines.removeAll(Collections.singleton((String)null));
+            lines.removeAll(Collections.singleton((String) null));
             this.lines = new String[15];
             this.scores = new int[15];
             int score = this.start;

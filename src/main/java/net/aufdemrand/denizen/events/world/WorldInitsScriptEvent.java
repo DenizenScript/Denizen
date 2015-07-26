@@ -38,12 +38,12 @@ public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1,CoreUtilities.toLowerCase(s)).equals("initializes");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("initializes");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
         if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }

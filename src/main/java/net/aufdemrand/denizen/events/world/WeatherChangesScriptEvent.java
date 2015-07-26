@@ -42,7 +42,7 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s)).equals("weather");
+        return CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)).equals("weather");
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
         if (!cmd.equals("changes") && !cmd.equals(weather.identifySimple())) {
             return false;
         }
-        String wCheck = CoreUtilities.getXthArg(3,lower);
+        String wCheck = CoreUtilities.getXthArg(3, lower);
         if (wCheck.length() > 0 && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }
@@ -90,7 +90,7 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
     @EventHandler
     public void onWeatherChanges(WeatherChangeEvent event) {
         world = new dWorld(event.getWorld());
-        weather = new Element(event.toWeatherState()?"rains":"clears");
+        weather = new Element(event.toWeatherState() ? "rains" : "clears");
         this.event = event;
         cancelled = event.isCancelled();
         fire();

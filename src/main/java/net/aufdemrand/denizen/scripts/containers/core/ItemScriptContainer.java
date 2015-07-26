@@ -197,7 +197,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 hideLore = Boolean.valueOf(getString("NO_ID"));
             }
             if (!hideLore) {
-                lore.set(0, hash);
+                lore.add(0, hash);
             }
 
             // Set Display Name

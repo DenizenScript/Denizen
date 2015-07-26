@@ -42,6 +42,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     public ItemMergesScriptEvent() {
         instance = this;
     }
+
     public static ItemMergesScriptEvent instance;
     public dItem item;
     public dLocation location;

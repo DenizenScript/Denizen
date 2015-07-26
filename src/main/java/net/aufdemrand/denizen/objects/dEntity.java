@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;

@@ -29,7 +29,8 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
             chatSpamField.set(null, AtomicIntegerFieldUpdater.newUpdater(AbstractListenerPlayIn.class, "chatThrottle"));
             chatThrottle = PlayerConnection.class.getDeclaredField("chatThrottle");
             chatThrottle.setAccessible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         this.chatThrottleField = chatThrottle;

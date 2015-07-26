@@ -59,8 +59,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String iTest = CoreUtilities.xthArgEquals(1, lower, "picks") ?
-            CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        if(!tryItem(item, iTest)) {
+                CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        if (!tryItem(item, iTest)) {
             return false;
         }
         return runInCheck(scriptContainer, s, lower, location);

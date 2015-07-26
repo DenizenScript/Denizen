@@ -294,7 +294,8 @@ public class dColor implements dObject {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int[] HSV = ((dColor) object).ToHSB();
-                return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));            }
+                return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
+            }
         });
 
         // <--[tag]
@@ -347,7 +348,7 @@ public class dColor implements dObject {
                 if (valid.asRGB() == 0) {
                     valid = Color.fromRGB(1, 0, 0);
                 }
-                return new dLocation(null, valid.getRed()/255F, valid.getGreen()/255F, valid.getBlue()/255F)
+                return new dLocation(null, valid.getRed() / 255F, valid.getGreen() / 255F, valid.getBlue() / 255F)
                         .getAttribute(attribute.fulfill(1));
             }
         });

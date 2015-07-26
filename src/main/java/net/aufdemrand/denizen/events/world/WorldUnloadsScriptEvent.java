@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -41,12 +40,12 @@ public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1,CoreUtilities.toLowerCase(s)).equals("unloads");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("unloads");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
+        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
         if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }

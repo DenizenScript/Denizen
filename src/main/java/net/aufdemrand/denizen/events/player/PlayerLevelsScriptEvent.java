@@ -54,12 +54,12 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 0; index < data.size(); index++) {
             if (data.get(index).equals("from")) {
-                if (aH.getIntegerFrom(data.get(index + 1)) != event.getOldLevel()){
+                if (aH.getIntegerFrom(data.get(index + 1)) != event.getOldLevel()) {
                     return false;
                 }
             }
             if (data.get(index).equals("to")) {
-                if (aH.getIntegerFrom(data.get(index + 1)) != event.getNewLevel()){
+                if (aH.getIntegerFrom(data.get(index + 1)) != event.getNewLevel()) {
                     return false;
                 }
             }

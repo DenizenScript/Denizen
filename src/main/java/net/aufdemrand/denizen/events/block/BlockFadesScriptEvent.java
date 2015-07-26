@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFadeEvent;
 
-import java.util.HashMap;
-
 public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

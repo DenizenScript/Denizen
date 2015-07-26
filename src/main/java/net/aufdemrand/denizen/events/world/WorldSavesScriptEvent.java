@@ -39,13 +39,13 @@ public class WorldSavesScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1,CoreUtilities.toLowerCase(s)).equals("saves");
+        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("saves");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        String wCheck = CoreUtilities.getXthArg(0,CoreUtilities.toLowerCase(s));
-        dB.log("world: "+CoreUtilities.toLowerCase(world.getName()));
+        String wCheck = CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s));
+        dB.log("world: " + CoreUtilities.toLowerCase(world.getName()));
         if (!wCheck.equals("world") && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }

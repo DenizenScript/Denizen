@@ -11,7 +11,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
@@ -61,7 +60,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         String block = CoreUtilities.getXthArg(0, lower);
         dMaterial mat = dMaterial.valueOf(block);
         return cmd.equals("grows")
-                && (block.equals("structure") || (mat != null && mat.isStructure()));    }
+                && (block.equals("structure") || (mat != null && mat.isStructure()));
+    }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
@@ -71,9 +71,10 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
                 !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
             return false;
         }
-        if (CoreUtilities.getXthArg(2,lower).equals("from") && !event.isFromBonemeal()) {
+        if (CoreUtilities.getXthArg(2, lower).equals("from") && !event.isFromBonemeal()) {
             return false;
-        } else if (CoreUtilities.getXthArg(2,lower).equals("naturally") && event.isFromBonemeal()) {
+        }
+        else if (CoreUtilities.getXthArg(2, lower).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
         return runInCheck(scriptContainer, s, lower, location);

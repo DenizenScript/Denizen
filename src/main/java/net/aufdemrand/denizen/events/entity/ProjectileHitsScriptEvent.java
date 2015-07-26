@@ -77,7 +77,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String pTest = cmd.equals("hits") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(4, lower);
+        String pTest = cmd.equals("hits") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(4, lower);
 
         if (pTest.length() > 0 && !projectile.matchesEntity(pTest)) {
             return false;
@@ -131,7 +131,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         HashMap<String, dObject> context = super.getContext();
         context.put("projectile", projectile);
         context.put("location", location);
-        if (shooter != null ) {
+        if (shooter != null) {
             context.put("shooter", shooter);
         }
         return context;
