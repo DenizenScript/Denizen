@@ -1,10 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.Fetchable;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -14,6 +11,7 @@ import org.bukkit.Color;
 import org.bukkit.DyeColor;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,16 +188,20 @@ public class dColor implements dObject {
         return this;
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
+    public static void registerTags() {
+
         // <--[tag]
         // @attribute <co@color.red>
         // @returns Element(Number)
         // @description
         // returns the red value of this color.
         // -->
-        if (attribute.startsWith("red"))
-            return new Element(color.getRed()).getAttribute(attribute.fulfill(1));
+        registerTag("red", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).color.getRed()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.green>
@@ -207,8 +209,12 @@ public class dColor implements dObject {
         // @description
         // returns the green value of this color.
         // -->
-        if (attribute.startsWith("green"))
-            return new Element(color.getGreen()).getAttribute(attribute.fulfill(1));
+        registerTag("green", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).color.getGreen()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.blue>
@@ -216,8 +222,12 @@ public class dColor implements dObject {
         // @description
         // returns the blue value of this color.
         // -->
-        if (attribute.startsWith("blue"))
-            return new Element(color.getBlue()).getAttribute(attribute.fulfill(1));
+        registerTag("blue", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).color.getBlue()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.rgb>
@@ -226,8 +236,13 @@ public class dColor implements dObject {
         // returns the RGB value of this color.
         // EG, 255,0,255
         // -->
-        if (attribute.startsWith("rgb"))
-            return new Element(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
+        registerTag("rgb", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                Color color = ((dColor) object).color;
+                return new Element(color.getRed() + "," + color.getGreen() + "," + color.getBlue()).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.hue>
@@ -235,8 +250,12 @@ public class dColor implements dObject {
         // @description
         // returns the hue value of this color.
         // -->
-        if (attribute.startsWith("hue"))
-            return new Element(ToHSB()[0]).getAttribute(attribute.fulfill(1));
+        registerTag("hue", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).ToHSB()[0]).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.saturation>
@@ -244,8 +263,12 @@ public class dColor implements dObject {
         // @description
         // returns the saturation value of this color.
         // -->
-        if (attribute.startsWith("saturation"))
-            return new Element(ToHSB()[1]).getAttribute(attribute.fulfill(1));
+        registerTag("saturation", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).ToHSB()[1]).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.brightness>
@@ -253,8 +276,12 @@ public class dColor implements dObject {
         // @description
         // returns the brightness value of this color.
         // -->
-        if (attribute.startsWith("brightness"))
-            return new Element(ToHSB()[2]).getAttribute(attribute.fulfill(1));
+        registerTag("brightness", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dColor) object).ToHSB()[2]).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.hsv>
@@ -263,10 +290,13 @@ public class dColor implements dObject {
         // returns the HSV value of this color.
         // EG, 100,100,255
         // -->
-        if (attribute.startsWith("hsv")) {
-            int[] HSV = ToHSB();
-            return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
-        }
+        registerTag("hsv", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                int[] HSV = ((dColor) object).ToHSB();
+                return new Element(HSV[1] + "," + HSV[1] + "," + HSV[2]).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.name>
@@ -274,8 +304,12 @@ public class dColor implements dObject {
         // @description
         // returns the name of this color (or red,green,blue if none).
         // -->
-        if (attribute.startsWith("name"))
-            return new Element(identify().substring(3)).getAttribute(attribute.fulfill(1));
+        registerTag("name", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(object.identify().substring(3)).getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.mix[<color>]>
@@ -283,14 +317,23 @@ public class dColor implements dObject {
         // @description
         // returns the color that results if you mix this color with another.
         // -->
-        if (attribute.startsWith("mix")
-                && attribute.hasContext(1)) {
-            dColor mixed_with = dColor.valueOf(attribute.getContext(1));
-            if (mixed_with != null)
-                return new dColor(color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
-            else
-                dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
-        }
+        registerTag("mix", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag li@list.insert[...] must have a value.");
+                    return null;
+                }
+                dColor mixed_with = dColor.valueOf(attribute.getContext(1));
+                if (mixed_with != null) {
+                    return new dColor(((dColor) object).color.mixColors(mixed_with.getColor())).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    dB.echoError("'" + attribute.getContext(1) + "' is not a valid color!");
+                    return null;
+                }
+            }
+        });
 
         // <--[tag]
         // @attribute <co@color.to_particle_offset>
@@ -298,14 +341,17 @@ public class dColor implements dObject {
         // @description
         // Returns the color as a particle offset, for use with PlayEffect.
         // -->
-        if (attribute.startsWith("to_particle_offset")) {
-            Color valid = color;
-            if (valid.asRGB() == 0) {
-                valid = Color.fromRGB(1, 0, 0);
+        registerTag("to_particle_offset", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                Color valid = ((dColor) object).color;
+                if (valid.asRGB() == 0) {
+                    valid = Color.fromRGB(1, 0, 0);
+                }
+                return new dLocation(null, valid.getRed() / 255F, valid.getGreen() / 255F, valid.getBlue() / 255F)
+                        .getAttribute(attribute.fulfill(1));
             }
-            return new dLocation(null, valid.getRed()/255F, valid.getGreen()/255F, valid.getBlue()/255F)
-                    .getAttribute(attribute.fulfill(1));
-        }
+        });
 
         // <--[tag]
         // @attribute <co@color.type>
@@ -314,8 +360,35 @@ public class dColor implements dObject {
         // Always returns 'Color' for dColor objects. All objects fetchable by the Object Fetcher will return the
         // type of object that is fulfilling this attribute.
         // -->
-        if (attribute.startsWith("type")) {
-            return new Element("Color").getAttribute(attribute.fulfill(1));
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Color").getAttribute(attribute.fulfill(1));
+            }
+        });
+
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
+        }
+        registeredTags.put(name, runnable);
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
         }
 
         // Iterate through this object's properties' attributes

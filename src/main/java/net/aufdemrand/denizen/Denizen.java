@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.core.*;
 import net.aufdemrand.denizen.events.entity.*;
-import net.aufdemrand.denizen.events.entity.ItemMergesScriptEvent;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;
@@ -361,7 +360,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             org.spigotmc.AsyncCatcher.enabled = false;
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             dB.echoError("Running not-Spigot?!");
         }
 
@@ -702,21 +701,30 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new WorldUnloadsScriptEvent());
 
 
-            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
+            ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
+            dBiome.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
+            dChunk.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
+            dColor.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
+            dCuboid.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
+            dEllipsoid.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
             ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
-            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
+            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
+            dItem.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
             ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
+            dMaterial.registerTags(); // TODO: Automate this once all classes have tag registries
             if (Depends.citizens != null)
                 ObjectFetcher.registerWithObjectFetcher(dNPC.class);   // n@
             ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
-            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
-            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
-            ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
-            ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
+            dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
+
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();

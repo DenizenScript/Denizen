@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Velocity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -16,8 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
-
-import java.util.HashMap;
 
 
 public class BlockDispensesScriptEvent extends BukkitScriptEvent implements Listener {
@@ -28,6 +24,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     // block dispenses <item> (in <area>)
     // <block> dispenses item (in <area>)
     // <block> dispenses <item> (in <area>)
+    //
+    // @Regex ^on [^\s]+ dispense [^\s]+ ( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -131,7 +129,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockDispenses(BlockDispenseEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

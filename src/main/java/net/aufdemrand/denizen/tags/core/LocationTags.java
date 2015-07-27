@@ -8,10 +8,6 @@ import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
 
 
-/**
- * Location tag is a starting point for getting attributes for a
- */
-
 public class LocationTags implements Listener {
 
     public LocationTags(Denizen denizen) {

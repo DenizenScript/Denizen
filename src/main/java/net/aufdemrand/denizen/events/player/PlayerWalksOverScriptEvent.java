@@ -25,6 +25,8 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // player walks over notable
     // player walks over <location>
     //
+    // @Regex ^on player walks over [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player walks over a notable location.
@@ -86,7 +88,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerWalksOver(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
             return;

@@ -1889,7 +1889,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[mechanism]
         // @object dLocation
         // @name base_color
-        // @inout Element
+        // @input Element
         // @description
         // Changes the base color of the banner at this location.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
@@ -1946,7 +1946,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             getBlock().setData((byte) value.asInt());
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
     }
 }

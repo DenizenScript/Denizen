@@ -28,10 +28,12 @@ public class EntityTags {
         dEntity e = null;
 
         // Entity tag may specify a new entity in the <entity[context]...> portion of the tag.
-        if (attribute.hasContext(1))
+        if (attribute.hasContext(1)) {
             // Check if this is a valid entity and update the dEntity object reference.
-            if (attribute.getIntContext(1) >= 1)
+            if (attribute.getIntContext(1) >= 1) {
                 e = dEntity.valueOf("e@" + attribute.getContext(1)); // TODO: Is the e@ needed here? If so, why? Should it be?
+            }
+        }
 
         if (e == null || !e.isValid()) {
             if (!event.hasAlternative()) dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");

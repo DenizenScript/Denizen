@@ -22,6 +22,8 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     // entity explosion primes (in <area>)
     // <entity> explosion primes (in <area>)
     //
+    // @Regex ^on [^\s]+ explosion primes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity decides to explode.
@@ -92,7 +94,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExplosionPrimes(ExplosionPrimeEvent event) {
         entity = new dEntity(event.getEntity());
         radius = event.getRadius();

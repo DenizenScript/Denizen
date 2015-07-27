@@ -22,6 +22,8 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     // @Events
     // player uses portal (in <area>)
     //
+    // @Regex ^on player uses portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable false
     //
     // @Triggers when a player enters a portal.
@@ -93,7 +95,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerEntersPortal(PlayerPortalEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

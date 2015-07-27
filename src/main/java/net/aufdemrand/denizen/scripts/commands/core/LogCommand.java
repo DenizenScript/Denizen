@@ -26,15 +26,18 @@ public class LogCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("type")
-                    && arg.matchesEnum(Type.values()))
+                    && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("file")
-                    && arg.matchesPrefix("file"))
+                    && arg.matchesPrefix("file")) {
                 scriptEntry.addObject("file", arg.asElement());
+            }
 
-            else if (!scriptEntry.hasObject("message"))
-                scriptEntry.addObject("message", arg.asElement());
+            else if (!scriptEntry.hasObject("message")) {
+                scriptEntry.addObject("message", new Element(arg.raw_value));
+            }
 
             else
                 arg.reportUnhandled();

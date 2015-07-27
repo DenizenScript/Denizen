@@ -165,7 +165,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityKilled(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
         damage = new Element(event.getDamage());

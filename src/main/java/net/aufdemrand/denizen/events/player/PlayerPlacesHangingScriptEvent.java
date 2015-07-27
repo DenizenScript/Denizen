@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -18,10 +21,13 @@ import java.util.HashMap;
 
 public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-collide with places block
     // <--[event]
     // @Events
     // player places hanging (in <area>)
     // player places <hanging> (in <area>)
+    //
+    // @Regex ^on player places [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -96,7 +102,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

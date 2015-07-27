@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class dBiome implements dObject, Adjustable {
@@ -120,9 +121,8 @@ public class dBiome implements dObject, Adjustable {
         return this;
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <b@biome.downfall_type>
@@ -131,90 +131,131 @@ public class dBiome implements dObject, Adjustable {
         // Returns this biome's downfall type for when a world has weather.
         // This can be RAIN, SNOW, or NONE.
         // -->
-        if (attribute.startsWith("downfall_type"))
-            return new Element(CoreUtilities.toLowerCase(biome.getDownfallType().name()))
-                    .getAttribute(attribute.fulfill(1));
-
-            // <--[tag]
-            // @attribute <b@biome.humidity>
-            // @returns Element(Decimal)
-            // @description
-            // Returns the humidity of this biome.
-            // -->
-        else if (attribute.startsWith("humidity"))
-            return new Element(biome.getHumidity()).getAttribute(attribute.fulfill(1));
-
-            // <--[tag]
-            // @attribute <b@biome.temperature>
-            // @returns Element(Decimal)
-            // @description
-            // Returns the temperature of this biome.
-            // -->
-        else if (attribute.startsWith("temperature"))
-            return new Element(biome.getTemperature()).getAttribute(attribute.fulfill(1));
-
-            // <--[tag]
-            // @attribute <b@biome.spawnable_entities>
-            // @returns dList(dEntity)
-            // @description
-            // Returns all entities that spawn naturally in this biome.
-            // -->
-        else if (attribute.startsWith("spawnable_entities")) {
-            attribute = attribute.fulfill(1);
-
-            List<EntityType> entityTypes;
-            boolean hasAttribute = true;
-
-            // <--[tag]
-            // @attribute <b@biome.spawnable_entities.ambient>
-            // @returns dList(dEntity)
-            // @description
-            // Returns the entities that spawn naturally in ambient locations.
-            // Default examples: BAT
-            // -->
-            if (attribute.startsWith("ambient"))
-                entityTypes = biome.getAmbientEntities();
-
-                // <--[tag]
-                // @attribute <b@biome.spawnable_entities.creatures>
-                // @returns dList(dEntity)
-                // @description
-                // Returns the entities that spawn naturally in creature locations.
-                // Default examples: PIG, COW, CHICKEN...
-                // -->
-            else if (attribute.startsWith("creatures"))
-                entityTypes = biome.getCreatureEntities();
-
-                // <--[tag]
-                // @attribute <b@biome.spawnable_entities.monsters>
-                // @returns dList(dEntity)
-                // @description
-                // Returns the entities that spawn naturally in monster locations.
-                // Default examples: CREEPER, ZOMBIE, SKELETON...
-                // -->
-            else if (attribute.startsWith("monsters"))
-                entityTypes = biome.getMonsterEntities();
-
-                // <--[tag]
-                // @attribute <b@biome.spawnable_entities.water>
-                // @returns dList(dEntity)
-                // @description
-                // Returns the entities that spawn naturally in underwater locations.
-                // Default examples: SQUID
-                // -->
-            else if (attribute.startsWith("water"))
-                entityTypes = biome.getWaterEntities();
-
-            else {
-                entityTypes = biome.getAllEntities();
-                hasAttribute = false;
+        registerTag("downfall_type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(CoreUtilities.toLowerCase(((dBiome) object).biome.getDownfallType().name()))
+                        .getAttribute(attribute.fulfill(1));
             }
+        });
 
-            dList list = new dList();
-            for (EntityType entityType : entityTypes) {
-                list.add(entityType.name());
+        // <--[tag]
+        // @attribute <b@biome.humidity>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the humidity of this biome.
+        // -->
+        registerTag("humidity", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dBiome) object).biome.getHumidity())
+                        .getAttribute(attribute.fulfill(1));
             }
-            return list.getAttribute(hasAttribute ? attribute.fulfill(1) : attribute);
+        });
+        // <--[tag]
+        // @attribute <b@biome.temperature>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the temperature of this biome.
+        // -->
+        registerTag("temperature", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dBiome) object).biome.getTemperature())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+        // <--[tag]
+        // @attribute <b@biome.spawnable_entities>
+        // @returns dList(dEntity)
+        // @description
+        // Returns all entities that spawn naturally in this biome.
+        // -->
+        registerTag("spawnable_entities", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                attribute = attribute.fulfill(1);
+                BiomeNMS biome = ((dBiome) object).biome;
+
+                List<EntityType> entityTypes;
+                boolean hasAttribute = true;
+
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.ambient>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in ambient locations.
+                // Default examples: BAT
+                // -->
+                if (attribute.startsWith("ambient"))
+                    entityTypes = biome.getAmbientEntities();
+
+                    // <--[tag]
+                    // @attribute <b@biome.spawnable_entities.creatures>
+                    // @returns dList(dEntity)
+                    // @description
+                    // Returns the entities that spawn naturally in creature locations.
+                    // Default examples: PIG, COW, CHICKEN...
+                    // -->
+                else if (attribute.startsWith("creatures"))
+                    entityTypes = biome.getCreatureEntities();
+
+                    // <--[tag]
+                    // @attribute <b@biome.spawnable_entities.monsters>
+                    // @returns dList(dEntity)
+                    // @description
+                    // Returns the entities that spawn naturally in monster locations.
+                    // Default examples: CREEPER, ZOMBIE, SKELETON...
+                    // -->
+                else if (attribute.startsWith("monsters"))
+                    entityTypes = biome.getMonsterEntities();
+
+                    // <--[tag]
+                    // @attribute <b@biome.spawnable_entities.water>
+                    // @returns dList(dEntity)
+                    // @description
+                    // Returns the entities that spawn naturally in underwater locations.
+                    // Default examples: SQUID
+                    // -->
+                else if (attribute.startsWith("water"))
+                    entityTypes = biome.getWaterEntities();
+
+                else {
+                    entityTypes = biome.getAllEntities();
+                    hasAttribute = false;
+                }
+
+                dList list = new dList();
+                for (EntityType entityType : entityTypes) {
+                    list.add(entityType.name());
+                }
+                return list.getAttribute(hasAttribute ? attribute.fulfill(1) : attribute);
+            }
+        });
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
+        }
+        registeredTags.put(name, runnable);
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+        if (attribute == null) return null;
+
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
         }
 
         return new Element(identify()).getAttribute(attribute);

@@ -94,7 +94,7 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onInvPicksUpItem(InventoryPickupItemEvent event) {
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         item = new dItem(event.getItem());

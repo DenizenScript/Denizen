@@ -21,6 +21,8 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     // @Events
     // slime splits (into <#>) (in <area>)
     //
+    // @Regex ^on slime splits( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a slime splits into smaller slimes.
@@ -99,7 +101,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSlimeSplits(SlimeSplitEvent event) {
         entity = new dEntity(event.getEntity());
         count = event.getCount();

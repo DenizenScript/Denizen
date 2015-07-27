@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -18,11 +17,14 @@ import java.util.HashMap;
 
 public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: de-colide with entity despawns
     // <--[event]
     // @Events
     // item despawns (in <area>)
     // <item> despawns (in <area>)
     // <material> despawns (in <area>)
+    //
+    // @Regex ^on [^\s]+ despawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -49,9 +51,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String entTest = CoreUtilities.getXthArg(0, lower);
-        return cmd.equals("despawns")
-                && (entTest.equals("item") || dMaterial.matches(entTest) || dItem.matches(entTest));
+        return cmd.equals("despawns");
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemDespawns(ItemDespawnEvent event) {
         location = new dLocation(event.getLocation());
         item = new dItem(event.getEntity().getItemStack());

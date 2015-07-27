@@ -28,6 +28,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     // <entity> interacts with block (in <area>)
     // entity interacts with block (in <area>)
     //
+    // @Regex ^on [^\s]+ interacts with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity interacts with a block (EG an arrow hits a button)
@@ -110,7 +112,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityInteract(EntityInteractEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());

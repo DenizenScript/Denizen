@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockGrowEvent;
 
-import java.util.HashMap;
-
 public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block grows (in <area>)
     // <block> grows (in <area>)
+    //
+    // @Regex ^on [^\s]+ grows( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -93,7 +93,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockGrows(BlockGrowEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());

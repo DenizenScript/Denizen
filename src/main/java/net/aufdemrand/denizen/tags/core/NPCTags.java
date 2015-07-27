@@ -56,11 +56,13 @@ public class NPCTags implements Listener {
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
             // Check if this is a valid player and update the dPlayer object reference.
-            if (dNPC.matches(attribute.getContext(1)))
+            if (dNPC.matches(attribute.getContext(1))) {
                 n = dNPC.valueOf(attribute.getContext(1));
+            }
             else {
-                if (!event.hasAlternative())
+                if (!event.hasAlternative()) {
                     dB.echoError("Could not match '" + attribute.getContext(1) + "' to a valid NPC!");
+                }
                 return;
             }
 

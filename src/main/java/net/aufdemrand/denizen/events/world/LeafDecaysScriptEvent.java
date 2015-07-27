@@ -82,7 +82,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onLeafDecays(LeavesDecayEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

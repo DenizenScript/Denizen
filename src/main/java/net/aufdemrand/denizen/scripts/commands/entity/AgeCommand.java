@@ -45,12 +45,12 @@ public class AgeCommand extends AbstractCommand {
     //     on player right clicks entity with i@baby_wand:
     //
     //     # Play an effect, and run the age command on the entity
-    //     - playeffect <c.entity.location> effect:mob_spell qty:100 data:1 offset:0.5
+    //     - playeffect <c.entity.location> effect:mob_spell quantity:100 data:1 offset:0.5
     //     - age <c.entity> baby
     //
     //     # ...and again for the aged_wand item
     //     on player right clicks entity with i@aged_wand:
-    //     - playeffect <c.entity.location> effect:mob_spell qty:200 data:0 offset:0.5
+    //     - playeffect <c.entity.location> effect:mob_spell quantity:200 data:0 offset:0.5
     //     - age <c.entity>
     //
     //

@@ -32,14 +32,14 @@ public class ItemQuantity implements Property {
         if (attribute == null) return "null";
 
         // <--[tag]
-        // @attribute <i@item.qty>
+        // @attribute <i@item.quantity>
         // @returns Element(Number)
         // @mechanism dItem.quantity
         // @group properties
         // @description
         // Returns the number of items in the dItem's itemstack.
         // -->
-        if (attribute.startsWith("qty"))
+        if (attribute.startsWith("quantity") || attribute.startsWith("qty"))
             return new Element(item.getItemStack().getAmount())
                     .getAttribute(attribute.fulfill(1));
 
@@ -82,7 +82,7 @@ public class ItemQuantity implements Property {
         // @description
         // Changes the number of items in this stack.
         // @tags
-        // <i@item.qty>
+        // <i@item.quantity>
         // <i@item.max_stack>
         // -->
 

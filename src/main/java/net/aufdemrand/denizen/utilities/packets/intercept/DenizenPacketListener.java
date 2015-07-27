@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 public class DenizenPacketListener extends AbstractListenerPlayIn {
@@ -36,8 +37,19 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
             if (tag.hasKey("Denizen Item Script")) {
                 NBTTagCompound display = tag.getCompound("display");
                 NBTTagList nbtLore = display.hasKey("Lore") ? (NBTTagList) display.get("Lore") : new NBTTagList();
-                nbtLore.add(new NBTTagString(tag.getString("Denizen Item Script")));
-                display.set("Lore", nbtLore);
+                try {
+                    if (nbtLore.size() == 0) {
+                        nbtLore.add(new NBTTagString(tag.getString("Denizen Item Script")));
+                    }
+                    else {
+                        List<NBTBase> list = (List<NBTBase>) nbttaglist_list.get(nbtLore);
+                        list.add(0, new NBTTagString(tag.getString("Denizen Item Script")));
+                    }
+                    display.set("Lore", nbtLore);
+                }
+                catch (IllegalAccessException e) {
+                    dB.echoError(e);
+                }
                 tag.set("display", display);
                 itemStack.setTag(tag);
             }
@@ -82,10 +94,13 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
     ///////////
 
     private static final Field resource_pack_hash, resource_pack_status;
+    private static final Field nbttaglist_list;
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayInResourcePackStatus.class);
         resource_pack_hash = fields.get("a");
         resource_pack_status = fields.get("b");
+        fields = PacketHelper.registerFields(NBTTagList.class);
+        nbttaglist_list = fields.get("list");
     }
 }

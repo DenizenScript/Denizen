@@ -24,6 +24,8 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     // <item> spawns (in <area>)
     // <material> spawns (in <area>)
     //
+    // @Regex ^on [^\s]+ spawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an item entity spawns.
@@ -99,7 +101,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemSpawns(ItemSpawnEvent event) {
         Item entity = event.getEntity();
         location = new dLocation(event.getLocation());

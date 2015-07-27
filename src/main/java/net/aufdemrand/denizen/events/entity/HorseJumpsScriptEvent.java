@@ -22,6 +22,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     // horse jumps (in <area>)
     // (<color>) (<type>) jumps (in <area>)
     //
+    // @Regex ^on [^\s]+( [^\s]+)? jumps( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a horse jumps.
@@ -109,7 +111,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHorseJumps(HorseJumpEvent event) {
         entity = new dEntity(event.getEntity());
         color = new Element(event.getEntity().getColor().name());

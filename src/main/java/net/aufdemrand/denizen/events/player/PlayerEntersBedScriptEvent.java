@@ -22,6 +22,8 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // player enters bed (in <area>)
     //
+    // @Regex ^on player enters bed( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player enters a bed.
@@ -82,7 +84,7 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerEntersBed(PlayerBedEnterEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

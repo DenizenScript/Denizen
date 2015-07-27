@@ -24,6 +24,8 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     // player shears <entity> (in <area>)
     // player shears <color> sheep (in <area>)
     //
+    // @Regex ^on player shears [^\s]+( sheep)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player shears an entity.
@@ -55,7 +57,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         }
 
         String color = CoreUtilities.getXthArg(3, lower).equals("sheep") ? CoreUtilities.getXthArg(2, lower) : "";
-        if(color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
+        if (color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
             return false;
         }
 
@@ -95,7 +97,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerShears(PlayerShearEntityEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

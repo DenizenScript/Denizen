@@ -24,6 +24,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // sheep dyed (<color>) (in <area>)
     // player dyes sheep (<color>) (in <area>)
     //
+    // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Warning Determine color will not update the clientside, use - wait 1t and adjust <context.entity> color:YOUR_COLOR to force-update.
@@ -59,7 +61,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String sheep = cmd.equals("dyed") ? CoreUtilities.getXthArg(0, lower): CoreUtilities.getXthArg(3, lower);
+        String sheep = cmd.equals("dyed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
         if (!entity.matchesEntity(sheep)) {
             return false;
         }
@@ -115,7 +117,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSheepDyed(SheepDyeWoolEvent event) {
         entity = new dEntity(event.getEntity());
         color = DyeColor.valueOf(event.getColor().toString());

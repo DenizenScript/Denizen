@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -205,8 +206,7 @@ public class dEllipsoid implements dObject, Notable {
         return this;
     }
 
-    @Override
-    public String getAttribute(Attribute attribute) {
+    public static void registerTags() {
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.get_blocks[<material>|...]>
@@ -216,14 +216,17 @@ public class dEllipsoid implements dObject, Notable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        if (attribute.startsWith("get_blocks")) {
-            if (attribute.hasContext(1))
-                return new dList(getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new dList(getBlocks())
-                        .getAttribute(attribute.fulfill(1));
-        }
+        registerTag("get_blocks", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (attribute.hasContext(1))
+                    return new dList(((dEllipsoid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                            .getAttribute(attribute.fulfill(1));
+                else
+                    return new dList(((dEllipsoid) object).getBlocks())
+                            .getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.location>
@@ -231,9 +234,12 @@ public class dEllipsoid implements dObject, Notable {
         // @description
         // Returns the location of the ellipsoid.
         // -->
-        if (attribute.startsWith("location")) {
-            return loc.getAttribute(attribute.fulfill(1));
-        }
+        registerTag("location", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return ((dEllipsoid) object).loc.getAttribute(attribute.fulfill(1));
+            }
+        });
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.size>
@@ -241,10 +247,37 @@ public class dEllipsoid implements dObject, Notable {
         // @description
         // Returns the size of the ellipsoid.
         // -->
-        if (attribute.startsWith("size")) {
-            return size.getAttribute(attribute.fulfill(1));
-        }
+        registerTag("size", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return ((dEllipsoid) object).size.getAttribute(attribute.fulfill(1));
+            }
+        });
 
+    }
+
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+
+    public static void registerTag(String name, TagRunnable runnable) {
+        if (runnable.name == null) {
+            runnable.name = name;
+        }
+        registeredTags.put(name, runnable);
+    }
+
+    @Override
+    public String getAttribute(Attribute attribute) {
+
+        // TODO: Scrap getAttribute, make this functionality a core system
+        String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
+        TagRunnable tr = registeredTags.get(attrLow);
+        if (tr != null) {
+            if (!tr.name.equals(attrLow)) {
+                net.aufdemrand.denizencore.utilities.debugging.dB.echoError(attribute.getScriptEntry() != null ? attribute.getScriptEntry().getResidingQueue() : null,
+                        "Using deprecated form of tag '" + tr.name + "': '" + attrLow + "'.");
+            }
+            return tr.run(attribute, this);
+        }
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);

@@ -25,6 +25,8 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     // <item> merges (in <area>)
     // <material> merges (in <area>)
     //
+    // @Regex ^on [^\s]+ merges( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an item entity merges into another item entity.
@@ -40,6 +42,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     public ItemMergesScriptEvent() {
         instance = this;
     }
+
     public static ItemMergesScriptEvent instance;
     public dItem item;
     public dLocation location;
@@ -102,7 +105,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemMerges(ItemMergeEvent event) {
         Item entity = event.getEntity();
         Item target = event.getTarget();

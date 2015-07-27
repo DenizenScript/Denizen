@@ -52,7 +52,7 @@ public class ItemFlags implements Property {
         // @group properties
         // @description
         // Returns a list of flags set on this item.
-        // Valid flags include: HIDE_ATTRUBTES, HIDE_DESTROYS, HIDE_ENCHANTS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS, and HIDE_UNBREAKABLE
+        // Valid flags include: HIDE_ATTRIBUTES, HIDE_DESTROYS, HIDE_ENCHANTS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS, and HIDE_UNBREAKABLE
         // -->
         if (attribute.startsWith("flags")) {
             return flags()

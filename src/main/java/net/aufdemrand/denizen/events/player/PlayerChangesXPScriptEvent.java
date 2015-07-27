@@ -19,9 +19,12 @@ import java.util.HashMap;
 
 public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: in area
     // <--[event]
     // @Events
     // player changes xp
+    //
+    // @Regex ^on player changes xp$
     //
     // @Cancellable true
     //
@@ -94,7 +97,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChangesXP(PlayerExpChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

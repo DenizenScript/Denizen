@@ -23,6 +23,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // player places block (in <area>)
     // player places <material> (in <area>)
     //
+    // @Regex ^on player places [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player places a block.
@@ -105,7 +107,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerPlacesBlock(BlockPlaceEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

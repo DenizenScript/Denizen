@@ -22,7 +22,9 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player levels up (from <level>/to <level>)
+    // player levels up (from <level>) (to <level>)
+    //
+    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?$
     //
     // @Cancellable false
     //
@@ -52,12 +54,12 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 0; index < data.size(); index++) {
             if (data.get(index).equals("from")) {
-                if (aH.getIntegerFrom(data.get(index+1)) != event.getOldLevel()){
+                if (aH.getIntegerFrom(data.get(index + 1)) != event.getOldLevel()) {
                     return false;
                 }
             }
             if (data.get(index).equals("to")) {
-                if (aH.getIntegerFrom(data.get(index+1)) != event.getNewLevel()){
+                if (aH.getIntegerFrom(data.get(index + 1)) != event.getNewLevel()) {
                     return false;
                 }
             }
@@ -99,7 +101,7 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerLevels(PlayerLevelChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

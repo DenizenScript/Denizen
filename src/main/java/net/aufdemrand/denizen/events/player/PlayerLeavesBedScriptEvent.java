@@ -22,6 +22,8 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // player leaves bed (in <area>)
     //
+    // @Regex ^on player leaves bed( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player leaves a bed.
@@ -82,7 +84,7 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerLeavesBed(PlayerBedLeaveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

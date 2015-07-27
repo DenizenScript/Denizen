@@ -14,14 +14,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
 
-import java.util.HashMap;
-
 public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block ignites (in <area>)
     // <material> ignites (in <area>)
+    //
+    // @Regex ^on [^\s]+ ignites( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -106,7 +106,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

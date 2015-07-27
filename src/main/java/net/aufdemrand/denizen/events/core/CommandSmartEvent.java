@@ -162,7 +162,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // command
     // <command_name>|... command (in <area>)
     //
-    // @Regex on [^\s]+ command(in \w+)?
+    // @Regex ^on( [^\s]+)? command( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player or console runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.
@@ -177,7 +177,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // "FULFILLED" to tell Bukkit the command was handled.
     //
     // -->
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
@@ -227,7 +227,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void serverCommand(ServerCommandEvent event) {
 
         if (event.getCommand().trim().length() == 0)

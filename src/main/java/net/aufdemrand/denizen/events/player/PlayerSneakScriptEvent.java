@@ -24,6 +24,8 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     // player starts sneaking (in <area>)
     // player stops sneaking (in <area>)
     //
+    // @Regex ^on player (toggles|starts|stops) sneaking( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts or stops sneaking.
@@ -43,7 +45,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sneak");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).startsWith("sneak");
     }
 
     @Override
@@ -92,7 +94,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

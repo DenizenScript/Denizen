@@ -23,6 +23,8 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
     // @Events
     // player walks (in <area>)
     //
+    // @Regex ^on player walks( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning This event fires very very rapidly!
     //
     // @Cancellable true
@@ -90,7 +92,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerMoves(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

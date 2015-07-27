@@ -26,6 +26,8 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // entity destroys <vehicle> (in <area>)
     // <entity> destroys <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ destroys [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity enters a vehicle.
@@ -108,7 +110,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleDestroyed(VehicleDestroyEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;

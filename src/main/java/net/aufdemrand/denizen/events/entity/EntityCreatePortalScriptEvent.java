@@ -23,6 +23,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     // entity creates portal (in <area>)
     // <entity> creates portal (in <area>)
     //
+    // @Regex ^on [^\s]+ creates portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity creates a portal.
@@ -97,7 +99,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
         entity = new dEntity(event.getEntity());
         portal_type = new Element(event.getPortalType().toString());

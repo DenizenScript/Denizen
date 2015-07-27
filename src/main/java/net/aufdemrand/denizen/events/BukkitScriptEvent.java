@@ -65,10 +65,10 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("notable")) {
             return true;
         }
-        comparedto = "l@"+comparedto;
+        comparedto = "l@" + comparedto;
         dLocation loc = dLocation.valueOf(comparedto);
         if (loc == null) {
-            dB.echoError("Invalid location in location comparison string: "+comparedto);
+            dB.echoError("Invalid location in location comparison string: " + comparedto);
             return false;
         }
         return loc.getBlock().equals(location.getBlock());

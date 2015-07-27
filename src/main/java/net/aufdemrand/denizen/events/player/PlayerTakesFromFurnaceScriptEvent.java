@@ -24,6 +24,8 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     // player takes <item> from furnace (in <area>)
     // player takes <material> from furnace (in <area>)
     //
+    // @Regex ^on player takes [^\s]+ from furnace( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a player takes an item from a furnace.
     // @Context
     // <context.location> returns the dLocation of the furnace.
@@ -96,7 +98,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTakesFromFurnace(FurnaceExtractEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

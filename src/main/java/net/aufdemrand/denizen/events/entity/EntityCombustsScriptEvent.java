@@ -24,6 +24,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // entity combusts (in <area>)
     // <entity> combusts (in <area>)
     //
+    // @Regex ^on [^\s]+ combusts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity catches fire.
@@ -97,7 +99,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityCombusts(EntityCombustEvent event) {
         entity = new dEntity(event.getEntity());
         duration = new Duration(event.getDuration());

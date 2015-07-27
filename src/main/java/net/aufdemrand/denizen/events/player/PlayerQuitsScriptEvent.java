@@ -23,6 +23,8 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     // player quits
     // player quit
     //
+    // @Regex ^on player (quit|quits)$
+    //
     // @Cancellable false
     //
     // @Triggers when a player quit the server.
@@ -89,7 +91,7 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerQuits(PlayerQuitEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
 
-import java.util.HashMap;
-
 public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block forms (in <area>)
     // <block> forms (in <area>)
+    //
+    // @Regex ^on [^\s]+ forms( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -89,7 +89,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockForms(BlockFormEvent event) {
 
         location = new dLocation(event.getBlock().getLocation());

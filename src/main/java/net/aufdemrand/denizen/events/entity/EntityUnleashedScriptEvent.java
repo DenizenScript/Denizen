@@ -21,6 +21,8 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // entity unleashed (because <reason>) (in <area>)
     // <entity> unleashed (because <reason>) (in <area>)
     //
+    // @Regex ^on [^\s]+ unleashed( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity is unleashed.
@@ -28,8 +30,6 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     // @Context
     // <context.entity> returns the dEntity.
     // <context.reason> returns an Element of the reason for the unleashing.
-    //
-    // @Note
     // Reasons include DISTANCE, HOLDER_GONE, PLAYER_UNLEASH, and UNKNOWN
     //
     // -->
@@ -95,7 +95,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityUnleashed(EntityUnleashEvent event) {
         entity = new dEntity(event.getEntity());
         reason = new Element(event.getReason().toString());

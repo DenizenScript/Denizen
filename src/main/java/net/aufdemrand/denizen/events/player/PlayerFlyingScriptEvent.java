@@ -24,6 +24,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     // player starts flying (in <area>)
     // player stops flying (in <area>)
     //
+    // @Regex ^on player (toggles|starts|stops) flying( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts or stops flying.
@@ -43,8 +45,8 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).equals("flying")
-                || CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).equals("flight");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flying")
+                || CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("flight");
     }
 
     @Override
@@ -93,7 +95,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerFlying(PlayerToggleFlightEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

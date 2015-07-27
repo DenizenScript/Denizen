@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockCanBuildEvent;
 
-import java.util.HashMap;
-
 public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block being built (on <material>) (in <area>)
     // <material> being built (on <material>) (in <area>)
+    //
+    // @Regex ^on [^\s]+ being built( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -109,7 +109,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         old_material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
