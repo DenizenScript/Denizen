@@ -24,6 +24,8 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     // <entity> enters vehicle (in <area>)
     // <entity> enters <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ enters [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity enters a vehicle.
@@ -94,7 +96,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityEntersVehicle(VehicleEnterEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = new dEntity(event.getEntered());

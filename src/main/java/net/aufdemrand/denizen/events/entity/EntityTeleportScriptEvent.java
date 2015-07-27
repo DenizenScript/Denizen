@@ -25,6 +25,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // entity teleports (in <area>)
     // <entity> teleports (in <area>)
     //
+    // @Regex ^on [^\s]+ teleports( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when an entity teleports.
     //
     // @Cancellable true
@@ -45,6 +47,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     public EntityTeleportScriptEvent() {
         instance = this;
     }
+
     public static EntityTeleportScriptEvent instance;
     public dEntity entity;
     public dLocation from;
@@ -125,7 +128,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityTeleports(EntityTeleportEvent event) {
         // TODO: cuboids?
         to = new dLocation(event.getTo());
@@ -141,7 +144,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         event.setTo(to);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleports(PlayerTeleportEvent event) {
 
         if (dEntity.isNPC(event.getPlayer())) {

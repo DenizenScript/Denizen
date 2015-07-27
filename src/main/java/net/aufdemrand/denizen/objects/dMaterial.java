@@ -678,8 +678,8 @@ public class dMaterial implements dObject {
             TreeType.valueOf(material.toString());
             return true;
         }
-        catch (Exception e){
-            switch(material) {
+        catch (Exception e) {
+            switch (material) {
                 case SAPLING:
                 case HUGE_MUSHROOM_1:
                 case HUGE_MUSHROOM_2:

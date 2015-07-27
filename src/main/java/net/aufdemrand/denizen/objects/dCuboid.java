@@ -1221,7 +1221,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("notable_name", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(NotableManager.getSavedId((dCuboid)object)).getAttribute(attribute.fulfill(1));
+                return new Element(NotableManager.getSavedId((dCuboid) object)).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1301,7 +1301,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         Element value = mechanism.getValue();
 
         // TODO: Better mechanisms!
-        
+
         if (mechanism.matches("outset")) {
             int mod = 1;
             if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))

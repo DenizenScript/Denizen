@@ -99,7 +99,7 @@ public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBucketEmpty(PlayerBucketEmptyEvent event) {
         entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());

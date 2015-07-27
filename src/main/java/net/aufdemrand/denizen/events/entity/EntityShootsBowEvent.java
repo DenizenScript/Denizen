@@ -32,6 +32,8 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     // entity shoots <item> (in <area>)
     // <entity> shoots <item> (in <area>)
     //
+    // @Regex ^on [^\s]+ shoots [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity shoots something out of a bow.
@@ -147,7 +149,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityShootsBow(EntityShootBowEvent event) {
         entity = new dEntity(event.getEntity());
         force = event.getForce() * 3;

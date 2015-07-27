@@ -30,6 +30,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // <entity> changes block (into <material>) (in <area>)
     // <entity> changes <material> (into <material>) (in <area>)
     //
+    // @Regex ^on [^\s]+ changes [^\s]+( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity changes the material of a block.
@@ -128,7 +130,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityChangesBlock(EntityChangeBlockEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());

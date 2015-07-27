@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFadeEvent;
 
-import java.util.HashMap;
-
 public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block fades (in <area>)
     // <block> fades (in <area>)
+    //
+    // @Regex ^on [^\s]+ fades( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -89,7 +89,7 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockFades(BlockFadeEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

@@ -18,12 +18,16 @@ import java.util.HashMap;
 
 public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: in area
     // <--[event]
     // @Events
     // player closes inventory
     // player closes <inventory type>
     // npc closes inventory
     // npc closes <inventory type>
+    //
+    // @Regex ^on (player|npc) closes [^\s]+$
+    //
     //
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
     //
@@ -104,7 +108,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerClosesInv(InventoryCloseEvent event) {
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         entity = new dEntity(event.getPlayer());

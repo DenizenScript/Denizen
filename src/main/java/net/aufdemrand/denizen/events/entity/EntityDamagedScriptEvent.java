@@ -175,7 +175,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamaged(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
         damage = new Element(event.getDamage());

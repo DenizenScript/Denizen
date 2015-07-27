@@ -25,6 +25,8 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // player fishes (<entity>) (while <state>) (in <area>)
     //
+    // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player uses a fishing rod.
@@ -58,14 +60,14 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
         String fish = CoreUtilities.getXthArg(2, lower);
         if (entity != null && fish.length() > 0) {
-            if(!entity.matchesEntity(fish)) {
+            if (!entity.matchesEntity(fish)) {
                 return false;
             }
         }
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 0; index < data.size(); index++) {
             if (data.get(index).equals("while")) {
-                if (!data.get(index+1).equalsIgnoreCase(state.asString())){
+                if (!data.get(index + 1).equalsIgnoreCase(state.asString())) {
                     return false;
                 }
             }
@@ -118,7 +120,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerFishes(PlayerFishEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

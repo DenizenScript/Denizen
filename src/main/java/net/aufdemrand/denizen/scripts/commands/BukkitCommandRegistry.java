@@ -769,7 +769,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -781,7 +781,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // an entity, specify a generic entity object. Drop can also reward players
         // with experience orbs by using the 'xp' argument.
         //
-        // For all three usages, you can optionally specify an integer with 'qty:'
+        // For all three usages, you can optionally specify an integer with 'quantity:'
         // prefix to drop multiple items/entities/xp.
         // For items, you can add 'speed:' to modify the launch velocity.
 
@@ -794,7 +794,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to reward a player
-        // - drop xp qty:500 <player.location>
+        // - drop xp quantity:500 <player.location>
 
         // @Usage
         // Use to drop a nasty surprise (exploding TNT)
@@ -1215,7 +1215,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)
+        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (to:<inventory>) (slot:<#>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
@@ -1228,13 +1228,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.money>
         // @Usage
         // Use to give money to the player.
-        // - give money qty:10
+        // - give money quantity:10
         // @Usage
         // Use to give XP to the player.
-        // - give xp qty:10
+        // - give xp quantity:10
         // @Usage
         // Use to give an item to the player.
-        // - give i@iron_sword qty:1
+        // - give i@iron_sword quantity:1
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
@@ -1563,19 +1563,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Use to listen for when the player kills 10 zombies.
-        // - listen kill type:entity target:zombie qty:10 script:ZombiesKilled
+        // - listen kill type:entity target:zombie quantity:10 script:ZombiesKilled
 
         // @Usage
         // Use to listen for when the player kills 3 zombies named "Boss"
-        // - listen kill type:entity target:zombie qty:3 mobnames:Boss script:ZombiesKilled
+        // - listen kill type:entity target:zombie quantity:3 mobnames:Boss script:ZombiesKilled
 
         // @Usage
         // Use to listen for when a player mines 1 iron ore.
-        // - listen block type:break block:iron_ore qty:1 script:IronMined
+        // - listen block type:break block:iron_ore quantity:1 script:IronMined
 
         // @Usage
         // Use to listen for when a player crafts 1 wooden sword.
-        // - listen item type:craft item:wood_sword qty:1 script:SwordCrafted
+        // - listen item type:craft item:wood_sword quantity:1 script:SwordCrafted
 
         // @Usage
         // Use to... (TODO: Itemdrop)
@@ -1927,7 +1927,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name PlayEffect
-        // @Syntax playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
+        // @Syntax playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
@@ -2795,7 +2795,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (quantity:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.

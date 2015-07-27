@@ -87,7 +87,7 @@ public class HurtCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(), amountElement.debug()
                 + aH.debugList("entities", entities)
-                + (cause == null ? "": cause.debug())
+                + (cause == null ? "" : cause.debug())
                 + (source == null ? "" : source.debug()));
 
         double amount = amountElement.asDouble();
@@ -106,9 +106,9 @@ public class HurtCommand extends AbstractCommand {
             }
             else {
                 EntityDamageEvent ede = source == null ? new EntityDamageEvent(entity.getBukkitEntity(),
-                        EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount):
+                        EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount) :
                         new EntityDamageByEntityEvent(source.getBukkitEntity(),
-                        entity.getBukkitEntity(), EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount);
+                                entity.getBukkitEntity(), EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount);
                 Bukkit.getPluginManager().callEvent(ede);
                 if (!ede.isCancelled()) {
                     if (source == null) {

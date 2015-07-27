@@ -22,6 +22,8 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     // @Events
     // player respawns (at bed/elsewhere)
     //
+    // @Regex ^on player respawns( at (bed|elsewhere))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player respawns.
@@ -99,7 +101,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawns(PlayerRespawnEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -23,7 +23,9 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     // player toggles sprinting (in <area>)
     // player starts sprinting (in <area>)
     // player stops sprinting (in <area>)
-    // 
+    //
+    // @Regex ^on player (toggles|starts\stops) sprinting( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player starts or stops sprinting.
@@ -43,7 +45,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2,CoreUtilities.toLowerCase(s)).startsWith("sprint");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).startsWith("sprint");
     }
 
     @Override
@@ -92,7 +94,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerSprint(PlayerToggleSprintEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

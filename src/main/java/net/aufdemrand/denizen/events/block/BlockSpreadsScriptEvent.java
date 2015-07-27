@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockSpreadEvent;
 
-import java.util.HashMap;
-
 public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block spreads (in <area>)
     // <material> spreads (in <area>)
+    //
+    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -96,7 +96,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockSpreads(BlockSpreadEvent event) {
         source = new dLocation(event.getBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());

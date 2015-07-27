@@ -18,6 +18,8 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     // entity despawns (in <area>)
     // <entity> despawns (in <area>)
     //
+    // @Regex ^on [^\s]+ despawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning this event fires very rapidly.
     //
     // @Switch cause death|chunk_unload|other

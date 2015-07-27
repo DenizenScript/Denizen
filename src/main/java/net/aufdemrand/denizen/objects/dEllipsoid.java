@@ -71,7 +71,8 @@ public class dEllipsoid implements dObject, Notable {
 
         try {
             return dEllipsoid.valueOf(arg) != null;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return false;
         }
     }
@@ -254,6 +255,7 @@ public class dEllipsoid implements dObject, Notable {
         });
 
     }
+
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
 
     public static void registerTag(String name, TagRunnable runnable) {
@@ -277,7 +279,7 @@ public class dEllipsoid implements dObject, Notable {
             return tr.run(attribute, this);
         }
         // Iterate through this object's properties' attributes
-        for(Property property: PropertyParser.getProperties(this)) {
+        for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
             if (returned != null) return returned;
         }

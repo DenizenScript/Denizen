@@ -21,6 +21,8 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     // vehicle moves (in <area>)
     // <vehicle> moves (in <area>)
     //
+    // @Regex ^on [^\s]+ moves( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning This event fires very very rapidly!
     //
     // @Triggers when a vehicle moves in the slightest.
@@ -94,7 +96,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleMove(VehicleMoveEvent event) {
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());

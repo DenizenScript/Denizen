@@ -90,7 +90,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBrews(FurnaceBurnEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         item = new dItem(event.getFuel());

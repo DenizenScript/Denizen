@@ -24,6 +24,8 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     // <entity> exits vehicle (in <area>)
     // <entity> exits <vehicle> (in <area>)
     //
+    // @Regex ^on [^\s]+ exits [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity exits a vehicle.
@@ -94,7 +96,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExitsVehicle(VehicleExitEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = new dEntity(event.getExited());

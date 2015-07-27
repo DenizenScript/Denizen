@@ -53,7 +53,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String rCheck = CoreUtilities.getXthArg(2,lower).equals("because") ? CoreUtilities.getXthArg(3,lower):CoreUtilities.getXthArg(5,lower);
+        String rCheck = CoreUtilities.getXthArg(2, lower).equals("because") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(5, lower);
         if (rCheck.length() > 0 && !rCheck.equals(CoreUtilities.toLowerCase(reason.asString()))) {
             return false;
         }
@@ -89,7 +89,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent event) {
         world = new dWorld(event.getWorld());
         reason = new Element(event.getReason().toString());

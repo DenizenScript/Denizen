@@ -19,6 +19,8 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     // @Events
     // pig zapped (in <area>)
     //
+    // @Regex ^on pig zapped( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a pig is zapped by lightning and turned into a pig zombie.
@@ -80,7 +82,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPigZapped(PigZapEvent event) {
         pig = new dEntity(event.getEntity());
         pig_zombie = new dEntity(event.getPigZombie());

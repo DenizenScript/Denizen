@@ -21,6 +21,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     // projectile launched (in <area>)
     // <entity> launched (in <area>)
     //
+    // @Regex ^on [^\s]+ launched( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a projectile is launched.
@@ -88,7 +90,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getEntity().getLocation());

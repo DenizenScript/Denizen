@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 
-import java.util.HashMap;
-
 public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block physics (in <area>)
     // <material> physics (in <area>)
+    //
+    // @Regex ^on [^\s]+ physics( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Warning This event may fire very rapidly.
     //
@@ -95,7 +95,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         new_material = dMaterial.getMaterialFrom(event.getChangedType());

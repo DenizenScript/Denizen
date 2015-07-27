@@ -34,6 +34,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <entity> dies (in <area>)
     // <entity> death (in <area>)
     //
+    // @Regex ^on [^\s]+ (death|dies)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
+    //
     // @Triggers when an entity dies.
     //
     // @Context
@@ -174,7 +177,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
         entity = new dEntity(event.getEntity());
 

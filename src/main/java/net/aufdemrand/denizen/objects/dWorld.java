@@ -70,13 +70,16 @@ public class dWorld implements dObject, Adjustable {
 
         World returnable = null;
 
-        for (World world : Bukkit.getWorlds())
-            if (world.getName().equalsIgnoreCase(string))
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().equalsIgnoreCase(string)) {
                 returnable = world;
+            }
+        }
 
         if (returnable != null) {
-            if (worlds.containsKey(returnable.getName()))
+            if (worlds.containsKey(returnable.getName())) {
                 return worlds.get(returnable.getName());
+            }
             else return new dWorld(returnable);
         }
         else if (announce) {
@@ -94,9 +97,11 @@ public class dWorld implements dObject, Adjustable {
 
         World returnable = null;
 
-        for (World world : Bukkit.getWorlds())
-            if (world.getName().equalsIgnoreCase(arg))
+        for (World world : Bukkit.getWorlds()) {
+            if (world.getName().equalsIgnoreCase(arg)) {
                 returnable = world;
+            }
+        }
 
         return returnable != null;
     }
@@ -125,8 +130,9 @@ public class dWorld implements dObject, Adjustable {
         if (prefix == null) this.prefix = "World";
         else this.prefix = prefix;
         this.world_name = world.getName();
-        if (!worlds.containsKey(world.getName()))
+        if (!worlds.containsKey(world.getName())) {
             worlds.put(world.getName(), this);
+        }
     }
 
     @Override
@@ -796,13 +802,14 @@ public class dWorld implements dObject, Adjustable {
         // @name difficulty
         // @input Element
         // @description
-        // Sets the limit for number of animals that can spawn in a chunk in this world.
+        // Sets the difficulty level of this world.
+        // Possible values: Peaceful, Easy, Normal, Hard.
         // @tags
         // <w@world.difficulty>
         // -->
         if (mechanism.matches("difficulty") && mechanism.requireEnum(true, Difficulty.values())) {
             String upper = value.asString().toUpperCase();
-            Difficulty diff = null;
+            Difficulty diff;
             if (upper.matches("(PEACEFUL|EASY|NORMAL|HARD)")) {
                 diff = Difficulty.valueOf(upper);
             }

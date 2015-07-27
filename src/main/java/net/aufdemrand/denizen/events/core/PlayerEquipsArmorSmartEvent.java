@@ -102,7 +102,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     //  MECHANICS
     ///////////
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void blockDispense(BlockDispenseEvent event) {
         final ItemStack item = event.getItem();
         final Location location = event.getBlock().getLocation();
@@ -136,7 +136,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void inventoryClick(InventoryClickEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
         if (pl == null)
@@ -171,7 +171,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void inventoryDrag(InventoryDragEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
         if (pl == null)
@@ -197,7 +197,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void playerInteract(PlayerInteractEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getPlayer());
         if (pl == null)
@@ -219,7 +219,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void entityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         dPlayer pl = dEntity.getPlayerFrom(entity);
@@ -335,7 +335,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     // player (un)equips <item>
     // player (un)equips [helmet/chestplate/leggings/boots]
     //
-    // @Regex on player (un)equips (m@|i@)?\w+
+    // @Regex ^on player (un)?equips [^\s]+$
     //
     // @Triggers when a player (un)equips armor.
     // @Context

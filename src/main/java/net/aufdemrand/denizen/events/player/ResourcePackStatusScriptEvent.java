@@ -17,6 +17,8 @@ public class ResourcePackStatusScriptEvent extends ScriptEvent {
     // @Events
     // resource pack status
     //
+    // @Regex ^on resource pack status$
+    //
     // @Triggers when a player accepts, denies, successfully loads, or fails to download a resource pack.
     //
     // @Context

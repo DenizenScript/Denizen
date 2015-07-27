@@ -23,6 +23,8 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     // entity exits portal (in <area>)
     // <entity> exits portal (in <area>)
     //
+    // @Regex ^on [^\s]+ exits portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable false
     //
     // @Triggers when an entity enters a portal.
@@ -88,7 +90,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExitsPortal(EntityPortalExitEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getTo());

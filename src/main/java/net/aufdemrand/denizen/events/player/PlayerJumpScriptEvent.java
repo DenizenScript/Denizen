@@ -14,13 +14,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
-
 public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // player jumps (in <area>)
+    //
+    // @Regex ^on player jumps( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player jumps.
     //
@@ -83,7 +83,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJumps(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

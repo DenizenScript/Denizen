@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import java.util.HashMap;
-
 public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // block falls (in <area>)
     // <material> falls (in <area>)
+    //
+    // @Regex ^on [^\s]+ falls( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -86,7 +86,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockFalls(EntityChangeBlockEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

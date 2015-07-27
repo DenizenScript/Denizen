@@ -98,7 +98,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // player enters notable cuboid
     // player exits notable cuboid
     //
-    // @Regex on player (?:enters|exits) (notable cuboid|(cu@)?\w+)
+    // @Regex ^on player (enters|exits) (notable cuboid|[^\s]+)$
     //
     // @Triggers when a player enters or exits a notable cuboid.
     // @Context
@@ -111,7 +111,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     //
     //
     // -->
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -122,7 +122,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerLeave(PlayerQuitEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -133,7 +133,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         playerMoveEvent(pme);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -155,7 +155,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         playerMoveEvent(evt);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void playerMoveEvent(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

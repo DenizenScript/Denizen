@@ -55,7 +55,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         String mat = CoreUtilities.getXthArg(0, lower);
         return (mat.equals("liquid") || tryMaterial(material, mat))
                 && (runInCheck(scriptContainer, s, lower, location)
-                    || runInCheck(scriptContainer, s, lower, destination));
+                || runInCheck(scriptContainer, s, lower, destination));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onLiquidSpreads(BlockFromToEvent event) {
         destination = new dLocation(event.getToBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());

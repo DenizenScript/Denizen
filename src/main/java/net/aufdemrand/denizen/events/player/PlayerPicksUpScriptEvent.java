@@ -26,6 +26,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // player takes item (in <area>)
     // player takes <item> (in <area>)
     //
+    // @Regex ^on player (picks up|takes) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a player picks up an item.
@@ -57,8 +59,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String iTest = CoreUtilities.xthArgEquals(1, lower, "picks") ?
-            CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        if(!tryItem(item, iTest)) {
+                CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        if (!tryItem(item, iTest)) {
             return false;
         }
         return runInCheck(scriptContainer, s, lower, location);
@@ -98,7 +100,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerPicksUp(PlayerPickupItemEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

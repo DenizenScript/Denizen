@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.objects.properties.bukkit;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
-import net.aufdemrand.denizencore.scripts.commands.core.Comparable;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
@@ -11,6 +10,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.commands.core.Comparable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.ChatColor;
 
