@@ -114,10 +114,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("state")) {
             return state;
         }
-        else if (name.equals("entity") && (entity != null)) {
+        else if ((name.equals("entity")) && (entity != null)) {
             return entity.getDenizenObject();
         }
-        else if (name.equals("item") && (item != null)) {
+        else if ((name.equals("item")) && (item != null)) {
             return item;
         }
         return super.getContext(name);
