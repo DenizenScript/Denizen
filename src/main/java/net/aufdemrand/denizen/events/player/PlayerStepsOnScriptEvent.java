@@ -109,7 +109,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("new_location")) {
             return new_location;
         }
-        else if (name.equals("cuboids")) {
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         return super.getContext(name);

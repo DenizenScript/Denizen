@@ -94,6 +94,9 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         if (name.equals("entity")) {
             return entity;
         }
+        else if (name.equals("state")) { // Deprecated and not in the meta documentation
+            return entity;
+        }
         return super.getContext(name);
     }
 

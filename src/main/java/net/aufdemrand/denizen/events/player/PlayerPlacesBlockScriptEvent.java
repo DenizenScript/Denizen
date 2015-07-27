@@ -105,7 +105,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("cuboids")) {
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         else if (name.equals("item_in_hand")) {

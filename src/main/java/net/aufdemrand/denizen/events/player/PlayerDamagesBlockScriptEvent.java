@@ -110,7 +110,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("cuboids")) {
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         return super.getContext(name);

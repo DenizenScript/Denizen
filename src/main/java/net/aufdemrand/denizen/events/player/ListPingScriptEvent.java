@@ -101,7 +101,7 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
         else if (name.equals("num_players")) {
             return num_players;
         }
-        else if (name.equals("adress")) {
+        else if (name.equals("address")) {
             return address;
         }
         return super.getContext(name);
