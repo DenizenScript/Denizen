@@ -113,15 +113,26 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("cause", cause);
-        context.put("entity", breaker); // NOTE: Deprecated
-        context.put("breaker", breaker);
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("cause")) {
+            return cause;
+        }
+        else if (name.equals("entity")) { // NOTE: Deprecated
+            return breaker;
+        }
+        else if (name.equals("breaker")) {
+            return breaker;
+        }
+        else if (name.equals("hanging")) {
+            return hanging;
+        }
+        else if (name.equals("cuboids")) { // NOTE: Deprecated
+            return cuboids;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

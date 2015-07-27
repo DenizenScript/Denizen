@@ -115,13 +115,20 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("location", location);
-        context.put("blocks", blocks);
-        context.put("strength", new Element(strength));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("blocks")) {
+            return blocks;
+        }
+        else if (name.equals("strength")) {
+            return new Element(strength);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

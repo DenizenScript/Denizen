@@ -127,14 +127,17 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("projectile", projectile);
-        context.put("location", location);
-        if (shooter != null) {
-            context.put("shooter", shooter);
+    public dObject getContext(String name) {
+        if (name.equals("projectile")) {
+            return projectile;
         }
-        return context;
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if ((name.equals("shooter")) && (shooter != null)) {
+            return shooter;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

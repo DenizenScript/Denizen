@@ -140,13 +140,20 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("force", new Element(force));
-        context.put("bow", bow);
-        context.put("projectile", projectile);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("force")) {
+            return new Element(force);
+        }
+        else if (name.equals("bow")) {
+            return bow;
+        }
+        else if (name.equals("projectile")) {
+            return projectile;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

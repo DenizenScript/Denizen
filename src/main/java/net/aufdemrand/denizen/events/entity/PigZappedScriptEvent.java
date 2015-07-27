@@ -74,12 +74,17 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("pig", pig);
-        context.put("pig_zombie", pig_zombie);
-        context.put("lightning", lightning);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("pig")) {
+            return pig;
+        }
+        else if (name.equals("pig_zombie")) {
+            return pig_zombie;
+        }
+        else if (name.equals("lightning")) {
+            return lightning;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

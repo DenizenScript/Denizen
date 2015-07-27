@@ -94,11 +94,14 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("count", new Element(count));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("count")) {
+            return new Element(count);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)
