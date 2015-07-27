@@ -70,11 +70,14 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("inventory", inventory);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("inventory")) {
+            return inventory;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

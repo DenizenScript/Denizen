@@ -71,12 +71,17 @@ public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        context.put("old_location", old_location);
-        context.put("new_location", new_location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        else if (name.equals("old_location")) {
+            return old_location;
+        }
+        else if (name.equals("new_location")) {
+            return new_location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

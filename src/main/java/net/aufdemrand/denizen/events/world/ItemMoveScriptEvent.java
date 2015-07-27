@@ -106,13 +106,20 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("origin", origin);
-        context.put("destination", destination);
-        context.put("initiator", initiator);
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("origin")) {
+            return origin;
+        }
+        else if (name.equals("destination")) {
+            return destination;
+        }
+        else if (name.equals("initiator")) {
+            return initiator;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

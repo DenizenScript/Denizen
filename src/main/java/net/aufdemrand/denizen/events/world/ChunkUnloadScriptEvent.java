@@ -75,11 +75,14 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("chunk", chunk);
-        context.put("world", world); // Deprecated in favor of context.chunk.world
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("chunk")) {
+            return chunk;
+        }
+        else if (name.equals("world")) { // Deprecated in favor of context.chunk.world
+            return world;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

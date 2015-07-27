@@ -80,11 +80,14 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        context.put("weather", weather);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        else if (name.equals("weather")) {
+            return weather;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)
