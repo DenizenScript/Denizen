@@ -117,7 +117,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityInteract(CreatureSpawnEvent event) {
         Entity entity = event.getEntity();
         this.entity = new dEntity(entity);

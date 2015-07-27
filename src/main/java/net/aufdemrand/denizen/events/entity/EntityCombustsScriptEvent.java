@@ -99,7 +99,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityCombusts(EntityCombustEvent event) {
         entity = new dEntity(event.getEntity());
         duration = new Duration(event.getDuration());

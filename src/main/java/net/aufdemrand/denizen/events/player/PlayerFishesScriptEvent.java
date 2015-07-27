@@ -120,7 +120,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerFishes(PlayerFishEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

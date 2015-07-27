@@ -100,7 +100,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleCollidesBlock(VehicleBlockCollisionEvent event) {
         vehicle = new dEntity(event.getVehicle());
         location = new dLocation(event.getBlock().getLocation());

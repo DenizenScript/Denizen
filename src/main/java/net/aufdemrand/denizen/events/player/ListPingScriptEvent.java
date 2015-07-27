@@ -100,7 +100,7 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onListPing(ServerListPingEvent event) {
         motd = new Element(event.getMotd());
         max_players = new Element(event.getMaxPlayers());

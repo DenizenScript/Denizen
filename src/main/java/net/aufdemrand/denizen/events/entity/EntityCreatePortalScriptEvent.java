@@ -99,7 +99,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
         entity = new dEntity(event.getEntity());
         portal_type = new Element(event.getPortalType().toString());

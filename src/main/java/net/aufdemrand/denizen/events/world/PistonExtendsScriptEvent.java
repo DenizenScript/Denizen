@@ -98,7 +98,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonExtends(BlockPistonExtendEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

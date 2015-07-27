@@ -163,7 +163,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     }
 
     class SyncChatHandler implements Listener {
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void onSyncChat(PlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
@@ -182,7 +182,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     }
 
     class AsyncChatHandler implements Listener {
-        @EventHandler
+        @EventHandler(ignoreCancelled = true)
         public void onAsyncChat(AsyncPlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());

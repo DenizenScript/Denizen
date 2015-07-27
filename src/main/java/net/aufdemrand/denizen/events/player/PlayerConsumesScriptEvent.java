@@ -103,7 +103,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerConsumes(PlayerItemConsumeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

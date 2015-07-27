@@ -82,7 +82,7 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onChunkUnload(ChunkUnloadEvent event) {
         chunk = new dChunk(event.getChunk());
         world = new dWorld(event.getWorld());

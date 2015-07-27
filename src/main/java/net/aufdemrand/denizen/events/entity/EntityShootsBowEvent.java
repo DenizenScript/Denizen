@@ -149,7 +149,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityShootsBow(EntityShootBowEvent event) {
         entity = new dEntity(event.getEntity());
         force = event.getForce() * 3;

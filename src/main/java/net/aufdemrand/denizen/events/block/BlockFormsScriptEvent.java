@@ -89,7 +89,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockForms(BlockFormEvent event) {
 
         location = new dLocation(event.getBlock().getLocation());

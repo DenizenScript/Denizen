@@ -111,7 +111,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityFormsBlock(EntityBlockFormEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

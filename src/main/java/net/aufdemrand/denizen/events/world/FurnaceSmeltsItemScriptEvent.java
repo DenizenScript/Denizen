@@ -100,7 +100,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onFurnaceSmelts(FurnaceSmeltEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         source_item = new dItem(event.getSource());

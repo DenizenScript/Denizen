@@ -92,7 +92,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onCreeperPowered(CreeperPowerEvent event) {
         lightning = new dEntity(event.getLightning());
         entity = new dEntity(event.getEntity());

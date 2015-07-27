@@ -100,7 +100,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPistonRetracts(BlockPistonRetractEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

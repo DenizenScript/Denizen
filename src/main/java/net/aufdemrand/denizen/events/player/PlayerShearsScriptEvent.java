@@ -97,7 +97,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerShears(PlayerShearEntityEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -89,7 +89,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent event) {
         world = new dWorld(event.getWorld());
         reason = new Element(event.getReason().toString());

@@ -123,7 +123,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemEnchanted(EnchantItemEvent event) {
         entity = new dEntity(event.getEnchanter());
         location = new dLocation(event.getEnchantBlock().getLocation());

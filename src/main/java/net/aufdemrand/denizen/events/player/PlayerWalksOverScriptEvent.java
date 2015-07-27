@@ -88,7 +88,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerWalksOver(PlayerMoveEvent event) {
         if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
             return;

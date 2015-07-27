@@ -101,7 +101,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSlimeSplits(SlimeSplitEvent event) {
         entity = new dEntity(event.getEntity());
         count = event.getCount();

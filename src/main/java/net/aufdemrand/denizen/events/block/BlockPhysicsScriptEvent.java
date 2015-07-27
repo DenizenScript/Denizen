@@ -95,7 +95,7 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockPhysics(BlockPhysicsEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         new_material = dMaterial.getMaterialFrom(event.getChangedType());

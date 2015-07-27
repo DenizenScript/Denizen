@@ -80,7 +80,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSheepRegrows(SheepRegrowWoolEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(entity.getLocation());

@@ -99,7 +99,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemDespawns(ItemDespawnEvent event) {
         location = new dLocation(event.getLocation());
         item = new dItem(event.getEntity().getItemStack());

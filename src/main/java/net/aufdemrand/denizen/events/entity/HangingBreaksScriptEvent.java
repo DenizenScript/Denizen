@@ -122,7 +122,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHangingBreaks(HangingBreakEvent event) {
         hanging = new dEntity(event.getEntity());
         cause = new Element(event.getCause().name());

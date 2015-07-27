@@ -109,7 +109,7 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityTames(EntityTameEvent event) {
         entity = new dEntity(event.getEntity());
         owner = new dEntity((Entity) event.getOwner());

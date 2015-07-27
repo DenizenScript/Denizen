@@ -84,7 +84,7 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerEntersBed(PlayerBedEnterEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

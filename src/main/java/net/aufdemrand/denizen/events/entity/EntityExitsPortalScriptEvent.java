@@ -90,7 +90,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityExitsPortal(EntityPortalExitEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getTo());

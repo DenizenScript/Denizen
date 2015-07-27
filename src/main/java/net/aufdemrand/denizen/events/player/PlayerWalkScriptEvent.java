@@ -92,7 +92,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerMoves(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

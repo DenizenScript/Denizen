@@ -112,7 +112,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityInteract(EntityInteractEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());

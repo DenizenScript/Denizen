@@ -92,7 +92,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerOpensInv(InventoryOpenEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

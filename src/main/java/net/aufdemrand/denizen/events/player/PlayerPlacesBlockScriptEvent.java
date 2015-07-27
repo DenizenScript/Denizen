@@ -107,7 +107,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerPlacesBlock(BlockPlaceEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

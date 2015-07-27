@@ -77,7 +77,7 @@ public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onWorldInits(WorldInitEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;

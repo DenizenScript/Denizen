@@ -95,7 +95,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerAnimates(PlayerAnimationEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

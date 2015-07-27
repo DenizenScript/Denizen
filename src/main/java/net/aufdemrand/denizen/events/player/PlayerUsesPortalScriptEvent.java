@@ -95,7 +95,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerEntersPortal(PlayerPortalEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

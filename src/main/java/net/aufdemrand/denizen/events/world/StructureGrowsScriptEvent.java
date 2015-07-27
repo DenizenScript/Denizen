@@ -111,7 +111,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onStructureGrow(StructureGrowEvent event) {
         world = new dWorld(event.getWorld());
         location = new dLocation(event.getLocation());

@@ -108,7 +108,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerClosesInv(InventoryCloseEvent event) {
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         entity = new dEntity(event.getPlayer());

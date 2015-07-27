@@ -89,7 +89,7 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleMove(VehicleCreateEvent event) {
         vehicle = new dEntity(event.getVehicle());
         this.event = event;

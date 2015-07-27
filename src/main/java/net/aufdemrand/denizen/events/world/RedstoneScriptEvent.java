@@ -90,7 +90,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockRedstone(BlockRedstoneEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         old_current = new Element(event.getOldCurrent());

@@ -123,7 +123,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerChangesSign(SignChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

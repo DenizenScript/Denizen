@@ -111,7 +111,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerThrowsEgg(PlayerEggThrowEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

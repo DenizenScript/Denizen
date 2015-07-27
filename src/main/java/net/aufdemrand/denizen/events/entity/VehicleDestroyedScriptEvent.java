@@ -110,7 +110,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onVehicleDestroyed(VehicleDestroyEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;

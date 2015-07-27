@@ -82,7 +82,7 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPigZapped(PigZapEvent event) {
         pig = new dEntity(event.getEntity());
         pig_zombie = new dEntity(event.getPigZombie());

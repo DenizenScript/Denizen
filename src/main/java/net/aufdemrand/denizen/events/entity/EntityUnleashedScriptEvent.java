@@ -95,7 +95,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityUnleashed(EntityUnleashEvent event) {
         entity = new dEntity(event.getEntity());
         reason = new Element(event.getReason().toString());

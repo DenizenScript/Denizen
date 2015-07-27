@@ -87,7 +87,7 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onWeatherChanges(WeatherChangeEvent event) {
         world = new dWorld(event.getWorld());
         weather = new Element(event.toWeatherState() ? "rains" : "clears");

@@ -111,7 +111,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDamagesBlock(BlockDamageEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

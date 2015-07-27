@@ -100,7 +100,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDropsItem(PlayerDropItemEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

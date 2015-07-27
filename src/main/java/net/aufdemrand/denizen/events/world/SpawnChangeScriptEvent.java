@@ -79,7 +79,7 @@ public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onSpawnChange(SpawnChangeEvent event) {
         world = new dWorld(event.getWorld());
         old_location = new dLocation(event.getPreviousLocation());

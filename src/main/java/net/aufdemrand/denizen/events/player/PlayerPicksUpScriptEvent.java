@@ -100,7 +100,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerPicksUp(PlayerPickupItemEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -93,7 +93,7 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerLeashes(PlayerLeashEntityEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

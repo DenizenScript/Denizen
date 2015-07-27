@@ -101,7 +101,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onItemSpawns(ItemSpawnEvent event) {
         Item entity = event.getEntity();
         location = new dLocation(event.getLocation());

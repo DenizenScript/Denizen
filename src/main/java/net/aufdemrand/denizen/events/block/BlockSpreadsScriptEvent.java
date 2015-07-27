@@ -96,7 +96,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onBlockSpreads(BlockSpreadEvent event) {
         source = new dLocation(event.getBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());

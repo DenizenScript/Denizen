@@ -108,7 +108,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerStepsOn(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -129,7 +129,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         event.setCancelled(cancelled);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

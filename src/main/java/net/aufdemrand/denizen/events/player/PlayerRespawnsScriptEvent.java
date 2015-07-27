@@ -101,7 +101,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         return context;
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerRespawns(PlayerRespawnEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
