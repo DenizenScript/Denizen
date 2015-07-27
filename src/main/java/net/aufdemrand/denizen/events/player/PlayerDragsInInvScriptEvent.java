@@ -24,8 +24,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // player drags in inventory (in <area>)
-    // player drags (<item>) (in <inventory type>) (in <area>)
+    // player drags in inventory
+    // player drags (<item>) (in <inventory type>)
     //
     // @Triggers when a player drags in an inventory.
     //
@@ -73,7 +73,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!arg2.equals("in") && !tryItem(item, arg2)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, dInv.getLocation());
+        return true;
+        // TODO: add this back when mcmonkey fixed runInCheck
+        // return runInCheck(scriptContainer, s, lower, dInv.getLocation());
     }
 
     @Override
