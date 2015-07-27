@@ -85,11 +85,14 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("new_slot", new_slot);
-        context.put("previous_slot", previous_slot);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("new_slot")) {
+            return new_slot;
+        }
+        else if (name.equals("previous_slot")) {
+            return previous_slot;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -113,14 +113,23 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        context.put("new", new_sign);
-        context.put("old", old_sign);
-        context.put("cuboids", cuboids);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("new")) {
+            return new_sign;
+        }
+        else if (name.equals("old")) {
+            return old_sign;
+        }
+        else if (name.equals("cuboids")) {
+            return cuboids;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

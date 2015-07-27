@@ -97,10 +97,11 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

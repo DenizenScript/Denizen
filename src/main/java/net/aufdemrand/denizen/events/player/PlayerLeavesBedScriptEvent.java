@@ -78,10 +78,11 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -107,17 +107,20 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("hook", hook);
-        context.put("state", state);
-        if (entity != null) {
-            context.put("entity", entity.getDenizenObject());
+    public dObject getContext(String name) {
+        if (name.equals("hook")) {
+            return hook;
         }
-        if (item != null) {
-            context.put("item", item);
+        else if (name.equals("state")) {
+            return state;
         }
-        return context;
+        else if (name.equals("entity") && entity != null) {
+            return entity.getDenizenObject();
+        }
+        else if (name.equals("item") && item != null) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

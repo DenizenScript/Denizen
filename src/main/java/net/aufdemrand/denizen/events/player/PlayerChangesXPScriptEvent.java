@@ -91,10 +91,11 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("amount", new Element(amount));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("amount")) {
+            return new Element(amount);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

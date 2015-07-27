@@ -88,10 +88,11 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("state", new Element(state));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("state")) {
+            return new Element(state);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)
