@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
-import java.util.HashMap;
-
 public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

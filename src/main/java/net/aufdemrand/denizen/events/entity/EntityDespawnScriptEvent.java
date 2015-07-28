@@ -9,9 +9,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
-import java.util.HashMap;
-
 public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     // <--[event]

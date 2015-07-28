@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import java.util.HashMap;
-
 public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
 
     // TODO: in area

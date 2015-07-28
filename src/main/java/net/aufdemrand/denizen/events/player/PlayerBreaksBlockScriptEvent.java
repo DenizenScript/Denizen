@@ -18,8 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.HashMap;
-
 public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-collide with breaks item

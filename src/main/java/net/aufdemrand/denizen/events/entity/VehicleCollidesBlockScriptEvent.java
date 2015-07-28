@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 
-import java.util.HashMap;
-
 public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-collide with 'collides with entity'

@@ -17,8 +17,6 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-
 public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

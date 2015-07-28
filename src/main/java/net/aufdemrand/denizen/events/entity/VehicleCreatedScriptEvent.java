@@ -11,8 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
 
-import java.util.HashMap;
-
 public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

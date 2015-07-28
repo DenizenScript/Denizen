@@ -16,8 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
-
 public class EntityTeleportScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

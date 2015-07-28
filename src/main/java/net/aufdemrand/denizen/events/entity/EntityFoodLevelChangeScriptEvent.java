@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
-import java.util.HashMap;
-
 public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
 
-import java.util.HashMap;
-
 public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-colide with entity despawns

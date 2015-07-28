@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 
-import java.util.HashMap;
-
 public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements Listener {
 

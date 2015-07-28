@@ -23,8 +23,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-
 public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

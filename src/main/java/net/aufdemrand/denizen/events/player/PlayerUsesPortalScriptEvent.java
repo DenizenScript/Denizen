@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 
-import java.util.HashMap;
-
 public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

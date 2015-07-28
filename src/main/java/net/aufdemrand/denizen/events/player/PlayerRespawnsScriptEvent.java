@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-import java.util.HashMap;
-
 public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

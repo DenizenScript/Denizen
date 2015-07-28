@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
-import java.util.HashMap;
-
 public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

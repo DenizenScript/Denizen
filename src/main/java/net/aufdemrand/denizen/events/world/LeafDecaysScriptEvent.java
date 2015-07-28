@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.LeavesDecayEvent;
 
-import java.util.HashMap;
-
 public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -76,7 +74,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public dObject getContext(String name) {
-        if (name.equals("location")){
+        if (name.equals("location")) {
             return location;
         }
         else if (name.equals("material")) {

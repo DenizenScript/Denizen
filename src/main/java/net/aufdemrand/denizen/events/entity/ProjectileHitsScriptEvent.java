@@ -17,8 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.util.BlockIterator;
 
-import java.util.HashMap;
-
 public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

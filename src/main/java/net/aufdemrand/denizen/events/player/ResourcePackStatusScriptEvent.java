@@ -9,8 +9,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
-import java.util.HashMap;
-
 public class ResourcePackStatusScriptEvent extends ScriptEvent {
 
     // <--[event]

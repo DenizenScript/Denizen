@@ -18,8 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.HashMap;
-
 public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -159,10 +157,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("cause")) {
             return cause;
         }
-        else if ((name.equals("damager"))  && (damager != null)) {
+        else if ((name.equals("damager")) && (damager != null)) {
             return damager;
         }
-        else if ((name.equals("projectile"))  && (projectile != null)) {
+        else if ((name.equals("projectile")) && (projectile != null)) {
             return projectile;
         }
         for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {

@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 
-import java.util.HashMap;
-
 public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

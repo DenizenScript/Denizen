@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
-import java.util.HashMap;
-
 public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

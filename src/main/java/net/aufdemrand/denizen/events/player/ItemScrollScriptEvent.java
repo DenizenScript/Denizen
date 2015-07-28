@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 
-import java.util.HashMap;
-
 public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
 
     // TODO: in area

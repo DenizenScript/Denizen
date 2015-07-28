@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
 
-import java.util.HashMap;
-
 public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]

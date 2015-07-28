@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreeperPowerEvent;
 
-import java.util.HashMap;
-
 public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

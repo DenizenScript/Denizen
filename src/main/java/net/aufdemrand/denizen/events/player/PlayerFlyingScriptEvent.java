@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import java.util.HashMap;
-
 public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

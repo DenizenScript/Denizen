@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.SpawnChangeEvent;
 
-import java.util.HashMap;
-
 public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]

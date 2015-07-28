@@ -18,8 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 
-import java.util.HashMap;
-
 public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: Find more appropriate package than 'entity' for this

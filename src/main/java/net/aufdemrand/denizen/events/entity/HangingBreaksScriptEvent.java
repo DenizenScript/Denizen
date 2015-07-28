@@ -18,8 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 
-import java.util.HashMap;
-
 public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldSaveEvent;
 
-import java.util.HashMap;
-
 public class WorldSavesScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]

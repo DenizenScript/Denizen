@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 
-import java.util.HashMap;
-
 public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPortalExitEvent;
 
-import java.util.HashMap;
-
 public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

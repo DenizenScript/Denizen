@@ -20,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener {

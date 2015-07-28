@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
-import java.util.HashMap;
-
 public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
 
-import java.util.HashMap;
-
 public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 
-import java.util.HashMap;
-
 public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -11,8 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PigZapEvent;
 
-import java.util.HashMap;
-
 public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

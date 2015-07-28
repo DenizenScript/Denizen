@@ -17,8 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
-import java.util.HashMap;
-
 public class StructureGrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

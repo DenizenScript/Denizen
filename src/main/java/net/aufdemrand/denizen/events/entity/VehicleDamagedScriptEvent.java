@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 
-import java.util.HashMap;
-
 public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.SlimeSplitEvent;
 
-import java.util.HashMap;
-
 public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

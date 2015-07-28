@@ -17,8 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 
-import java.util.HashMap;
-
 public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-collide with places block

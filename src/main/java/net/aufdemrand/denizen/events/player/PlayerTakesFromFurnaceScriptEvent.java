@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 
-import java.util.HashMap;
-
 public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

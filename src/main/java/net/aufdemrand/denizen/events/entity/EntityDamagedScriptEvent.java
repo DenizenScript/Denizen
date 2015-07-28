@@ -17,8 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.HashMap;
-
 public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[language]
@@ -169,13 +167,13 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("cause")) {
             return cause;
         }
-        else if ((name.equals("damager"))  && (damager != null)) {
+        else if (name.equals("damager") && damager != null) {
             return damager;
         }
-        else if ((name.equals("projectile"))  && (projectile != null)) {
+        else if (name.equals("projectile") && projectile != null) {
             return projectile;
         }
-        if (name.startsWith("damage_")) {
+        else if (name.startsWith("damage_")) {
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
                 if (name.equals("damage_" + dm.name())) {
                     return new Element(event.getDamage(dm));

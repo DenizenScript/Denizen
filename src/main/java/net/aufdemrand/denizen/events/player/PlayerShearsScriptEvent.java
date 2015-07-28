@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
-import java.util.HashMap;
-
 public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

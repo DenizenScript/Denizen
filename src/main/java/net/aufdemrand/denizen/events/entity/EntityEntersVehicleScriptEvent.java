@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
-import java.util.HashMap;
-
 public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

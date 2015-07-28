@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.util.HashMap;
-
 public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]

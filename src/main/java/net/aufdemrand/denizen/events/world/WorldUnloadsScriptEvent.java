@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldUnloadEvent;
 
-import java.util.HashMap;
-
 public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]

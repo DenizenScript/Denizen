@@ -1193,7 +1193,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // @description
                 // Returns the dInventory with a certain quantity of an item added.
                 // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") ||attribute.getAttribute(2).startsWith("qty")) &&
+                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                         attribute.hasContext(2) &&
                         aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);

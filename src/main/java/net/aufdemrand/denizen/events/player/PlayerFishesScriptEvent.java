@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listener {

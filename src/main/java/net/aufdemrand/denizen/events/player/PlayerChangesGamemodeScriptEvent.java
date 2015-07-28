@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
-import java.util.HashMap;
-
 public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]

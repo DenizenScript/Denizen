@@ -15,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
-
 public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
