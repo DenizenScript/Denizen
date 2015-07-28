@@ -63,6 +63,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Events
     // server start
     //
+    // @Regex ^server start$
+    //
     // @Triggers when the server starts
     //
     // @Determine
@@ -84,8 +86,9 @@ public class BukkitWorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList("server start"),
                 null, null, null);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
+        }
     }
 
     private final Map<String, Integer> current_time = new HashMap<String, Integer>();
@@ -93,10 +96,12 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // time changes (in <world>)
-    // <0-23>:00 in <world>
     // time <0-23> in <world>
     //
+    // @Regex ^time [^\s]+( in [^\s]+)$
+    //
     // @Triggers when the current time changes in a world (once per mine-hour).
+    //
     // @Context
     // <context.time> returns the current time.
     // <context.world> returns the world.
@@ -121,7 +126,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 doEvents(Arrays.asList
                                 ("time changes",
                                         "time changes in " + currentWorld.identifySimple(),
-                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
+                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(), // NOTE: Deprecated
                                         "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
