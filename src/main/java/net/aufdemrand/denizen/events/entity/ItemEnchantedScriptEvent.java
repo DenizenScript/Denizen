@@ -112,15 +112,26 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("location", location);
-        context.put("inventory", inventory);
-        context.put("item", item);
-        context.put("button", button);
-        context.put("cost", new Element(cost));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("inventory")) {
+            return inventory;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("button")) {
+            return button;
+        }
+        else if (name.equals("cost")) {
+            return new Element(cost);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -93,12 +93,17 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("item", item);
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

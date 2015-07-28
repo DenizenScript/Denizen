@@ -101,14 +101,23 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        context.put("location", location);
-        context.put("structure", structure);
-        context.put("blocks", blocks);
-        context.put("new_materials", new_materials);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("structure")) {
+            return structure;
+        }
+        else if (name.equals("blocks")) {
+            return blocks;
+        }
+        else if (name.equals("new_materials")) {
+            return new_materials;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

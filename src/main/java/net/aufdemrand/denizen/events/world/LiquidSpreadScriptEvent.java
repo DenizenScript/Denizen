@@ -79,12 +79,17 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("destination", destination);
-        context.put("material", material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("destination")) {
+            return destination;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -119,13 +119,20 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("origin", from);
-        context.put("destination", to);
-        context.put("entity", entity.getDenizenObject());
-        context.put("cause", new Element(cause));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("origin")) {
+            return from;
+        }
+        else if (name.equals("destination")) {
+            return to;
+        }
+        else if (name.equals("entity")) {
+            return entity.getDenizenObject();
+        }
+        else if (name.equals("cause")) {
+            return new Element(cause);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

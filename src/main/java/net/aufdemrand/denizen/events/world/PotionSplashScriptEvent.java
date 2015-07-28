@@ -82,13 +82,20 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("entities", entities);
-        context.put("location", location);
-        context.put("potion", potion);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("entities")) {
+            return entities;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("potion")) {
+            return potion;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

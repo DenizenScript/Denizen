@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import java.util.HashMap;
 
 public class EntityDespawnScriptEvent extends BukkitScriptEvent {
@@ -80,10 +81,13 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("cause", cause);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("cause")) {
+            return cause;
+        }
+        return super.getContext(name);
     }
 }

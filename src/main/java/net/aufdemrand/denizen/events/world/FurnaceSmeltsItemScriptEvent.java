@@ -92,12 +92,17 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("source_item", source_item);
-        context.put("result_item", result_item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("source_item")) {
+            return source_item;
+        }
+        else if (name.equals("result_item")) {
+            return result_item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

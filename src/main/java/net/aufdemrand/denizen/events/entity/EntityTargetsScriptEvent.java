@@ -120,15 +120,20 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("reason", reason);
-        if (target != null) {
-            context.put("target", target);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        context.put("cuboids", cuboids);
-        return context;
+        else if (name.equals("reason")) {
+            return reason;
+        }
+        else if (name.equals("cuboids")) {
+            return cuboids;
+        }
+        else if ((name.equals("target")) && (target != null)) {
+            return target;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

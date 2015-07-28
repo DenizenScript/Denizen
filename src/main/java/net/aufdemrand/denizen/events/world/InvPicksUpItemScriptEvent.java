@@ -87,11 +87,14 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("inventory")) {
+            return inventory;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

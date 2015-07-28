@@ -89,15 +89,26 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        context.put("sticky", sticky);
-        context.put("relative", relative);
-        context.put("blocks", blocks);
-        context.put("retract_location", retract_location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("sticky")) {
+            return sticky;
+        }
+        else if (name.equals("relative")) {
+            return relative;
+        }
+        else if (name.equals("blocks")) {
+            return blocks;
+        }
+        else if (name.equals("retract_location")) {
+            return retract_location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

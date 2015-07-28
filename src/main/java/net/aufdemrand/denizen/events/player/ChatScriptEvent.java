@@ -150,16 +150,21 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("message", message);
-        context.put("format", format);
+    public dObject getContext(String name) {
         dList list = new dList();
         for (Player tplayer : recipients) {
             list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
         }
-        context.put("recipients", list);
-        return context;
+        if (name.equals("message")) {
+            return message;
+        }
+        else if (name.equals("format")) {
+            return format;
+        }
+        if (name.equals("recipients")) {
+            return list;
+        }
+        return super.getContext(name);
     }
 
     class SyncChatHandler implements Listener {

@@ -146,23 +146,31 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("damage", damage);
-        context.put("final_damage", final_damage);
-        context.put("cause", cause);
-        if (damager != null) {
-            context.put("damager", damager);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        if (projectile != null) {
-            context.put("projectile", projectile);
+        else if (name.equals("damage")) {
+            return damage;
+        }
+        else if (name.equals("final_damage")) {
+            return final_damage;
+        }
+        else if (name.equals("cause")) {
+            return cause;
+        }
+        else if ((name.equals("damager"))  && (damager != null)) {
+            return damager;
+        }
+        else if ((name.equals("projectile"))  && (projectile != null)) {
+            return projectile;
         }
         for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
-            context.put("damage_" + dm.name(), new Element(event.getDamage(dm)));
+            if (name.equals("damage_" + dm.name())) {
+                return new Element(event.getDamage(dm));
+            }
         }
-
-        return context;
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

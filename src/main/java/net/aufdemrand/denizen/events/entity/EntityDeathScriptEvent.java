@@ -156,25 +156,26 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        if (damager != null) {
-            context.put("damager", damager);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        if (message != null) {
-            context.put("message", message);
+        else if ((name.equals("damager")) && (damager != null)) {
+            return damager;
         }
-        if (inventory != null) {
-            context.put("inventory", inventory);
+        else if ((name.equals("message")) && (message != null)) {
+            return message;
         }
-        if (cause != null) {
-            context.put("cause", cause);
+        else if ((name.equals("inventory")) && (inventory != null)) {
+            return inventory;
         }
-        if (drops != null) {
-            context.put("drops", drops);
+        else if ((name.equals("cause")) && (cause != null)) {
+            return cause;
         }
-        return context;
+        else if ((name.equals("drops")) && (drops != null)) {
+            return drops;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -108,12 +108,17 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("vehicle", vehicle);
-        context.put("entity", entity);
-        context.put("pickup", new Element(!pickup_cancel));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("vehicle")) {
+            return vehicle;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("pickup")) {
+            return new Element(!pickup_cancel);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

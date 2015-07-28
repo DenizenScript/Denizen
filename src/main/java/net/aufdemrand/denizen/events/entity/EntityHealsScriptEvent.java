@@ -100,12 +100,17 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("reason", reason);
-        context.put("amount", amount);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("reason")) {
+            return reason;
+        }
+        else if (name.equals("amount")) {
+            return amount;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)
