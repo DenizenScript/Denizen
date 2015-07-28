@@ -93,10 +93,11 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("hostname", new Element(event.getAddress().toString()));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("hostname")) {
+            return new Element(event.getAddress().toString());
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

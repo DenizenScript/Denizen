@@ -91,13 +91,20 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("motd", motd);
-        context.put("max_players", max_players);
-        context.put("num_players", num_players);
-        context.put("address", address);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("motd")) {
+            return motd;
+        }
+        else if (name.equals("max_players")) {
+            return max_players;
+        }
+        else if (name.equals("num_players")) {
+            return num_players;
+        }
+        else if (name.equals("address")) {
+            return address;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

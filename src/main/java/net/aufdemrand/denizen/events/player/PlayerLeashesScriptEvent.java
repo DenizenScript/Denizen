@@ -86,11 +86,14 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("holder", holder);
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("holder")) {
+            return holder;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

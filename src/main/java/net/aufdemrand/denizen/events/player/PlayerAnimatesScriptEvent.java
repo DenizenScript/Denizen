@@ -89,10 +89,11 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("animation", new Element(animation));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("animation")) {
+            return new Element(animation);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

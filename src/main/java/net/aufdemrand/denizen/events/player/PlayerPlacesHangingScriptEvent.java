@@ -94,12 +94,17 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("hanging")) {
+            return hanging;
+        }
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
+            return cuboids;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

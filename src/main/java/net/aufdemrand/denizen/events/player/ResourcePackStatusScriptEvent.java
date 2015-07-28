@@ -54,11 +54,14 @@ public class ResourcePackStatusScriptEvent extends ScriptEvent {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("hash", hash);
-        context.put("status", status);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("hash")) {
+            return hash;
+        }
+        else if (name.equals("status")) {
+            return status;
+        }
+        return super.getContext(name);
     }
 
     @Override
