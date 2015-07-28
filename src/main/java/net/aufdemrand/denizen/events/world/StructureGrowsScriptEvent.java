@@ -26,6 +26,8 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     // plant grows (naturally/from bonemeal) (in <area>)
     // <plant> grows (naturally/from bonemeal) (in <area>)
     //
+    // @Regex ^on [^\s]+ grows( naturally|from bonemeal)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a structure (a tree or a mushroom) grows in a world.

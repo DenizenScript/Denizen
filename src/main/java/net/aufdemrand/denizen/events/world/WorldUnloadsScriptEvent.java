@@ -19,6 +19,8 @@ public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
     // world unloads
     // <world> unloads
     //
+    // @Regex ^on [^\s]+ unloads$
+    //
     // @Cancellable true
     //
     // @Triggers when a world is unloaded.

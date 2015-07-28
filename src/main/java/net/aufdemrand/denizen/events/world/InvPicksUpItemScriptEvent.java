@@ -14,12 +14,15 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
 public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: Add in <area>
     // <--[event]
     // @Events
     // inventory picks up item
     // inventory picks up <item>
     // <inventory type> picks up item
     // <inventory type> picks up <item>
+    //
+    // @Regex ^on [^\s]+ picks up [^\s]+$
     //
     // @Cancellable true
     //

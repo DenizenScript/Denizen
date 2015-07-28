@@ -14,9 +14,12 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 
 public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: replace in <world> with in <area>
     // <--[event]
     // @Events
     // chunk unloads (in <world>)
+    //
+    // @Regex ^on player unloads( in [^\s]+)?$
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //

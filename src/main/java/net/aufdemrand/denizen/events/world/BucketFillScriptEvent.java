@@ -23,6 +23,8 @@ public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener
     // player fills bucket (in <area>)
     // player fills <bucket> (in <area>)
     //
+    // @Regex ^on player fills [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a player fills a bucket.
     //
     // @Cancellable true

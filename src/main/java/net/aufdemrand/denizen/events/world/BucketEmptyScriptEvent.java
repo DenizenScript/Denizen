@@ -23,6 +23,8 @@ public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listene
     // player empties bucket (in <area>)
     // player empties <bucket> (in <area>)
     //
+    // @Regex ^on player empties [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a player empties a bucket.
     //
     // @Cancellable true

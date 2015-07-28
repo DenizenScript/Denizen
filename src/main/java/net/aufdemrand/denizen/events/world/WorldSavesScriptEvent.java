@@ -20,6 +20,8 @@ public class WorldSavesScriptEvent extends ScriptEvent implements Listener {
     // world saves
     // <world> saves
     //
+    // @Regex ^on [^\s]+ saves$
+    //
     // @Triggers when a world is saved.
     //
     // @Context

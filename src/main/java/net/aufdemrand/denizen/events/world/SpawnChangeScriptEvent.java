@@ -19,6 +19,8 @@ public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
     // @Events
     // spawn changes
     //
+    // @Regex ^on spawn changes$
+    //
     // @Triggers when the world's spawn point changes.
     //
     // @Context

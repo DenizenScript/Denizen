@@ -20,6 +20,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     // furnace burns item (in <area>)
     // furnace burns <item> (in <area>)
     //
+    // @Regex ^on furnace burns [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a furnace burns an item used as fuel.

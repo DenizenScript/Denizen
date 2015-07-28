@@ -19,6 +19,8 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
     // @Events
     // weather changes/rains/clears (in <world>)
     //
+    // @Regex ^on weather (changes|rains|clears)( in [^\s]+)?$
+    //
     // @Cancellable true
     //
     // @Triggers when weather changes in a world.

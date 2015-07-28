@@ -19,6 +19,8 @@ public class WorldLoadsScriptEvent extends ScriptEvent implements Listener {
     // world loads
     // <world> loads
     //
+    // @Regex ^on [^\s]+ loads$
+    //
     // @Triggers when a world is loaded.
     //
     // @Context

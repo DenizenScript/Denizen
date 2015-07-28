@@ -20,6 +20,8 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     // @Events
     // lightning strikes (in <area>)
     //
+    // @Regex ^on lightning strikes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when lightning strikes in a world.

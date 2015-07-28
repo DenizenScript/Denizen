@@ -19,6 +19,8 @@ public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
     // world initializes
     // <world> initializes
     //
+    // @Regex ^on [^\s]+ initializes$
+    //
     // @Triggers when a world is initialized.
     //
     // @Context

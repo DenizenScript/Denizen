@@ -21,6 +21,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     //
     // @Cancellable true
     //
+    // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a furnace smelts an item.
     //
     // @Context

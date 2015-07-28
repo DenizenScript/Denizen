@@ -14,12 +14,15 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: in <area>
     // <--[event]
     // @Events
     // item moves from inventory (to <inventory type>)
     // item moves from <inventory type> (to <inventory type>)
     // <item> moves from inventory (to <inventory type>)
     // <item> moves from <inventory type> (to <inventory type>)
+    //
+    // @Regex ^on [^\s]+ moves from [^\s]+( to [^\s]+)?$
     //
     // @Cancellable true
     //

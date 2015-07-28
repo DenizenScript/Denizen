@@ -18,6 +18,8 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // brewing stand brews (in <area>)
     //
+    // @Regex ^on brewing stand brews( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a brewing stand brews a potion.

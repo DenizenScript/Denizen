@@ -14,9 +14,12 @@ import org.bukkit.event.world.ChunkLoadEvent;
 
 public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: Replace in <world> with in <area>
     // <--[event]
     // @Events
     // chunk loads for the first time (in <world>)
+    //
+    // @Regex ^on chunk loads for the first time( in [^\s]+)?$
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //

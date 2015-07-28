@@ -19,6 +19,8 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     // leaves decay (in <area>)
     // <block> decay (in <area>)
     //
+    // @Regex ^on [^\s]+ decay( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when leaves decay.

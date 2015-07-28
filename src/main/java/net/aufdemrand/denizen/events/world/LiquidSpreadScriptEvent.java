@@ -19,6 +19,8 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     // liquid spreads (in <area>)
     // <liquid block> spreads (in <area>)
     //
+    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a liquid block spreads or dragon egg moves.

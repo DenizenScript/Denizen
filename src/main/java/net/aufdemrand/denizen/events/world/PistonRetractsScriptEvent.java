@@ -22,6 +22,8 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     // piston retracts (in <area>)
     // <block> retracts (in <area>)
     //
+    // @Regex ^on [^\s]+ retracts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a piston retracts.

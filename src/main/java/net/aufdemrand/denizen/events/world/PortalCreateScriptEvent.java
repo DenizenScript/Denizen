@@ -22,6 +22,8 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     // @Events
     // portal created (because <reason>) (in <area>)
     //
+    // @Regex ^on portal created( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a portal is created.

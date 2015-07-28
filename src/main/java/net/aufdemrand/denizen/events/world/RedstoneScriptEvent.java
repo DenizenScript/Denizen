@@ -18,6 +18,8 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // redstone recalculated (in <area>)
     //
+    // @Regex ^on redstone recalculated( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Warning This event fires very very rapidly!
     //
     // @Triggers when a redstone wire is recalculated.

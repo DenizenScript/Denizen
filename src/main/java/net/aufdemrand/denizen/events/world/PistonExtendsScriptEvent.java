@@ -22,6 +22,8 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     // piston extends (in <area>)
     // <block> extends (in <area>)
     //
+    // @Regex ^on [^\s]+ extends( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a piston extends.

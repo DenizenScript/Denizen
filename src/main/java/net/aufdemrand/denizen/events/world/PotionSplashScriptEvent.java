@@ -22,6 +22,8 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
     // potion splash (in <area>)
     // <item> splashes (in <area>)
     //
+    // @Regex ^on [^\s]+ splashes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when a splash potion breaks open
