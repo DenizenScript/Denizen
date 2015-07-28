@@ -24,8 +24,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // player drags in inventory
-    // player drags (<item>) (in <inventory type>)
+    // player drags in inventory (in_area <area>)
+    // player drags (<item>) (in <inventory type>) (in_area <area>)
     //
     // @Triggers when a player drags in an inventory.
     //
@@ -73,14 +73,12 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!arg2.equals("in") && !tryItem(item, arg2)) {
             return false;
         }
-        return true;
-        // TODO: add this back when mcmonkey fixed runInCheck
-        // return runInCheck(scriptContainer, s, lower, dInv.getLocation());
+        return runInCheck(scriptContainer, s, lower, entity.getLocation(), "in_area");
     }
 
     @Override
     public String getName() {
-        return "PlayerDragsInInv";
+        return "PlayerDragsInInventory";
     }
 
     @Override
@@ -103,7 +101,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
         return new BukkitScriptEntryData(entity, null);
     }
 
@@ -124,9 +121,12 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerDragsInInv(InventoryDragEvent event) {
-        entity = dEntity.getPlayerFrom((Player) event.getWhoClicked());
+        if (dEntity.isCitizensNPC(event.getWhoClicked())) {
+            return;
+        }
+        entity = dEntity.getPlayerFrom(event.getWhoClicked());
         inventory = event.getInventory();
         dInv = dInventory.mirrorBukkitInventory(inventory);
         item = new dItem(event.getOldCursor());
@@ -148,8 +148,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
                 @Override
                 public void run() {
                     entity.getPlayerEntity().updateInventory();
-                    if (holder != null && holder instanceof Player)
+                    if (holder != null && holder instanceof Player) {
                         ((Player) holder).updateInventory();
+                    }
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
