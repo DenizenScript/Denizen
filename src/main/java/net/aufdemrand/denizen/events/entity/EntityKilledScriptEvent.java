@@ -163,9 +163,11 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         else if ((name.equals("projectile")) && (projectile != null)) {
             return projectile;
         }
-        for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
-            if (name.equals("damage_" + dm.name())) {
-                return new Element(event.getDamage(dm));
+        else if (name.startsWith("damage_")) {
+            for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+                if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
+                    return new Element(event.getDamage(dm));
+                }
             }
         }
         return super.getContext(name);

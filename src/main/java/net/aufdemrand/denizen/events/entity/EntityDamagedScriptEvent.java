@@ -175,7 +175,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (name.startsWith("damage_")) {
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
-                if (name.equals("damage_" + dm.name())) {
+                if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
                     return new Element(event.getDamage(dm));
                 }
             }
