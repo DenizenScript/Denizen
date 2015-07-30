@@ -1404,8 +1404,16 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+            if (attribute.hasContext(1)) {
+                flag_name = attribute.getContext(1);
+            }
+            else {
+                return null;
+            }
+            if (isPlayer() || isCitizensNPC()) {
+                dB.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                return null;
+            }
             return new Element(FlagManager.entityHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -1417,19 +1425,27 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+            if (attribute.hasContext(1)) {
+                flag_name = attribute.getContext(1);
+            }
+            else {
+                return null;
+            }
+            if (isPlayer() || isCitizensNPC()) {
+                dB.echoError("Reading flag for PLAYER or NPC as if it were an ENTITY!");
+                return null;
+            }
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
-                    || attribute.startsWith("isexpired"))
+                    || attribute.startsWith("isexpired")) {
                 return new Element(!FlagManager.entityHasFlag(this, flag_name))
                         .getAttribute(attribute.fulfill(2));
-            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name))
+            }
+            if (attribute.getAttribute(2).equalsIgnoreCase("size") && !FlagManager.entityHasFlag(this, flag_name)) {
                 return new Element(0).getAttribute(attribute.fulfill(2));
+            }
             if (FlagManager.entityHasFlag(this, flag_name)) {
-                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager()
-                        .getEntityFlag(this, flag_name);
-                return new dList(flag.toString(), true, flag.values())
-                        .getAttribute(attribute.fulfill(1));
+                FlagManager.Flag flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag(this, flag_name);
+                return new dList(flag.toString(), true, flag.values()).getAttribute(attribute.fulfill(1));
             }
             return new Element(identify()).getAttribute(attribute);
         }

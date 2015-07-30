@@ -168,10 +168,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return cause;
         }
         else if (name.equals("damager") && damager != null) {
-            return damager;
+            return damager.getDenizenObject();
         }
         else if (name.equals("projectile") && projectile != null) {
-            return projectile;
+            return projectile.getDenizenObject();
         }
         else if (name.startsWith("damage_")) {
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
