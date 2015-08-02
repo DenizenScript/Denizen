@@ -152,7 +152,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
-                    && arg.matchesPrefix("qty", "q")) {
+                    && arg.matchesPrefix("qty", "q", "quantity")) {
 
                 scriptEntry.addObject("qty", arg.asElement());
             }
