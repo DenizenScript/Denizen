@@ -131,11 +131,6 @@ public class dInventory implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-
-    public static dInventory valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("in")
     public static dInventory valueOf(String string, TagContext context) {
         if (context == null) {
