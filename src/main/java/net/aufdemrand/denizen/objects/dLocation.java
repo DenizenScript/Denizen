@@ -32,8 +32,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.util.*;
 
 import java.util.*;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -676,6 +678,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return new dLocation(location).getAttribute(attribute.fulfill(1));
             else
                 return null;
+        }
+
+        // <--[tag]
+        // @attribute <l@location.line_of_sight[<location>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the specified location is within this location's
+        // line of sight.
+        // -->
+        if (attribute.startsWith("line_of_sight") && attribute.hasContext(1)) {
+            dLocation location = dLocation.valueOf(attribute.getContext(1));
+            if (location != null) {
+                return new Element(Rotation.rayTrace(getWorld(), toVector(), location.toVector()) == null)
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

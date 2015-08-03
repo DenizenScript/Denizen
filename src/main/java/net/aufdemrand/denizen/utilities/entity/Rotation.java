@@ -84,7 +84,7 @@ public class Rotation {
         }
     }
 
-    private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
+    public static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
         return ((CraftWorld) world).getHandle().rayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
                 new Vec3D(end.getX(), end.getY(), end.getZ()));
     }
