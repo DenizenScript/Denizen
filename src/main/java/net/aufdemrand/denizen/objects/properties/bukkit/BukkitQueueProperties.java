@@ -56,7 +56,7 @@ public class BukkitQueueProperties implements Property {
 
         // <--[tag]
         // @attribute <q@queue.player>
-        // @returns dNPC
+        // @returns dPlayer
         // @description
         // Returns the dPlayer linked to a queue.
         // -->
