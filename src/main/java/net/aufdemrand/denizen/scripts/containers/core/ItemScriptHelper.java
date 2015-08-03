@@ -267,7 +267,7 @@ public class ItemScriptHelper implements Listener {
 
         // Iterate through all the special recipes
         master:
-        for (Map.Entry<dItem, dList> entry :
+        for (Map.Entry<dItem, List<dItem>> entry :
                 ItemScriptContainer.specialrecipesMap.entrySet()) {
 
             // Check if the two sets of items match each other
@@ -275,7 +275,7 @@ public class ItemScriptHelper implements Listener {
 
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison
-                dItem valueN = dItem.valueOf(entry.getValue().get(n));
+                dItem valueN = entry.getValue().get(n);
                 dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR) : new dItem(matrix[n].clone());
 
                 // If one's an item script and the other's not, it's a fail
@@ -296,10 +296,10 @@ public class ItemScriptHelper implements Listener {
         }
 
         primary:
-        for (Map.Entry<dItem, dList> entry :
+        for (Map.Entry<dItem, List<dItem>> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
             for (int i = 0; i < entry.getValue().size(); i++) {
-                if (!containsAny(dItem.valueOf(entry.getValue().get(i)), matrix)) {
+                if (!containsAny(entry.getValue().get(i), matrix)) {
                     continue primary;
                 }
             }

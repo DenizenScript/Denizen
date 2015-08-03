@@ -98,8 +98,8 @@ public class ItemScriptContainer extends ScriptContainer {
     // -->
 
     // A map storing special recipes that use itemscripts as ingredients
-    public static Map<dItem, dList> specialrecipesMap = new HashMap<dItem, dList>();
-    public static Map<dItem, dList> shapelessRecipesMap = new HashMap<dItem, dList>();
+    public static Map<dItem, List<dItem>> specialrecipesMap = new HashMap<dItem, List<dItem>>();
+    public static Map<dItem, List<dItem>> shapelessRecipesMap = new HashMap<dItem, List<dItem>>();
 
     dNPC npc = null;
     dPlayer player = null;
@@ -123,27 +123,50 @@ public class ItemScriptContainer extends ScriptContainer {
                 recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this))));
             }
 
-            // Store every ingredient in a dList
-            dList ingredients = new dList();
+            // Store every ingredient in a List
+            List<dItem> ingredients = new ArrayList<dItem>();
 
-            for (String recipeRow : recipeList) {
+            boolean shouldRegister = true;
+            recipeLoop: for (String recipeRow : recipeList) {
                 String[] elements = recipeRow.split("\\|", 3);
 
                 for (String element : elements) {
-                    ingredients.add(element.replaceAll("[iImM]@", ""));
+                    dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                    if (ingredient == null) {
+                        dB.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
+                                + getName() + "': " + element);
+                        shouldRegister = false;
+                        break recipeLoop;
+                    }
+                    ingredients.add(ingredient);
                 }
             }
 
             // Add the recipe to Denizen's item script recipe list so it
             // will be checked manually inside ItemScriptHelper
-            specialrecipesMap.put(getItemFrom(), ingredients);
+            if (shouldRegister) {
+                specialrecipesMap.put(getItemFrom(), ingredients);
+            }
 
         }
 
         if (contains("SHAPELESS_RECIPE")) {
             String list = TagManager.tag(getString("SHAPELESS_RECIPE"), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this)));
-            dList actual_list = dList.valueOf(list);
-            shapelessRecipesMap.put(getItemFrom(), actual_list);
+            List<dItem> ingredients = new ArrayList<dItem>();
+            boolean shouldRegister = true;
+            for (String element : dList.valueOf(list)) {
+                dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                if (ingredient == null) {
+                    dB.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
+                            + getName() + "': " + element);
+                    shouldRegister = false;
+                    break;
+                }
+                ingredients.add(ingredient);
+            }
+            if (shouldRegister) {
+                shapelessRecipesMap.put(getItemFrom(), ingredients);
+            }
         }
 
         if (contains("FURNACE_RECIPE")) {
