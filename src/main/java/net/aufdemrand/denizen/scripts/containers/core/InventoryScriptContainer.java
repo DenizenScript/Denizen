@@ -143,9 +143,15 @@ public class InventoryScriptContainer extends ScriptContainer {
                 int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
                     items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))).trim();
-                    if (items.isEmpty())
+                    if (items.isEmpty()) {
                         continue;
-                    String[] itemsInLine = items.split("\\[?\\]?\\s+\\[|\\]$");
+                    }
+                    if (!items.startsWith("[") || !items.endsWith("]")) {
+                        dB.echoError("Inventory script \"" + getName() + "\" has an invalid slots line: ["
+                                + items + "]... Ignoring it");
+                        continue;
+                    }
+                    String[] itemsInLine = items.substring(1, items.length()-1).split("\\[?\\]?\\s+\\[");
                     for (String item : itemsInLine) {
                         if (contains("DEFINITIONS." + item) &&
                                 dItem.matches(getString("DEFINITIONS." + item))) {
