@@ -51,6 +51,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                     dB.echoError(e);
                 }
                 tag.set("display", display);
+                tag.remove("Denizen Item Script");
                 itemStack.setTag(tag);
             }
         }
