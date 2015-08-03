@@ -94,8 +94,6 @@ public class InventoryScriptContainer extends ScriptContainer {
         return getInventoryFrom(null, null);
     }
 
-    static Pattern fromPattern = Pattern.compile("(\\[)(.*)(\\])");
-
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
 
         dInventory inventory = null;
@@ -147,30 +145,25 @@ public class InventoryScriptContainer extends ScriptContainer {
                     items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))).trim();
                     if (items.isEmpty())
                         continue;
-                    String[] itemsInLine = items.split(" ");
+                    String[] itemsInLine = items.split("\\[?\\]?\\s+\\[|\\]$");
                     for (String item : itemsInLine) {
-                        Matcher m = fromPattern.matcher(item);
-                        if (!m.matches()) {
-                            dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item.");
-                            return null;
-                        }
-                        if (contains("DEFINITIONS." + m.group(2)) &&
-                                dItem.matches(getString("DEFINITIONS." + m.group(2)))) {
+                        if (contains("DEFINITIONS." + item) &&
+                                dItem.matches(getString("DEFINITIONS." + item))) {
                             finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
-                                            (getString("DEFINITIONS." + m.group(2)),
+                                            (getString("DEFINITIONS." + item),
                                                     new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
                                     player, npc).getItemStack();
                         }
-                        else if (dItem.matches(m.group(2))) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(m.group(2),
+                        else if (dItem.matches(item)) {
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(item,
                                             new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
                                     player, npc).getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                            if (!m.group(2).trim().isEmpty()) {
+                            if (!item.trim().isEmpty()) {
                                 dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
-                                        + m.group(2) + "]... Ignoring it and assuming \"AIR\"");
+                                        + item + "]... Ignoring it and assuming \"AIR\"");
                             }
                         }
                         itemsAdded++;
