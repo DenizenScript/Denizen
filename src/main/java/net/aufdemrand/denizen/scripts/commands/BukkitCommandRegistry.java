@@ -2885,7 +2885,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Title
-        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)
+        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)
         // @Required 1
         // @Stable stable
         // @Short Displays a title to specified players.
@@ -2905,7 +2905,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
         // -->
         registerCoreMember(TitleCommand.class,
-                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)", 1);
+                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
 
         // <--[command]
         // @Name Trait
@@ -2945,7 +2945,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - trigger name:click state:true
         // @Usage
         // Use to enable the chat trigger with a 10-second cooldown and a radius of 5 blocks.
-        // - trigger name:chat state:ture cooldown:10s radius:5
+        // - trigger name:chat state:true cooldown:10s radius:5
         // @Usage
         // TODO: Document Command Details
         // -->

@@ -1431,6 +1431,16 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
 
         // <--[tag]
+        // @attribute <p@player.nameplate>
+        // @returns Element
+        // @description
+        // Returns the displayed text in the nameplate of the player.
+        // -->
+        if (attribute.startsWith("nameplate"))
+            return new Element(PlayerProfileEditor.getPlayerName(getPlayerEntity()))
+                    .getAttribute(attribute.fulfill(1));
+
+        // <--[tag]
         // @attribute <p@player.name>
         // @returns Element
         // @description
@@ -2482,7 +2492,7 @@ public class dPlayer implements dObject, Adjustable {
         // @name name
         // @input Element
         // @description
-        // Changes the name of this player to the entire server.
+        // Changes the name on this player's nameplate.
         // -->
         if (mechanism.matches("name")) {
             String name = value.asString();

@@ -77,8 +77,6 @@ public class InventoryScriptContainer extends ScriptContainer {
         InventoryScriptHelper.inventory_scripts.put(getName(), this);
     }
 
-    public Map<String, dItem> definitions = new HashMap<String, dItem>();
-
     public InventoryType getInventoryType() {
         String typeStr = getString("inventory", "CHEST");
 
