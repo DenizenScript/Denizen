@@ -313,6 +313,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         return npc.getTrait(net.citizensnpcs.api.trait.trait.Inventory.class);
     }
 
+    public PushableTrait getPushableTrait() {
+        NPC npc = getCitizen();
+        if (!npc.hasTrait(PushableTrait.class))
+            npc.addTrait(PushableTrait.class);
+        return npc.getTrait(PushableTrait.class);
+    }
+
     public LookClose getLookCloseTrait() {
         NPC npc = getCitizen();
         if (!npc.hasTrait(LookClose.class))
