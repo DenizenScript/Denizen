@@ -1498,6 +1498,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.first_empty>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first empty slot.
+        // Returns -1 if the inventory is full.
+        // -->
+        if (attribute.startsWith("first_empty")) {
+            return new Element(firstEmpty(0)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.find.material[<material>]>
         // @returns Element(Number)
         // @description
