@@ -61,7 +61,7 @@ public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String iTest = CoreUtilities.getXthArg(2, lower);
-        return tryItem(item, iTest)
+        return (iTest.equals("bucket") || tryItem(item, iTest))
                 && runInCheck(scriptContainer, s, lower, location);
     }
 
