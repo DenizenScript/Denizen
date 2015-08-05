@@ -73,7 +73,7 @@ public class PushableCommand extends AbstractCommand {
         }
 
         if (state != null) {
-            switch (Toggle.valueOf(state.asString().toUpperCase())) {\
+            switch (Toggle.valueOf(state.asString().toUpperCase())) {
 
                 case TRUE:
                 case ON:
