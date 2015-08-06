@@ -16,14 +16,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 
-import java.util.HashMap;
-
 public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // player fills bucket (in <area>)
     // player fills <bucket> (in <area>)
+    //
+    // @Regex ^on player fills [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player fills a bucket.
     //
@@ -61,7 +61,7 @@ public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String iTest = CoreUtilities.getXthArg(2, lower);
-        return tryItem(item, iTest)
+        return (iTest.equals("bucket") || tryItem(item, iTest))
                 && runInCheck(scriptContainer, s, lower, location);
     }
 
@@ -93,12 +93,17 @@ public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("item", item);
-        context.put("material", material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-
 public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -85,10 +83,11 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("message", new Element(message));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("message")) {
+            return new Element(message);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

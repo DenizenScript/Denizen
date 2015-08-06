@@ -13,13 +13,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
-import java.util.HashMap;
-
 public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // weather changes/rains/clears (in <world>)
+    //
+    // @Regex ^on weather (changes|rains|clears)( in [^\s]+)?$
     //
     // @Cancellable true
     //
@@ -80,11 +80,14 @@ public class WeatherChangesScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        context.put("weather", weather);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        else if (name.equals("weather")) {
+            return weather;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

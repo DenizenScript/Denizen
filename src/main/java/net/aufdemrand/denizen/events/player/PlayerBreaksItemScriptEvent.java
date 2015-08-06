@@ -17,8 +17,6 @@ import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-
 public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -90,10 +88,11 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

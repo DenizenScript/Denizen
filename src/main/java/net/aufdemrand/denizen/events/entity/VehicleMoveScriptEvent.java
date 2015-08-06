@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
-import java.util.HashMap;
-
 public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -88,12 +86,17 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("from", from);
-        context.put("to", to);
-        context.put("vehicle", vehicle);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("from")) {
+            return from;
+        }
+        else if (name.equals("to")) {
+            return to;
+        }
+        else if (name.equals("vehicle")) {
+            return vehicle;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

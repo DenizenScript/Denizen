@@ -18,8 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 
-import java.util.HashMap;
-
 public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -120,14 +118,23 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("cuboids", cuboids);  //DEPRECATED
-        context.put("location", location);
-        context.put("new_material", new_material);
-        context.put("old_material", old_material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("cuboids")) { // NOTE: Deprecated
+            return cuboids;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("new_material")) {
+            return new_material;
+        }
+        else if (name.equals("old_material")) {
+            return old_material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

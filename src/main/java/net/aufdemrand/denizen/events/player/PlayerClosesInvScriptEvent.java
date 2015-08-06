@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import java.util.HashMap;
-
 public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener {
 
     // TODO: in area
@@ -102,10 +100,11 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("inventory")) {
+            return inventory;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

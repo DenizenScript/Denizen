@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
-
 public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -82,10 +80,11 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("notable", new Element(notable));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("notable")) {
+            return new Element(notable);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

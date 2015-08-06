@@ -14,13 +14,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.weather.LightningStrikeEvent;
 
-import java.util.HashMap;
-
 public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // lightning strikes (in <area>)
+    //
+    // @Regex ^on lightning strikes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -73,12 +73,17 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("lightning", lightning);
-        context.put("world", new dWorld(location.getWorld()));
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("lightning")) {
+            return lightning;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("world")) { // NOTE: Deprecated in favor of context.location.world
+            return new dWorld(location.getWorld());
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

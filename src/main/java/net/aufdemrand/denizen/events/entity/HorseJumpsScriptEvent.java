@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.HorseJumpEvent;
 
-import java.util.HashMap;
-
 public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -102,13 +100,20 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("color", color);
-        context.put("variant", variant);
-        context.put("power", new Element(power));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("color")) {
+            return color;
+        }
+        else if (name.equals("variant")) {
+            return variant;
+        }
+        else if (name.equals("power")) {
+            return new Element(power);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityCombustEvent;
 
-import java.util.HashMap;
-
 public class EntityCombustsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -92,11 +90,14 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("duration", duration);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("duration")) {
+            return duration;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

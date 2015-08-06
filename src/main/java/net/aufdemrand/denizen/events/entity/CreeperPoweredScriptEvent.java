@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreeperPowerEvent;
 
-import java.util.HashMap;
-
 public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -82,14 +80,17 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        if (lightning != null) {
-            context.put("lightning", lightning);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        context.put("entity", entity);
-        context.put("cause", cause);
-        return context;
+        else if ((name.equals("lightning")) && (lightning != null)) {
+            return lightning;
+        }
+        else if (name.equals("cause")) {
+            return cause;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

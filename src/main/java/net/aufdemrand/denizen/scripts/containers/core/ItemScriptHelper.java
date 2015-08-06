@@ -1,14 +1,19 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,17 +30,15 @@ import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
 
     public static Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<String, ItemScriptContainer>(8, 0.9f, 1);
-
     public static Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<String, ItemScriptContainer>();
+    public static Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<ItemScriptContainer, List<String>>();
+    public static Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<ItemScriptContainer, String>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -46,6 +49,73 @@ public class ItemScriptHelper implements Listener {
     public static void removeDenizenRecipes() {
         ItemScriptContainer.specialrecipesMap.clear();
         ItemScriptContainer.shapelessRecipesMap.clear();
+    }
+
+    @EventHandler
+    public void scriptReload(ScriptReloadEvent event) {
+
+        for (Map.Entry<ItemScriptContainer, List<String>> entry : recipes_to_register.entrySet()) {
+
+            ItemScriptContainer container = entry.getKey();
+            List<String> recipeList = entry.getValue();
+
+            // Process all tags in list
+            for (int n = 0; n < recipeList.size(); n++) {
+                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(container.player, container.npc,
+                        false, null, dB.shouldDebug(container), new dScript(container))));
+            }
+
+            // Store every ingredient in a List
+            List<dItem> ingredients = new ArrayList<dItem>();
+
+            boolean shouldRegister = true;
+            recipeLoop: for (String recipeRow : recipeList) {
+                String[] elements = recipeRow.split("\\|", 3);
+
+                for (String element : elements) {
+                    dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                    if (ingredient == null) {
+                        dB.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
+                                + container.getName() + "': " + element);
+                        shouldRegister = false;
+                        break recipeLoop;
+                    }
+                    ingredients.add(ingredient);
+                }
+            }
+
+            // Add the recipe to Denizen's item script recipe list so it
+            // will be checked manually inside ItemScriptHelper
+            if (shouldRegister) {
+                ItemScriptContainer.specialrecipesMap.put(container, ingredients);
+            }
+        }
+
+        for (Map.Entry<ItemScriptContainer, String> entry : shapeless_to_register.entrySet()) {
+
+            ItemScriptContainer container = entry.getKey();
+            String string = entry.getValue();
+
+            String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
+                    false, null, dB.shouldDebug(container), new dScript(container)));
+
+            List<dItem> ingredients = new ArrayList<dItem>();
+
+            boolean shouldRegister = true;
+            for (String element : dList.valueOf(list)) {
+                dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                if (ingredient == null) {
+                    dB.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
+                            + container.getName() + "': " + element);
+                    shouldRegister = false;
+                    break;
+                }
+                ingredients.add(ingredient);
+            }
+            if (shouldRegister) {
+                ItemScriptContainer.shapelessRecipesMap.put(container, ingredients);
+            }
+        }
     }
 
     public static boolean isBound(ItemStack item) {
@@ -200,7 +270,7 @@ public class ItemScriptHelper implements Listener {
 
         // Get the result of the special recipe that this matrix matches,
         // if any
-        dItem result1 = getSpecialRecipeResult(matrix1);
+        dItem result1 = getSpecialRecipeResult(matrix1, player);
 
         boolean returnme = result1 != null;
 
@@ -215,7 +285,7 @@ public class ItemScriptHelper implements Listener {
 
                         // Get the result of the special recipe that this matrix matches,
                         // if any
-                        dItem result = getSpecialRecipeResult(matrix);
+                        dItem result = getSpecialRecipeResult(matrix, player);
 
                         // Proceed only if the result was not null
                         if (result != null) {
@@ -263,11 +333,11 @@ public class ItemScriptHelper implements Listener {
 
     // Check if a CraftingInventory's crafting matrix matches a special
     // recipe and return that recipe's dItem result if it does
-    public dItem getSpecialRecipeResult(ItemStack[] matrix) {
+    public dItem getSpecialRecipeResult(ItemStack[] matrix, Player player) {
 
         // Iterate through all the special recipes
         master:
-        for (Map.Entry<dItem, dList> entry :
+        for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
                 ItemScriptContainer.specialrecipesMap.entrySet()) {
 
             // Check if the two sets of items match each other
@@ -275,7 +345,7 @@ public class ItemScriptHelper implements Listener {
 
                 // Use dItem.valueOf on the entry values to ensure
                 // correct comparison
-                dItem valueN = dItem.valueOf(entry.getValue().get(n));
+                dItem valueN = entry.getValue().get(n);
                 dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR) : new dItem(matrix[n].clone());
 
                 // If one's an item script and the other's not, it's a fail
@@ -292,18 +362,18 @@ public class ItemScriptHelper implements Listener {
             }
 
             // If all the items match, return the special recipe's dItem key
-            return entry.getKey();
+            return entry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
         }
 
         primary:
-        for (Map.Entry<dItem, dList> entry :
+        for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
             for (int i = 0; i < entry.getValue().size(); i++) {
-                if (!containsAny(dItem.valueOf(entry.getValue().get(i)), matrix)) {
+                if (!containsAny(entry.getValue().get(i), matrix)) {
                     continue primary;
                 }
             }
-            return entry.getKey();
+            return entry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
         }
 
         return null;
@@ -329,7 +399,7 @@ public class ItemScriptHelper implements Listener {
 
         // Get the result of the special recipe that this matrix matches,
         // if any
-        dItem result = getSpecialRecipeResult(matrix);
+        dItem result = getSpecialRecipeResult(matrix, player);
 
         // Proceed only if the result was not null
         if (result != null) {

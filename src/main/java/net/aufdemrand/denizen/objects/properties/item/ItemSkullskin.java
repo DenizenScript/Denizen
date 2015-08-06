@@ -163,21 +163,25 @@ public class ItemSkullskin implements Property {
     }
 
     public static GameProfile fillGameProfile(GameProfile gameProfile) {
-        if (gameProfile != null) {
-            GameProfile gameProfile1 = null;
-            if (gameProfile.getName() != null) {
-                gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
+        try {
+            if (gameProfile != null) {
+                GameProfile gameProfile1 = null;
+                if (gameProfile.getName() != null) {
+                    gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
+                }
+                if (gameProfile1 == null) {
+                    gameProfile1 = MinecraftServer.getServer().getUserCache().a(gameProfile.getId());
+                }
+                if (gameProfile1 == null) {
+                    gameProfile1 = gameProfile;
+                }
+                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
+                    gameProfile1 = MinecraftServer.getServer().aD().fillProfileProperties(gameProfile1, true);
+                }
+                return gameProfile1;
             }
-            if (gameProfile1 == null) {
-                gameProfile1 = MinecraftServer.getServer().getUserCache().a(gameProfile.getId());
-            }
-            if (gameProfile1 == null) {
-                gameProfile1 = gameProfile;
-            }
-            if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                gameProfile1 = MinecraftServer.getServer().aD().fillProfileProperties(gameProfile1, true);
-            }
-            return gameProfile1;
+        } catch (Exception e) {
+            dB.echoError(e);
         }
         return null;
     }

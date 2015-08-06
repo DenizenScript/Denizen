@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 
-import java.util.HashMap;
-
 public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -103,12 +101,17 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        context.put("cuboids", cuboids);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
+            return cuboids;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

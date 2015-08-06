@@ -15,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
-
 public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -99,13 +97,20 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("previous_location", previous_location);
-        context.put("new_location", new_location);
-        context.put("cuboids", cuboids);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("previous_location")) {
+            return previous_location;
+        }
+        else if (name.equals("new_location")) {
+            return new_location;
+        }
+        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
+            return cuboids;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

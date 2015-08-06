@@ -63,6 +63,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Events
     // server start
     //
+    // @Regex ^server start$
+    //
     // @Triggers when the server starts
     //
     // @Determine
@@ -84,8 +86,9 @@ public class BukkitWorldScriptHelper implements Listener {
         String determination = doEvents(Arrays.asList("server start"),
                 null, null, null);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
+        }
     }
 
     private final Map<String, Integer> current_time = new HashMap<String, Integer>();
@@ -93,10 +96,12 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // time changes (in <world>)
-    // <0-23>:00 in <world>
     // time <0-23> in <world>
     //
+    // @Regex ^time [^\s]+( in [^\s]+)$
+    //
     // @Triggers when the current time changes in a world (once per mine-hour).
+    //
     // @Context
     // <context.time> returns the current time.
     // <context.world> returns the world.
@@ -121,7 +126,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 doEvents(Arrays.asList
                                 ("time changes",
                                         "time changes in " + currentWorld.identifySimple(),
-                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(),
+                                        String.valueOf(hour) + ":00 in " + currentWorld.identifySimple(), // NOTE: Deprecated
                                         "time " + String.valueOf(hour) + " in " + currentWorld.identifySimple()),
                         null, null, context, true);
 
@@ -382,84 +387,6 @@ public class BukkitWorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
             final InventoryHolder holder = event.getInventory().getHolder();
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    player.getPlayerEntity().updateInventory();
-                    if (holder != null && holder instanceof Player)
-                        ((Player) holder).updateInventory();
-                }
-            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
-        }
-    }
-
-    // <--[event]
-    // @Events
-    // player drags in inventory
-    // player drags (<item>) (in <inventory type>)
-    //
-    // @Triggers when a player drags in an inventory.
-    // @Context
-    // <context.item> returns the dItem the player has dragged.
-    // <context.inventory> returns the dInventory.
-    // <context.slots> returns a dList of the slot numbers dragged through.
-    // <context.raw_slots> returns a dList of the raw slot numbers dragged through.
-    //
-    // @Determine
-    // "CANCELLED" to stop the player from dragging.
-    //
-    // -->
-    @EventHandler
-    public void inventoryDragEvent(InventoryDragEvent event) {
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = null;
-
-        Inventory inventory = event.getInventory();
-        final dPlayer player = dEntity.getPlayerFrom((Player) event.getWhoClicked());
-        String type = event.getInventory().getType().name();
-
-        List<String> events = new ArrayList<String>();
-        events.add("player drags");
-        events.add("player drags in inventory");
-        events.add("player drags in " + type);
-
-        if (event.getOldCursor() != null) {
-
-            item = new dItem(event.getOldCursor());
-
-            events.add("player drags " +
-                    item.identifySimple());
-            events.add("player drags " +
-                    item.identifySimple() + " in inventory");
-            events.add("player drags " +
-                    item.identifySimple() + " in " + type);
-            events.add("player drags " +
-                    item.identifyMaterial());
-            events.add("player drags " +
-                    item.identifyMaterial() + " in inventory");
-            events.add("player drags " +
-                    item.identifyMaterial() + " in " + type);
-        }
-
-        context.put("item", item);
-        context.put("inventory", dInventory.mirrorBukkitInventory(inventory));
-        dList slots = new dList();
-        for (Integer slot : event.getInventorySlots()) {
-            slots.add(slot.toString());
-        }
-        context.put("slots", slots);
-        dList raw_slots = new dList();
-        for (Integer raw_slot : event.getRawSlots()) {
-            raw_slots.add(raw_slot.toString());
-        }
-        context.put("raw_slots", raw_slots);
-
-        String determination = doEvents(events, null, player, context, true);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            event.setCancelled(true);
-            final InventoryHolder holder = inventory.getHolder();
             new BukkitRunnable() {
                 @Override
                 public void run() {

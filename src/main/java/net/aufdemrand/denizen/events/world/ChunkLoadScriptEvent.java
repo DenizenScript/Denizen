@@ -12,13 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 
-import java.util.HashMap;
-
 public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: Replace in <world> with in <area>
     // <--[event]
     // @Events
     // chunk loads for the first time (in <world>)
+    //
+    // @Regex ^on chunk loads for the first time( in [^\s]+)?$
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
@@ -74,11 +75,14 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("chunk", chunk);
-        context.put("world", world); // Deprecated in favor of context.chunk.world
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("chunk")) {
+            return chunk;
+        }
+        else if (name.equals("world")) { // Deprecated in favor of context.chunk.world
+            return world;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -17,8 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import java.util.HashMap;
-
 public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[language]
@@ -156,23 +154,33 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("damage", damage);
-        context.put("final_damage", final_damage);
-        context.put("cause", cause);
-        if (damager != null) {
-            context.put("damager", damager);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        if (projectile != null) {
-            context.put("projectile", projectile);
+        else if (name.equals("damage")) {
+            return damage;
         }
-        for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
-            context.put("damage_" + dm.name(), new Element(event.getDamage(dm)));
+        else if (name.equals("final_damage")) {
+            return final_damage;
         }
-
-        return context;
+        else if (name.equals("cause")) {
+            return cause;
+        }
+        else if (name.equals("damager") && damager != null) {
+            return damager.getDenizenObject();
+        }
+        else if (name.equals("projectile") && projectile != null) {
+            return projectile.getDenizenObject();
+        }
+        else if (name.startsWith("damage_")) {
+            for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {
+                if (name.equals("damage_" + CoreUtilities.toLowerCase(dm.name()))) {
+                    return new Element(event.getDamage(dm));
+                }
+            }
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

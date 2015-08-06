@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 
-import java.util.HashMap;
-
 public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -22,6 +20,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     // furnace smelts <item> (into <item>) (in <area>)
     //
     // @Cancellable true
+    //
+    // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a furnace smelts an item.
     //
@@ -92,12 +92,17 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("source_item", source_item);
-        context.put("result_item", result_item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("source_item")) {
+            return source_item;
+        }
+        else if (name.equals("result_item")) {
+            return result_item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

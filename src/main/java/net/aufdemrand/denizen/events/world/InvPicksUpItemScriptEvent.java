@@ -12,16 +12,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
-import java.util.HashMap;
-
 public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
+    // TODO: Add in <area>
     // <--[event]
     // @Events
     // inventory picks up item
     // inventory picks up <item>
     // <inventory type> picks up item
     // <inventory type> picks up <item>
+    //
+    // @Regex ^on [^\s]+ picks up [^\s]+$
     //
     // @Cancellable true
     //
@@ -87,11 +88,14 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("inventory", inventory);
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("inventory")) {
+            return inventory;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

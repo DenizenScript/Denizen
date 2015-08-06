@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
-import java.util.HashMap;
-
 public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -97,10 +95,11 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -97,8 +98,16 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPhysics(BlockPhysicsEvent event) {
+        Material changedType = event.getChangedType();
+        if (changedType == Material.REDSTONE_WIRE
+                || changedType == Material.DIODE_BLOCK_OFF
+                || changedType == Material.DIODE_BLOCK_ON
+                || changedType == Material.REDSTONE_COMPARATOR_OFF
+                || changedType == Material.REDSTONE_COMPARATOR_ON) {
+            return;
+        }
         location = new dLocation(event.getBlock().getLocation());
-        new_material = dMaterial.getMaterialFrom(event.getChangedType());
+        new_material = dMaterial.getMaterialFrom(changedType);
         material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         cancelled = event.isCancelled();
         this.event = event;

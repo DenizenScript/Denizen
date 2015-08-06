@@ -15,7 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listener {
@@ -95,10 +94,11 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("level", new Element(level));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("level")) {
+            return new Element(level);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

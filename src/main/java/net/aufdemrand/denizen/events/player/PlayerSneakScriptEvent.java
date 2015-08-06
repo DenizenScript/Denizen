@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import java.util.HashMap;
-
 public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -88,10 +86,11 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("state", new Element(state));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("state")) {
+            return new Element(state);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

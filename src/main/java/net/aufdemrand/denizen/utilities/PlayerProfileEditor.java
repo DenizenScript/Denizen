@@ -98,6 +98,10 @@ public class PlayerProfileEditor {
         updatePlayer(player, false);
     }
 
+    public static String getPlayerName(Player player) {
+        return getFakeProfile(player).getName();
+    }
+
     public static void setPlayerSkin(Player player, String name) {
         GameProfile gameProfile = getFakeProfile(player);
         gameProfile.getProperties().get("textures").clear();

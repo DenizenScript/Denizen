@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 
-import java.util.HashMap;
-
 public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-collide with 'collides with entity'
@@ -93,11 +91,14 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("vehicle", vehicle);
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("vehicle")) {
+            return vehicle;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

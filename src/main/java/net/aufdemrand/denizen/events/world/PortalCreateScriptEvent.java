@@ -16,13 +16,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.PortalCreateEvent;
 
-import java.util.HashMap;
-
 public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // portal created (because <reason>) (in <area>)
+    //
+    // @Regex ^on portal created( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -81,12 +81,17 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        context.put("reason", reason);
-        context.put("blocks", blocks);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        else if (name.equals("reason")) {
+            return reason;
+        }
+        else if (name.equals("blocks")) {
+            return blocks;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

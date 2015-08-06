@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 
-import java.util.HashMap;
-
 public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -83,10 +81,11 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("gamemode", gamemode);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("gamemode")) {
+            return gamemode;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

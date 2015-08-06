@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
-
 public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
 
     // TODO: in area?
@@ -102,13 +100,20 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("to", to);
-        context.put("from", from);
-        context.put("old_biome", old_biome);
-        context.put("new_biome", new_biome);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("to")) {
+            return to;
+        }
+        else if (name.equals("from")) {
+            return from;
+        }
+        else if (name.equals("old_biome")) {
+            return old_biome;
+        }
+        else if (name.equals("new_biome")) {
+            return new_biome;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

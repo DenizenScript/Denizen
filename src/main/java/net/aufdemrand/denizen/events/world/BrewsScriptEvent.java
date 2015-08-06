@@ -12,13 +12,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.BrewEvent;
 
-import java.util.HashMap;
-
 public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // brewing stand brews (in <area>)
+    //
+    // @Regex ^on brewing stand brews( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -70,11 +70,14 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("inventory", inventory);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("inventory")) {
+            return inventory;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

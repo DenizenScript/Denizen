@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 
-import java.util.HashMap;
-
 public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -86,12 +84,17 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("radius", new Element(radius));
-        context.put("fire", new Element(fire));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("radius")) {
+            return new Element(radius);
+        }
+        else if (name.equals("fire")) {
+            return new Element(fire);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

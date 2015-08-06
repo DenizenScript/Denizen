@@ -18,8 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 
-import java.util.HashMap;
-
 public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -112,14 +110,23 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("cause", cause);
-        context.put("entity", entity);
-        context.put("hanging", hanging);
-        context.put("cuboids", cuboids);
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("cause")) {
+            return cause;
+        }
+        else if (name.equals("entity")) { // NOTE: Deprecated
+            return entity;
+        }
+        else if (name.equals("hanging")) {
+            return hanging;
+        }
+        else if (name.equals("cuboids")) { // NOTE: Deprecated
+            return cuboids;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -17,8 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
 
-import java.util.HashMap;
-
 public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -120,15 +118,20 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("reason", reason);
-        if (target != null) {
-            context.put("target", target);
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
         }
-        context.put("cuboids", cuboids);
-        return context;
+        else if (name.equals("reason")) {
+            return reason;
+        }
+        else if (name.equals("cuboids")) { // DEPRECATED
+            return cuboids;
+        }
+        else if ((name.equals("target")) && (target != null)) {
+            return target;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

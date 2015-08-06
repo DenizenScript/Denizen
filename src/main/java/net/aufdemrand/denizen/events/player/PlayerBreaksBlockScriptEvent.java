@@ -18,8 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.HashMap;
-
 public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-collide with breaks item
@@ -140,13 +138,20 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        context.put("cuboids", cuboids);
-        context.put("xp", xp);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        else if (name.equals("cuboids")) { // DEPRECATED
+            return cuboids;
+        }
+        else if (name.equals("xp")) {
+            return xp;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

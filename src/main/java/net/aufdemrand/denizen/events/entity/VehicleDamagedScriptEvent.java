@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 
-import java.util.HashMap;
-
 public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -110,13 +108,14 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("vehicle", vehicle);
-        if (entity != null) {
-            context.put("entity", entity);
+    public dObject getContext(String name) {
+        if (name.equals("vehicle")) {
+            return vehicle;
         }
-        return context;
+        else if ((name.equals("entity")) && (entity != null)) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

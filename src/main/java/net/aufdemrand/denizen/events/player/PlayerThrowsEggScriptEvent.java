@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 
-import java.util.HashMap;
-
 public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -104,11 +102,14 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("is_hatching", new Element(is_hatching));
-        context.put("egg", egg);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("is_hatching")) {
+            return new Element(is_hatching);
+        }
+        else if (name.equals("egg")) {
+            return egg;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

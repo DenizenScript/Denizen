@@ -1012,13 +1012,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax fail (script:<name>)
         // @Required 0
         // @Stable stable
-        // @deprecated This command is outdated, use flags instead!
+        // @Deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having failed.
         // @Author aufdemrand
         // @Group core
         // @Description
         // TODO: Document Command Details
-        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1057,13 +1056,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax finish (script:<name>)
         // @Required 0
         // @Stable stable
-        // @deprecated This command is outdated, use flags instead!
+        // @Deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having been completed successfully.
         // @Author aufdemrand
         // @Group core
         // @Description
         // TODO: Document Command Details
-        // NOTE: this command is very outdated, but not yet considered deprecated.
         // @Tags
         // TODO: Document Command Details
         // @Usage
@@ -1533,7 +1531,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax listen ({new}/cancel/finish) [kill/block/item/itemdrop/travel] [<requirements>] [script:<name>] (id:<name>)
         // @Required 2
         // @Stable unstable
-        // @deprecated This command may become unsupported in the future.
+        // @Deprecated This command may become unsupported in the future.
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
         // @Author aufdemrand, Jeebiss
         // @Group player
@@ -2045,6 +2043,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(PushCommand.class,
                 "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
+
+
+        // <--[command]
+        // @Name Pushable
+        // @Syntax pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)
+        // @Required 0
+        // @Stable stable
+        // @Short Edits the pushable trait for NPCs.
+        // @Author Morphan1
+        // @Group npc
+        // @Description
+        // Enables, disables, toggles, or edits the Pushable trait on the attached NPC.
+        // @Tags
+        // None
+        // @Usage
+        // Use to toggle the Pushable trait for a specified NPC.
+        // - pushable npc:n@321
+        // @Usage
+        // Use to enable the Pushable trait and return after 2 seconds.
+        // - pushable state:true delay:2s returnable:true
+        // -->
+        registerCoreMember(PushableCommand.class,
+                "PUSHABLE", "pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)", 0);
 
 
         // <--[command]
@@ -2887,7 +2908,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Title
-        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)
+        // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)
         // @Required 1
         // @Stable stable
         // @Short Displays a title to specified players.
@@ -2907,7 +2928,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
         // -->
         registerCoreMember(TitleCommand.class,
-                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>{1s}) (stay:<duration>{3s}) (fade_out:<duration>{1s}) (targets:<player>|...)", 1);
+                "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
 
         // <--[command]
         // @Name Trait
@@ -2947,7 +2968,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - trigger name:click state:true
         // @Usage
         // Use to enable the chat trigger with a 10-second cooldown and a radius of 5 blocks.
-        // - trigger name:chat state:ture cooldown:10s radius:5
+        // - trigger name:chat state:true cooldown:10s radius:5
         // @Usage
         // TODO: Document Command Details
         // -->

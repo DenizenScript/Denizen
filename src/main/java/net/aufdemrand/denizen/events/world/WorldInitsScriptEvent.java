@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
 
-import java.util.HashMap;
-
 public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // world initializes
     // <world> initializes
+    //
+    // @Regex ^on [^\s]+ initializes$
     //
     // @Triggers when a world is initialized.
     //
@@ -71,10 +71,11 @@ public class WorldInitsScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("world", world);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("world")) {
+            return world;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

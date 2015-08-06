@@ -131,11 +131,6 @@ public class dInventory implements dObject, Notable, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
-
-    public static dInventory valueOf(String string) {
-        return valueOf(string, null);
-    }
-
     @Fetchable("in")
     public static dInventory valueOf(String string, TagContext context) {
         if (context == null) {
@@ -1193,7 +1188,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 // @description
                 // Returns the dInventory with a certain quantity of an item added.
                 // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") ||attribute.getAttribute(2).startsWith("qty")) &&
+                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                         attribute.hasContext(2) &&
                         aH.matchesInteger(attribute.getContext(2))) {
                     qty = attribute.getIntContext(2);
@@ -1500,6 +1495,17 @@ public class dInventory implements dObject, Notable, Adjustable {
                 }
                 return Element.TRUE.getAttribute(attribute.fulfill(attribs));
             }
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.first_empty>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first empty slot.
+        // Returns -1 if the inventory is full.
+        // -->
+        if (attribute.startsWith("first_empty")) {
+            return new Element(firstEmpty(0)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

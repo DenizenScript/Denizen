@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
-import java.util.HashMap;
-
 public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -89,11 +87,14 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("vehicle", vehicle);
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("vehicle")) {
+            return vehicle;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

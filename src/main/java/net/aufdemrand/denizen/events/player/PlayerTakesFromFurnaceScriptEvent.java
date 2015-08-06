@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 
-import java.util.HashMap;
-
 public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -91,11 +89,14 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("item", item);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

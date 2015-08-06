@@ -12,13 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.util.HashMap;
-
 public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
 
+    // TODO: replace in <world> with in <area>
     // <--[event]
     // @Events
     // chunk unloads (in <world>)
+    //
+    // @Regex ^on player unloads( in [^\s]+)?$
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //
@@ -75,11 +76,14 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("chunk", chunk);
-        context.put("world", world); // Deprecated in favor of context.chunk.world
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("chunk")) {
+            return chunk;
+        }
+        else if (name.equals("world")) { // Deprecated in favor of context.chunk.world
+            return world;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

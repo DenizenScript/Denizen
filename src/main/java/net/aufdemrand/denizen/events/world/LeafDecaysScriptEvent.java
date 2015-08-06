@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.LeavesDecayEvent;
 
-import java.util.HashMap;
-
 public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // leaves decay (in <area>)
     // <block> decay (in <area>)
+    //
+    // @Regex ^on [^\s]+ decay( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -75,11 +75,14 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("material", material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

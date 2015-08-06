@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 
-import java.util.HashMap;
-
 public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -87,12 +85,17 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("to", to);
-        context.put("from", from);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("to")) {
+            return to;
+        }
+        else if (name.equals("from")) {
+            return from;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

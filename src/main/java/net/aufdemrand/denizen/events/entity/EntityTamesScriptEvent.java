@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTameEvent;
 
-import java.util.HashMap;
-
 public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -102,11 +100,14 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("owner", owner);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("owner")) {
+            return owner;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

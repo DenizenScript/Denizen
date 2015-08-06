@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityUnleashEvent;
 
-import java.util.HashMap;
-
 public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -88,11 +86,14 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("reason", reason);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("reason")) {
+            return reason;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

@@ -14,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements Listener {
@@ -96,11 +95,14 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("origin_world", origin_world);
-        context.put("destination_world", destination_world);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("origin_world")) {
+            return origin_world;
+        }
+        else if (name.equals("destination_world")) {
+            return destination_world;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

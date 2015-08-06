@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemDespawnEvent;
 
-import java.util.HashMap;
-
 public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: de-colide with entity despawns
@@ -91,12 +89,17 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("item", item);
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

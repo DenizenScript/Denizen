@@ -98,8 +98,8 @@ public class ItemScriptContainer extends ScriptContainer {
     // -->
 
     // A map storing special recipes that use itemscripts as ingredients
-    public static Map<dItem, dList> specialrecipesMap = new HashMap<dItem, dList>();
-    public static Map<dItem, dList> shapelessRecipesMap = new HashMap<dItem, dList>();
+    public static Map<ItemScriptContainer, List<dItem>> specialrecipesMap = new HashMap<ItemScriptContainer, List<dItem>>();
+    public static Map<ItemScriptContainer, List<dItem>> shapelessRecipesMap = new HashMap<ItemScriptContainer, List<dItem>>();
 
     dNPC npc = null;
     dPlayer player = null;
@@ -118,32 +118,13 @@ public class ItemScriptContainer extends ScriptContainer {
             // Get recipe list from item script
             List<String> recipeList = getStringList("RECIPE");
 
-            // Process all tags in list
-            for (int n = 0; n < recipeList.size(); n++) {
-                recipeList.set(n, TagManager.tag(recipeList.get(n), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this))));
-            }
-
-            // Store every ingredient in a dList
-            dList ingredients = new dList();
-
-            for (String recipeRow : recipeList) {
-                String[] elements = recipeRow.split("\\|", 3);
-
-                for (String element : elements) {
-                    ingredients.add(element.replaceAll("[iImM]@", ""));
-                }
-            }
-
-            // Add the recipe to Denizen's item script recipe list so it
-            // will be checked manually inside ItemScriptHelper
-            specialrecipesMap.put(getItemFrom(), ingredients);
+            // Process later so that any item script ingredients can be fulfilled
+            ItemScriptHelper.recipes_to_register.put(this, recipeList);
 
         }
 
         if (contains("SHAPELESS_RECIPE")) {
-            String list = TagManager.tag(getString("SHAPELESS_RECIPE"), new BukkitTagContext(player, npc, false, null, dB.shouldDebug(this), new dScript(this)));
-            dList actual_list = dList.valueOf(list);
-            shapelessRecipesMap.put(getItemFrom(), actual_list);
+            ItemScriptHelper.shapeless_to_register.put(this, getString("SHAPELESS_RECIPE"));
         }
 
         if (contains("FURNACE_RECIPE")) {

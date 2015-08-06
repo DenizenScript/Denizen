@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
-import java.util.HashMap;
-
 public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -89,10 +87,11 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("state", new Element(state));
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("state")) {
+            return new Element(state);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

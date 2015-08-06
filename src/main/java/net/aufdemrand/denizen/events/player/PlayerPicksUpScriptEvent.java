@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import java.util.HashMap;
-
 public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -92,12 +90,17 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("item", item);
-        context.put("entity", entity);
-        context.put("location", location);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("location")) {
+            return location;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

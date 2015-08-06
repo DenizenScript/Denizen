@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
-import java.util.HashMap;
-
 public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -84,10 +82,11 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

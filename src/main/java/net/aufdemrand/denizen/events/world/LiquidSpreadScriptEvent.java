@@ -12,14 +12,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFromToEvent;
 
-import java.util.HashMap;
-
 public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // liquid spreads (in <area>)
     // <liquid block> spreads (in <area>)
+    //
+    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
@@ -79,12 +79,17 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("destination", destination);
-        context.put("material", material);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("destination")) {
+            return destination;
+        }
+        else if (name.equals("material")) {
+            return material;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

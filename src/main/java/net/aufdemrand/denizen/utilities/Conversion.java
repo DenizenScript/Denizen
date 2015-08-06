@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -77,11 +78,11 @@ public class Conversion {
         String string = arg.getValue();
 
         if (dInventory.matches(string)) {
-            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.getData();
+            BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
             if (data != null)
                 return dInventory.valueOf(string, data.getTagContext());
             else
-                return dInventory.valueOf(string);
+                return dInventory.valueOf(string, null);
         }
         else if (arg.matchesArgumentList(dItem.class)) {
             List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);

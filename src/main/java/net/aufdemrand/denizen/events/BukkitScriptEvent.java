@@ -12,12 +12,16 @@ import java.util.List;
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
+        return runInCheck(scriptContainer, s, lower, location, "in");
+    }
+
+    public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location, String innote) {
         List<String> data = CoreUtilities.split(lower, ' ');
 
         int index;
 
         for (index = 0; index < data.size(); index++) {
-            if (data.get(index).equals("in")) {
+            if (data.get(index).equals(innote)) {
                 break;
             }
         }

@@ -234,9 +234,13 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                     return;
                 ItemStack[] newArmor = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
-                    ItemStack o = oldArmor[i];
-                    ItemStack n = newArmor[i];
+                    ItemStack o = oldArmor[i].clone();
+                    ItemStack n = newArmor[i].clone();
                     if (o != null) {
+                        o.setDurability((short) 0);
+                        if (n != null) {
+                            n.setDurability((short) 0);
+                        }
                         if (n == null || !n.equals(o)) {
                             if (playerUnequipsArmorEvent(player, o, "BREAK")) {
                                 newArmor[i] = o;

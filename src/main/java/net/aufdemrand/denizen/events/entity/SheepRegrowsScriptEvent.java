@@ -12,8 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.SheepRegrowWoolEvent;
 
-import java.util.HashMap;
-
 public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -74,10 +72,11 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

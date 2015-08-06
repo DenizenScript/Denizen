@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 
-import java.util.HashMap;
-
 public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -90,11 +88,14 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("entity", entity);
-        context.put("state", entity); //DEPRECATED because...dumb
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("entity")) {
+            return entity;
+        }
+        else if (name.equals("state")) { // Deprecated and not in the meta documentation
+            return entity;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

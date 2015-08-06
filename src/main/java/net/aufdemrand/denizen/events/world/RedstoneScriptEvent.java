@@ -12,13 +12,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
-import java.util.HashMap;
-
 public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // redstone recalculated (in <area>)
+    //
+    // @Regex ^on redstone recalculated( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Warning This event fires very very rapidly!
     //
@@ -82,12 +82,17 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public HashMap<String, dObject> getContext() {
-        HashMap<String, dObject> context = super.getContext();
-        context.put("location", location);
-        context.put("old_current", old_current);
-        context.put("new_current", new_current);
-        return context;
+    public dObject getContext(String name) {
+        if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("old_current")) {
+            return old_current;
+        }
+        else if (name.equals("new_current")) {
+            return new_current;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler(ignoreCancelled = true)

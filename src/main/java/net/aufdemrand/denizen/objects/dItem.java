@@ -829,6 +829,24 @@ public class dItem implements dObject, Notable, Adjustable {
             }
         });
 
+        // <--[tag]
+        // @attribute <i@item.script>
+        // @returns dScript
+        // @group scripts
+        // @description
+        // Returns the script of the item if it was created by an item script.
+        // -->
+        registerTag("script", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (((dItem) object).isItemscript()) {
+                    return new dScript(((dItem) object).getScriptName())
+                            .getAttribute(attribute.fulfill(1));
+                }
+                return null;
+            }
+        });
+
         registerTag("prefix", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
