@@ -53,7 +53,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public dList old_sign;
     public dMaterial material;
     public dList cuboids;
-    private dList new_text;
+    public dList new_text;
     public SignChangeEvent event;
 
     @Override
@@ -145,6 +145,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         }
         old_sign = new dList(Arrays.asList(sign.getLines()));
         new_sign = new dList(Arrays.asList(event.getLines()));
+        new_text = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();
