@@ -15,11 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class InventoryScriptContainer extends ScriptContainer {
 
     // <--[language]
@@ -95,6 +90,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
 
         dInventory inventory = null;
+        BukkitTagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this));
 
         try {
             if (contains("INVENTORY")) {
@@ -112,8 +108,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     dB.echoError("You can only set the size of chest inventories!");
                 }
                 else {
-                    size = aH.getIntegerFrom(TagManager.tag(getString("SIZE"),
-                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))));
+                    size = aH.getIntegerFrom(TagManager.tag(getString("SIZE"), context));
 
                     if (size == 0) {
                         dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
@@ -127,9 +122,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         dB.echoError("Inventory size must be a positive number! Inverting to " + size + "...");
                     }
 
-                    inventory = new dInventory(size,
-                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
-                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
+                    inventory = new dInventory(size, contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
                     inventory.setIdentifiers("script", getName());
                 }
             }
@@ -140,7 +133,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 ItemStack[] finalItems = new ItemStack[size];
                 int itemsAdded = 0;
                 for (String items : getStringList("SLOTS")) {
-                    items = TagManager.tag(items, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))).trim();
+                    items = TagManager.tag(items, context).trim();
                     if (items.isEmpty()) {
                         continue;
                     }
@@ -151,17 +144,19 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                     String[] itemsInLine = items.substring(1, items.length()-1).split("\\[?\\]?\\s+\\[");
                     for (String item : itemsInLine) {
-                        if (contains("DEFINITIONS." + item) &&
-                                dItem.matches(getString("DEFINITIONS." + item))) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag
-                                            (getString("DEFINITIONS." + item),
-                                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
-                                    player, npc).getItemStack();
+                        if (contains("DEFINITIONS." + item)) {
+                            dItem def = dItem.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), player, npc);
+                            if (def == null) {
+                                dB.echoError("Invalid definition '" + item + "' in inventory script '" + getName() + "'"
+                                        + "... Ignoring it and assuming \"AIR\"");
+                                finalItems[itemsAdded] = new ItemStack(Material.AIR);
+                            }
+                            else {
+                                finalItems[itemsAdded] = def.getItemStack();
+                            }
                         }
                         else if (dItem.matches(item)) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(item,
-                                            new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))),
-                                    player, npc).getItemStack();
+                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(item, context), player, npc).getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
@@ -176,8 +171,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 if (inventory == null) {
                     size = finalItems.length % 9 == 0 ? finalItems.length : Math.round(finalItems.length / 9) * 9;
                     inventory = new dInventory(size == 0 ? 9 : size,
-                            contains("TITLE") ? TagManager.tag(getString("TITLE"),
-                                    new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this))) : "Chest");
+                            contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
                 }
                 inventory.setContents(finalItems);
             }
