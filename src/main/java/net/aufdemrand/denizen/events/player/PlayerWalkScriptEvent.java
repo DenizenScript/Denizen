@@ -48,7 +48,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player walks");
+        return lower.startsWith("player walks") && !CoreUtilities.xthArgEquals(2, lower, "over");
     }
 
     @Override
