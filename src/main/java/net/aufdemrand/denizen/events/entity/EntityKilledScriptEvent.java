@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -78,7 +79,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     public boolean matches(ScriptContainer scriptContainer, String s) {
         // Check for possibility of death first
         if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() <= entity.getLivingEntity().getHealth()) {
+            if (final_damage.asDouble() < entity.getLivingEntity().getHealth()) {
                 return false;
             }
         }
