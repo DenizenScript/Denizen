@@ -505,12 +505,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
         }
         else if (getIdType().equals("script")) {
-            // Iterate through inventory scripts
-            for (InventoryScriptContainer container : InventoryScriptHelper.inventory_scripts.values()) {
-                if (((CraftInventory) (container.getInventoryFrom()).inventory).getInventory().equals(((CraftInventory) inventory).getInventory())) {
-                    idHolder = container.getName();
-                    return;
-                }
+            if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {
+                idHolder = InventoryScriptHelper.tempInventoryScripts.get(inventory);
+                return;
             }
         }
         idType = "generic";

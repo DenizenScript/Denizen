@@ -1859,7 +1859,7 @@ public class dPlayer implements dObject, Adjustable {
             }
         }
 
-        // <--[tag]
+        // <--[mechanism]
         // @object dPlayer
         // @name item_on_cursor
         // @input dItem
