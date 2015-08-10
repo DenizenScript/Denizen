@@ -76,9 +76,10 @@ public class EntitySkeleton implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name skeleton
-        // @input Element(Boolean)
+        // @input Element
         // @description
         // Changes whether a skeleton is a normal or wither type skeleton.
+        // Valid input: NORMAL, WITHER.
         // @tags
         // <e@entity.skeleton_type>
         // -->
