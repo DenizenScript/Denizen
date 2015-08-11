@@ -83,10 +83,6 @@ public class InventoryScriptContainer extends ScriptContainer {
         }
     }
 
-    public dInventory getInventoryFrom() {
-        return getInventoryFrom(null, null);
-    }
-
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
 
         dInventory inventory = null;
@@ -156,11 +152,11 @@ public class InventoryScriptContainer extends ScriptContainer {
                             }
                         }
                         else if (dItem.matches(item)) {
-                            finalItems[itemsAdded] = dItem.valueOf(TagManager.tag(item, context), player, npc).getItemStack();
+                            finalItems[itemsAdded] = dItem.valueOf(item, player, npc).getItemStack();
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
-                            if (!item.trim().isEmpty()) {
+                            if (!item.isEmpty()) {
                                 dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
                                         + item + "]... Ignoring it and assuming \"AIR\"");
                             }
