@@ -76,12 +76,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        // Check for possibility of death first
-        if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() < entity.getLivingEntity().getHealth()) {
-                return false;
-            }
-        }
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String arg0 = CoreUtilities.getXthArg(0, lower);
@@ -178,6 +172,12 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         entity = new dEntity(event.getEntity());
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
+        // Check for possibility of death first
+        if (entity.isValid() && entity.isLivingEntity()) {
+            if (final_damage.asDouble() < entity.getLivingEntity().getHealth()) {
+                return;
+            }
+        }
         cause = new Element(event.getCause().name().toLowerCase());
         damager = null;
         projectile = null;
