@@ -1493,7 +1493,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         else if (comparedto.equalsIgnoreCase("cuboid"))
             outcome = dCuboid.matches(comparable);
-        
+
         else
             dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
 
