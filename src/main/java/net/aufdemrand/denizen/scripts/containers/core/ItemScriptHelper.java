@@ -116,6 +116,9 @@ public class ItemScriptHelper implements Listener {
                 ItemScriptContainer.shapelessRecipesMap.put(container, ingredients);
             }
         }
+
+        recipes_to_register.clear();
+        shapeless_to_register.clear();
     }
 
     public static boolean isBound(ItemStack item) {
