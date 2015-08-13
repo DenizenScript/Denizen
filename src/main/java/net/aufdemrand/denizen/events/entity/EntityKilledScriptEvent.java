@@ -176,6 +176,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 return;
             }
         }
+        else {
+            return;
+        }
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
