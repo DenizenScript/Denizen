@@ -125,7 +125,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("old")) {
             return old_sign;
         }
-        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
+        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         return super.getContext(name);
