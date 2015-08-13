@@ -115,7 +115,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         if (name.equals("cause")) {
             return cause;
         }
-        else if (name.equals("entity")) { // NOTE: Deprecated
+        else if (name.equals("entity")) { // NOTE: Deprecated in favor of context.breaker
             return breaker;
         }
         else if (name.equals("breaker")) {
@@ -124,7 +124,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         else if (name.equals("hanging")) {
             return hanging;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated
+        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         else if (name.equals("location")) {

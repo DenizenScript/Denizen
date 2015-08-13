@@ -80,7 +80,7 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
         if (name.equals("chunk")) {
             return chunk;
         }
-        else if (name.equals("world")) { // Deprecated in favor of context.chunk.world
+        else if (name.equals("world")) { // NOTE: Deprecated in favor of context.chunk.world
             return world;
         }
         return super.getContext(name);

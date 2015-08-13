@@ -84,7 +84,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
         if (name.equals("entity")) {
             return entity;
         }
-        else if ((name.equals("lightning")) && (lightning != null)) {
+        else if (name.equals("lightning") && lightning != null) {
             return lightning;
         }
         else if (name.equals("cause")) {

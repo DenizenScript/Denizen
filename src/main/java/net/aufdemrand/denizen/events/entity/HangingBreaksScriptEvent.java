@@ -123,7 +123,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("cuboids")) { // NOTE: Deprecated
             return cuboids;
         }
-        else if (name.equals("location")) {
+        else if (name.equals("location")) { // NOTE: Deprecated
             return location;
         }
         return super.getContext(name);

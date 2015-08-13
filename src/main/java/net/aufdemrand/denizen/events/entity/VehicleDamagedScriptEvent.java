@@ -112,7 +112,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         if (name.equals("vehicle")) {
             return vehicle;
         }
-        else if ((name.equals("entity")) && (entity != null)) {
+        else if (name.equals("entity") && entity != null) {
             return entity;
         }
         return super.getContext(name);
