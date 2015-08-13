@@ -170,14 +170,14 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler(ignoreCancelled = true)
     public void onEntityKilled(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
-        damage = new Element(event.getDamage());
-        final_damage = new Element(event.getFinalDamage());
         // Check for possibility of death first
         if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() < entity.getLivingEntity().getHealth()) {
+            if (event.getFinalDamage() < entity.getLivingEntity().getHealth()) {
                 return;
             }
         }
+        damage = new Element(event.getDamage());
+        final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());
         damager = null;
         projectile = null;
