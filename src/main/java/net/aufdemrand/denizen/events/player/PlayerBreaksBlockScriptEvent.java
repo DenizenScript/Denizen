@@ -145,7 +145,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("cuboids")) { // DEPRECATED
+        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         else if (name.equals("xp")) {

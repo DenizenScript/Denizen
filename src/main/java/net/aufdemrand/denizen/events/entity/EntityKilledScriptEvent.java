@@ -151,10 +151,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("cause")) {
             return cause;
         }
-        else if ((name.equals("damager")) && (damager != null)) {
+        else if (name.equals("damager") && damager != null) {
             return damager;
         }
-        else if ((name.equals("projectile")) && (projectile != null)) {
+        else if (name.equals("projectile") && projectile != null) {
             return projectile;
         }
         else if (name.startsWith("damage_")) {

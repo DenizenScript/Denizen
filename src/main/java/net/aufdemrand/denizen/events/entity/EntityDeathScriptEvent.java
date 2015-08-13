@@ -158,19 +158,19 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         if (name.equals("entity")) {
             return entity;
         }
-        else if ((name.equals("damager")) && (damager != null)) {
+        else if (name.equals("damager") && damager != null) {
             return damager;
         }
-        else if ((name.equals("message")) && (message != null)) {
+        else if (name.equals("message") && message != null) {
             return message;
         }
-        else if ((name.equals("inventory")) && (inventory != null)) {
+        else if (name.equals("inventory") && inventory != null) {
             return inventory;
         }
-        else if ((name.equals("cause")) && (cause != null)) {
+        else if (name.equals("cause") && cause != null) {
             return cause;
         }
-        else if ((name.equals("drops")) && (drops != null)) {
+        else if (name.equals("drops") && drops != null) {
             return drops;
         }
         return super.getContext(name);

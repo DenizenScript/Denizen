@@ -125,10 +125,10 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("reason")) {
             return reason;
         }
-        else if (name.equals("cuboids")) { // DEPRECATED
+        else if (name.equals("cuboids")) { // NOTE: Deprecated
             return cuboids;
         }
-        else if ((name.equals("target")) && (target != null)) {
+        else if (name.equals("target") && target != null) {
             return target;
         }
         return super.getContext(name);
