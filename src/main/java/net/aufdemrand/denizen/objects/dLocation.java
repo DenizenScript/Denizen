@@ -758,10 +758,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("face")
                 && attribute.hasContext(1)) {
             Location two = dLocation.valueOf(attribute.getContext(1));
-            Location rel = Rotation.faceLocation(this, two);
-            if (rel != null) {
-                return new dLocation(rel).getAttribute(attribute.fulfill(1));
-            }
+            return new dLocation(Rotation.faceLocation(this, two))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

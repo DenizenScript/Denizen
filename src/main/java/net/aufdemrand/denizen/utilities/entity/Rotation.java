@@ -170,12 +170,9 @@ public class Rotation {
 
 
     public static Location faceLocation(Location from, Location at) {
-        if (from.getWorld() != at.getWorld()) return null;
-        Location loc = from.getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
-
-        double xDiff = at.getX() - loc.getX();
-        double yDiff = at.getY() - loc.getY();
-        double zDiff = at.getZ() - loc.getZ();
+        double xDiff = at.getX() - from.getX();
+        double yDiff = at.getY() - from.getY();
+        double zDiff = at.getZ() - from.getZ();
 
         double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
         double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
