@@ -169,6 +169,28 @@ public class Rotation {
     }
 
 
+    public static Location faceLocation(Location from, Location at) {
+        if (from.getWorld() != at.getWorld()) return null;
+        Location loc = from.getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
+
+        double xDiff = at.getX() - loc.getX();
+        double yDiff = at.getY() - loc.getY();
+        double zDiff = at.getZ() - loc.getZ();
+
+        double distanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+        double distanceY = Math.sqrt(distanceXZ * distanceXZ + yDiff * yDiff);
+
+        double yaw = Math.toDegrees(Math.acos(xDiff / distanceXZ));
+        double pitch = Math.toDegrees(Math.acos(yDiff / distanceY)) - 70;
+
+        if (zDiff < 0.0) {
+            yaw = yaw + (Math.abs(180 - yaw) * 2);
+        }
+
+        return new Location(from.getWorld(), from.getX(), from.getY(), from.getZ(), (float)yaw - 90, (float)pitch);
+    }
+
+
     /**
      * Changes an entity's yaw and pitch to make it face a location.
      *
