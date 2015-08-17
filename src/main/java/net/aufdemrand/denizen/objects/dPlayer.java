@@ -1252,7 +1252,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.item_on_cursor>
         // @returns dItem
         // @description
-        // returns a dItem that the player's cursor is on, if any. This includes
+        // Returns the item on the player's cursor, if any. This includes
         // chest interfaces, inventories, and hotbars, etc.
         // -->
         if (attribute.startsWith("item_on_cursor"))
@@ -1857,6 +1857,20 @@ public class dPlayer implements dObject, Adjustable {
             else {
                 getNBTEditor().setItemInHand(value.asInt() - 1);
             }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name item_on_cursor
+        // @input dItem
+        // @description
+        // Sets the item on the player's cursor. This includes
+        // chest interfaces, inventories, and hotbars, etc.
+        // @tags
+        // <p@player.item_on_cursor>
+        // -->
+        if (mechanism.matches("item_on_cursor") && mechanism.requireObject(dItem.class)) {
+            getPlayerEntity().setItemOnCursor(value.asType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]

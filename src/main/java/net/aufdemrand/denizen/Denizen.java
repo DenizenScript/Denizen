@@ -769,6 +769,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityPowered.class, dEntity.class);
             propertyParser.registerProperty(EntityProfession.class, dEntity.class);
             propertyParser.registerProperty(EntityRotation.class, dEntity.class);
+            propertyParser.registerProperty(EntitySilent.class, dEntity.class);
             propertyParser.registerProperty(EntitySitting.class, dEntity.class);
             propertyParser.registerProperty(EntitySize.class, dEntity.class);
             propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
@@ -1453,6 +1454,50 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public String cleanseLogString(String input) {
         return LogInterceptor.cleanse(input);
+    }
+
+    @Override
+    public boolean matchesType(String comparable, String comparedto) {
+
+        boolean outcome = false;
+
+        if (comparedto.equalsIgnoreCase("location"))
+            outcome = dLocation.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("material"))
+            outcome = dMaterial.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("materiallist"))
+            outcome = dList.valueOf(comparable).containsObjectsFrom(dMaterial.class);
+
+        else if (comparedto.equalsIgnoreCase("entity"))
+            outcome = dEntity.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("spawnedentity"))
+            outcome = (dEntity.matches(comparable) && dEntity.valueOf(comparable).isSpawned());
+
+        else if (comparedto.equalsIgnoreCase("npc"))
+            outcome = dNPC.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("player"))
+            outcome = dPlayer.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("offlineplayer"))
+            outcome = (dPlayer.valueOf(comparable) != null && !dPlayer.valueOf(comparable).isOnline());
+
+        else if (comparedto.equalsIgnoreCase("onlineplayer"))
+            outcome = (dPlayer.valueOf(comparable) != null && dPlayer.valueOf(comparable).isOnline());
+
+        else if (comparedto.equalsIgnoreCase("item"))
+            outcome = dItem.matches(comparable);
+
+        else if (comparedto.equalsIgnoreCase("cuboid"))
+            outcome = dCuboid.matches(comparable);
+
+        else
+            dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
+
+        return outcome;
     }
 }
 

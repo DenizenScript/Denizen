@@ -73,9 +73,9 @@ public class LogCommand extends AbstractCommand {
 
         String output = TagManager.cleanOutputFully(message.asString());
 
+        file.getParentFile().mkdirs();
         if (type == Type.NONE) {
             try {
-                file.getParentFile().mkdirs();
                 FileWriter fw = new FileWriter(file, true);
                 fw.write(output + "\n");
                 fw.close();
@@ -89,7 +89,6 @@ public class LogCommand extends AbstractCommand {
 
         else if (type == Type.CLEAR) {
             try {
-                file.getParentFile().mkdirs();
                 FileWriter fw = new FileWriter(file);
                 if (output.length() > 0) {
                     fw.write(output + "\n");

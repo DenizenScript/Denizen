@@ -132,7 +132,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("location")) {
             return location;
         }
-        else if ((name.equals("shooter")) && (shooter != null)) {
+        else if (name.equals("shooter") && shooter != null) {
             return shooter;
         }
         return super.getContext(name);

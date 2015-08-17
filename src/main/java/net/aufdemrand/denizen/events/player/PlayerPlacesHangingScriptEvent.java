@@ -96,11 +96,11 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         if (name.equals("hanging")) {
             return hanging;
         }
-        else if (name.equals("cuboids")) { // Deprecated in favor of context.location.cuboids
-            return cuboids;
-        }
         else if (name.equals("location")) {
             return location;
+        }
+        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            return cuboids;
         }
         return super.getContext(name);
     }

@@ -76,12 +76,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        // Check for possibility of death first
-        if (entity.isValid() && entity.isLivingEntity()) {
-            if (final_damage.asDouble() <= entity.getLivingEntity().getHealth()) {
-                return false;
-            }
-        }
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
         String arg0 = CoreUtilities.getXthArg(0, lower);
@@ -157,10 +151,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("cause")) {
             return cause;
         }
-        else if ((name.equals("damager")) && (damager != null)) {
+        else if (name.equals("damager") && damager != null) {
             return damager;
         }
-        else if ((name.equals("projectile")) && (projectile != null)) {
+        else if (name.equals("projectile") && projectile != null) {
             return projectile;
         }
         else if (name.startsWith("damage_")) {
@@ -176,6 +170,15 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler(ignoreCancelled = true)
     public void onEntityKilled(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
+        // Check for possibility of death first
+        if (entity.isValid() && entity.isLivingEntity()) {
+            if (event.getFinalDamage() < entity.getLivingEntity().getHealth()) {
+                return;
+            }
+        }
+        else {
+            return;
+        }
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
         cause = new Element(event.getCause().name().toLowerCase());

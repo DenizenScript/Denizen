@@ -150,10 +150,6 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public dObject getContext(String name) {
-        dList list = new dList();
-        for (Player tplayer : recipients) {
-            list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
-        }
         if (name.equals("message")) {
             return message;
         }
@@ -161,6 +157,10 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
             return format;
         }
         if (name.equals("recipients")) {
+            dList list = new dList();
+            for (Player tplayer : recipients) {
+                list.add(dPlayer.mirrorBukkitPlayer(tplayer).identify());
+            }
             return list;
         }
         return super.getContext(name);

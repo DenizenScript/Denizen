@@ -749,6 +749,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.face[<location>]>
+        // @returns dLocation
+        // @description
+        // Returns a location containing a yaw/pitch that point from the current location
+        // to the target location.
+        // -->
+        if (attribute.startsWith("face")
+                && attribute.hasContext(1)) {
+            Location two = dLocation.valueOf(attribute.getContext(1));
+            return new dLocation(Rotation.faceLocation(this, two))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.facing[<entity>/<location>]>
         // @returns Element(Boolean)
         // @description
