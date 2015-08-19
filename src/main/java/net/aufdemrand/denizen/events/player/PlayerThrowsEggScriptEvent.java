@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -119,10 +120,13 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         }
         dB.log("Is this even firing?");
         is_hatching = event.isHatching();
+        Entity eggEntity = event.getEgg();
+        dEntity.rememberEntity(eggEntity);
         egg = new dEntity(event.getEgg());
         type = event.getHatchingType();
         this.event = event;
         fire();
+        dEntity.forgetEntity(eggEntity);
         event.setHatching(is_hatching);
         event.setHatchingType(type);
     }

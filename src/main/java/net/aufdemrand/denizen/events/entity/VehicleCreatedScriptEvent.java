@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleCreateEvent;
@@ -90,8 +91,11 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler(ignoreCancelled = true)
     public void onVehicleMove(VehicleCreateEvent event) {
-        vehicle = new dEntity(event.getVehicle());
+        Entity entity = event.getVehicle();
+        dEntity.rememberEntity(entity);
+        vehicle = new dEntity(entity);
         this.event = event;
         fire();
+        dEntity.forgetEntity(entity);
     }
 }
