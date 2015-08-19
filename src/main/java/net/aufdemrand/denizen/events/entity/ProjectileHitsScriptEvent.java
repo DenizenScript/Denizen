@@ -141,7 +141,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler(ignoreCancelled = true)
     public void onProjectileHits(ProjectileHitEvent event) {
         projectile = new dEntity(event.getEntity());
-        if (!projectile.getShooter().isPlayer()) return;
         if (projectile.getLocation() == null)
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
 

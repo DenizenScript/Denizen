@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -110,7 +111,9 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        hanging = new dEntity(event.getEntity());
+        Entity hangingEntity = event.getEntity();
+        dEntity.rememberEntity(hangingEntity);
+        hanging = new dEntity(hangingEntity);
         location = new dLocation(event.getBlock().getLocation());
         cuboids = new dList();
         for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
@@ -119,6 +122,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         cancelled = event.isCancelled();
         this.event = event;
         fire();
+        dEntity.forgetEntity(hangingEntity);
         event.setCancelled(cancelled);
     }
 }

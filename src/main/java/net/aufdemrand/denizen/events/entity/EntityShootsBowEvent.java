@@ -160,10 +160,13 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
         entity = new dEntity(event.getEntity());
         force = event.getForce() * 3;
         bow = new dItem(event.getBow());
-        projectile = new dEntity(event.getProjectile());
+        Entity projectileEntity = event.getProjectile();
+        dEntity.rememberEntity(projectileEntity);
+        projectile = new dEntity(projectileEntity);
         cancelled = event.isCancelled();
         this.event = event;
         fire();
+        dEntity.forgetEntity(projectileEntity);
         event.setCancelled(cancelled);
     }
 }

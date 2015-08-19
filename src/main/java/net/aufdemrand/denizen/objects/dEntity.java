@@ -56,10 +56,16 @@ public class dEntity implements dObject, Adjustable {
     private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
 
     public static void rememberEntity(Entity entity) {
+        if (entity == null) {
+            return;
+        }
         rememberedEntities.put(entity.getUniqueId(), entity);
     }
 
     public static void forgetEntity(Entity entity) {
+        if (entity == null) {
+            return;
+        }
         rememberedEntities.remove(entity.getUniqueId());
     }
 
