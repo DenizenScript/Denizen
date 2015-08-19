@@ -36,9 +36,10 @@ public class MidiUtil {
         sequencer.start();
     }
 
-    public static void playMidi(File file, float tempo, List<dEntity> entities) {
+    public static void playMidi(File file, float tempo, float volume, List<dEntity> entities) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(entities, entities.get(0).getUUID().toString());
+            receiver.VOLUME_RANGE = volume;
             // If there is already a midi file being played for one of the entities,
             // stop playing it
             for (dEntity entity : entities) {
@@ -53,9 +54,10 @@ public class MidiUtil {
         }
     }
 
-    public static void playMidi(File file, float tempo, dLocation location) {
+    public static void playMidi(File file, float tempo, float volume, dLocation location) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(location, location.identify());
+            receiver.VOLUME_RANGE = volume;
             // If there is already a midi file being played for this location,
             // stop playing it
             stopMidi(location.identify());

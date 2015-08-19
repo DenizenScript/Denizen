@@ -40,6 +40,12 @@ public class MidiCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
+            else if (!scriptEntry.hasObject("volume") &&
+                    arg.matchesPrimitive(aH.PrimitiveType.Double) &&
+                    arg.matchesPrefix("volume", "vol", "v"))
+
+                scriptEntry.addObject("volume", arg.asElement());
+
             else if (!scriptEntry.hasObject("tempo") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double))
 
@@ -71,7 +77,7 @@ public class MidiCommand extends AbstractCommand {
                     (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
         }
 
-        scriptEntry.defaultObject("tempo", new Element(1));
+        scriptEntry.defaultObject("tempo", new Element(1)).defaultObject("volume", new Element(10));
     }
 
     @SuppressWarnings("unchecked")
@@ -88,22 +94,24 @@ public class MidiCommand extends AbstractCommand {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        float tempo = (float) scriptEntry.getElement("tempo").asDouble();
+        float tempo = scriptEntry.getElement("tempo").asFloat();
+        float volume = scriptEntry.getElement("volume").asFloat();
 
         // Report to dB
         dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
                 (file != null ? aH.debugObj("file", file.getPath()) : "") +
                 (entities != null ? aH.debugObj("entities", entities.toString()) : "") +
                 (location != null ? location.debug() : "") +
-                aH.debugObj("tempo", tempo));
+                aH.debugObj("tempo", tempo) +
+                aH.debugObj("volume", volume));
 
         // Play the midi
         if (!cancel) {
             if (location != null) {
-                MidiUtil.playMidi(file, tempo, location);
+                MidiUtil.playMidi(file, tempo, volume, location);
             }
             else {
-                MidiUtil.playMidi(file, tempo, entities);
+                MidiUtil.playMidi(file, tempo, volume, entities);
             }
         }
         else {
