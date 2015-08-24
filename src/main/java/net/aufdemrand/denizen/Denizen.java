@@ -38,10 +38,7 @@ import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
-import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
-import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
-import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
+import net.aufdemrand.denizen.utilities.entity.*;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizen.utilities.packets.intercept.DenizenPacketListener;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -1498,6 +1495,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
 
         return outcome;
+    }
+
+    @Override
+    public Thread getMainThread() {
+        return net.minecraft.server.v1_8_R3.MinecraftServer.getServer().primaryThread;
     }
 }
 
