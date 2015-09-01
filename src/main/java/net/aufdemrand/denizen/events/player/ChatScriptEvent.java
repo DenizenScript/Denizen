@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -26,14 +26,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ChatScriptEvent extends ScriptEvent implements Listener {
+public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: in area
     // <--[event]
     // @Events
-    // player chats
+    // player chats (in <area>)
     //
-    // @Regex ^on player chats$
+    // @Regex ^on player chats+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?
     //
     // @Cancellable true
     //
@@ -76,7 +76,7 @@ public class ChatScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return true;
+        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), player.getLocation());
     }
 
     @Override
