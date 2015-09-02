@@ -123,7 +123,8 @@ public class EntityArmorPose implements Property {
         // For example, head|12,3,45|body|54,32,1
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
         // @tags
-        // <e@entity.has_ai>
+        // <e@entity.armor_pose_list>
+        // <e@entity.armor_pose[<part>]>
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
@@ -131,12 +132,13 @@ public class EntityArmorPose implements Property {
             Iterator<String> iterator = list.iterator();
             while (iterator.hasNext()) {
                 String name = iterator.next();
+                String angle = iterator.next();
                 PosePart posePart = PosePart.fromName(name);
                 if (posePart == null) {
-                    dB.echoError("Invalid pose part specified: " + name);
+                    dB.echoError("Invalid pose part specified: " + name + "; ignoring next: " + angle);
                 }
                 else {
-                    posePart.setAngle(armorStand, toEulerAngle(dLocation.valueOf(iterator.next())));
+                    posePart.setAngle(armorStand, toEulerAngle(dLocation.valueOf(angle)));
                 }
             }
         }

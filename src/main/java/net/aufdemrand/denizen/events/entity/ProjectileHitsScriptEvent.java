@@ -169,7 +169,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         }
         material = dMaterial.getMaterialFrom(block.getType(), block.getData());
         shooter = projectile.getShooter();
-        location = new dLocation(event.getEntity().getLocation());
+        location = new dLocation(block.getLocation());
         this.event = event;
         fire();
     }
