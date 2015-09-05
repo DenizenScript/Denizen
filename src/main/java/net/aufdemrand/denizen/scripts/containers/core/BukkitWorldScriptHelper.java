@@ -23,7 +23,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.*;
@@ -171,6 +170,8 @@ public class BukkitWorldScriptHelper implements Listener {
             context.put("item", result);
             events.add(result.identifySimple() + " crafted");
             events.add(result.identifyMaterial() + " crafted");
+            events.add(result.identifySimpleNoIdentifier() + " crafted");
+            events.add(result.identifyMaterialNoIdentifier() + " crafted");
         }
 
         dList recipeList = new dList();
