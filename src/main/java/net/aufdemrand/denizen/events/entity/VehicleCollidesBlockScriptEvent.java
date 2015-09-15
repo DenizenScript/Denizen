@@ -59,15 +59,11 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
         }
 
         String mat = CoreUtilities.getXthArg(3, lower);
-        if (tryMaterial(material, mat)) {
+        if (!tryMaterial(material, mat)) {
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, location);
     }
 
     @Override
