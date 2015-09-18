@@ -33,7 +33,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // @Events
     // player chats (in <area>)
     //
-    // @Regex ^on player chats [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?
+    // @Regex ^on player chats( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
     //
