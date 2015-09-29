@@ -264,7 +264,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     for (dPlayer player : targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, false, (float) location.getX(),
+                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, true, (float) location.getX(),
                         (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt());
                 for (Player player : players) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
@@ -289,7 +289,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     for (dPlayer player : targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, false, (float) location.getX(),
+                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, true, (float) location.getX(),
                         (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
                         iconcrack.asInt(), iconcrack.asInt()); // TODO: ???
                 for (Player player : players) {
