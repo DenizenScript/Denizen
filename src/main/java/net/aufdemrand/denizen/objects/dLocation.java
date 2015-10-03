@@ -1928,7 +1928,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.base_color>
         // -->
         if (mechanism.matches("base_color")) {
-            Banner banner = (Banner) getBlock();
+            Banner banner = (Banner) getBlock().getState();
             banner.setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             banner.update();
         }
@@ -1959,7 +1959,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     dB.echoError("Could not apply pattern to banner: " + string);
                 }
             }
-            Banner banner = (Banner) getBlock();
+            Banner banner = (Banner) getBlock().getState();
             banner.setPatterns(patterns);
             banner.update();
         }
