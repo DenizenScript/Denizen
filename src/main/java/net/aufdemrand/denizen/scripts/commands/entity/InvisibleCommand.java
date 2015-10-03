@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -80,10 +81,20 @@ public class InvisibleCommand extends AbstractCommand {
         else {
             switch (Action.valueOf(state.asString().toUpperCase())) {
                 case FALSE:
-                    target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+                    if (target.getBukkitEntity() instanceof ArmorStand) {
+                        ((ArmorStand) target.getBukkitEntity()).setVisible(true);
+                    }
+                    else {
+                        target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+                    }
                     break;
                 case TRUE:
-                    new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
+                    if (target.getBukkitEntity() instanceof ArmorStand) {
+                        ((ArmorStand) target.getBukkitEntity()).setVisible(false);
+                    }
+                    else {
+                        new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
+                    }
                     break;
                 case TOGGLE:
                     if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY))
