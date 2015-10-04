@@ -16,7 +16,7 @@ import java.util.Map;
  * @author authorblues
  */
 public class NoteBlockReceiver implements Receiver {
-    private static final float VOLUME_RANGE = 10.0f;
+    public float VOLUME_RANGE = 10.0f;
 
     private List<dEntity> entities;
     private dLocation location;

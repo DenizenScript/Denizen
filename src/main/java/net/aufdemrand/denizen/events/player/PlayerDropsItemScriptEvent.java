@@ -11,6 +11,8 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -109,8 +111,10 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
             return;
         }
         location = new dLocation(event.getPlayer().getLocation());
-        item = new dItem(event.getItemDrop().getItemStack());
-        entity = new dEntity(event.getItemDrop());
+        Item itemDrop = event.getItemDrop();
+        dEntity.rememberEntity(itemDrop);
+        item = new dItem(itemDrop.getItemStack());
+        entity = new dEntity(itemDrop);
         cancelled = event.isCancelled();
         this.event = event;
         fire();

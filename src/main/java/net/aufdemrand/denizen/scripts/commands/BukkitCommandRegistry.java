@@ -1730,7 +1730,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Midi
-        // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)
+        // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
@@ -1763,7 +1763,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // -->
         registerCoreMember(MidiCommand.class,
-                "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>)", 1);
+                "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)", 1);
 
 
         // <--[command]

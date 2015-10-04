@@ -60,12 +60,12 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         }
 
         String mat1 = CoreUtilities.getXthArg(0, lower);
-        if (!tryMaterial(old_material, mat1)) {
+        if (!tryMaterial(new_material, mat1)) {
             return false;
         }
 
         String mat2 = CoreUtilities.getXthArg(4, lower);
-        if (mat2.length() > 0 && !tryMaterial(new_material, mat2)) {
+        if (mat2.length() > 0 && !tryMaterial(old_material, mat2)) {
             return false;
         }
         return true;

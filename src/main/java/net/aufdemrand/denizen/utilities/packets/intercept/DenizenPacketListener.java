@@ -80,6 +80,12 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
         super.a(packet);
     }
 
+    // For compatibility with other plugins using Reflection weirdly...
+    @Override
+    public void sendPacket(Packet packet) {
+        super.sendPacket(packet);
+    }
+
     // IMPORTANT NOTE WHEN ADDING MORE HANDLERS:
     // Packets are handled asynchronously. Remember to use Bukkit's Scheduler!
 

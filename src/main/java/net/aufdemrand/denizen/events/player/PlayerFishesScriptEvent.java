@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -116,7 +117,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         else if (name.equals("item") && item != null) {
             return item;
         }
-        else if (name.equals("state")) { // NOTE: Deprecated
+        else if (name.equals("state")) {
             return state;
         }
         return super.getContext(name);
@@ -127,19 +128,25 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        hook = new dEntity(event.getHook());
+        Entity hookEntity = event.getHook();
+        dEntity.rememberEntity(hookEntity);
+        hook = new dEntity(hookEntity);
         state = new Element(event.getState().name());
         item = null;
         entity = null;
-        if (event.getCaught() != null) {
-            entity = new dEntity(event.getCaught());
-            if (event.getCaught() instanceof Item) {
-                item = new dItem(((Item) event.getCaught()).getItemStack());
+        Entity caughtEntity = event.getCaught();
+        if (caughtEntity != null) {
+            dEntity.rememberEntity(caughtEntity);
+            entity = new dEntity(caughtEntity);
+            if (caughtEntity instanceof Item) {
+                item = new dItem(((Item) caughtEntity).getItemStack());
             }
         }
         cancelled = event.isCancelled();
         this.event = event;
         fire();
+        dEntity.forgetEntity(hookEntity);
+        dEntity.forgetEntity(caughtEntity);
         event.setCancelled(cancelled);
     }
 }

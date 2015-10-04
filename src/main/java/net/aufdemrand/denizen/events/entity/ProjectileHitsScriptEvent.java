@@ -75,7 +75,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String pTest = cmd.equals("hits") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(4, lower);
+        String pTest = cmd.equals("hits") ? CoreUtilities.getXthArg(0, lower) :
+                CoreUtilities.getXthArg(3, lower).equals("with") ? CoreUtilities.getXthArg(4, lower) : "";
 
         if (pTest.length() > 0 && !projectile.matchesEntity(pTest)) {
             return false;
@@ -91,12 +92,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
-            return false;
-        }
-
-        return true;
+        return runInCheck(scriptContainer, s, lower, location);
     }
+
 
     @Override
     public String getName() {
@@ -141,7 +139,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler(ignoreCancelled = true)
     public void onProjectileHits(ProjectileHitEvent event) {
         projectile = new dEntity(event.getEntity());
-        if (!projectile.getShooter().isPlayer()) return;
         if (projectile.getLocation() == null)
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
 
@@ -170,7 +167,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         }
         material = dMaterial.getMaterialFrom(block.getType(), block.getData());
         shooter = projectile.getShooter();
-        location = new dLocation(event.getEntity().getLocation());
+        location = new dLocation(block.getLocation());
         this.event = event;
         fire();
     }

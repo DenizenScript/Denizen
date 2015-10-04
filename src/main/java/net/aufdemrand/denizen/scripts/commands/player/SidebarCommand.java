@@ -25,6 +25,8 @@ import java.util.*;
 
 public class SidebarCommand extends AbstractCommand {
 
+    // TODO: Clean me!
+
     private enum Action {ADD, REMOVE, SET}
 
     @Override
@@ -145,7 +147,7 @@ public class SidebarCommand extends AbstractCommand {
                 perIncrement = elIncrement.asString();
             }
             if (elStart != null) {
-                perStart = start.asString();
+                perStart = elStart.asString();
             }
             debug = action.debug() +
                     (elTitle != null ? elTitle.debug() : "") +

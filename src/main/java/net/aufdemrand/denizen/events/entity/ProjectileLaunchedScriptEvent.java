@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -91,11 +92,14 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
-        entity = new dEntity(event.getEntity());
+        Entity projectile = event.getEntity();
+        dEntity.rememberEntity(projectile);
+        entity = new dEntity(projectile);
         location = new dLocation(event.getEntity().getLocation());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
+        dEntity.forgetEntity(projectile);
         event.setCancelled(cancelled);
     }
 }
