@@ -118,6 +118,17 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.has_whitelist>
+        // @returns Element(boolean)
+        // @description
+        // returns true if the server's whitelist is active, otherwise returns false.
+        // -->
+        if (attribute.startsWith("has_whitelist")) {
+            event.setReplaced(new Element(Bukkit.hasWhitelist()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.has_flag[<flag_name>]>
         // @returns Element(boolean)
         // @description
