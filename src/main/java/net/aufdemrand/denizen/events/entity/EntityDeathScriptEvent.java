@@ -106,6 +106,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         // Deprecated
         if (lower.startsWith("drops ")) {
             lower = lower.substring(6);
+            determination = determination.substring(6);
         }
 
         //Handle no_drops and no_drops_or_xp and just no_xp
@@ -128,12 +129,12 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             drops.clear();
             changed_drops = true;
-            dList drops_list = dList.valueOf(lower);
+            dList drops_list = dList.valueOf(determination);
             drops_list.filter(dItem.class);
             for (String drop : drops_list) {
                 dItem item = dItem.valueOf(drop);
                 if (item != null)
-                    drops.add(item.identify());
+                    drops.add(item.identify()); // TODO: Why not just store the dItem in an arraylist?
             }
         }
 
