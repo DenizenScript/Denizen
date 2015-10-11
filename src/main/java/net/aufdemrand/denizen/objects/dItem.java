@@ -956,12 +956,22 @@ public class dItem implements dObject, Notable, Adjustable {
                 if (id.equals("cactus"))
                     return new Element("cactuses")
                             .getAttribute(attribute.fulfill(1));
+
+                if (id.endsWith(" off"))
+                    id = new String(id.substring(0, id.length() - 4));
+                if (id.endsWith(" on"))
+                    id = new String(id.substring(0, id.length() - 3));
+
+                if (id.equals("rotten flesh") || id.equals("cooked fish")
+                        || id.equals("raw fish") || id.endsWith("s"))
+                    return new Element(id)
+                            .getAttribute(attribute.fulfill(1));
                 if (id.endsWith("y"))
                     return new Element(id.substring(0, id.length() - 1) + "ies")
                             .getAttribute(attribute.fulfill(1));  // ex: lily -> lilies
-                if (id.endsWith("s"))
-                    return new Element(id)
-                            .getAttribute(attribute.fulfill(1));  // ex: shears -> shears
+                if (id.endsWith("sh") || id.endsWith("ch"))
+                    return new Element(id + "es")
+                            .getAttribute(attribute.fulfill(1));
                 // else
                 return new Element(id + "s")
                         .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
@@ -970,6 +980,14 @@ public class dItem implements dObject, Notable, Adjustable {
             else {
                 if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(1));
                 if (id.endsWith("s")) return new Element(id).getAttribute(attribute.fulfill(1));
+
+                if (id.endsWith(" off"))
+                    return new Element("a " + id.substring(0, id.length() - 4))
+                            .getAttribute(attribute.fulfill(1));
+                if (id.endsWith(" on"))
+                    return new Element("a " + id.substring(0, id.length() - 3))
+                            .getAttribute(attribute.fulfill(1));
+
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
                         || id.startsWith("o") || id.startsWith("u"))
                     return new Element("an " + id)
