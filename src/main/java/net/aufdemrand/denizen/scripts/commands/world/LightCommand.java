@@ -60,7 +60,11 @@ public class LightCommand extends AbstractCommand {
             dB.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");
             return;
         }
-        location.getChunk().load();
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                location.clone().add(x * 16, 0, z * 16).getChunk().load();
+            }
+        }
         if (!reset.asBoolean()) {
             int brightness = light.asInt();
             if (brightness < 0 || brightness > 15) {
