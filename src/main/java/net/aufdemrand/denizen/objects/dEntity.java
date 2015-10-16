@@ -1638,13 +1638,13 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@entity.get_eye_height>
+        // @attribute <e@entity.eye_height>
         // @returns Element(Boolean)
         // @group location
         // @description
         // Returns the height of the entity's eyes above its location.
         // -->
-        if (attribute.startsWith("get_eye_height")) {
+        if (attribute.startsWith("eye_height") || attribute.startsWith("eye_height")) {
             if (isLivingEntity())
                 return new Element(getLivingEntity().getEyeHeight())
                         .getAttribute(attribute.fulfill(1));
@@ -1797,13 +1797,13 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_leash_holder>
+        // @attribute <e@entity.leash_holder>
         // @returns dEntity
         // @group attributes
         // @description
         // Returns the leash holder of entity.
         // -->
-        if (attribute.startsWith("get_leash_holder")) {
+        if (attribute.startsWith("leash_holder") || attribute.startsWith("get_leash_holder")) {
             if (isLivingEntity() && getLivingEntity().isLeashed()) {
                 return new dEntity(getLivingEntity().getLeashHolder())
                         .getAttribute(attribute.fulfill(1));
@@ -1813,31 +1813,30 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_passenger>
+        // @attribute <e@entity.passenger>
         // @returns dEntity
         // @group attributes
         // @description
         // If the entity has a passenger, returns the passenger as a dEntity.
         // Otherwise, returns null.
         // -->
-        if (attribute.startsWith("get_passenger")) {
-            if (!entity.isEmpty())
+        if (attribute.startsWith("passenger") || attribute.startsWith("get_passenger")) {
+            if (!entity.isEmpty()) {
                 return new dEntity(entity.getPassenger())
                         .getAttribute(attribute.fulfill(1));
-            else return new Element("null")
-                    .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_shooter>
+        // @attribute <e@entity.shooter>
         // @returns dEntity
         // @group attributes
         // @description
         // If the entity is a projectile with a shooter, gets its shooter
         // Otherwise, returns null.
         // -->
-        if (attribute.startsWith("get_shooter") ||
-                attribute.startsWith("shooter")) {
+        if (attribute.startsWith("shooter") ||
+                attribute.startsWith("get_shooter")) {
             if (isProjectile() && hasShooter())
                 return getShooter().getAttribute(attribute.fulfill(1));
             else return new Element("null")
@@ -1845,19 +1844,17 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_vehicle>
+        // @attribute <e@entity.vehicle>
         // @returns dEntity
         // @group attributes
         // @description
         // If the entity is in a vehicle, returns the vehicle as a dEntity.
-        // Otherwise, returns null.
         // -->
-        if (attribute.startsWith("get_vehicle")) {
-            if (entity.isInsideVehicle())
+        if (attribute.startsWith("vehicle") || attribute.startsWith("get_vehicle")) {
+            if (entity.isInsideVehicle()) {
                 return new dEntity(entity.getVehicle())
                         .getAttribute(attribute.fulfill(1));
-            else return new Element("null")
-                    .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1911,46 +1908,60 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@entity.is_breeding>
+        // @attribute <e@entity.breeding>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
-        if (attribute.startsWith("is_breeding"))
+        if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding"))
             return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <e@entity.is_empty>
+        // @attribute <e@entity.has_passenger>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether the entity has a passenger.
+        // -->
+        if (attribute.startsWith("has_passenger")) {
+            return new Element(!entity.isEmpty())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.empty>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity does not have a passenger.
         // -->
-        if (attribute.startsWith("is_empty"))
+        if (attribute.startsWith("empty") || attribute.startsWith("is_empty")) {
             return new Element(entity.isEmpty())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <e@entity.is_inside_vehicle>
+        // @attribute <e@entity.inside_vehicle>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is inside a vehicle.
         // -->
-        if (attribute.startsWith("is_inside_vehicle"))
+        if (attribute.startsWith("inside_vehicle") || attribute.startsWith("is_inside_vehicle")) {
             return new Element(entity.isInsideVehicle())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <e@entity.is_leashed>
+        // @attribute <e@entity.leashed>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is leashed.
         // -->
-        if (attribute.startsWith("is_leashed")) {
+        if (attribute.startsWith("leashed") || attribute.startsWith("is_leashed")) {
             if (isLivingEntity())
                 return new Element(getLivingEntity().isLeashed())
                         .getAttribute(attribute.fulfill(1));
@@ -1960,24 +1971,25 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_on_ground>
+        // @attribute <e@entity.on_ground>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity is supported by a block.
         // -->
-        if (attribute.startsWith("is_on_ground"))
+        if (attribute.startsWith("on_ground") || attribute.startsWith("is_on_ground")) {
             return new Element(entity.isOnGround())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <e@entity.is_persistent>
+        // @attribute <e@entity.persistent>
         // @returns Element(Boolean)
         // @group attributes
         // @description
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
-        if (attribute.startsWith("is_persistent")) {
+        if (attribute.startsWith("persistent") || attribute.startsWith("is_persistent")) {
             if (isLivingEntity())
                 return new Element(!getLivingEntity().getRemoveWhenFarAway())
                         .getAttribute(attribute.fulfill(1));
@@ -1993,9 +2005,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the player that last killed the entity.
         // -->
-        if (attribute.startsWith("killer"))
+        if (attribute.startsWith("killer")) {
             return getPlayerFrom(getLivingEntity().getKiller())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.amount>
@@ -2004,9 +2017,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the amount of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.amount"))
+        if (attribute.startsWith("last_damage.amount")) {
             return new Element(getLivingEntity().getLastDamage())
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.cause>
@@ -2016,9 +2030,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the cause of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.cause")
-                && entity.getLastDamageCause() != null)
+                && entity.getLastDamageCause() != null) {
             return new Element(entity.getLastDamageCause().getCause().name())
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
@@ -2027,9 +2042,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
-        if (attribute.startsWith("last_damage.duration"))
+        if (attribute.startsWith("last_damage.duration")) {
             return new Duration((long) getLivingEntity().getNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.oxygen.max>
@@ -2039,9 +2055,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the maximum duration of oxygen the entity can have.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("oxygen.max"))
+        if (attribute.startsWith("oxygen.max")) {
             return new Duration((long) getLivingEntity().getMaximumAir())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.oxygen>
@@ -2051,9 +2068,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the duration of oxygen the entity has left.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("oxygen"))
+        if (attribute.startsWith("oxygen")) {
             return new Duration((long) getLivingEntity().getRemainingAir())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.remove_when_far>
@@ -2062,9 +2080,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns if the entity despawns when away from players.
         // -->
-        if (attribute.startsWith("remove_when_far"))
+        if (attribute.startsWith("remove_when_far")) {
             return new Element(getLivingEntity().getRemoveWhenFarAway())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.time_lived>
@@ -2073,9 +2092,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns how long the entity has lived.
         // -->
-        if (attribute.startsWith("time_lived"))
+        if (attribute.startsWith("time_lived")) {
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
+        }
 
         /////////////////////
         //   TYPE ATTRIBUTES
@@ -2148,7 +2168,7 @@ public class dEntity implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <e@entity.is_tameable>
+        // @attribute <e@entity.tameable>
         // @returns Element(Boolean)
         // @group properties
         // @description
@@ -2157,12 +2177,13 @@ public class dEntity implements dObject, Adjustable {
         // <@link mechanism dEntity.tame>, <@link mechanism dEntity.owner>,
         // <@link tag e@entity.is_tamed>, and <@link tag e@entity.get_owner>
         // -->
-        if (attribute.startsWith("is_tameable"))
+        if (attribute.startsWith("tameable") || attribute.startsWith("is_tameable")) {
             return new Element(EntityTame.describes(this))
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <e@entity.is_ageable>
+        // @attribute <e@entity.ageable>
         // @returns Element(Boolean)
         // @group properties
         // @description
@@ -2172,12 +2193,13 @@ public class dEntity implements dObject, Adjustable {
         // <@link tag e@entity.is_baby>, <@link tag e@entity.age>,
         // and <@link tag e@entity.is_age_locked>
         // -->
-        if (attribute.startsWith("is_ageable"))
+        if (attribute.startsWith("ageable") || attribute.startsWith("is_ageable")) {
             return new Element(EntityAge.describes(this))
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
-        // @attribute <e@entity.is_colorable>
+        // @attribute <e@entity.colorable>
         // @returns Element(Boolean)
         // @group properties
         // @description
@@ -2185,9 +2207,10 @@ public class dEntity implements dObject, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism dEntity.color> and <@link tag e@entity.color>
         // -->
-        if (attribute.startsWith("is_colorable"))
+        if (attribute.startsWith("colorable") || attribute.startsWith("is_colorable")) {
             return new Element(EntityColor.describes(this))
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.describe>

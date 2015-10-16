@@ -732,14 +732,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_blocks[<material>|...]>
+        // @attribute <cu@cuboid.blocks[<material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dCuboid.
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("get_blocks", new TagRunnable() {
+        registerTag("blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.hasContext(1))
@@ -750,6 +750,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             .getAttribute(attribute.fulfill(1));
             }
         });
+        registerTag("get_blocks", registeredTags.get("blocks"));
 
         // <--[tag]
         // @attribute <cu@cuboid.members_size>
@@ -766,12 +767,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_member[<#>]>
+        // @attribute <cu@cuboid.member[<#>]>
         // @returns dCuboid
         // @description
         // Returns a new dCuboid of a single member of this dCuboid. Just specify an index.
         // -->
-        registerTag("get_member", new TagRunnable() {
+        registerTag("member", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int member = attribute.getIntContext(1);
@@ -783,9 +784,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         .getAttribute(attribute.fulfill(1));
             }
         });
+        registerTag("get_member", registeredTags.get("member"));
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_spawnable_blocks[<Material>|...]>
+        // @attribute <cu@cuboid.spawnable_blocks[<Material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each dLocation within the dCuboid that is
@@ -793,7 +795,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("get_spawnable_blocks", new TagRunnable() {
+        registerTag("spawnable_blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.hasContext(1))
@@ -804,20 +806,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             .getAttribute(attribute.fulfill(1));
             }
         });
+        registerTag("get_spawnable_blocks", registeredTags.get("spawnable_blocks"));
 
         // <--[tag]
-        // @attribute <cu@cuboid.get_outline>
+        // @attribute <cu@cuboid.outline>
         // @returns dList(dLocation)
         // @description
         // Returns each block location on the outline of the dCuboid.
         // -->
-        registerTag("get_outline", new TagRunnable() {
+        registerTag("outline", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new dList(((dCuboid) object).getOutline())
                         .getAttribute(attribute.fulfill(1));
             }
         });
+        registerTag("get_outline", registeredTags.get("outline"));
 
         // <--[tag]
         // @attribute <cu@cuboid.filter>

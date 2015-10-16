@@ -209,14 +209,14 @@ public class dEllipsoid implements dObject, Notable {
     public static void registerTags() {
 
         // <--[tag]
-        // @attribute <ellipsoid@ellipsoid.get_blocks[<material>|...]>
+        // @attribute <ellipsoid@ellipsoid.blocks[<material>|...]>
         // @returns dList(dLocation)
         // @description
         // Returns each block location within the dEllipsoid.
         // Optionally, specify a list of materials to only return locations
         // with that block type.
         // -->
-        registerTag("get_blocks", new TagRunnable() {
+        registerTag("blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.hasContext(1))
@@ -227,6 +227,7 @@ public class dEllipsoid implements dObject, Notable {
                             .getAttribute(attribute.fulfill(1));
             }
         });
+        registerTag("get_blocks", registeredTags.get("blocks"));
 
         // <--[tag]
         // @attribute <ellipsoid@ellipsoid.location>

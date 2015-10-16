@@ -645,13 +645,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
-        // @attribute <n@npc.get_pose[<name>]>
+        // @attribute <n@npc.pose[<name>]>
         // @returns dLocation
         // @description
         // Returns the pose as a dLocation with x, y, and z set to 0, and the world set to the first
         // possible available world Bukkit knows about.
         // -->
-        if (attribute.startsWith("get_pose")) {
+        if (attribute.startsWith("pose") || attribute.startsWith("get_pose")) {
             if (attribute.hasContext(1)) {
                 Pose pose = getCitizen().getTrait(Poses.class).getPose(attribute.getContext(1));
                 return new dLocation(org.bukkit.Bukkit.getWorlds().get(0), 0, 0, 0, pose.getYaw(), pose.getPitch())

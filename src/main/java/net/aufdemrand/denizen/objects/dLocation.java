@@ -1275,13 +1275,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.get_chunk>
+        // @attribute <l@location.chunk>
         // @returns dChunk
         // @description
         // returns the chunk that this location belongs to.
         // -->
-        if (attribute.startsWith("get_chunk") ||
-                attribute.startsWith("chunk"))
+        if (attribute.startsWith("chunk") ||
+                attribute.startsWith("get_chunk"))
             return new dChunk(this).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
