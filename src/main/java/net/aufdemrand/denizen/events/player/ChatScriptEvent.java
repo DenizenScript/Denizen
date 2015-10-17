@@ -46,7 +46,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // <context.recipients> returns a list of all players that will receive the chat.
     //
     // @Determine
-    // Element(String) to change the message.
+    // Element to change the message.
     // "FORMAT:" + dScript to set the format script the message should use.
     // "RECIPIENTS:" + dList(dPlayer) to set the list of players that will receive the message.
     //

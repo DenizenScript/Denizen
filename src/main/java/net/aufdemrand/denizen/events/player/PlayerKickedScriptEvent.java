@@ -30,7 +30,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     // <context.message> returns an Element of the kicked message.
     //
     // @Determine
-    // Element(String) to change the kicked message.
+    // Element to change the kicked message.
     //
     // -->
 

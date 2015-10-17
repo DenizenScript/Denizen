@@ -35,7 +35,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // <context.color> returns an Element of the color the sheep is being dyed.
     //
     // @Determine
-    // Element(String) that matches DyeColor to dye it a different color.
+    // Element that matches DyeColor to dye it a different color.
     //
     // -->
 

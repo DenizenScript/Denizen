@@ -46,7 +46,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <context.drops> returns a dList of all pending item drops.
     //
     // @Determine
-    // Element(String) to change the death message.
+    // Element to change the death message.
     // "NO_DROPS" to specify that any drops should be removed.
     // "NO_DROPS_OR_XP" to specify that any drops or XP orbs should be removed.
     // "NO_XP" to specify that any XP orbs should be removed.

@@ -56,7 +56,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the player from chatting.
-    // Element(String) to change the message.
+    // Element to change the message.
     //
     // -->
     public ChatContext process(Player player, String message) {
