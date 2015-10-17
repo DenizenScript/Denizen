@@ -243,7 +243,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
 
         String id = event.getNameContext().toUpperCase();
 
-        Attribute attribute = new Attribute(event.raw_tag, event.getScriptEntry()).fulfill(1);
+        Attribute attribute = event.getAttributes().fulfill(1);
 
         if (!schematics.containsKey(id)) {
             // Meta below
