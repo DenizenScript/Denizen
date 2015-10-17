@@ -2332,8 +2332,8 @@ public class dEntity implements dObject, Adjustable {
         // Sets the entity holding this entity by leash.
         // The entity must be living.
         // @tags
-        // <e@entity.is_leashed>
-        // <e@entity.get_leash_holder>
+        // <e@entity.leashed>
+        // <e@entity.leash_holder>
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
             getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
@@ -2378,8 +2378,8 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Sets the passenger of this entity.
         // @tags
-        // <e@entity.get_passenger>
-        // <e@entity.is_empty>
+        // <e@entity.passenger>
+        // <e@entity.empty>
         // -->
         if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class))
             entity.setPassenger(value.asType(dEntity.class).getBukkitEntity());
