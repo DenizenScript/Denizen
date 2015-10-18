@@ -256,7 +256,7 @@ public class DenizenCommandHandler {
 
 
     /*
-     * DENIZEN SCRIPTCHECK
+     * DENIZEN SCRIPTVERSIONS
      */
     @Command(
             aliases = {"denizen"}, usage = "scriptversions",

@@ -40,7 +40,9 @@ public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("unloads");
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.getXthArg(1, lower).equals("unloads")
+                && !CoreUtilities.getXthArg(0, lower).equals("chunk");
     }
 
     @Override
