@@ -409,7 +409,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location one block above this location.
         // -->
         if (attribute.startsWith("above"))
-            return new dLocation(this.add(0, 1, 0))
+            return new dLocation(this.clone().add(0, 1, 0))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -419,7 +419,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location one block below this location.
         // -->
         if (attribute.startsWith("below"))
-            return new dLocation(this.add(0, -1, 0))
+            return new dLocation(this.clone().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
