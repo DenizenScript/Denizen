@@ -290,11 +290,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group npc
         // @Description
-        // TODO: Document Command Details
+        // Changes an NPC's assignment as though you used the '/npc assignment' command.
+        // Uses the script: argument, which accepts an assignment script type. For this command to work an npc must
+        // be attached to the script queue or an npc specified with npc:n@npc.
         // @Tags
         // <n@npc.script>
         // @Usage
-        // TODO: Document Command Details
+        // Use to assign an npc with an assignment script named 'Bob the Builder'.
+        // - assignment set "script:Bob the Builder"
+        // @Usage
+        // Use to give an npc with the id of 3 an assignment.
+        // - assignment set "script:Bob the Builder" npc:n@3
+        // @Usage
+        // Use to remove an npc's assignment.
+        // - assignment remove
         // -->
         if (Depends.citizens != null)
             registerCoreMember(AssignmentCommand.class,
@@ -510,7 +519,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author spaceemotion, mcmonkey
         // @Group world
         // @Description
-        // TODO Document Command Details
+        // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.  This is
+        // persistent over server restarts. If no duration is specified it defaults to 0 (forever). While a chunk is
+        // loaded all normal activity such as crop growth and npc activity continues.
         // @Tags
         // <w@world.loaded_chunks>
         // <ch@chunk.is_loaded>
@@ -524,7 +535,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to stop loading a chunk.
         // - chunkload remove ch@0,0,world
         // @Usage
-        // Use to stop loading any chunks.
+        // Use to stop loading all chunks.
         // - chunkload removeall
         // -->
         registerCoreMember(ChunkLoadCommand.class,
@@ -619,8 +630,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group npc
         // @Description
-        // TODO: Document Command Details
-        // Specify an NPC to copy the NPC.
+        // Creates an npc which the entity type specified, or specify an existing npc to create a copy. If no location
+        // is specified the npc is created despawned. Use the 'save:<savename>' argument to return the npc for later
+        // use in a script.
         // @Tags
         // <server.list_npcs>
         // <entry[saveName].created_npc> returns the NPC that was created.
@@ -646,9 +658,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         // @Description
         // This command creates a new minecraft world with the specified name.
-        // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
+        // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
         // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
         // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
         // mountain-like terrain)
@@ -926,11 +938,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group server
         // @Description
-        // TODO: Document Command Details
+        // Allows the execution of server commands through a Denizen Script. Commands can be executed as the server,
+        // as an npc, an op or as a player, as though it was typed by the respective source.
         // @Tags
         // <entry[saveName].output> returns the output to an as_server sender.
         // @Usage
-        // TODO: Document Command Details
+        // Use to execute the save-all command as the server.
+        // - execute as_server "save-all"
+        // @Usage
+        // Use to add the player to the op list as if an existing op had typed it.
+        // - execute as_op "op <player.name>"
         // -->
         registerCoreMember(ExecuteCommand.class,
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
@@ -985,7 +1002,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Default location: npc.location, or if no NPC link, player.location.
         // It is highly recommended you specify a location to be safe.
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
         // Use to create an explosion at a player's location
         // - explode <player.location>
@@ -1029,23 +1046,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Feed
-        // @Syntax feed (amt:<#>) (target:<entity>|...)
+        // @Syntax feed (amount:<#>) (target:<entity>|...)
         // @Required 0
         // @Stable unstable
-        // @Short Refills the player's food bar.
+        // @Short Feed the player or npc.
         // @Author aufdemrand, Jeebiss
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Feeds the player or npc specified. By default targets the player attached to the script queue and feeds
+        // a full amount. Accepts the 'amount:' argument, which is in half bar increments, for a total of 20 food
+        // points. Also accepts the 'target:<entity>|...' argument to specify entity(s) which will be fed the amount.
         // NOTE: This command is outdated and bound to be updated.
         // @Tags
         // <p@player.food_level>
         // <p@player.food_level.formatted>
         // @Usage
-        // Use to feed the player for 5 foodpoints.
-        // feed amt:5
+        // Use to feed the player for 5 foodpoints or 2.5 bars.
+        // - feed amount:5
         // @Usage
-        // TODO: Document Command Details
+        // Use to feed an npc with id 5 for 10 foodpoints or 5 bars.
+        // - feed amount:10 target:n@5
+        // @Usage
+        // Use to refill the food bar of all online players.
+        // - feed target:<server.list_online_players>
         // -->
         registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
@@ -1243,17 +1266,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable TODO: Document Command Details
-        // @Short Adds a player to or removes a player from or sets a players permissions group.
+        // @Short Adds a player to, removes a player from or sets a players permissions group.
         // @Author GnomeffinWay
         // @Group player
+        // @Plugin Vault
         // @Description
-        // TODO: Document Command Details
+        // Controls a player's permission groups, which the ability to add, remove or set a player's groups.
+        // The 'add' argument adds the player to the group and any parent groups, while the remove command does
+        // the opposite, removing the player from the group and any inheriting groups. The set command removes all
+        // existing groups and sets the player's group.
+        // Note: This requires a permissions plugin.
         // @Tags
         // <p@player.in_group[<group>]>
         // <p@player.in_group[<group>].global>
         // <p@player.in_group[<group>].world>
         // @Usage
-        // TODO: Document Command Details
+        // Use to add a player to the Admin group.
+        // - group add Admin
+        // @Usage
+        // Use to remove a player from the Moderator group.
+        // - group remove Moderator
+        // @Usage
+        // Use to set a player to the Member group in the Creative world.
+        // - group set Member w@Creative
         // -->
         registerCoreMember(GroupCommand.class,
                 "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
@@ -1268,14 +1303,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Equips a player's head onto the player(s) or npc(s) specified. If no player or npc is specified, it defaults
+        // to the player attached to the script queue. It accepts a single entity or list of entities.
         // @Tags
-        // TODO: Document Command Details
+        // <i@item.skin>
         // @Usage
         // Use to stick an awesome head on your head with the head command.
-        // - skin <player> skin:mcmonkey4eva
+        // - head <player> skin:mcmonkey4eva
         // @Usage
-        // TODO: Document Command Details
+        // Use to equip an npc with id 5 with your own head.
+        // - head n@5 skin:<player.name>
+        // @Usage
+        // Use to equip all online players with Notch's head.
+        // - head <server.list_online_players> skin:Notch
         // -->
         registerCoreMember(HeadCommand.class,
                 "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
@@ -1373,14 +1413,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.health>
         // @Usage
-        // Use to hurt the player for 1HP.
+        // Use to hurt the player for 1 HP.
         // - hurt
         // @Usage
         // Use to hurt the NPC for 5 HP.
         // - hurt 5 <npc>
         // @Usage
         // Use to cause the player to hurt the NPC for all its health (if unarmored).
-        // hurt <npc.health> <npc> cause:CUSTOM source:<player>
+        // - hurt <npc.health> <npc> cause:CUSTOM source:<player>
         // -->
         registerCoreMember(HurtCommand.class,
                 "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
@@ -1641,7 +1681,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand, mcmonkey
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Makes the entity look towards the location, can be used on players. If a duration is set, the entity cannot
+        // look away from the location until the duration has expired unless they are forces to look at a different
+        // location.
         // @Tags
         // <l@location.yaw>
         // <l@location.pitch>
@@ -1775,7 +1817,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Mounts an entity onto another as though in a vehicle. Can be used to force a player into a vehicle or to
+        // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
+        // spawned. Accepts a location, which the entities will be teleported to on mounting.
         // @Tags
         // <e@entity.get_vehicle>
         // <e@entity.is_inside_vehicle>
@@ -1842,11 +1886,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group player
         // @Description
-        // TODO: Document Command Details
+        // Prints some text into the targets chat area. If no target is specified it will default to the attached player
+        // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+        // format script.
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
-        // TODO: Document Command Details
+        // Use to narrate text to the player.
+        // - narrate "Hello World!"
+        // @Usage
+        // Use to narrate text to a list of players.
+        // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
         // -->
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
@@ -1884,7 +1934,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group player
         // @Description
-        // TODO: Document Command Details
+        // Used to add to, remove from or set the amount of oxygen of a player. Also allows for the changing of the
+        // player's maximum oxygen level.
         // @Tags
         // <p@player.oxygen>
         // <p@player.oxygen.max>
@@ -1971,14 +2022,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Gives or takes a permission node to/from the player or group.
         // @Author GnomeffinWay
         // @Group player
+        // @Plugin Vault
         // @Description
-        // TODO: Document Command Details
+        // Adds or removes a permission node from a player or group. Accepts a world for world-based permissions
+        // plugins. By default changes the attached player's permissions. Accepts the 'group:<name>' argument to change
+        // a group's permission nodes rather than a player's.
+        // Note: This requires a permissions plugin.
         // @Tags
         // <p@player.has_permission[permission.node]>
         // <p@player.has_permission[permission.node].global>
         // <p@player.has_permission[permission.node].world>
         // @Usage
-        // TODO: Document Command Details
+        // Use to give the player a permissions node.
+        // - permission add bukkit.version
+        // @Usage
+        // Use to remove a permissions node from a player.
+        // - permission remove bukkit.version
+        // @Usage
+        // Use to give the group 'Members' a permission node.
+        // - permission add bukkit.version group:Members
+        // @Usage
+        // Use to remove a permissions node from the group 'Members' in the Creative world.
+        // - permission remove bukkit.version group:Members w@Creative
         // -->
         registerCoreMember(PermissionCommand.class,
                 "PERMISSION", "permission [add/remove] [permission] (group:<name>) (<world>)", 2);
@@ -2676,13 +2741,23 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Spawn an entity or list of entities at the specified location. Accepts the 'target:<entity>' argument which
+        // will cause all spawned entities to follow and attack the targetted entity.
+        // If the persistent argument is present, the entity will not despawn when no players are within range, causing
+        // the enity to remain until killed.
         // @Tags
         // <e@entity.is_spawned>
         // <server.entity_is_spawned[<entity>]>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
         // @Usage
-        // TODO: Document Command Details
+        // Use to spawn a spider at the player's location.
+        // - spawn spider <player.location>
+        // @Usage
+        // Use to spawn a spider at the player's location which will automatically target the player.
+        // - spawn spider <player.location> target:<player>
+        // @Usage
+        // Use to spawn a swarm of creepers around the npc, which will not despawn until killed.
+        // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
         // -->
         registerCoreMember(SpawnCommand.class,
                 "SPAWN", "spawn [<entity>|...] [<location>] (target:<entity>) (persistent)", 2);
@@ -2787,11 +2862,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group world
         // @Description
-        // TODO: Document Command Details
+        // Causes lightning to strike at the specified location, which can optionally have damage disabled.
+        // The lightning will still cause fires to start, even without the 'no_damage' argument.
+        // Lightning caused by this command will cause creepers to activate. Using the no_damage argument makes the
+        // lightning do no damage to the player or any other entities, and means creepers struck will not activate.
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
-        // TODO: Document Command Details
+        // Use to cause lightning to strike the player.
+        // - strike <player.location>
+        // @Usage
+        // Use to strike the player with lightning causing no damage.
+        // - strike no_damage <player.location>
         // -->
         registerCoreMember(StrikeCommand.class,
                 "STRIKE", "strike (no_damage) [<location>]", 1);
@@ -2862,11 +2944,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax teleport (<entity>|...) [<location>]
         // @Required 1
         // @Stable stable
-        // @Short Teleports the player or NPC to a new location.
+        // @Short Teleports the entity(s) to a new location.
         // @Author David Cernat, aufdemrand
         // @Group entity
         // @Description
-        // TODO: Document Command Details
+        // Teleports the entity or entities to the new location. Entities can be teleported between worlds using this
+        // command, assuming the location is valid.
         // @Tags
         // <e@entity.location>
         // @Usage
@@ -3027,11 +3110,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group core
         // @Description
-        // TODO: Document Command Details
+        // Pauses the script queue for the duration specified. If no duration is specified it defaults to 3 seconds.
+        // Accepts the 'queue:<name>' argument which allows the delay of a different queue.
         // @Tags
-        // TODO: Document Command Details
+        // <q@queue.speed>
         // @Usage
-        // TODO: Document Command Details
+        // Use to delay the current queue for 1 minute.
+        // - wait 1m
         // -->
         registerCoreMember(WaitCommand.class,
                 "WAIT", "wait (<duration>) (queue:<name>)", 0);
@@ -3163,7 +3248,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // TODO: Document Command Details
         // @Tags
-        // TODO: Document Command Details
+        // <s@script.step[<player>]>
         // @Usage
         // Use to change the step to 2
         // - zap 2

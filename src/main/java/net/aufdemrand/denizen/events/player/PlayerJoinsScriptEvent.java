@@ -31,7 +31,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     // <context.message> returns an Element of the join message.
     //
     // @Determine
-    // Element(String) to change the join message.
+    // Element to change the join message.
     //
     // -->
 

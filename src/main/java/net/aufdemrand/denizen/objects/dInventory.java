@@ -621,7 +621,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             filled++;
         }
         inventory.setContents(contents);
-        if (dNPC.matches(idHolder)) { // TODO: Directly store holder
+        if (Depends.citizens != null && dNPC.matches(idHolder)) { // TODO: Directly store holder
             dNPC.valueOf(idHolder).getInventoryTrait().setContents(contents);
         }
     }

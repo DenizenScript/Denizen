@@ -9,13 +9,13 @@ Denizen: Helpful Citizens for Bukkit!
 
 #### Need help using Denizen? Try one of these places:
 
-**Wiki**: http://wiki.citizensnpcs.co/Denizen  
-**IRC**: http://webchat.esper.net/?channels=citizens,denizen-dev  
+**IRC** (Modern): http://webchat.esper.net/?channels=citizens,denizen-dev  
 (irc.esper.net in the channels #denizen-dev or #citizens)  
-**command/tag/event/etc. search**: http://mcmonkey.org/denizen/logs/  
-**Tutorial Videos**: http://mcmonkey.org/denizen/vids  
+**command/tag/event/etc. search** (Modern): http://mcmonkey.org/denizen/logs/  
+**Tutorial Videos** (Modern): http://mcmonkey.org/denizen/vids  
 **Denizen Handbook** (OLD): http://bit.ly/XaWBLN  
 **Beginner's Guide** (OLD): http://bit.ly/1bHkByR  
+**Wiki** (OLD): http://wiki.citizensnpcs.co/Denizen  
 
 #### Also check out:
 
@@ -23,4 +23,4 @@ Denizen: Helpful Citizens for Bukkit!
 **Depenizen (Other plugin support - optional)**: https://github.com/DenizenScript/Depenizen-For-Bukkit  
 **dIRCBot (Adds an IRC bot to Denizen)**: https://github.com/DenizenScript/dIRCBot  
 **Webizen (Adds a webserver to Denizen)**: https://github.com/DenizenScript/Webizen  
-**Denizen Core (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core  
+**DenizenCore (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core  

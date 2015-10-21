@@ -122,7 +122,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
 
                 if (shouldStop) {
-                    npc.getNavigator().setPaused(true);
+                    npc.getNavigator().cancelNavigation();
                     continue;
                 }
 

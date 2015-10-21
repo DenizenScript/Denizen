@@ -409,7 +409,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location one block above this location.
         // -->
         if (attribute.startsWith("above"))
-            return new dLocation(this.add(0, 1, 0))
+            return new dLocation(this.clone().add(0, 1, 0))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -419,7 +419,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location one block below this location.
         // -->
         if (attribute.startsWith("below"))
-            return new dLocation(this.add(0, -1, 0))
+            return new dLocation(this.clone().add(0, -1, 0))
                     .getAttribute(attribute.fulfill(1));
 
         // <--[tag]
@@ -475,7 +475,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // block is not a container, returns null.
         // -->
         if (attribute.startsWith("inventory")) {
-            return Element.handleNull(identify() + ".inventory", getInventory(), "dInventory", attribute.hasAlternative()).getAttribute(attribute.fulfill(1));
+            dObject obj = Element.handleNull(identify() + ".inventory", getInventory(), "dInventory", attribute.hasAlternative());
+            return obj == null ? null: obj.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1274,13 +1275,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     + "', in world '" + getWorld().getName() + "'").getAttribute(attribute.fulfill(1));
 
         // <--[tag]
-        // @attribute <l@location.get_chunk>
+        // @attribute <l@location.chunk>
         // @returns dChunk
         // @description
         // returns the chunk that this location belongs to.
         // -->
-        if (attribute.startsWith("get_chunk") ||
-                attribute.startsWith("chunk"))
+        if (attribute.startsWith("chunk") ||
+                attribute.startsWith("get_chunk"))
             return new dChunk(this).getAttribute(attribute.fulfill(1));
 
         // <--[tag]

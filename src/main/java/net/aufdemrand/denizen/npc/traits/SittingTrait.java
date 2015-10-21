@@ -42,6 +42,10 @@ public class SittingTrait extends Trait implements Listener {
 
     @Override
     public void onDespawn() {
+        if (npc == null || npc.getEntity() == null) {
+            // Wat.
+            return;
+        }
         if (npc.getEntity().getVehicle() != null) {
             npc.getEntity().getVehicle().setPassenger(null);
         }

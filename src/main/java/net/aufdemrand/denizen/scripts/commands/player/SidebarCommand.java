@@ -100,8 +100,8 @@ public class SidebarCommand extends AbstractCommand {
         scriptEntry.addObject("action", new Element(action.name()));
 
         BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
-        scriptEntry.defaultObject("per_player", new Element(false)).defaultObject("players",
-                new Element(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
+        scriptEntry.defaultObject("per_player", new Element(false))
+                .defaultObject("players", new Element(entryData.hasPlayer() ? entryData.getPlayer().identify() : "li@"));
     }
 
     @Override
@@ -158,7 +158,7 @@ public class SidebarCommand extends AbstractCommand {
                     players.debug();
         }
         else {
-            BukkitTagContext context = new BukkitTagContext(scriptEntry, false);
+            BukkitTagContext context = (BukkitTagContext) DenizenAPI.getCurrentInstance().getTagContextFor(scriptEntry, false);
             if (elTitle != null) {
                 title = new Element(TagManager.tag(elTitle.asString(), context));
             }
@@ -189,14 +189,18 @@ public class SidebarCommand extends AbstractCommand {
 
             case ADD:
                 for (dPlayer player : players.filter(dPlayer.class)) {
+                    if (player == null || !player.isValid()) {
+                        dB.echoError("Invalid player!");
+                        continue;
+                    }
                     Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
                     }
                     List<String> current = sidebar.getLines();
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
-                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         value = dList.valueOf(TagManager.tag(perValue, context));
                         if (perLines != null) {
                             lines = dList.valueOf(TagManager.tag(perLines, context));
@@ -225,14 +229,18 @@ public class SidebarCommand extends AbstractCommand {
 
             case REMOVE:
                 for (dPlayer player : players.filter(dPlayer.class)) {
+                    if (player == null || !player.isValid()) {
+                        dB.echoError("Invalid player!");
+                        continue;
+                    }
                     Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
                     }
                     List<String> current = sidebar.getLines();
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
-                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));
                         }
@@ -290,6 +298,10 @@ public class SidebarCommand extends AbstractCommand {
 
             case SET:
                 for (dPlayer player : players.filter(dPlayer.class)) {
+                    if (player == null || !player.isValid()) {
+                        dB.echoError("Invalid player!");
+                        continue;
+                    }
                     Sidebar sidebar = createSidebar(player);
                     if (sidebar == null) {
                         continue;
@@ -297,8 +309,8 @@ public class SidebarCommand extends AbstractCommand {
                     List<String> current = sidebar.getLines();
                     boolean currEdited = false;
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, null, false, scriptEntry,
-                                scriptEntry.shouldDebug(), scriptEntry.getScript());
+                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                                false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));
                         }

@@ -191,7 +191,11 @@ public class BlockLight {
         int cZ = chunk.locZ;
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                BlockLight.setDirtyCount(getPlayerChunk(playerChunkMap, cX + x, cZ + z));
+                Object pChunk = getPlayerChunk(playerChunkMap, cX + x, cZ + z);
+                if (pChunk == null) {
+                    continue;
+                }
+                BlockLight.setDirtyCount(pChunk);
             }
         }
     }

@@ -29,8 +29,8 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
     //
     // @Determine
     // Element(Number) to change the max player amount that will show
-    // Element(Number)|Element(String) to set the max player amount and change the MOTD.
-    // Element(String) to change the MOTD that will show.
+    // Element(Number)|Element to set the max player amount and change the MOTD.
+    // Element to change the MOTD that will show.
     //
     // -->
 
