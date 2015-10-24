@@ -439,6 +439,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
         // of '1639s' (1639 seconds) or greater. While it may display as infinite, it will still wear off.
         //
+        // If no player is specified, the command will target the player. If no player is present, the
+        // command will target the NPC. If an NPC is not present, there will be an error!
+        //
         // Optionally, specify "no_ambient" to hide some translucent additional particles, while still
         // rendering the main particles.
         // Optionally, specify "hide_particles" to remove the particle effects entirely.
@@ -459,7 +462,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(CastCommand.class,
-                "CAST, POTION", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)", 1);
+                "CAST", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)", 1);
 
         // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
