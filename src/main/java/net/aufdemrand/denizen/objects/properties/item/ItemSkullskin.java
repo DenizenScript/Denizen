@@ -107,7 +107,7 @@ public class ItemSkullskin implements Property {
                     com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
                     UUID uuid = profile.getId();
                     return (uuid != null ? uuid : profile.getName())
-                            + (property != null ? "|" + property.getValue()+
+                            + (property != null ? "|" + property.getValue() +
                             (profile != null && profile.getName() != null ? "|" + profile.getName(): "") : "");
                 }
             }

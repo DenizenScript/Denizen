@@ -426,18 +426,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Cast
-        // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...)
+        // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)
         // @Required 1
         // @Stable Stable
         // @Short Casts a potion effect to a list of entities.
-        // @Author aufdemrand, Jeebiss, Morphan1
+        // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Group entity
 
         // @Description
         // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
         // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
         // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
-        // of 1639s (1639 seconds) or greater. While it may display as infinite, it will still wear off.
+        // of '1639s' (1639 seconds) or greater. While it may display as infinite, it will still wear off.
+        //
+        // Optionally, specify "no_ambient" to hide some translucent additional particles, while still
+        // rendering the main particles.
+        // Optionally, specify "hide_particles" to remove the particle effects entirely.
 
         // @Tags
         // <e@entity.has_effect[<effect>]>

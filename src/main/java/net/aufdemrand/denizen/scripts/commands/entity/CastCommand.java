@@ -26,18 +26,31 @@ public class CastCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("remove")
-                    && arg.matches("remove", "cancel"))
-                scriptEntry.addObject("remove", Element.TRUE);
+                    && arg.matches("remove", "cancel")) {
+                scriptEntry.addObject("remove", new Element(true));
+            }
+
+            if (!scriptEntry.hasObject("ambient")
+                    && arg.matches("no_ambient")) {
+                scriptEntry.addObject("ambient", new Element(false));
+            }
+
+            if (!scriptEntry.hasObject("show_particles")
+                    && arg.matches("hide_particles")) {
+                scriptEntry.addObject("show_particles", new Element(false));
+            }
 
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration", "d")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
             else if (!scriptEntry.hasObject("amplifier")
                     && arg.matchesPrefix("power", "p", "amplifier", "a")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("amplifier", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("effect")
                     && PotionEffectType.getByName(arg.asElement().asString()) != null) {
@@ -64,7 +77,9 @@ public class CastCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("duration", new Duration(60));
         scriptEntry.defaultObject("amplifier", new Element(1));
-        scriptEntry.defaultObject("remove", Element.FALSE);
+        scriptEntry.defaultObject("remove", new Element(false));
+        scriptEntry.defaultObject("show_particles", new Element(true));
+        scriptEntry.defaultObject("ambient", new Element(true));
 
     }
 
@@ -77,20 +92,27 @@ public class CastCommand extends AbstractCommand {
         int amplifier = scriptEntry.getElement("amplifier").asInt();
         Duration duration = (Duration) scriptEntry.getObject("duration");
         boolean remove = scriptEntry.getElement("remove").asBoolean();
+        Element showParticles = scriptEntry.getElement("show_particles");
+        Element ambient = scriptEntry.getElement("ambient");
 
         // Report to dB
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Target(s)", entities.toString())
                         + aH.debugObj("Effect", effect.getName())
                         + aH.debugObj("Amplifier", amplifier)
-                        + duration.debug());
+                        + duration.debug()
+                        + ambient.debug()
+                        + showParticles.debug());
+
+        boolean amb = ambient.asBoolean();
+        boolean showP = showParticles.asBoolean();
 
         // Apply the PotionEffect to the targets!
         for (dEntity entity : entities) {
             if (entity.getLivingEntity().hasPotionEffect(effect))
                 entity.getLivingEntity().removePotionEffect(effect);
             if (remove) continue;
-            PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier);
+            PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier, amb, showP);
             if (!potion.apply(entity.getLivingEntity()))
                 dB.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
         }
