@@ -266,7 +266,7 @@ public class HealthTrait extends Trait implements Listener {
         if (event.getEntity() != npc.getEntity() || dying) return;
 
         // Make sure this is a killing blow
-        if (this.getHealth() - event.getDamage() > 0)
+        if (this.getHealth() - event.getFinalDamage() > 0)
             return;
 
         dying = true;
