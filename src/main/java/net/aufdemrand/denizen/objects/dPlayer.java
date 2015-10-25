@@ -1508,13 +1508,13 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.allowed_flight>
+        // @attribute <p@player.can_fly>
         // @returns Element(Boolean)
         // @description
         // returns whether the player is allowed to fly.
         // @mechanism dPlayer.can_fly
         // -->
-        if (attribute.startsWith("allowed_flight"))
+        if (attribute.startsWith("can_fly") || attribute.startsWith("allowed_flight"))
             return new Element(getPlayerEntity().getAllowFlight())
                     .getAttribute(attribute.fulfill(1));
 
@@ -1979,7 +1979,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets whether the player is allowed to fly.
         // @tags
-        // <player.allowed_flight>
+        // <p@player.can_fly>
         // -->
         if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
             getPlayerEntity().setAllowFlight(value.asBoolean());
