@@ -53,6 +53,7 @@ public class ItemFlags implements Property {
         // @description
         // Returns a list of flags set on this item.
         // Valid flags include: HIDE_ATTRIBUTES, HIDE_DESTROYS, HIDE_ENCHANTS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS, and HIDE_UNBREAKABLE
+        // NOTE: 'HIDE_POTION_EFFECTS' also hides banner patterns.
         // -->
         if (attribute.startsWith("flags")) {
             return flags()
