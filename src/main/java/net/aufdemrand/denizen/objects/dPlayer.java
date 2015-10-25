@@ -1814,7 +1814,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sets the level on the player. Does not affect the current progression
         // of experience towards next level.
         // @tags
-        // <player.xp.level>
+        // <p@player.xp.level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
             setLevel(value.asInt());
@@ -1828,7 +1828,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sets the inventory slot that the player has selected.
         // Works with offline players.
         // @tags
-        // <player.item_in_hand.slot>
+        // <p@player.item_in_hand.slot>
         // -->
         if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
             if (isOnline()) {
@@ -1883,7 +1883,7 @@ public class dPlayer implements dObject, Adjustable {
         // standard.
         // Player relogging will reset this mechanism.
         // @tags
-        // <player.health.scale>
+        // <p@player.health.scale>
         // -->
         if (mechanism.matches("health_scale") && mechanism.requireDouble()) {
             getPlayerEntity().setHealthScale(value.asDouble());
@@ -1897,7 +1897,7 @@ public class dPlayer implements dObject, Adjustable {
         // Enables or disables the health scale value. Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
-        // <player.health.is_scaled>
+        // <p@player.health.is_scaled>
         // -->
         if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
             getPlayerEntity().setHealthScaled(value.asBoolean());
@@ -1923,7 +1923,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the current food saturation level of a player.
         // @tags
-        // <player.saturation>
+        // <p@player.saturation>
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
             getPlayerEntity().setSaturation(value.asFloat());
@@ -1953,7 +1953,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the current food level of a player. Typically, '20' is full.
         // @tags
-        // <player.food_level>
+        // <p@player.food_level>
         // -->
         if (mechanism.matches("food_level") && mechanism.requireInteger()) {
             getPlayerEntity().setFoodLevel(value.asInt());
@@ -1966,7 +1966,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the bed location that the player respawns at.
         // @tags
-        // <player.bed_spawn>
+        // <p@player.bed_spawn>
         // -->
         if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
             setBedSpawnLocation(value.asType(dLocation.class));
@@ -1992,7 +1992,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the fly speed of the player. Valid range is 0.0 to 1.0
         // @tags
-        // <player.fly_speed>
+        // <p@player.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
             setFlySpeed(value.asFloat());
@@ -2048,7 +2048,7 @@ public class dPlayer implements dObject, Adjustable {
         // in the world, and will block any world weather changes until the 'reset_weather'
         // mechanism is used. Valid weather: CLEAR, DOWNFALL
         // @tags
-        // <player.weather>
+        // <p@player.weather>
         // -->
         if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
             getPlayerEntity().setPlayerWeather(WeatherType.valueOf(value.asString().toUpperCase()));
@@ -2062,7 +2062,7 @@ public class dPlayer implements dObject, Adjustable {
         // Resets the weather on the Player to the conditions currently taking place in the Player's
         // current world.
         // @tags
-        // <player.weather>
+        // <p@player.weather>
         // -->
         if (mechanism.matches("reset_weather")) {
             getPlayerEntity().resetPlayerWeather();
@@ -2075,7 +2075,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the entry that is shown in the 'player list' that is shown when pressing tab.
         // @tags
-        // <player.name.list>
+        // <p@player.name.list>
         // -->
         if (mechanism.matches("player_list_name")) {
             getPlayerEntity().setPlayerListName(value.asString());
@@ -2088,7 +2088,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the name displayed for the player when chatting.
         // @tags
-        // <player.name.display>
+        // <p@player.name.display>
         // -->
         if (mechanism.matches("display_name")) {
             getPlayerEntity().setDisplayName(value.asString());
@@ -2117,7 +2117,7 @@ public class dPlayer implements dObject, Adjustable {
         // If the player is online, teleports the player to a given location.
         // Otherwise, sets the player's next spawn location.
         // @tags
-        // <player.location>
+        // <p@player.location>
         // -->
         if (mechanism.matches("location") && mechanism.requireObject(dLocation.class)) {
             setLocation(value.asType(dLocation.class));
@@ -2133,7 +2133,7 @@ public class dPlayer implements dObject, Adjustable {
         // time will continue to progress. Using the 'reset_time' mechanism, or relogging your player
         // will reset this mechanism to match the world's current time. Valid range is 0-24000
         // @tags
-        // <player.time>
+        // <p@player.time>
         // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
             getPlayerEntity().setPlayerTime(value.asInt(), true);
@@ -2150,7 +2150,7 @@ public class dPlayer implements dObject, Adjustable {
         // the world are experiencing. Using the 'reset_time' mechanism, or relogging your player
         // will reset this mechanism to match the world's current time. Valid range is 0-24000
         // @tags
-        // <player.time>
+        // <p@player.time>
         // -->
         if (mechanism.matches("freeze_time")) {
             if (mechanism.requireInteger("Invalid integer specified. Assuming current world time."))
@@ -2167,7 +2167,7 @@ public class dPlayer implements dObject, Adjustable {
         // Resets any altered time that has been applied to this player. Using this will make
         // the Player's time match the world's current time.
         // @tags
-        // <player.time>
+        // <p@player.time>
         // -->
         if (mechanism.matches("reset_time")) {
             getPlayerEntity().resetPlayerTime();
@@ -2180,7 +2180,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Sets the walk speed of the player. The standard value is '0.2'. Valid range is 0.0 to 1.0
         // @tags
-        // <player.walk_speed>
+        // <p@player.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
