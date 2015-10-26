@@ -278,7 +278,7 @@ public class BukkitWorldScriptHelper implements Listener {
         // TODO: make this a script event...
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        dItem item = null;
+        dItem item = new dItem(Material.AIR);
         dItem holding;
 
         dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
