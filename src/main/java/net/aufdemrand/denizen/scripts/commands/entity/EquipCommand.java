@@ -12,7 +12,11 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Pig;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,6 +57,16 @@ public class EquipCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("boots", "feet")) {
                 equipment.put("boots", dItem.valueOf(arg.getValue()));
+            }
+
+            else if (arg.matchesArgumentType(dItem.class)
+                    && arg.matchesPrefix("saddle")) {
+                equipment.put("saddle", dItem.valueOf(arg.getValue()));
+            }
+
+            else if (arg.matchesArgumentType(dItem.class)
+                    && arg.matchesPrefix("horse_armor", "horse_armour")) {
+                equipment.put("horse_armor", dItem.valueOf(arg.getValue()));
             }
 
             // Default to item in hand if no prefix is used
@@ -119,16 +133,34 @@ public class EquipCommand extends AbstractCommand {
 
                 if (livingEntity != null) {
 
-                    if (equipment.get("hand") != null)
-                        livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
-                    if (equipment.get("head") != null)
-                        livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
-                    if (equipment.get("chest") != null)
-                        livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
-                    if (equipment.get("legs") != null)
-                        livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
-                    if (equipment.get("boots") != null)
-                        livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
+                    if (livingEntity.getType() == EntityType.HORSE) {
+                        if (equipment.get("saddle") != null)
+                            ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                        if (equipment.get("horse_armor") != null)
+                            ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
+                    }
+                    else if (livingEntity.getType() == EntityType.PIG) {
+                        if (equipment.get("saddle") != null) {
+                            dItem saddle = equipment.get("saddle");
+                            if (saddle.getItemStack().getType() == Material.SADDLE)
+                                ((Pig) livingEntity).setSaddle(true);
+                            else
+                                ((Pig) livingEntity).setSaddle(false);
+                        }
+                    }
+                    else {
+
+                        if (equipment.get("hand") != null)
+                            livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
+                        if (equipment.get("head") != null)
+                            livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
+                        if (equipment.get("chest") != null)
+                            livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
+                        if (equipment.get("legs") != null)
+                            livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
+                        if (equipment.get("boots") != null)
+                            livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
+                    }
                 }
             }
         }
