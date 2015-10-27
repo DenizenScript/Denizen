@@ -884,19 +884,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author David Cernat
         // @Group entity
         // @Description
-        // This command equips an item or armor to an entity or list of entities to the specified slot.
-        // It allows or blocks to be equipped in an entity's armor/hand slots, this inclueds horses.
+        // This command equips an item or armor to an entity or list of entities to the specified slot(s).
+        // Set the item to 'i@air' to unequip any slot.
         // @Tags
         // <e@entity.equipment>
         // @Usage
-        // Use to equip a stone block on a player's head
+        // Use to equip a stone block on the player's head.
         // - equip <player> head:i@stone
         // @Usage
-        // Use to equip a diamond sword into the hand of an npc named bob
-        // - equip <n@bob> hand:i@diamond_sword
-        // @Usage
-        // Use to equip a iron helmet on two players named Bob and Steve
+        // Use to equip a iron helmet on two players named Bob and Steve.
         // - equip p@bob|p@steve head:i@iron_helmet
+        // @Usage
+        // Use to unequip all armor off the player.
+        // - equip <player> head:i@air chest:i@air legs:i@air boots:i@air
         // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>)", 1);
