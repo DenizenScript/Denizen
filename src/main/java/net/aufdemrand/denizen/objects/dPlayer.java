@@ -1060,12 +1060,26 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("last_played")) {
             attribute = attribute.fulfill(1);
-            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
-                return new Element(getOfflinePlayer().getLastPlayed())
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Duration(getOfflinePlayer().getLastPlayed() / 50)
-                        .getAttribute(attribute);
+            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
+                if (isOnline()) {
+                    return new Element(System.currentTimeMillis())
+                            .getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new Element(getOfflinePlayer().getLastPlayed())
+                            .getAttribute(attribute.fulfill(1));
+                }
+            }
+            else {
+                if (isOnline()) {
+                    return new Duration(System.currentTimeMillis() / 50)
+                            .getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new Duration(getOfflinePlayer().getLastPlayed() / 50)
+                            .getAttribute(attribute);
+                }
+            }
         }
 
         // <--[tag]
