@@ -2659,7 +2659,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
         // @Stable stable
-        // @Short Shoots an entity through the air up to a certain height.
+        // @Short Shoots an entity through the air, useful for things like firing arrows.
         // @Author David Cernat, mcmonkey
         // @Group entity
         // @Description
