@@ -1073,7 +1073,7 @@ public class dPlayer implements dObject, Adjustable {
             else {
                 if (isOnline()) {
                     return new Duration(System.currentTimeMillis() / 50)
-                            .getAttribute(attribute.fulfill(1));
+                            .getAttribute(attribute);
                 }
                 else {
                     return new Duration(getOfflinePlayer().getLastPlayed() / 50)
