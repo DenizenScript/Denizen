@@ -46,7 +46,7 @@ public class DenizenWorldAccess implements IWorldAccess {
     @Override
     public void b(Entity entity) {
         try {
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity.getBukkitEntity())) {
+            if (dEntity.isCitizensNPC(entity.getBukkitEntity())) {
                 return;
             }
             if (entity.getBukkitEntity() instanceof LivingEntity && !((LivingEntity) entity.getBukkitEntity()).getRemoveWhenFarAway()) {

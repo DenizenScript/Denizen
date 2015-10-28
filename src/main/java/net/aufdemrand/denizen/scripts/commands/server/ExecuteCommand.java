@@ -118,7 +118,7 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as player.");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
-                return;
+                break;
 
             case AS_OP:
                 boolean isOp = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().isOp();
@@ -144,7 +144,7 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 if (!isOp) ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(false);
-                return;
+                break;
 
             case AS_NPC:
                 if (!((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
@@ -164,7 +164,7 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 ((Player) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setOp(false);
-                return;
+                break;
 
             case AS_SERVER:
                 dcs.clearOutput();
@@ -173,6 +173,7 @@ public class ExecuteCommand extends AbstractCommand {
                 Bukkit.getPluginManager().callEvent(sce);
                 DenizenAPI.getCurrentInstance().getServer().dispatchCommand(dcs, sce.getCommand());
                 scriptEntry.addObject("output", new dList(dcs.getOutput()));
+                break;
         }
     }
 }

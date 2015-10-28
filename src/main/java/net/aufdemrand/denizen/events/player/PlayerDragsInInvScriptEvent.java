@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -66,8 +67,12 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         String arg3 = CoreUtilities.getXthArg(3, lower);
         String arg4 = CoreUtilities.getXthArg(4, lower);
         String inv = arg2.equals("in") ? arg3 : arg3.equals("in") ? arg4 : "";
+        String nname = NotableManager.isSaved(dInv) ?
+                CoreUtilities.toLowerCase(NotableManager.getSavedId(dInv)):
+                "\0";
         if (!inv.equals("") && !inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(dInv.getInventoryType().name()))) {
+                && !inv.equals(CoreUtilities.toLowerCase(dInv.getInventoryType().name()))
+                && !inv.equals(nname)) {
             return false;
         }
         if (!arg2.equals("in") && !tryItem(item, arg2)) {

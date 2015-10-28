@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -65,8 +66,12 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
         }
 
         String inv = CoreUtilities.getXthArg(2, lower);
+        String nname = NotableManager.isSaved(inventory) ?
+                CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)):
+                "\0";
         if (!inv.equals("inventory")
-                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))) {
+                && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))
+                && !inv.equals(nname)) {
             return false;
         }
         return true;

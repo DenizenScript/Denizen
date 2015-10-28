@@ -365,6 +365,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public boolean containsItem(dItem item, int amount) {
         if (item == null)
             return false;
+        item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         String myItem = CoreUtilities.toLowerCase(item.getFullString());
         for (int i = 0; i < inventory.getSize(); i++) {

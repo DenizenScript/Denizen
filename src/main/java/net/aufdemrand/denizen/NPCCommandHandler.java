@@ -409,7 +409,7 @@ public class NPCCommandHandler {
         if (args.hasValueFlag("location")) {
             String[] argsArray = args.getFlag("location").split(",");
             if (argsArray.length != 4) {
-                Messaging.sendError(sender, "Usage: /npc sit --location x,y,z,world");
+                Messaging.sendError(sender, "Usage: /npc sleep --location x,y,z,world");
                 return;
             }
             trait.toSleep(dLocation.valueOf(argsArray[0] + "," + argsArray[1] + "," + argsArray[2] + "," + argsArray[3]));

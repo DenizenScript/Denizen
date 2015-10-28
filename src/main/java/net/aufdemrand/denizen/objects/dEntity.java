@@ -1560,13 +1560,62 @@ public class dEntity implements dObject, Adjustable {
         //   INVENTORY ATTRIBUTES
         /////////////////
 
+
+        // <--[tag]
+        // @attribute <e@entity.saddle>
+        // @returns dItem
+        // @group inventory
+        // @description
+        // If the entity is a horse or pig, returns the saddle as a dItem, or i@air if none.
+        // -->
+        if (attribute.startsWith("saddle")) {
+            if (getLivingEntity().getType() == EntityType.HORSE)
+                return new dItem(((Horse) getLivingEntity()).getInventory().getSaddle())
+                    .getAttribute(attribute.fulfill(1));
+            else if (getLivingEntity().getType() == EntityType.PIG) {
+                if (((Pig) getLivingEntity()).hasSaddle())
+                    return new dItem(Material.SADDLE).getAttribute(attribute.fulfill(1));
+                else
+                    return new dItem(Material.AIR).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.horse_armor>
+        // @returns dItem
+        // @group inventory
+        // @description
+        // If the entity is a horse, returns the item equipped as the horses armor, or i@air if none.
+        // -->
+        if (attribute.startsWith("horse_armor") || attribute.startsWith("horse_armour")) {
+            if (getLivingEntity().getType() == EntityType.HORSE)
+                return new dItem(((Horse) getLivingEntity()).getInventory().getArmor())
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.has_saddle>
+        // @returns Element(Boolean)
+        // @group inventory
+        // @description
+        // If the entity s a pig or horse, returns whether it has a saddle equipped.
+        // -->
+        if (attribute.startsWith("has_saddle")) {
+            if (getLivingEntity().getType() == EntityType.HORSE)
+                return new Element(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
+                        .getAttribute(attribute.fulfill(1));
+            else if (getLivingEntity().getType() == EntityType.PIG) {
+                return new Element(((Pig) getLivingEntity()).hasSaddle())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
         // <--[tag]
         // @attribute <e@entity.item_in_hand>
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is holding, or i@air
-        // if none.
+        // Returns the item the entity is holding, or i@air if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand"))
@@ -1619,7 +1668,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity can see the specified other entity.
         // -->
         if (attribute.startsWith("can_see")) {
-            if (attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
+            if (isLivingEntity() && attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
                 if (toEntity != null && toEntity.isSpawned())
                     return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
@@ -1633,9 +1682,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // returns the location of the entity's eyes.
         // -->
-        if (attribute.startsWith("eye_location"))
+        if (attribute.startsWith("eye_location")) {
             return new dLocation(getEyeLocation())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.eye_height>
@@ -1644,13 +1694,11 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the height of the entity's eyes above its location.
         // -->
-        if (attribute.startsWith("eye_height") || attribute.startsWith("eye_height")) {
-            if (isLivingEntity())
+        if (attribute.startsWith("eye_height")) {
+            if (isLivingEntity()) {
                 return new Element(getLivingEntity().getEyeHeight())
                         .getAttribute(attribute.fulfill(1));
-            else
-                return new Element("null")
-                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1748,9 +1796,12 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns whether the entity can pick up items.
         // -->
-        if (attribute.startsWith("can_pickup_items"))
-            return new Element(getLivingEntity().getCanPickupItems())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("can_pickup_items")) {
+            if (isLivingEntity()) {
+                return new Element(getLivingEntity().getCanPickupItems())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
 
         // <--[tag]
         // @attribute <e@entity.fallingblock_material>
@@ -1808,8 +1859,6 @@ public class dEntity implements dObject, Adjustable {
                 return new dEntity(getLivingEntity().getLeashHolder())
                         .getAttribute(attribute.fulfill(1));
             }
-            else return new Element("null")
-                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1837,10 +1886,9 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("shooter") ||
                 attribute.startsWith("get_shooter")) {
-            if (isProjectile() && hasShooter())
+            if (isProjectile() && hasShooter()) {
                 return getShooter().getAttribute(attribute.fulfill(1));
-            else return new Element("null")
-                    .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1903,9 +1951,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns whether the animal entity is capable of mating with another of its kind.
         // -->
-        if (attribute.startsWith("can_breed"))
+        if (attribute.startsWith("can_breed")) {
             return new Element(((Ageable) getLivingEntity()).canBreed())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.breeding>
@@ -1914,9 +1963,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
-        if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding"))
+        if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
             return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.has_passenger>

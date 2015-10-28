@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
@@ -71,6 +72,10 @@ public class EntityEquipment implements Property {
                 return new dItem(entity.getLivingEntity().getEquipment().getBoots())
                         .getAttribute(attribute.fulfill(2));
             }
+            else {
+                return new dItem(Material.AIR)
+                        .getAttribute(attribute.fulfill(2));
+            }
         }
 
         // <--[tag]
@@ -85,6 +90,10 @@ public class EntityEquipment implements Property {
                 attribute.startsWith("equipment.chest")) {
             if (entity.getLivingEntity().getEquipment().getChestplate() != null) {
                 return new dItem(entity.getLivingEntity().getEquipment().getChestplate())
+                        .getAttribute(attribute.fulfill(2));
+            }
+            else {
+                return new dItem(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }
@@ -103,6 +112,10 @@ public class EntityEquipment implements Property {
                 return new dItem(entity.getLivingEntity().getEquipment().getHelmet())
                         .getAttribute(attribute.fulfill(2));
             }
+            else {
+                return new dItem(Material.AIR)
+                        .getAttribute(attribute.fulfill(2));
+            }
         }
 
         // <--[tag]
@@ -117,6 +130,10 @@ public class EntityEquipment implements Property {
                 attribute.startsWith("equipment.legs")) {
             if (entity.getLivingEntity().getEquipment().getLeggings() != null) {
                 return new dItem(entity.getLivingEntity().getEquipment().getLeggings())
+                        .getAttribute(attribute.fulfill(2));
+            }
+            else {
+                return new dItem(Material.AIR)
                         .getAttribute(attribute.fulfill(2));
             }
         }

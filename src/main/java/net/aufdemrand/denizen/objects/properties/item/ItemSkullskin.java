@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.objects.properties.item;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dList;
@@ -106,7 +106,9 @@ public class ItemSkullskin implements Property {
                     GameProfile profile = GameProfileSerializer.deserialize(tag.getCompound("SkullOwner"));
                     com.mojang.authlib.properties.Property property = Iterables.getFirst(profile.getProperties().get("textures"), null);
                     UUID uuid = profile.getId();
-                    return (uuid != null ? uuid : profile.getName()) + (property != null ? "|" + property.getValue() : "");
+                    return (uuid != null ? uuid : profile.getName())
+                            + (property != null ? "|" + property.getValue() +
+                            (profile != null && profile.getName() != null ? "|" + profile.getName(): "") : "");
                 }
             }
         }
@@ -145,13 +147,20 @@ public class ItemSkullskin implements Property {
             GameProfile profile;
             if (idString.contains("-")) {
                 UUID uuid = UUID.fromString(idString);
-                profile = new GameProfile(uuid, null);
+                String name = null;
+                if (list.size() > 2) {
+                    name = list.get(2);
+                }
+                profile = new GameProfile(uuid, name);
             }
             else {
                 profile = new GameProfile(null, idString);
             }
-            profile = fillGameProfile(profile);
             if (list.size() > 1) {
+                profile.getProperties().put("textures", new com.mojang.authlib.properties.Property("value", list.get(1)));
+            }
+            profile = fillGameProfile(profile);
+            if (list.size() > 1) { // Ensure we didn't get overwritten
                 profile.getProperties().put("textures", new com.mojang.authlib.properties.Property("value", list.get(1)));
             }
             NBTTagCompound tag = itemStack.hasTag() ? itemStack.getTag() : new NBTTagCompound();
@@ -166,16 +175,20 @@ public class ItemSkullskin implements Property {
         try {
             if (gameProfile != null) {
                 GameProfile gameProfile1 = null;
-                if (gameProfile.getName() != null) {
-                    gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
-                }
-                if (gameProfile1 == null) {
+                if (gameProfile.getId() != null) {
                     gameProfile1 = MinecraftServer.getServer().getUserCache().a(gameProfile.getId());
+                }
+                if (gameProfile1 == null && gameProfile.getName() != null) {
+                    gameProfile1 = MinecraftServer.getServer().getUserCache().getProfile(gameProfile.getName());
                 }
                 if (gameProfile1 == null) {
                     gameProfile1 = gameProfile;
                 }
-                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
+                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null
+                        || gameProfile1.getName() == null) {
+                    if (dB.verbose) {
+                        dB.log("Filling profile name/textures!");
+                    }
                     gameProfile1 = MinecraftServer.getServer().aD().fillProfileProperties(gameProfile1, true);
                 }
                 return gameProfile1;
