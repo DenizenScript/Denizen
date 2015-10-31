@@ -165,6 +165,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("inventory", new dInventory(inventory));
 
         Recipe recipe = event.getRecipe();
+        if (recipe == null) {
+            return;
+        }
         dItem result = recipe.getResult() != null ? new dItem(recipe.getResult()) : null;
         if (result != null) {
             context.put("item", result);

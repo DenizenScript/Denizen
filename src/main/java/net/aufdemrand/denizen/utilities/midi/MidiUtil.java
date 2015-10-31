@@ -73,7 +73,6 @@ public class MidiUtil {
     public static void stopMidi(String object) {
         if (receivers.containsKey(object)) {
             receivers.get(object).close();
-            receivers.remove(object);
         }
     }
 
