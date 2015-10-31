@@ -719,6 +719,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             return new Element(getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <n@npc.skin_blob>
+        // @returns Element
+        // @description
+        // returns the NPC's custom skin blob, if any.
+        // -->
+        if (attribute.startsWith("skin_blob")) {
+            if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA))
+                return new Element(getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.skin>
         // @returns Element
         // @description
