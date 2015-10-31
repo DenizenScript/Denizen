@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Utility for playing midi files for players to hear.
  *
- * @author authorblues
+ * @author authorblues, patched by mcmonkey
  */
 public class MidiUtil {
     public static Map<String, Receiver> receivers = new HashMap<String, Receiver>();
@@ -73,6 +73,7 @@ public class MidiUtil {
     public static void stopMidi(String object) {
         if (receivers.containsKey(object)) {
             receivers.get(object).close();
+            receivers.remove(object);
         }
     }
 
