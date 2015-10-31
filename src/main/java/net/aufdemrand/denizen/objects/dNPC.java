@@ -1086,6 +1086,27 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         // <--[mechanism]
         // @object dNPC
+        // @name skin_blob
+        // @input Element
+        // @description
+        // Sets the skin blob of an NPC.
+        // @tags
+        // <n@npc.skin>
+        // -->
+        if (mechanism.matches("skin")) {
+            if (!mechanism.hasValue())
+                getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
+            else {
+                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, mechanism.getValue().asString());
+            }
+            if (getCitizen().isSpawned()) {
+                getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                getCitizen().spawn(getCitizen().getStoredLocation());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dNPC
         // @name skin
         // @input Element
         // @description
