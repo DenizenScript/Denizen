@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public class ChatTrigger extends AbstractTrigger implements Listener {
 
     final static Pattern triggerPattern = Pattern.compile("/([^/]*)/");
-    final static boolean HyperDebug = false;
+    final static boolean HyperDebug = false; // TODO: Replace with core->dB.verbose!
 
     @Override
     public void onEnable() {

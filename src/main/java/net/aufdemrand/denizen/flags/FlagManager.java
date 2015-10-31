@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -357,7 +358,7 @@ public class FlagManager {
                 if (dPlayer.matches(OldOwner))
                     player = dPlayer.valueOf(OldOwner);
                 dNPC npc = null;
-                if (dNPC.matches(OldOwner))
+                if (Depends.citizens != null && dNPC.matches(OldOwner))
                     npc = dNPC.valueOf(OldOwner);
 
                 String type;
@@ -597,7 +598,7 @@ public class FlagManager {
                 dPlayer player = null;
                 if (dPlayer.matches(OldOwner)) player = dPlayer.valueOf(OldOwner);
                 dNPC npc = null;
-                if (dNPC.matches(OldOwner)) npc = dNPC.valueOf(OldOwner);
+                if (Depends.citizens != null && dNPC.matches(OldOwner)) npc = dNPC.valueOf(OldOwner);
                 dEntity entity = null;
                 if (dEntity.matches(OldOwner)) entity = dEntity.valueOf(OldOwner);
 
@@ -694,7 +695,7 @@ public class FlagManager {
                         if (dPlayer.matches(OldOwner))
                             player = dPlayer.valueOf(OldOwner);
                         dNPC npc = null;
-                        if (dNPC.matches(OldOwner))
+                        if (Depends.citizens != null && dNPC.matches(OldOwner))
                             npc = dNPC.valueOf(OldOwner);
                         dEntity entity = null;
                         if (dEntity.matches(OldOwner))
