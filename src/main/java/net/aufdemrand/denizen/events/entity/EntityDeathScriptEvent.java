@@ -157,7 +157,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("damager") && damager != null) {
             return damager;
