@@ -254,6 +254,20 @@ public class dPlayer implements dObject, Adjustable {
             return 300;
     }
 
+    public double getHealth() {
+        if (isOnline())
+            return getPlayerEntity().getHealth();
+        else
+            return getNBTEditor().getHealthFloat();
+    }
+
+    public double getMaxHealth() {
+        if (isOnline())
+            return getPlayerEntity().getMaxHealth();
+        else
+            return getNBTEditor().getMaxHealth();
+    }
+
     public dLocation getEyeLocation() {
         if (isOnline()) return new dLocation(getPlayerEntity().getEyeLocation());
         else return null;
@@ -395,6 +409,20 @@ public class dPlayer implements dObject, Adjustable {
             getPlayerEntity().setRemainingAir(air);
         else
             getNBTEditor().setRemainingAir(air);
+    }
+
+    public void setHealth(double health) {
+        if (isOnline())
+            getPlayerEntity().setHealth(health);
+        else
+            getNBTEditor().setHealthFloat((float) health);
+    }
+
+    public void setMaxHealth(double maxHealth) {
+        if (isOnline())
+            getPlayerEntity().setMaxHealth(maxHealth);
+        else
+            getNBTEditor().setMaxHealth(maxHealth);
     }
 
     public void setLevel(int level) {
@@ -1004,10 +1032,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // Handle dEntity oxygen tags here to allow getting them when the player is offline
         if (attribute.startsWith("oxygen.max"))
-            return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(1));
+            return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(2));
 
         if (attribute.startsWith("oxygen"))
             return new Duration((long) getRemainingAir()).getAttribute(attribute.fulfill(1));
+
+        // Same with health tags
+        if (attribute.startsWith("health.max")) {
+            return new Element(getMaxHealth()).getAttribute(attribute.fulfill(2));
+        }
+
+        if (attribute.startsWith("health")) {
+            return new Element(getHealth()).getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.is_banned>
@@ -1675,6 +1712,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("statistic")) {
             Statistic statistic = Statistic.valueOf(attribute.getContext(1).toUpperCase());
+            if (statistic == null) return null;
 
             // <--[tag]
             // @attribute <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
@@ -1684,7 +1722,6 @@ public class dPlayer implements dObject, Adjustable {
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                if (statistic == null) return null;
                 dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
                 try {
                     if (obj instanceof dMaterial)
@@ -1701,8 +1738,6 @@ public class dPlayer implements dObject, Adjustable {
                     return null;
                 }
             }
-
-            if (statistic == null) return null;
             try {
                 return new Element(getPlayerEntity().getStatistic(statistic)).getAttribute(attribute.fulfill(1));
             }
@@ -1915,6 +1950,15 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
             getPlayerEntity().setHealthScaled(value.asBoolean());
+        }
+
+        // Allow offline editing of health values
+        if (mechanism.matches("max_health") && mechanism.requireDouble()) {
+            setMaxHealth(value.asDouble());
+        }
+
+        if (mechanism.matches("health") && mechanism.requireDouble()) {
+            setHealth(value.asDouble());
         }
 
         // <--[mechanism]

@@ -156,7 +156,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("damage")) {
             return damage;

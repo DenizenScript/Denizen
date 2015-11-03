@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Utility for playing midi files for players to hear.
  *
- * @author authorblues
+ * @author authorblues, patched by mcmonkey
  */
 public class MidiUtil {
     public static Map<String, Receiver> receivers = new HashMap<String, Receiver>();

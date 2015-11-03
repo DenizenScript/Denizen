@@ -36,6 +36,7 @@ import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
+import net.aufdemrand.denizen.utilities.debugging.StatsRecord;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.*;
@@ -69,6 +70,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -344,8 +346,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void onEnable() {
         try {
             net.minecraft.server.v1_8_R3.Block.getById(0);
-        }
-        catch (NoClassDefFoundError e) {
+        } catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("This Denizen version is not compatible with this CraftBukkit version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");
@@ -356,8 +357,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         try {
             org.spigotmc.AsyncCatcher.enabled = false;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             dB.echoError("Running not-Spigot?!");
         }
 
@@ -387,16 +387,14 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
             dB.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -423,16 +421,14 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 dPlayer.notePlayer(player);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
             DenizenCore.setCommandRegistry(getCommandRegistry());
             getCommandRegistry().registerCoreMembers();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -443,8 +439,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Populate config.yml if it doesn't yet exist.
             saveDefaultConfig();
             reloadConfig();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -459,8 +454,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptRegistry._registerType("command", CommandScriptContainer.class);
             ScriptRegistry._registerType("map", MapScriptContainer.class);
             ScriptRegistry._registerType("version", VersionScriptContainer.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -476,8 +470,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 dB.log("Denizen.mid not found, extracting from " + sourceFile);
                 Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -498,8 +491,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();
             CommandScriptHelper cs_helper = new CommandScriptHelper();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -535,8 +527,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Compile and load Denizen externals
             runtimeCompiler = new RuntimeCompiler(this);
             runtimeCompiler.loader();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -546,8 +537,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 getTriggerRegistry().registerCoreMembers();
             getRequirementRegistry().registerCoreMembers();
             getListenerRegistry().registerCoreMembers();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -727,8 +717,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -799,8 +788,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemQuantity.class, dItem.class);
             propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
             propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -808,8 +796,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             for (World world : getServer().getWorlds()) {
                 EntityScriptHelper.linkWorld(world);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -833,8 +820,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
                     // Fire the 'on Server Start' world event
                     ws_helper.serverStartEvent();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     dB.echoError(e);
                 }
             }
@@ -846,6 +832,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 DenizenCore.tick(50); // Sadly, minecraft has no delta timing, so a tick is always 50ms.
             }
         }, 1, 1);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (Settings.canRecordStats()) {
+                    new StatsRecord().start();
+                }
+            }
+        }.runTaskTimer(this, 100, 20 * 60 * 60);
     }
 
 

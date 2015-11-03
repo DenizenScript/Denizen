@@ -719,6 +719,17 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             return new Element(getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)).getAttribute(attribute.fulfill(1));
 
         // <--[tag]
+        // @attribute <n@npc.skin_blob>
+        // @returns Element
+        // @description
+        // returns the NPC's custom skin blob, if any.
+        // -->
+        if (attribute.startsWith("skin_blob")) {
+            if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA))
+                return new Element(getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.skin>
         // @returns Element
         // @description
@@ -1071,6 +1082,27 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // -->
         if (mechanism.matches("owner")) {
             getCitizen().getTrait(Owner.class).setOwner(value.asString());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name skin_blob
+        // @input Element
+        // @description
+        // Sets the skin blob of an NPC.
+        // @tags
+        // <n@npc.skin>
+        // -->
+        if (mechanism.matches("skin")) {
+            if (!mechanism.hasValue())
+                getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
+            else {
+                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, mechanism.getValue().asString());
+            }
+            if (getCitizen().isSpawned()) {
+                getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                getCitizen().spawn(getCitizen().getStoredLocation());
+            }
         }
 
         // <--[mechanism]

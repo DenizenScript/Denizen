@@ -138,7 +138,7 @@ public class EntityHealth implements Property {
         // <e@entity.health>
         // <e@entity.health.max>
         // -->
-        if (mechanism.matches("max_health") && mechanism.requireInteger()) {
+        if (mechanism.matches("max_health") && mechanism.requireDouble()) {
             if (entity.isCitizensNPC()) {
                 if (entity.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
                     entity.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());

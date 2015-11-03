@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.midi;
 import com.google.common.collect.Maps;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Sound;
 
 import javax.sound.midi.*;
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * Midi Receiver for processing note events.
  *
- * @author authorblues
+ * @author authorblues, patched by mcmonkey
  */
 public class NoteBlockReceiver implements Receiver {
     public float VOLUME_RANGE = 10.0f;
@@ -76,6 +77,11 @@ public class NoteBlockReceiver implements Receiver {
 
         // If this is a percussion channel, return
         if (channel == 9) return;
+
+        if (channelPatches == null) {
+            dB.echoError("Trying to play notes on closed midi NoteBlockReceiver!");
+            return;
+        }
 
         // get the correct instrument
         Integer patch = channelPatches.get(channel);

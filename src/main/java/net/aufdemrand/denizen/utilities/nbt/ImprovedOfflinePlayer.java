@@ -130,6 +130,25 @@ public class ImprovedOfflinePlayer {
         if (this.autosave) savePlayerData();
     }
 
+    public float getHealthFloat() {
+        return this.compound.getFloat("HealF");
+    }
+
+    public void setHealthFloat(float input) {
+        this.compound.setFloat("HealF", input);
+        if (this.autosave) savePlayerData();
+    }
+
+    public double getMaxHealth() {
+        return getAttributes().a("generic.maxHealth").getValue();
+    }
+
+    public void setMaxHealth(double input) {
+        AttributeMapBase attributes = getAttributes();
+        attributes.a("generic.maxHealth").setValue(input);
+        setAttributes(attributes);
+    }
+
     private boolean loadPlayerData(UUID uuid) {
         try {
             this.player = uuid;
@@ -319,15 +338,6 @@ public class ImprovedOfflinePlayer {
     @SuppressWarnings("deprecation")//Will most likely break in 1.7
     public void setGameMode(GameMode input) {
         this.compound.setInt("playerGameType", input.getValue());
-        if (this.autosave) savePlayerData();
-    }
-
-    public float getHealthFloat() {
-        return this.compound.getFloat("HealF");
-    }
-
-    public void setHealthFloat(float input) {
-        this.compound.setFloat("HealF", input);
         if (this.autosave) savePlayerData();
     }
 

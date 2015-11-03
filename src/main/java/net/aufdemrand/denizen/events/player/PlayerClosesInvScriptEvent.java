@@ -22,10 +22,8 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
     // @Events
     // player closes inventory
     // player closes <inventory type>
-    // npc closes inventory
-    // npc closes <inventory type>
     //
-    // @Regex ^on (player|npc) closes [^\s]+$
+    // @Regex ^on player closes [^\s]+$
     //
     //
     // @Triggers when a player closes an inventory. (EG, chests, not the player's main inventory.)
@@ -48,10 +46,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String entName = CoreUtilities.getXthArg(0, lower);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("closes")
-                && (entName.equals("player") || entName.equals("npc"));
+        return lower.startsWith("player closes ");
     }
 
     @Override
@@ -61,10 +56,6 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
         if (entName.equals("player") && !entity.isPlayer()) {
             return false;
         }
-        if (entName.equals("npc") && !entity.isCitizensNPC()) {
-            return false;
-        }
-
         String inv = CoreUtilities.getXthArg(2, lower);
         String nname = NotableManager.isSaved(inventory) ?
                 CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)):
@@ -99,9 +90,8 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        // TODO: Store the player / npc?
-        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null,
-                entity.isCitizensNPC() ? entity.getDenizenNPC() : null);
+        // TODO: Store the player?
+        return new BukkitScriptEntryData(entity.isPlayer() ? entity.getDenizenPlayer() : null, null);
     }
 
     @Override
@@ -114,6 +104,9 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerClosesInv(InventoryCloseEvent event) {
+        if (dEntity.isNPC(event.getPlayer())) {
+            return;
+        }
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         entity = new dEntity(event.getPlayer());
         this.event = event;

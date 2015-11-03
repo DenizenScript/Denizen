@@ -8,6 +8,10 @@ Debug:
   Trim length: 512
   # Whether to permit the "server.redirect_logging" mechanism
   Allow console redirection: false
+  # Whether to send basic statistic information to the Denizen central server.
+  # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
+  # Please do not disable this unless it is throwing errors (Please report any errors you receive as well).
+  Stats: true
 
 Scripts:
   World:
