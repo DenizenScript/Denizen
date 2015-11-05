@@ -31,6 +31,10 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     // <context.entity> returns the dEntity.
     // <context.location> returns the dLocation of the portal block touched by the entity.
     //
+    // @Player when the entity that entered the portal is a player
+    //
+    // @NPC when the entity that entered the portal is an NPC.
+    //
     // -->
 
     public EntityEntersPortalScriptEvent() {

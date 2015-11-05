@@ -51,6 +51,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // @Determine
     // Element(Decimal) to set the amount of damage the entity receives, instead of dying.
     //
+    // @Player when the killer or entity that was killed is a player. Cannot be both.
+    //
+    // @NPC when the killer or entity that was killed is an NPC. Cannot be both.
+    //
     // -->
 
     public EntityKilledScriptEvent() {

@@ -37,6 +37,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     // @Determine
     // Element that matches DyeColor to dye it a different color.
     //
+    // @Player when a player dyes a sheep, and using the 'player dyes sheep' event.
+    //
     // -->
 
     public SheepDyedScriptEvent() {

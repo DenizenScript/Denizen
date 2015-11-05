@@ -35,6 +35,10 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     // @Determine
     // Element(Decimal) to set the entity's new food level.
     //
+    // @Player when the entity that's food level has changed is a player.
+    //
+    // @NPC when the entity that's food level has changed is an NPC.
+    //
     // -->
 
     public EntityFoodLevelChangeScriptEvent() {

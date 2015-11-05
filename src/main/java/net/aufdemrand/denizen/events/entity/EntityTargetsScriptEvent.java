@@ -28,8 +28,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Cancellable true
     //
-    // @Triggers when an entity interacts with a block (EG an arrow hits a button)
-    //
     // @Triggers when an entity targets a new entity.
     //
     // @Context
@@ -40,6 +38,8 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // dEntity to make the entity target a different entity instead.
+    //
+    // @Player when the entity being targetted is a player.
     //
     // -->
 
