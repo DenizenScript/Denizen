@@ -329,8 +329,26 @@ public class BukkitElementProperties implements Property {
         // @description
         // Returns the element with all color encoding stripped.
         // -->
-        if (attribute.startsWith("strip_color"))
+        if (attribute.startsWith("strip_color")) {
             return new Element(ChatColor.stripColor(element.asString())).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.parse_color>
+        // @returns Element
+        // @group string manipulation
+        // @description
+        // Returns the element with all color codes parsed.
+        // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.
+        // -->
+        if (attribute.startsWith("parse_color")) {
+            char prefix = '&';
+            if (attribute.hasContext(1)) {
+                prefix = attribute.getContext(1).charAt(0);
+            }
+            return new Element(ChatColor.translateAlternateColorCodes(prefix, element.asString()))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <el@element.to_itemscript_hash>

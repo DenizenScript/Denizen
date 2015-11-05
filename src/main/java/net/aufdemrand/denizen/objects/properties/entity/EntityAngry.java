@@ -7,12 +7,14 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Wolf;
 
 public class EntityAngry implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.WOLF;
+            return entity instanceof dEntity && (((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
+                    || ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
     }
 
     public static EntityAngry getFrom(dObject entity) {
@@ -37,10 +39,23 @@ public class EntityAngry implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!((Wolf) entity.getBukkitEntity()).isAngry())
-            return null;
-        else
-            return "true";
+        if (entity.getBukkitEntityType() == EntityType.WOLF) {
+            if (!((Wolf) entity.getLivingEntity()).isAngry()) {
+                return null;
+            }
+            else {
+                return "true";
+            }
+        }
+        else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+            if (!((PigZombie) entity.getLivingEntity()).isAngry()) {
+                return null;
+            }
+            else {
+                return "true";
+            }
+        }
+        return null;
     }
 
     @Override
@@ -65,9 +80,16 @@ public class EntityAngry implements Property {
         // @description
         // If the entity is a wolf, returns whether the wolf is angry.
         // -->
-        if (attribute.startsWith("angry"))
-            return new Element(((Wolf) entity.getBukkitEntity()).isAngry())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("angry")) {
+            if (entity.getBukkitEntityType() == EntityType.WOLF) {
+                return new Element(((Wolf) entity.getBukkitEntity()).isAngry())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+                return new Element(((PigZombie) entity.getBukkitEntity()).isAngry())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
 
         return null;
     }
@@ -80,13 +102,18 @@ public class EntityAngry implements Property {
         // @name angry
         // @input Element(Boolean)
         // @description
-        // Changes the anger state of a wolf.
+        // Changes the anger state of a Wolf or PigZombie.
         // @tags
         // <e@entity.angry>
         // -->
 
         if (mechanism.matches("angry") && mechanism.requireBoolean()) {
-            ((Wolf) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
+            if (entity.getBukkitEntityType() == EntityType.WOLF) {
+                ((Wolf) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
+            }
+            else if (entity.getBukkitEntityType() == EntityType.PIG_ZOMBIE) {
+                ((PigZombie) entity.getBukkitEntity()).setAngry(mechanism.getValue().asBoolean());
+            }
         }
     }
 }
