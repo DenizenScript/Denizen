@@ -93,9 +93,13 @@ public class InventoryScriptContainer extends ScriptContainer {
                 if (InventoryType.valueOf(getString("INVENTORY").toUpperCase()) != null) {
                     inventory = new dInventory(InventoryType.valueOf(getString("INVENTORY").toUpperCase()));
                     inventory.setIdentifiers("script", getName());
+                    if (contains("TITLE")) {
+                        inventory.setTitle(TagManager.tag(getString("TITLE"), context));
+                    }
                 }
                 else {
                     dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
+                    // TODO: Maybe actually construct a default chest inventory at this point?
                 }
             }
             int size = 0;

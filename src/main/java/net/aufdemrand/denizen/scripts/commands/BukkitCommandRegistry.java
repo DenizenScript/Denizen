@@ -1979,8 +1979,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - pause activity 1m
         // @Usage
         // Use to pause an NPC's waypoint navigation and then resume it.
-        // - pause navigation
-        // - resume navigation
+        // - pause waypoints
+        // - resume waypoints
         // -->
         if (Depends.citizens != null)
             registerCoreMember(PauseCommand.class,
