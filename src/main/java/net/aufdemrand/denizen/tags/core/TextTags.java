@@ -634,7 +634,7 @@ public class TextTags implements Listener {
         // @attribute <&chr[<character>]>
         // @returns Element
         // @description
-        // Returns the character specified.
+        // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
         if (attribute.startsWith("&chr") && attribute.hasContext(1))
             event.setReplaced(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16)));

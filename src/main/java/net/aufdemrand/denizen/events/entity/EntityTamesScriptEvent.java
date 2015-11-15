@@ -33,6 +33,8 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     // <context.entity> returns a dEntity of the tamed entity.
     // <context.owner> returns a dEntity of the owner.
     //
+    // @Player when a player tames an entity and using the 'players tames entity' event.
+    //
     // -->
 
     public EntityTamesScriptEvent() {

@@ -40,6 +40,10 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // "ORIGIN:" + dLocation to change the location the entity teleported from.
     // "DESTINATION:" + dLocation to change the location the entity teleports to.
     //
+    // @Player when the entity being teleported is a player.
+    //
+    // @NPC when the entity being teleported is an NPC.
+    //
     // -->
 
     public EntityTeleportScriptEvent() {

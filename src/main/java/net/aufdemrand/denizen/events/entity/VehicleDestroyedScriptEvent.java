@@ -34,6 +34,10 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     // <context.vehicle> returns the dEntity of the vehicle.
     // <context.entity> returns the dEntity of the attacking entity.
     //
+    // @NPC when the entity that destroyed the vehicle is a player..
+    //
+    // @NPC when the entity that destroyed the vehicle is an NPC.
+    //
     // -->
 
     public VehicleDestroyedScriptEvent() {

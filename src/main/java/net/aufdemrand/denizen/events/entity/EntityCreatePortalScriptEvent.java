@@ -31,6 +31,8 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     // <context.entity> returns the dEntity that created the portal.
     // <context.portal_type> returns the type of portal: CUSTOM, ENDER, NETHER.
     //
+    // @Player if the entity that created the portal is a player.
+    //
     // -->
 
     public EntityCreatePortalScriptEvent() {

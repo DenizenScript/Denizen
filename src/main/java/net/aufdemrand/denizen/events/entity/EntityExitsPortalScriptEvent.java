@@ -25,11 +25,15 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
     //
     // @Cancellable false
     //
-    // @Triggers when an entity enters a portal.
+    // @Triggers when an entity exits a portal.
     //
     // @Context
     // <context.entity> returns the dEntity.
     // <context.location> returns the dLocation of the portal block touched by the entity.
+    //
+    // @Player when the entity that exits the portal is a player.
+    //
+    // @NPC when the entity that exits the portal is an NPC.
     //
     // -->
 

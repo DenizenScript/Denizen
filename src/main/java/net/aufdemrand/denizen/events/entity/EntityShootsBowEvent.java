@@ -45,6 +45,11 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     //
     // @Determine
     // dList(dEntity) to change the projectile(s) being shot.
+    //
+    // @Player when the entity that shot the bow is a player.
+    //
+    // @NPC when the entity that shot the bow is an NPC.
+    //
     // -->
 
     public EntityShootsBowEvent() {

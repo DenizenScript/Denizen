@@ -39,6 +39,10 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     // "PICKUP:TRUE" to allow the vehicle to pick up the entity.
     // "PICKUP:FALSE" to stop the vehicle from picking up the entity.
     //
+    // @Player when a vehicle collides with a player.
+    //
+    // @NPC when a vehicle collides with an NPC.
+    //
     // -->
 
     public VehicleCollidesEntityScriptEvent() {
