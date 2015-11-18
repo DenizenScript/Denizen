@@ -25,57 +25,21 @@ public class TextTags implements Listener {
 
         // TODO: Handle case-sensitivity stuff better here!
 
-        // <--[tag]
-        // @attribute <&auml>
-        // @returns Element
-        // @description
-        // Returns an umlaut-a symbol: ä
-        // -->
         if (event.getName().equals("&auml"))
             event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Auml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-A symbol: Ä
-            // -->
         else if (event.getName().equals("&Auml"))
             event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&ouml>
-            // @returns Element
-            // @description
-            // Returns an umlaut-o symbol: ö
-            // -->
         else if (event.getName().equals("&ouml"))
             event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Ouml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-O symbol: Ö
-            // -->
         else if (event.getName().equals("&Ouml"))
             event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&uuml>
-            // @returns Element
-            // @description
-            // Returns an umlaut-u symbol: ü
-            // -->
         else if (event.getName().equals("&uuml"))
             event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Uuml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-U symbol: Ü
-            // -->
         else if (event.getName().equals("&Uuml"))
             event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
 
