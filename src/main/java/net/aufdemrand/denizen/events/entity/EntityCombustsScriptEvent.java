@@ -35,6 +35,10 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // @Determine
     // Element(Number) set the length of duration.
     //
+    // @Player when the entity that catches fire is a player.
+    //
+    // @NPC when the entity that catches fire is an NPC.
+    //
     // -->
 
     public EntityCombustsScriptEvent() {

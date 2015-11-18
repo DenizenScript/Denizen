@@ -58,6 +58,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @Determine
     // Element(Decimal) to set the amount of damage the entity receives.
     //
+    // @Player when the damager or damaged entity is a player. Cannot be both.
+    //
+    // @NPC when the damager or damaged entity is an NPC. Cannot be both.
+    //
     // -->
 
     public EntityDamagedScriptEvent() {

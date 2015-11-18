@@ -73,8 +73,12 @@ public class LeashCommand extends AbstractCommand {
         }
         else if (holderObject instanceof dLocation) {
             holderLoc = ((dLocation) scriptEntry.getObject("holder"));
-            if (holderLoc.getBlock().getType() == Material.FENCE || holderLoc.getBlock().getType() == Material.NETHER_FENCE)
+            if (holderLoc.getBlock().getType() == Material.FENCE || holderLoc.getBlock().getType() == Material.NETHER_FENCE
+                    || holderLoc.getBlock().getType() == Material.ACACIA_FENCE || holderLoc.getBlock().getType() == Material.BIRCH_FENCE
+                    || holderLoc.getBlock().getType() == Material.JUNGLE_FENCE || holderLoc.getBlock().getType() == Material.DARK_OAK_FENCE
+                    || holderLoc.getBlock().getType() == Material.SPRUCE_FENCE) {
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
+            }
             else {
                 dB.echoError(scriptEntry.getResidingQueue(), "Bad holder location specified - only fences are permitted!");
                 return;

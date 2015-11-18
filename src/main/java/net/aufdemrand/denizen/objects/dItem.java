@@ -30,20 +30,11 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject, Notable, Adjustable {
 
-    // An item pattern with the following groups:
-    //
-    // 1) An optional item: prefix.
-    // 2) Word characters (letters and digits) and
-    //    spaces that specify the name or ID of the item
-    // 3) Digits that specify the special data value
-    //    of the item
-    // 4) Digits between [] brackets that specify the
-    //    quantity of the item
     final static Pattern ITEM_PATTERN =
-            Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?",
+            Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?", // TODO: Wot.
                     Pattern.CASE_INSENSITIVE);
 
-    final static Pattern item_by_saved = Pattern.compile("(i@)(.+)\\[?(\\d+)?\\]?");
+    final static Pattern item_by_saved = Pattern.compile("(i@)?(.+)\\[?(\\d+)?\\]?"); // TODO: Wot.
 
     final public static String itemscriptIdentifier = "§0id:";
 

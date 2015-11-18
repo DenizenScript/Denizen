@@ -39,6 +39,10 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // <context.cuboids> DEPRECATED.
     // <context.location> DEPRECATED.
     //
+    // @Player when the breaker is a player.
+    //
+    // @NPC when the breaker is an npc.
+    //
     // -->
 
     public EntityBreaksHangingScriptEvent() {

@@ -38,6 +38,10 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     // @Determine
     // Element(Decimal) to set the value of the damage received by the vehicle.
     //
+    // @NPC when the entity that damaged the vehicle is a player.
+    //
+    // @NPC when the entity that damaged the vehicle is an NPC.
+    //
     // -->
 
     public VehicleDamagedScriptEvent() {

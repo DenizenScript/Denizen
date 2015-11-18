@@ -35,7 +35,9 @@ import java.util.List;
 //   RECORD_PLAY, STEP_SOUND, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_DESTROY_DOOR
 //
 // Visual effects:
-// - iconcrack_[id] (item break effect - examples: iconcrack_7, iconcrack_268)
+// - iconcrack_[id],[data] (item break effect - examples: iconcrack_7, iconcrack_17,3)
+// - blockcrack_[id] (block break effect)
+// - blockdust_[id] (block break effect)
 // - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE,
 // - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
 //   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
@@ -124,12 +126,41 @@ public class PlayEffectCommand extends AbstractCommand {
                     scriptEntry.addObject("particleeffect", effect);
                 }
                 else if (arg.startsWith("iconcrack_")) {
-                    // Allow iconcrack_[id] for item break effects (ex: iconcrack_1)
-                    Element typeId = new Element(arg.getValue().substring(10));
-                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null)
+                    // Allow iconcrack_[id],[data] for item break effects (ex: iconcrack_1)
+                    String shrunk = arg.getValue().substring("iconcrack_".length());
+                    String[] split = shrunk.split(",");
+                    Element typeId = new Element(split[0]);
+                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
                         scriptEntry.addObject("iconcrack", typeId);
-                    else
+                    }
+                    else {
                         dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
+                    }
+                    Element dataId = new Element(split.length <= 1 ? "0": split[1]);
+                    scriptEntry.addObject("iconcrack_data", dataId);
+                    scriptEntry.addObject("iconcrack_type", new Element("iconcrack"));
+                }
+                else if (arg.startsWith("blockcrack_")) {
+                    String shrunk = arg.getValue().substring("blockcrack_".length());
+                    Element typeId = new Element(shrunk);
+                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
+                        scriptEntry.addObject("iconcrack", typeId);
+                    }
+                    else {
+                        dB.echoError("Invalid blockcrack_[id]. Must be a valid Material ID, besides 0.");
+                    }
+                    scriptEntry.addObject("iconcrack_type", new Element("blockcrack"));
+                }
+                else if (arg.startsWith("blockdust_")) {
+                    String shrunk = arg.getValue().substring("blockdust_".length());
+                    Element typeId = new Element(shrunk);
+                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
+                        scriptEntry.addObject("iconcrack", typeId);
+                    }
+                    else {
+                        dB.echoError("Invalid blockdust_[id]. Must be a valid Material ID, besides 0.");
+                    }
+                    scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
                 }
                 else if (arg.matchesEnum(Effect.values())) {
                     scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
@@ -212,6 +243,8 @@ public class PlayEffectCommand extends AbstractCommand {
         Effect effect = (Effect) scriptEntry.getObject("effect");
         ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
+        Element iconcrack_data = scriptEntry.getElement("iconcrack_data");
+        Element iconcrack_type = scriptEntry.getElement("iconcrack_type");
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
         Element qty = scriptEntry.getElement("qty");
@@ -220,7 +253,7 @@ public class PlayEffectCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
                 particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
-                        iconcrack.debug()) +
+                        iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug(): "")) +
                 aH.debugObj("locations", locations.toString()) +
                 (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
                 radius.debug() +
@@ -289,9 +322,22 @@ public class PlayEffectCommand extends AbstractCommand {
                     for (dPlayer player : targets)
                         if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
                 }
-                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, true, (float) location.getX(),
-                        (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
-                        iconcrack.asInt(), iconcrack.asInt()); // TODO: ???
+                PacketPlayOutWorldParticles o;
+                if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
+                    o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, true, (float) location.getX(),
+                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
+                            iconcrack.asInt(), iconcrack_data.asInt());
+                }
+                else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
+                    o = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, true, (float) location.getX(),
+                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
+                            iconcrack.asInt());
+                }
+                else { // blockdust
+                    o = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_DUST, true, (float) location.getX(),
+                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
+                            iconcrack.asInt());
+                }
                 for (Player player : players) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
                 }
