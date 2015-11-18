@@ -1533,7 +1533,7 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.compass.target>
+        // @attribute <p@player.compass_target>
         // @returns dLocation
         // @description
         // returns the location of the player's compass target.

@@ -23,6 +23,8 @@ public class TextTags implements Listener {
         if (!event.getName().startsWith("&")) return;
         Attribute attribute = event.getAttributes();
 
+        // TODO: Handle case-sensitivity stuff better here!
+
         // <--[tag]
         // @attribute <&auml>
         // @returns Element
@@ -51,7 +53,7 @@ public class TextTags implements Listener {
             event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
 
             // <--[tag]
-            // @attribute <&Iuml>
+            // @attribute <&Ouml>
             // @returns Element
             // @description
             // Returns a capital umlaut-O symbol: Ö
