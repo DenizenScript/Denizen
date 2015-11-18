@@ -12,15 +12,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FireworkExplodeEvent;
 
+// TODO: Allow me when we update
+    /*
 public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // <--[event]
+    // TODO: <-- [ event ]
     // @Events
     // firework bursts (in <area>)
     //
     // @Regex ^on firework bursts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable true
+    //
+    // @Warning not yet implemented
     //
     // @Triggers when a firework bursts (explodes).
     //
@@ -91,3 +95,4 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         event.setCancelled(cancelled);
     }
 }
+    */
