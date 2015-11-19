@@ -164,6 +164,60 @@ public class dChunk implements dObject, Adjustable {
     public static void registerTags() {
 
         // <--[tag]
+        // @attribute <ch@chunk.add[<#>,<#>]>
+        // @returns dChunk
+        // @description
+        // returns the chunk with the specified coordinates added to it.
+        // -->
+        registerTag("add", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    return null;
+                }
+                List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
+                if (coords.size() < 2) {
+                    dB.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
+                    return null;
+                }
+                double x = aH.getDoubleFrom(coords.get(0)) * 16;
+                double z = aH.getDoubleFrom(coords.get(1)) * 16;
+
+                return new dChunk(((dChunk) object).getCenter().clone().add(x, 0, z).getChunk())
+                        .getAttribute(attribute.fulfill(1));
+
+            }
+        });
+
+        // <--[tag]
+        // @attribute <ch@chunk.sub[<#>,<#>]>
+        // @returns dChunk
+        // @description
+        // returns the chunk with the specified coordinates subtracted from it.
+        // -->
+        registerTag("sub", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag ch@chunk.add[<#>,<#>] must have a value.");
+                    return null;
+                }
+                List<String> coords = CoreUtilities.split(attribute.getContext(1), ',');
+                if (coords.size() < 2) {
+                    dB.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
+                    return null;
+                }
+                double x = aH.getDoubleFrom(coords.get(0)) * 16;
+                double z = aH.getDoubleFrom(coords.get(1)) * 16;
+
+                return new dChunk(((dChunk) object).getCenter().clone().subtract(x, 0, z).getChunk())
+                        .getAttribute(attribute.fulfill(1));
+
+            }
+        });
+
+        // <--[tag]
         // @attribute <ch@chunk.is_loaded>
         // @returns Element(Boolean)
         // @description
