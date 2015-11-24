@@ -1163,15 +1163,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Flag
-        // @Syntax flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+        // @Syntax flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
         // @Required 1
         // @Stable stable
-        // @Short Sets or modifies a flag on the player, NPC, or server.
+        // @Short Sets or modifies a flag on the player, NPC, entity, or server.
         // @Author aufdemrand
         // @Group core
         // @Description
         // The flag command sets or modifies custom value storage database entries connected to
-        // each player, each NPC, and the server.
+        // each player, each NPC, each entity, and the server.
         // TODO: Document Command Details
         // @Tags
         // <p@player.flag[<flag>]>
@@ -1203,7 +1203,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - flag server myflag[3]:HelloWorld
         // -->
         registerCoreMember(FlagCommand.class,
-                "FLAG", "flag ({player}/npc/global/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
+                "FLAG", "flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);
 
 
         // <--[command]
@@ -1979,8 +1979,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - pause activity 1m
         // @Usage
         // Use to pause an NPC's waypoint navigation and then resume it.
-        // - pause navigation
-        // - resume navigation
+        // - pause waypoints
+        // - resume waypoints
         // -->
         if (Depends.citizens != null)
             registerCoreMember(PauseCommand.class,

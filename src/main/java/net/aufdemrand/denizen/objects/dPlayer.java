@@ -1533,7 +1533,7 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
-        // @attribute <p@player.compass.target>
+        // @attribute <p@player.compass_target>
         // @returns dLocation
         // @description
         // returns the location of the player's compass target.
@@ -2572,6 +2572,28 @@ public class dPlayer implements dObject, Adjustable {
             else {
                 PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
             }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name is_whitelisted
+        // @input Element(Boolean)
+        // @description
+        // Changes whether the player is whitelisted or not.
+        // -->
+        if (mechanism.matches("is_whitelisted") && mechanism.requireBoolean()) {
+            getPlayerEntity().setWhitelisted(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name is_op
+        // @input Element(Boolean)
+        // @description
+        // Changes whether the player is a server operator or not.
+        // -->
+        if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
+            getPlayerEntity().setOp(mechanism.getValue().asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms

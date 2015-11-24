@@ -1,66 +1,62 @@
 package net.aufdemrand.denizen.events.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
+    /*
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.entity.FireworkExplodeEvent;
 
-public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements Listener {
+// TODO: Allow me when we update
+public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // <--[event]
+    // TODO: <-- [ event ]
     // @Events
-    // entity enters portal (in <area>)
-    // <entity> enters portal (in <area>)
+    // firework bursts (in <area>)
     //
-    // @Regex ^on [^\s]+ enters portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on firework bursts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    // @Cancellable false
+    // @Cancellable true
     //
-    // @Triggers when an entity enters a portal.
+    // @Warning not yet implemented
+    //
+    // @Triggers when a firework bursts (explodes).
     //
     // @Context
-    // <context.entity> returns the dEntity.
-    // <context.location> returns the dLocation of the portal block touched by the entity.
-    //
-    // @Player when the entity that entered the portal is a player
-    //
-    // @NPC when the entity that entered the portal is an NPC.
+    // <context.entity> returns the firework that exploded.
+    // <context.location> returns the dLocation the firework exploded at.
     //
     // -->
 
-    public EntityEntersPortalScriptEvent() {
+    public FireworkBurstsScriptEvent() {
         instance = this;
     }
 
-    public static EntityEntersPortalScriptEvent instance;
+    public static FireworkBurstsScriptEvent instance;
     public dEntity entity;
     public dLocation location;
-    public EntityPortalEnterEvent event;
+    public FireworkExplodeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.toLowerCase(s).contains("enters portal");
+        return CoreUtilities.toLowerCase(s).startsWith("firework bursts");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(0, lower);
-        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
+        return runInCheck(scriptContainer, s, lower, entity.getLocation());
     }
 
     @Override
     public String getName() {
-        return "EntityEntersPortal";
+        return "FireworkBursts";
     }
 
     @Override
@@ -70,18 +66,12 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public void destroy() {
-        EntityPortalEnterEvent.getHandlerList().unregister(this);
+        FireworkExplodeEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
-    }
-
-    @Override
-    public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override
@@ -96,10 +86,13 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onEntityEntersPortal(EntityPortalEnterEvent event) {
+    public void onFireworkBursts(FireworkExplodeEvent event) {
         entity = new dEntity(event.getEntity());
-        location = new dLocation(event.getLocation());
+        location = new dLocation(entity.getLocation());
+        cancelled = event.isCancelled();
         this.event = event;
         fire();
+        event.setCancelled(cancelled);
     }
 }
+    */

@@ -40,6 +40,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // <context.old_material> returns the old material of the block.
     // <context.new_material> returns the new material of the block.
     //
+    // @Player when the entity that changed the block is a player.
+    //
     // -->
 
     public EntityChangesBlockScriptEvent() {

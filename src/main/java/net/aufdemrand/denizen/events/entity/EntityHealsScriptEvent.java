@@ -37,6 +37,10 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // @Determine
     // Element(Decimal) to set the amount of health the entity receives.
     //
+    // @Player when the entity that was healed is a player.
+    //
+    // @NPC when the entity that was healed was an NPC.
+    //
     // -->
 
     public EntityHealsScriptEvent() {

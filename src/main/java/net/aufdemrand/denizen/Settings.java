@@ -53,6 +53,10 @@ public class Settings {
                 .getBoolean("Debug.Allow console redirection", false);
     }
 
+    public static boolean canRecordStats() {
+        return DenizenAPI.getCurrentInstance().getConfig().getBoolean("Debug.Stats", true);
+    }
+
     /*
 
     # Sets the default speed between execution of commands in queues

@@ -23,57 +23,23 @@ public class TextTags implements Listener {
         if (!event.getName().startsWith("&")) return;
         Attribute attribute = event.getAttributes();
 
-        // <--[tag]
-        // @attribute <&auml>
-        // @returns Element
-        // @description
-        // Returns an umlaut-a symbol: ä
-        // -->
+        // TODO: Handle case-sensitivity stuff better here!
+
         if (event.getName().equals("&auml"))
             event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Auml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-A symbol: Ä
-            // -->
         else if (event.getName().equals("&Auml"))
             event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&ouml>
-            // @returns Element
-            // @description
-            // Returns an umlaut-o symbol: ö
-            // -->
         else if (event.getName().equals("&ouml"))
             event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Iuml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-O symbol: Ö
-            // -->
         else if (event.getName().equals("&Ouml"))
             event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&uuml>
-            // @returns Element
-            // @description
-            // Returns an umlaut-u symbol: ü
-            // -->
         else if (event.getName().equals("&uuml"))
             event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
 
-            // <--[tag]
-            // @attribute <&Uuml>
-            // @returns Element
-            // @description
-            // Returns a capital umlaut-U symbol: Ü
-            // -->
         else if (event.getName().equals("&Uuml"))
             event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
 
@@ -634,7 +600,7 @@ public class TextTags implements Listener {
         // @attribute <&chr[<character>]>
         // @returns Element
         // @description
-        // Returns the character specified.
+        // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
         if (attribute.startsWith("&chr") && attribute.hasContext(1))
             event.setReplaced(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16)));

@@ -53,6 +53,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // dList(dItem) to specify new items to be dropped.
     // Element(Number) to specify the new amount of XP to be dropped.
     //
+    // @Player when the entity that died is a player.
+    //
+    // @NPC when the entity that died is an NPC.
+    //
     // -->
     public EntityDeathScriptEvent() {
         instance = this;
@@ -157,7 +161,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("damager") && damager != null) {
             return damager;
