@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -64,13 +65,21 @@ public class DenizenMapRenderer extends MapRenderer {
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
         if (active) {
-            UUID uuid = player.getUniqueId();
-            dPlayer p = dPlayer.mirrorBukkitPlayer(player);
-            for (MapObject object : mapObjects) {
-                if (autoUpdate)
-                    object.update(p, uuid);
-                if (object.isVisibleTo(p, uuid))
-                    object.render(mapView, mapCanvas, p, uuid);
+            try {
+                UUID uuid = player.getUniqueId();
+                dPlayer p = dPlayer.mirrorBukkitPlayer(player);
+                for (MapObject object : mapObjects) {
+                    if (autoUpdate) {
+                        object.update(p, uuid);
+                    }
+                    if (object.isVisibleTo(p, uuid)) {
+                        object.render(mapView, mapCanvas, p, uuid);
+                    }
+                }
+            }
+            catch (Exception e) {
+                dB.echoError(e);
+                mapView.removeRenderer(this);
             }
         }
         else {
