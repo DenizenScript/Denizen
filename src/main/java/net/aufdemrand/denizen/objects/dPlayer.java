@@ -530,8 +530,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
-                    .getAttribute(attribute.fulfill(2));
+            return Element.TRUE.getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -617,10 +616,8 @@ public class dPlayer implements dObject, Adjustable {
         // returns the specified flag from the player.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+        if (attribute.startsWith("flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.playerHasFlag(this, flag_name))
@@ -643,10 +640,8 @@ public class dPlayer implements dObject, Adjustable {
         // returns true if the Player has the specified flag, otherwise returns false.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("has_flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+        if (attribute.startsWith("has_flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -994,12 +989,12 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("first_played")) {
             attribute = attribute.fulfill(1);
-            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
+            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
                 return new Element(getOfflinePlayer().getFirstPlayed())
                         .getAttribute(attribute.fulfill(1));
-            else
-                return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
-                        .getAttribute(attribute);
+            }
+            return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
+                    .getAttribute(attribute);
         }
 
         // <--[tag]
@@ -1106,21 +1101,15 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(System.currentTimeMillis())
                             .getAttribute(attribute.fulfill(1));
                 }
-                else {
-                    return new Element(getOfflinePlayer().getLastPlayed())
-                            .getAttribute(attribute.fulfill(1));
-                }
+                return new Element(getOfflinePlayer().getLastPlayed())
+                        .getAttribute(attribute.fulfill(1));
             }
-            else {
-                if (isOnline()) {
-                    return new Duration(System.currentTimeMillis() / 50)
-                            .getAttribute(attribute);
-                }
-                else {
-                    return new Duration(getOfflinePlayer().getLastPlayed() / 50)
-                            .getAttribute(attribute);
-                }
+            if (isOnline()) {
+                return new Duration(System.currentTimeMillis() / 50)
+                        .getAttribute(attribute);
             }
+            return new Duration(getOfflinePlayer().getLastPlayed() / 50)
+                    .getAttribute(attribute);
         }
 
         // <--[tag]
@@ -1413,10 +1402,9 @@ public class dPlayer implements dObject, Adjustable {
         // '/npc select', null if no player selected.
         // -->
         if (attribute.startsWith("selected_npc")) {
-            if (getPlayerEntity().hasMetadata("selected"))
-                return getSelectedNPC()
-                        .getAttribute(attribute.fulfill(1));
-            else return null;
+            if (getPlayerEntity().hasMetadata("selected")) {
+                return getSelectedNPC().getAttribute(attribute.fulfill(1));
+            }
         }
 
 
@@ -1542,9 +1530,12 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // returns the location of the player's compass target.
         // -->
-        if (attribute.startsWith("compass_target"))
-            return new dLocation(getPlayerEntity().getCompassTarget())
-                    .getAttribute(attribute.fulfill(2));
+        if (attribute.startsWith("compass_target")) {
+            Location target = getPlayerEntity().getCompassTarget();
+            if (target != null) {
+                return new dLocation(target).getAttribute(attribute.fulfill(1));
+            }
+        }
 
         // <--[tag]
         // @attribute <p@player.chunk_loaded[<chunk>]>
@@ -1554,6 +1545,9 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("chunk_loaded") && attribute.hasContext(1)) {
             dChunk chunk = dChunk.valueOf(attribute.getContext(1));
+            if (chunk == null) {
+                return null;
+            }
             return new Element(hasChunkLoaded(chunk.chunk)).getAttribute(attribute.fulfill(1));
         }
 
