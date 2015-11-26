@@ -1568,14 +1568,13 @@ public class dEntity implements dObject, Adjustable {
         // If the entity is a horse or pig, returns the saddle as a dItem, or i@air if none.
         // -->
         if (attribute.startsWith("saddle")) {
-            if (getLivingEntity().getType() == EntityType.HORSE)
+            if (getLivingEntity().getType() == EntityType.HORSE) {
                 return new dItem(((Horse) getLivingEntity()).getInventory().getSaddle())
-                    .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute.fulfill(1));
+            }
             else if (getLivingEntity().getType() == EntityType.PIG) {
-                if (((Pig) getLivingEntity()).hasSaddle())
-                    return new dItem(Material.SADDLE).getAttribute(attribute.fulfill(1));
-                else
-                    return new dItem(Material.AIR).getAttribute(attribute.fulfill(1));
+                return new dItem(((Pig) getLivingEntity()).hasSaddle() ? Material.SADDLE : Material.AIR)
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
