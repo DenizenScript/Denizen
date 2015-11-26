@@ -599,11 +599,15 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(getName())) // TODO: UUID?
+            if (!PlayerTags.playerChatHistory.containsKey(getName())) { // TODO: UUID?
                 return null;
-            else
-                return new Element(PlayerTags.playerChatHistory.get(getName()).get(x - 1)) // TODO: UUID?
-                        .getAttribute(attribute.fulfill(1));
+            }
+            List<String> messages = PlayerTags.playerChatHistory.get(getName()); // TODO: UUID?
+            if (messages.size() < x || x < 1) {
+                return null;
+            }
+            return new Element(messages.get(x - 1))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
