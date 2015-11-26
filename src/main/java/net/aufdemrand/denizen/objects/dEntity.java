@@ -1523,8 +1523,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element
         // @group attributes
         // @description
-        // If the entity has a custom name, returns the name as an Element.
-        // Otherwise, returns null.
+        // Returns the entity's custom name, if any.
         // -->
         if (attribute.startsWith("custom_name")) {
             return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
@@ -1866,8 +1865,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dEntity
         // @group attributes
         // @description
-        // If the entity has a passenger, returns the passenger as a dEntity.
-        // Otherwise, returns null.
+        // Returns the entity's passenger, if any.
         // -->
         if (attribute.startsWith("passenger") || attribute.startsWith("get_passenger")) {
             if (!entity.isEmpty()) {
@@ -1881,8 +1879,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dEntity
         // @group attributes
         // @description
-        // If the entity is a projectile with a shooter, gets its shooter
-        // Otherwise, returns null.
+        // Returns the entity's shooter, if any.
         // -->
         if (attribute.startsWith("shooter") ||
                 attribute.startsWith("get_shooter")) {
