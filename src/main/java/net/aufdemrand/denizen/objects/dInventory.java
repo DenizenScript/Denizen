@@ -1141,7 +1141,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory can fit an item.
         // -->
-        if (attribute.startsWith("can_fit") && attribute.hasContext(1)) {
+        if (attribute.startsWith("can_fit") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
             dItem item = dItem.valueOf(attribute.getContext(1));
             if (item == null) {
                 return null;
@@ -1178,7 +1178,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns the dInventory with an item added.
         // -->
-        if (attribute.startsWith("include") && attribute.hasContext(1)) {
+        if (attribute.startsWith("include") && attribute.hasContext(1)
+                && dItem.matches(attribute.getContext(1))) {
             dItem item = dItem.valueOf(attribute.getContext(1));
             if (item == null) {
                 return null;
@@ -1198,8 +1199,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Returns the dInventory with a certain quantity of an item added.
             // -->
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
-                    attribute.hasContext(2) &&
-                    aH.matchesInteger(attribute.getContext(2))) {
+                    attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
@@ -1255,14 +1255,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         // check if the search element is contained in the display name.
         // -->
         if (attribute.startsWith("contains.display") && attribute.hasContext(2)) {
-            int qty = 1;
-            int attribs = 2;
             String search_string = attribute.getContext(2);
             boolean strict = false;
             if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
                 strict = true;
                 search_string = search_string.substring(7);
             }
+            if (search_string.length() == 0) {
+                return null;
+            }
+            int qty = 1;
+            int attribs = 2;
 
             // <--[tag]
             // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
@@ -1326,15 +1329,18 @@ public class dInventory implements dObject, Notable, Adjustable {
         // check if the search elements are contained in the lore.
         // -->
         if (attribute.startsWith("contains.lore") && attribute.hasContext(2)) {
-            int qty = 1;
-            int attribs = 2;
             String search_string = attribute.getContext(2);
             boolean strict = false;
             if (search_string.toLowerCase().startsWith("strict:")) {
                 strict = true;
                 search_string = search_string.substring(7);
             }
+            if (search_string.length() == 0) {
+                return null;
+            }
             dList lore = dList.valueOf(search_string);
+            int qty = 1;
+            int attribs = 2;
 
             // <--[tag]
             // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
@@ -1409,13 +1415,12 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains an item with the specified material.
         // -->
-        if (attribute.startsWith("contains.material") && attribute.hasContext(2)) {
+        if (attribute.startsWith("contains.material") && attribute.hasContext(2) &&
+                dMaterial.matches(attribute.getContext(2))) {
+            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
             int qty = 1;
             int attribs = 2;
-            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
-            if (material == null) {
-                return null;
-            }
+
             // <--[tag]
             // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
             // @returns Element(Boolean)
@@ -1451,6 +1456,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains any of the specified items.
         // -->
         if (attribute.startsWith("contains_any") && attribute.hasContext(1)) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
+            }
             int qty = 1;
             int attribs = 1;
 
@@ -1465,10 +1474,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
-
-            for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
-                if (containsItem(item, qty)) {
-                    return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            if (!contains.isEmpty()) {
+                for (dItem item : contains) {
+                    if (containsItem(item, qty)) {
+                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                    }
                 }
             }
             return Element.FALSE.getAttribute(attribute.fulfill(attribs));
@@ -1481,6 +1492,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory contains all of the specified items.
         // -->
         if (attribute.startsWith("contains") && attribute.hasContext(1)) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
+            }
             int qty = 1;
             int attribs = 1;
 
@@ -1495,9 +1510,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
-            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry());
-            if (!items.isEmpty()) {
-                for (dItem item : items) {
+            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            if (!contains.isEmpty()) {
+                for (dItem item : contains) {
                     if (containsItem(item, qty)) {
                         return Element.TRUE.getAttribute(attribute.fulfill(attribs));
                     }
@@ -1528,6 +1543,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 && attribute.hasContext(2)
                 && dMaterial.matches(attribute.getContext(2))) {
             dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+            if (material == null) {
+                return null;
+            }
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (inventory.getItem(i) != null && inventory.getItem(i).getType() == material.getMaterial()) {
