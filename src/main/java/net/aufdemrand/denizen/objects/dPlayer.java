@@ -869,37 +869,16 @@ public class dPlayer implements dObject, Adjustable {
             return effects.getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <p@player.list>
-        // @returns dList(dPlayer)
-        // @description
-        // Returns all players that have ever played on the server, online or not.
-        // ** NOTE: This tag is old. Please instead use <server.list_players> **
-        // -->
         if (attribute.startsWith("list")) {
+            dB.echoError("DO NOT USE PLAYER.LIST AS A TAG, please use <server.list_online_players> and related tags!");
             List<String> players = new ArrayList<String>();
 
-            // <--[tag]
-            // @attribute <p@player.list.online>
-            // @returns dList(dPlayer)
-            // @description
-            // Returns all online players.
-            // **NOTE: This will only work if there is a player attached to the current script.
-            // If you need it anywhere else, use <server.list_online_players>**
-            // -->
             if (attribute.startsWith("list.online")) {
                 for (Player player : Bukkit.getOnlinePlayers())
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
 
-            // <--[tag]
-            // @attribute <p@player.list.offline>
-            // @returns dList(dPlayer)
-            // @description
-            // Returns all players that have ever played on the server, but are not currently online.
-            // ** NOTE: This tag is old. Please instead use <server.list_offline_players> **
-            // -->
             else if (attribute.startsWith("list.offline")) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!player.isOnline())
