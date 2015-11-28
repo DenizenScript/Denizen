@@ -72,7 +72,7 @@ public class ItemMap implements Property {
         // <i@item.map>
         // -->
 
-        if (mechanism.matches("map")) {
+        if (mechanism.matches("map") && mechanism.requireInteger()) {
             item.getItemStack().setDurability((short) (mechanism.getValue().asInt()));
         }
     }

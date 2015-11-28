@@ -34,7 +34,7 @@ public class ItemApple implements Property {
 
         // <--[tag]
         // @attribute <i@item.apple_enchanted>
-        // @returns Element
+        // @returns Element(Boolean)
         // @group properties
         // @mechanism dItem.apple_enchanted
         // @description
@@ -75,7 +75,7 @@ public class ItemApple implements Property {
         // <i@item.apple_enchanted>
         // -->
 
-        if (mechanism.matches("apple_enchanted")) {
+        if (mechanism.matches("apple_enchanted") && mechanism.requireBoolean()) {
             item.getItemStack().setDurability((short) (mechanism.getValue().asBoolean() ? 1 : 0));
         }
     }

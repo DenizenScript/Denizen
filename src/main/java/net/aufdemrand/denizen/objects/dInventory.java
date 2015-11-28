@@ -1125,41 +1125,51 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute == null) return null;
 
         // <--[tag]
+        // @attribute <in@inventory.empty_slots>
+        // @returns Element(Integer)
+        // @description
+        // Returns the number of empty slots in an inventory.
+        // -->
+        if (attribute.startsWith("empty_slots")) {
+            int full = new dInventory(inventory).count(null, true);
+            return new Element(inventory.getSize() - full).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.can_fit[<item>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the inventory can fit an item.
         // -->
-        if (attribute.startsWith("can_fit")) {
-            if (attribute.hasContext(1)) {
-                int attribs = 1;
-                int qty = 1;
-
-                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
-                if (inventory.getType() == InventoryType.CHEST)
-                    dummyInv.setSize(inventory.getSize());
-                dummyInv.setContents(getContents());
-                dItem item = dItem.valueOf(attribute.getContext(1));
-                if (item == null) return null;
-
-                // <--[tag]
-                // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory can fit a certain quantity of an item.
-                // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-                    qty = attribute.getIntContext(2);
-                    attribs = 2;
-                }
-                item.setAmount(qty);
-
-                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
-                return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
-
+        if (attribute.startsWith("can_fit") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+            dItem item = dItem.valueOf(attribute.getContext(1));
+            if (item == null) {
+                return null;
             }
+            int attribs = 1;
+            int qty = 1;
+
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+            if (inventory.getType() == InventoryType.CHEST)
+                dummyInv.setSize(inventory.getSize());
+            dummyInv.setContents(getContents());
+
+            // <--[tag]
+            // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory can fit a certain quantity of an item.
+            // -->
+            if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
+                    attribute.hasContext(2) &&
+                    aH.matchesInteger(attribute.getContext(2))) {
+                qty = attribute.getIntContext(2);
+                attribs = 2;
+            }
+            item.setAmount(qty);
+
+            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
+            return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1168,34 +1178,34 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns the dInventory with an item added.
         // -->
-        if (attribute.startsWith("include")) {
-            if (attribute.hasContext(1)) {
-                int attribs = 1;
-                int qty = 1;
-
-                dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
-                if (inventory.getType() == InventoryType.CHEST)
-                    dummyInv.setSize(inventory.getSize());
-                dummyInv.setContents(getContents());
-                dItem item = dItem.valueOf(attribute.getContext(1));
-                if (item == null) return null;
-
-                // <--[tag]
-                // @attribute <in@inventory.include[<item>].quantity[<#>]>
-                // @returns dInventory
-                // @description
-                // Returns the dInventory with a certain quantity of an item added.
-                // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-                    qty = attribute.getIntContext(2);
-                    attribs = 2;
-                }
-                item.setAmount(qty);
-                dummyInv.add(0, item.getItemStack());
-                return dummyInv.getAttribute(attribute.fulfill(attribs));
+        if (attribute.startsWith("include") && attribute.hasContext(1)
+                && dItem.matches(attribute.getContext(1))) {
+            dItem item = dItem.valueOf(attribute.getContext(1));
+            if (item == null) {
+                return null;
             }
+            int attribs = 1;
+            int qty = 1;
+
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+            if (inventory.getType() == InventoryType.CHEST)
+                dummyInv.setSize(inventory.getSize());
+            dummyInv.setContents(getContents());
+
+            // <--[tag]
+            // @attribute <in@inventory.include[<item>].quantity[<#>]>
+            // @returns dInventory
+            // @description
+            // Returns the dInventory with a certain quantity of an item added.
+            // -->
+            if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
+                    attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                qty = attribute.getIntContext(2);
+                attribs = 2;
+            }
+            item.setAmount(qty);
+            dummyInv.add(0, item.getItemStack());
+            return dummyInv.getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1244,69 +1254,69 @@ public class dInventory implements dObject, Notable, Adjustable {
         // name is EXACTLY the search element, otherwise the searching will only
         // check if the search element is contained in the display name.
         // -->
-        if (attribute.startsWith("contains.display")) {
-            if (attribute.hasContext(2)) {
-                int qty = 1;
-                int attribs = 2;
-                String search_string = attribute.getContext(2);
-                boolean strict = false;
-                if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
-                    strict = true;
-                    search_string = search_string.substring(7);
-                }
-
-                // <--[tag]
-                // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the
-                // specified display name. Use 'strict:' in front of the search element to ensure
-                // the display name is EXACTLY the search element, otherwise the searching will only
-                // check if the search element is contained in the display name.
-                // -->
-                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
-                        attribute.hasContext(3) &&
-                        aH.matchesInteger(attribute.getContext(3))) {
-                    qty = attribute.getIntContext(3);
-                    attribs = 3;
-                }
-
-                int found_items = 0;
-
-                if (strict) {
-                    for (ItemStack item : getContents()) {
-                        if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) break;
-                        }
-                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) break;
-                        }
-                    }
-                }
-                else {
-                    for (ItemStack item : getContents()) {
-                        if (item != null && item.getType() == Material.WRITTEN_BOOK
-                                && ((BookMeta) item.getItemMeta()).getTitle()
-                                .toLowerCase().contains(search_string.toLowerCase())) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) break;
-                        }
-                        else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                                item.getItemMeta().getDisplayName().toLowerCase()
-                                        .contains(search_string.toLowerCase())) {
-                            found_items += item.getAmount();
-                            if (found_items >= qty) break;
-                        }
-                    }
-                }
-
-                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
-                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+        if (attribute.startsWith("contains.display") && attribute.hasContext(2)) {
+            String search_string = attribute.getContext(2);
+            boolean strict = false;
+            if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
+                strict = true;
+                search_string = search_string.substring(7);
             }
+            if (search_string.length() == 0) {
+                return null;
+            }
+            int qty = 1;
+            int attribs = 2;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains.display[(strict:)<element>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item with the
+            // specified display name. Use 'strict:' in front of the search element to ensure
+            // the display name is EXACTLY the search element, otherwise the searching will only
+            // check if the search element is contained in the display name.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
+
+            int found_items = 0;
+
+            if (strict) {
+                for (ItemStack item : getContents()) {
+                    if (item != null && item.getType() == Material.WRITTEN_BOOK
+                            && ((BookMeta) item.getItemMeta()).getTitle().equalsIgnoreCase(search_string)) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) break;
+                    }
+                    else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                            item.getItemMeta().getDisplayName().equalsIgnoreCase(search_string)) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) break;
+                    }
+                }
+            }
+            else {
+                for (ItemStack item : getContents()) {
+                    if (item != null && item.getType() == Material.WRITTEN_BOOK
+                            && ((BookMeta) item.getItemMeta()).getTitle()
+                            .toLowerCase().contains(search_string.toLowerCase())) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) break;
+                    }
+                    else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
+                            item.getItemMeta().getDisplayName().toLowerCase()
+                                    .contains(search_string.toLowerCase())) {
+                        found_items += item.getAmount();
+                        if (found_items >= qty) break;
+                    }
+                }
+            }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1318,79 +1328,85 @@ public class dInventory implements dObject, Notable, Adjustable {
         // are EXACTLY the search elements, otherwise the searching will only
         // check if the search elements are contained in the lore.
         // -->
-        if (attribute.startsWith("contains.lore")) {
-            if (attribute.hasContext(2)) {
-                int qty = 1;
-                int attribs = 2;
-                String search_string = attribute.getContext(2);
-                boolean strict = false;
-                if (search_string.toLowerCase().startsWith("strict:")) {
-                    strict = true;
-                    search_string = search_string.substring(7);
-                }
-                dList lore = dList.valueOf(search_string);
-
-                // <--[tag]
-                // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item
-                // with the specified lore. Use 'strict:' in front of the search elements
-                // to ensure all lore lines are EXACTLY the search elements, otherwise the
-                // searching will only check if the search elements are contained in the lore.
-                // -->
-                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
-                        attribute.hasContext(3) &&
-                        aH.matchesInteger(attribute.getContext(3))) {
-                    qty = attribute.getIntContext(3);
-                    attribs = 3;
-                }
-
-                int found_items = 0;
-
-                if (strict) {
-                    strict_items:
-                    for (ItemStack item : getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                            List<String> item_lore = item.getItemMeta().getLore();
-                            if (lore.size() != item_lore.size()) continue;
-                            for (int i = 0; i < item_lore.size(); i++) {
-                                if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
-                                    if (i == lore.size()) {
-                                        found_items += item.getAmount();
-                                        if (found_items >= qty) break strict_items;
-                                    }
-                                }
-                                else continue strict_items;
-                            }
-                        }
-                    }
-                }
-                else {
-                    for (ItemStack item : getContents()) {
-                        if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
-                            List<String> item_lore = item.getItemMeta().getLore();
-                            int loreCount = 0;
-                            lines:
-                            for (String line : lore) {
-                                for (String item_line : item_lore) {
-                                    if (item_line.toLowerCase().contains(line.toLowerCase())) {
-                                        loreCount++;
-                                        continue lines;
-                                    }
-                                }
-                            }
-                            if (loreCount == lore.size()) {
-                                found_items += item.getAmount();
-                                if (found_items >= qty) break;
-                            }
-                        }
-                    }
-                }
-
-                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
-                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
+        if (attribute.startsWith("contains.lore") && attribute.hasContext(2)) {
+            String search_string = attribute.getContext(2);
+            boolean strict = false;
+            if (search_string.toLowerCase().startsWith("strict:")) {
+                strict = true;
+                search_string = search_string.substring(7);
             }
+            if (search_string.length() == 0) {
+                return null;
+            }
+            dList lore = dList.valueOf(search_string);
+            int qty = 1;
+            int attribs = 2;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains.lore[(strict:)<element>|...].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item
+            // with the specified lore. Use 'strict:' in front of the search elements
+            // to ensure all lore lines are EXACTLY the search elements, otherwise the
+            // searching will only check if the search elements are contained in the lore.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
+
+            int found_items = 0;
+
+            if (strict) {
+                strict_items:
+                for (ItemStack item : getContents()) {
+                    if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                        List<String> item_lore = item.getItemMeta().getLore();
+                        if (lore.size() != item_lore.size()) {
+                            continue;
+                        }
+                        for (int i = 0; i < item_lore.size(); i++) {
+                            if (lore.get(i).equalsIgnoreCase(item_lore.get(i))) {
+                                if (i == lore.size()) {
+                                    found_items += item.getAmount();
+                                    if (found_items >= qty) {
+                                        break strict_items;
+                                    }
+                                }
+                            }
+                            else continue strict_items;
+                        }
+                    }
+                }
+            }
+            else {
+                for (ItemStack item : getContents()) {
+                    if (item != null && item.hasItemMeta() && item.getItemMeta().hasLore()) {
+                        List<String> item_lore = item.getItemMeta().getLore();
+                        int loreCount = 0;
+                        lines:
+                        for (String line : lore) {
+                            for (String item_line : item_lore) {
+                                if (item_line.toLowerCase().contains(line.toLowerCase())) {
+                                    loreCount++;
+                                    continue lines;
+                                }
+                            }
+                        }
+                        if (loreCount == lore.size()) {
+                            found_items += item.getAmount();
+                            if (found_items >= qty) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1399,38 +1415,38 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains an item with the specified material.
         // -->
-        if (attribute.startsWith("contains.material")) {
-            if (attribute.hasContext(2)) {
-                int qty = 1;
-                int attribs = 2;
-                dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+        if (attribute.startsWith("contains.material") && attribute.hasContext(2) &&
+                dMaterial.matches(attribute.getContext(2))) {
+            dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+            int qty = 1;
+            int attribs = 2;
 
-                // <--[tag]
-                // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of an item with the
-                // specified material.
-                // -->
-                if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
-                        attribute.hasContext(3) &&
-                        aH.matchesInteger(attribute.getContext(3))) {
-                    qty = attribute.getIntContext(3);
-                    attribs = 3;
-                }
+            // <--[tag]
+            // @attribute <in@inventory.contains.material[<material>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item with the
+            // specified material.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
 
-                int found_items = 0;
+            int found_items = 0;
 
-                for (ItemStack item : getContents()) {
-                    if (item != null && item.getType() == material.getMaterial()) {
-                        found_items += item.getAmount();
-                        if (found_items >= qty) break;
+            for (ItemStack item : getContents()) {
+                if (item != null && item.getType() == material.getMaterial()) {
+                    found_items += item.getAmount();
+                    if (found_items >= qty) {
+                        break;
                     }
                 }
-
-                return (found_items >= qty ? Element.TRUE.getAttribute(attribute.fulfill(attribs))
-                        : Element.FALSE.getAttribute(attribute.fulfill(attribs)));
             }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1439,29 +1455,34 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains any of the specified items.
         // -->
-        if (attribute.startsWith("contains_any")) {
-            if (attribute.hasContext(1)) {
-                int qty = 1;
-                int attribs = 1;
-
-                // <--[tag]
-                // @attribute <in@inventory.contains_any[<item>|...].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of any of the specified items.
-                // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
-                        && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
-                    qty = attribute.getIntContext(2);
-                    attribs = 2;
-                }
-
-                for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
-                    if (containsItem(item, qty))
-                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
-                }
-                return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+        if (attribute.startsWith("contains_any") && attribute.hasContext(1)) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
             }
+            int qty = 1;
+            int attribs = 1;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains_any[<item>|...].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of any of the specified items.
+            // -->
+            if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
+                    && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                qty = attribute.getIntContext(2);
+                attribs = 2;
+            }
+            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            if (!contains.isEmpty()) {
+                for (dItem item : contains) {
+                    if (containsItem(item, qty)) {
+                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                    }
+                }
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1470,29 +1491,34 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains all of the specified items.
         // -->
-        if (attribute.startsWith("contains")) {
-            if (attribute.hasContext(1)) {
-                int qty = 1;
-                int attribs = 1;
-
-                // <--[tag]
-                // @attribute <in@inventory.contains[<item>|...].quantity[<#>]>
-                // @returns Element(Boolean)
-                // @description
-                // Returns whether the inventory contains a certain quantity of all of the specified items.
-                // -->
-                if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
-                        && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
-                    qty = attribute.getIntContext(2);
-                    attribs = 2;
-                }
-
-                for (dItem item : dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry())) {
-                    if (!containsItem(item, qty))
-                        return Element.FALSE.getAttribute(attribute.fulfill(attribs));
-                }
-                return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+        if (attribute.startsWith("contains") && attribute.hasContext(1)) {
+            dList list = dList.valueOf(attribute.getContext(1));
+            if (list.isEmpty()) {
+                return null;
             }
+            int qty = 1;
+            int attribs = 1;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains[<item>|...].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of all of the specified items.
+            // -->
+            if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty"))
+                    && attribute.hasContext(2) && aH.matchesInteger(attribute.getContext(2))) {
+                qty = attribute.getIntContext(2);
+                attribs = 2;
+            }
+            List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
+            if (!contains.isEmpty()) {
+                for (dItem item : contains) {
+                    if (containsItem(item, qty)) {
+                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                    }
+                }
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1517,6 +1543,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                 && attribute.hasContext(2)
                 && dMaterial.matches(attribute.getContext(2))) {
             dMaterial material = dMaterial.valueOf(attribute.getContext(2));
+            if (material == null) {
+                return null;
+            }
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
                 if (inventory.getItem(i) != null && inventory.getItem(i).getType() == material.getMaterial()) {
@@ -1613,10 +1642,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("location")) {
             dLocation location = getLocation();
-            if (location != null)
-                return location.getAttribute(attribute.fulfill(1));
-            else
+            if (location == null) {
                 return null;
+            }
+            return location.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -1627,16 +1656,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         // one if specified, or the combined quantity of all itemstacks
         // if one is not.
         // -->
-        if (attribute.startsWith("quantity") || attribute.startsWith("qty"))
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Element(count(null, false))
-                        .getAttribute(attribute.fulfill(1));
+        if ((attribute.startsWith("quantity") || attribute.startsWith("qty"))
+                && attribute.hasContext(1)
+                && dItem.matches(attribute.getContext(1))) {
+            return new Element(count // TODO: Handle no-script-entry cases
+                    (dItem.valueOf(attribute.getContext(1),
+                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
+                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.stacks[<item>]>
@@ -1645,16 +1673,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not.
         // -->
-        if (attribute.startsWith("stacks"))
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1)))
-                return new Element(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
-                        .getAttribute(attribute.fulfill(1));
-            else
-                return new Element(count(null, true))
-                        .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("stacks") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+            return new Element(count // TODO: Handle no-script-entry cases
+                    (dItem.valueOf(attribute.getContext(1),
+                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
+                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.slot[<#>]>
@@ -1666,8 +1691,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 && attribute.hasContext(1)
                 && aH.matchesInteger(attribute.getContext(1))) {
             int slot = new Element(attribute.getContext(1)).asInt() - 1;
-            if (slot < 0) slot = 0;
-            if (slot > getInventory().getSize() - 1) slot = getInventory().getSize() - 1;
+            if (slot < 0) {
+                slot = 0;
+            }
+            else if (slot > getInventory().getSize() - 1) {
+                slot = getInventory().getSize() - 1;
+            }
             return new dItem(getInventory().getItem(slot))
                     .getAttribute(attribute.fulfill(1));
         }
@@ -1678,9 +1707,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns the type of the inventory (e.g. "PLAYER", "CRAFTING", "HORSE").
         // -->
-        if (attribute.startsWith("inventory_type"))
+        if (attribute.startsWith("inventory_type")) {
             return new Element(inventory instanceof HorseInventory ? "HORSE" : getInventory().getType().name())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <in@inventory.equipment>
@@ -1690,10 +1720,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("equipment")) {
             dList equipment = getEquipment();
-            if (equipment == null)
+            if (equipment == null) {
                 return null;
-            else
-                return equipment.getAttribute(attribute.fulfill(1));
+            }
+            return equipment.getAttribute(attribute.fulfill(1));
         }
 
         if (inventory instanceof CraftingInventory) {
@@ -1708,10 +1738,12 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (attribute.startsWith("matrix")) {
                 dList recipeList = new dList();
                 for (ItemStack item : craftingInventory.getMatrix()) {
-                    if (item != null)
+                    if (item != null) {
                         recipeList.add(new dItem(item).identify());
-                    else
+                    }
+                    else {
                         recipeList.add(new dItem(Material.AIR).identify());
+                    }
                 }
                 return recipeList.getAttribute(attribute.fulfill(1));
             }
@@ -1723,10 +1755,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             // Returns the dItem currently in the result section of a crafting inventory.
             // -->
             if (attribute.startsWith("result")) {
-                if (craftingInventory.getResult() != null)
-                    return new dItem(craftingInventory.getResult()).getAttribute(attribute.fulfill(1));
-                else
+                ItemStack result = craftingInventory.getResult();
+                if (result == null) {
                     return null;
+                }
+                return new dItem(result).getAttribute(attribute.fulfill(1));
             }
         }
 

@@ -530,8 +530,7 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
-                    .getAttribute(attribute.fulfill(2));
+            return Element.TRUE.getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -599,11 +598,15 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)))
                 x = attribute.getIntContext(1);
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(getName())) // TODO: UUID?
+            if (!PlayerTags.playerChatHistory.containsKey(getName())) { // TODO: UUID?
                 return null;
-            else
-                return new Element(PlayerTags.playerChatHistory.get(getName()).get(x - 1)) // TODO: UUID?
-                        .getAttribute(attribute.fulfill(1));
+            }
+            List<String> messages = PlayerTags.playerChatHistory.get(getName()); // TODO: UUID?
+            if (messages.size() < x || x < 1) {
+                return null;
+            }
+            return new Element(messages.get(x - 1))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -613,10 +616,8 @@ public class dPlayer implements dObject, Adjustable {
         // returns the specified flag from the player.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+        if (attribute.startsWith("flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
             if (attribute.getAttribute(2).equalsIgnoreCase("is_expired")
                     || attribute.startsWith("isexpired"))
                 return new Element(!FlagManager.playerHasFlag(this, flag_name))
@@ -639,10 +640,8 @@ public class dPlayer implements dObject, Adjustable {
         // returns true if the Player has the specified flag, otherwise returns false.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("has_flag")) {
-            String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
-            else return null;
+        if (attribute.startsWith("has_flag") && attribute.hasContext(1)) {
+            String flag_name = attribute.getContext(1);
             return new Element(FlagManager.playerHasFlag(this, flag_name)).getAttribute(attribute.fulfill(1));
         }
 
@@ -869,37 +868,16 @@ public class dPlayer implements dObject, Adjustable {
             return effects.getAttribute(attribute.fulfill(1));
         }
 
-        // <--[tag]
-        // @attribute <p@player.list>
-        // @returns dList(dPlayer)
-        // @description
-        // Returns all players that have ever played on the server, online or not.
-        // ** NOTE: This tag is old. Please instead use <server.list_players> **
-        // -->
         if (attribute.startsWith("list")) {
+            dB.echoError("DO NOT USE PLAYER.LIST AS A TAG, please use <server.list_online_players> and related tags!");
             List<String> players = new ArrayList<String>();
 
-            // <--[tag]
-            // @attribute <p@player.list.online>
-            // @returns dList(dPlayer)
-            // @description
-            // Returns all online players.
-            // **NOTE: This will only work if there is a player attached to the current script.
-            // If you need it anywhere else, use <server.list_online_players>**
-            // -->
             if (attribute.startsWith("list.online")) {
                 for (Player player : Bukkit.getOnlinePlayers())
                     players.add(player.getName());
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
 
-            // <--[tag]
-            // @attribute <p@player.list.offline>
-            // @returns dList(dPlayer)
-            // @description
-            // Returns all players that have ever played on the server, but are not currently online.
-            // ** NOTE: This tag is old. Please instead use <server.list_offline_players> **
-            // -->
             else if (attribute.startsWith("list.offline")) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!player.isOnline())
@@ -990,12 +968,12 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("first_played")) {
             attribute = attribute.fulfill(1);
-            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds"))
+            if (attribute.startsWith("milliseconds") || attribute.startsWith("in_milliseconds")) {
                 return new Element(getOfflinePlayer().getFirstPlayed())
                         .getAttribute(attribute.fulfill(1));
-            else
-                return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
-                        .getAttribute(attribute);
+            }
+            return new Duration(getOfflinePlayer().getFirstPlayed() / 50)
+                    .getAttribute(attribute);
         }
 
         // <--[tag]
@@ -1102,21 +1080,15 @@ public class dPlayer implements dObject, Adjustable {
                     return new Element(System.currentTimeMillis())
                             .getAttribute(attribute.fulfill(1));
                 }
-                else {
-                    return new Element(getOfflinePlayer().getLastPlayed())
-                            .getAttribute(attribute.fulfill(1));
-                }
+                return new Element(getOfflinePlayer().getLastPlayed())
+                        .getAttribute(attribute.fulfill(1));
             }
-            else {
-                if (isOnline()) {
-                    return new Duration(System.currentTimeMillis() / 50)
-                            .getAttribute(attribute);
-                }
-                else {
-                    return new Duration(getOfflinePlayer().getLastPlayed() / 50)
-                            .getAttribute(attribute);
-                }
+            if (isOnline()) {
+                return new Duration(System.currentTimeMillis() / 50)
+                        .getAttribute(attribute);
             }
+            return new Duration(getOfflinePlayer().getLastPlayed() / 50)
+                    .getAttribute(attribute);
         }
 
         // <--[tag]
@@ -1409,10 +1381,9 @@ public class dPlayer implements dObject, Adjustable {
         // '/npc select', null if no player selected.
         // -->
         if (attribute.startsWith("selected_npc")) {
-            if (getPlayerEntity().hasMetadata("selected"))
-                return getSelectedNPC()
-                        .getAttribute(attribute.fulfill(1));
-            else return null;
+            if (getPlayerEntity().hasMetadata("selected")) {
+                return getSelectedNPC().getAttribute(attribute.fulfill(1));
+            }
         }
 
 
@@ -1538,9 +1509,12 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // returns the location of the player's compass target.
         // -->
-        if (attribute.startsWith("compass_target"))
-            return new dLocation(getPlayerEntity().getCompassTarget())
-                    .getAttribute(attribute.fulfill(2));
+        if (attribute.startsWith("compass_target")) {
+            Location target = getPlayerEntity().getCompassTarget();
+            if (target != null) {
+                return new dLocation(target).getAttribute(attribute.fulfill(1));
+            }
+        }
 
         // <--[tag]
         // @attribute <p@player.chunk_loaded[<chunk>]>
@@ -1550,6 +1524,9 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("chunk_loaded") && attribute.hasContext(1)) {
             dChunk chunk = dChunk.valueOf(attribute.getContext(1));
+            if (chunk == null) {
+                return null;
+            }
             return new Element(hasChunkLoaded(chunk.chunk)).getAttribute(attribute.fulfill(1));
         }
 
