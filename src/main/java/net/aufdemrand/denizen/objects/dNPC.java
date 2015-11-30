@@ -143,9 +143,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public NPC getCitizen() {
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null) {
-            dB.echoError(new RuntimeException("StackTraceOutput"));
-            dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC. " +
-                    "Has this NPC been removed?");
+            //dB.echoError(new RuntimeException("StackTraceOutput"));
+            //dB.log("Uh oh! Denizen has encountered a NPE while trying to fetch an NPC. " +
+            //        "Has this NPC been removed?");
         }
         return npc;
     }
