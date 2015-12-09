@@ -622,7 +622,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
     // <context.cuboids> DEPRECATED.
-    // <context.location> returns a dLocation of the clicked entity.
+    // <context.location> returns a dLocation on the entity that was clicked.
     //
     // @Determine
     // "CANCELLED" to stop the click from happening.
