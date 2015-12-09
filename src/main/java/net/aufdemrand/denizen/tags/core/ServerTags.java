@@ -808,6 +808,21 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_banned_players>
+        // @returns dList(dPlayer)
+        // @description
+        // Returns a list of all banned players.
+        // -->
+        if (attribute.startsWith("list_banned_players")) {
+            dList banned = new dList();
+            for (OfflinePlayer player : Bukkit.getBannedPlayers()) {
+                banned.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            }
+            event.setReplaced(banned.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_ops>
         // @returns dList(dPlayer)
         // @description
