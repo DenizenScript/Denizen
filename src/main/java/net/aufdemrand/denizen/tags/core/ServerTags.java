@@ -830,8 +830,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_ops")) {
             dList players = new dList();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            for (OfflinePlayer player : Bukkit.getOperators()) {
+                players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -844,8 +845,11 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_online_ops")) {
             dList players = new dList();
-            for (Player player : Bukkit.getOnlinePlayers())
-                if (player.isOp()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            for (OfflinePlayer player : Bukkit.getOperators()) {
+                if (player.isOnline()) {
+                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                }
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
