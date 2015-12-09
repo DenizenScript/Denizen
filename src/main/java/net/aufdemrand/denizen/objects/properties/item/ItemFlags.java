@@ -98,7 +98,7 @@ public class ItemFlags implements Property {
             meta.removeItemFlags(ItemFlag.values());
             dList new_flags = mechanism.getValue().asType(dList.class);
             for (String str : new_flags) {
-                meta.addItemFlags(ItemFlag.valueOf(str));
+                meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
             }
             item.getItemStack().setItemMeta(meta);
         }
