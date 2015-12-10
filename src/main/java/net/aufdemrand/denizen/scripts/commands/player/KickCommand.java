@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class KickCommand extends AbstractCommand {
@@ -44,9 +42,9 @@ public class KickCommand extends AbstractCommand {
         Element reason = scriptEntry.getElement("reason");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
-        dB.report(scriptEntry, getName(),
-                (reason != null ? reason.debug() : "") +
-                        aH.debugObj("targets", targets));
+        dB.report(scriptEntry, getName()
+                aH.debugObj("targets", targets) +
+                        reason.debug());
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline()) {
