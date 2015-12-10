@@ -5,9 +5,7 @@ import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
 import net.aufdemrand.denizen.scripts.commands.npc.*;
 import net.aufdemrand.denizen.scripts.commands.player.*;
-import net.aufdemrand.denizen.scripts.commands.server.AnnounceCommand;
-import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
-import net.aufdemrand.denizen.scripts.commands.server.ScoreboardCommand;
+import net.aufdemrand.denizen.scripts.commands.server.*;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -352,6 +350,46 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(AttackCommand.class,
                 "ATTACK", "attack (<entity>|...) (target:<entity>/cancel)", 0);
+
+        // <--[command]
+        // @Name Ban
+        // Syntax ban ({ADD}/REMOVE) [<player>|...] reason:<text> duration:<duration>
+        // @Required 1
+        // @Stable stable
+        // @Short Ban or un-ban a player or list of players.
+        // @Author Fortifier42
+        // @Group server
+        // @Description
+        // Add or remove bans from the server, with optional arguments for a reason and duration of a temporary
+        // ban. By default will ban the specified player(s), and kick them from the server. You can set a reason for
+        // which the player(s) will be banned, along with a duration (if you wish to temporarily ban them). If a
+        // reason is not specified, it will default to "Banned.".  If a duration for the ban if not specified, they
+        // will be banned permanently.
+        // @Tags
+        // <p@player.is_banned>
+        // <p@player.ban_info.reason>
+        // <p@player.ban_info.expiration>
+        // <p@player.ban_info.created>
+
+        // @Usage
+        // Use to ban a player.
+        // - ban p@mcmonkey4eva
+
+        // @Usage
+        // Use to ban a list of players with a reason.
+        // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes."
+
+        // @Usage
+        // Use to ban a list of players for 10 minutes with a reason.
+        // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes." duration:10m
+
+        // @Usage
+        // Use to unban a list of players.
+        // - ban remove p@mcmonkey4eva|p@Morphan1
+
+        // -->
+        registerCoreMember(BanCommand.class,
+                "BAN", "ban ({ADD}/REMOVE) [<player>|...] (reason:<text>) (duration:<duration>)", 1);
 
 
         // <--[command]
@@ -1524,6 +1562,31 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
 
+        // <--[command]
+        // @Name kick
+        // @Syntax kick [<player>|...] (reason:<text>)
+        // @Required 1
+        // @Stable stable
+        // @Short Kicks a player from the server.
+        // @Author Fortifier42
+        // @Group player
+        // @Description
+        // Kick a player or a list of players from the server and optionally specify a reason.
+        // If no reason is specified it defaults to "Kicked."
+        // @Tags
+        // None
+        // @Usage
+        // Use to kick the player with the default reason.
+        // - kick <player>
+        // @Usage
+        // Use to kick the player with a reason.
+        // - kick <player> "reason:Because I can."
+        // @Usage
+        // Use to kick another player with a reason.
+        // - kick p@mcmonkey4eva "reason:Because I can."
+        // -->
+        registerCoreMember(KickCommand.class,
+                "KICK", "kick [<player>|...] (reason:<text>)", 1);
 
         // <--[command]
         // @Name Leash

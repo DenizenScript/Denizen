@@ -96,7 +96,7 @@ public class EntityColor implements Property {
     // Where color is:
     // BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
     // and where style is:
-    // WHITE, WHITE_DOTS, WHITE_FIELD, BLACK_DOTS, or NONE.
+    // WHITE, WHITE_DOTS, WHITEFIELD, BLACK_DOTS, or NONE.
     // and where variant is:
     // DONKEY, MULE, SKELETON_HORSE, UNDEAD_HORSE, or HORSE.
     // -->
