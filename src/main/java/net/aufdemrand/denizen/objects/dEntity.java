@@ -2135,6 +2135,24 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.target>
+        // @returns dEntity
+        // @group attributes
+        // @description
+        // Returns the target entity of the creature, if any.
+        // Note: use <n@npc.navigator.target_entity> for NPC's.
+        // -->
+        if (attribute.startsWith("target")) {
+            if (getBukkitEntity() instanceof Creature) {
+                dEntity target = new dEntity(((Creature) getLivingEntity()).getTarget());
+                if (target != null) {
+                    return target.getAttribute(attribute.fulfill(1));
+                }
+            }
+            return null;
+        }
+
+        // <--[tag]
         // @attribute <e@entity.time_lived>
         // @returns Duration
         // @group attributes
