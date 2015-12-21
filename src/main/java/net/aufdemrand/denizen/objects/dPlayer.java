@@ -1030,9 +1030,13 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // returns whether the player is banned.
         // -->
-        if (attribute.startsWith("is_banned"))
-            return new Element(getOfflinePlayer().isBanned())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("is_banned")) {
+            BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
+            if (ban != null && ban.getExpiration().after(new Date())) {
+                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            }
+            return Element.FALSE.getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <p@player.is_online>
@@ -1111,6 +1115,48 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             return list.getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("ban_info")) {
+            attribute.fulfill(1);
+            BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
+            if (ban == null) {
+                return null;
+            }
+            else if (ban.getExpiration().before(new Date())) {
+                return null;
+            }
+            // <--[tag]
+            // @attribute <p@player.ban_info.expiration>
+            // returns Duration
+            // description
+            // returns the expiration of the player's ban, if they are banned.
+            // -->
+            if (attribute.startsWith("expiration")) {
+                return new Duration(ban.getExpiration().getTime() / 50)
+                        .getAttribute(attribute.fulfill(1));
+            }
+            // <--[tag]
+            // @attribute <p@player.ban_info.reason>
+            // returns Element
+            // description
+            // returns the reason for the player's ban, if they are banned.
+            // -->
+            else if (attribute.startsWith("reason")) {
+                return new Element(ban.getReason())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            // <--[tag]
+            // @attribute <p@player.ban_info.created>
+            // returns Duration
+            // description
+            // returns when the player's ban was created, if they are banned.
+            // -->
+            else if (attribute.startsWith("created")) {
+                return new Duration(ban.getCreated().getTime() / 50)
+                        .getAttribute(attribute.fulfill(1));
+            }
+            return null;
         }
 
         // <--[tag]
@@ -2571,6 +2617,17 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
             getPlayerEntity().setOp(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name is_banned
+        // @input Element(Boolean)
+        // @description
+        // Set whether the player is banned or not.
+        // -->
+        if (mechanism.matches("is_banned") && mechanism.requireBoolean()) {
+            getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms

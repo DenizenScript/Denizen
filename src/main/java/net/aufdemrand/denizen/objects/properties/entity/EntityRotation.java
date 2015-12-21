@@ -15,7 +15,6 @@ public class EntityRotation implements Property {
 
     public static boolean describes(dObject entity) {
         if (!(entity instanceof dEntity)) return false;
-        // Check if the entity is a Villager, the only EntityType that can be a Professional
         return ((dEntity) entity).getBukkitEntityType() == EntityType.PAINTING
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }

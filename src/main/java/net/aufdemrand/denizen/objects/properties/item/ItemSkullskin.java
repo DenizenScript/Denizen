@@ -194,7 +194,9 @@ public class ItemSkullskin implements Property {
                 return gameProfile1;
             }
         } catch (Exception e) {
-            dB.echoError(e);
+            if (dB.verbose) {
+                dB.echoError(e);
+            }
         }
         return null;
     }

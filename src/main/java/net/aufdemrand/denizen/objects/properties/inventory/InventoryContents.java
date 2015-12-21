@@ -63,6 +63,7 @@ public class InventoryContents implements Property {
         if (inventory.getInventory() == null)
             return null;
         dList contents = new dList();
+        lore = ChatColor.stripColor(lore);
         for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 if (item.hasItemMeta() && item.getItemMeta().hasLore()) {

@@ -47,8 +47,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     public static EntityCombustsScriptEvent instance;
     public dEntity entity;
-    public Duration duration;
-    private Integer burntime;
+    private int burntime;
     public EntityCombustEvent event;
 
     @Override
@@ -99,7 +98,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
             return entity;
         }
         else if (name.equals("duration")) {
-            return duration;
+            return new Duration(burntime);
         }
         return super.getContext(name);
     }
@@ -107,7 +106,7 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler(ignoreCancelled = true)
     public void onEntityCombusts(EntityCombustEvent event) {
         entity = new dEntity(event.getEntity());
-        duration = new Duration(event.getDuration());
+        burntime = event.getDuration();
         cancelled = event.isCancelled();
         this.event = event;
         fire();
