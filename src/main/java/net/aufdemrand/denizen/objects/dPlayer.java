@@ -1128,8 +1128,8 @@ public class dPlayer implements dObject, Adjustable {
             }
             // <--[tag]
             // @attribute <p@player.ban_info.expiration>
-            // returns Duration
-            // description
+            // @returns Duration
+            // @description
             // returns the expiration of the player's ban, if they are banned.
             // -->
             if (attribute.startsWith("expiration")) {
@@ -1138,8 +1138,8 @@ public class dPlayer implements dObject, Adjustable {
             }
             // <--[tag]
             // @attribute <p@player.ban_info.reason>
-            // returns Element
-            // description
+            // @returns Element
+            // @description
             // returns the reason for the player's ban, if they are banned.
             // -->
             else if (attribute.startsWith("reason")) {
@@ -1148,8 +1148,8 @@ public class dPlayer implements dObject, Adjustable {
             }
             // <--[tag]
             // @attribute <p@player.ban_info.created>
-            // returns Duration
-            // description
+            // @returns Duration
+            // @description
             // returns when the player's ban was created, if they are banned.
             // -->
             else if (attribute.startsWith("created")) {
