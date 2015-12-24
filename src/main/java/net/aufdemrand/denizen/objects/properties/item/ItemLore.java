@@ -41,7 +41,9 @@ public class ItemLore implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // deprecated in favor of .escape_contents
         if (attribute.startsWith("lore.escaped")) {

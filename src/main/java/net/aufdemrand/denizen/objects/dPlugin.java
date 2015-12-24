@@ -215,7 +215,9 @@ public class dPlugin implements dObject {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));

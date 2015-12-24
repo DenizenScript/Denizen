@@ -502,11 +502,14 @@ public class dPlayer implements dObject, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null)
-            return "null";
-
-        if (offlinePlayer == null)
+        if (attribute == null) {
             return null;
+        }
+
+
+        if (offlinePlayer == null) {
+            return null;
+        }
 
         /////////////////////
         //   OFFLINE ATTRIBUTES

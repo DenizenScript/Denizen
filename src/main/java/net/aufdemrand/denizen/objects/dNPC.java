@@ -406,7 +406,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // Defined in dEntity
         if (attribute.startsWith("is_npc")) {
