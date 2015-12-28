@@ -64,8 +64,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as boots, or null
-        // if none.
+        // returns the item the entity is wearing as boots.
         // -->
         if (attribute.startsWith("equipment.boots")) {
             if (entity.getLivingEntity().getEquipment().getBoots() != null) {
@@ -83,8 +82,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as a chestplate, or null
-        // if none.
+        // returns the item the entity is wearing as a chestplate.
         // -->
         else if (attribute.startsWith("equipment.chestplate") ||
                 attribute.startsWith("equipment.chest")) {
@@ -103,8 +101,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as a helmet, or null
-        // if none.
+        // returns the item the entity is wearing as a helmet.
         // -->
         else if (attribute.startsWith("equipment.helmet") ||
                 attribute.startsWith("equipment.head")) {
@@ -123,8 +120,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as leggings, or null
-        // if none.
+        // returns the item the entity is wearing as leggings.
         // -->
         else if (attribute.startsWith("equipment.leggings") ||
                 attribute.startsWith("equipment.legs")) {
