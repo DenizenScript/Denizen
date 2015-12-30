@@ -2986,7 +2986,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.item_in_hand>
         // <p@player.money>
         // @Usage
-        // TODO: Document Command Details
+        // Use to take money from the player.
+        // - take money qty:10
+        // @Usage
+        // Use to take an arrow from the player's enderchest.
+        // - take arrow quantity:1 from:<player.enderchest>
+        // @Usage
+        // Use to take an item from the player's hand.
+        // - take <player.item_in_hand> quantity:1
         // -->
         registerCoreMember(TakeCommand.class,
                 "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
