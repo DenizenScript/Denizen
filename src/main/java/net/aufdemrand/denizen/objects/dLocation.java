@@ -441,7 +441,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location at the center of the block this location is on.
         // -->
         if (attribute.startsWith("center")) {
-            return new dLocation(getWorld(), getBlockX() + 0.5, getBlockY(), getBlockZ() + 0.5)
+            return new dLocation(getWorld(), getBlockX() + 0.5, getBlockY() + 0.5, getBlockZ() + 0.5)
                     .getAttribute(attribute.fulfill(1));
         }
 
