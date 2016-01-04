@@ -23,8 +23,12 @@ public class ItemBaseColor implements Property {
     }
 
     public static ItemBaseColor getFrom(dObject item) {
-        if (!describes(item)) return null;
-        else return new ItemBaseColor((dItem) item);
+        if (!describes(item)) {
+            return null;
+        }
+        else {
+            return new ItemBaseColor((dItem) item);
+        }
     }
 
 

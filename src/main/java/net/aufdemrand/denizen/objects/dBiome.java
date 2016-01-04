@@ -30,8 +30,9 @@ public class dBiome implements dObject, Adjustable {
     @Fetchable("b")
     public static dBiome valueOf(String string, TagContext context) {
 
-        if (string.startsWith("b@"))
+        if (string.startsWith("b@")) {
             string = string.substring(2);
+        }
 
         for (Biome biome : Biome.values()) {
             if (biome.name().equalsIgnoreCase(string)) {
@@ -50,8 +51,9 @@ public class dBiome implements dObject, Adjustable {
      */
     public static boolean matches(String arg) {
 
-        if (arg.startsWith("b@"))
+        if (arg.startsWith("b@")) {
             arg = arg.substring(2);
+        }
 
         for (Biome b : Biome.values()) {
             if (b.name().equalsIgnoreCase(arg)) {
@@ -116,8 +118,9 @@ public class dBiome implements dObject, Adjustable {
 
     @Override
     public dObject setPrefix(String prefix) {
-        if (prefix != null)
+        if (prefix != null) {
             this.prefix = prefix;
+        }
         return this;
     }
 
@@ -187,38 +190,42 @@ public class dBiome implements dObject, Adjustable {
                 // Returns the entities that spawn naturally in ambient locations.
                 // Default examples: BAT
                 // -->
-                if (attribute.startsWith("ambient"))
+                if (attribute.startsWith("ambient")) {
                     entityTypes = biome.getAmbientEntities();
+                }
 
-                    // <--[tag]
-                    // @attribute <b@biome.spawnable_entities.creatures>
-                    // @returns dList(dEntity)
-                    // @description
-                    // Returns the entities that spawn naturally in creature locations.
-                    // Default examples: PIG, COW, CHICKEN...
-                    // -->
-                else if (attribute.startsWith("creatures"))
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.creatures>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in creature locations.
+                // Default examples: PIG, COW, CHICKEN...
+                // -->
+                else if (attribute.startsWith("creatures")) {
                     entityTypes = biome.getCreatureEntities();
+                }
 
-                    // <--[tag]
-                    // @attribute <b@biome.spawnable_entities.monsters>
-                    // @returns dList(dEntity)
-                    // @description
-                    // Returns the entities that spawn naturally in monster locations.
-                    // Default examples: CREEPER, ZOMBIE, SKELETON...
-                    // -->
-                else if (attribute.startsWith("monsters"))
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.monsters>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in monster locations.
+                // Default examples: CREEPER, ZOMBIE, SKELETON...
+                // -->
+                else if (attribute.startsWith("monsters")) {
                     entityTypes = biome.getMonsterEntities();
+                }
 
-                    // <--[tag]
-                    // @attribute <b@biome.spawnable_entities.water>
-                    // @returns dList(dEntity)
-                    // @description
-                    // Returns the entities that spawn naturally in underwater locations.
-                    // Default examples: SQUID
-                    // -->
-                else if (attribute.startsWith("water"))
+                // <--[tag]
+                // @attribute <b@biome.spawnable_entities.water>
+                // @returns dList(dEntity)
+                // @description
+                // Returns the entities that spawn naturally in underwater locations.
+                // Default examples: SQUID
+                // -->
+                else if (attribute.startsWith("water")) {
                     entityTypes = biome.getWaterEntities();
+                }
 
                 else {
                     entityTypes = biome.getAllEntities();
@@ -245,7 +252,9 @@ public class dBiome implements dObject, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));

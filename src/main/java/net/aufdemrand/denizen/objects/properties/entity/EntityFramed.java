@@ -22,8 +22,12 @@ public class EntityFramed implements Property {
     }
 
     public static EntityFramed getFrom(dObject entity) {
-        if (!describes(entity)) return null;
-        else return new EntityFramed((dEntity) entity);
+        if (!describes(entity)) {
+            return null;
+        }
+        else {
+            return new EntityFramed((dEntity) entity);
+        }
     }
 
 
@@ -61,12 +65,14 @@ public class EntityFramed implements Property {
 
     @Override
     public String getPropertyString() {
-        if (hasItem())
+        if (hasItem()) {
             return getItem().identify()
                     + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
                     : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override
@@ -94,9 +100,10 @@ public class EntityFramed implements Property {
         // @description
         // If the entity is an item frame, returns the rotation of the material currently framed.
         // -->
-        if (attribute.startsWith("framed_item_rotation"))
+        if (attribute.startsWith("framed_item_rotation")) {
             return new Element(getItemFrameEntity().getRotation().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.framed_item>
@@ -106,9 +113,10 @@ public class EntityFramed implements Property {
         // @description
         // If the entity is an item frame, returns the material currently framed.
         // -->
-        if (attribute.startsWith("framed_item"))
+        if (attribute.startsWith("framed_item")) {
             return getItem()
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.has_framed_item>
@@ -118,9 +126,10 @@ public class EntityFramed implements Property {
         // @description
         // If the entity is an item frame, returns whether the frame has an item in it.
         // -->
-        if (attribute.startsWith("has_framed_item"))
+        if (attribute.startsWith("has_framed_item")) {
             return new Element(hasItem())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -149,13 +158,15 @@ public class EntityFramed implements Property {
                 dB.echoError("Missing value for 'framed' mechanism!");
                 return;
             }
-            if (new Element(list.get(0)).matchesType(dItem.class))
+            if (new Element(list.get(0)).matchesType(dItem.class)) {
                 setItem(new Element(list.get(0)).asType(dItem.class));
+            }
             else {
                 dB.echoError("Invalid item '" + list.get(0) + "'");
             }
-            if (list.size() > 1 && new Element(list.get(1)).matchesEnum(Rotation.values()))
+            if (list.size() > 1 && new Element(list.get(1)).matchesEnum(Rotation.values())) {
                 getItemFrameEntity().setRotation(Rotation.valueOf(list.get(1).toUpperCase()));
+            }
         }
 
     }

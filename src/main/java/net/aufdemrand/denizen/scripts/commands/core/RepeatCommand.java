@@ -60,8 +60,9 @@ public class RepeatCommand extends BracedCommand {
             }
         }
 
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback")) {
             throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
+        }
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
 

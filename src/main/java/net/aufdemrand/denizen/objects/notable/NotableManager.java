@@ -54,15 +54,19 @@ public class NotableManager {
 
 
     public static Notable getSavedObject(String id) {
-        if (notableObjects.containsKey(id.toLowerCase()))
+        if (notableObjects.containsKey(id.toLowerCase())) {
             return notableObjects.get(id.toLowerCase());
-        else return null;
+        }
+        else {
+            return null;
+        }
     }
 
 
     public static String getSavedId(Notable object) {
-        if (reverseObjects.containsKey(object))
+        if (reverseObjects.containsKey(object)) {
             return reverseObjects.get(object);
+        }
         return null;
     }
 
@@ -73,7 +77,9 @@ public class NotableManager {
 
 
     public static void saveAs(Notable object, String id) {
-        if (object == null) return;
+        if (object == null) {
+            return;
+        }
         notableObjects.put(id.toLowerCase(), object);
         reverseObjects.put(object, id.toLowerCase());
         typeTracker.put(id.toLowerCase(), object.getClass());
@@ -98,8 +104,9 @@ public class NotableManager {
         List<T> objects = new ArrayList<T>();
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
             // dB.log(notable.toString());
-            if (isType(notable.getKey(), type))
+            if (isType(notable.getKey(), type)) {
                 objects.add((T) notable.getValue());
+            }
         }
 
         return objects;
@@ -122,8 +129,9 @@ public class NotableManager {
             ConfigurationSection section = DenizenAPI.getCurrentInstance().notableManager().getNotables()
                     .getConfigurationSection(key);
 
-            if (section == null)
+            if (section == null) {
                 continue;
+            }
 
             for (String notable : section.getKeys(false)) {
                 Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
@@ -164,9 +172,11 @@ public class NotableManager {
     }
 
     private static <T extends Notable> Class<T> getClass(Notable notable) {
-        for (Class clazz : objects.keySet())
-            if (clazz.isInstance(notable))
+        for (Class clazz : objects.keySet()) {
+            if (clazz.isInstance(notable)) {
                 return clazz;
+            }
+        }
         return null;
     }
 
@@ -215,12 +225,13 @@ public class NotableManager {
     private static Map<String, Class> reverse_objects = new HashMap<String, Class>();
 
     public static void registerWithNotableManager(Class notable) {
-        for (Method method : notable.getMethods())
+        for (Method method : notable.getMethods()) {
             if (method.isAnnotationPresent(Note.class)) {
                 String note = method.getAnnotation(Note.class).value();
                 objects.put(notable, note);
                 reverse_objects.put(note, notable);
             }
+        }
     }
 
     public static boolean canFetch(Class notable) {
@@ -228,10 +239,12 @@ public class NotableManager {
     }
 
     public static String getClassId(Class notable) {
-        if (canFetch(notable))
+        if (canFetch(notable)) {
             return objects.get(notable);
-        else
+        }
+        else {
             return null;
+        }
     }
 
     public static Map<String, Class> getReverseClassIdMap() {

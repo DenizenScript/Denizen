@@ -20,16 +20,18 @@ public class PermissionRequirement extends AbstractRequirement {
                 boolean global = false;
 
                 for (String arg : args) {
-                    if (aH.matchesArg("GLOBAL", arg))
+                    if (aH.matchesArg("GLOBAL", arg)) {
                         global = true;
+                    }
                     else {
                         if (global) {
                             if (Depends.permissions.has((World) null, context.getPlayer().getName(), arg)) {
                                 dB.echoDebug(context.getScriptContainer(), "...player has global permission: " + arg);
                                 outcome = true;
                             }
-                            else
+                            else {
                                 dB.echoDebug(context.getScriptContainer(), "...player does not have global permission: " + arg);
+                            }
                         }
                         else {
                             if (Depends.permissions.has(context.getPlayer().getPlayerEntity(), arg)) {

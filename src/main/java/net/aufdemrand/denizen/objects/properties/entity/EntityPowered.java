@@ -16,9 +16,13 @@ public class EntityPowered implements Property {
     }
 
     public static EntityPowered getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityPowered((dEntity) entity);
+        else {
+            return new EntityPowered((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -36,7 +40,9 @@ public class EntityPowered implements Property {
     }
 
     private void setPowered(boolean power) {
-        if (powered == null) return;
+        if (powered == null) {
+            return;
+        }
 
         ((Creeper) (powered.getBukkitEntity())).setPowered(power);
     }
@@ -47,10 +53,12 @@ public class EntityPowered implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!getPowered())
+        if (!getPowered()) {
             return null;
-        else
+        }
+        else {
             return "true";
+        }
     }
 
     @Override
@@ -77,9 +85,10 @@ public class EntityPowered implements Property {
         // @description
         // If the entity is a creeper, returns whether the creeper is powered.
         // -->
-        if (attribute.startsWith("powered"))
+        if (attribute.startsWith("powered")) {
             return new Element(getPowered())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

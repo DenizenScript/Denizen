@@ -63,7 +63,9 @@ public class ServerTags implements Listener {
     // -->
     @TagManager.TagEvents
     public void mathTag(ReplaceableTagEvent event) {
-        if (!event.matches("math", "m")) return;
+        if (!event.matches("math", "m")) {
+            return;
+        }
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
@@ -86,10 +88,14 @@ public class ServerTags implements Listener {
     // -->
     @TagManager.TagEvents
     public void ternaryTag(ReplaceableTagEvent event) {
-        if (!event.matches("ternary", "tern", "t")) return;
+        if (!event.matches("ternary", "tern", "t")) {
+            return;
+        }
 
         // Fallback if nothing to evaluate
-        if (!event.hasNameContext()) return;
+        if (!event.hasNameContext()) {
+            return;
+        }
 
         // Check evaluation. A result of 'true' will return the value. Anything else
         // will result in the fallback.
@@ -102,7 +108,9 @@ public class ServerTags implements Listener {
 
     @TagManager.TagEvents
     public void serverTag(ReplaceableTagEvent event) {
-        if (!event.matches("server", "svr", "global") || event.replaced()) return;
+        if (!event.matches("server", "svr", "global") || event.replaced()) {
+            return;
+        }
         Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
@@ -136,7 +144,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            if (attribute.hasContext(1)) {
+                flag_name = attribute.getContext(1);
+            }
             else {
                 event.setReplaced("null");
                 return;
@@ -153,7 +163,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
-            if (attribute.hasContext(1)) flag_name = attribute.getContext(1);
+            if (attribute.hasContext(1)) {
+                flag_name = attribute.getContext(1);
+            }
             else {
                 event.setReplaced("null");
                 return;
@@ -188,8 +200,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_materials")) {
             dList allMats = new dList();
-            for (Material mat : Material.values())
+            for (Material mat : Material.values()) {
                 allMats.add(mat.name());
+            }
             event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
         }
 
@@ -209,9 +222,11 @@ public class ServerTags implements Listener {
                 if (search.startsWith("regex:")) {
                     try {
                         Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags)
-                            if (pattern.matcher(flag).matches())
+                        for (String flag : allFlags) {
+                            if (pattern.matcher(flag).matches()) {
                                 searchFlags.add(flag);
+                            }
+                        }
                     }
                     catch (Exception e) {
                         dB.echoError(e);
@@ -219,9 +234,11 @@ public class ServerTags implements Listener {
                 }
                 else {
                     search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags)
-                        if (flag.toLowerCase().contains(search))
+                    for (String flag : allFlags) {
+                        if (flag.toLowerCase().contains(search)) {
                             searchFlags.add(flag);
+                        }
+                    }
                 }
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
@@ -364,8 +381,9 @@ public class ServerTags implements Listener {
                 }
                 if (EventsTwo != null) {
                     for (WorldScriptContainer script : EventsTwo) {
-                        if (!list.contains("s@" + script.getName()))
+                        if (!list.contains("s@" + script.getName())) {
                             list.add("s@" + script.getName());
+                        }
                     }
                 }
                 event.setReplaced(list.getAttribute(attribute.fulfill(1)));
@@ -381,10 +399,12 @@ public class ServerTags implements Listener {
         if (attribute.startsWith("selected_npc")) {
             NPC npc = ((Citizens) Bukkit.getPluginManager().getPlugin("Citizens"))
                     .getNPCSelector().getSelected(Bukkit.getConsoleSender());
-            if (npc == null)
+            if (npc == null) {
                 return;
-            else
+            }
+            else {
                 event.setReplaced(new dNPC(npc).getAttribute(attribute.fulfill(1)));
+            }
             return;
         }
 
@@ -396,9 +416,11 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("get_npcs_named") && Depends.citizens != null && attribute.hasContext(1)) {
             dList npcs = new dList();
-            for (NPC npc : CitizensAPI.getNPCRegistry())
-                if (npc.getName().equalsIgnoreCase(attribute.getContext(1)))
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                if (npc.getName().equalsIgnoreCase(attribute.getContext(1))) {
                     npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+                }
+            }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -549,8 +571,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_plugin_names")) {
             dList plugins = new dList();
-            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
+            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
                 plugins.add(plugin.getName());
+            }
             event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -563,8 +586,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_scripts")) {
             dList scripts = new dList();
-            for (String str : ScriptRegistry._getScriptNames())
+            for (String str : ScriptRegistry._getScriptNames()) {
                 scripts.add("s@" + str);
+            }
             event.setReplaced(scripts.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -641,8 +665,9 @@ public class ServerTags implements Listener {
                 dList npcs = new dList();
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()
-                            && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName()))
+                            && npc.getTrait(AssignmentTrait.class).getAssignment().getName().equalsIgnoreCase(script.getName())) {
                         npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+                    }
                 }
                 event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
                 return;
@@ -660,8 +685,9 @@ public class ServerTags implements Listener {
             String flag = attribute.getContext(1);
             dList players = new dList();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0)
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(player), flag).size() > 0) {
                     players.add(new dPlayer(player).identify());
+                }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
@@ -678,8 +704,9 @@ public class ServerTags implements Listener {
             String flag = attribute.getContext(1);
             dList players = new dList();
             for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0)
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0) {
                     players.add(new dPlayer(entry.getValue()).identify());
+                }
             }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
@@ -697,8 +724,9 @@ public class ServerTags implements Listener {
             dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
-                if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag))
+                if (dNpc.isSpawned() && FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.add(dNpc.identify());
+                }
             }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
@@ -716,8 +744,9 @@ public class ServerTags implements Listener {
             dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 dNPC dNpc = dNPC.mirrorCitizensNPC(npc);
-                if (FlagManager.npcHasFlag(dNpc, flag))
+                if (FlagManager.npcHasFlag(dNpc, flag)) {
                     npcs.add(dNpc.identify());
+                }
             }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
@@ -731,8 +760,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_npcs") && Depends.citizens != null) {
             dList npcs = new dList();
-            for (NPC npc : CitizensAPI.getNPCRegistry())
+            for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 npcs.add(dNPC.mirrorCitizensNPC(npc).identify());
+            }
             event.setReplaced(npcs.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -745,8 +775,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_worlds")) {
             dList worlds = new dList();
-            for (World world : Bukkit.getWorlds())
+            for (World world : Bukkit.getWorlds()) {
                 worlds.add(dWorld.mirrorBukkitWorld(world).identify());
+            }
             event.setReplaced(worlds.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -759,8 +790,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_plugins")) {
             dList plugins = new dList();
-            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins())
+            for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
                 plugins.add(new dPlugin(plugin).identify());
+            }
             event.setReplaced(plugins.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -773,8 +805,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_players")) {
             dList players = new dList();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -787,8 +820,9 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_online_players")) {
             dList players = new dList();
-            for (Player player : Bukkit.getOnlinePlayers())
+            for (Player player : Bukkit.getOnlinePlayers()) {
                 players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -801,8 +835,11 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_offline_players")) {
             dList players = new dList();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (!player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                if (!player.isOnline()) {
+                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                }
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -862,8 +899,11 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("list_offline_ops")) {
             dList players = new dList();
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers())
-                if (player.isOp() && !player.isOnline()) players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+                if (player.isOp() && !player.isOnline()) {
+                    players.add(dPlayer.mirrorBukkitPlayer(player).identify());
+                }
+            }
             event.setReplaced(players.getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -1051,7 +1091,8 @@ public class ServerTags implements Listener {
             System.gc();
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
     }
 }

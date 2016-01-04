@@ -13,14 +13,18 @@ import org.bukkit.entity.Wolf;
 public class EntityAngry implements Property {
 
     public static boolean describes(dObject entity) {
-            return entity instanceof dEntity && (((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
-                    || ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
+        return entity instanceof dEntity && (((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
+                || ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE);
     }
 
     public static EntityAngry getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityAngry((dEntity) entity);
+        else {
+            return new EntityAngry((dEntity) entity);
+        }
     }
 
     ///////////////////

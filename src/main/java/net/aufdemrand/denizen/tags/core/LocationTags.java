@@ -18,7 +18,9 @@ public class LocationTags implements Listener {
     @TagManager.TagEvents
     public void locationTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("location", "l") || event.replaced()) return;
+        if (!event.matches("location", "l") || event.replaced()) {
+            return;
+        }
 
         // Stage the location
         dLocation loc = null;
@@ -26,10 +28,12 @@ public class LocationTags implements Listener {
         // Check name context for a specified location, or check
         // the ScriptEntry for a 'location' context
         String context = event.getNameContext();
-        if (event.hasNameContext() && dLocation.matches(context))
+        if (event.hasNameContext() && dLocation.matches(context)) {
             loc = dLocation.valueOf(context);
-        else if (event.getScriptEntry().hasObject("location"))
+        }
+        else if (event.getScriptEntry().hasObject("location")) {
             loc = (dLocation) event.getScriptEntry().getObject("location");
+        }
 
         // Check if location is null, return null if it is
         if (loc == null) {

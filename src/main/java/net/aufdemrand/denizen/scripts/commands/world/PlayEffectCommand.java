@@ -136,7 +136,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     else {
                         dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
                     }
-                    Element dataId = new Element(split.length <= 1 ? "0": split[1]);
+                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
                     scriptEntry.addObject("iconcrack_data", dataId);
                     scriptEntry.addObject("iconcrack_type", new Element("iconcrack"));
                 }
@@ -210,8 +210,9 @@ public class PlayEffectCommand extends AbstractCommand {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Use default values if necessary
@@ -227,11 +228,13 @@ public class PlayEffectCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("effect") &&
                 !scriptEntry.hasObject("particleeffect") &&
-                !scriptEntry.hasObject("iconcrack"))
+                !scriptEntry.hasObject("iconcrack")) {
             throw new InvalidArgumentsException("Missing effect argument!");
+        }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
     }
 
     @Override
@@ -253,7 +256,7 @@ public class PlayEffectCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
                 particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
-                        iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug(): "")) +
+                        iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
                 aH.debugObj("locations", locations.toString()) +
                 (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
                 radius.debug() +
@@ -269,9 +272,11 @@ public class PlayEffectCommand extends AbstractCommand {
             if (effect != null) {
                 for (int n = 0; n < qty.asInt(); n++) {
                     if (targets != null) {
-                        for (dPlayer player : targets)
-                            if (player.isValid() && player.isOnline())
+                        for (dPlayer player : targets) {
+                            if (player.isValid() && player.isOnline()) {
                                 player.getPlayerEntity().playEffect(location, effect, data.asInt());
+                            }
+                        }
                     }
                     else {
                         location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
@@ -294,8 +299,11 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    for (dPlayer player : targets)
-                        if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
+                    for (dPlayer player : targets) {
+                        if (player.isValid() && player.isOnline()) {
+                            players.add(player.getPlayerEntity());
+                        }
+                    }
                 }
                 PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, true, (float) location.getX(),
                         (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt());
@@ -319,8 +327,11 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 else {
-                    for (dPlayer player : targets)
-                        if (player.isValid() && player.isOnline()) players.add(player.getPlayerEntity());
+                    for (dPlayer player : targets) {
+                        if (player.isValid() && player.isOnline()) {
+                            players.add(player.getPlayerEntity());
+                        }
+                    }
                 }
                 PacketPlayOutWorldParticles o;
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {

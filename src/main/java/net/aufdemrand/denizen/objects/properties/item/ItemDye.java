@@ -21,8 +21,12 @@ public class ItemDye implements Property {
     }
 
     public static ItemDye getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemDye((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemDye((dItem) _item);
+        }
     }
 
     private ItemDye(dItem _item) {

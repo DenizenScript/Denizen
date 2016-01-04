@@ -20,28 +20,36 @@ public class TextTags implements Listener {
     public void foreignCharacterTags(ReplaceableTagEvent event) {
 
 
-        if (!event.getName().startsWith("&")) return;
+        if (!event.getName().startsWith("&")) {
+            return;
+        }
         Attribute attribute = event.getAttributes();
 
         // TODO: Handle case-sensitivity stuff better here!
 
-        if (event.getName().equals("&auml"))
+        if (event.getName().equals("&auml")) {
             event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
+        }
 
-        else if (event.getName().equals("&Auml"))
+        else if (event.getName().equals("&Auml")) {
             event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
+        }
 
-        else if (event.getName().equals("&ouml"))
+        else if (event.getName().equals("&ouml")) {
             event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
+        }
 
-        else if (event.getName().equals("&Ouml"))
+        else if (event.getName().equals("&Ouml")) {
             event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
+        }
 
-        else if (event.getName().equals("&uuml"))
+        else if (event.getName().equals("&uuml")) {
             event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
+        }
 
-        else if (event.getName().equals("&Uuml"))
+        else if (event.getName().equals("&Uuml")) {
             event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
+        }
 
     }
 
@@ -364,11 +372,15 @@ public class TextTags implements Listener {
         Attribute attribute = event.getAttributes();
         int i = 0;
         for (ChatColor color : ChatColor.values()) {
-            if (i > 22) break;
-            if (event.matches(color.name()))
+            if (i > 22) {
+                break;
+            }
+            if (event.matches(color.name())) {
                 event.setReplaced(new Element(color.toString()).getAttribute(attribute.fulfill(1)));
-            else if (event.matches("&" + code[i]))
+            }
+            else if (event.matches("&" + code[i])) {
                 event.setReplaced(new Element(ChatColor.getByChar(code[i]).toString()).getAttribute(attribute.fulfill(1)));
+            }
             i++;
         }
     }
@@ -376,7 +388,9 @@ public class TextTags implements Listener {
 
     @TagManager.TagEvents
     public void specialCharacterTags(ReplaceableTagEvent event) {
-        if (!event.getName().startsWith("&")) return;
+        if (!event.getName().startsWith("&")) {
+            return;
+        }
         String lower = CoreUtilities.toLowerCase(event.getName());
         Attribute attribute = event.getAttributes();
 
@@ -386,215 +400,239 @@ public class TextTags implements Listener {
         // @description
         // Returns a newline symbol.
         // -->
-        if (lower.equals("&nl"))
+        if (lower.equals("&nl")) {
             event.setReplaced(new Element("\n").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&amp>
-            // @returns Element
-            // @description
-            // Returns an ampersand symbol: &
-            // -->
-        else if (lower.equals("&amp"))
+        // <--[tag]
+        // @attribute <&amp>
+        // @returns Element
+        // @description
+        // Returns an ampersand symbol: &
+        // -->
+        else if (lower.equals("&amp")) {
             event.setReplaced(new Element("&").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&cm>
-            // @returns Element
-            // @description
-            // Returns a comma symbol: ,
-            // -->
-        else if (lower.equals("&cm"))
+        // <--[tag]
+        // @attribute <&cm>
+        // @returns Element
+        // @description
+        // Returns a comma symbol: ,
+        // -->
+        else if (lower.equals("&cm")) {
             event.setReplaced(new Element(",").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&ss>
-            // @returns Element
-            // @description
-            // Returns an internal coloring symbol: §
-            // -->
-        else if (lower.equals("&ss"))
+        // <--[tag]
+        // @attribute <&ss>
+        // @returns Element
+        // @description
+        // Returns an internal coloring symbol: §
+        // -->
+        else if (lower.equals("&ss")) {
             event.setReplaced(new Element("§").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&sq>
-            // @returns Element
-            // @description
-            // Returns a single-quote symbol: '
-            // -->
-        else if (lower.equals("&sq"))
+        // <--[tag]
+        // @attribute <&sq>
+        // @returns Element
+        // @description
+        // Returns a single-quote symbol: '
+        // -->
+        else if (lower.equals("&sq")) {
             event.setReplaced(new Element("'").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&sp>
-            // @returns Element
-            // @description
-            // Returns a space symbol.
-            // -->
-        else if (lower.equals("&sp"))
+        // <--[tag]
+        // @attribute <&sp>
+        // @returns Element
+        // @description
+        // Returns a space symbol.
+        // -->
+        else if (lower.equals("&sp")) {
             event.setReplaced(new Element(String.valueOf(' ')).getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&nbsp>
-            // @returns Element
-            // @description
-            // Returns a non-breaking space symbol.
-            // -->
-        else if (lower.equals("&nbsp"))
+        // <--[tag]
+        // @attribute <&nbsp>
+        // @returns Element
+        // @description
+        // Returns a non-breaking space symbol.
+        // -->
+        else if (lower.equals("&nbsp")) {
             event.setReplaced(new Element(String.valueOf((char) 0x00A0)).getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&dq>
-            // @returns Element
-            // @description
-            // Returns a double-quote symbol: "
-            // -->
-        else if (lower.equals("&dq"))
+        // <--[tag]
+        // @attribute <&dq>
+        // @returns Element
+        // @description
+        // Returns a double-quote symbol: "
+        // -->
+        else if (lower.equals("&dq")) {
             event.setReplaced(new Element("\"").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&co>
-            // @returns Element
-            // @description
-            // Returns a colon symbol: :
-            // -->
-        else if (lower.equals("&co"))
+        // <--[tag]
+        // @attribute <&co>
+        // @returns Element
+        // @description
+        // Returns a colon symbol: :
+        // -->
+        else if (lower.equals("&co")) {
             event.setReplaced(new Element(":").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&sc>
-            // @returns Element
-            // @description
-            // Returns a semicolon symbol: ;
-            // -->
-        else if (lower.equals("&sc"))
+        // <--[tag]
+        // @attribute <&sc>
+        // @returns Element
+        // @description
+        // Returns a semicolon symbol: ;
+        // -->
+        else if (lower.equals("&sc")) {
             event.setReplaced(new Element(String.valueOf((char) 0x2011)).getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&rb>
-            // @returns Element
-            // @description
-            // Returns a right-bracket symbol: ]
-            // -->
-        else if (lower.equals("&rb"))
+        // <--[tag]
+        // @attribute <&rb>
+        // @returns Element
+        // @description
+        // Returns a right-bracket symbol: ]
+        // -->
+        else if (lower.equals("&rb")) {
             event.setReplaced(new Element("]").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&lb>
-            // @returns Element
-            // @description
-            // Returns a left-bracket symbol: [
-            // -->
-        else if (lower.equals("&lb"))
+        // <--[tag]
+        // @attribute <&lb>
+        // @returns Element
+        // @description
+        // Returns a left-bracket symbol: [
+        // -->
+        else if (lower.equals("&lb")) {
             event.setReplaced(new Element("[").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&rc>
-            // @returns Element
-            // @description
-            // Returns a right-brace symbol: }
-            // -->
-        else if (lower.equals("&rc"))
+        // <--[tag]
+        // @attribute <&rc>
+        // @returns Element
+        // @description
+        // Returns a right-brace symbol: }
+        // -->
+        else if (lower.equals("&rc")) {
             event.setReplaced(new Element("}").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&lc>
-            // @returns Element
-            // @description
-            // Returns a left-brace symbol: {
-            // -->
-        else if (lower.equals("&lc"))
+        // <--[tag]
+        // @attribute <&lc>
+        // @returns Element
+        // @description
+        // Returns a left-brace symbol: {
+        // -->
+        else if (lower.equals("&lc")) {
             event.setReplaced(new Element("{").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&ns>
-            // @returns Element
-            // @description
-            // Returns a hash symbol: #
-            // -->
-        else if (lower.equals("&ns"))
+        // <--[tag]
+        // @attribute <&ns>
+        // @returns Element
+        // @description
+        // Returns a hash symbol: #
+        // -->
+        else if (lower.equals("&ns")) {
             event.setReplaced(new Element("#").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&pc>
-            // @returns Element
-            // @description
-            // Returns a percent symbol: %
-            // -->
-        else if (lower.equals("&pc"))
+        // <--[tag]
+        // @attribute <&pc>
+        // @returns Element
+        // @description
+        // Returns a percent symbol: %
+        // -->
+        else if (lower.equals("&pc")) {
             event.setReplaced(new Element("%").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&pipe>
-            // @returns Element
-            // @description
-            // Returns a pipe symbol: |
-            // -->
-        else if (lower.equals("&pipe"))
+        // <--[tag]
+        // @attribute <&pipe>
+        // @returns Element
+        // @description
+        // Returns a pipe symbol: |
+        // -->
+        else if (lower.equals("&pipe")) {
             event.setReplaced(new Element("|").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&ds>
-            // @returns Element
-            // @description
-            // Returns a dollar sign: $
-            // -->
-        else if (lower.equals("&ds"))
+        // <--[tag]
+        // @attribute <&ds>
+        // @returns Element
+        // @description
+        // Returns a dollar sign: $
+        // -->
+        else if (lower.equals("&ds")) {
             event.setReplaced(new Element("$").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&lt>
-            // @returns Element
-            // @description
-            // Returns a less than symbol: <
-            // -->
-        else if (lower.equals("&lt"))
+        // <--[tag]
+        // @attribute <&lt>
+        // @returns Element
+        // @description
+        // Returns a less than symbol: <
+        // -->
+        else if (lower.equals("&lt")) {
             event.setReplaced(new Element(String.valueOf((char) 0x01)).getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&gt>
-            // @returns Element
-            // @description
-            // Returns a greater than symbol: >
-            // -->
-        else if (lower.equals("&gt"))
+        // <--[tag]
+        // @attribute <&gt>
+        // @returns Element
+        // @description
+        // Returns a greater than symbol: >
+        // -->
+        else if (lower.equals("&gt")) {
             event.setReplaced(new Element(String.valueOf((char) 0x02)).getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&bs>
-            // @returns Element
-            // @description
-            // Returns a backslash symbol: \
-            // -->
-        else if (lower.equals("&bs"))
+        // <--[tag]
+        // @attribute <&bs>
+        // @returns Element
+        // @description
+        // Returns a backslash symbol: \
+        // -->
+        else if (lower.equals("&bs")) {
             event.setReplaced(new Element("\\").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&at>
-            // @returns Element
-            // @description
-            // Returns an at symbol: @
-            // -->
-        else if (lower.equals("&at"))
+        // <--[tag]
+        // @attribute <&at>
+        // @returns Element
+        // @description
+        // Returns an at symbol: @
+        // -->
+        else if (lower.equals("&at")) {
             event.setReplaced(new Element("@").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&dot>
-            // @returns Element
-            // @description
-            // Returns a dot symbol: .
-            // -->
-        else if (lower.equals("&dot"))
+        // <--[tag]
+        // @attribute <&dot>
+        // @returns Element
+        // @description
+        // Returns a dot symbol: .
+        // -->
+        else if (lower.equals("&dot")) {
             event.setReplaced(new Element(".").getAttribute(attribute.fulfill(1)));
+        }
 
-            // <--[tag]
-            // @attribute <&hrt>
-            // @returns Element
-            // @description
-            // Returns a heart symbol: ♥
-            // -->
-        else if (lower.equals("&hrt"))
+        // <--[tag]
+        // @attribute <&hrt>
+        // @returns Element
+        // @description
+        // Returns a heart symbol: ♥
+        // -->
+        else if (lower.equals("&hrt")) {
             event.setReplaced(new Element("\u2665").getAttribute(attribute.fulfill(1)));
+        }
 
         // <--[tag]
         // @attribute <&chr[<character>]>
@@ -602,8 +640,9 @@ public class TextTags implements Listener {
         // @description
         // Returns the Unicode character specified. e.g. <&chr[2665]> returns a heart.
         // -->
-        if (attribute.startsWith("&chr") && attribute.hasContext(1))
+        if (attribute.startsWith("&chr") && attribute.hasContext(1)) {
             event.setReplaced(String.valueOf((char) Integer.parseInt(attribute.getContext(1), 16)));
+        }
 
     }
 }

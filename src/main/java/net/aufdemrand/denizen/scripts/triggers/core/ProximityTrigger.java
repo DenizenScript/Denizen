@@ -165,20 +165,28 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                 Iterator<dNPC> it = dNPCRegistry.getSpawnedNPCs().iterator();
                 while (it.hasNext()) {
                     dNPC npc = it.next();
-                    if (npc == null)
+                    if (npc == null) {
                         continue;
-                    if (npc.getCitizen() == null)
+                    }
+                    if (npc.getCitizen() == null) {
                         continue;
+                    }
 
                     //
                     // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
                     // then just return.
                     //
-                    if (!npc.getCitizen().hasTrait(TriggerTrait.class)) continue;
+                    if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
+                        continue;
+                    }
 
-                    if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) continue;
+                    if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) {
+                        continue;
+                    }
 
-                    if (!npc.isSpawned()) continue;
+                    if (!npc.isSpawned()) {
+                        continue;
+                    }
 
                     // Loop through all players
                     for (Player BukkitPlayer : Bukkit.getOnlinePlayers()) {
@@ -188,14 +196,18 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         // unless the Player hasn't yet triggered an Exit Proximity after Entering
                         //
                         if (!npc.getWorld().equals(BukkitPlayer.getWorld())
-                                && hasExitedProximityOf(BukkitPlayer, npc)) continue;
+                                && hasExitedProximityOf(BukkitPlayer, npc)) {
+                            continue;
+                        }
 
                         //
                         // If this NPC is more than the maxProximityDistance, skip it, unless
                         // the Player hasn't yet triggered an 'Exit Proximity' after entering.
                         //
                         if (!isCloseEnough(BukkitPlayer, npc)
-                                && hasExitedProximityOf(BukkitPlayer, npc)) continue;
+                                && hasExitedProximityOf(BukkitPlayer, npc)) {
+                            continue;
+                        }
 
                         // Get the player
                         dPlayer player = dPlayer.mirrorBukkitPlayer(BukkitPlayer);
@@ -220,22 +232,25 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         //
                         if (script != null) {
                             try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"))
+                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS")) {
                                     entryRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "ENTRY RADIUS"));
+                                }
                             }
                             catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Entry Radius was not an integer.  Assuming " + entryRadius + " as the radius.");
                             }
                             try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"))
+                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS")) {
                                     exitRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "EXIT RADIUS"));
+                                }
                             }
                             catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Exit Radius was not an integer.  Assuming " + exitRadius + " as the radius.");
                             }
                             try {
-                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"))
+                                if (script.hasTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS")) {
                                     moveRadius = Integer.valueOf(script.getTriggerOptionFor(ProximityTrigger.class, player, null, "MOVE RADIUS"));
+                                }
                             }
                             catch (NumberFormatException nfe) {
                                 dB.echoDebug(script, "Move Radius was not an integer.  Assuming " + moveRadius + " as the radius.");
@@ -251,8 +266,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         // an exception if worlds do not match.
                         //
                         boolean playerChangedWorlds = false;
-                        if (npcLocation.getWorld() != player.getWorld())
+                        if (npcLocation.getWorld() != player.getWorld()) {
                             playerChangedWorlds = true;
+                        }
 
                         //
                         // If the user is outside the range, and was previously within the
@@ -266,12 +282,15 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         //
                         boolean exitedProximity = hasExitedProximityOf(BukkitPlayer, npc);
                         double distance = 0;
-                        if (!playerChangedWorlds) distance = npcLocation.distance(player.getLocation());
+                        if (!playerChangedWorlds) {
+                            distance = npcLocation.distance(player.getLocation());
+                        }
 
                         if (!exitedProximity
                                 && (playerChangedWorlds || distance >= exitRadius)) {
-                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player))
+                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player)) {
                                 continue;
+                            }
                             // Remember that NPC has exited proximity.
                             exitProximityOf(BukkitPlayer, npc);
                             // Exit Proximity Action
@@ -281,8 +300,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         }
                         else if (exitedProximity && distance <= entryRadius) {
                             // Cooldown
-                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player))
+                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player)) {
                                 continue;
+                            }
                             // Remember that Player has entered proximity of the NPC
                             enterProximityOf(BukkitPlayer, npc);
                             // Enter Proximity Action
@@ -322,9 +342,15 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private boolean isCloseEnough(Player player, dNPC npc) {
         Location pLoc = player.getLocation();
         Location nLoc = npc.getLocation();
-        if (Math.abs(pLoc.getX() - nLoc.getX()) > maxProximityDistance) return false;
-        if (Math.abs(pLoc.getY() - nLoc.getY()) > maxProximityDistance) return false;
-        if (Math.abs(pLoc.getZ() - nLoc.getZ()) > maxProximityDistance) return false;
+        if (Math.abs(pLoc.getX() - nLoc.getX()) > maxProximityDistance) {
+            return false;
+        }
+        if (Math.abs(pLoc.getY() - nLoc.getY()) > maxProximityDistance) {
+            return false;
+        }
+        if (Math.abs(pLoc.getZ() - nLoc.getZ()) > maxProximityDistance) {
+            return false;
+        }
         return true;
     }
 
@@ -354,9 +380,13 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private boolean hasExitedProximityOf(Player player, dNPC npc) {
         // If Player hasn't entered proximity, it's not in the Map. Return true, must be exited.
         Set<Integer> existing = proximityTracker.get(player.getUniqueId());
-        if (existing == null) return true;
+        if (existing == null) {
+            return true;
+        }
         // If Player has no entry for this NPC, return true.
-        if (!existing.contains(npc.getId())) return true;
+        if (!existing.contains(npc.getId())) {
+            return true;
+        }
         // Entry is present, NPC has not yet triggered exit proximity.
         return false;
     }

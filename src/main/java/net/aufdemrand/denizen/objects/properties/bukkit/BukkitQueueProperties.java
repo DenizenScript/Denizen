@@ -17,8 +17,12 @@ public class BukkitQueueProperties implements Property {
     }
 
     public static BukkitQueueProperties getFrom(dObject queue) {
-        if (!describes(queue)) return null;
-        else return new BukkitQueueProperties((ScriptQueue) queue);
+        if (!describes(queue)) {
+            return null;
+        }
+        else {
+            return new BukkitQueueProperties((ScriptQueue) queue);
+        }
     }
 
 
@@ -48,10 +52,12 @@ public class BukkitQueueProperties implements Property {
             else {
                 dB.echoError(queue, "Can't determine a linked NPC.");
             }
-            if (npc == null)
+            if (npc == null) {
                 return null;
-            else
+            }
+            else {
                 return npc.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -71,10 +77,12 @@ public class BukkitQueueProperties implements Property {
             else {
                 dB.echoError(queue, "Can't determine a linked player.");
             }
-            if (player == null)
+            if (player == null) {
                 return null;
-            else
+            }
+            else {
                 return player.getAttribute(attribute.fulfill(1));
+            }
         }
         return null;
     }

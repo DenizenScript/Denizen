@@ -48,10 +48,11 @@ public class dColor implements dObject {
 
         Matcher m = rgbPattern.matcher(string);
 
-        if (m.matches())
+        if (m.matches()) {
             return new dColor(aH.getIntegerFrom(m.group(1)),
                     aH.getIntegerFrom(m.group(2)),
                     aH.getIntegerFrom(m.group(3)));
+        }
 
         Field colorField = null;
 
@@ -65,8 +66,9 @@ public class dColor implements dObject {
             dB.echoError("No such color field!");
         }
 
-        if (colorField != null)
+        if (colorField != null) {
             return new dColor(colorField);
+        }
 
         // No match
         return null;
@@ -82,16 +84,21 @@ public class dColor implements dObject {
 
         arg = arg.toUpperCase().replace("CO@", "");
 
-        if (arg.toUpperCase().matches("RANDOM"))
+        if (arg.toUpperCase().matches("RANDOM")) {
             return true;
+        }
 
         Matcher m = rgbPattern.matcher(arg);
 
-        if (m.matches())
+        if (m.matches()) {
             return true;
+        }
 
-        for (Field field : Color.class.getFields())
-            if (arg.toUpperCase().matches(field.getName())) return true;
+        for (Field field : Color.class.getFields()) {
+            if (arg.toUpperCase().matches(field.getName())) {
+                return true;
+            }
+        }
 
         return false;
     }
@@ -161,8 +168,9 @@ public class dColor implements dObject {
     public String identify() {
         for (Field field : Color.class.getFields()) {
             try {
-                if (((Color) field.get(null)).asRGB() == getColor().asRGB())
+                if (((Color) field.get(null)).asRGB() == getColor().asRGB()) {
                     return "co@" + field.getName();
+                }
             }
             catch (Exception e) {
                 dB.echoError("Exception trying to fetch color!");
@@ -183,8 +191,9 @@ public class dColor implements dObject {
 
     @Override
     public dObject setPrefix(String prefix) {
-        if (prefix != null)
+        if (prefix != null) {
             this.prefix = prefix;
+        }
         return this;
     }
 
@@ -394,7 +403,9 @@ public class dColor implements dObject {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);

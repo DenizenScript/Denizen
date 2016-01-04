@@ -19,12 +19,15 @@ public class VulnerableCommand extends AbstractCommand {
         // Initialize fields
         Toggle vulnerable = Toggle.TRUE;
         // TODO: UPDATE COMMAND PARSING
-        for (String arg : scriptEntry.getArguments())
-            if (aH.matchesState(arg))
+        for (String arg : scriptEntry.getArguments()) {
+            if (aH.matchesState(arg)) {
                 vulnerable = Toggle.valueOf(aH.getStringFrom(arg).toUpperCase());
+            }
+        }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
         // Add objects that need to be passed to execute() to the scriptEntry
         scriptEntry.addObject("vulnerable", vulnerable);
@@ -44,10 +47,13 @@ public class VulnerableCommand extends AbstractCommand {
 
         boolean vulnerable;
 
-        if (toggle == Toggle.TOGGLE)
+        if (toggle == Toggle.TOGGLE) {
             vulnerable = !npc.data().get(NPC.DEFAULT_PROTECTED_METADATA, true);
+        }
 
-        else vulnerable = Boolean.valueOf(toggle.toString());
+        else {
+            vulnerable = Boolean.valueOf(toggle.toString());
+        }
 
         npc.data().set(NPC.DEFAULT_PROTECTED_METADATA, !vulnerable);
     }

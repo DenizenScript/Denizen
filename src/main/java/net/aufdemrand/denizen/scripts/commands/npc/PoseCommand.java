@@ -44,12 +44,14 @@ public class PoseCommand extends AbstractCommand {
         }
 
         // Even if the target is a player, this command requires an NPC to get the pose from.
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("This command requires an NPC!");
+        }
 
         // It also requires a pose ID
-        if (!scriptEntry.hasObject("pose_id"))
+        if (!scriptEntry.hasObject("pose_id")) {
             throw new InvalidArgumentsException("No ID specified!");
+        }
 
         // Set default objects
         scriptEntry.defaultObject("target", TargetType.NPC);
@@ -58,10 +60,12 @@ public class PoseCommand extends AbstractCommand {
         // If the target is a player, it needs a player! However, you can't ADD/REMOVE poses
         // from players, so only allow ASSUME.
         if (scriptEntry.getObject("target") == TargetType.PLAYER) {
-            if (scriptEntry.getObject("action") != Action.ASSUME)
+            if (scriptEntry.getObject("action") != Action.ASSUME) {
                 throw new InvalidArgumentsException("You cannot add or remove poses from a player.");
-            else if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            }
+            else if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 throw new InvalidArgumentsException("This command requires a linked player!");
+            }
         }
 
     }
@@ -85,19 +89,22 @@ public class PoseCommand extends AbstractCommand {
                         + aH.debugObj("Id", id)
                         + (pose_loc != null ? pose_loc.debug() : ""));
 
-        if (!npc.getCitizen().hasTrait(Poses.class))
+        if (!npc.getCitizen().hasTrait(Poses.class)) {
             npc.getCitizen().addTrait(Poses.class);
+        }
 
         Poses poses = npc.getCitizen().getTrait(Poses.class);
 
         switch (action) {
 
             case ASSUME:
-                if (!poses.hasPose(id))
+                if (!poses.hasPose(id)) {
                     throw new CommandExecutionException("Pose \"" + id + "\" doesn't exist for " + npc.toString());
+                }
 
-                if (target.name().equals("NPC"))
+                if (target.name().equals("NPC")) {
                     poses.assumePose(id);
+                }
                 else {
                     Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
                     Location location = player.getLocation();
@@ -111,13 +118,15 @@ public class PoseCommand extends AbstractCommand {
                 break;
 
             case ADD:
-                if (!poses.addPose(id, pose_loc))
+                if (!poses.addPose(id, pose_loc)) {
                     throw new CommandExecutionException(npc.toString() + " already has that pose!");
+                }
                 break;
 
             case REMOVE:
-                if (!poses.removePose(id))
+                if (!poses.removePose(id)) {
                     throw new CommandExecutionException(npc.toString() + " does not have that pose!");
+                }
                 break;
 
         }

@@ -30,8 +30,12 @@ public class ItemPatterns implements Property {
     }
 
     public static ItemPatterns getFrom(dObject item) {
-        if (!describes(item)) return null;
-        else return new ItemPatterns((dItem) item);
+        if (!describes(item)) {
+            return null;
+        }
+        else {
+            return new ItemPatterns((dItem) item);
+        }
     }
 
 

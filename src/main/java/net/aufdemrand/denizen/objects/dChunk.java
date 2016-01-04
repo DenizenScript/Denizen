@@ -40,7 +40,9 @@ public class dChunk implements dObject, Adjustable {
      */
     @Fetchable("ch")
     public static dChunk valueOf(String string, TagContext context) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         string = string.toLowerCase().replace("ch@", "");
 
@@ -60,18 +62,22 @@ public class dChunk implements dObject, Adjustable {
             }
 
         }
-        else
+        else {
             dB.log("valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+        }
 
         return null;
     }
 
 
     public static boolean matches(String string) {
-        if (string.toLowerCase().startsWith("ch@"))
+        if (string.toLowerCase().startsWith("ch@")) {
             return true;
+        }
 
-        else return false;
+        else {
+            return false;
+        }
     }
 
     CraftChunk chunk = null;
@@ -295,8 +301,9 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities())
+                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
                     entities.add(new dEntity(ent).identify());
+                }
 
                 return entities.getAttribute(attribute.fulfill(1));
             }
@@ -313,9 +320,11 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities())
-                    if (ent instanceof LivingEntity)
+                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
+                    if (ent instanceof LivingEntity) {
                         entities.add(new dEntity(ent).identify());
+                    }
+                }
 
                 return entities.getAttribute(attribute.fulfill(1));
             }
@@ -331,9 +340,11 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities())
-                    if (dEntity.isPlayer(ent))
+                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
+                    if (dEntity.isPlayer(ent)) {
                         entities.add(new dEntity(ent).identify());
+                    }
+                }
 
                 return entities.getAttribute(attribute.fulfill(1));
             }
@@ -349,8 +360,9 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 List<String> height_map = new ArrayList<String>(((dChunk) object).chunk.getHandle().heightMap.length);
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap)
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
                     height_map.add(String.valueOf(i));
+                }
                 return new dList(height_map).getAttribute(attribute.fulfill(1));
             }
         });
@@ -365,7 +377,9 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int sum = 0;
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap) sum += i;
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
+                    sum += i;
+                }
                 return new Element(((double) sum) / ((dChunk) object).chunk.getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
             }
         });
@@ -384,9 +398,11 @@ public class dChunk implements dObject, Adjustable {
                 int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
                         Integer.valueOf(attribute.getContext(1)) : 2;
                 int x = ((dChunk) object).chunk.getHandle().heightMap[0];
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap)
-                    if (Math.abs(x - i) > tolerance)
+                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
+                    if (Math.abs(x - i) > tolerance) {
                         return Element.FALSE.getAttribute(attribute.fulfill(1));
+                    }
+                }
 
                 return Element.TRUE.getAttribute(attribute.fulfill(1));
             }
@@ -402,10 +418,12 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList surface_blocks = new dList();
-                for (int x = 0; x < 16; x++)
-                    for (int z = 0; z < 16; z++)
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
                         surface_blocks.add(new dLocation(((dChunk) object).chunk.getBlock(x, ((dChunk) object)
                                 .getSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
+                    }
+                }
 
                 return surface_blocks.getAttribute(attribute.fulfill(1));
             }
@@ -457,7 +475,9 @@ public class dChunk implements dObject, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
@@ -473,7 +493,9 @@ public class dChunk implements dObject, Adjustable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -580,14 +602,16 @@ public class dChunk implements dObject, Adjustable {
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
 
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
-            if (mechanism.fulfilled())
+            if (mechanism.fulfilled()) {
                 break;
+            }
         }
     }
 }

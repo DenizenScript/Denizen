@@ -17,8 +17,12 @@ public class ItemSpawnEgg implements Property {
     }
 
     public static ItemSpawnEgg getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemSpawnEgg((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemSpawnEgg((dItem) _item);
+        }
     }
 
 

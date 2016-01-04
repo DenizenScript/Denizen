@@ -35,7 +35,9 @@ public class HungerTrait extends Trait implements Listener {
      */
     @Override
     public void run() {
-        if (!listening) return;
+        if (!listening) {
+            return;
+        }
         // We'll only actually calculate hunger-loss once per second
         count++;
         if (count >= 20) {
@@ -167,8 +169,12 @@ public class HungerTrait extends Trait implements Listener {
      * @param hunger new hunger level
      */
     public void setHunger(double hunger) {
-        if (currenthunger > maxhunger) currenthunger = maxhunger;
-        else currenthunger = hunger;
+        if (currenthunger > maxhunger) {
+            currenthunger = maxhunger;
+        }
+        else {
+            currenthunger = hunger;
+        }
     }
 
     /**
@@ -178,7 +184,9 @@ public class HungerTrait extends Trait implements Listener {
      */
     public void feed(double hunger) {
         currenthunger = currenthunger - hunger;
-        if (currenthunger < 0) currenthunger = 0;
+        if (currenthunger < 0) {
+            currenthunger = 0;
+        }
     }
 
     /**

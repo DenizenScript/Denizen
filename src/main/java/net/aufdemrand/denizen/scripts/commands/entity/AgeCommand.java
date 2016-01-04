@@ -83,28 +83,35 @@ public class AgeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class))
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+            }
 
             else if (!scriptEntry.hasObject("agetype")
-                    && arg.matchesEnum(AgeType.values()))
+                    && arg.matchesEnum(AgeType.values())) {
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
+            }
 
             else if (!scriptEntry.hasObject("age")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("age", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("lock")
-                    && arg.matches("lock"))
+                    && arg.matches("lock")) {
                 scriptEntry.addObject("lock", Element.TRUE);
+            }
 
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("No valid entities specified.");
+        }
 
         // Use default age if one is not specified
         scriptEntry.defaultObject("age", new Element(1));
@@ -138,19 +145,24 @@ public class AgeCommand extends AbstractCommand {
 
                     // Adjust 'ageType'
                     if (ageType != null) {
-                        if (ageType.equals(AgeType.BABY))
+                        if (ageType.equals(AgeType.BABY)) {
                             property.setBaby(true);
-                        else property.setBaby(false);
+                        }
+                        else {
+                            property.setBaby(false);
+                        }
                     }
-                    else
+                    else {
                         property.setAge(age);
+                    }
 
                     // Adjust 'locked'
                     property.setLock(lock);
                 }
 
-                else
+                else {
                     dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
+                }
 
             }
         }

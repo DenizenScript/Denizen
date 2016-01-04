@@ -82,7 +82,9 @@ public class FishingTrait extends Trait {
                 }
             }
         }
-        if (!fishing) return;
+        if (!fishing) {
+            return;
+        }
 
         if (reelCount == 400) {
             reel();
@@ -192,18 +194,22 @@ public class FishingTrait extends Trait {
         Vector test = to.clone().subtract(from).toVector();
         Double elev = test.getY();
         Double testAngle = launchAngle(from, to, v, elev, g);
-        if (testAngle == null) return;
+        if (testAngle == null) {
+            return;
+        }
         Double hangtime = hangtime(testAngle, v, elev, g);
         Vector victor = to.clone().subtract(from).toVector();
         Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
         elev = victor.getY();
 
-        if (dist == 0)
+        if (dist == 0) {
             return;
+        }
 
         Double launchAngle = launchAngle(from, to, v, elev, g);
-        if (launchAngle == null)
+        if (launchAngle == null) {
             return;
+        }
         victor.setY(Math.tan(launchAngle) * dist);
         victor = normalizeVector(victor);
         v = v + (.5 * Math.pow(hangtime, 2));
@@ -272,24 +278,31 @@ public class FishingTrait extends Trait {
 
             f1 = MathHelper.a(f1, 0.0F, 1.0F);
             f2 = MathHelper.a(f2, 0.0F, 1.0F);
-            if (f < f1)
+            if (f < f1) {
                 return catchRandomJunk();
+            }
             else {
                 f -= f1;
-                if (f < f2)
+                if (f < f2) {
                     return catchRandomTreasure();
-                else
+                }
+                else {
                     return catchRandomFish();
+                }
             }
         }
-        else if (catchType == CatchType.JUNK)
+        else if (catchType == CatchType.JUNK) {
             return catchRandomJunk();
-        else if (catchType == CatchType.TREASURE)
+        }
+        else if (catchType == CatchType.TREASURE) {
             return catchRandomTreasure();
-        else if (catchType == CatchType.FISH)
+        }
+        else if (catchType == CatchType.FISH) {
             return catchRandomFish();
-        else
+        }
+        else {
             return null;
+        }
     }
 
     private ItemStack catchRandomJunk() {
@@ -338,26 +351,30 @@ public class FishingTrait extends Trait {
         double v4 = Math.pow(v, 4);
         double derp = g * (g * Math.pow(dist, 2) + 2 * elev * v2);
 
-        if (v4 < derp)
+        if (v4 < derp) {
             return null;
-        else
+        }
+        else {
             return Math.atan((v2 - Math.sqrt(v4 - derp)) / (g * dist));
+        }
     }
 
     public static double hangtime(double launchAngle, double v, double elev, double g) {
         double a = v * Math.sin(launchAngle);
         double b = -2 * g * elev;
 
-        if (Math.pow(a, 2) + b < 0)
+        if (Math.pow(a, 2) + b < 0) {
             return 0;
+        }
 
         return (a + Math.sqrt(Math.pow(a, 2) + b)) / g;
     }
 
     public static Vector normalizeVector(Vector victor) {
         double mag = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getY(), 2) + Math.pow(victor.getZ(), 2));
-        if (mag != 0)
+        if (mag != 0) {
             return victor.multiply(1 / mag);
+        }
         return victor.multiply(0);
     }
 

@@ -28,8 +28,9 @@ public class StatisticCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values()))
+                    && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
+            }
 
             else if (arg.matchesPrefix("players")
                     && !scriptEntry.hasObject("players")
@@ -39,46 +40,57 @@ public class StatisticCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("statistic")
-                    && arg.matchesEnum(Statistic.values()))
+                    && arg.matchesEnum(Statistic.values())) {
                 scriptEntry.addObject("statistic", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("amount", arg.asElement());
+            }
 
             else if (arg.matchesPrefix("qualifier", "q")
                     && !scriptEntry.hasObject("material")
                     && !scriptEntry.hasObject("entity")) {
-                if (arg.matchesArgumentType(dMaterial.class))
+                if (arg.matchesArgumentType(dMaterial.class)) {
                     scriptEntry.addObject("material", arg.asType(dMaterial.class));
-                else if (arg.matchesArgumentType(dEntity.class))
+                }
+                else if (arg.matchesArgumentType(dEntity.class)) {
                     scriptEntry.addObject("entity", arg.asType(dEntity.class));
+                }
             }
 
         }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a valid action!");
+        }
 
-        if (!scriptEntry.hasObject("statistic"))
+        if (!scriptEntry.hasObject("statistic")) {
             throw new InvalidArgumentsException("Must specify a valid Statistic!");
+        }
 
-        if (!scriptEntry.hasObject("amount"))
+        if (!scriptEntry.hasObject("amount")) {
             scriptEntry.addObject("amount", new Element(1));
+        }
 
         Statistic.Type type = Statistic.valueOf(scriptEntry.getElement("statistic").asString().toUpperCase()).getType();
         if (type != Statistic.Type.UNTYPED) {
-            if ((type == Statistic.Type.BLOCK || type == Statistic.Type.ITEM) && !scriptEntry.hasObject("material"))
+            if ((type == Statistic.Type.BLOCK || type == Statistic.Type.ITEM) && !scriptEntry.hasObject("material")) {
                 throw new InvalidArgumentsException("Must specify a valid " + type.name() + " MATERIAL!");
-            else if (type == Statistic.Type.ENTITY && !scriptEntry.hasObject("entity"))
+            }
+            else if (type == Statistic.Type.ENTITY && !scriptEntry.hasObject("entity")) {
                 throw new InvalidArgumentsException("Must specify a valid ENTITY!");
+            }
         }
 
-        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_players)
+        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_players) {
             scriptEntry.addObject("players", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
+        }
 
-        if (!scriptEntry.hasObject("players"))
+        if (!scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must specify valid players!");
+        }
 
     }
 
@@ -105,16 +117,19 @@ public class StatisticCommand extends AbstractCommand {
                 Material mat = material.getMaterial();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.incrementStatistic(stat, mat, amt);
+                        }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.decrementStatistic(stat, mat, amt);
+                        }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.setStatistic(stat, mat, amt);
+                        }
                         break;
                 }
                 break;
@@ -123,16 +138,19 @@ public class StatisticCommand extends AbstractCommand {
                 EntityType ent = entity.getBukkitEntityType();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.incrementStatistic(stat, ent, amt);
+                        }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.decrementStatistic(stat, ent, amt);
+                        }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class))
+                        for (dPlayer player : players.filter(dPlayer.class)) {
                             player.setStatistic(stat, ent, amt);
+                        }
                         break;
                 }
                 break;

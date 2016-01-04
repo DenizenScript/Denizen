@@ -93,10 +93,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
             else if (!scriptEntry.hasObject("value") &&
                     arg.matchesPrefix("VALUE")) {
-                if (arg.matchesArgumentType(dList.class))
+                if (arg.matchesArgumentType(dList.class)) {
                     scriptEntry.addObject("value", arg.asType(dList.class));
-                else
+                }
+                else {
                     scriptEntry.addObject("value", arg.asElement());
+                }
             }
 
             else if (!scriptEntry.hasObject("id") &&
@@ -152,26 +154,33 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("key", new Element(flagArgs[0]));
 
-                if (flagArgs[1].equals("->"))
+                if (flagArgs[1].equals("->")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.INSERT);
+                }
 
-                else if (flagArgs[1].equals("<-"))
+                else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.REMOVE);
+                }
 
-                else if (flagArgs[1].equals("||") || flagArgs[1].equals("|"))
+                else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.SPLIT);
+                }
 
-                else if (flagArgs[1].equals("++") || flagArgs[1].equals("+"))
+                else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.INCREASE);
+                }
 
-                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-"))
+                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.DECREASE);
+                }
 
-                else if (flagArgs[1].equals("**") || flagArgs[1].equals("*"))
+                else if (flagArgs[1].equals("**") || flagArgs[1].equals("*")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.MULTIPLY);
+                }
 
-                else if (flagArgs[1].equals("//") || flagArgs[1].equals("/"))
+                else if (flagArgs[1].equals("//") || flagArgs[1].equals("/")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.DIVIDE);
+                }
 
                 else {
                     scriptEntry.addObject("yaml_action", YAML_Action.SET_VALUE);
@@ -181,20 +190,25 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("value", new Element(flagArgs[2]));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check for required arguments
 
-        if (!scriptEntry.hasObject("id"))
+        if (!scriptEntry.hasObject("id")) {
             throw new InvalidArgumentsException("Must specify an id!");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an action!");
+        }
 
         if (!scriptEntry.hasObject("key") &&
-                scriptEntry.getElement("action").asString().equalsIgnoreCase("write"))
+                scriptEntry.getElement("action").asString().equalsIgnoreCase("write")) {
             throw new InvalidArgumentsException("Must specify a key!");
+        }
 
         scriptEntry.defaultObject("value", new Element(""));
         scriptEntry.defaultObject("fix_formatting", new Element("false"));
@@ -240,8 +254,9 @@ public class YamlCommand extends AbstractCommand implements Listener {
                 try {
                     FileInputStream fis = new FileInputStream(file);
                     String str = ScriptHelper.convertStreamToString(fis);
-                    if (fixFormatting.asBoolean())
+                    if (fixFormatting.asBoolean()) {
                         str = ScriptHelper.ClearComments("", str, false);
+                    }
                     yamlConfiguration = YamlConfiguration.load(str);
                     fis.close();
                 }
@@ -249,17 +264,21 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     dB.echoError(e);
                     return;
                 }
-                if (yamls.containsKey(id))
+                if (yamls.containsKey(id)) {
                     yamls.remove(id);
-                if (yamlConfiguration != null)
+                }
+                if (yamlConfiguration != null) {
                     yamls.put(id, yamlConfiguration);
+                }
                 break;
 
             case UNLOAD:
-                if (yamls.containsKey(id))
+                if (yamls.containsKey(id)) {
                     yamls.remove(id);
-                else
+                }
+                else {
                     dB.echoError("Unknown YAML ID '" + id + "'");
+                }
                 break;
 
             case SAVE:
@@ -288,21 +307,26 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         dB.echoError(e);
                     }
                 }
-                else
+                else {
                     dB.echoError("Unknown YAML ID '" + id + "'");
+                }
                 break;
 
             case WRITE:
                 if (yamls.containsKey(id)) {
-                    if (value instanceof Element)
+                    if (value instanceof Element) {
                         yamls.get(id).set(key.asString(), ((Element) value).asString());
-                    else if (split != null && split.asBoolean())
+                    }
+                    else if (split != null && split.asBoolean()) {
                         yamls.get(id).set(key.asString(), value);
-                    else
+                    }
+                    else {
                         yamls.get(id).set(key.asString(), value.identify());
+                    }
                 }
-                else
+                else {
                     dB.echoError("Unknown YAML ID '" + id + "'");
+                }
                 break;
 
             case SET:
@@ -348,16 +372,18 @@ public class YamlCommand extends AbstractCommand implements Listener {
                             break;
                         case INSERT: {
                             List<String> list = yaml.getStringList(keyStr);
-                            if (list == null)
+                            if (list == null) {
                                 list = new ArrayList<String>();
+                            }
                             list.add(valueStr);
                             yaml.set(keyStr, list);
                             break;
                         }
                         case REMOVE: {
                             List<String> list = yaml.getStringList(keyStr);
-                            if (list == null)
+                            if (list == null) {
                                 break;
+                            }
                             if (index > -1 && index < list.size()) {
                                 list.remove(index);
                             }
@@ -374,21 +400,24 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         }
                         case SPLIT: {
                             List<String> list = yaml.getStringList(keyStr);
-                            if (list == null)
+                            if (list == null) {
                                 list = new ArrayList<String>();
+                            }
                             list.addAll(dList.valueOf(valueStr));
                             yaml.set(keyStr, list);
                             break;
                         }
                     }
                 }
-                else
+                else {
                     dB.echoError("Unknown YAML ID '" + id + "'");
+                }
                 break;
 
             case CREATE:
-                if (yamls.containsKey(id))
+                if (yamls.containsKey(id)) {
                     yamls.remove(id);
+                }
                 yamlConfiguration = new YamlConfiguration();
                 yamls.put(id.toUpperCase(), yamlConfiguration);
                 break;
@@ -402,12 +431,15 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
         else {
             List<String> list = yaml.getStringList(key);
-            if (index < 0)
+            if (index < 0) {
                 index = 0;
-            if (index > list.size())
+            }
+            if (index > list.size()) {
                 index = list.size() - 1;
-            if (list.size() == 0)
+            }
+            if (list.size() == 0) {
                 return "";
+            }
             return list.get(index);
         }
     }
@@ -418,12 +450,15 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
         else {
             List<String> list = yaml.getStringList(key);
-            if (index < 0)
+            if (index < 0) {
                 index = 0;
-            if (index > list.size())
+            }
+            if (index > list.size()) {
                 index = list.size() - 1;
-            if (list.size() == 0)
+            }
+            if (list.size() == 0) {
                 list.add("");
+            }
             list.set(index, value);
             yaml.set(key, list);
         }
@@ -432,7 +467,9 @@ public class YamlCommand extends AbstractCommand implements Listener {
     @TagManager.TagEvents
     public void yaml(ReplaceableTagEvent event) {
 
-        if (!event.matches("yaml")) return;
+        if (!event.matches("yaml")) {
+            return;
+        }
 
         Attribute attribute = event.getAttributes();
 

@@ -17,9 +17,13 @@ public class EntityVisible implements Property {
     }
 
     public static EntityVisible getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityVisible((dEntity) entity);
+        else {
+            return new EntityVisible((dEntity) entity);
+        }
     }
 
 
@@ -72,8 +76,9 @@ public class EntityVisible implements Property {
         // @description
         // Returns whether the armor stand is visible.
         // -->
-        if (attribute.startsWith("visible"))
+        if (attribute.startsWith("visible")) {
             return new Element(stand.isVisible()).getAttribute(attribute.fulfill(1));
+        }
 
 
         return null;

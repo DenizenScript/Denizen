@@ -20,9 +20,13 @@ public class EntityFirework implements Property {
     }
 
     public static EntityFirework getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityFirework((dEntity) entity);
+        else {
+            return new EntityFirework((dEntity) entity);
+        }
     }
 
     ///////////////////

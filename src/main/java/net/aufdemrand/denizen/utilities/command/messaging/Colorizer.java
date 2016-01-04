@@ -22,8 +22,9 @@ public class Colorizer {
 
     static {
         String colors = "";
-        for (ChatColor color : ChatColor.values())
+        for (ChatColor color : ChatColor.values()) {
             colors += color.getChar();
+        }
         COLOR_MATCHER = Pattern.compile("<([COLORS])>".replace("COLORS", colors), Pattern.CASE_INSENSITIVE);
     }
 }

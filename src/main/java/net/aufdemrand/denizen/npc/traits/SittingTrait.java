@@ -29,7 +29,9 @@ public class SittingTrait extends Trait implements Listener {
 
     @Override
     public void run() {
-        if (!npc.isSpawned() || chairLocation == null) return;
+        if (!npc.isSpawned() || chairLocation == null) {
+            return;
+        }
         if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), chairLocation, 1)) {
             stand();
         }
@@ -37,7 +39,9 @@ public class SittingTrait extends Trait implements Listener {
 
     @Override
     public void onSpawn() {
-        if (sitting) sit();
+        if (sitting) {
+            sit();
+        }
     }
 
     @Override
@@ -168,7 +172,9 @@ public class SittingTrait extends Trait implements Listener {
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (chairLocation == null) return;
+        if (chairLocation == null) {
+            return;
+        }
         if (event.getBlock().getLocation().equals(chairLocation)) {
             event.setCancelled(true);
         }

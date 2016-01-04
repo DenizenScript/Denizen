@@ -346,7 +346,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void onEnable() {
         try {
             net.minecraft.server.v1_8_R3.Block.getById(0);
-        } catch (NoClassDefFoundError e) {
+        }
+        catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("This Denizen version is not compatible with this CraftBukkit version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");
@@ -357,7 +358,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         try {
             org.spigotmc.AsyncCatcher.enabled = false;
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             dB.echoError("Running not-Spigot?!");
         }
 
@@ -387,14 +389,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
             dB.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -421,14 +425,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 dPlayer.notePlayer(player);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
         try {
             DenizenCore.setCommandRegistry(getCommandRegistry());
             getCommandRegistry().registerCoreMembers();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -439,7 +445,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Populate config.yml if it doesn't yet exist.
             saveDefaultConfig();
             reloadConfig();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -454,7 +461,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptRegistry._registerType("command", CommandScriptContainer.class);
             ScriptRegistry._registerType("map", MapScriptContainer.class);
             ScriptRegistry._registerType("version", VersionScriptContainer.class);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -470,7 +478,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 dB.log("Denizen.mid not found, extracting from " + sourceFile);
                 Utilities.extractFile(new File(sourceFile), "Denizen.mid", getDataFolder() + "/midi/");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -491,7 +500,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             InventoryScriptHelper in_helper = new InventoryScriptHelper();
             EntityScriptHelper es_helper = new EntityScriptHelper();
             CommandScriptHelper cs_helper = new CommandScriptHelper();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -521,23 +531,27 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // If Program AB, used for reading Artificial Intelligence Markup Language
             // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
             // ChatbotTrait
-            if (Depends.hasProgramAB)
+            if (Depends.hasProgramAB) {
                 CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
+            }
 
             // Compile and load Denizen externals
             runtimeCompiler = new RuntimeCompiler(this);
             runtimeCompiler.loader();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
         // Register Core Members in the Denizen Registries
         try {
-            if (Depends.citizens != null)
+            if (Depends.citizens != null) {
                 getTriggerRegistry().registerCoreMembers();
+            }
             getRequirementRegistry().registerCoreMembers();
             getListenerRegistry().registerCoreMembers();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -708,8 +722,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
             ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
             dMaterial.registerTags(); // TODO: Automate this once all classes have tag registries
-            if (Depends.citizens != null)
+            if (Depends.citizens != null) {
                 ObjectFetcher.registerWithObjectFetcher(dNPC.class);   // n@
+            }
             ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
@@ -719,7 +734,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -796,7 +812,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
             propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
             propertyParser.registerProperty(ItemUnbreakable.class, dItem.class);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -804,7 +821,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             for (World world : getServer().getWorlds()) {
                 EntityScriptHelper.linkWorld(world);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
 
@@ -828,7 +846,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
                     // Fire the 'on Server Start' world event
                     ws_helper.serverStartEvent();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     dB.echoError(e);
                 }
             }
@@ -857,7 +876,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      */
     @Override
     public void onDisable() {
-        if (!startedSuccessful) return;
+        if (!startedSuccessful) {
+            return;
+        }
 
         // <--[event]
         // @Events
@@ -890,24 +911,29 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         InventoryScriptHelper._savePlayerInventories();
 
         // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
-        for (Player player : this.getServer().getOnlinePlayers())
+        for (Player player : this.getServer().getOnlinePlayers()) {
             getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
+        }
 
         for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
             try {
                 getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
             }
             catch (Exception e) {
-                if (player == null)
+                if (player == null) {
                     dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
-                else dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
-                        "You might have a corrupt player file!");
+                }
+                else {
+                    dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
+                            "You might have a corrupt player file!");
+                }
             }
         }
 
         // Unload loaded dExternals
-        for (dExternal external : RuntimeCompiler.loadedExternals)
+        for (dExternal external : RuntimeCompiler.loadedExternals) {
             external.unload();
+        }
         RuntimeCompiler.loadedExternals.clear();
 
         //Disable core members
@@ -970,8 +996,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public void updateSaves() {
         int saves_version = 1;
-        if (savesConfig.contains("a_saves.version"))
+        if (savesConfig.contains("a_saves.version")) {
             saves_version = savesConfig.getInt("a_saves.version");
+        }
 
         if (saves_version == 1) {
             dB.log("Updating saves from v1 to v2...");
@@ -1022,10 +1049,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 for (String key : section.getKeys(false)) {
                     try {
                         dPlayer player = dPlayer.valueOf(key);
-                        if (player == null)
+                        if (player == null) {
                             dB.log("Warning: can't update listeners for player '" + key + "' - invalid name!");
+                        }
                         else // Listeners
+                        {
                             savesConfig.createSection("Listeners." + player.getSaveName(), savesConfig.getConfigurationSection("Listeners." + key).getValues(true));
+                        }
                         savesConfig.set("Listeners." + key, null);
                     }
                     catch (Exception ex) {
@@ -1119,8 +1149,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         if (cmdName.equalsIgnoreCase("ex")) {
             List<Object> entries = new ArrayList<Object>();
             String entry = "";
-            for (String arg : args)
+            for (String arg : args) {
                 entry = entry + arg + " ";
+            }
 
             if (entry.length() < 2) {
                 sender.sendMessage("/ex <dCommand> (arguments)");
@@ -1128,17 +1159,20 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
 
             if (Settings.showExHelp()) {
-                if (dB.showDebug)
+                if (dB.showDebug) {
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
-                else
+                }
+                else {
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
+                }
             }
 
             entries.add(entry);
             InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("EXCOMMAND"));
             dNPC npc = null;
-            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null)
+            if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
+            }
             List<ScriptEntry> scriptEntries = ScriptBuilder.buildScriptEntries(entries, null,
                     new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, npc));
 
@@ -1173,11 +1207,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public File getScriptFolder() {
         File file = null;
         // Get the script directory
-        if (Settings.useDefaultScriptPath())
+        if (Settings.useDefaultScriptPath()) {
             file = new File(DenizenAPI.getCurrentInstance()
                     .getDataFolder() + File.separator + "scripts");
-        else
+        }
+        else {
             file = new File(Settings.getAlternateScriptPath().replace("/", File.separator));
+        }
         return file;
     }
 
@@ -1274,8 +1310,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void handleCommandSpecialCases(ScriptEntry scriptEntry) {
         if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()
-                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen() == null)
+                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen() == null) {
             ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(null);
+        }
     }
 
     @Override
@@ -1283,14 +1320,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         if (scriptEntry.getOriginalArguments() == null ||
                 scriptEntry.getOriginalArguments().size() == 0 ||
                 !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 dB.echoDebug(scriptEntry, DebugElement.Header,
                         "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" +
                                 ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
-            else
+            }
+            else {
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
                         scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null ?
                         "/n@" + ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getName() : ""));
+            }
         }
     }
 
@@ -1365,24 +1404,30 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                     String flag = string.substring(cb + 2);
                     if (dPlayer.matches(owner)) {
                         dPlayer player = dPlayer.valueOf(owner);
-                        if (FlagManager.playerHasFlag(player, flag))
+                        if (FlagManager.playerHasFlag(player, flag)) {
                             return flag_manager.getPlayerFlag(player, flag);
-                        else
+                        }
+                        else {
                             dB.echoError("Player '" + owner + "' flag '" + flag + "' not found.");
+                        }
                     }
                     else if (Depends.citizens != null && dNPC.matches(owner)) {
                         dNPC npc = dNPC.valueOf(owner);
-                        if (FlagManager.npcHasFlag(npc, flag))
+                        if (FlagManager.npcHasFlag(npc, flag)) {
                             return flag_manager.getNPCFlag(npc.getId(), flag);
-                        else
+                        }
+                        else {
                             dB.echoError("NPC '" + owner + "' flag '" + flag + "' not found.");
+                        }
                     }
                     else if (dEntity.matches(owner)) {
                         dEntity entity = dEntity.valueOf(owner);
-                        if (FlagManager.entityHasFlag(entity, flag))
+                        if (FlagManager.entityHasFlag(entity, flag)) {
                             return flag_manager.getEntityFlag(entity, flag);
-                        else
+                        }
+                        else {
                             dB.echoError("Entity '" + owner + "' flag '" + flag + "' not found.");
+                        }
                     }
                 }
                 else {
@@ -1391,10 +1436,12 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
             else if (string.indexOf('@') == 2) {
                 String flag = string.substring(3);
-                if (FlagManager.serverHasFlag(flag))
+                if (FlagManager.serverHasFlag(flag)) {
                     return flag_manager.getGlobalFlag(flag);
-                else
+                }
+                else {
                     dB.echoError("Global flag '" + flag + "' not found.");
+                }
             }
         }
         return null;
@@ -1463,41 +1510,53 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         boolean outcome = false;
 
-        if (comparedto.equalsIgnoreCase("location"))
+        if (comparedto.equalsIgnoreCase("location")) {
             outcome = dLocation.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("material"))
+        else if (comparedto.equalsIgnoreCase("material")) {
             outcome = dMaterial.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("materiallist"))
+        else if (comparedto.equalsIgnoreCase("materiallist")) {
             outcome = dList.valueOf(comparable).containsObjectsFrom(dMaterial.class);
+        }
 
-        else if (comparedto.equalsIgnoreCase("entity"))
+        else if (comparedto.equalsIgnoreCase("entity")) {
             outcome = dEntity.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("spawnedentity"))
+        else if (comparedto.equalsIgnoreCase("spawnedentity")) {
             outcome = (dEntity.matches(comparable) && dEntity.valueOf(comparable).isSpawned());
+        }
 
-        else if (comparedto.equalsIgnoreCase("npc"))
+        else if (comparedto.equalsIgnoreCase("npc")) {
             outcome = dNPC.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("player"))
+        else if (comparedto.equalsIgnoreCase("player")) {
             outcome = dPlayer.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("offlineplayer"))
+        else if (comparedto.equalsIgnoreCase("offlineplayer")) {
             outcome = (dPlayer.valueOf(comparable) != null && !dPlayer.valueOf(comparable).isOnline());
+        }
 
-        else if (comparedto.equalsIgnoreCase("onlineplayer"))
+        else if (comparedto.equalsIgnoreCase("onlineplayer")) {
             outcome = (dPlayer.valueOf(comparable) != null && dPlayer.valueOf(comparable).isOnline());
+        }
 
-        else if (comparedto.equalsIgnoreCase("item"))
+        else if (comparedto.equalsIgnoreCase("item")) {
             outcome = dItem.matches(comparable);
+        }
 
-        else if (comparedto.equalsIgnoreCase("cuboid"))
+        else if (comparedto.equalsIgnoreCase("cuboid")) {
             outcome = dCuboid.matches(comparable);
+        }
 
-        else
+        else {
             dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
+        }
 
         return outcome;
     }

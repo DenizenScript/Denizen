@@ -88,12 +88,15 @@ public class InventoryCommand extends AbstractCommand {
                 scriptEntry.addObject("slot", arg.asElement());
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("actions"))
+        if (!scriptEntry.hasObject("actions")) {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
+        }
 
         scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory() : null);
@@ -127,8 +130,9 @@ public class InventoryCommand extends AbstractCommand {
                                 .openWorkbench(null, true);
                     }
                     // Otherwise, open inventory as usual
-                    else
+                    else {
                         ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                    }
                     break;
 
                 // Make the attached player close any open inventory
@@ -230,8 +234,9 @@ public class InventoryCommand extends AbstractCommand {
 
                 // If this is a player inventory, update it
                 case UPDATE:
-                    if (!destination.update())
+                    if (!destination.update()) {
                         dB.echoError("Only player inventories can be force-updated!");
+                    }
                     break;
 
             }

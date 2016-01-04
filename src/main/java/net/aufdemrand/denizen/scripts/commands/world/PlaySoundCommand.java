@@ -25,23 +25,27 @@ public class PlaySoundCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dLocation.class))
+                    && arg.matchesArgumentList(dLocation.class)) {
                 scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dPlayer.class))
+                    && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dPlayer.class));
+            }
 
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("volume, v"))
+                    && arg.matchesPrefix("volume, v")) {
                 scriptEntry.addObject("volume", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("pitch, p"))
+                    && arg.matchesPrefix("pitch, p")) {
                 scriptEntry.addObject("pitch", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrimitive(aH.PrimitiveType.String)) {
@@ -53,15 +57,18 @@ public class PlaySoundCommand extends AbstractCommand {
                 scriptEntry.addObject("custom", Element.TRUE);
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
-        if (!scriptEntry.hasObject("sound"))
+        if (!scriptEntry.hasObject("sound")) {
             throw new InvalidArgumentsException("Missing sound argument!");
-        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("entities"))
+        }
+        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
 
         scriptEntry.defaultObject("volume", new Element(1));
         scriptEntry.defaultObject("pitch", new Element(1));
@@ -91,29 +98,36 @@ public class PlaySoundCommand extends AbstractCommand {
         try {
             if (locations != null) {
                 if (custom.asBoolean()) {
-                    for (dLocation location : locations)
+                    for (dLocation location : locations) {
                         for (Player player : location.getWorld().getPlayers())
-                            // Note: Randomly defining 100 blocks as maximum hear distance.
-                            if (player.getLocation().distanceSquared(location) < 100 * 100)
+                        // Note: Randomly defining 100 blocks as maximum hear distance.
+                        {
+                            if (player.getLocation().distanceSquared(location) < 100 * 100) {
                                 player.playSound(location, sound.asString(),
                                         volume.asFloat(), pitch.asFloat());
+                            }
+                        }
+                    }
                 }
                 else {
-                    for (dLocation location : locations)
+                    for (dLocation location : locations) {
                         location.getWorld().playSound(location,
                                 Sound.valueOf(sound.asString().toUpperCase()),
                                 volume.asFloat(), pitch.asFloat());
+                    }
                 }
             }
             else {
                 for (dPlayer player : players) {
-                    if (custom.asBoolean())
+                    if (custom.asBoolean()) {
                         player.getPlayerEntity().playSound(player.getLocation(),
                                 sound.asString(), volume.asFloat(), pitch.asFloat());
-                    else
+                    }
+                    else {
                         player.getPlayerEntity().playSound(player.getLocation(),
                                 Sound.valueOf(sound.asString().toUpperCase()),
                                 volume.asFloat(), pitch.asFloat());
+                    }
                 }
             }
         }

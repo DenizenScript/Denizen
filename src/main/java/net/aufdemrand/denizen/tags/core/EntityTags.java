@@ -20,7 +20,9 @@ public class EntityTags {
     @TagManager.TagEvents
     public void entityTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("entity") || event.replaced()) return;
+        if (!event.matches("entity") || event.replaced()) {
+            return;
+        }
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = event.getAttributes();
@@ -36,7 +38,9 @@ public class EntityTags {
         }
 
         if (e == null || !e.isValid()) {
-            if (!event.hasAlternative()) dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
+            if (!event.hasAlternative()) {
+                dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
+            }
             return;
         }
 

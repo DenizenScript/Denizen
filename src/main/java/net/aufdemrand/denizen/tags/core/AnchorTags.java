@@ -21,16 +21,22 @@ public class AnchorTags implements Listener {
 
     @TagManager.TagEvents
     public void anchorTags(ReplaceableTagEvent event) {
-        if (!event.matches("ANCHOR")) return;
+        if (!event.matches("ANCHOR")) {
+            return;
+        }
 
         dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "anchor: tags are deprecated! Use <npc.anchor[]>!");
         NPC npc = null;
         if (event.getType() != null
-                && event.getType().matches("\\d+"))
+                && event.getType().matches("\\d+")) {
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-        else if (((BukkitTagContext) event.getContext()).npc != null)
+        }
+        else if (((BukkitTagContext) event.getContext()).npc != null) {
             npc = ((BukkitTagContext) event.getContext()).npc.getCitizen();
-        if (npc == null) return;
+        }
+        if (npc == null) {
+            return;
+        }
 
         if (npc.getTrait(Anchors.class).getAnchor(event.getValue()) != null) {
             Location anchor = npc.getTrait(Anchors.class).getAnchor(event.getValue()).getLocation();

@@ -34,15 +34,18 @@ public class dPlugin implements dObject {
     @Fetchable("pl")
     public static dPlugin valueOf(String string, TagContext context) {
 
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         string = string.toLowerCase().replace("pl@", "");
 
         try {
             // Attempt to match from plugin list, as PluginManager#getPlugin is case sensitive
             for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
-                if (string.equalsIgnoreCase(plugin.getName()))
+                if (string.equalsIgnoreCase(plugin.getName())) {
                     return new dPlugin(plugin);
+                }
             }
         }
         catch (Exception e) {
@@ -54,11 +57,13 @@ public class dPlugin implements dObject {
     }
 
     public static boolean matches(String arg) {
-        if (arg.toLowerCase().startsWith("pl@"))
+        if (arg.toLowerCase().startsWith("pl@")) {
             return true;
+        }
         for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
-            if (arg.equalsIgnoreCase(plugin.getName()))
+            if (arg.equalsIgnoreCase(plugin.getName())) {
                 return true;
+            }
         }
         return false;
     }
@@ -232,7 +237,9 @@ public class dPlugin implements dObject {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);

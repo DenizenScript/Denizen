@@ -418,9 +418,12 @@ public class dMaterial implements dObject {
     public static dMaterial registerVariety(dMaterial material) {
         Map<Integer, dMaterial> entry;
         // Get any existing entries for the Material, or make a new HashMap for entries.
-        if (material_varieties.containsKey(material.getMaterial()))
+        if (material_varieties.containsKey(material.getMaterial())) {
             entry = material_varieties.get(material.getMaterial());
-        else entry = new HashMap<Integer, dMaterial>();
+        }
+        else {
+            entry = new HashMap<Integer, dMaterial>();
+        }
         // Put in new entry
         entry.put((int) material.data, material);
         // Return the dMaterial
@@ -483,10 +486,13 @@ public class dMaterial implements dObject {
      * @return a dMaterial representation of the input Bukkit material
      */
     public static dMaterial getMaterialFrom(Material material, int data) {
-        if (material == Material.AIR) return AIR;
+        if (material == Material.AIR) {
+            return AIR;
+        }
         if (material_varieties.containsKey(material)) {
-            if (material_varieties.get(material).containsKey(data))
+            if (material_varieties.get(material).containsKey(data)) {
                 return material_varieties.get(material).get(data);
+            }
         }
 
         return new dMaterial(material, data);
@@ -540,8 +546,9 @@ public class dMaterial implements dObject {
 
                 // Iterate through dMaterials
                 dMaterial mat = all_dMaterials.get(materialName.toUpperCase());
-                if (mat != null)
+                if (mat != null) {
                     return mat;
+                }
             }
         }
 
@@ -560,10 +567,13 @@ public class dMaterial implements dObject {
         // Avoid case sensitivity
         arg = arg.toUpperCase();
 
-        if (arg.startsWith("M@")) return true;
-
-        if (arg.matches("(?:M@)?RANDOM"))
+        if (arg.startsWith("M@")) {
             return true;
+        }
+
+        if (arg.matches("(?:M@)?RANDOM")) {
+            return true;
+        }
 
         Matcher m = materialPattern.matcher(arg);
 
@@ -574,8 +584,9 @@ public class dMaterial implements dObject {
             // If this argument is in an integer, return true if it does not
             // exceed the number of materials in Bukkit
             if (aH.matchesInteger(materialName)) {
-                if (aH.getIntegerFrom(arg) < Material.values().length)
+                if (aH.getIntegerFrom(arg) < Material.values().length) {
                     return true;
+                }
             }
 
             // Check if this argument matches a Material or a special stored
@@ -589,8 +600,9 @@ public class dMaterial implements dObject {
                 }
 
                 // Iterate through dMaterials
-                if (all_dMaterials.get(materialName) != null)
+                if (all_dMaterials.get(materialName) != null) {
                     return true;
+                }
             }
         }
 
@@ -603,8 +615,9 @@ public class dMaterial implements dObject {
      */
     @Override
     public boolean equals(Object object) {
-        if (object instanceof dMaterial)
+        if (object instanceof dMaterial) {
             return ((dMaterial) object).identify().equals(this.identify());
+        }
         else {
             dMaterial parsed = valueOf(object.toString());
             return parsed != null && parsed.identify().equals(this.identify());
@@ -619,8 +632,12 @@ public class dMaterial implements dObject {
     private dMaterial(Material material, int data) {
         this.material = material;
 
-        if (data < 0) this.data = null;
-        else this.data = (byte) data;
+        if (data < 0) {
+            this.data = null;
+        }
+        else {
+            this.data = (byte) data;
+        }
     }
 
     private dMaterial(Material material) {
@@ -646,10 +663,12 @@ public class dMaterial implements dObject {
 
 
     public Byte getData(byte fallback) {
-        if (data == null)
+        if (data == null) {
             return fallback;
-        else
+        }
+        else {
             return data;
+        }
     }
 
     public Byte getData() {
@@ -662,11 +681,14 @@ public class dMaterial implements dObject {
 
     public boolean matchesMaterialData(MaterialData data) {
         // If this material has data, check datas
-        if (hasData())
+        if (hasData()) {
             return (material == data.getItemType() && this.data == data.getData());
+        }
 
-            // Else, return matched itemType/materialType
-        else return material == data.getItemType();
+        // Else, return matched itemType/materialType
+        else {
+            return material == data.getItemType();
+        }
     }
 
     public MaterialData getMaterialData() {
@@ -714,37 +736,57 @@ public class dMaterial implements dObject {
 
     @Override
     public String identify() {
-        if (forcedIdentity != null) return "m@" + forcedIdentityLow;
-        if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
+        if (forcedIdentity != null) {
+            return "m@" + forcedIdentityLow;
+        }
+        if (getData() != null && getData() > 0) {
+            return "m@" + material.name().toLowerCase() + "," + getData();
+        }
         return "m@" + material.name().toLowerCase();
     }
 
     public String identifyFull() {
-        if (forcedIdentity != null) return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
-        if (getData() != null && getData() > 0) return "m@" + material.name().toLowerCase() + "," + getData();
+        if (forcedIdentity != null) {
+            return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
+        }
+        if (getData() != null && getData() > 0) {
+            return "m@" + material.name().toLowerCase() + "," + getData();
+        }
         return "m@" + material.name().toLowerCase();
     }
 
     @Override
     public String identifySimple() {
-        if (forcedIdentity != null) return "m@" + forcedIdentityLow;
+        if (forcedIdentity != null) {
+            return "m@" + forcedIdentityLow;
+        }
         return "m@" + material.name().toLowerCase();
     }
 
     public String identifyNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentityLow;
-        if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
+        if (forcedIdentity != null) {
+            return forcedIdentityLow;
+        }
+        if (getData() != null && getData() > 0) {
+            return material.name().toLowerCase() + "," + getData();
+        }
         return material.name().toLowerCase();
     }
 
     public String identifySimpleNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentityLow;
+        if (forcedIdentity != null) {
+            return forcedIdentityLow;
+        }
         return material.name().toLowerCase();
     }
 
     public String identifyFullNoIdentifier() {
-        if (forcedIdentity != null) return forcedIdentityLow + (getData() != null ? "," + getData() : "");
-        if (getData() != null && getData() > 0) return material.name().toLowerCase() + "," + getData();
+        if (forcedIdentity != null) {
+            return forcedIdentityLow + (getData() != null ? "," + getData() : "");
+        }
+        if (getData() != null && getData() > 0) {
+            return material.name().toLowerCase() + "," + getData();
+        }
         return material.name().toLowerCase();
     }
 
@@ -754,14 +796,17 @@ public class dMaterial implements dObject {
     }
 
     public String realName() {
-        if (forcedIdentity != null) return forcedIdentityLow;
+        if (forcedIdentity != null) {
+            return forcedIdentityLow;
+        }
         return material.name().toLowerCase();
     }
 
     @Override
     public dObject setPrefix(String prefix) {
-        if (prefix != null)
+        if (prefix != null) {
             this.prefix = prefix;
+        }
         return this;
     }
 
@@ -946,9 +991,13 @@ public class dMaterial implements dObject {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dMaterial compared = dMaterial.valueOf(attribute.getContext(1));
-                if (compared == null) return Element.FALSE.getAttribute(attribute.fulfill(1));
-                else return new Element(((dMaterial) object).material == compared.getMaterial())
-                        .getAttribute(attribute.fulfill(1));
+                if (compared == null) {
+                    return Element.FALSE.getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new Element(((dMaterial) object).material == compared.getMaterial())
+                            .getAttribute(attribute.fulfill(1));
+                }
             }
         });
 
@@ -991,12 +1040,14 @@ public class dMaterial implements dObject {
         registerTag("full", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (((dMaterial) object).hasData())
+                if (((dMaterial) object).hasData()) {
                     return new Element(((dMaterial) object).identifyFull())
                             .getAttribute(attribute.fulfill(1));
-                else
+                }
+                else {
                     return new Element(((dMaterial) object).identify())
                             .getAttribute(attribute.fulfill(1));
+                }
             }
         });
 
@@ -1057,7 +1108,9 @@ public class dMaterial implements dObject {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
@@ -1073,7 +1126,9 @@ public class dMaterial implements dObject {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));

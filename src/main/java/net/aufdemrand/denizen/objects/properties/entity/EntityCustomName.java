@@ -20,7 +20,7 @@ public class EntityCustomName implements Property {
         return new EntityCustomName((dEntity) entity);
     }
 
-    private EntityCustomName(dEntity ent){
+    private EntityCustomName(dEntity ent) {
         entity = ent;
     }
 
@@ -82,7 +82,9 @@ public class EntityCustomName implements Property {
         }
         else
 
-        return null;
+        {
+            return null;
+        }
     }
 
     @Override

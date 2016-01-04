@@ -87,8 +87,9 @@ public class MapImage extends MapObject {
         for (int x2 = 0; x2 < width; ++x2) {
             for (int y2 = 0; y2 < height; ++y2) {
                 byte p = bytes[y2 * width + x2];
-                if (p != MapPalette.TRANSPARENT)
+                if (p != MapPalette.TRANSPARENT) {
                     mapCanvas.setPixel(x + x2, y + y2, p);
+                }
             }
         }
     }
@@ -123,7 +124,9 @@ public class MapImage extends MapObject {
     }
 
     private static byte matchColor(Color color) {
-        if (color.getAlpha() < 128) return 0;
+        if (color.getAlpha() < 128) {
+            return 0;
+        }
         int index = 0;
         double best = -1;
         for (int i = 4; i < bukkitColors.length; i++) {

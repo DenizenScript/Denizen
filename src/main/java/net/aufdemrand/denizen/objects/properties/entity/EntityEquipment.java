@@ -19,9 +19,13 @@ public class EntityEquipment implements Property {
     }
 
     public static EntityEquipment getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityEquipment((dEntity) entity);
+        else {
+            return new EntityEquipment((dEntity) entity);
+        }
     }
 
 

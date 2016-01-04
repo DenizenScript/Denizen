@@ -192,9 +192,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
 
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(AnimateCommand.class,
                     "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
+        }
 
 
         // <--[command]
@@ -303,9 +304,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to remove an npc's assignment.
         // - assignment remove
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(AssignmentCommand.class,
                     "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
+        }
 
 
         // <--[command]
@@ -424,9 +426,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - break l@17,64,-87,world entity:n@bob radius:5
 
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(BreakCommand.class,
                     "BREAK", "break [<location>] (entity:<entity>) (radius:<#.#>)", 1);
+        }
 
 
         // <--[command]
@@ -550,9 +553,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(ChatCommand.class,
                     "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
+        }
 
 
         // <--[command]
@@ -688,9 +692,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to create an NPC and spawn it immediately.
         // - create spider Joe <player.location>
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(CreateCommand.class,
                     "CREATE", "create [<entity>] [<name>] (<location>)", 1);
+        }
 
 
         // <--[command]
@@ -747,9 +752,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to despawn several NPCs.
         // - despawn <npc>|<player.selected_npc>|n@32
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(DespawnCommand.class,
                     "DESPAWN", "despawn (<npc>)", 0);
+        }
 
 
         // <--[command]
@@ -787,9 +793,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - disengage
         //
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(DisengageCommand.class,
                     "DISENGAGE", "disengage (npc:<npc>)", 0);
+        }
 
 
         // <--[command]
@@ -908,9 +915,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - flag player finished_quests:->:super_quest
         //
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
                     "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
+        }
 
 
         // <--[command]
@@ -1803,9 +1811,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Change up the range and make the NPC more realistic
         // - lookclose true range:10 realistic
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(LookcloseCommand.class,
                     "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);
+        }
 
 
         // <--[command]
@@ -2045,9 +2054,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - pause waypoints
         // - resume waypoints
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(PauseCommand.class,
                     "PAUSE, RESUME", "pause [waypoints/activity] (<duration>)", 1);
+        }
 
 
         // <--[command]
@@ -2156,9 +2166,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Remove a pose from an NPC.
         // - pose remove id:MyPose1
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(PoseCommand.class,
                     "POSE", "pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)", 1);
+        }
 
 
         // <--[command]
@@ -2319,9 +2330,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to rename a different NPC.
         // - rename Bob npc:n@32
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(RenameCommand.class,
                     "RENAME", "rename [<name>]", 1);
+        }
 
 
         // <--[command]
@@ -2904,9 +2916,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(StandCommand.class,
                     "STAND", "stand", 0);
+        }
 
 
         // <--[command]
@@ -3105,9 +3118,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(TraitCommand.class,
                     "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
+        }
 
 
         // <--[command]
@@ -3173,9 +3187,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             registerCoreMember(VulnerableCommand.class,
                     "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
+        }
 
         // <--[command]
         // @Name Wait

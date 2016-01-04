@@ -19,7 +19,9 @@ public class InventoryContents implements Property {
     }
 
     public static InventoryContents getFrom(dObject inventory) {
-        if (!describes(inventory)) return null;
+        if (!describes(inventory)) {
+            return null;
+        }
         return new InventoryContents((dInventory) inventory);
     }
 
@@ -35,33 +37,41 @@ public class InventoryContents implements Property {
     }
 
     public dList getContents(int simpleOrFull) {
-        if (inventory.getInventory() == null)
+        if (inventory.getInventory() == null) {
             return null;
+        }
         dList contents = new dList();
         boolean containsNonAir = false;
         for (ItemStack item : inventory.getInventory().getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 containsNonAir = true;
-                if (simpleOrFull == 1)
+                if (simpleOrFull == 1) {
                     contents.add(new dItem(item).identifySimple());
-                else if (simpleOrFull == 2)
+                }
+                else if (simpleOrFull == 2) {
                     contents.add(new dItem(item).getFullString());
-                else
+                }
+                else {
                     contents.add(new dItem(item).identify());
+                }
             }
-            else
+            else {
                 contents.add("i@air");
+            }
         }
-        if (!containsNonAir)
+        if (!containsNonAir) {
             contents.clear();
-        else
+        }
+        else {
             contents = dList.valueOf(contents.identify().replaceAll("(\\|i@air)*$", ""));
+        }
         return contents;
     }
 
     public dList getContentsWithLore(String lore, boolean simple) {
-        if (inventory.getInventory() == null)
+        if (inventory.getInventory() == null) {
             return null;
+        }
         dList contents = new dList();
         lore = ChatColor.stripColor(lore);
         for (ItemStack item : inventory.getInventory().getContents()) {
@@ -71,10 +81,12 @@ public class InventoryContents implements Property {
                         // Add the item to the list if it contains the lore specified in
                         // the context
                         if (ChatColor.stripColor(line).equalsIgnoreCase(lore)) {
-                            if (simple)
+                            if (simple) {
                                 contents.add(new dItem(item).identifySimple());
-                            else
+                            }
+                            else {
                                 contents.add(new dItem(item).identify());
+                            }
                             break;
                         }
                     }
@@ -91,13 +103,16 @@ public class InventoryContents implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!inventory.getIdType().equals("generic") && !inventory.isUnique())
+        if (!inventory.getIdType().equals("generic") && !inventory.isUnique()) {
             return null;
+        }
         dList contents = getContents(0);
-        if (contents == null || contents.isEmpty())
+        if (contents == null || contents.isEmpty()) {
             return null;
-        else
+        }
+        else {
             return contents.identify();
+        }
     }
 
     @Override
@@ -131,8 +146,9 @@ public class InventoryContents implements Property {
             // @description
             // Returns a list of all items in the inventory, without item properties.
             // -->
-            if (attribute.startsWith("simple"))
+            if (attribute.startsWith("simple")) {
                 return getContents(1).getAttribute(attribute.fulfill(1));
+            }
 
             // <--[tag]
             // @attribute <in@inventory.list_contents.full>
@@ -142,8 +158,9 @@ public class InventoryContents implements Property {
             // @description
             // Returns a list of all items in the inventory, without with the tag item.full used.
             // -->
-            if (attribute.startsWith("full"))
+            if (attribute.startsWith("full")) {
                 return getContents(2).getAttribute(attribute.fulfill(1));
+            }
 
             // <--[tag]
             // @attribute <in@inventory.list_contents.with_lore[<element>]>
@@ -156,7 +173,9 @@ public class InventoryContents implements Property {
             // -->
             if (attribute.startsWith("with_lore")) {
                 // Must specify lore to check
-                if (!attribute.hasContext(1)) return null;
+                if (!attribute.hasContext(1)) {
+                    return null;
+                }
                 String lore = attribute.getContext(1);
                 attribute.fulfill(1);
                 // <--[tag]
@@ -168,9 +187,10 @@ public class InventoryContents implements Property {
                 // Returns a list of all items in the inventory with the specified
                 // lore, without item properties. Color codes are ignored.
                 // -->
-                if (attribute.startsWith("simple"))
+                if (attribute.startsWith("simple")) {
                     return getContentsWithLore(lore, true)
                             .getAttribute(attribute.fulfill(1));
+                }
 
                 return getContentsWithLore(lore, false)
                         .getAttribute(attribute);

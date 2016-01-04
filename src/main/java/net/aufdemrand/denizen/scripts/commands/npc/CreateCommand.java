@@ -26,23 +26,29 @@ public class CreateCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Avoid duplication of objects
                 dEntity ent = arg.asType(dEntity.class);
-                if (!ent.isGeneric() && !ent.isCitizensNPC())
+                if (!ent.isGeneric() && !ent.isCitizensNPC()) {
                     throw new InvalidArgumentsException("Entity supplied must be generic or a Citizens NPC!");
+                }
                 scriptEntry.addObject("entity_type", ent);
             }
 
             else if (!scriptEntry.hasObject("spawn_location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("spawn_location", arg.asType(dLocation.class));
+            }
 
-            else if (!scriptEntry.hasObject("name"))
+            else if (!scriptEntry.hasObject("name")) {
                 scriptEntry.addObject("name", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("traits")
-                    && arg.matchesPrefix("t", "trait", "traits"))
+                    && arg.matchesPrefix("t", "trait", "traits")) {
                 scriptEntry.addObject("traits", arg.asType(dList.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         if (!scriptEntry.hasObject("name")) {
@@ -77,15 +83,18 @@ public class CreateCommand extends AbstractCommand {
         // Add the created NPC into the script entry so it can be utilized if need be.
         scriptEntry.addObject("created_npc", created);
 
-        if (loc != null)
+        if (loc != null) {
             created.getCitizen().spawn(loc);
+        }
         if (traits != null) {
             for (String trait_name : traits) {
                 Trait trait = CitizensAPI.getTraitFactory().getTrait(trait_name);
-                if (trait != null)
+                if (trait != null) {
                     created.getCitizen().addTrait(trait);
-                else
+                }
+                else {
                     dB.echoError(scriptEntry.getResidingQueue(), "Could not add trait to NPC: " + trait_name);
+                }
             }
         }
         for (Mechanism mechanism : type.getWaitingMechanisms()) {

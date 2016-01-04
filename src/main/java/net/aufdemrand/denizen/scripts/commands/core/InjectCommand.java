@@ -109,30 +109,37 @@ public class InjectCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("instant", "instantly"))
+            if (arg.matches("instant", "instantly")) {
                 scriptEntry.addObject("instant", new Element(true));
+            }
 
-            else if (arg.matches("local", "locally"))
+            else if (arg.matches("local", "locally")) {
                 scriptEntry.addObject("local", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("p", "path"))
+                    && !arg.matchesPrefix("p", "path")) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
-            else if (!scriptEntry.hasObject("path"))
+            else if (!scriptEntry.hasObject("path")) {
                 scriptEntry.addObject("path", arg.asElement());
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
-        if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local"))
+        if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local")) {
             throw new InvalidArgumentsException("Must define a SCRIPT to be injected.");
+        }
 
-        if (!scriptEntry.hasObject("path") && scriptEntry.hasObject("local"))
+        if (!scriptEntry.hasObject("path") && scriptEntry.hasObject("local")) {
             throw new InvalidArgumentsException("Must specify a PATH.");
+        }
 
     }
 
@@ -151,17 +158,21 @@ public class InjectCommand extends AbstractCommand {
         // Get the entries
         List<ScriptEntry> entries;
         // If it's local
-        if (scriptEntry.hasObject("local"))
+        if (scriptEntry.hasObject("local")) {
             entries = scriptEntry.getScript().getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
+        }
 
-            // If it has a path
-        else if (scriptEntry.hasObject("path"))
+        // If it has a path
+        else if (scriptEntry.hasObject("path")) {
             entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
+        }
 
-            // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+        // Else, assume standard path
+        else {
+            entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+        }
 
         // For determine
         ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));

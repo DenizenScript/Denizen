@@ -33,7 +33,9 @@ public class BurnCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or the Player as the default entity

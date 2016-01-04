@@ -37,10 +37,14 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
     public void setInvisible(boolean invisible) {
         this.invisible = invisible;
-        if (invisible) setInvisible();
-        else if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity)
-            if (((LivingEntity) npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY))
+        if (invisible) {
+            setInvisible();
+        }
+        else if (npc.isSpawned() && npc.getEntity() instanceof LivingEntity) {
+            if (((LivingEntity) npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 ((LivingEntity) npc.getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
+            }
+        }
     }
 
 
@@ -58,7 +62,9 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
 
     @Override
     public void onSpawn() {
-        if (invisible) setInvisible();
+        if (invisible) {
+            setInvisible();
+        }
     }
 
 

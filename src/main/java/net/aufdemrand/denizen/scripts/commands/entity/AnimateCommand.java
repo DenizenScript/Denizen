@@ -41,11 +41,13 @@ public class AnimateCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
-        if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation"))
+        if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation")) {
             throw new InvalidArgumentsException("Must specify a valid animation!");
+        }
     }
 
     @SuppressWarnings("unchecked")

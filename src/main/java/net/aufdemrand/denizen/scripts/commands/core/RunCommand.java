@@ -140,7 +140,9 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("path", arg.asElement());
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
 
         }
 
@@ -178,12 +180,15 @@ public class RunCommand extends AbstractCommand implements Holdable {
         }
 
         // If it has a path
-        else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null)
+        else if (scriptEntry.hasObject("path") && scriptEntry.getObject("path") != null) {
             entries = script.getContainer().getEntries(scriptEntry.entryData.clone(),
                     scriptEntry.getElement("path").asString());
+        }
 
-            // Else, assume standard path
-        else entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+        // Else, assume standard path
+        else {
+            entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
+        }
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
@@ -198,14 +203,16 @@ public class RunCommand extends AbstractCommand implements Holdable {
             queue = TimedQueue.getQueue(id).addEntries(entries);
 
             // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
-            if (script != null && script.getContainer().contains("SPEED"))
+            if (script != null && script.getContainer().contains("SPEED")) {
                 ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks());
+            }
 
         }
 
         // Set any delay
-        if (scriptEntry.hasObject("delay"))
+        if (scriptEntry.hasObject("delay")) {
             queue.delayUntil(System.currentTimeMillis() + ((Duration) scriptEntry.getObject("delay")).getMillis());
+        }
 
         // Set any definitions
         if (scriptEntry.hasObject("definitions")) {

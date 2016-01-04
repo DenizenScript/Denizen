@@ -16,9 +16,13 @@ public class EntityKnockback implements Property {
     }
 
     public static EntityKnockback getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityKnockback((dEntity) entity);
+        else {
+            return new EntityKnockback((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -64,9 +68,10 @@ public class EntityKnockback implements Property {
         // @description
         // If the entity is an arrow, returns the knockback strength of the arrow.
         // -->
-        if (attribute.startsWith("knockback"))
+        if (attribute.startsWith("knockback")) {
             return new Element(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

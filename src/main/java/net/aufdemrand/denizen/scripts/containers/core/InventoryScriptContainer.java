@@ -142,7 +142,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 + items + "]... Ignoring it");
                         continue;
                     }
-                    String[] itemsInLine = items.substring(1, items.length()-1).split("\\[?\\]?\\s+\\[");
+                    String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[");
                     for (String item : itemsInLine) {
                         if (contains("DEFINITIONS." + item)) {
                             dItem def = dItem.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), player, npc);
@@ -182,8 +182,9 @@ public class InventoryScriptContainer extends ScriptContainer {
             inventory = null;
         }
 
-        if (inventory != null)
+        if (inventory != null) {
             InventoryScriptHelper.tempInventoryScripts.put(inventory.getInventory(), getName());
+        }
 
         return inventory;
 

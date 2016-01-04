@@ -116,13 +116,17 @@ public class ParticlesTrait extends Trait {
     public void playFlameEffect() {
         Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.MOBSPAWNER_FLAMES, 0);
-        if (dense) world.playEffect(location.add(0, 1, 0), Effect.MOBSPAWNER_FLAMES, 0);
+        if (dense) {
+            world.playEffect(location.add(0, 1, 0), Effect.MOBSPAWNER_FLAMES, 0);
+        }
     }
 
     public void playEnderEffect() {
         Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.ENDER_SIGNAL, 0);
-        if (dense) world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
+        if (dense) {
+            world.playEffect(location.add(0, 1, 0), Effect.ENDER_SIGNAL, 0);
+        }
     }
 
     public void playPotionEffect() { // TODO: Implement?
@@ -132,7 +136,9 @@ public class ParticlesTrait extends Trait {
     public void playPotionBreakEffect() {
         Location location = npc.getEntity().getLocation();
         world.playEffect(location, Effect.POTION_BREAK, 0);
-        if (dense) world.playEffect(location.add(0, 1, 0), Effect.POTION_BREAK, 0);
+        if (dense) {
+            world.playEffect(location.add(0, 1, 0), Effect.POTION_BREAK, 0);
+        }
     }
 
     public void playHeartEffect() {
@@ -140,7 +146,9 @@ public class ParticlesTrait extends Trait {
         Wolf tempWolf = world.spawn(location, Wolf.class);
         ((CraftWolf) tempWolf).getHandle().setInvisible(true);
         tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
-        if (dense) tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
+        if (dense) {
+            tempWolf.playEffect(EntityEffect.WOLF_HEARTS);
+        }
         tempWolf.remove();
     }
 

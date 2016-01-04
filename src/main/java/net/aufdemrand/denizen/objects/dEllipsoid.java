@@ -20,9 +20,11 @@ public class dEllipsoid implements dObject, Notable {
 
     public static List<dEllipsoid> getNotableEllipsoidsContaining(Location location) {
         List<dEllipsoid> cuboids = new ArrayList<dEllipsoid>();
-        for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class))
-            if (ellipsoid.contains(location))
+        for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class)) {
+            if (ellipsoid.contains(location)) {
                 cuboids.add(ellipsoid);
+            }
+        }
 
         return cuboids;
     }
@@ -43,16 +45,19 @@ public class dEllipsoid implements dObject, Notable {
     @Fetchable("ellipsoid")
     public static dEllipsoid valueOf(String string, TagContext context) {
 
-        if (string.startsWith("ellipsoid@"))
+        if (string.startsWith("ellipsoid@")) {
             string = string.substring(10);
+        }
 
-        if (NotableManager.isType(string, dEllipsoid.class))
+        if (NotableManager.isType(string, dEllipsoid.class)) {
             return (dEllipsoid) NotableManager.getSavedObject(string);
+        }
 
         List<String> split = CoreUtilities.split(string, ',');
 
-        if (split.size() != 7)
+        if (split.size() != 7) {
             return null;
+        }
 
         dLocation location = new dLocation(dWorld.valueOf(split.get(3)).getWorld(),
                 aH.getDoubleFrom(split.get(0)), aH.getDoubleFrom(split.get(1)), aH.getDoubleFrom(split.get(2)));
@@ -178,10 +183,12 @@ public class dEllipsoid implements dObject, Notable {
 
     @Override
     public String identify() {
-        if (isUnique())
+        if (isUnique()) {
             return "ellipsoid@" + NotableManager.getSavedId(this);
-        else
+        }
+        else {
             return identifyFull();
+        }
     }
 
     @Override
@@ -201,8 +208,9 @@ public class dEllipsoid implements dObject, Notable {
 
     @Override
     public dObject setPrefix(String prefix) {
-        if (prefix != null)
+        if (prefix != null) {
             this.prefix = prefix;
+        }
         return this;
     }
 
@@ -219,12 +227,14 @@ public class dEllipsoid implements dObject, Notable {
         registerTag("blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (attribute.hasContext(1))
+                if (attribute.hasContext(1)) {
                     return new dList(((dEllipsoid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
                             .getAttribute(attribute.fulfill(1));
-                else
+                }
+                else {
                     return new dList(((dEllipsoid) object).getBlocks())
                             .getAttribute(attribute.fulfill(1));
+                }
             }
         });
         registerTag("get_blocks", registeredTags.get("blocks"));
@@ -282,7 +292,9 @@ public class dEllipsoid implements dObject, Notable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);

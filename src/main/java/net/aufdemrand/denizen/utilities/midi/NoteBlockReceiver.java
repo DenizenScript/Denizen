@@ -71,12 +71,16 @@ public class NoteBlockReceiver implements Receiver {
 
     public void playNote(ShortMessage message) {
         // if this isn't a NOTE_ON message, we can't play it
-        if (ShortMessage.NOTE_ON != message.getCommand()) return;
+        if (ShortMessage.NOTE_ON != message.getCommand()) {
+            return;
+        }
 
         int channel = message.getChannel();
 
         // If this is a percussion channel, return
-        if (channel == 9) return;
+        if (channel == 9) {
+            return;
+        }
 
         if (channelPatches == null) {
             dB.echoError("Trying to play notes on closed midi NoteBlockReceiver!");
@@ -91,7 +95,9 @@ public class NoteBlockReceiver implements Receiver {
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
 
         Sound instrument = Sound.NOTE_PIANO;
-        if (patch != null) instrument = MidiUtil.patchToInstrument(patch);
+        if (patch != null) {
+            instrument = MidiUtil.patchToInstrument(patch);
+        }
 
         if (location != null) {
             location.getWorld().playSound(location, instrument, volume, pitch);
@@ -114,7 +120,9 @@ public class NoteBlockReceiver implements Receiver {
                 }
             }
         }
-        else this.close();
+        else {
+            this.close();
+        }
     }
 
     @Override

@@ -139,11 +139,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler(ignoreCancelled = true)
     public void onProjectileHits(ProjectileHitEvent event) {
         projectile = new dEntity(event.getEntity());
-        if (projectile.getLocation() == null)
+        if (projectile.getLocation() == null) {
             return; // No, I can't explain how or why this would ever happen... nonetheless, it appears it does happen sometimes.
+        }
 
-        if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX()))
+        if (Double.isNaN(projectile.getLocation().getDirection().normalize().getX())) {
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
+        }
 
         Block block = null;
         try {

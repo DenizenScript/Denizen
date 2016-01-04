@@ -17,9 +17,13 @@ public class EntitySize implements Property {
     }
 
     public static EntitySize getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntitySize((dEntity) entity);
+        else {
+            return new EntitySize((dEntity) entity);
+        }
     }
 
 

@@ -53,27 +53,33 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
 
         for (aH.Argument arg : args) {
 
-            if (arg.matchesEnum(BlockType.values()) && type == null)
+            if (arg.matchesEnum(BlockType.values()) && type == null) {
                 type = BlockType.valueOf(arg.getValue().toUpperCase());
+            }
 
             else if (arg.matchesPrefix("qty, q")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
+            }
 
-            else if (arg.matchesPrefix("region, r"))
+            else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
+            }
 
             else if (arg.matchesPrefix("cuboid, c")
-                    && arg.matchesArgumentType(dCuboid.class))
+                    && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);
+            }
 
-            else if (arg.matchesPrefix("blocks, block, b, name, names"))
+            else if (arg.matchesPrefix("blocks, block, b, name, names")) {
                 blocks = arg.asType(dList.class);
+            }
 
         }
 
-        if (blocks == null)
+        if (blocks == null) {
             blocks = new dList("*");
+        }
 
         if (type == null) {
             dB.echoError("Missing TYPE argument! Valid: BUILD, COLLECT, BREAK");
@@ -88,7 +94,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         store("Quantity", required);
         store("Current Blocks", blocks_so_far);
         store("Region", region);
-        if (cuboid != null) store("Cuboid", cuboid.identify());
+        if (cuboid != null) {
+            store("Cuboid", cuboid.identify());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -140,7 +148,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @EventHandler
     public void listenBreak(BlockBreakEvent event) {
         //Check if event references proper player.
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
 
         //Check if region is specified, and if so, is the player in it.
         if (region != null) {
@@ -148,8 +158,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
         //Type BREAK
         if (type == BlockType.BREAK) {
@@ -187,7 +200,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @EventHandler
     public void listenCollect(PlayerPickupItemEvent event) {
         //Check if event references proper player.
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
 
         //Check if region is specified, and if so, is the player in it.
         if (region != null) {
@@ -195,8 +210,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
@@ -218,9 +236,12 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
                 if (event.getItem().getItemStack().getType() == mat.getMaterial() &&
                         event.getItem().getItemStack().getData().equals(mat.getMaterialData())) {
                     //If the specific item has been collected before, dont count it
-                    if (itemsCollected.contains(event.getItem().getEntityId()))
+                    if (itemsCollected.contains(event.getItem().getEntityId())) {
                         return;
-                    else itemsCollected.add(event.getItem().getEntityId());
+                    }
+                    else {
+                        itemsCollected.add(event.getItem().getEntityId());
+                    }
 
                     blocks_so_far++;
                     dB.log(ChatColor.YELLOW + "// " + player.getName()
@@ -235,7 +256,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @EventHandler
     public void listenBucket(PlayerBucketFillEvent event) {
         //Check if event references proper player.
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
 
         //Check if region is specified, and if so, is the player in it.
         if (region != null) {
@@ -243,8 +266,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
         //Type COLLECT
         if (type == BlockType.COLLECT) {
@@ -279,7 +305,9 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @EventHandler
     public void listenPlace(BlockPlaceEvent event) {
         //Check if event references proper player.
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
 
         //Check if region is specified, and if so, is the player in it.
         if (region != null) {
@@ -287,8 +315,11 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
         //Type BUILD
         if (type == BlockType.BUILD) {
@@ -322,8 +353,12 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
     @TagManager.TagEvents
     public void listenTag(ReplaceableTagEvent event) {
 
-        if (!event.matches("LISTENER")) return;
-        if (!event.getType().equalsIgnoreCase(id)) return;
+        if (!event.matches("LISTENER")) {
+            return;
+        }
+        if (!event.getType().equalsIgnoreCase(id)) {
+            return;
+        }
 
         if (event.getValue().equalsIgnoreCase("region")) {
             event.setReplaced(region);

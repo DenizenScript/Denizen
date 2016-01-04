@@ -47,17 +47,22 @@ public class CooldownCommand extends AbstractCommand {
             else if (arg.matchesPrefix("script", "s")) {
                 // Check matchesArgumentType afterwards so we don't default
                 // to the attached script unintentionally.
-                if (arg.matchesArgumentType(dScript.class))
+                if (arg.matchesArgumentType(dScript.class)) {
                     scriptEntry.addObject("script", arg.asType(dScript.class));
-                else
+                }
+                else {
                     throw new InvalidArgumentsException("Specified an invalid script!");
+                }
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("duration"))
+        if (!scriptEntry.hasObject("duration")) {
             throw new InvalidArgumentsException("Requires a valid duration!");
+        }
     }
 
 
@@ -111,26 +116,30 @@ public class CooldownCommand extends AbstractCommand {
         // Check current entry GLOBALLY, reset it if necessary
         if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
             if (System.currentTimeMillis()
-                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
+                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
                 duration = new Duration((double) (DenizenAPI._saves().getLong("Global.Scripts." + scriptName
                         + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
+            }
         }
 
         // No player specified? No need to check any further...
-        if (player == null)
+        if (player == null) {
             return duration;
+        }
 
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))
+        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             return duration;
+        }
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()
                 <= DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             Duration player_dur = new Duration((double) (DenizenAPI._saves().getLong("Players." + player.getSaveName() + ".Scripts."
                     + scriptName + ".Cooldown Time") - System.currentTimeMillis()) / 1000);
-            if (player_dur.getSeconds() > duration.getSeconds())
+            if (player_dur.getSeconds() > duration.getSeconds()) {
                 return player_dur;
+            }
         }
 
         return duration;
@@ -154,19 +163,23 @@ public class CooldownCommand extends AbstractCommand {
         // Check current entry GLOBALLY, reset it if necessary
         if (DenizenAPI._saves().contains("Global.Scripts." + scriptName + ".Cooldown Time")) {
             if (System.currentTimeMillis()
-                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time"))
+                    < DenizenAPI._saves().getLong("Global.Scripts." + scriptName + ".Cooldown Time")) {
                 return false;
-            else
+            }
+            else {
                 DenizenAPI._saves().set("Global.Scripts." + scriptName + ".Cooldown Time", null);
+            }
         }
 
         // No player specified? No need to check any further...
-        if (player == null)
+        if (player == null) {
             return true;
+        }
 
         // If no entry for the script, return true
-        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time"))
+        if (!DenizenAPI._saves().contains("Players." + player.getSaveName() + ".Scripts." + scriptName + ".Cooldown Time")) {
             return true;
+        }
 
         // If there is an entry, check against the time
         if (System.currentTimeMillis()

@@ -19,9 +19,13 @@ public class EntitySitting implements Property {
     }
 
     public static EntitySitting getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntitySitting((dEntity) entity);
+        else {
+            return new EntitySitting((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -41,16 +45,20 @@ public class EntitySitting implements Property {
     @Override
     public String getPropertyString() {
         if (entity.getBukkitEntityType() == EntityType.WOLF) {
-            if (!((Wolf) entity.getBukkitEntity()).isSitting())
+            if (!((Wolf) entity.getBukkitEntity()).isSitting()) {
                 return null;
-            else
+            }
+            else {
                 return "true";
+            }
         }
         else {
-            if (!((Ocelot) entity.getBukkitEntity()).isSitting())
+            if (!((Ocelot) entity.getBukkitEntity()).isSitting()) {
                 return null;
-            else
+            }
+            else {
                 return "true";
+            }
         }
     }
 
@@ -79,12 +87,14 @@ public class EntitySitting implements Property {
         // If the entity is a wolf or ocelot, returns whether the animal is sitting.
         // -->
         if (attribute.startsWith("sitting")) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF)
+            if (entity.getBukkitEntityType() == EntityType.WOLF) {
                 return new Element(((Wolf) entity.getBukkitEntity()).isSitting())
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return new Element(((Ocelot) entity.getBukkitEntity()).isSitting())
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         return null;
@@ -104,10 +114,12 @@ public class EntitySitting implements Property {
         // -->
 
         if (mechanism.matches("sitting") && mechanism.requireBoolean()) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF)
+            if (entity.getBukkitEntityType() == EntityType.WOLF) {
                 ((Wolf) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
-            else
+            }
+            else {
                 ((Ocelot) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
+            }
         }
     }
 }

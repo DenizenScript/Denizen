@@ -26,8 +26,9 @@ public class Conversion {
 
         List<Color> newList = new ArrayList<Color>();
 
-        for (dColor color : colors)
+        for (dColor color : colors) {
             newList.add(color.getColor());
+        }
 
         return newList;
     }
@@ -43,8 +44,9 @@ public class Conversion {
 
         List<ItemStack> newList = new ArrayList<ItemStack>();
 
-        for (dItem item : items)
+        for (dItem item : items) {
             newList.add(item.getItemStack());
+        }
 
         return newList;
     }
@@ -60,8 +62,9 @@ public class Conversion {
 
         List<Entity> newList = new ArrayList<Entity>();
 
-        for (dEntity entity : entities)
+        for (dEntity entity : entities) {
             newList.add(entity.getBukkitEntity());
+        }
 
         return newList;
     }
@@ -79,10 +82,12 @@ public class Conversion {
 
         if (dInventory.matches(string)) {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
-            if (data != null)
+            if (data != null) {
                 return dInventory.valueOf(string, data.getTagContext());
-            else
+            }
+            else {
                 return dInventory.valueOf(string, null);
+            }
         }
         else if (arg.matchesArgumentList(dItem.class)) {
             List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);

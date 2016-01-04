@@ -26,8 +26,12 @@ public class ItemFirework implements Property {
     }
 
     public static ItemFirework getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemFirework((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemFirework((dItem) _item);
+        }
     }
 
 
@@ -43,16 +47,18 @@ public class ItemFirework implements Property {
         if (item.getItemStack().getItemMeta() instanceof FireworkMeta) {
             effects = ((FireworkMeta) item.getItemStack().getItemMeta()).getEffects();
             int power = ((FireworkMeta) item.getItemStack().getItemMeta()).getPower();
-            if (power != 0)
+            if (power != 0) {
                 list.add(String.valueOf(power));
+            }
         }
         else {
             effects = Arrays.asList(((FireworkEffectMeta) item.getItemStack().getItemMeta()).getEffect());
         }
         if (effects != null) {
             for (FireworkEffect effect : effects) {
-                if (effect == null)
+                if (effect == null) {
                     continue;
+                }
                 Color ColOne = effect.getColors() != null && effect.getColors().size() > 0 ? effect.getColors().get(0) : Color.BLUE;
                 Color ColTwo = effect.getFadeColors() != null && effect.getFadeColors().size() > 0 ? effect.getFadeColors().get(0) : ColOne;
                 list.add(effect.hasTrail() + "," + effect.hasFlicker() + "," + effect.getType().name() + "," +
@@ -123,10 +129,12 @@ public class ItemFirework implements Property {
                     FireworkEffect.Builder builder = FireworkEffect.builder();
                     builder.trail(new Element(data[0]).asBoolean());
                     builder.flicker(new Element(data[1]).asBoolean());
-                    if (new Element(data[2]).matchesEnum(FireworkEffect.Type.values()))
+                    if (new Element(data[2]).matchesEnum(FireworkEffect.Type.values())) {
                         builder.with(FireworkEffect.Type.valueOf(data[2].toUpperCase()));
-                    else
+                    }
+                    else {
                         dB.echoError("Invalid firework type '" + data[2] + "'");
+                    }
                     builder.withColor(Color.fromRGB(new Element(data[3]).asInt(),
                             new Element(data[4]).asInt(),
                             new Element(data[5]).asInt()));
@@ -143,10 +151,12 @@ public class ItemFirework implements Property {
                     }
                 }
                 else if (data.length == 1) {
-                    if (meta instanceof FireworkMeta)
+                    if (meta instanceof FireworkMeta) {
                         ((FireworkMeta) meta).setPower(new Element(data[0]).asInt());
-                    else
+                    }
+                    else {
                         dB.echoError("Cannot set the power of a firework effect!");
+                    }
                 }
                 else {
                     dB.echoError("Invalid firework data '" + effect + "'");

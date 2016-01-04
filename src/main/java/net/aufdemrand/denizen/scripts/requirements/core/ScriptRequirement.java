@@ -28,29 +28,37 @@ public class ScriptRequirement extends AbstractRequirement {
 
         for (String thisArg : args) {
 
-            if (aH.matchesArg("FINISHED, FAILED", thisArg))
+            if (aH.matchesArg("FINISHED, FAILED", thisArg)) {
                 try {
                     type = Type.valueOf(aH.getStringFrom(thisArg).toUpperCase());
                 }
                 catch (Exception e) {
                     dB.echoError("Invalid check type. Valid: FINISHED, FAILED, STEP.");
                 }
+            }
 
-            else if (aH.matchesScript(thisArg))
+            else if (aH.matchesScript(thisArg)) {
                 checkScript = aH.getStringFrom(thisArg).toUpperCase();
+            }
 
-            else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String))
+            else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String)) {
                 step = aH.getStringFrom(thisArg).toUpperCase();
+            }
 
-            else if (aH.matchesQuantity(thisArg))
+            else if (aH.matchesQuantity(thisArg)) {
                 quantity = aH.getIntegerFrom(thisArg);
+            }
 
 
             else if (aH.matchesArg("EXACTLY", thisArg))
-                //im pretty confident this was missing from the original requirement
+            //im pretty confident this was missing from the original requirement
+            {
                 exactly = true;
+            }
 
-            else dB.echoError("Could not match argument '" + thisArg + "'");
+            else {
+                dB.echoError("Could not match argument '" + thisArg + "'");
+            }
         }
 
         if (type != null && checkScript != null) {
@@ -60,20 +68,28 @@ public class ScriptRequirement extends AbstractRequirement {
                 case FINISHED:
                     int finishes = FinishCommand.getScriptCompletes(context.getPlayer().getName(), checkScript);
                     if (exactly) {
-                        if (quantity == finishes) outcome = true;
+                        if (quantity == finishes) {
+                            outcome = true;
+                        }
                     }
                     else {
-                        if (finishes >= quantity) outcome = true;
+                        if (finishes >= quantity) {
+                            outcome = true;
+                        }
                     }
                     break;
 
                 case FAILED:
                     int fails = FailCommand.getScriptFails(context.getPlayer().getName(), checkScript);
                     if (exactly) {
-                        if (quantity == fails) outcome = true;
+                        if (quantity == fails) {
+                            outcome = true;
+                        }
                     }
                     else {
-                        if (fails >= quantity) outcome = true;
+                        if (fails >= quantity) {
+                            outcome = true;
+                        }
                     }
                     break;
 

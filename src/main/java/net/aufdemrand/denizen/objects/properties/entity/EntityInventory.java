@@ -19,9 +19,13 @@ public class EntityInventory implements Property {
     }
 
     public static EntityInventory getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityInventory((dEntity) entity);
+        else {
+            return new EntityInventory((dEntity) entity);
+        }
     }
 
 
@@ -70,10 +74,12 @@ public class EntityInventory implements Property {
         // -->
         if (attribute.startsWith("inventory")) {
             dInventory inventory = entity.getInventory();
-            if (inventory != null)
+            if (inventory != null) {
                 return inventory.getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return null;
+            }
         }
 
 

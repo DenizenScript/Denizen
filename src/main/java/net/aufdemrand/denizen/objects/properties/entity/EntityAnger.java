@@ -12,13 +12,17 @@ import org.bukkit.entity.PigZombie;
 public class EntityAnger implements Property {
 
     public static boolean describes(dObject entity) {
-            return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.PIG_ZOMBIE;
     }
 
     public static EntityAnger getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityAnger((dEntity) entity);
+        else {
+            return new EntityAnger((dEntity) entity);
+        }
     }
 
     ///////////////////

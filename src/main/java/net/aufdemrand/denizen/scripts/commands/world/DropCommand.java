@@ -38,8 +38,10 @@ public class DropCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience", "exp", "xp"))
-                // Experience arg
+            // Experience arg
+            {
                 scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
+            }
 
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesArgumentType(dEntity.class)) {
@@ -50,38 +52,49 @@ public class DropCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
-                // Location arg
+            // Location arg
+            {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+            }
 
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrefix("speed")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("speed", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
-                // Quantity arg
+            // Quantity arg
+            {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Make sure all required arguments are met
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify something to drop!");
+        }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null && ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()) {
                 scriptEntry.addObject("location", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation().setPrefix("location"));
                 dB.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
 
             }
-            else throw new InvalidArgumentsException("Must specify a location!");
+            else {
+                throw new InvalidArgumentsException("Must specify a location!");
+            }
+        }
 
-        if (!scriptEntry.hasObject("qty"))
+        if (!scriptEntry.hasObject("qty")) {
             scriptEntry.addObject("qty", Element.valueOf("1").setPrefix("qty"));
+        }
 
         // Okay!
     }
@@ -118,12 +131,14 @@ public class DropCommand extends AbstractCommand {
 
             case DROP_ITEM:
                 for (dItem item : items) {
-                    if (qty.asInt() > 1 && item.isUnique())
+                    if (qty.asInt() > 1 && item.isUnique()) {
                         dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
+                    }
                     for (int x = 0; x < qty.asInt(); x++) {
                         dEntity e = new dEntity(location.getWorld().dropItem(location, item.getItemStack()));
-                        if (e.isValid())
+                        if (e.isValid()) {
                             e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble() : 1d));
+                        }
                         entityList.add(e.toString());
                     }
                 }

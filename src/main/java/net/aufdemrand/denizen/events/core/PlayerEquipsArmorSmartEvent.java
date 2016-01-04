@@ -62,17 +62,20 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                         || string.equalsIgnoreCase("helmet")
                         || string.equalsIgnoreCase("chestplate")
                         || string.equalsIgnoreCase("leggings")
-                        || string.equalsIgnoreCase("boots"))
+                        || string.equalsIgnoreCase("boots")) {
                     return true;
+                }
                 else if (dMaterial.matches(string)) {
                     dMaterial material = dMaterial.valueOf(string);
-                    if (material != null)
+                    if (material != null) {
                         return isArmor(material.getMaterial());
+                    }
                 }
                 else if (dItem.matches(string)) {
                     dItem item = dItem.valueOf(string);
-                    if (item != null)
+                    if (item != null) {
                         return isArmor(item.getItemStack());
+                    }
                 }
             }
         }
@@ -139,12 +142,14 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     @EventHandler(ignoreCancelled = true)
     public void inventoryClick(InventoryClickEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
-        if (pl == null)
+        if (pl == null) {
             return;
+        }
         final Player player = pl.getPlayerEntity();
         Inventory inventory = event.getInventory();
-        if (!didPlayerClickOwnInventory(player, inventory))
+        if (!didPlayerClickOwnInventory(player, inventory)) {
             return;
+        }
         ItemStack item = event.getCurrentItem();
         ItemStack cursor = event.getCursor();
         if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
@@ -174,14 +179,18 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     @EventHandler(ignoreCancelled = true)
     public void inventoryDrag(InventoryDragEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getWhoClicked());
-        if (pl == null)
+        if (pl == null) {
             return;
+        }
         final Player player = pl.getPlayerEntity();
         Inventory inventory = event.getInventory();
-        if (!didPlayerClickOwnInventory(player, inventory))
+        if (!didPlayerClickOwnInventory(player, inventory)) {
             return;
+        }
         ItemStack item = event.getOldCursor();
-        if (!isArmor(item)) return;
+        if (!isArmor(item)) {
+            return;
+        }
         int[] armor_slots = new int[]{5, 6, 7, 8};
         Set<Integer> slots = event.getRawSlots();
         for (int slot : armor_slots) {
@@ -200,16 +209,18 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     @EventHandler(ignoreCancelled = true)
     public void playerInteract(PlayerInteractEvent event) {
         dPlayer pl = dEntity.getPlayerFrom(event.getPlayer());
-        if (pl == null)
+        if (pl == null) {
             return;
+        }
         final Player player = pl.getPlayerEntity();
         if (event.hasItem()) {
             ItemStack item = event.getItem();
             Action action = event.getAction();
             Block clicked = event.getClickedBlock();
             if ((action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK)
-                    || !isArmor(item) || (clicked != null && isInteractive(clicked.getType())))
+                    || !isArmor(item) || (clicked != null && isInteractive(clicked.getType()))) {
                 return;
+            }
             ItemStack currentItem = event.getPlayer().getInventory().getArmorContents()[3 - getArmorTypeNumber(item)];
             if (currentItem == null || currentItem.getType() == Material.AIR) {
                 if (playerEquipsArmorEvent(player, item, "INTERACT")) {
@@ -223,15 +234,17 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     public void entityDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         dPlayer pl = dEntity.getPlayerFrom(entity);
-        if (pl == null)
+        if (pl == null) {
             return;
+        }
         final Player player = pl.getPlayerEntity();
         final ItemStack[] oldArmor = player.getInventory().getArmorContents();
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!player.isValid() || player.isDead())
+                if (!player.isValid() || player.isDead()) {
                     return;
+                }
                 ItemStack[] newArmor = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
                     ItemStack o = oldArmor[i].clone();
@@ -277,8 +290,9 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     }
 
     private String getArmorType(ItemStack itemStack) {
-        if (!isArmor(itemStack))
+        if (!isArmor(itemStack)) {
             return "helmet";
+        }
         switch (getArmorTypeNumber(itemStack)) {
             case 0:
                 return "helmet";

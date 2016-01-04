@@ -25,12 +25,15 @@ public class BiomeNMS {
     }
 
     public DownfallType getDownfallType() {
-        if (getDoesSnow())
+        if (getDoesSnow()) {
             return DownfallType.SNOW;
-        else if (getDoesRain())
+        }
+        else if (getDoesRain()) {
             return DownfallType.RAIN;
-        else
+        }
+        else {
             return DownfallType.NONE;
+        }
     }
 
     public String getName() {

@@ -22,18 +22,21 @@ public class Paginator {
 
     public boolean sendPage(CommandSender sender, int page) {
         int pages = (int) ((lines.size() / LINES_PER_PAGE == 0) ? 1 : Math.ceil((double) lines.size() / LINES_PER_PAGE));
-        if (page < 0 || page > pages)
+        if (page < 0 || page > pages) {
             return false;
+        }
 
         int startIndex = LINES_PER_PAGE * page - LINES_PER_PAGE;
         int endIndex = page * LINES_PER_PAGE;
 
         Messaging.send(sender, wrapHeader("<e>" + header + " <f>" + page + "/" + pages));
 
-        if (lines.size() < endIndex)
+        if (lines.size() < endIndex) {
             endIndex = lines.size();
-        for (String line : lines.subList(startIndex, endIndex))
+        }
+        for (String line : lines.subList(startIndex, endIndex)) {
             Messaging.send(sender, line);
+        }
         return true;
     }
 

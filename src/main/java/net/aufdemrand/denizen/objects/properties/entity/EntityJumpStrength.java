@@ -18,9 +18,13 @@ public class EntityJumpStrength implements Property {
     }
 
     public static EntityJumpStrength getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityJumpStrength((dEntity) entity);
+        else {
+            return new EntityJumpStrength((dEntity) entity);
+        }
     }
 
 

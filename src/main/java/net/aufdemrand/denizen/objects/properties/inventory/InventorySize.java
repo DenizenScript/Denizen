@@ -15,7 +15,9 @@ public class InventorySize implements Property {
     }
 
     public static InventorySize getFrom(dObject inventory) {
-        if (!describes(inventory)) return null;
+        if (!describes(inventory)) {
+            return null;
+        }
         return new InventorySize((dInventory) inventory);
     }
 
@@ -31,8 +33,9 @@ public class InventorySize implements Property {
     }
 
     public int getSize() {
-        if (inventory.getInventory() == null)
+        if (inventory.getInventory() == null) {
             return 0;
+        }
         return inventory.getInventory().getSize();
     }
 
@@ -48,10 +51,12 @@ public class InventorySize implements Property {
     @Override
     public String getPropertyString() {
         if (getSize() > 0 && inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST"))
+                && inventory.getIdHolder().equals("CHEST")) {
             return String.valueOf(getSize());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override
@@ -79,9 +84,10 @@ public class InventorySize implements Property {
         // @description
         // Return the number of slots in the inventory.
         // -->
-        if (attribute.startsWith("size"))
+        if (attribute.startsWith("size")) {
             return new Element(getSize())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
 

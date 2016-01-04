@@ -71,8 +71,9 @@ public class FireworkCommand extends AbstractCommand {
                 scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -118,9 +119,15 @@ public class FireworkCommand extends AbstractCommand {
         fireworkBuilder.with(FireworkEffect.Type.valueOf(type.asString().toUpperCase()));
 
         fireworkBuilder.withColor(Conversion.convertColors(primary));
-        if (fade != null) fireworkBuilder.withFade(Conversion.convertColors(fade));
-        if (flicker) fireworkBuilder.withFlicker();
-        if (trail) fireworkBuilder.withTrail();
+        if (fade != null) {
+            fireworkBuilder.withFade(Conversion.convertColors(fade));
+        }
+        if (flicker) {
+            fireworkBuilder.withFlicker();
+        }
+        if (trail) {
+            fireworkBuilder.withTrail();
+        }
 
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);

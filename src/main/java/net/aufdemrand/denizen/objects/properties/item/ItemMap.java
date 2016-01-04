@@ -16,8 +16,12 @@ public class ItemMap implements Property {
     }
 
     public static ItemMap getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemMap((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemMap((dItem) _item);
+        }
     }
 
 

@@ -25,31 +25,38 @@ public class SignCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matchesEnum(Type.values()))
+                    && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
+            }
 
             else if (!scriptEntry.hasObject("direction")
-                    && arg.matchesPrefix("direction", "dir"))
+                    && arg.matchesPrefix("direction", "dir")) {
                 scriptEntry.addObject("direction", arg.asElement());
+            }
 
-            else if (!scriptEntry.hasObject("text"))
+            else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", arg.asType(dList.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a Sign location!");
+        }
 
-        if (!scriptEntry.hasObject("text"))
+        if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Must specify sign text!");
+        }
 
         // Default to SIGN_POST type
         scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
@@ -74,14 +81,17 @@ public class SignCommand extends AbstractCommand {
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
-                && sign.getType() != Material.SIGN_POST))
+                && sign.getType() != Material.SIGN_POST)) {
             sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST);
+        }
         BlockState signState = sign.getState();
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));
-        if (direction != null)
+        if (direction != null) {
             Utilities.setSignRotation(signState, direction);
-        else if (type == Type.WALL_SIGN)
+        }
+        else if (type == Type.WALL_SIGN) {
             Utilities.setSignRotation(signState);
+        }
     }
 }

@@ -27,34 +27,42 @@ public class HealthCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("target")
                     && arg.matches("player")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                     throw new InvalidArgumentsException("No player attached!");
+                }
                 scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
 
             else if (!scriptEntry.hasObject("qty")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentList(dEntity.class))
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+            }
 
             else if (!scriptEntry.hasObject("action")
-                    && arg.matchesPrefix("state"))
+                    && arg.matchesPrefix("state")) {
                 scriptEntry.addObject("action", arg.asElement());
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
 
         // Check for required information
 
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a quantity!");
+        }
         if (!scriptEntry.hasObject("target")) {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 throw new InvalidArgumentsException("Missing NPC!");
+            }
             scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
         }
 
@@ -72,30 +80,38 @@ public class HealthCommand extends AbstractCommand {
                 (action != null ? action.debug() : "") +
                 aH.debugObj("target", targets.toString()));
 
-        if (qty == null && action == null)
+        if (qty == null && action == null) {
             dB.echoError(scriptEntry.getResidingQueue(), "Null quantity!");
+        }
 
-        if (action == null)
+        if (action == null) {
             action = Element.TRUE;
+        }
 
         for (dEntity target : targets) {
             if (target.isCitizensNPC()) {
-                if (action.asString().equalsIgnoreCase("true"))
+                if (action.asString().equalsIgnoreCase("true")) {
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
-                else if (action.asString().equalsIgnoreCase("false"))
+                }
+                else if (action.asString().equalsIgnoreCase("false")) {
                     target.getDenizenNPC().getCitizen().removeTrait(HealthTrait.class);
-                else if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                }
+                else if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
                     target.getDenizenNPC().getCitizen().removeTrait(HealthTrait.class);
-                else
+                }
+                else {
                     target.getDenizenNPC().getCitizen().addTrait(HealthTrait.class);
+                }
             }
 
             if (qty != null) {
                 if (target.isCitizensNPC()) {
-                    if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                    if (target.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
                         target.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth((int) qty.asFloat());
-                    else
+                    }
+                    else {
                         dB.echoError(scriptEntry.getResidingQueue(), "NPC doesn't have health trait!");
+                    }
                 }
                 else if (target.isLivingEntity()) {
                     target.getLivingEntity().setMaxHealth(qty.asDouble());

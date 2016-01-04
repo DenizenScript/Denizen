@@ -30,22 +30,28 @@ public class DenizenCommand extends Command {
         if (permission != null && !permission.equals("")) {
             this.setPermission(permission);
             String permissionMessage = script.getPermissionMessage();
-            if (permissionMessage != null && !permissionMessage.equals(""))
+            if (permissionMessage != null && !permissionMessage.equals("")) {
                 this.setPermissionMessage(permissionMessage);
+            }
         }
         this.script = script;
     }
 
     public boolean canSeeHelp(CommandSender commandSender) {
-        if (!script.hasAllowedHelpProcedure()) return true;
-        if (!testPermissionSilent(commandSender)) return false;
+        if (!script.hasAllowedHelpProcedure()) {
+            return true;
+        }
+        if (!testPermissionSilent(commandSender)) {
+            return false;
+        }
         Map<String, dObject> context = new HashMap<String, dObject>();
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (!dEntity.isNPC(pl))
+            if (!dEntity.isNPC(pl)) {
                 player = dPlayer.mirrorBukkitPlayer(pl);
+            }
             context.put("server", Element.FALSE);
         }
         else {
@@ -70,15 +76,18 @@ public class DenizenCommand extends Command {
             dNPC npc = null;
             if (target instanceof Player) {
                 Player pl = (Player) target;
-                if (dEntity.isCitizensNPC(pl))
+                if (dEntity.isCitizensNPC(pl)) {
                     npc = dNPC.fromEntity(pl);
-                else
+                }
+                else {
                     player = dPlayer.mirrorBukkitPlayer(pl);
+                }
             }
             if (Depends.citizens != null && npc == null) {
                 NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(target);
-                if (citizen != null)
+                if (citizen != null) {
                     npc = dNPC.mirrorCitizensNPC(citizen);
+                }
             }
             // <permission> is built into Bukkit... let's keep it here
             for (String line : TagManager.tag(permissionMessage.replace("<permission>", getPermission()),
@@ -92,7 +101,9 @@ public class DenizenCommand extends Command {
 
     @Override
     public boolean execute(CommandSender commandSender, String commandLabel, String[] arguments) {
-        if (!testPermission(commandSender)) return true;
+        if (!testPermission(commandSender)) {
+            return true;
+        }
         Map<String, dObject> context = new HashMap<String, dObject>();
         String raw_args = "";
         if (arguments.length > 0) {
@@ -110,10 +121,12 @@ public class DenizenCommand extends Command {
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (dEntity.isCitizensNPC(pl))
+            if (dEntity.isCitizensNPC(pl)) {
                 npc = dNPC.fromEntity(pl);
-            else
+            }
+            else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
+            }
             context.put("server", Element.FALSE);
         }
         else {
@@ -121,8 +134,9 @@ public class DenizenCommand extends Command {
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
-            if (citizen != null)
+            if (citizen != null) {
                 npc = dNPC.mirrorCitizensNPC(citizen);
+            }
         }
         script.runCommandScript(player, npc, context);
         return true;
@@ -135,7 +149,9 @@ public class DenizenCommand extends Command {
 
     @Override
     public List<String> tabComplete(CommandSender commandSender, String alias, String[] arguments) {
-        if (!script.hasTabCompleteProcedure()) return super.tabComplete(commandSender, alias, arguments);
+        if (!script.hasTabCompleteProcedure()) {
+            return super.tabComplete(commandSender, alias, arguments);
+        }
         Map<String, dObject> context = new HashMap<String, dObject>();
         String raw_args = "";
         if (arguments.length > 0) {
@@ -153,10 +169,12 @@ public class DenizenCommand extends Command {
         dNPC npc = null;
         if (commandSender instanceof Player) {
             Player pl = (Player) commandSender;
-            if (dEntity.isCitizensNPC(pl))
+            if (dEntity.isCitizensNPC(pl)) {
                 npc = dNPC.fromEntity(pl);
-            else
+            }
+            else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
+            }
             context.put("server", Element.FALSE);
         }
         else {
@@ -164,8 +182,9 @@ public class DenizenCommand extends Command {
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);
-            if (citizen != null)
+            if (citizen != null) {
                 npc = dNPC.mirrorCitizensNPC(citizen);
+            }
         }
         return script.runTabCompleteProcedure(player, npc, context);
     }

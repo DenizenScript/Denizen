@@ -68,7 +68,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         String arg4 = CoreUtilities.getXthArg(4, lower);
         String inv = arg2.equals("in") ? arg3 : arg3.equals("in") ? arg4 : "";
         String nname = NotableManager.isSaved(dInv) ?
-                CoreUtilities.toLowerCase(NotableManager.getSavedId(dInv)):
+                CoreUtilities.toLowerCase(NotableManager.getSavedId(dInv)) :
                 "\0";
         if (!inv.equals("") && !inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(dInv.getInventoryType().name()))

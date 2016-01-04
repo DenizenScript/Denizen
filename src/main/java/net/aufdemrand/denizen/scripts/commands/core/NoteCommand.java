@@ -20,24 +20,32 @@ public class NoteCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("as", "i", "id"))
+            if (arg.matchesPrefix("as", "i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
 
-            else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0]))
+            else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0])) {
                 scriptEntry.addObject("object", arg.getValue());
+            }
 
-            else if (arg.matches("remove"))
+            else if (arg.matches("remove")) {
                 scriptEntry.addObject("remove", Element.TRUE);
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("id"))
+        if (!scriptEntry.hasObject("id")) {
             throw new InvalidArgumentsException("Must specify an id");
-        if (!scriptEntry.hasObject("object") && !scriptEntry.hasObject("remove"))
+        }
+        if (!scriptEntry.hasObject("object") && !scriptEntry.hasObject("remove")) {
             throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
-        if (!scriptEntry.hasObject("remove"))
+        }
+        if (!scriptEntry.hasObject("remove")) {
             scriptEntry.addObject("remove", Element.FALSE);
+        }
 
     }
 
@@ -80,8 +88,9 @@ public class NoteCommand extends AbstractCommand {
 
             arg = ObjectFetcher.getObjectFrom(object_class, object);
 
-            if (arg instanceof Notable)
+            if (arg instanceof Notable) {
                 ((Notable) arg).makeUnique(id.asString());
+            }
 
         }
         catch (Exception e) {

@@ -123,25 +123,33 @@ public class FlagManager {
 
     // Static methods
     public static boolean playerHasFlag(dPlayer player, String flagName) {
-        if (player == null || flagName == null) return false;
+        if (player == null || flagName == null) {
+            return false;
+        }
         return DenizenAPI.getCurrentInstance().flagManager()
                 .getPlayerFlag(player, flagName).size() > 0;
     }
 
     public static boolean entityHasFlag(dEntity entity, String flagName) {
-        if (entity == null || flagName == null) return false;
+        if (entity == null || flagName == null) {
+            return false;
+        }
         return DenizenAPI.getCurrentInstance().flagManager()
                 .getEntityFlag(entity, flagName).size() > 0;
     }
 
     public static boolean npcHasFlag(dNPC npc, String flagName) {
-        if (npc == null || flagName == null) return false;
+        if (npc == null || flagName == null) {
+            return false;
+        }
         return DenizenAPI.getCurrentInstance().flagManager()
                 .getNPCFlag(npc.getId(), flagName).size() > 0;
     }
 
     public static boolean serverHasFlag(String flagName) {
-        if (flagName == null) return false;
+        if (flagName == null) {
+            return false;
+        }
         return DenizenAPI.getCurrentInstance().flagManager()
                 .getGlobalFlag(flagName).size() > 0;
     }
@@ -178,20 +186,23 @@ public class FlagManager {
      * it will be created with blank values.
      */
     public Flag getPlayerFlag(dPlayer player, String flagName) {
-        if (player == null)
+        if (player == null) {
             return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        }
         return new Flag("Players." + player.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, player.identify());
     }
 
     public Flag getEntityFlag(dEntity entity, String flagName) {
-        if (entity == null)
+        if (entity == null) {
             return new Flag("Entities.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        }
         return new Flag("Entities." + entity.getSaveName() + ".Flags." + flagName.toUpperCase(), flagName, entity.identify());
     }
 
     public Flag getPlayerFlag(UUID player, String flagName) {
-        if (player == null)
+        if (player == null) {
             return new Flag("players.00.UNKNOWN.Flags." + flagName.toUpperCase(), flagName, "p@null");
+        }
         String baseID = player.toString().toUpperCase().replace("-", "");
         return new Flag("Players." + baseID.substring(0, 2) + "." + baseID + ".Flags." + flagName.toUpperCase(), flagName, "p@" + player.toString());
     }
@@ -227,8 +238,9 @@ public class FlagManager {
 
     public Set<String> _filterExpirations(Set<String> flagKeys) {
         for (Iterator<String> iter = flagKeys.iterator(); iter.hasNext(); ) {
-            if (iter.next().endsWith("-expiration"))
+            if (iter.next().endsWith("-expiration")) {
                 iter.remove();
+            }
         }
         return flagKeys;
     }
@@ -278,12 +290,17 @@ public class FlagManager {
          * provided value is a number.
          */
         public boolean contains(String stringValue) {
-            if (checkExpired())
+            if (checkExpired()) {
                 return false;
+            }
             for (String val : value.values) {
-                if (val.equalsIgnoreCase(stringValue)) return true;
+                if (val.equalsIgnoreCase(stringValue)) {
+                    return true;
+                }
                 try {
-                    if (Double.valueOf(val).equals(Double.valueOf(stringValue))) return true;
+                    if (Double.valueOf(val).equals(Double.valueOf(stringValue))) {
+                        return true;
+                    }
                 }
                 catch (NumberFormatException e) { /* Not a valid number, continue. */ }
             }
@@ -355,11 +372,13 @@ public class FlagManager {
 
                 Map<String, dObject> context = new HashMap<String, dObject>();
                 dPlayer player = null;
-                if (dPlayer.matches(OldOwner))
+                if (dPlayer.matches(OldOwner)) {
                     player = dPlayer.valueOf(OldOwner);
+                }
                 dNPC npc = null;
-                if (Depends.citizens != null && dNPC.matches(OldOwner))
+                if (Depends.citizens != null && dNPC.matches(OldOwner)) {
                     npc = dNPC.valueOf(OldOwner);
+                }
 
                 String type;
 
@@ -435,7 +454,9 @@ public class FlagManager {
 
                     // Index higher than currently exists? Add the item to the end of the list.
                 }
-                else value.values.add((String) obj);
+                else {
+                    value.values.add((String) obj);
+                }
             }
             valid = true;
             save();
@@ -465,9 +486,11 @@ public class FlagManager {
             String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
 
             if (split.length > 0) {
-                for (String val : split)
-                    if (val.length() > 0)
+                for (String val : split) {
+                    if (val.length() > 0) {
                         value.values.add(val);
+                    }
+                }
 
                 save();
                 rebuild();
@@ -521,7 +544,9 @@ public class FlagManager {
 
                 // Else, remove specified index
             }
-            else if (index <= size()) value.values.remove(index - 1);
+            else if (index <= size()) {
+                value.values.remove(index - 1);
+            }
 
             valid = true;
             save();
@@ -596,11 +621,17 @@ public class FlagManager {
 
                 Map<String, dObject> context = new HashMap<String, dObject>();
                 dPlayer player = null;
-                if (dPlayer.matches(OldOwner)) player = dPlayer.valueOf(OldOwner);
+                if (dPlayer.matches(OldOwner)) {
+                    player = dPlayer.valueOf(OldOwner);
+                }
                 dNPC npc = null;
-                if (Depends.citizens != null && dNPC.matches(OldOwner)) npc = dNPC.valueOf(OldOwner);
+                if (Depends.citizens != null && dNPC.matches(OldOwner)) {
+                    npc = dNPC.valueOf(OldOwner);
+                }
                 dEntity entity = null;
-                if (dEntity.matches(OldOwner)) entity = dEntity.valueOf(OldOwner);
+                if (dEntity.matches(OldOwner)) {
+                    entity = dEntity.valueOf(OldOwner);
+                }
 
                 String type;
 
@@ -675,7 +706,7 @@ public class FlagManager {
          */
         public boolean checkExpired() {
             rebuild();
-            if (denizen.getSaves().contains(flagPath + "-expiration"))
+            if (denizen.getSaves().contains(flagPath + "-expiration")) {
                 if (expiration > 1 && expiration < System.currentTimeMillis()) {
                     String OldOwner = flagOwner;
                     String OldName = flagName;
@@ -692,14 +723,17 @@ public class FlagManager {
 
                         Map<String, dObject> context = new HashMap<String, dObject>();
                         dPlayer player = null;
-                        if (dPlayer.matches(OldOwner))
+                        if (dPlayer.matches(OldOwner)) {
                             player = dPlayer.valueOf(OldOwner);
+                        }
                         dNPC npc = null;
-                        if (Depends.citizens != null && dNPC.matches(OldOwner))
+                        if (Depends.citizens != null && dNPC.matches(OldOwner)) {
                             npc = dNPC.valueOf(OldOwner);
+                        }
                         dEntity entity = null;
-                        if (dEntity.matches(OldOwner))
+                        if (dEntity.matches(OldOwner)) {
                             entity = dEntity.valueOf(OldOwner);
+                        }
 
                         String type;
 
@@ -730,6 +764,7 @@ public class FlagManager {
                     }
                     return true;
                 }
+            }
             return false;
         }
 
@@ -755,14 +790,18 @@ public class FlagManager {
 
             String timeString = "";
 
-            if (days > 0)
+            if (days > 0) {
                 timeString = String.valueOf(days) + "d ";
-            if (hours > 0)
+            }
+            if (hours > 0) {
                 timeString = timeString + String.valueOf(hours) + "h ";
-            if (minutes > 0 && days == 0)
+            }
+            if (minutes > 0 && days == 0) {
                 timeString = timeString + String.valueOf(minutes) + "m ";
-            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0)
+            }
+            if (seconds > 0 && minutes < 10 && hours == 0 && days == 0) {
                 timeString = timeString + String.valueOf(seconds) + "s";
+            }
 
             return timeString.trim();
         }
@@ -773,8 +812,9 @@ public class FlagManager {
          * of the plugin.
          */
         public Flag rebuild() {
-            if (denizen.getSaves().contains(flagPath + "-expiration"))
+            if (denizen.getSaves().contains(flagPath + "-expiration")) {
                 this.expiration = (denizen.getSaves().getLong(flagPath + "-expiration"));
+            }
             List<String> cval = denizen.getSaves().getStringList(flagPath);
             if (cval == null) {
                 cval = new ArrayList<String>();
@@ -802,9 +842,13 @@ public class FlagManager {
 
             String val = (value != null ? value.asString() : null);
 
-            if (index == null) index = -1;
+            if (index == null) {
+                index = -1;
+            }
 
-            if (action == null) return;
+            if (action == null) {
+                return;
+            }
 
             // Do flagAction
             switch (action) {
@@ -889,8 +933,9 @@ public class FlagManager {
          */
         private void adjustIndex() {
             // -1 = last object.
-            if (index < 0)
+            if (index < 0) {
                 index = size() - 1;
+            }
         }
 
         /**
@@ -946,8 +991,9 @@ public class FlagManager {
             adjustIndex();
             String returnList = "";
 
-            for (String string : values)
+            for (String string : values) {
                 returnList = returnList + string + ", ";
+            }
 
             return returnList.substring(0, returnList.length() - 2);
         }
@@ -1006,25 +1052,33 @@ public class FlagManager {
 
             try {
                 // If an Integer
-                if (aH.matchesInteger(arg))
+                if (aH.matchesInteger(arg)) {
                     return aH.getIntegerFrom(arg);
+                }
 
-                    // If a Double
-                else if (aH.matchesDouble(arg))
+                // If a Double
+                else if (aH.matchesDouble(arg)) {
                     return aH.getDoubleFrom(arg);
+                }
 
-                    // If a Boolean
-                else if (arg.equalsIgnoreCase("true")) return true;
-                else if (arg.equalsIgnoreCase("false")) return false;
+                // If a Boolean
+                else if (arg.equalsIgnoreCase("true")) {
+                    return true;
+                }
+                else if (arg.equalsIgnoreCase("false")) {
+                    return false;
+                }
 
-                    // If a List<Object>
+                // If a List<Object>
                 else if (arg.contains("|")) {
                     List<String> toList = new ArrayList<String>();
                     return new dList(toList);
                 }
 
                 // Must be a String
-                else return arg;
+                else {
+                    return arg;
+                }
             }
             catch (Exception e) {
                 return "";
@@ -1046,9 +1100,13 @@ public class FlagManager {
          * Determines if the flag is empty.
          */
         public boolean isEmpty() {
-            if (values.isEmpty()) return true;
+            if (values.isEmpty()) {
+                return true;
+            }
             adjustIndex();
-            if (this.size() < index + 1) return true;
+            if (this.size() < index + 1) {
+                return true;
+            }
             return values.get(index).equals("");
         }
 

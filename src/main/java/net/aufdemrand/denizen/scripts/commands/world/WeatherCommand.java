@@ -26,25 +26,34 @@ public class WeatherCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
 
+            {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
+            }
 
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class))
 
+            {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
+            }
 
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesEnum(Value.values()))
 
+            {
                 scriptEntry.addObject("value", arg.asElement());
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
 
-        if ((!scriptEntry.hasObject("value")))
+        if ((!scriptEntry.hasObject("value"))) {
             throw new InvalidArgumentsException("Must specify a value!");
+        }
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary

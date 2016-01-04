@@ -19,20 +19,24 @@ public class StrikeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
-            else if (arg.matches("no_damage") || arg.matches("nodamage"))
+            else if (arg.matches("no_damage") || arg.matches("nodamage")) {
                 scriptEntry.addObject("damage", Element.FALSE);
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
         // Check required args
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
 
         scriptEntry.defaultObject("damage", Element.TRUE);
     }
@@ -50,9 +54,11 @@ public class StrikeCommand extends AbstractCommand {
                         + aH.debugObj("Damageable", String.valueOf(damage)));
 
         // Play the sound
-        if (damage)
+        if (damage) {
             location.getWorld().strikeLightning(location);
-        else
+        }
+        else {
             location.getWorld().strikeLightningEffect(location);
+        }
     }
 }

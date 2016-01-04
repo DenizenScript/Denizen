@@ -17,8 +17,12 @@ public class ItemDisplayname implements Property {
     }
 
     public static ItemDisplayname getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemDisplayname((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemDisplayname((dItem) _item);
+        }
     }
 
     private ItemDisplayname(dItem _item) {

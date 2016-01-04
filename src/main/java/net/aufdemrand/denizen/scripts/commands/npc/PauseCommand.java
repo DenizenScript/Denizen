@@ -34,10 +34,12 @@ public class PauseCommand extends AbstractCommand {
         pauseType = null;
         dNPC = null;
         player = null;
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null) {
             dNPC = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+        }
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
             player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+        }
 
         // Parse arguments
         // TODO: UPDATE COMMAND PARSING
@@ -53,8 +55,9 @@ public class PauseCommand extends AbstractCommand {
                 pauseType = PauseType.valueOf(arg.toUpperCase());
 
             }
-            else
+            else {
                 dB.echoError(scriptEntry.getResidingQueue(), "Unknown argument '" + arg + "'");
+            }
         }
     }
 
@@ -96,7 +99,9 @@ public class PauseCommand extends AbstractCommand {
 
             case WAYPOINTS:
                 denizen.getCitizen().getTrait(Waypoints.class).getCurrentProvider().setPaused(pause);
-                if (pause) denizen.getNavigator().cancelNavigation();
+                if (pause) {
+                    denizen.getNavigator().cancelNavigation();
+                }
                 return;
 
             case ACTIVITY:

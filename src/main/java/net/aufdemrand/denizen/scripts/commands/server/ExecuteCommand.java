@@ -36,45 +36,54 @@ public class ExecuteCommand extends AbstractCommand {
 
             if (arg.matches("ASPLAYER", "AS_PLAYER", "PLAYER")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
+                }
                 scriptEntry.addObject("type", new Element("AS_PLAYER"));
             }
 
             else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
+                }
                 scriptEntry.addObject("type", new Element("AS_OP"));
             }
 
             else if (arg.matches("ASNPC", "AS_NPC", "NPC")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                     throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
+                }
                 scriptEntry.addObject("type", new Element("AS_NPC"));
             }
 
             else if (arg.matches("ASSERVER", "AS_SERVER", "SERVER")
-                    && !scriptEntry.hasObject("type"))
+                    && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", new Element("AS_SERVER"));
+            }
 
             else if (!scriptEntry.hasObject("silent")
-                    && arg.matches("silent"))
+                    && arg.matches("silent")) {
                 scriptEntry.addObject("silent", new Element("true"));
+            }
 
-            else if (!scriptEntry.hasObject("command"))
+            else if (!scriptEntry.hasObject("command")) {
                 scriptEntry.addObject("command", new Element(arg.raw_value));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("type"))
+        if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing execution type!");
+        }
 
-        if (!scriptEntry.hasObject("command"))
+        if (!scriptEntry.hasObject("command")) {
             throw new InvalidArgumentsException("Missing command text!");
+        }
 
         scriptEntry.defaultObject("silent", new Element("false"));
 
@@ -122,7 +131,9 @@ public class ExecuteCommand extends AbstractCommand {
 
             case AS_OP:
                 boolean isOp = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().isOp();
-                if (!isOp) ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(true);
+                if (!isOp) {
+                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(true);
+                }
                 try {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
                     Bukkit.getPluginManager().callEvent(pcpe);
@@ -143,7 +154,9 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as OP.");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
-                if (!isOp) ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(false);
+                if (!isOp) {
+                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(false);
+                }
                 break;
 
             case AS_NPC:

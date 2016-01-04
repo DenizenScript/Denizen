@@ -36,27 +36,33 @@ public class ZapCommand extends AbstractCommand implements Listener {
             // If a script is found, use that to ZAP
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
-                    && !arg.matchesPrefix("step"))
+                    && !arg.matchesPrefix("step")) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
-                // Add argument as step
-            else if (!scriptEntry.hasObject("step"))
+            // Add argument as step
+            else if (!scriptEntry.hasObject("step")) {
                 scriptEntry.addObject("step", arg.asElement());
+            }
 
-                // Lastly duration
+            // Lastly duration
             else if (!scriptEntry.hasObject("duration")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Add default script if none was specified.
         scriptEntry.defaultObject("script", scriptEntry.getScript());
 
         // Check if player is valid
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
+        }
     }
 
     //"PlayerName,ScriptName", TaskID
@@ -87,7 +93,9 @@ public class ZapCommand extends AbstractCommand implements Listener {
             if (aH.matchesInteger(currentStep)) {
                 step = String.valueOf(aH.getIntegerFrom(currentStep) + 1);
             }
-            else step = "1";
+            else {
+                step = "1";
+            }
         }
 
         if (step.equalsIgnoreCase(currentStep)) {
@@ -98,12 +106,13 @@ public class ZapCommand extends AbstractCommand implements Listener {
         // If the durationsMap already contains an entry for this player/script combination,
         // cancel the task since it's probably not desired to change back anymore if another
         // ZAP for this script is taking place.
-        if (durations.containsKey(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName()))
+        if (durations.containsKey(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName())) {
             try {
                 DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName()));
             }
             catch (Exception e) {
             }
+        }
 
         // One last thing... check for duration.
         if (duration != null && duration.getSeconds() > 0) {

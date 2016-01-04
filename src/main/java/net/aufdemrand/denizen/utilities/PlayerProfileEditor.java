@@ -106,8 +106,9 @@ public class PlayerProfileEditor {
         GameProfile gameProfile = getFakeProfile(player);
         gameProfile.getProperties().get("textures").clear();
         GameProfile skinProfile = ItemSkullskin.fillGameProfile(new GameProfile(null, name));
-        for (Property texture : skinProfile.getProperties().get("textures"))
+        for (Property texture : skinProfile.getProperties().get("textures")) {
             gameProfile.getProperties().put("textures", texture);
+        }
         updatePlayer(player, true);
     }
 
@@ -116,8 +117,9 @@ public class PlayerProfileEditor {
         final UUID uuid = player.getUniqueId();
         PacketPlayOutEntityDestroy destroyPacket = new PacketPlayOutEntityDestroy(entityPlayer.getId());
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-            if (!p.getUniqueId().equals(uuid))
+            if (!p.getUniqueId().equals(uuid)) {
                 PacketHelper.sendPacket(p, destroyPacket);
+            }
         }
         new BukkitRunnable() {
             @Override

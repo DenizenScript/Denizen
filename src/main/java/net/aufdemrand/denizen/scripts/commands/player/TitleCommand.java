@@ -23,32 +23,39 @@ public class TitleCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matchesPrefix("title"))
+            if (arg.matchesPrefix("title")) {
                 scriptEntry.addObject("title", arg.asElement());
+            }
 
-            else if (arg.matchesPrefix("subtitle"))
+            else if (arg.matchesPrefix("subtitle")) {
                 scriptEntry.addObject("subtitle", arg.asElement());
+            }
 
             else if (arg.matchesPrefix("fade_in")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("fade_in", arg.asType(Duration.class));
+            }
 
             else if (arg.matchesPrefix("stay")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("stay", arg.asType(Duration.class));
+            }
 
             else if (arg.matchesPrefix("fade_out")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("fade_out", arg.asType(Duration.class));
+            }
 
             else if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(dPlayer.class))
+                    && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+            }
 
         }
 
-        if (!scriptEntry.hasObject("title") && !scriptEntry.hasObject("subtitle"))
+        if (!scriptEntry.hasObject("title") && !scriptEntry.hasObject("subtitle")) {
             throw new InvalidArgumentsException("Must have a title or subtitle!");
+        }
 
         scriptEntry.defaultObject("fade_in", new Duration(1)).defaultObject("stay", new Duration(3))
                 .defaultObject("fade_out", new Duration(1))
@@ -75,13 +82,14 @@ public class TitleCommand extends AbstractCommand {
                         aH.debugObj("targets", targets));
 
         for (dPlayer player : targets) {
-            if (player.isValid() && player.isOnline())
+            if (player.isValid() && player.isOnline()) {
                 DisplayTitle.showTitle(player.getPlayerEntity(),
                         title != null ? title.asString() : "",
                         subtitle != null ? subtitle.asString() : "",
                         fade_in.getTicksAsInt(),
                         stay.getTicksAsInt(),
                         fade_out.getTicksAsInt());
+            }
         }
 
     }

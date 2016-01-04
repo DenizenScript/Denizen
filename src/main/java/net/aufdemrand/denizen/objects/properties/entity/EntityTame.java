@@ -21,9 +21,13 @@ public class EntityTame implements Property {
     }
 
     public static EntityTame getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityTame((dEntity) entity);
+        else {
+            return new EntityTame((dEntity) entity);
+        }
     }
 
 
@@ -45,13 +49,16 @@ public class EntityTame implements Property {
     public String getPropertyString() {
         if (((Tameable) entity.getBukkitEntity()).isTamed()) {
             OfflinePlayer owner = (OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner();
-            if (owner == null)
+            if (owner == null) {
                 return "true";
-            else
+            }
+            else {
                 return "true|" + owner.getUniqueId();
+            }
         }
-        else
+        else {
             return null;
+        }
     }
 
     @Override
@@ -93,11 +100,13 @@ public class EntityTame implements Property {
         // Returns the owner of a tamed entity.
         // -->
         if (attribute.startsWith("get_owner")) {
-            if (((Tameable) entity.getBukkitEntity()).isTamed())
+            if (((Tameable) entity.getBukkitEntity()).isTamed()) {
                 return new dPlayer((OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner())
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return null;
+            }
         }
 
         return null;
@@ -124,12 +133,15 @@ public class EntityTame implements Property {
                 dB.echoError("Missing value for 'tame' mechanism!");
                 return;
             }
-            if (new Element(list.get(0)).isBoolean())
+            if (new Element(list.get(0)).isBoolean()) {
                 ((Tameable) entity.getBukkitEntity()).setTamed(mechanism.getValue().asBoolean());
-            else
+            }
+            else {
                 dB.echoError("Invalid boolean value!");
-            if (list.size() > 1 && new Element(list.get(1)).matchesType(dPlayer.class))
+            }
+            if (list.size() > 1 && new Element(list.get(1)).matchesType(dPlayer.class)) {
                 ((Tameable) entity.getBukkitEntity()).setOwner(new Element(list.get(1)).asType(dPlayer.class).getOfflinePlayer());
+            }
         }
 
         // <--[mechanism]
@@ -146,10 +158,12 @@ public class EntityTame implements Property {
         // -->
 
         if (mechanism.matches("owner")) {
-            if (mechanism.hasValue() && mechanism.requireObject(dPlayer.class))
+            if (mechanism.hasValue() && mechanism.requireObject(dPlayer.class)) {
                 ((Tameable) entity.getBukkitEntity()).setOwner(mechanism.getValue().asType(dPlayer.class).getOfflinePlayer());
-            else
+            }
+            else {
                 ((Tameable) entity.getBukkitEntity()).setOwner(null);
+            }
         }
 
     }

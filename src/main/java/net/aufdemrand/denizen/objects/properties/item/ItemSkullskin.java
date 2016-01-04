@@ -28,8 +28,12 @@ public class ItemSkullskin implements Property {
     }
 
     public static ItemSkullskin getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemSkullskin((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemSkullskin((dItem) _item);
+        }
     }
 
 
@@ -75,8 +79,9 @@ public class ItemSkullskin implements Property {
                 }
                 return new Element(CoreUtilities.split(skin, '|').get(0)).getAttribute(attribute);
             }
-            else
+            else {
                 dB.echoError("This skull_item does not have a skin set!");
+            }
         }
 
         // <--[tag]
@@ -88,9 +93,10 @@ public class ItemSkullskin implements Property {
         // Returns whether the item has a custom skin set.
         // (Only for human 'skull_item's)
         // -->
-        if (attribute.startsWith("has_skin"))
+        if (attribute.startsWith("has_skin")) {
             return new Element(item.getItemStack().getDurability() == 3 && getPropertyString() != null)
                     .getAttribute(attribute.fulfill(1));
+        }
 
 
         return null;
@@ -110,7 +116,7 @@ public class ItemSkullskin implements Property {
                     UUID uuid = profile.getId();
                     return (uuid != null ? uuid : profile.getName())
                             + (property != null ? "|" + property.getValue() +
-                            (profile != null && profile.getName() != null ? "|" + profile.getName(): "") : "");
+                            (profile != null && profile.getName() != null ? "|" + profile.getName() : "") : "");
                 }
             }
         }
@@ -141,8 +147,9 @@ public class ItemSkullskin implements Property {
 
         // TODO: use Bukkit SkullMeta method when updated
         if (mechanism.matches("skull_skin")) {
-            if (item.getItemStack().getDurability() != 3)
+            if (item.getItemStack().getDurability() != 3) {
                 item.getItemStack().setDurability((short) 3);
+            }
             dList list = mechanism.getValue().asType(dList.class);
             String idString = list.get(0);
             ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
@@ -195,7 +202,8 @@ public class ItemSkullskin implements Property {
                 }
                 return gameProfile1;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (dB.verbose) {
                 dB.echoError(e);
             }

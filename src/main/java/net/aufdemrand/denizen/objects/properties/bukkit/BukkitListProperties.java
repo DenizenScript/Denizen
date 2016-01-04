@@ -16,8 +16,12 @@ public class BukkitListProperties implements Property {
     }
 
     public static BukkitListProperties getFrom(dObject list) {
-        if (!describes(list)) return null;
-        else return new BukkitListProperties((dList) list);
+        if (!describes(list)) {
+            return null;
+        }
+        else {
+            return new BukkitListProperties((dList) list);
+        }
     }
 
 
@@ -38,7 +42,9 @@ public class BukkitListProperties implements Property {
         // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
         if (attribute.startsWith("formatted")) {
-            if (list.isEmpty()) return new Element("").getAttribute(attribute.fulfill(1));
+            if (list.isEmpty()) {
+                return new Element("").getAttribute(attribute.fulfill(1));
+            }
             StringBuilder dScriptArg = new StringBuilder();
 
             for (int n = 0; n < list.size(); n++) {

@@ -23,20 +23,24 @@ public class CompassCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("reset")
-                    && arg.matches("reset"))
+                    && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element(true));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Check for required information
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("reset"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
 
         scriptEntry.defaultObject("reset", new Element(false));
     }

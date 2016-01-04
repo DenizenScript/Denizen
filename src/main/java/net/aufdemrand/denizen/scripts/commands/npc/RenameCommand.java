@@ -19,16 +19,19 @@ public class RenameCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("name"))
+            if (!scriptEntry.hasObject("name")) {
                 scriptEntry.addObject("name", arg.asElement());
+            }
 
         }
 
-        if (!scriptEntry.hasObject("name"))
+        if (!scriptEntry.hasObject("name")) {
             throw new InvalidArgumentsException("Must specify a name!");
+        }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid())
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid()) {
             throw new InvalidArgumentsException("Must have a NPC attached!");
+        }
     }
 
     @Override
@@ -43,8 +46,9 @@ public class RenameCommand extends AbstractCommand {
         Location prev = npc.isSpawned() ? npc.getEntity().getLocation() : null;
         npc.despawn(DespawnReason.PENDING_RESPAWN);
         npc.setName(name.asString().length() > 128 ? name.asString().substring(0, 128) : name.asString());
-        if (prev != null)
+        if (prev != null) {
             npc.spawn(prev);
+        }
 
     }
 }

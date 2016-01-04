@@ -23,19 +23,23 @@ public class TraitCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("state")
                     && arg.matchesPrefix("state", "s")
-                    && arg.matchesEnum(Toggle.values()))
+                    && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("state", new Element(arg.getValue().toUpperCase()));
+            }
 
-            else if (!scriptEntry.hasObject("trait"))
+            else if (!scriptEntry.hasObject("trait")) {
                 scriptEntry.addObject("trait", new Element(arg.getValue()));
+            }
 
         }
 
-        if (!scriptEntry.hasObject("trait"))
+        if (!scriptEntry.hasObject("trait")) {
             throw new InvalidArgumentsException("Missing trait argument!");
+        }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
         scriptEntry.defaultObject("state", new Element("TOGGLE"));
 
@@ -64,25 +68,31 @@ public class TraitCommand extends AbstractCommand {
 
             case TRUE:
             case ON:
-                if (npc.hasTrait(trait))
+                if (npc.hasTrait(trait)) {
                     dB.echoError(scriptEntry.getResidingQueue(), "NPC already has trait '" + traitName.asString() + "'");
-                else
+                }
+                else {
                     npc.addTrait(trait);
+                }
                 break;
 
             case FALSE:
             case OFF:
-                if (!npc.hasTrait(trait))
+                if (!npc.hasTrait(trait)) {
                     dB.echoError(scriptEntry.getResidingQueue(), "NPC does not have trait '" + traitName.asString() + "'");
-                else
+                }
+                else {
                     npc.removeTrait(trait);
+                }
                 break;
 
             case TOGGLE:
-                if (npc.hasTrait(trait))
+                if (npc.hasTrait(trait)) {
                     npc.removeTrait(trait);
-                else
+                }
+                else {
                     npc.addTrait(trait);
+                }
                 break;
 
         }

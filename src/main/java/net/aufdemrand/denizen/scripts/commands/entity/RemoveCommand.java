@@ -39,13 +39,16 @@ public class RemoveCommand extends AbstractCommand {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to the specified world in the server properties if necessary

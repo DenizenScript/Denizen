@@ -66,8 +66,9 @@ public enum RabbitType {
      */
     public static RabbitType getType(int id) {
         for (RabbitType type : types) {
-            if (id == type.getId())
+            if (id == type.getId()) {
                 return type;
+            }
         }
         return null;
     }

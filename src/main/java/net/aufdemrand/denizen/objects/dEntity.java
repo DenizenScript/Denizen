@@ -78,10 +78,12 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static dNPC getNPCFrom(Entity entity) {
-        if (isCitizensNPC(entity))
+        if (isCitizensNPC(entity)) {
             return dNPC.fromEntity(entity);
-        else
+        }
+        else {
             return null;
+        }
     }
 
     public static boolean isPlayer(Entity entity) {
@@ -89,10 +91,12 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static dPlayer getPlayerFrom(Entity entity) {
-        if (isPlayer(entity))
+        if (isPlayer(entity)) {
             return dPlayer.mirrorBukkitPlayer((Player) entity);
-        else
+        }
+        else {
             return null;
+        }
     }
 
     public dItem getItemInHand() {
@@ -130,7 +134,9 @@ public class dEntity implements dObject, Adjustable {
      */
     @Fetchable("e")
     public static dEntity valueOf(String string, TagContext context) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         Matcher m;
 
@@ -175,10 +181,13 @@ public class dEntity implements dObject, Adjustable {
 
                 dNPC npc = dNPC.valueOf(string);
 
-                if (npc != null)
+                if (npc != null) {
                     return new dEntity(npc);
-                else dB.echoError("NPC '" + string
-                        + "' does not exist!");
+                }
+                else {
+                    dB.echoError("NPC '" + string
+                            + "' does not exist!");
+                }
             }
 
             // Player entity
@@ -199,7 +208,9 @@ public class dEntity implements dObject, Adjustable {
                 try {
                     UUID entityID = UUID.fromString(m.group(2));
                     Entity entity = getEntityForID(entityID);
-                    if (entity != null) return new dEntity(entity);
+                    if (entity != null) {
+                        return new dEntity(entity);
+                    }
                     return null;
                 }
                 catch (Exception ex) {
@@ -255,8 +266,9 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static Entity getEntityForID(UUID id) {
-        if (rememberedEntities.containsKey(id))
+        if (rememberedEntities.containsKey(id)) {
             return rememberedEntities.get(id);
+        }
         for (World world : Bukkit.getWorlds()) {
             net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
@@ -324,7 +336,9 @@ public class dEntity implements dObject, Adjustable {
                 this.npc = getNPCFrom(entity);
             }
         }
-        else dB.echoError("Entity referenced is null!");
+        else {
+            dB.echoError("Entity referenced is null!");
+        }
     }
 
     @Deprecated
@@ -333,7 +347,9 @@ public class dEntity implements dObject, Adjustable {
             this.entity = null;
             this.entity_type = DenizenEntityType.getByName(entityType.name());
         }
-        else dB.echoError("Entity_type referenced is null!");
+        else {
+            dB.echoError("Entity_type referenced is null!");
+        }
     }
 
     @Deprecated
@@ -349,7 +365,9 @@ public class dEntity implements dObject, Adjustable {
             this.entity_type = DenizenEntityType.getByName(entityType.name());
             this.data1 = data1;
         }
-        else dB.echoError("Entity_type referenced is null!");
+        else {
+            dB.echoError("Entity_type referenced is null!");
+        }
     }
 
     @Deprecated
@@ -360,7 +378,9 @@ public class dEntity implements dObject, Adjustable {
             this.data1 = data1;
             this.data2 = data2;
         }
-        else dB.echoError("Entity_type referenced is null!");
+        else {
+            dB.echoError("Entity_type referenced is null!");
+        }
     }
 
     public dEntity(DenizenEntityType entityType) {
@@ -368,7 +388,9 @@ public class dEntity implements dObject, Adjustable {
             this.entity = null;
             this.entity_type = entityType;
         }
-        else dB.echoError("DenizenEntityType referenced is null!");
+        else {
+            dB.echoError("DenizenEntityType referenced is null!");
+        }
     }
 
     public dEntity(DenizenEntityType entityType, ArrayList<Mechanism> mechanisms) {
@@ -382,7 +404,9 @@ public class dEntity implements dObject, Adjustable {
             this.entity_type = entityType;
             this.data1 = data1;
         }
-        else dB.echoError("DenizenEntityType referenced is null!");
+        else {
+            dB.echoError("DenizenEntityType referenced is null!");
+        }
     }
 
     public dEntity(DenizenEntityType entityType, String data1, String data2) {
@@ -392,7 +416,9 @@ public class dEntity implements dObject, Adjustable {
             this.data1 = data1;
             this.data2 = data2;
         }
-        else dB.echoError("DenizenEntityType referenced is null!");
+        else {
+            dB.echoError("DenizenEntityType referenced is null!");
+        }
     }
 
     public dEntity(dNPC npc) {
@@ -408,7 +434,9 @@ public class dEntity implements dObject, Adjustable {
                 this.uuid = entity.getUniqueId();
             }
         }
-        else dB.echoError("NPC referenced is null!");
+        else {
+            dB.echoError("NPC referenced is null!");
+        }
 
     }
 
@@ -467,14 +495,19 @@ public class dEntity implements dObject, Adjustable {
 
     public dObject getDenizenObject() {
 
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
 
-        if (isCitizensNPC())
+        if (isCitizensNPC()) {
             return getDenizenNPC();
-        else if (isPlayer())
+        }
+        else if (isPlayer()) {
             return new dPlayer(getPlayer());
-        else
+        }
+        else {
             return this;
+        }
     }
 
     /**
@@ -494,9 +527,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public LivingEntity getLivingEntity() {
-        if (entity instanceof LivingEntity)
+        if (entity instanceof LivingEntity) {
             return (LivingEntity) entity;
-        else return null;
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -520,10 +556,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dNPC getDenizenNPC() {
-        if (npc != null)
+        if (npc != null) {
             return npc;
-        else
+        }
+        else {
             return getNPCFrom(entity);
+        }
     }
 
     /**
@@ -547,10 +585,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public Player getPlayer() {
-        if (isPlayer())
+        if (isPlayer()) {
             return (Player) entity;
-        else
+        }
+        else {
             return null;
+        }
     }
 
     /**
@@ -560,10 +600,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dPlayer getDenizenPlayer() {
-        if (isPlayer())
+        if (isPlayer()) {
             return new dPlayer(getPlayer());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     /**
@@ -604,10 +646,12 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dEntity getShooter() {
-        if (hasShooter())
+        if (hasShooter()) {
             return new dEntity((LivingEntity) getProjectile().getShooter());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     /**
@@ -615,8 +659,9 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public void setShooter(dEntity shooter) {
-        if (isProjectile() && shooter.isLivingEntity())
+        if (isProjectile() && shooter.isLivingEntity()) {
             getProjectile().setShooter(shooter.getLivingEntity());
+        }
     }
 
     /**
@@ -632,8 +677,9 @@ public class dEntity implements dObject, Adjustable {
 
     public Inventory getBukkitInventory() {
         if (hasInventory()) {
-            if (!isCitizensNPC())
+            if (!isCitizensNPC()) {
                 return ((InventoryHolder) getBukkitEntity()).getInventory();
+            }
         }
         return null;
     }
@@ -780,15 +826,18 @@ public class dEntity implements dObject, Adjustable {
         // If the entity is already spawned, teleport it.
 
         if (isCitizensNPC()) {
-            if (getDenizenNPC().getCitizen().isSpawned())
+            if (getDenizenNPC().getCitizen().isSpawned()) {
                 getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
+            }
             else {
                 getDenizenNPC().getCitizen().spawn(location);
                 entity = getDenizenNPC().getCitizen().getEntity();
                 uuid = getDenizenNPC().getCitizen().getEntity().getUniqueId();
             }
         }
-        else if (entity != null && isUnique()) entity.teleport(location);
+        else if (entity != null && isUnique()) {
+            entity.teleport(location);
+        }
 
         else {
             if (entity_type != null) {
@@ -798,8 +847,9 @@ public class dEntity implements dObject, Adjustable {
                         // TODO: Build entity from custom script
                     }
                     // Else, use the entity_type specified/remembered
-                    else
+                    else {
                         entity = entity_type.spawnNewEntity(location, mechanisms);
+                    }
 
                     getLivingEntity().teleport(location);
                     getLivingEntity().getEquipment().setArmorContents(despawned_entity.equipment);
@@ -871,8 +921,9 @@ public class dEntity implements dObject, Adjustable {
                             return;
                         }
                         uuid = entity.getUniqueId();
-                        if (entityScript != null)
+                        if (entityScript != null) {
                             EntityScriptHelper.setEntityScript(entity, entityScript);
+                        }
 
                         if (entity_type.getName().equals("PIG_ZOMBIE")) {
 
@@ -961,7 +1012,9 @@ public class dEntity implements dObject, Adjustable {
                 }
             }
 
-            else dB.echoError("Cannot spawn a null dEntity!");
+            else {
+                dB.echoError("Cannot spawn a null dEntity!");
+            }
 
             if (!isUnique()) {
                 dB.echoError("Error spawning entity - bad entity type, blocked by another plugin, or tried to spawn in an unloaded chunk?");
@@ -981,10 +1034,12 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public void respawn() {
-        if (despawned_entity != null)
+        if (despawned_entity != null) {
             spawnAt(despawned_entity.location);
-        else if (entity == null)
+        }
+        else if (entity == null) {
             dB.echoError("Cannot respawn a null dEntity!");
+        }
 
     }
 
@@ -1002,10 +1057,12 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public void teleport(Location location) {
-        if (isCitizensNPC())
+        if (isCitizensNPC()) {
             getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
-        else
+        }
+        else {
             entity.teleport(location);
+        }
     }
 
     /**
@@ -1089,27 +1146,35 @@ public class dEntity implements dObject, Adjustable {
                 location = entity.getLivingEntity().getLocation();
                 equipment = entity.getLivingEntity().getEquipment().getArmorContents();
 
-                if (CustomNBT.hasCustomNBT(entity.getLivingEntity(), "denizen-script-id"))
+                if (CustomNBT.hasCustomNBT(entity.getLivingEntity(), "denizen-script-id")) {
                     custom_script = CustomNBT.getCustomNBT(entity.getLivingEntity(), "denizen-script-id");
+                }
             }
         }
     }
 
     public int comparesTo(dEntity entity) {
         // Never matches a null
-        if (entity == null) return 0;
+        if (entity == null) {
+            return 0;
+        }
 
         // If provided is unique, and both are the same unique entity, return 1.
-        if (entity.isUnique() && entity.identify().equals(identify())) return 1;
+        if (entity.isUnique() && entity.identify().equals(identify())) {
+            return 1;
+        }
 
         // If provided isn't unique...
         if (!entity.isUnique()) {
             // Return 1 if this object isn't unique either, but matches
-            if (!isUnique() && entity.identify().equals(identify()))
+            if (!isUnique() && entity.identify().equals(identify())) {
                 return 1;
+            }
             // Return 1 if the provided object isn't unique, but whose entity_type
             // matches this object, even if this object is unique.
-            if (entity_type == entity.entity_type) return 1;
+            if (entity_type == entity.entity_type) {
+                return 1;
+            }
         }
 
         return 0;
@@ -1153,21 +1218,24 @@ public class dEntity implements dObject, Adjustable {
 
         // Check if entity is a Player or is spawned
         if (entity != null) {
-            if (isPlayer())
+            if (isPlayer()) {
                 return "p@" + getPlayer().getUniqueId();
+            }
 
-                // TODO:
-                // Check if entity is a 'notable entity'
-                // if (isSaved(this))
-                //    return "e@" + getSaved(this);
+            // TODO:
+            // Check if entity is a 'notable entity'
+            // if (isSaved(this))
+            //    return "e@" + getSaved(this);
 
-            else if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId()))
+            else if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId())) {
                 return "e@" + entity.getUniqueId().toString();
+            }
         }
 
         // Try to identify as an entity script
-        if (entityScript != null)
+        if (entityScript != null) {
             return "e@" + entityScript;
+        }
 
         // Check if an entity_type is available
         if (entity_type != null) {
@@ -1195,31 +1263,46 @@ public class dEntity implements dObject, Adjustable {
             return "n@" + npc.getId();
         }
 
-        if (isPlayer())
+        if (isPlayer()) {
             return "p@" + getPlayer().getName();
+        }
 
         // Try to identify as an entity script
-        if (entityScript != null)
+        if (entityScript != null) {
             return "e@" + entityScript;
+        }
 
         // Check if an entity_type is available
-        if (entity_type != null)
+        if (entity_type != null) {
             return "e@" + entity_type.getLowercaseName();
+        }
 
         return "null";
     }
 
 
     public String identifyType() {
-        if (isCitizensNPC()) return "npc";
-        else if (isPlayer()) return "player";
-        else return "e@" + entity_type.getName();
+        if (isCitizensNPC()) {
+            return "npc";
+        }
+        else if (isPlayer()) {
+            return "player";
+        }
+        else {
+            return "e@" + entity_type.getName();
+        }
     }
 
     public String identifySimpleType() {
-        if (isCitizensNPC()) return "npc";
-        else if (isPlayer()) return "player";
-        else return entity_type.getLowercaseName();
+        if (isCitizensNPC()) {
+            return "npc";
+        }
+        else if (isPlayer()) {
+            return "player";
+        }
+        else {
+            return entity_type.getLowercaseName();
+        }
     }
 
     @Override
@@ -1270,7 +1353,9 @@ public class dEntity implements dObject, Adjustable {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         if (entity == null && entity_type == null) {
             if (npc != null) {
@@ -1328,9 +1413,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the prefix of the entity.
         // -->
-        if (attribute.startsWith("prefix"))
+        if (attribute.startsWith("prefix")) {
             return new Element(prefix)
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.type>
@@ -1377,9 +1463,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the entity's temporary server entity ID.
         // -->
-        if (attribute.startsWith("eid"))
+        if (attribute.startsWith("eid")) {
             return new Element(entity.getEntityId())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.uuid>
@@ -1389,9 +1476,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the permanent unique ID of the entity.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("uuid"))
+        if (attribute.startsWith("uuid")) {
             return new Element(getUUID().toString())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.scriptname>
@@ -1475,9 +1563,11 @@ public class dEntity implements dObject, Adjustable {
                 if (search.startsWith("regex:")) {
                     try {
                         Pattern pattern = Pattern.compile(search.substring(6), Pattern.CASE_INSENSITIVE);
-                        for (String flag : allFlags)
-                            if (pattern.matcher(flag).matches())
+                        for (String flag : allFlags) {
+                            if (pattern.matcher(flag).matches()) {
                                 searchFlags.add(flag);
+                            }
+                        }
                     }
                     catch (Exception e) {
                         dB.echoError(e);
@@ -1485,9 +1575,11 @@ public class dEntity implements dObject, Adjustable {
                 }
                 else {
                     search = CoreUtilities.toLowerCase(search);
-                    for (String flag : allFlags)
-                        if (flag.toLowerCase().contains(search))
+                    for (String flag : allFlags) {
+                        if (flag.toLowerCase().contains(search)) {
                             searchFlags.add(flag);
+                        }
+                    }
                 }
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
@@ -1513,12 +1605,14 @@ public class dEntity implements dObject, Adjustable {
         // Otherwise, returns the name of the entity type.
         // -->
         if (attribute.startsWith("custom_id")) {
-            if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id"))
+            if (CustomNBT.hasCustomNBT(getLivingEntity(), "denizen-script-id")) {
                 return new dScript(CustomNBT.getCustomNBT(getLivingEntity(), "denizen-script-id"))
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return new Element(entity.getType().name())
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1566,9 +1660,10 @@ public class dEntity implements dObject, Adjustable {
         // If the entity is a horse, returns the item equipped as the horses armor, or i@air if none.
         // -->
         if (attribute.startsWith("horse_armor") || attribute.startsWith("horse_armour")) {
-            if (getLivingEntity().getType() == EntityType.HORSE)
+            if (getLivingEntity().getType() == EntityType.HORSE) {
                 return new dItem(((Horse) getLivingEntity()).getInventory().getArmor())
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -1579,9 +1674,10 @@ public class dEntity implements dObject, Adjustable {
         // If the entity s a pig or horse, returns whether it has a saddle equipped.
         // -->
         if (attribute.startsWith("has_saddle")) {
-            if (getLivingEntity().getType() == EntityType.HORSE)
+            if (getLivingEntity().getType() == EntityType.HORSE) {
                 return new Element(((Horse) getLivingEntity()).getInventory().getSaddle().getType() == Material.SADDLE)
                         .getAttribute(attribute.fulfill(1));
+            }
             else if (getLivingEntity().getType() == EntityType.PIG) {
                 return new Element(((Pig) getLivingEntity()).hasSaddle())
                         .getAttribute(attribute.fulfill(1));
@@ -1596,9 +1692,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the item the entity is holding, or i@air if none.
         // -->
         if (attribute.startsWith("item_in_hand") ||
-                attribute.startsWith("iteminhand"))
+                attribute.startsWith("iteminhand")) {
             return new dItem(getLivingEntity().getEquipment().getItemInHand())
                     .getAttribute(attribute.fulfill(1));
+        }
 
 
         /////////////////////
@@ -1648,8 +1745,9 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("can_see")) {
             if (isLivingEntity() && attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
                 dEntity toEntity = dEntity.valueOf(attribute.getContext(1));
-                if (toEntity != null && toEntity.isSpawned())
+                if (toEntity != null && toEntity.isSpawned()) {
                     return new Element(getLivingEntity().hasLineOfSight(toEntity.getBukkitEntity())).getAttribute(attribute.fulfill(1));
+                }
             }
         }
 
@@ -1699,14 +1797,17 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("location.cursor_on")) {
             int range = attribute.getIntContext(2);
-            if (range < 1) range = 50;
+            if (range < 1) {
+                range = 50;
+            }
             Set<Material> set = new HashSet<Material>();
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
                 List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
-                for (dMaterial material : ignoreList)
+                for (dMaterial material : ignoreList) {
                     set.add(material.getMaterial());
+                }
                 attribute = attribute.fulfill(1);
             }
             return new dLocation(getLivingEntity().getTargetBlock(set, range).getLocation()).getAttribute(attribute);
@@ -1720,9 +1821,10 @@ public class dEntity implements dObject, Adjustable {
         // Returns the location of what the entity is standing on.
         // Works with offline players.
         // -->
-        if (attribute.startsWith("location.standing_on"))
+        if (attribute.startsWith("location.standing_on")) {
             return new dLocation(entity.getLocation().clone().add(0, -0.5f, 0))
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.location>
@@ -1788,9 +1890,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the material of a fallingblock-type entity.
         // -->
-        if (attribute.startsWith("fallingblock_material"))
+        if (attribute.startsWith("fallingblock_material")) {
             return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.fall_distance>
@@ -1799,9 +1902,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns how far the entity has fallen.
         // -->
-        if (attribute.startsWith("fall_distance"))
+        if (attribute.startsWith("fall_distance")) {
             return new Element(entity.getFallDistance())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.fire_time>
@@ -1810,9 +1914,10 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the duration for which the entity will remain on fire
         // -->
-        if (attribute.startsWith("fire_time"))
+        if (attribute.startsWith("fire_time")) {
             return new Duration(entity.getFireTicks() / 20)
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.on_fire>
@@ -1988,12 +2093,14 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity is leashed.
         // -->
         if (attribute.startsWith("leashed") || attribute.startsWith("is_leashed")) {
-            if (isLivingEntity())
+            if (isLivingEntity()) {
                 return new Element(getLivingEntity().isLeashed())
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -2016,12 +2123,14 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
         if (attribute.startsWith("persistent") || attribute.startsWith("is_persistent")) {
-            if (isLivingEntity())
+            if (isLivingEntity()) {
                 return new Element(!getLivingEntity().getRemoveWhenFarAway())
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return Element.FALSE
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -2165,9 +2274,12 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
         if (attribute.startsWith("is_mob")) {
-            if (!isPlayer() && !isNPC())
+            if (!isPlayer() && !isNPC()) {
                 return Element.TRUE.getAttribute(attribute.fulfill(1));
-            else return Element.FALSE.getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]
@@ -2273,7 +2385,9 @@ public class dEntity implements dObject, Adjustable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -2317,8 +2431,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.can_pickup_items>
         // -->
-        if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean())
+        if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean()) {
             getLivingEntity().setCanPickupItems(value.asBoolean());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2329,8 +2444,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.fall_distance>
         // -->
-        if (mechanism.matches("fall_distance") && mechanism.requireFloat())
+        if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
             entity.setFallDistance(value.asFloat());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2341,8 +2457,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.fire_time>
         // -->
-        if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class))
+        if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class)) {
             entity.setFireTicks(value.asType(Duration.class).getTicksAsInt());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2355,8 +2472,9 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.leashed>
         // <e@entity.leash_holder>
         // -->
-        if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class))
+        if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class)) {
             getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2368,8 +2486,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.can_breed>
         // -->
-        if (mechanism.matches("can_breed") && mechanism.requireBoolean())
+        if (mechanism.matches("can_breed") && mechanism.requireBoolean()) {
             ((Ageable) getLivingEntity()).setBreed(true);
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2384,10 +2503,12 @@ public class dEntity implements dObject, Adjustable {
         if (mechanism.matches("breed")) {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
-                if (list.get(0).equalsIgnoreCase("true"))
+                if (list.get(0).equalsIgnoreCase("true")) {
                     ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
-                else
+                }
+                else {
                     ((CraftAnimals) getLivingEntity()).getHandle().cq();
+                }
             }
         }
 
@@ -2401,8 +2522,9 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.passenger>
         // <e@entity.empty>
         // -->
-        if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class))
+        if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class)) {
             entity.setPassenger(value.asType(dEntity.class).getBukkitEntity());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2413,8 +2535,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.time_lived>
         // -->
-        if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class))
+        if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class)) {
             entity.setTicksLived(value.asType(Duration.class).getTicksAsInt());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2427,8 +2550,9 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.oxygen>
         // <e@entity.oxygen.max>
         // -->
-        if (mechanism.matches("remaining_air") && mechanism.requireInteger())
+        if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
             getLivingEntity().setRemainingAir(value.asInt());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2440,9 +2564,11 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.has_effect[<effect>]>
         // -->
-        if (mechanism.matches("remove_effects"))
-            for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects())
+        if (mechanism.matches("remove_effects")) {
+            for (PotionEffect potionEffect : this.getLivingEntity().getActivePotionEffects()) {
                 getLivingEntity().removePotionEffect(potionEffect.getType());
+            }
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2454,8 +2580,9 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.remove_when_far>
         // -->
-        if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean())
+        if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+        }
 
         // <--[mechanism]
         // @object dEntity
@@ -2510,11 +2637,13 @@ public class dEntity implements dObject, Adjustable {
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
-            if (mechanism.fulfilled())
+            if (mechanism.fulfilled()) {
                 break;
+            }
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
     }
 }

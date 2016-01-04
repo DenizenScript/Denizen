@@ -28,49 +28,62 @@ public class MidiCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop")))
 
+            {
                 scriptEntry.addObject("cancel", "");
+            }
 
             else if (!scriptEntry.hasObject("location") &&
                     arg.matchesArgumentType(dLocation.class))
 
+            {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesArgumentList(dEntity.class))
 
+            {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+            }
 
             else if (!scriptEntry.hasObject("volume") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
                     arg.matchesPrefix("volume", "vol", "v"))
 
+            {
                 scriptEntry.addObject("volume", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("tempo") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double))
 
+            {
                 scriptEntry.addObject("tempo", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("file")) {
 
                 String path = DenizenAPI.getCurrentInstance().getDataFolder() +
                         File.separator + "midi" +
                         File.separator + arg.getValue();
-                if (!path.endsWith(".mid"))
+                if (!path.endsWith(".mid")) {
                     path = path + ".mid";
+                }
 
                 scriptEntry.addObject("file", new Element(path));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Produce error if there is no file and the "cancel" argument was
         // not used
         if (!scriptEntry.hasObject("file")
-                && !scriptEntry.hasObject("cancel"))
+                && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Missing file (Midi name) argument!");
+        }
 
         if (!scriptEntry.hasObject("location")) {
             scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),

@@ -44,8 +44,11 @@ public class ShowFakeCommand extends AbstractCommand {
 
             else if (locations.isEmpty()
                     && arg.matchesArgumentType(dList.class)) {
-                for (String item : dList.valueOf(arg.getValue()))
-                    if (dLocation.matches(item)) locations.add(item);
+                for (String item : dList.valueOf(arg.getValue())) {
+                    if (dLocation.matches(item)) {
+                        locations.add(item);
+                    }
+                }
             }
 
             else if (locations.isEmpty()
@@ -68,21 +71,26 @@ public class ShowFakeCommand extends AbstractCommand {
 
         }
 
-        if (entities.isEmpty() && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+        if (entities.isEmpty() && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
             entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify());
+        }
 
-        if (locations.isEmpty())
+        if (locations.isEmpty()) {
             throw new InvalidArgumentsException("Must specify at least one valid location!");
+        }
 
         if (!added_entities && (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()
-                || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()))
+                || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline())) {
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
+        }
 
-        if (entities.isEmpty() && added_entities)
+        if (entities.isEmpty() && added_entities) {
             throw new InvalidArgumentsException("Must specify valid targets!");
+        }
 
-        if (!scriptEntry.hasObject("materials") && !scriptEntry.hasObject("cancel"))
+        if (!scriptEntry.hasObject("materials") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify valid material(s)!");
+        }
 
         scriptEntry.addObject("entities", entities);
         scriptEntry.addObject("locations", locations);

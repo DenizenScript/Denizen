@@ -45,7 +45,9 @@ public class NPCTags implements Listener {
     @TagManager.TagEvents
     public void npcTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("npc") || event.replaced()) return;
+        if (!event.matches("npc") || event.replaced()) {
+            return;
+        }
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = event.getAttributes();
@@ -55,7 +57,8 @@ public class NPCTags implements Listener {
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1))
-            // Check if this is a valid player and update the dPlayer object reference.
+        // Check if this is a valid player and update the dPlayer object reference.
+        {
             if (dNPC.matches(attribute.getContext(1))) {
                 n = dNPC.valueOf(attribute.getContext(1));
             }
@@ -65,10 +68,13 @@ public class NPCTags implements Listener {
                 }
                 return;
             }
+        }
 
 
         if (n == null || !n.isValid()) {
-            if (!event.hasAlternative()) dB.echoError("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
+            if (!event.hasAlternative()) {
+                dB.echoError("Invalid or missing NPC for tag <" + event.raw_tag + ">!");
+            }
             return;
         }
 
@@ -113,12 +119,15 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Do world script event 'On NPC Completes Navigation'
-        if (NPCNavigationSmartEvent.IsActive())
+        if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
                     ("npc completes navigation"), new BukkitScriptEntryData(null, npc), null);
+        }
 
         // Do the assignment script action
-        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
+            return;
+        }
         npc.action("complete navigation", null);
 
     }
@@ -152,11 +161,14 @@ public class NPCTags implements Listener {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Do world script event 'On NPC Completes Navigation'
-        if (NPCNavigationSmartEvent.IsActive())
+        if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
                     ("npc begins navigation"), new BukkitScriptEntryData(null, npc), null);
+        }
 
-        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
+            return;
+        }
         npc.action("begin navigation", null);
 
         if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
@@ -170,8 +182,9 @@ public class NPCTags implements Listener {
                 dPlayer player = null;
 
                 // Check if the entity attacked by this NPC is a player
-                if (entity instanceof Player)
+                if (entity instanceof Player) {
                     player = dPlayer.mirrorBukkitPlayer((Player) entity);
+                }
 
                 // <--[action]
                 // @Actions
@@ -208,11 +221,14 @@ public class NPCTags implements Listener {
     public void navCancel(NavigationCancelEvent event) {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        if (NPCNavigationSmartEvent.IsActive())
+        if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
                     ("npc cancels navigation"), new BukkitScriptEntryData(null, npc), null);
+        }
 
-        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
+            return;
+        }
         npc.action("cancel navigation", null);
         npc.action("cancel navigation due to " + event.getCancelReason().toString(), null);
     }
@@ -259,20 +275,26 @@ public class NPCTags implements Listener {
             List<String> determinations = OldEventManager.doEvents(Arrays.asList
                     ("npc stuck"), new BukkitScriptEntryData(null, npc), context);
             for (String determination : determinations) {
-                if (determination.equalsIgnoreCase("none"))
+                if (determination.equalsIgnoreCase("none")) {
                     event.setAction(null);
-                if (determination.equalsIgnoreCase("teleport"))
+                }
+                if (determination.equalsIgnoreCase("teleport")) {
                     event.setAction(TeleportStuckAction.INSTANCE);
+                }
             }
         }
 
         // Do the assignment script action
-        if (!event.getNPC().hasTrait(AssignmentTrait.class)) return;
+        if (!event.getNPC().hasTrait(AssignmentTrait.class)) {
+            return;
+        }
         String determination2 = npc.action("stuck", null, context);
-        if (determination2.equalsIgnoreCase("none"))
+        if (determination2.equalsIgnoreCase("none")) {
             event.setAction(null);
-        if (determination2.equalsIgnoreCase("teleport"))
+        }
+        if (determination2.equalsIgnoreCase("teleport")) {
             event.setAction(TeleportStuckAction.INSTANCE);
+        }
 
     }
 }

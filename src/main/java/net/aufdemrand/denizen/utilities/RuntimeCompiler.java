@@ -72,8 +72,9 @@ public class RuntimeCompiler {
             dB.log("Could not find CraftBukkit jar or error reading it: " + error.getMessage());
         }
 
-        if (!externalsFolder.exists() || externalsFolder.list().length == 0)
+        if (!externalsFolder.exists() || externalsFolder.list().length == 0) {
             return;
+        }
         try {
             File file = new File(denizen.getDataFolder() + File.separator + "externals");
             File[] files = file.listFiles(javaFilter);
@@ -85,7 +86,9 @@ public class RuntimeCompiler {
 
                     JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
                     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
-                    if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
+                    if (!dependencies.isEmpty()) {
+                        compilationUnit.addClassPathEntries(dependencies);
+                    }
 
                     try {
                         compilationUnit.addJavaSource(fileName.replace(".java", ""), readFile(f.getAbsolutePath()));
@@ -121,7 +124,9 @@ public class RuntimeCompiler {
             i++;
             JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
             JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
-            if (!dependencies.isEmpty()) compilationUnit.addClassPathEntries(dependencies);
+            if (!dependencies.isEmpty()) {
+                compilationUnit.addClassPathEntries(dependencies);
+            }
             String complete = "import net.aufdemrand.denizen.utilities.debugging.dB;\npublic class CodeTester" + i +
                     " extends net.aufdemrand.denizen.utilities.dExternalRunnable {\n"
                     + "public void unload() {}\npublic void load() {}\n"
@@ -140,8 +145,9 @@ public class RuntimeCompiler {
     }
 
     public void reload() {
-        for (dExternal external : loadedExternals)
+        for (dExternal external : loadedExternals) {
             external.unload();
+        }
         loadedExternals.clear();
         loader();
     }

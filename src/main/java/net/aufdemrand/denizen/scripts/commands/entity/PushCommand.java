@@ -33,12 +33,15 @@ public class PushCommand extends AbstractCommand implements Holdable {
             if (!scriptEntry.hasObject("origin")
                     && arg.matchesPrefix("origin", "o", "source", "shooter", "s")) {
 
-                if (arg.matchesArgumentType(dEntity.class))
+                if (arg.matchesArgumentType(dEntity.class)) {
                     scriptEntry.addObject("originEntity", arg.asType(dEntity.class));
-                else if (arg.matchesArgumentType(dLocation.class))
+                }
+                else if (arg.matchesArgumentType(dLocation.class)) {
                     scriptEntry.addObject("originLocation", arg.asType(dLocation.class));
-                else
+                }
+                else {
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
+                }
             }
 
             else if (!scriptEntry.hasObject("destination")
@@ -94,7 +97,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("no_damage", new Element(true));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -113,11 +118,13 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
-        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
+        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -186,8 +193,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
             // instead of "e@57" on it
             entityList.add(entity.toString());
 
-            if (!no_rotate)
+            if (!no_rotate) {
                 Rotation.faceLocation(entity.getBukkitEntity(), destination);
+            }
 
             // If the current entity is a projectile, set its shooter
             // when applicable
@@ -264,10 +272,12 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
                                 .addEntries(entries);
-                        if (lastEntity.getLocation() != null)
+                        if (lastEntity.getLocation() != null) {
                             queue.addDefinition("location", lastEntity.getLocation().identify());
-                        else
+                        }
+                        else {
                             queue.addDefinition("location", lastLocation.identify());
+                        }
                         queue.addDefinition("pushed_entities", entityList.toString());
                         queue.addDefinition("last_entity", lastEntity.identify());
                         queue.start();

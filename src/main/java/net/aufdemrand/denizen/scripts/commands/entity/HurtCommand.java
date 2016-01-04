@@ -29,8 +29,9 @@ public class HurtCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("amount")
                     && (arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    || arg.matchesPrimitive(aH.PrimitiveType.Integer)))
+                    || arg.matchesPrimitive(aH.PrimitiveType.Integer))) {
                 scriptEntry.addObject("amount", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("source")
                     && arg.matchesPrefix("source", "s")
@@ -57,20 +58,26 @@ public class HurtCommand extends AbstractCommand {
                 scriptEntry.addObject("cause", arg.asElement());
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("amount"))
+        if (!scriptEntry.hasObject("amount")) {
             scriptEntry.addObject("amount", new Element(1.0d));
+        }
 
         if (!specified_targets) {
             List<dEntity> entities = new ArrayList<dEntity>();
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
-            else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null)
+            }
+            else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("No valid target entities found.");
+            }
             scriptEntry.addObject("entities", entities);
         }
 

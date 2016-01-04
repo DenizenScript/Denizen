@@ -103,17 +103,20 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                 scriptEntry.addObject("percents", arg.asType(dList.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Must have material
-        if (!scriptEntry.hasObject("materials"))
+        if (!scriptEntry.hasObject("materials")) {
             throw new InvalidArgumentsException("Missing material argument!");
+        }
 
         // ..and at least one location.
-        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("location_list"))
+        if (!scriptEntry.hasObject("locations") && !scriptEntry.hasObject("location_list")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
 
         // Set some defaults
         scriptEntry.defaultObject("radius", new Element(0))
@@ -173,10 +176,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         final List<Float> percs = percentages;
 
-        if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0))
+        if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0)) {
             dB.echoError("Must specify a valid location!");
-        if (materialList.size() == 0)
+        }
+        if (materialList.size() == 0) {
             dB.echoError("Must specify a valid material!");
+        }
 
         no_physics = !doPhysics;
         if (delayed.asBoolean()) {
@@ -254,16 +259,18 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         // TODO: make this do all worlds from the locations in the list
         CraftWorld craftWorld = (CraftWorld) loc0.getWorld();
         boolean was_static = craftWorld.getHandle().isClientSide;
-        if (no_physics)
+        if (no_physics) {
             setWorldIsStatic(loc0.getWorld(), true);
+        }
         return was_static;
     }
 
     void postComplete(Location loc, boolean was_static) {
         // Unfreeze the first world in the list.
         // TODO: make this do all worlds from the locations in the list
-        if (no_physics)
+        if (no_physics) {
             setWorldIsStatic(loc.getWorld(), was_static);
+        }
         no_physics = false;
     }
 
@@ -346,8 +353,9 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
     void setBlock(Location location, dMaterial material, boolean physics, boolean natural) {
         if (physics) {
             for (int i = 0; i < block_physics.size(); i++) {
-                if (compareloc(block_physics.get(i), location))
+                if (compareloc(block_physics.get(i), location)) {
                     block_physics.remove(i--);
+                }
             }
         }
         else {
@@ -358,10 +366,12 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             dB.echoError("Invalid modifyblock location: " + new dLocation(location).toString());
             return;
         }
-        if (natural && material.getMaterial() == Material.AIR)
+        if (natural && material.getMaterial() == Material.AIR) {
             location.getBlock().breakNaturally();
-        else
+        }
+        else {
             location.getBlock().setTypeIdAndData(material.getMaterial().getId(), material.getMaterialData().getData(), physics);
+        }
     }
 
     boolean no_physics = false;
@@ -381,8 +391,9 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             @Override
             public void run() {
                 tick++;
-                if (physitick < tick - 1)
+                if (physitick < tick - 1) {
                     block_physics.clear();
+                }
             }
         }, 2, 2);
     }
@@ -390,23 +401,28 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     @EventHandler
     public void blockPhysics(BlockPhysicsEvent event) {
-        if (no_physics)
+        if (no_physics) {
             event.setCancelled(true);
+        }
         for (Location loc : block_physics) {
-            if (compareloc(event.getBlock().getLocation(), loc))
+            if (compareloc(event.getBlock().getLocation(), loc)) {
                 event.setCancelled(true);
+            }
         }
     }
 
     @EventHandler
     public void blockChanges(EntityChangeBlockEvent event) {
-        if (event.getEntity().getType() != EntityType.FALLING_BLOCK)
+        if (event.getEntity().getType() != EntityType.FALLING_BLOCK) {
             return;
-        if (no_physics)
+        }
+        if (no_physics) {
             event.setCancelled(true);
+        }
         for (Location loc : block_physics) {
-            if (compareloc(event.getBlock().getLocation(), loc))
+            if (compareloc(event.getBlock().getLocation(), loc)) {
                 event.setCancelled(true);
+            }
         }
     }
 

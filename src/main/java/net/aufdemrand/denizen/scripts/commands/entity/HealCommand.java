@@ -25,8 +25,9 @@ public class HealCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("amount")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("amount", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dList.class)) {
@@ -42,20 +43,26 @@ public class HealCommand extends AbstractCommand {
                 specified_targets = true;
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("amount"))
+        if (!scriptEntry.hasObject("amount")) {
             scriptEntry.addObject("amount", new Element(-1));
+        }
 
         if (!specified_targets) {
             List<dEntity> entities = new ArrayList<dEntity>();
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null)
+            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
-            else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null)
+            }
+            else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("No valid target entities found.");
+            }
             scriptEntry.addObject("entities", entities);
         }
 
@@ -66,24 +73,29 @@ public class HealCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
-        if (entities == null)
+        if (entities == null) {
             return;
+        }
         Element amountelement = scriptEntry.getElement("amount");
 
         dB.report(scriptEntry, getName(), amountelement.debug() + aH.debugObj("entities", entities));
-        if (amountelement.asDouble() == -1)
+        if (amountelement.asDouble() == -1) {
             for (dEntity entity : entities) {
                 if (entity.isLivingEntity()) {
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
                 }
             }
+        }
         else {
             double amount = amountelement.asDouble();
-            for (dEntity entity : entities)
-                if (entity.getLivingEntity().getHealth() + amount < entity.getLivingEntity().getMaxHealth())
+            for (dEntity entity : entities) {
+                if (entity.getLivingEntity().getHealth() + amount < entity.getLivingEntity().getMaxHealth()) {
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getHealth() + amount);
-                else
+                }
+                else {
                     entity.getLivingEntity().setHealth(entity.getLivingEntity().getMaxHealth());
+                }
+            }
         }
     }
 }

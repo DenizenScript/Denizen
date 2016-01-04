@@ -24,8 +24,9 @@ public class DenizenEntityType {
     private final Method createMethod;
 
     static {
-        for (EntityType entityType : EntityType.values())
+        for (EntityType entityType : EntityType.values()) {
             registeredTypes.put(entityType.name(), new DenizenEntityType(entityType));
+        }
     }
 
     private DenizenEntityType(EntityType entityType) {
@@ -121,10 +122,12 @@ public class DenizenEntityType {
     }
 
     public static DenizenEntityType getByEntity(Entity entity) {
-        if (entity instanceof DenizenCustomEntity)
+        if (entity instanceof DenizenCustomEntity) {
             return getByName(((DenizenCustomEntity) entity).getEntityTypeName());
-        else
+        }
+        else {
             return getByName(entity.getType().name());
+        }
     }
 
     public boolean isCustom() {

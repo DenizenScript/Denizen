@@ -27,8 +27,9 @@ public class InteractScriptContainer extends ScriptContainer {
 
             // TODO: Throw a warning if 'requirements' section exists
 
-            if (keys.isEmpty())
+            if (keys.isEmpty()) {
                 throw new ExceptionInInitializerError("Could not find any STEPS in " + getName() + "! Is the type on this script correct?");
+            }
 
             for (StringHolder step1 : keys) {
                 String step = step1.str;
@@ -40,8 +41,12 @@ public class InteractScriptContainer extends ScriptContainer {
                     defaultStep = step;
                 }
 
-                if (step.equalsIgnoreCase("1")) defaultStep = step;
-                if (step.equalsIgnoreCase("DEFAULT")) defaultStep = step;
+                if (step.equalsIgnoreCase("1")) {
+                    defaultStep = step;
+                }
+                if (step.equalsIgnoreCase("DEFAULT")) {
+                    defaultStep = step;
+                }
                 steps.add(step);
             }
 
@@ -51,11 +56,13 @@ public class InteractScriptContainer extends ScriptContainer {
         }
 
         // Make default step the only step if there is only one step
-        if (defaultStep == null && steps.size() == 1)
+        if (defaultStep == null && steps.size() == 1) {
             defaultStep = steps.get(0);
+        }
 
-        if (defaultStep == null)
+        if (defaultStep == null) {
             throw new ExceptionInInitializerError("Must specify a default step in '" + getName() + "'!");
+        }
     }
 
     private String defaultStep = null;
@@ -160,11 +167,12 @@ public class InteractScriptContainer extends ScriptContainer {
             // No entries, so just return an empty list to avoid NPEs
         }
         else {
-            if (!quiet)
+            if (!quiet) {
                 dB.echoDebug(this, "No entries in script for " +
                         ("STEPS." + InteractScriptHelper.getCurrentStep(player, getName()) + "."
                                 + triggerName + " TRIGGER."
                                 + (id == null ? "SCRIPT" : id.toUpperCase() + ".SCRIPT")));
+            }
             return Collections.emptyList();
         }
     }
@@ -215,10 +223,12 @@ public class InteractScriptContainer extends ScriptContainer {
             // Iterate through IDs to build the idMap
             try {
                 for (StringHolder id : getConfigurationSection("STEPS." + step + "."
-                        + triggerName + " TRIGGER").getKeys(false))
-                    if (!id.str.equalsIgnoreCase("SCRIPT"))
+                        + triggerName + " TRIGGER").getKeys(false)) {
+                    if (!id.str.equalsIgnoreCase("SCRIPT")) {
                         idMap.put(id.str, getString("STEPS." + step + "."
                                 + triggerName + " TRIGGER." + id.str + ".TRIGGER", ""));
+                    }
+                }
             }
             catch (Exception ex) {
                 dB.echoError("Warning: improperly defined " + trigger.getName() + " trigger for script '" + getName() + "'!");
@@ -226,7 +236,9 @@ public class InteractScriptContainer extends ScriptContainer {
             return idMap;
         }
         // No entries, so just return an empty list to avoid NPEs
-        else return Collections.emptyMap();
+        else {
+            return Collections.emptyMap();
+        }
     }
 
     public boolean checkSpecificTriggerScriptRequirementsFor(Class<? extends AbstractTrigger> trigger,
@@ -267,13 +279,19 @@ public class InteractScriptContainer extends ScriptContainer {
     }
 
     public boolean checkRequirements(dPlayer player, dNPC npc, String path) {
-        if (path == null) path = "";
-        if (path.length() > 0) path = path + ".";
+        if (path == null) {
+            path = "";
+        }
+        if (path.length() > 0) {
+            path = path + ".";
+        }
         // Get requirements
         List<String> requirements = getContents().getStringList(path + "REQUIREMENTS.LIST");
         String mode = getContents().getString(path + "REQUIREMENTS.MODE", "ALL");
         // No requirements? Meets requirements!
-        if (requirements == null || requirements.isEmpty()) return true;
+        if (requirements == null || requirements.isEmpty()) {
+            return true;
+        }
         // Return new RequirementsContext built with info extracted from the ScriptContainer
         RequirementsContext context = new RequirementsContext(new RequirementsMode(mode), requirements, this);
         context.attachPlayer(player);

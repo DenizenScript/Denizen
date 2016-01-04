@@ -9,7 +9,9 @@ public class LeatherColorer {
 
     public static void colorArmor(dItem item, String colorArg) {
 
-        if (item == null) return;
+        if (item == null) {
+            return;
+        }
 
         if (dColor.matches(colorArg)) {
 

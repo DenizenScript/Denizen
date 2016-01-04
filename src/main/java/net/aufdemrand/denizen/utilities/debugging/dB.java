@@ -109,7 +109,9 @@ public class dB {
      * @param report all the debug information related to the command
      */
     public static void report(Debuggable caller, String name, String report) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         echo("<Y>+> <G>Executing '<Y>" + name + "<G>': "
                 + trimMessage(report), caller);
 
@@ -132,7 +134,9 @@ public class dB {
     }
 
     public static void echoDebug(Debuggable caller, DebugElement element) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         echoDebug(caller, element, null);
     }
 
@@ -141,7 +145,9 @@ public class dB {
     // to help scripters see what is going on. Debugging an element is usually
     // for formatting debug information.
     public static void echoDebug(Debuggable caller, DebugElement element, String string) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         StringBuilder sb = new StringBuilder(24);
 
         switch (element) {
@@ -161,7 +167,9 @@ public class dB {
     // Used by the various parts of Denizen that output debuggable information
     // to help scripters see what is going on.
     public static void echoDebug(Debuggable caller, String message) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
     }
 
@@ -191,7 +199,9 @@ public class dB {
      * @param message the message to debug
      */
     public static void echoApproval(String message) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
                 + ChatColor.WHITE + message);
     }
@@ -226,24 +236,30 @@ public class dB {
             ThrowErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("message", new Element(message));
-            if (source != null)
+            if (source != null) {
                 context.put("queue", source);
-            if (script != null)
+            }
+            if (script != null) {
                 context.put("script", script);
+            }
             List<String> events = new ArrayList<String>();
             events.add("script generates error");
-            if (script != null)
+            if (script != null) {
                 events.add(script.identifySimple() + " generates error");
+            }
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(events,
                     entry != null ? entry.entryData : new BukkitScriptEntryData(null, null), context, true);
             ThrowErrorEvent = true;
             for (String Determination : Determinations) {
-                if (Determination.equalsIgnoreCase("CANCELLED"))
+                if (Determination.equalsIgnoreCase("CANCELLED")) {
                     return;
+                }
             }
         }
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                 (script != null ? " in script '" + script.getName() + "'" : "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
@@ -284,11 +300,14 @@ public class dB {
                     entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);
             ThrowErrorEvent = true;
             for (String Determination : Determinations) {
-                if (Determination.equalsIgnoreCase("CANCELLED"))
+                if (Determination.equalsIgnoreCase("CANCELLED")) {
                     return;
+                }
             }
         }
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         if (!showStackTraces) {
             dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
@@ -316,11 +335,14 @@ public class dB {
     private static final Map<Class<?>, String> classNameCache = new WeakHashMap<Class<?>, String>();
 
     public static void log(String message) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
         String callerName = classNameCache.get(caller);
-        if (callerName == null)
+        if (callerName == null) {
             classNameCache.put(caller, callerName = caller.getSimpleName());
+        }
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + (callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName) + "] "
                 + ChatColor.WHITE + trimMessage(message));
@@ -328,7 +350,9 @@ public class dB {
 
 
     public static void log(DebugElement element, String string) {
-        if (!showDebug) return;
+        if (!showDebug) {
+            return;
+        }
         StringBuilder sb = new StringBuilder(24);
 
         switch (element) {
@@ -354,10 +378,13 @@ public class dB {
 
     // Some debug methods trim to keep super-long messages from hitting the console.
     private static String trimMessage(String message) {
-        if (!shouldTrim) return message;
+        if (!shouldTrim) {
+            return message;
+        }
         int trimSize = Settings.trimLength();
-        if (message.length() > trimSize)
+        if (message.length() > trimSize) {
             message = message.substring(0, trimSize - 1) + "... * snip! *";
+        }
         return message;
     }
 
@@ -370,19 +397,21 @@ public class dB {
 
         // Attempt to see if the debug should even be sent by checking the
         // script container's 'debug' node.
-        if (caller != null)
+        if (caller != null) {
             try {
 
-                if (filter.isEmpty())
+                if (filter.isEmpty()) {
                     should_send = caller.shouldDebug();
+                }
 
                 else {
                     should_send = false;
-                    for (String criteria : filter)
+                    for (String criteria : filter) {
                         if (caller.shouldFilter(criteria)) {
                             should_send = true;
                             break;
                         }
+                    }
                 }
 
             }
@@ -390,12 +419,15 @@ public class dB {
                 // Had a problem determining whether it should debug, assume true.
                 should_send = true;
             }
+        }
         return should_send;
     }
 
     // Handles checking whether the provided debuggable should submit to the debugger
     private static void echo(String string, Debuggable caller) {
-        if (shouldDebug(caller)) ConsoleSender.sendMessage(string);
+        if (shouldDebug(caller)) {
+            ConsoleSender.sendMessage(string);
+        }
     }
 
 
@@ -414,7 +446,9 @@ public class dB {
 
         // Use this method for sending a message
         public static void sendMessage(String string) {
-            if (commandSender == null) commandSender = Bukkit.getServer().getConsoleSender();
+            if (commandSender == null) {
+                commandSender = Bukkit.getServer().getConsoleSender();
+            }
 
             // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
             // than having a bunch of ChatColor.XXXX
@@ -427,12 +461,16 @@ public class dB {
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
-                if (!skipFooter) skipFooter = true;
+                if (!skipFooter) {
+                    skipFooter = true;
+                }
                 else {
                     return;
                 }
             }
-            else skipFooter = false;
+            else {
+                skipFooter = false;
+            }
 
             // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
             String[] words = string.split(" ");
@@ -455,8 +493,10 @@ public class dB {
 
             String result = buffer.toString();
             // Record current buffer to the to-be-submitted buffer
-            if (dB.record) dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
-                    + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
+            if (dB.record) {
+                dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
+                        + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
+            }
 
             // Send buffer to the player
             commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));

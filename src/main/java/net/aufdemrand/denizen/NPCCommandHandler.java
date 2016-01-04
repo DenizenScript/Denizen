@@ -64,7 +64,9 @@ public class NPCCommandHandler {
             flags = "rt", modifiers = {"pushable", "push"}, min = 1, max = 2, permission = "denizen.npc.pushable")
     @Requirements(selected = true, ownership = true)
     public void pushable(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(PushableTrait.class)) npc.addTrait(PushableTrait.class);
+        if (!npc.hasTrait(PushableTrait.class)) {
+            npc.addTrait(PushableTrait.class);
+        }
         PushableTrait trait = npc.getTrait(PushableTrait.class);
 
         if (args.hasFlag('r') && !args.hasFlag('t')) {
@@ -97,9 +99,12 @@ public class NPCCommandHandler {
         }
         else if (args.hasFlag('t')) {
             trait.toggle();
-            if (args.hasFlag('r')) trait.setReturnable(true);
-            if (args.hasValueFlag("delay") && args.getFlag("delay").matches("\\d+") && args.getFlagInteger("delay") > 0)
+            if (args.hasFlag('r')) {
+                trait.setReturnable(true);
+            }
+            if (args.hasValueFlag("delay") && args.getFlag("delay").matches("\\d+") && args.getFlagInteger("delay") > 0) {
                 trait.setDelay(args.getFlagInteger("delay"));
+            }
             Messaging.sendInfo(sender, npc.getName() + (trait.isPushable() ? " is" : " is not") + " currently pushable" +
                     (trait.isReturnable() && trait.isPushable() ? " and will return when pushed after '" + trait.getDelay() + "' seconds." : "."));
             return;
@@ -149,11 +154,14 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.constants")
     @Requirements(selected = true, ownership = true)
     public void constants(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
+        if (!npc.hasTrait(ConstantsTrait.class)) {
+            npc.addTrait(ConstantsTrait.class);
+        }
         ConstantsTrait trait = npc.getTrait(ConstantsTrait.class);
         if (args.hasValueFlag("set")) {
-            if (!args.hasValueFlag("value"))
+            if (!args.hasValueFlag("value")) {
                 throw new CommandException("--SET requires use of the '--VALUE \"constant value\"' argument.");
+            }
             trait.setConstant(args.getFlag("set"), args.getFlag("value"));
             Messaging.sendInfo(sender, npc.getName() + " has added constant '" + args.getFlag("set") + "'.");
             return;
@@ -196,22 +204,32 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.assign")
     @Requirements(selected = true, ownership = true)
     public void assignment(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(AssignmentTrait.class)) npc.addTrait(AssignmentTrait.class);
+        if (!npc.hasTrait(AssignmentTrait.class)) {
+            npc.addTrait(AssignmentTrait.class);
+        }
         Player player = null;
-        if (sender instanceof Player) player = (Player) sender;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        }
         AssignmentTrait trait = npc.getTrait(AssignmentTrait.class);
 
         if (args.hasValueFlag("set")) {
             String script = args.getFlag("set").replace("\"", "");
 
-            if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player)))
-                if (trait.hasAssignment())
+            if (trait.setAssignment(script, dPlayer.mirrorBukkitPlayer(player))) {
+                if (trait.hasAssignment()) {
                     Messaging.sendInfo(sender, npc.getName() + "'s assignment is now: '" + trait.getAssignment().getName() + "'.");
-                else Messaging.sendInfo(sender, npc.getName() + "'s assignment was not able to be set.");
-            else if (ScriptRegistry.containsScript(script))
+                }
+                else {
+                    Messaging.sendInfo(sender, npc.getName() + "'s assignment was not able to be set.");
+                }
+            }
+            else if (ScriptRegistry.containsScript(script)) {
                 Messaging.sendError(sender, "A script with that name exists, but it is not an assignment script!");
-            else
+            }
+            else {
                 Messaging.sendError(sender, "Invalid assignment! Has the script sucessfully loaded, or has it been mispelled?");
+            }
             return;
 
         }
@@ -249,13 +267,19 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.trigger")
     @Requirements(selected = true, ownership = true)
     public void trigger(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
+        if (!npc.hasTrait(TriggerTrait.class)) {
+            npc.addTrait(TriggerTrait.class);
+        }
         TriggerTrait trait = npc.getTrait(TriggerTrait.class);
         if ((args.hasValueFlag("name") || (args.argsLength() > 1 && (args.getJoinedStrings(1) != null) && !args.getString(1).matches("\\d+")))) {
             // Get the name of the trigger
             String triggerName;
-            if (args.hasValueFlag("name")) triggerName = args.getFlag("name");
-            else triggerName = args.getJoinedStrings(1);
+            if (args.hasValueFlag("name")) {
+                triggerName = args.getFlag("name");
+            }
+            else {
+                triggerName = args.getJoinedStrings(1);
+            }
             // Check to make sure trigger exists
             if (DenizenAPI.getCurrentInstance().getTriggerRegistry().get(triggerName) == null) {
                 Messaging.sendError(sender, "'" + triggerName.toUpperCase() + "' trigger does not exist.");
@@ -268,10 +292,13 @@ public class NPCCommandHandler {
                 return;
             }
             // If toggling
-            if (args.hasFlag('t')) trait.toggleTrigger(triggerName);
+            if (args.hasFlag('t')) {
+                trait.toggleTrigger(triggerName);
+            }
             // If setting cooldown
-            if (args.hasValueFlag("cooldown"))
+            if (args.hasValueFlag("cooldown")) {
                 trait.setLocalCooldown(triggerName, args.getFlagDouble("cooldown"));
+            }
             // If specifying radius
             if (args.hasValueFlag("radius")) {
                 trait.setLocalRadius(triggerName, args.getFlagInteger("radius"));
@@ -301,7 +328,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.nickname")
     @Requirements(selected = true, ownership = true)
     public void nickname(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(NicknameTrait.class)) npc.addTrait(NicknameTrait.class);
+        if (!npc.hasTrait(NicknameTrait.class)) {
+            npc.addTrait(NicknameTrait.class);
+        }
         NicknameTrait trait = npc.getTrait(NicknameTrait.class);
         if (args.hasValueFlag("set")) {
             trait.setNickname(args.getFlag("set"));
@@ -314,9 +343,12 @@ public class NPCCommandHandler {
             return;
         }
 
-        if (trait.hasNickname())
+        if (trait.hasNickname()) {
             Messaging.sendInfo(sender, npc.getName() + "'s nickname is '" + trait.getNickname() + "'.");
-        else Messaging.sendInfo(sender, npc.getName() + " does not have a nickname!");
+        }
+        else {
+            Messaging.sendInfo(sender, npc.getName() + " does not have a nickname!");
+        }
     }
 
 
@@ -334,7 +366,9 @@ public class NPCCommandHandler {
             return;
         }
 
-        if (!npc.hasTrait(SittingTrait.class)) npc.addTrait(SittingTrait.class);
+        if (!npc.hasTrait(SittingTrait.class)) {
+            npc.addTrait(SittingTrait.class);
+        }
         SittingTrait trait = npc.getTrait(SittingTrait.class);
 
         if (args.hasFlag('c')) {
@@ -351,8 +385,9 @@ public class NPCCommandHandler {
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getTrait(Anchors.class);
-                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.sit(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                }
             }
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         }
@@ -398,7 +433,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void sleeping(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
+        if (!npc.hasTrait(SleepingTrait.class)) {
+            npc.addTrait(SleepingTrait.class);
+        }
         SleepingTrait trait = npc.getTrait(SleepingTrait.class);
 
         if (trait.isSleeping()) {
@@ -417,8 +454,9 @@ public class NPCCommandHandler {
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getTrait(Anchors.class);
-                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.toSleep(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                }
             }
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         }
@@ -437,7 +475,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(SleepingTrait.class)) npc.addTrait(SleepingTrait.class);
+        if (!npc.hasTrait(SleepingTrait.class)) {
+            npc.addTrait(SleepingTrait.class);
+        }
         SleepingTrait trait = npc.getTrait(SleepingTrait.class);
 
         if (!trait.isSleeping()) {
@@ -459,7 +499,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void startFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
+        if (!npc.hasTrait(FishingTrait.class)) {
+            npc.addTrait(FishingTrait.class);
+        }
         FishingTrait trait = npc.getTrait(FishingTrait.class);
 
         if (trait.isFishing()) {
@@ -491,8 +533,9 @@ public class NPCCommandHandler {
         else if (args.hasValueFlag("anchor")) {
             if (npc.hasTrait(Anchors.class)) {
                 Anchors anchors = npc.getTrait(Anchors.class);
-                if (anchors.getAnchor(args.getFlag("anchor")) != null)
+                if (anchors.getAnchor(args.getFlag("anchor")) != null) {
                     trait.startFishing(anchors.getAnchor(args.getFlag("anchor")).getLocation());
+                }
             }
             Messaging.sendError(sender, "The NPC does not have the specified anchor!");
         }
@@ -511,7 +554,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void stopFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(FishingTrait.class)) npc.addTrait(FishingTrait.class);
+        if (!npc.hasTrait(FishingTrait.class)) {
+            npc.addTrait(FishingTrait.class);
+        }
         FishingTrait trait = npc.getTrait(FishingTrait.class);
 
         if (!trait.isFishing()) {
@@ -533,7 +578,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.effect")
     @Requirements(selected = true, ownership = true)
     public void playEffect(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
+        if (!npc.hasTrait(ParticlesTrait.class)) {
+            npc.addTrait(ParticlesTrait.class);
+        }
         ParticlesTrait trait = npc.getTrait(ParticlesTrait.class);
 
         if (args.hasValueFlag("delay")) {
@@ -546,7 +593,9 @@ public class NPCCommandHandler {
 
         if (args.hasValueFlag("play")) {
             String name = args.getFlag("play");
-            if (!npc.hasTrait(ParticlesTrait.class)) npc.addTrait(ParticlesTrait.class);
+            if (!npc.hasTrait(ParticlesTrait.class)) {
+                npc.addTrait(ParticlesTrait.class);
+            }
 
             if (name.equalsIgnoreCase("none")) {
                 trait.setEffect("NONE");
@@ -572,10 +621,14 @@ public class NPCCommandHandler {
             else if (name.equalsIgnoreCase("explosion")) {
                 trait.setEffect("EXPLOSION");
             }
-            else Messaging.sendError(sender, "Not a valid effect name!");
+            else {
+                Messaging.sendError(sender, "Not a valid effect name!");
+            }
 
         }
-        else Messaging.sendError(sender, "Please specify an effect name!");
+        else {
+            Messaging.sendError(sender, "Please specify an effect name!");
+        }
 
     }
 
@@ -593,7 +646,9 @@ public class NPCCommandHandler {
             return;
         }
 
-        if (!npc.hasTrait(SneakingTrait.class)) npc.addTrait(SneakingTrait.class);
+        if (!npc.hasTrait(SneakingTrait.class)) {
+            npc.addTrait(SneakingTrait.class);
+        }
         SneakingTrait trait = npc.getTrait(SneakingTrait.class);
 
         if (trait.isSneaking()) {
@@ -614,7 +669,9 @@ public class NPCCommandHandler {
             min = 1, max = 3, permission = "denizen.npc.health")
     @Requirements(selected = true, ownership = true)
     public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
-        if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
+        if (!npc.hasTrait(HealthTrait.class)) {
+            npc.addTrait(HealthTrait.class);
+        }
         HealthTrait trait = npc.getTrait(HealthTrait.class);
 
         boolean showMore = true;
@@ -666,8 +723,9 @@ public class NPCCommandHandler {
             showMore = false;
         }
 
-        if (showMore)
+        if (showMore) {
             Messaging.sendInfo(sender, npc.getName() + "'s health is '" + trait.getHealth() + "/" + trait.getMaxhealth() + "'.");
+        }
     }
 
     /*

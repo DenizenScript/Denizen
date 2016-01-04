@@ -16,8 +16,12 @@ public class EntitySilent implements Property {
     }
 
     public static EntitySilent getFrom(dObject entity) {
-        if (!describes(entity)) return null;
-        else return new EntitySilent((dEntity) entity);
+        if (!describes(entity)) {
+            return null;
+        }
+        else {
+            return new EntitySilent((dEntity) entity);
+        }
     }
 
 
@@ -64,9 +68,10 @@ public class EntitySilent implements Property {
         // @description
         // Returns whether the entity is silent. (Plays no sounds)
         // -->
-        if (attribute.startsWith("silent"))
+        if (attribute.startsWith("silent")) {
             return new Element(isSilent(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
+        }
 
 
         return null;

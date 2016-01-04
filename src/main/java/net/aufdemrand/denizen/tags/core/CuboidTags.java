@@ -18,13 +18,16 @@ public class CuboidTags implements Listener {
     @TagManager.TagEvents
     public void locationTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("cuboid") || event.replaced()) return;
+        if (!event.matches("cuboid") || event.replaced()) {
+            return;
+        }
 
         dCuboid cuboid = null;
 
         String context = event.getNameContext();
-        if (event.hasNameContext())
+        if (event.hasNameContext()) {
             cuboid = dCuboid.valueOf(context);
+        }
 
         // Check if cuboid is null, return if it is
         if (cuboid == null) {

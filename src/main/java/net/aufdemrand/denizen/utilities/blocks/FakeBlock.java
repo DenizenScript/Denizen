@@ -34,11 +34,13 @@ public class FakeBlock {
 
     public static void showFakeBlockTo(List<dPlayer> players, dLocation location, dMaterial material, Duration duration) {
         for (dPlayer player : players) {
-            if (!player.isOnline() || !player.isValid())
+            if (!player.isOnline() || !player.isValid()) {
                 continue;
+            }
             UUID uuid = player.getPlayerEntity().getUniqueId();
-            if (!blocks.containsKey(uuid))
+            if (!blocks.containsKey(uuid)) {
                 blocks.put(uuid, new HashMap<dLocation, FakeBlock>());
+            }
             Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
             if (!playerBlocks.containsKey(location)) {
                 playerBlocks.put(location, new FakeBlock(player, location));
@@ -50,25 +52,29 @@ public class FakeBlock {
     public static void stopShowingTo(List<dPlayer> players, final dLocation location) {
         final List<UUID> uuids = new ArrayList<UUID>();
         for (dPlayer player : players) {
-            if (!player.isOnline() || !player.isValid())
+            if (!player.isOnline() || !player.isValid()) {
                 continue;
+            }
             UUID uuid = player.getPlayerEntity().getUniqueId();
             uuids.add(uuid);
             if (blocks.containsKey(uuid)) {
                 Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
-                if (playerBlocks.containsKey(location))
+                if (playerBlocks.containsKey(location)) {
                     playerBlocks.get(location).cancelBlock();
+                }
             }
         }
         new BukkitRunnable() {
             @Override
             public void run() {
                 for (UUID uuid : blocks.keySet()) {
-                    if (uuids.contains(uuid))
+                    if (uuids.contains(uuid)) {
                         continue;
+                    }
                     Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
-                    if (playerBlocks.containsKey(location))
+                    if (playerBlocks.containsKey(location)) {
                         playerBlocks.get(location).updateBlock();
+                    }
                 }
             }
         }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
@@ -97,8 +103,9 @@ public class FakeBlock {
     }
 
     private void updateBlock(dMaterial material, long ticks) {
-        if (currentTask != null)
+        if (currentTask != null) {
             currentTask.cancel();
+        }
         this.material = material;
         if (!player.hasChunkLoaded(location.getChunk())) {
             return;
@@ -111,8 +118,9 @@ public class FakeBlock {
                 @Override
                 public void run() {
                     currentTask = null;
-                    if (player.isValid() && player.isOnline())
+                    if (player.isValid() && player.isOnline()) {
                         cancelBlock();
+                    }
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), ticks);
         }
@@ -131,8 +139,9 @@ public class FakeBlock {
         @EventHandler
         public void playerQuit(PlayerQuitEvent event) {
             UUID uuid = event.getPlayer().getUniqueId();
-            if (blocks.containsKey(uuid))
+            if (blocks.containsKey(uuid)) {
                 blocks.remove(uuid);
+            }
         }
     }
 }

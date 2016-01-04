@@ -57,8 +57,9 @@ public class ItemChangeMessage implements Listener {
             item = new ItemStack(Material.STAINED_GLASS_PANE);
             item.getData().setData((byte) 8);
         }
-        else
+        else {
             item = item.clone();
+        }
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(message);
         item.setItemMeta(meta);
@@ -68,7 +69,9 @@ public class ItemChangeMessage implements Listener {
     }
 
     public static void resetItem(Player player) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
         UUID uuid = player.getUniqueId();
         if (slotChanged.containsKey(uuid)) {
             PacketPlayOutSetSlot slotPacket = getSlotPacket(uuid, slotChanged.get(uuid), player.getItemInHand());
@@ -84,8 +87,9 @@ public class ItemChangeMessage implements Listener {
 
     @EventHandler
     public void inventoryOpen(InventoryOpenEvent event) {
-        if (event.getPlayer() instanceof Player)
+        if (event.getPlayer() instanceof Player) {
             resetItem((Player) event.getPlayer());
+        }
     }
 
     // Breaking blocks with tools and such will reset the item automatically...

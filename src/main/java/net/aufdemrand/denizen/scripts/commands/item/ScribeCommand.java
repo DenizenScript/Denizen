@@ -99,12 +99,14 @@ public class ScribeCommand extends AbstractCommand implements Listener {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesEnum(BookAction.values())
-                    && !scriptEntry.hasObject("action"))
+                    && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", BookAction.valueOf(arg.getValue().toUpperCase()));
+            }
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class))
+                    && arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
@@ -117,15 +119,18 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("item", arg.asType(dItem.class));
 
             }
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         scriptEntry.defaultObject("action", BookAction.GIVE);
         scriptEntry.defaultObject("item", new dItem(Material.WRITTEN_BOOK));
 
         // Must contain a book script
-        if (!scriptEntry.hasObject("script"))
+        if (!scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Missing SCRIPT argument!");
+        }
 
     }
 
@@ -169,8 +174,9 @@ public class ScribeCommand extends AbstractCommand implements Listener {
     private void giveBook(Player player, ItemStack book) {
         Inventory inv = player.getInventory();
         int emptySpot = inv.firstEmpty();
-        if (emptySpot != -1)
+        if (emptySpot != -1) {
             player.getInventory().addItem(book);
+        }
         else {
             player.getWorld().dropItem(player.getLocation(), book);
             dB.log("Player's inventory is full, dropped book.");

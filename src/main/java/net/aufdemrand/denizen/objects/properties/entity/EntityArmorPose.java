@@ -23,9 +23,13 @@ public class EntityArmorPose implements Property {
     }
 
     public static EntityArmorPose getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityArmorPose((dEntity) entity);
+        else {
+            return new EntityArmorPose((dEntity) entity);
+        }
     }
 
 
@@ -223,6 +227,7 @@ public class EntityArmorPose implements Property {
         };
 
         abstract EulerAngle getAngle(ArmorStand armorStand);
+
         abstract void setAngle(ArmorStand armorStand, EulerAngle eulerAngle);
 
         static PosePart fromName(String name) {

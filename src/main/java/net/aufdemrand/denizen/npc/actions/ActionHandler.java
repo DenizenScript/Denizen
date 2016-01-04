@@ -41,7 +41,9 @@ public class ActionHandler {
             return determination;
         }
 
-        if (!assignment.contains("actions.on " + actionName)) return determination;
+        if (!assignment.contains("actions.on " + actionName)) {
+            return determination;
+        }
 
         dB.report(assignment, "Action",
                 aH.debugObj("Type", "On " + actionName)
@@ -51,7 +53,9 @@ public class ActionHandler {
 
         // Fetch script from Actions
         List<ScriptEntry> script = assignment.getEntries(new BukkitScriptEntryData(player, npc), "actions.on " + actionName);
-        if (script.isEmpty()) return determination;
+        if (script.isEmpty()) {
+            return determination;
+        }
 
         // Create new ID -- this is what we will look for when determining an outcome
         long id = DetermineCommand.getNewId();
@@ -75,8 +79,9 @@ public class ActionHandler {
         queue.start();
 
         // Check the determination by asking the DetermineCommand
-        if (DetermineCommand.hasOutcome(id))
+        if (DetermineCommand.hasOutcome(id)) {
             determination = DetermineCommand.getOutcome(id).get(0);
+        }
         // TODO: Multiple determination system
         return determination;
     }

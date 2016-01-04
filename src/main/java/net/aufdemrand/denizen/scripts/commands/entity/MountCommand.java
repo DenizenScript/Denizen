@@ -42,7 +42,9 @@ public class MountCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -53,11 +55,13 @@ public class MountCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -42,23 +42,28 @@ public class AttackCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the player as the target if one is not specified
-        if (!scriptEntry.hasObject("target"))
+        if (!scriptEntry.hasObject("target")) {
             scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
+        }
 
         // Use the NPC as the attacking entity if one is not specified
         scriptEntry.defaultObject("entities",
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null);
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
-        if (!scriptEntry.hasObject("target") && !scriptEntry.hasObject("cancel"))
+        if (!scriptEntry.hasObject("target") && !scriptEntry.hasObject("cancel")) {
             throw new InvalidArgumentsException("Must specify a target!");
+        }
     }
 
     @SuppressWarnings("unchecked")

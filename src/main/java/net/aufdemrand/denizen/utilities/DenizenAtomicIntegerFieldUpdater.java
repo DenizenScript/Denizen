@@ -16,7 +16,8 @@ public class DenizenAtomicIntegerFieldUpdater<T> extends AtomicIntegerFieldUpdat
             Field field = Unsafe.class.getDeclaredField("theUnsafe");
             field.setAccessible(true);
             theUnsafe = (Unsafe) field.get(null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             dB.echoError(e);
         }
         unsafe = theUnsafe;
@@ -29,11 +30,13 @@ public class DenizenAtomicIntegerFieldUpdater<T> extends AtomicIntegerFieldUpdat
         int modifiers = field.getModifiers();
 
         Class fieldt = field.getType();
-        if (fieldt != int.class)
+        if (fieldt != int.class) {
             throw new IllegalArgumentException("Must be integer type");
+        }
 
-        if (!Modifier.isVolatile(modifiers))
+        if (!Modifier.isVolatile(modifiers)) {
             throw new IllegalArgumentException("Must be volatile type");
+        }
 
         offset = unsafe.objectFieldOffset(field);
     }

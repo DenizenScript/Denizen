@@ -126,7 +126,9 @@ public class PushableTrait extends Trait implements Listener {
      */
     public boolean toggle() {
         pushable = !pushable;
-        if (!pushable) returnable = false;
+        if (!pushable) {
+            returnable = false;
+        }
         return pushable;
     }
 
@@ -152,8 +154,11 @@ public class PushableTrait extends Trait implements Listener {
             if (System.currentTimeMillis() > pushedTimer) {
                 // Get pusher
                 Player pusher = null;
-                for (Entity le : event.getNPC().getEntity().getNearbyEntities(1, 1, 1))
-                    if (le instanceof Player) pusher = (Player) le;
+                for (Entity le : event.getNPC().getEntity().getNearbyEntities(1, 1, 1)) {
+                    if (le instanceof Player) {
+                        pusher = (Player) le;
+                    }
+                }
                 if (pusher != null) {
                     DenizenAPI.getDenizenNPC(npc).action("push", dPlayer.mirrorBukkitPlayer(pusher));
                     pushedTimer = System.currentTimeMillis() + (delay * 1000);

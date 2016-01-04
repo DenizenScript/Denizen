@@ -19,8 +19,12 @@ public class ItemPotion implements Property {
     }
 
     public static ItemPotion getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemPotion((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemPotion((dItem) _item);
+        }
     }
 
     private ItemPotion(dItem item) {
@@ -32,16 +36,18 @@ public class ItemPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() == 0)
+        if (item.getItemStack().getDurability() == 0) {
             return null;
+        }
         // World record winning stupidest necessary workaround for a Bukkit issue
         if ((item.getItemStack().getDurability() & 0x40) != 0
                 && PotionType.getByDamageValue(item.getItemStack().getDurability() & 0xF).isInstant()) {
             item.getItemStack().setDurability((short) (item.getItemStack().getDurability() & ~0x40));
         }
         Potion pot = Potion.fromItemStack(item.getItemStack());
-        if (pot == null || pot.getType() == null)
+        if (pot == null || pot.getType() == null) {
             return String.valueOf(item.getItemStack().getDurability());
+        }
         return pot.getType().name() + "," + pot.getLevel() + "," + pot.hasExtendedDuration() + "," + pot.isSplash();
     }
 
@@ -176,10 +182,12 @@ public class ItemPotion implements Property {
         if (mechanism.matches("potion")) {
             String[] data = mechanism.getValue().asString().split(",", 4);
             if (data.length < 4) {
-                if (mechanism.getValue().isInt())
+                if (mechanism.getValue().isInt()) {
                     item.getItemStack().setDurability((short) mechanism.getValue().asInt());
-                else
+                }
+                else {
                     dB.echoError("Invalid effect format, use name,amplifier,extended,splash.");
+                }
             }
             else {
                 Element data1 = new Element(data[1]);
@@ -214,8 +222,9 @@ public class ItemPotion implements Property {
                 if (d1 >= 1 && d1 <= pot.getType().getMaxLevel()) {
                     pot.setLevel(d1);
                 }
-                if (!pot.getType().isInstant())
+                if (!pot.getType().isInstant()) {
                     pot.setHasExtendedDuration(data2.asBoolean());
+                }
                 pot.setSplash(data3.asBoolean());
                 item.setDurability((short) 0);
                 pot.apply(item.getItemStack());

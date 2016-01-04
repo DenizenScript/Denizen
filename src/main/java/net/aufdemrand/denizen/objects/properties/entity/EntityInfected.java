@@ -15,15 +15,21 @@ import org.bukkit.entity.Zombie;
 public class EntityInfected implements Property {
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
+        if (!(entity instanceof dEntity)) {
+            return false;
+        }
         // Check if a Villager or Zombie -- the only two EntityTypes that can be 'infected'
         return ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
     public static EntityInfected getFrom(dObject entity) {
-        if (!describes(entity)) return null;
-        else return new EntityInfected((dEntity) entity);
+        if (!describes(entity)) {
+            return null;
+        }
+        else {
+            return new EntityInfected((dEntity) entity);
+        }
     }
 
 
@@ -48,8 +54,9 @@ public class EntityInfected implements Property {
             if (infected.isCitizensNPC()) {
                 NPC infected_npc = infected.getDenizenNPC().getCitizen();
                 infected_npc.setBukkitEntityType(EntityType.ZOMBIE);
-                if (!infected_npc.getTrait(ZombieModifier.class).toggleVillager())
+                if (!infected_npc.getTrait(ZombieModifier.class).toggleVillager()) {
                     infected_npc.getTrait(ZombieModifier.class).toggleVillager();
+                }
             }
 
             // If it's a Villager, we need to spawn a Zombie instead.
@@ -118,9 +125,10 @@ public class EntityInfected implements Property {
         // If the entity is infectable, returns whether the entity is infected.
         // Currently only Zombie or Villager entities can be infected.
         // -->
-        if (attribute.startsWith("is_infected"))
+        if (attribute.startsWith("is_infected")) {
             return new Element(isInfected())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

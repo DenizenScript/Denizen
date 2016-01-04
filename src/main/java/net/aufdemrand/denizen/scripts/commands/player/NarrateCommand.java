@@ -24,8 +24,9 @@ public class NarrateCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 
-        if (scriptEntry.getArguments().size() > 4)
+        if (scriptEntry.getArguments().size() > 4) {
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
+        }
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -34,7 +35,9 @@ public class NarrateCommand extends AbstractCommand {
                 FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainer(formatStr);
-                if (format == null) dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                if (format == null) {
+                    dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                }
                 scriptEntry.addObject("format", format);
             }
 
@@ -45,22 +48,26 @@ public class NarrateCommand extends AbstractCommand {
             }
 
             // Use raw_value as to not accidentally strip a value before any :'s.
-            else if (!scriptEntry.hasObject("text"))
+            else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
         // If there are no targets, check if you can add this player
         // to the targets
-        if (!scriptEntry.hasObject("targets"))
+        if (!scriptEntry.hasObject("targets")) {
             scriptEntry.addObject("targets",
                     (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) : null));
+        }
 
-        if (!scriptEntry.hasObject("text"))
+        if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing any text!");
+        }
 
     }
 
@@ -84,10 +91,12 @@ public class NarrateCommand extends AbstractCommand {
         }
 
         for (dPlayer player : targets) {
-            if (player != null && player.isOnline())
+            if (player != null && player.isOnline()) {
                 player.getPlayerEntity().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);
-            else
+            }
+            else {
                 dB.echoError("Narrated to non-existent or offline player!");
+            }
         }
     }
 }

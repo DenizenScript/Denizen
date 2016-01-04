@@ -21,11 +21,13 @@ public class ItemRequirement extends AbstractRequirement {
         for (aH.Argument arg : aH.interpret(args)) {
 
             if (contains == null
-                    && arg.matchesArgumentType(dItem.class))
+                    && arg.matchesArgumentType(dItem.class)) {
                 contains = arg.asType(dItem.class);
+            }
 
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer))
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 quantity = aH.getIntegerFrom(arg.getValue());
+            }
         }
 
         if (context.getPlayer().getPlayerEntity().getInventory().containsAtLeast(contains.getItemStack(), quantity)) {

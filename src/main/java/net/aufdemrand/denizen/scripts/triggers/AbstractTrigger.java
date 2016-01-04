@@ -87,10 +87,14 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
     }
 
     public boolean parse(dNPC npc, dPlayer player, InteractScriptContainer script, String id, Map<String, dObject> context) {
-        if (npc == null || player == null || script == null) return false;
+        if (npc == null || player == null || script == null) {
+            return false;
+        }
 
         List<ScriptEntry> entries = script.getEntriesFor(this.getClass(), player, npc, id, true);
-        if (entries.isEmpty()) return false;
+        if (entries.isEmpty()) {
+            return false;
+        }
 
         dB.echoDebug(script, DebugElement.Header, "Parsing " + name + " trigger: n@" + npc.getName() + "/p@" + player.getName());
         // Create Queue

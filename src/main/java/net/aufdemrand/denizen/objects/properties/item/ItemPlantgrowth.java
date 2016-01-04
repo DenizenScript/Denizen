@@ -29,8 +29,12 @@ public class ItemPlantgrowth implements Property {
     }
 
     public static ItemPlantgrowth getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemPlantgrowth((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemPlantgrowth((dItem) _item);
+        }
     }
 
 
@@ -60,18 +64,22 @@ public class ItemPlantgrowth implements Property {
         // Pumpkin stem, melon stem, carrot, potato: 0-7
         // -->
         if (attribute.startsWith("plant_growth")) {
-            if (item.getItemStack().getData() instanceof Crops)
+            if (item.getItemStack().getData() instanceof Crops) {
                 return new Element(((Crops) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
-            else if (item.getItemStack().getData() instanceof NetherWarts)
+            }
+            else if (item.getItemStack().getData() instanceof NetherWarts) {
                 return new Element(((NetherWarts) item.getItemStack().getData()).getState().name())
                         .getAttribute(attribute.fulfill(1));
-            else if (item.getItemStack().getData() instanceof CocoaPlant)
+            }
+            else if (item.getItemStack().getData() instanceof CocoaPlant) {
                 return new Element(((CocoaPlant) item.getItemStack().getData()).getSize().name())
                         .getAttribute(attribute.fulfill(1));
-            else
+            }
+            else {
                 return new Element(item.getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
+            }
         }
 
         return null;
@@ -81,19 +89,25 @@ public class ItemPlantgrowth implements Property {
     @Override
     public String getPropertyString() {
         String state;
-        if (item.getItemStack().getData() instanceof Crops)
+        if (item.getItemStack().getData() instanceof Crops) {
             state = ((Crops) item.getItemStack().getData()).getState().name();
-        else if (item.getItemStack().getData() instanceof NetherWarts)
+        }
+        else if (item.getItemStack().getData() instanceof NetherWarts) {
             state = ((NetherWarts) item.getItemStack().getData()).getState().name();
-        else if (item.getItemStack().getData() instanceof CocoaPlant)
+        }
+        else if (item.getItemStack().getData() instanceof CocoaPlant) {
             state = ((CocoaPlant) item.getItemStack().getData()).getSize().name();
-        else
+        }
+        else {
             state = String.valueOf(item.getItemStack().getData().getData());
+        }
 
-        if (!state.equalsIgnoreCase("SEEDED") && !state.equalsIgnoreCase("0"))
+        if (!state.equalsIgnoreCase("SEEDED") && !state.equalsIgnoreCase("0")) {
             return state;
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override
@@ -118,14 +132,18 @@ public class ItemPlantgrowth implements Property {
 
         if (mechanism.matches("plant_growth")) {
             Element inputValue = new Element(mechanism.getValue().asString().toUpperCase());
-            if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values()))
+            if (item.getItemStack().getData() instanceof Crops && inputValue.matchesEnum(CropState.values())) {
                 ((Crops) item.getItemStack().getData()).setState(CropState.valueOf(mechanism.getValue().asString().toUpperCase()));
-            else if (item.getItemStack().getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values()))
+            }
+            else if (item.getItemStack().getData() instanceof NetherWarts && inputValue.matchesEnum(NetherWartsState.values())) {
                 ((NetherWarts) item.getItemStack().getData()).setState(NetherWartsState.valueOf(mechanism.getValue().asString().toUpperCase()));
-            else if (item.getItemStack().getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values()))
+            }
+            else if (item.getItemStack().getData() instanceof CocoaPlant && inputValue.matchesEnum(CocoaPlant.CocoaPlantSize.values())) {
                 ((CocoaPlant) item.getItemStack().getData()).setSize(CocoaPlant.CocoaPlantSize.valueOf(mechanism.getValue().asString().toUpperCase()));
-            else if (mechanism.requireInteger())
+            }
+            else if (mechanism.requireInteger()) {
                 item.getItemStack().getData().setData((byte) mechanism.getValue().asInt());
+            }
         }
     }
 }

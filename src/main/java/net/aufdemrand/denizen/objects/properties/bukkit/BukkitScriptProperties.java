@@ -19,8 +19,12 @@ public class BukkitScriptProperties implements Property {
     }
 
     public static BukkitScriptProperties getFrom(dObject script) {
-        if (!describes(script)) return null;
-        else return new BukkitScriptProperties((dScript) script);
+        if (!describes(script)) {
+            return null;
+        }
+        else {
+            return new BukkitScriptProperties((dScript) script);
+        }
     }
 
 
@@ -67,11 +71,12 @@ public class BukkitScriptProperties implements Property {
         if (attribute.startsWith("requirements.check")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-            if (attribute.hasContext(2))
+            if (attribute.hasContext(2)) {
                 return new Element(((InteractScriptContainer) script.getContainer()).checkRequirements(player,
                         ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC(),
                         attribute.getContext(2)))
                         .getAttribute(attribute.fulfill(2));
+            }
         }
 
         // <--[tag]
@@ -100,9 +105,10 @@ public class BukkitScriptProperties implements Property {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
 
-            if (player != null && player.isValid())
+            if (player != null && player.isValid()) {
                 return new Element(InteractScriptHelper.getCurrentStep(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
+            }
         }
         return null;
     }

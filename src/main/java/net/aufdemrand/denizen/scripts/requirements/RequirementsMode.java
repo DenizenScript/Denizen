@@ -30,15 +30,26 @@ public class RequirementsMode {
      */
     public RequirementsMode(String arg) {
         arg = arg.toUpperCase();
-        if (arg.equals("NONE")) mode = Mode.NONE;
-        else if (arg.equals("ALL")) mode = Mode.ALL;
-        else if (arg.contains("FIRST")) mode = Mode.FIRST_AND_ANY_NUM;
-        else if (arg.contains("ANY")) mode = Mode.ANY_NUM;
+        if (arg.equals("NONE")) {
+            mode = Mode.NONE;
+        }
+        else if (arg.equals("ALL")) {
+            mode = Mode.ALL;
+        }
+        else if (arg.contains("FIRST")) {
+            mode = Mode.FIRST_AND_ANY_NUM;
+        }
+        else if (arg.contains("ANY")) {
+            mode = Mode.ANY_NUM;
+        }
 
         Matcher findInt = intsOnly.matcher(arg);
-        if (findInt.matches())
+        if (findInt.matches()) {
             modeInt = Integer.valueOf(findInt.group(1));
-        else modeInt = 1;
+        }
+        else {
+            modeInt = 1;
+        }
     }
 
     public RequirementsMode(Mode mode) {

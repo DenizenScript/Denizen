@@ -33,8 +33,9 @@ public class LookCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
-                    && arg.matchesPrefix("duration", "d"))
+                    && arg.matchesPrefix("duration", "d")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -42,7 +43,9 @@ public class LookCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player as the entity if no entities are specified
@@ -51,8 +54,9 @@ public class LookCommand extends AbstractCommand {
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null,
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null);
 
-        if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("location") || !scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify a location and entity!");
+        }
     }
 
     @SuppressWarnings("unchecked")

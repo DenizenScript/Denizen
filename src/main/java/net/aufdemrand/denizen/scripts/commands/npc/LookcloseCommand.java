@@ -19,25 +19,33 @@ public class LookcloseCommand extends AbstractCommand {
         // Parse Arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (arg.matches("realistic", "realistically"))
+            if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", Element.TRUE);
+            }
 
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer))
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("range", arg.asElement());
+            }
 
-            else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean))
+            else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("toggle", arg.asElement());
+            }
 
             else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
+            {
                 ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Only required thing is a valid NPC. This may be an already linked
         // NPC, or one specified by arguments
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
+        }
 
     }
 
@@ -53,13 +61,17 @@ public class LookcloseCommand extends AbstractCommand {
         LookClose trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(LookClose.class);
 
         // Handle toggle
-        if (scriptEntry.hasObject("toggle"))
+        if (scriptEntry.hasObject("toggle")) {
             trait.lookClose(scriptEntry.getElement("toggle").asBoolean());
+        }
 
         // Handle realistic
-        if (scriptEntry.hasObject("realistic"))
+        if (scriptEntry.hasObject("realistic")) {
             trait.setRealisticLooking(true);
-        else trait.setRealisticLooking(false);
+        }
+        else {
+            trait.setRealisticLooking(false);
+        }
 
         // Handle range
         if (scriptEntry.hasObject("range")) {

@@ -26,12 +26,14 @@ public class WaitCommand extends AbstractCommand {
         for (String arg : scriptEntry.getArguments()) {
 
             // Set duration
-            if (aH.matchesDuration(arg))
+            if (aH.matchesDuration(arg)) {
                 delay = Duration.valueOf(arg);
+            }
 
             // Specify queue
-            if (aH.matchesQueue(arg))
+            if (aH.matchesQueue(arg)) {
                 queue = ScriptQueue._getExistingQueue(arg);
+            }
         }
 
         scriptEntry.addObject("queue", queue);
@@ -49,8 +51,9 @@ public class WaitCommand extends AbstractCommand {
                 aH.debugObj("queue", queue.id) + delay.debug());
 
         // Tell the queue to delay
-        if (queue instanceof Delayable)
+        if (queue instanceof Delayable) {
             ((Delayable) queue).delayFor(delay);
+        }
         else {
             scriptEntry.setInstant(false);
             dB.echoDebug(scriptEntry, "Forcing queue " + queue.id + " into a timed queue...");

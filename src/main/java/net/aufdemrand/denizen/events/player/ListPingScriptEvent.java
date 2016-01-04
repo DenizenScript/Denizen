@@ -78,12 +78,16 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
             String[] values = determination.split("[\\|" + dList.internal_escape + "]", 2);
             if (new Element(values[0]).isInt()) {
                 max_players = new Element(values[0]);
-                if (values.length == 1) return true;
+                if (values.length == 1) {
+                    return true;
+                }
             }
-            if (values.length == 2)
+            if (values.length == 2) {
                 motd = new Element(values[1]);
-            else
+            }
+            else {
                 motd = new Element(values[0]);
+            }
         }
         return true;
     }

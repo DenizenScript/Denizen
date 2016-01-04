@@ -20,41 +20,52 @@ public class ResetCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matches("finishes", "finished", "finish")
-                    && !scriptEntry.hasObject("type"))
+                    && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.FINISH);
+            }
 
             else if (arg.matches("fails", "failed", "fail")
-                    && !scriptEntry.hasObject("type"))
+                    && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.FAIL);
+            }
 
             else if (arg.matches("cooldown")
-                    && !scriptEntry.hasObject("type"))
+                    && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.PLAYER_COOLDOWN);
+            }
 
             else if (arg.matches("global_cooldown")
-                    && !scriptEntry.hasObject("type"))
+                    && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.GLOBAL_COOLDOWN);
+            }
 
-            else if (arg.matches("saves") && !scriptEntry.hasObject("type"))
+            else if (arg.matches("saves") && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.SAVES);
+            }
 
-            else if (arg.matchesArgumentType(dScript.class))
+            else if (arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
+            }
 
-            else if (arg.matchesArgumentList(dPlayer.class))
+            else if (arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class));
-                // TODO: Reset NPCs option too!
+            }
+            // TODO: Reset NPCs option too!
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use attached player if none is specified, and we're not resetting GLOBAL_COOLDOWN
-        if (!scriptEntry.getObject("type").equals(Type.GLOBAL_COOLDOWN))
+        if (!scriptEntry.getObject("type").equals(Type.GLOBAL_COOLDOWN)) {
             scriptEntry.defaultObject("players", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+        }
 
         // Must specify a script unless resetting SAVES
-        if (!scriptEntry.hasObject("script") && !scriptEntry.getObject("type").equals(Type.SAVES))
+        if (!scriptEntry.hasObject("script") && !scriptEntry.getObject("type").equals(Type.SAVES)) {
             throw new InvalidArgumentsException("Must specify a script!");
+        }
     }
 
     @Override
@@ -63,9 +74,12 @@ public class ResetCommand extends AbstractCommand {
         // We allow players to be a single player or multiple players
         dObject player = scriptEntry.getdObject("players");
         dList players;
-        if (player instanceof dPlayer)
+        if (player instanceof dPlayer) {
             players = new dList(player.identify());
-        else players = scriptEntry.getdObject("players");
+        }
+        else {
+            players = scriptEntry.getdObject("players");
+        }
 
         Type type = (Type) scriptEntry.getObject("type");
         dScript script = scriptEntry.getdObject("script");

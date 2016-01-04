@@ -39,18 +39,22 @@ public class LogCommand extends AbstractCommand {
                 scriptEntry.addObject("message", new Element(arg.raw_value));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("message"))
+        if (!scriptEntry.hasObject("message")) {
             throw new InvalidArgumentsException("Must specify a message.");
+        }
 
-        if (!scriptEntry.hasObject("file"))
+        if (!scriptEntry.hasObject("file")) {
             throw new InvalidArgumentsException("Must specify a file.");
+        }
 
-        if (!scriptEntry.hasObject("type"))
+        if (!scriptEntry.hasObject("type")) {
             scriptEntry.addObject("type", new Element("INFO"));
+        }
     }
 
     @Override

@@ -24,18 +24,21 @@ public class AnnounceCommand extends AbstractCommand {
 
         // Users tend to forget quotes sometimes on commands like this, so
         // let's check if there are more argument than usual.
-        if (scriptEntry.getArguments().size() > 3)
+        if (scriptEntry.getArguments().size() > 3) {
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
+        }
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matches("to_ops"))
+                    && arg.matches("to_ops")) {
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
+            }
 
             else if (!scriptEntry.hasObject("type")
-                    && arg.matches("to_console"))
+                    && arg.matches("to_console")) {
                 scriptEntry.addObject("type", AnnounceType.TO_CONSOLE);
+            }
 
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("to_flagged")) {
@@ -48,18 +51,22 @@ public class AnnounceCommand extends AbstractCommand {
                 FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
                 format = ScriptRegistry.getScriptContainer(formatStr);
-                if (format == null) dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                if (format == null) {
+                    dB.echoError("Could not find format script matching '" + formatStr + '\'');
+                }
                 scriptEntry.addObject("format", format);
             }
 
-            else if (!scriptEntry.hasObject("text"))
+            else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(arg.raw_value));
+            }
 
         }
 
         // If text is missing, alert the console.
-        if (!scriptEntry.hasObject("text"))
+        if (!scriptEntry.hasObject("text")) {
             throw new InvalidArgumentsException("Missing text argument!");
+        }
 
         scriptEntry.defaultObject("type", AnnounceType.ALL);
 
@@ -89,14 +96,17 @@ public class AnnounceCommand extends AbstractCommand {
 
         else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.isOp()) player.sendMessage(message);
+                if (player.isOp()) {
+                    player.sendMessage(message);
+                }
             }
         }
 
         else if (type == AnnounceType.TO_FLAGGED) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString()))
+                if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString())) {
                     player.sendMessage(message);
+                }
             }
         }
 

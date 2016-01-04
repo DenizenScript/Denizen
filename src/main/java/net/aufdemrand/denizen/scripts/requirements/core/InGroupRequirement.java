@@ -26,16 +26,18 @@ public class InGroupRequirement extends AbstractRequirement {
                 boolean global = false;
 
                 for (String arg : args) {
-                    if (aH.matchesArg("GLOBAL", arg))
+                    if (aH.matchesArg("GLOBAL", arg)) {
                         global = true;
+                    }
                     else {
                         if (global) {
                             if (Depends.permissions.playerInGroup((World) null, context.getPlayer().getName(), arg)) {
                                 dB.echoDebug(context.getScriptContainer(), "...player is in global group: " + arg);
                                 outcome = true;
                             }
-                            else
+                            else {
                                 dB.echoDebug(context.getScriptContainer(), "...player is not in global group: " + arg + "!");
+                            }
                         }
                         else {
                             if (Depends.permissions.playerInGroup(context.getPlayer().getPlayerEntity(), arg)) {

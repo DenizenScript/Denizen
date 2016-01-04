@@ -230,8 +230,9 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     @EventHandler(ignoreCancelled = true)
     public void serverCommand(ServerCommandEvent event) {
 
-        if (event.getCommand().trim().length() == 0)
+        if (event.getCommand().trim().length() == 0) {
             return;
+        }
 
         Map<String, dObject> context = new HashMap<String, dObject>();
 

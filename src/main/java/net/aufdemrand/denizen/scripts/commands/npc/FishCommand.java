@@ -22,34 +22,40 @@ public class FishCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("catch")
                     && arg.matchesPrefix("catch")
-                    && arg.matchesEnum(FishingTrait.CatchType.values()))
+                    && arg.matchesEnum(FishingTrait.CatchType.values())) {
                 scriptEntry.addObject("catch", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("stop")
-                    && arg.matches("stop"))
+                    && arg.matches("stop")) {
                 scriptEntry.addObject("stop", Element.TRUE);
+            }
 
             else if (!scriptEntry.hasObject("percent")
                     && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("percent", arg.asElement());
+            }
 
         }
 
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop")) {
             throw new InvalidArgumentsException("Must specify a valid location!");
+        }
 
         scriptEntry.defaultObject("catch", new Element("NONE"))
                 .defaultObject("stop", Element.FALSE)
                 .defaultObject("percent", new Element(65));
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
             throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
+        }
 
     }
 

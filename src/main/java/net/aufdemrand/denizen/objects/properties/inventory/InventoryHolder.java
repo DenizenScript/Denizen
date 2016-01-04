@@ -21,7 +21,9 @@ public class InventoryHolder implements Property {
     }
 
     public static InventoryHolder getFrom(dObject inventory) {
-        if (!describes(inventory)) return null;
+        if (!describes(inventory)) {
+            return null;
+        }
         return new InventoryHolder((dInventory) inventory);
     }
 
@@ -39,11 +41,13 @@ public class InventoryHolder implements Property {
     }
 
     public dObject getHolder() {
-        if (inventory.getInventory() == null)
+        if (inventory.getInventory() == null) {
             return null;
+        }
         if (inventory.getIdType() != null
-                && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest")))
+                && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest"))) {
             return dPlayer.valueOf(inventory.getIdHolder());
+        }
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 
         if (holder != null) {
@@ -63,19 +67,23 @@ public class InventoryHolder implements Property {
                 return new dLocation(((BlockState) holder).getLocation());
             }
         }
-        else
+        else {
             return new Element(inventory.getIdHolder());
+        }
 
         return null;
     }
 
     public void setHolder(dPlayer player) {
-        if (inventory.getIdType().equals("enderchest"))
+        if (inventory.getIdType().equals("enderchest")) {
             inventory.setInventory(player.getBukkitEnderChest(), player);
-        else if (inventory.getIdType().equals("workbench"))
+        }
+        else if (inventory.getIdType().equals("workbench")) {
             inventory.setInventory(player.getBukkitWorkbench(), player);
-        else
+        }
+        else {
             inventory.setInventory(player.getBukkitInventory(), player);
+        }
     }
 
     public void setHolder(dNPC npc) {
@@ -91,9 +99,10 @@ public class InventoryHolder implements Property {
     }
 
     public void setHolder(Element element) {
-        if (element.matchesEnum(InventoryType.values()))
+        if (element.matchesEnum(InventoryType.values())) {
             inventory.setInventory(Bukkit.getServer().createInventory(null,
                     InventoryType.valueOf(element.asString().toUpperCase())));
+        }
     }
 
 
@@ -104,10 +113,12 @@ public class InventoryHolder implements Property {
     @Override
     public String getPropertyString() {
         if (holder == null || (inventory.getIdType().equals("generic")
-                && inventory.getIdHolder().equals("CHEST")))
+                && inventory.getIdHolder().equals("CHEST"))) {
             return null;
-        else
+        }
+        else {
             return holder.identify();
+        }
     }
 
     @Override
@@ -136,8 +147,9 @@ public class InventoryHolder implements Property {
         // Returns Denizen's holder ID for this inventory. (p@aufdemrand, l@123,321,123, etc.)
         // -->
         if (attribute.startsWith("id_holder")) {
-            if (holder == null)
+            if (holder == null) {
                 return null;
+            }
             return holder.getAttribute(attribute.fulfill(1));
         }
 
@@ -160,11 +172,21 @@ public class InventoryHolder implements Property {
         // -->
         if (mechanism.matches("holder")) {
             Element value = mechanism.getValue();
-            if (value.matchesEnum(InventoryType.values())) setHolder(value);
-            else if (value.matchesType(dPlayer.class)) setHolder(value.asType(dPlayer.class));
-            else if (value.matchesType(dNPC.class)) setHolder(value.asType(dNPC.class));
-            else if (value.matchesType(dEntity.class)) setHolder(value.asType(dEntity.class));
-            else if (value.matchesType(dLocation.class)) setHolder(value.asType(dLocation.class));
+            if (value.matchesEnum(InventoryType.values())) {
+                setHolder(value);
+            }
+            else if (value.matchesType(dPlayer.class)) {
+                setHolder(value.asType(dPlayer.class));
+            }
+            else if (value.matchesType(dNPC.class)) {
+                setHolder(value.asType(dNPC.class));
+            }
+            else if (value.matchesType(dEntity.class)) {
+                setHolder(value.asType(dEntity.class));
+            }
+            else if (value.matchesType(dLocation.class)) {
+                setHolder(value.asType(dLocation.class));
+            }
         }
 
     }

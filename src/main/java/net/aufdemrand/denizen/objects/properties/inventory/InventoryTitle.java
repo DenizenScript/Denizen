@@ -15,7 +15,9 @@ public class InventoryTitle implements Property {
     }
 
     public static InventoryTitle getFrom(dObject inventory) {
-        if (!describes(inventory)) return null;
+        if (!describes(inventory)) {
+            return null;
+        }
         return new InventoryTitle((dInventory) inventory);
     }
 
@@ -34,10 +36,12 @@ public class InventoryTitle implements Property {
         if (inventory.getInventory() != null) {
             String title = inventory.getInventory().getTitle();
             if (title != null) {
-                if (inventory.isUnique())
+                if (inventory.isUnique()) {
                     return title.substring(0, title.length() - 6);
-                else if (!title.startsWith("container."))
+                }
+                else if (!title.startsWith("container.")) {
                     return title;
+                }
             }
         }
         return null;
@@ -53,10 +57,12 @@ public class InventoryTitle implements Property {
         // Only show a property string for titles that can actually change
         if (inventory.isUnique()
                 || inventory.getIdType().equals("generic")
-                || inventory.getIdType().equals("location"))
+                || inventory.getIdType().equals("location")) {
             return getTitle();
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override

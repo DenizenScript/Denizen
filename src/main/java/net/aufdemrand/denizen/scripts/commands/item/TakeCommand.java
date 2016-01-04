@@ -27,17 +27,20 @@ public class TakeCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("type")
-                    && arg.matches("money", "coins"))
+                    && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
+            }
 
             else if (!scriptEntry.hasObject("type")
-                    && arg.matches("item_in_hand", "iteminhand"))
+                    && arg.matches("item_in_hand", "iteminhand")) {
                 scriptEntry.addObject("type", Type.ITEMINHAND);
+            }
 
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("bydisplay")
@@ -63,21 +66,25 @@ public class TakeCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
-                    && arg.matchesArgumentList(dItem.class))
+                    && arg.matchesArgumentList(dItem.class)) {
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
+            }
 
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")
-                    && arg.matchesArgumentType(dInventory.class))
+                    && arg.matchesArgumentType(dInventory.class)) {
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
+            }
 
             else if (!scriptEntry.hasObject("type")
-                    && arg.matches("inventory"))
+                    && arg.matches("inventory")) {
                 scriptEntry.addObject("type", Type.INVENTORY);
+            }
 
             else if (!scriptEntry.hasObject("inventory")
-                    && arg.matches("npc"))
+                    && arg.matches("npc")) {
                 scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity().getInventory());
+            }
 
         }
 
@@ -86,14 +93,17 @@ public class TakeCommand extends AbstractCommand {
 
         Type type = (Type) scriptEntry.getObject("type");
 
-        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
+        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
             scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getInventory() : null);
+        }
 
-        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
+        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
             throw new InvalidArgumentsException("Must specify an inventory to take from!");
+        }
 
-        if (type == Type.ITEM && scriptEntry.getObject("items") == null)
+        if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
             throw new InvalidArgumentsException("Must specify item/items!");
+        }
 
     }
 
@@ -110,8 +120,9 @@ public class TakeCommand extends AbstractCommand {
         Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
 
-        if (items_object != null)
+        if (items_object != null) {
             items = (List<dItem>) items_object;
+        }
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
@@ -167,10 +178,11 @@ public class TakeCommand extends AbstractCommand {
                     ItemStack is = item.getItemStack();
                     is.setAmount(qty.asInt());
 
-                    if (!inventory.removeItem(item, item.getAmount()))
+                    if (!inventory.removeItem(item, item.getAmount())) {
                         dB.echoDebug(scriptEntry, "Inventory does not contain at least "
                                 + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
+                    }
                 }
                 break;
 

@@ -24,32 +24,39 @@ public class InvisibleCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("state")
-                    && arg.matchesEnum(Action.values()))
+                    && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("state", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("PLAYER")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
+            }
 
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("NPC")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
+            }
 
             else if (!scriptEntry.hasObject("target")
-                    && arg.matchesArgumentType(dEntity.class))
+                    && arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("state"))
+        if (!scriptEntry.hasObject("state")) {
             scriptEntry.addObject("state", new Element("TRUE"));
+        }
 
-        if (!scriptEntry.hasObject("target") || !((dEntity) scriptEntry.getdObject("target")).isValid())
+        if (!scriptEntry.hasObject("target") || !((dEntity) scriptEntry.getdObject("target")).isValid()) {
             throw new InvalidArgumentsException("Must specify a valid target!");
+        }
     }
 
     @Override
@@ -63,8 +70,9 @@ public class InvisibleCommand extends AbstractCommand {
 
         if (target.isCitizensNPC()) {
             NPC npc = target.getDenizenNPC().getCitizen();
-            if (!npc.hasTrait(InvisibleTrait.class))
+            if (!npc.hasTrait(InvisibleTrait.class)) {
                 npc.addTrait(InvisibleTrait.class);
+            }
             InvisibleTrait trait = npc.getTrait(InvisibleTrait.class);
             switch (Action.valueOf(state.asString().toUpperCase())) {
                 case FALSE:
@@ -97,10 +105,12 @@ public class InvisibleCommand extends AbstractCommand {
                     }
                     break;
                 case TOGGLE:
-                    if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY))
+                    if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                         target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
-                    else
+                    }
+                    else {
                         new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
+                    }
                     break;
             }
         }

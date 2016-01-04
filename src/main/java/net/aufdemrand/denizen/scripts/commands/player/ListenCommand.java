@@ -30,23 +30,27 @@ public class ListenCommand extends AbstractCommand {
 
             // <action>
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values()))
+                    && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
+            }
 
-                // <id:name>
+            // <id:name>
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix("id", "i"))
+                    && arg.matchesPrefix("id", "i")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
 
-                // <script>
+            // <script>
             else if (!scriptEntry.hasObject("finish_script")
                     && arg.matchesPrefix("script")
-                    && arg.matchesArgumentType(dScript.class))
+                    && arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("finish_script", arg.asType(dScript.class));
+            }
 
-                // <type>
-            else if (!scriptEntry.hasObject("type"))
+            // <type>
+            else if (!scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", arg.asElement());
+            }
 
             arguments.add(arg);
         }
@@ -57,12 +61,14 @@ public class ListenCommand extends AbstractCommand {
 
         // Check for type (if using NEW) -- it's required
         if (!scriptEntry.hasObject("type")
-                && scriptEntry.getElement("action").asString().equalsIgnoreCase("new"))
+                && scriptEntry.getElement("action").asString().equalsIgnoreCase("new")) {
             throw new InvalidArgumentsException("Must specify a listener type!");
+        }
 
         // Player listeners require a player!
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() == null) {
             throw new InvalidArgumentsException("Must specify a player!");
+        }
 
         // Add arguments
         scriptEntry.addObject("args", arguments);
@@ -118,13 +124,15 @@ public class ListenCommand extends AbstractCommand {
                     dB.echoDebug(scriptEntry, "Cancelled creation of NEW listener!");
 
                     // Why? Maybe a wrong listener type...
-                    if (DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString()) == null)
+                    if (DenizenAPI.getCurrentInstance().getListenerRegistry().get(type.asString()) == null) {
                         dB.echoError(scriptEntry.getResidingQueue(), "Invalid listener type!");
+                    }
 
-                        // Just print the stacktrace if anything else, so we can debug other possible
-                        // problems.
-                    else
+                    // Just print the stacktrace if anything else, so we can debug other possible
+                    // problems.
+                    else {
                         dB.echoError(scriptEntry.getResidingQueue(), e);
+                    }
 
                     // Deconstruct the listener in case it was partially created while erroring out.
                     try {
@@ -138,25 +146,31 @@ public class ListenCommand extends AbstractCommand {
 
             case FINISH:
                 if (DenizenAPI.getCurrentInstance().getListenerRegistry()
-                        .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null)
+                        .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null) {
                     DenizenAPI.getCurrentInstance().getListenerRegistry()
                             .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()).finish();
+                }
                 break;
 
             case CANCEL:
                 if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
-                    if (id != null)
+                    if (id != null) {
                         if (DenizenAPI.getCurrentInstance().getListenerRegistry()
-                                .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null)
+                                .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()) != null) {
                             DenizenAPI.getCurrentInstance().getListenerRegistry()
                                     .getListenerFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), id.asString()).cancel();
-                        else
+                        }
+                        else {
                             for (AbstractListener listener :
-                                    DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()).values())
+                                    DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()).values()) {
                                 listener.cancel();
+                            }
+                        }
+                    }
                 }
-                else
+                else {
                     DenizenAPI.getCurrentInstance().getSaves().set("Listeners." + ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName() + "." + id, null);
+                }
                 break;
         }
     }

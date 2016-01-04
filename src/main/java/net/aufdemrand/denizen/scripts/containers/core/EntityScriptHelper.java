@@ -107,8 +107,9 @@ public class EntityScriptHelper implements Listener {
         entities.clear();
         ConfigurationSection entity_scripts = DenizenAPI.getCurrentInstance()
                 .getEntities().getConfigurationSection("entities.scripts");
-        if (entity_scripts == null)
+        if (entity_scripts == null) {
             return;
+        }
         for (String Path : entity_scripts.getKeys(false)) {
             UUID id = UUID.fromString(Path);
             String scriptname = entity_scripts.getString(Path + ".scriptname");
@@ -135,8 +136,9 @@ public class EntityScriptHelper implements Listener {
      * Returns the name of the entity script that defined this entity, or null if none.
      */
     public static String getEntityScript(Entity ent) {
-        if (ent == null)
+        if (ent == null) {
             return null;
+        }
         return getEntityScript(ent.getUniqueId());
     }
 
@@ -144,8 +146,9 @@ public class EntityScriptHelper implements Listener {
      * Returns the name of the entity script that defined the entity by this UUID, or null if none.
      */
     public static String getEntityScript(UUID entID) {
-        if (entID == null)
+        if (entID == null) {
             return null;
+        }
         return entities.get(entID);
     }
 
@@ -153,8 +156,9 @@ public class EntityScriptHelper implements Listener {
      * Marks the entity as having been created by a specified script.
      */
     public static void setEntityScript(Entity ent, String script) {
-        if (ent == null || ent.getUniqueId() == null || script == null)
+        if (ent == null || ent.getUniqueId() == null || script == null) {
             return;
+        }
         entities.put(ent.getUniqueId(), script);
     }
 
@@ -162,8 +166,9 @@ public class EntityScriptHelper implements Listener {
      * Removes the entity from the list of scripted entities.
      */
     public static void unlinkEntity(Entity ent) {
-        if (ent == null || ent.getUniqueId() == null)
+        if (ent == null || ent.getUniqueId() == null) {
             return;
+        }
         entities.remove(ent.getUniqueId());
         FlagManager.clearEntityFlags(new dEntity(ent));
     }
