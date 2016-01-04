@@ -564,7 +564,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return new dList(Arrays.asList(((Sign) getBlock().getState()).getLines()))
                         .getAttribute(attribute.fulfill(1));
             }
-            else return "null";
+            else {
+                return null;
+            }
         }
 
         // <--[tag]
@@ -579,7 +581,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return new dEntity(DenizenEntityType.getByName(((CreatureSpawner) getBlock().getState())
                         .getSpawnedType().name())).getAttribute(attribute.fulfill(1));
             }
-            else return "null";
+            else {
+                return null;
+            }
         }
 
         // <--[tag]
@@ -613,7 +617,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
                 return new Element(id != null ? id.toString() : name != null ? name : null).getAttribute(attribute);
             }
-            else return "null";
+            else {
+                return null;
+            }
         }
 
         // <--[tag]

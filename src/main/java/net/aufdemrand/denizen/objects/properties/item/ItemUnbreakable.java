@@ -30,8 +30,9 @@ public class ItemUnbreakable implements Property {
     dItem item;
 
     public String getAttribute(Attribute attribute) {
+
         if (attribute == null) {
-            return "null";
+            return null;
         }
 
         // <--[tag]

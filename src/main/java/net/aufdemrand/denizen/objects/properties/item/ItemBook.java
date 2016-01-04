@@ -36,7 +36,9 @@ public class ItemBook implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         if (attribute.startsWith("book")) {
             BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();

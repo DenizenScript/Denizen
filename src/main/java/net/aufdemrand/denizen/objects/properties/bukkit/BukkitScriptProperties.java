@@ -33,7 +33,9 @@ public class BukkitScriptProperties implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <s@script.cooled_down[<player>]>
@@ -46,10 +48,13 @@ public class BukkitScriptProperties implements Property {
         if (attribute.startsWith("cooled_down")) {
             dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
                     : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-            if (player != null && player.isValid())
+            if (player != null && player.isValid()) {
                 return new Element(CooldownCommand.checkCooldown(player, script.getContainer().getName()))
                         .getAttribute(attribute.fulfill(1));
-            else return "null";
+            }
+            else {
+                return null;
+            }
         }
 
         // <--[tag]

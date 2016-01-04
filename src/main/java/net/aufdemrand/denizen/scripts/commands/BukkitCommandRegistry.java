@@ -353,7 +353,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Ban
-        // Syntax ban ({ADD}/REMOVE) [<player>|...] reason:<text> duration:<duration>
+        // @Syntax ban ({ADD}/REMOVE) [<player>|...] reason:<text> duration:<duration>
         // @Required 1
         // @Stable stable
         // @Short Ban or un-ban a player or list of players.

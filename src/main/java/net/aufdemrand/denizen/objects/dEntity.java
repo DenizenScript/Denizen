@@ -1522,29 +1522,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.custom_name>
-        // @returns Element
-        // @group attributes
-        // @description
-        // Returns the entity's custom name, if any.
-        // -->
-        if (attribute.startsWith("custom_name")) {
-            return new Element(entity.getCustomName()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.custom_name.visible>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns true if the entity's custom name is visible.
-        // -->
-        if (attribute.startsWith("custom_name.visible")) {
-            return new Element(entity.isCustomNameVisible())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.name>
         // @returns Element
         // @group data
@@ -2135,6 +2112,24 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.target>
+        // @returns dEntity
+        // @group attributes
+        // @description
+        // Returns the target entity of the creature, if any.
+        // Note: use <n@npc.navigator.target_entity> for NPC's.
+        // -->
+        if (attribute.startsWith("target")) {
+            if (getBukkitEntity() instanceof Creature) {
+                dEntity target = new dEntity(((Creature) getLivingEntity()).getTarget());
+                if (target != null) {
+                    return target.getAttribute(attribute.fulfill(1));
+                }
+            }
+            return null;
+        }
+
+        // <--[tag]
         // @attribute <e@entity.time_lived>
         // @returns Duration
         // @group attributes
@@ -2324,30 +2319,6 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean())
             getLivingEntity().setCanPickupItems(value.asBoolean());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name custom_name
-        // @input Element
-        // @description
-        // Sets the custom name of the entity.
-        // @tags
-        // <e@entity.custom_name>
-        // -->
-        if (mechanism.matches("custom_name"))
-            entity.setCustomName(value.asString());
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name custom_name_visibility
-        // @input Element(Boolean)
-        // @description
-        // Sets whether the custom name is visible.
-        // @tags
-        // <e@entity.custom_name.visible>
-        // -->
-        if (mechanism.matches("custom_name_visibility") && mechanism.requireBoolean())
-            entity.setCustomNameVisible(value.asBoolean());
 
         // <--[mechanism]
         // @object dEntity

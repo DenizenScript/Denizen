@@ -58,7 +58,9 @@ public class EntityHealth implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.health.formatted>
@@ -153,25 +155,6 @@ public class EntityHealth implements Property {
             }
         }
 
-        // <--[mechanism]
-        // @object dEntity
-        // @name health
-        // @input Element(Decimal)
-        // @description
-        // Sets the amount of health the entity has.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        if (mechanism.matches("health") && mechanism.requireDouble()) {
-            if (entity.isLivingEntity()) {
-                entity.getLivingEntity().setHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
 
         // <--[mechanism]
         // @object dEntity
@@ -189,6 +172,26 @@ public class EntityHealth implements Property {
                 List<String> values = CoreUtilities.split(mechanism.getValue().asString(), '/');
                 entity.getLivingEntity().setMaxHealth(Double.valueOf(values.get(1)));
                 entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
+            }
+            else {
+                dB.echoError("Entity is not alive!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name health
+        // @input Element(Decimal)
+        // @description
+        // Sets the amount of health the entity has.
+        // The entity must be living.
+        // @tags
+        // <e@entity.health>
+        // <e@entity.health.max>
+        // -->
+        if (mechanism.matches("health") && mechanism.requireDouble()) {
+            if (entity.isLivingEntity()) {
+                entity.getLivingEntity().setHealth(mechanism.getValue().asDouble());
             }
             else {
                 dB.echoError("Entity is not alive!");

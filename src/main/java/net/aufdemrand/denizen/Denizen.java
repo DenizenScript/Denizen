@@ -746,6 +746,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
             propertyParser.registerProperty(EntityColor.class, dEntity.class);
             propertyParser.registerProperty(EntityCritical.class, dEntity.class);
+            propertyParser.registerProperty(EntityCustomName.class, dEntity.class);
             propertyParser.registerProperty(EntityElder.class, dEntity.class);
             propertyParser.registerProperty(EntityEquipment.class, dEntity.class);
             propertyParser.registerProperty(EntityFirework.class, dEntity.class);
@@ -768,6 +769,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
             propertyParser.registerProperty(EntitySpeed.class, dEntity.class);
             propertyParser.registerProperty(EntityTame.class, dEntity.class);
+            propertyParser.registerProperty(EntityVisible.class, dEntity.class);
 
             // register core dInventory properties
             propertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
