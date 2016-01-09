@@ -20,9 +20,13 @@ public class EntityFirework implements Property {
     }
 
     public static EntityFirework getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityFirework((dEntity) entity);
+        else {
+            return new EntityFirework((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -58,7 +62,9 @@ public class EntityFirework implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.firework_item>

@@ -35,13 +35,16 @@ public class TimeCommand extends AbstractCommand {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
 
-        if ((!scriptEntry.hasObject("value")))
+        if ((!scriptEntry.hasObject("value"))) {
             throw new InvalidArgumentsException("Must specify a value!");
+        }
 
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
@@ -55,8 +58,9 @@ public class TimeCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("type", new Element("GLOBAL"));
 
-        if (!scriptEntry.hasObject("world"))
+        if (!scriptEntry.hasObject("world")) {
             throw new InvalidArgumentsException("Must specify a valid world!");
+        }
     }
 
     @Override
@@ -76,11 +80,13 @@ public class TimeCommand extends AbstractCommand {
             world.getWorld().setTime(value.getTicks());
         }
         else {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 dB.echoError("Must have a valid player link!");
-            else
+            }
+            else {
                 ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()
                         .getPlayerEntity().setPlayerTime(value.getTicks(), true);
+            }
         }
     }
 }

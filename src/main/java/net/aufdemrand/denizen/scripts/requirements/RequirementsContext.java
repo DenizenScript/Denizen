@@ -60,7 +60,9 @@ public class RequirementsContext {
 
     public Object getObject(String key) {
         key = key.toUpperCase();
-        if (objects.containsKey(key)) return objects.get(key);
+        if (objects.containsKey(key)) {
+            return objects.get(key);
+        }
         return null;
     }
 }

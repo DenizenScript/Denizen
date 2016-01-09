@@ -66,8 +66,9 @@ public class CommandManager {
     }
 
     private void executeHelp(String[] args, CommandSender sender) throws CommandException {
-        if (!sender.hasPermission("denizen.basic"))
+        if (!sender.hasPermission("denizen.basic")) {
             throw new NoPermissionsException();
+        }
         int page = 1;
         try {
             page = args.length == 3 ? Integer.parseInt(args[2]) : page;
@@ -86,36 +87,44 @@ public class CommandManager {
         boolean help = modifier.toLowerCase().equals("help");
 
         Method method = commands.get(cmdName + " " + modifier.toLowerCase());
-        if (method == null && !help)
+        if (method == null && !help) {
             method = commands.get(cmdName + " *");
+        }
 
         if (method == null && help) {
             executeHelp(args, sender);
             return;
         }
 
-        if (method == null)
+        if (method == null) {
             throw new UnhandledCommandException();
+        }
 
-        if (!serverCommands.contains(method) && sender instanceof ConsoleCommandSender)
+        if (!serverCommands.contains(method) && sender instanceof ConsoleCommandSender) {
             throw new ServerCommandException();
+        }
 
-        if (!hasPermission(method, sender))
+        if (!hasPermission(method, sender)) {
             throw new NoPermissionsException();
+        }
 
         Command cmd = method.getAnnotation(Command.class);
         CommandContext context = new CommandContext(sender, args);
 
-        if (context.argsLength() < cmd.min())
+        if (context.argsLength() < cmd.min()) {
             throw new CommandUsageException("Too few arguments.", getUsage(args, cmd));
+        }
 
-        if (cmd.max() != -1 && context.argsLength() > cmd.max())
+        if (cmd.max() != -1 && context.argsLength() > cmd.max()) {
             throw new CommandUsageException("Too many arguments.", getUsage(args, cmd));
+        }
 
         if (!cmd.flags().contains("*")) {
-            for (char flag : context.getFlags())
-                if (cmd.flags().indexOf(String.valueOf(flag)) == -1)
+            for (char flag : context.getFlags()) {
+                if (cmd.flags().indexOf(String.valueOf(flag)) == -1) {
                     throw new CommandUsageException("Unknown flag: " + flag, getUsage(args, cmd));
+                }
+            }
         }
 
         methodArgs[0] = context;
@@ -136,8 +145,9 @@ public class CommandManager {
             dB.echoError(e);
         }
         catch (InvocationTargetException e) {
-            if (e.getCause() instanceof CommandException)
+            if (e.getCause() instanceof CommandException) {
                 throw (CommandException) e.getCause();
+            }
             throw new WrappedCommandException(e.getCause());
         }
     }
@@ -200,8 +210,9 @@ public class CommandManager {
         String closest = "";
         for (String cmd : commands.keySet()) {
             String[] split = cmd.split(" ");
-            if (split.length <= 1 || !split[0].equals(command))
+            if (split.length <= 1 || !split[0].equals(command)) {
                 continue;
+            }
             int distance = getLevenshteinDistance(modifier, split[1]);
             if (minDist > distance) {
                 minDist = distance;
@@ -223,11 +234,13 @@ public class CommandManager {
     public CommandInfo getCommand(String rootCommand, String modifier) {
         String joined = rootCommand + ' ' + modifier;
         for (Map.Entry<String, Method> entry : commands.entrySet()) {
-            if (!entry.getKey().equalsIgnoreCase(joined) || entry.getValue() == null)
+            if (!entry.getKey().equalsIgnoreCase(joined) || entry.getValue() == null) {
                 continue;
+            }
             Command commandAnnotation = entry.getValue().getAnnotation(Command.class);
-            if (commandAnnotation == null)
+            if (commandAnnotation == null) {
                 continue;
+            }
             return new CommandInfo(commandAnnotation);
         }
         return null;
@@ -246,11 +259,13 @@ public class CommandManager {
         List<CommandInfo> cmds = new ArrayList<CommandInfo>();
         command = command.toLowerCase();
         for (Map.Entry<String, Method> entry : commands.entrySet()) {
-            if (!entry.getKey().startsWith(command) || entry.getValue() == null)
+            if (!entry.getKey().startsWith(command) || entry.getValue() == null) {
                 continue;
+            }
             Command commandAnnotation = entry.getValue().getAnnotation(Command.class);
-            if (commandAnnotation == null)
+            if (commandAnnotation == null) {
                 continue;
+            }
             cmds.add(new CommandInfo(commandAnnotation));
         }
         return cmds;
@@ -262,8 +277,9 @@ public class CommandManager {
         List<String> lines = new ArrayList<String>();
         for (CommandInfo info : getCommands(baseCommand)) {
             Command command = info.getCommandAnnotation();
-            if (processed.contains(info) || !sender.hasPermission(command.permission()))
+            if (processed.contains(info) || !sender.hasPermission(command.permission())) {
                 continue;
+            }
             lines.add(format(command, baseCommand));
             if (command.modifiers().length > 1) {
                 processed.add(info);
@@ -343,13 +359,15 @@ public class CommandManager {
     // Register the methods of a class.
     private void registerMethods(Class<?> clazz, Method parent, Object obj) {
         for (Method method : clazz.getMethods()) {
-            if (!method.isAnnotationPresent(Command.class))
+            if (!method.isAnnotationPresent(Command.class)) {
                 continue;
+            }
             // We want to be able invoke with an instance
             if (!Modifier.isStatic(method.getModifiers())) {
                 // Can't register this command if we don't have an instance
-                if (obj == null)
+                if (obj == null) {
                     continue;
+                }
                 instances.put(method, obj);
             }
 
@@ -367,13 +385,15 @@ public class CommandManager {
             List<Annotation> annotations = new ArrayList<Annotation>();
             for (Annotation annotation : method.getDeclaringClass().getAnnotations()) {
                 Class<? extends Annotation> annotationClass = annotation.annotationType();
-                if (annotationProcessors.containsKey(annotationClass))
+                if (annotationProcessors.containsKey(annotationClass)) {
                     annotations.add(annotation);
+                }
             }
             for (Annotation annotation : method.getAnnotations()) {
                 Class<? extends Annotation> annotationClass = annotation.annotationType();
-                if (!annotationProcessors.containsKey(annotationClass))
+                if (!annotationProcessors.containsKey(annotationClass)) {
                     continue;
+                }
                 Iterator<Annotation> itr = annotations.iterator();
                 while (itr.hasNext()) {
                     Annotation previous = itr.next();
@@ -384,32 +404,39 @@ public class CommandManager {
                 annotations.add(annotation);
             }
 
-            if (annotations.size() > 0)
+            if (annotations.size() > 0) {
                 registeredAnnotations.putAll(method, annotations);
+            }
 
             Class<?>[] parameterTypes = method.getParameterTypes();
-            if (parameterTypes.length <= 1 || parameterTypes[1] == CommandSender.class)
+            if (parameterTypes.length <= 1 || parameterTypes[1] == CommandSender.class) {
                 serverCommands.add(method);
+            }
         }
     }
 
     private void sendHelp(CommandSender sender, String name, int page) throws CommandException {
-        if (name.equalsIgnoreCase("npc"))
+        if (name.equalsIgnoreCase("npc")) {
             name = "NPC";
+        }
         Paginator paginator = new Paginator().header(capitalize(name) + " Help");
-        for (String line : getLines(sender, name.toLowerCase()))
+        for (String line : getLines(sender, name.toLowerCase())) {
             paginator.addLine(line);
-        if (!paginator.sendPage(sender, page))
+        }
+        if (!paginator.sendPage(sender, page)) {
             throw new CommandException("The page " + page + " does not exist.");
+        }
     }
 
     private void sendSpecificHelp(CommandSender sender, String rootCommand, String modifier) throws CommandException {
         CommandInfo info = getCommand(rootCommand, modifier);
-        if (info == null)
+        if (info == null) {
             throw new CommandException("Command /" + rootCommand + " " + modifier + " not found.");
+        }
         Messaging.send(sender, format(info.getCommandAnnotation(), rootCommand));
-        if (info.getCommandAnnotation().help().isEmpty())
+        if (info.getCommandAnnotation().help().isEmpty()) {
             return;
+        }
         Messaging.send(sender, "<b>" + info.getCommandAnnotation().help());
     }
 
@@ -466,16 +493,19 @@ public class CommandManager {
     }
 
     private static int getLevenshteinDistance(String s, String t) {
-        if (s == null || t == null)
+        if (s == null || t == null) {
             throw new IllegalArgumentException("Strings must not be null");
+        }
 
         int n = s.length(); // length of s
         int m = t.length(); // length of t
 
-        if (n == 0)
+        if (n == 0) {
             return m;
-        else if (m == 0)
+        }
+        else if (m == 0) {
             return n;
+        }
 
         int p[] = new int[n + 1]; // 'previous' cost array, horizontally
         int d[] = new int[n + 1]; // cost array, horizontally
@@ -489,8 +519,9 @@ public class CommandManager {
 
         int cost; // cost
 
-        for (i = 0; i <= n; i++)
+        for (i = 0; i <= n; i++) {
             p[i] = i;
+        }
 
         for (j = 1; j <= m; j++) {
             t_j = t.charAt(j - 1);

@@ -72,11 +72,13 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             }
         }
 
-        if (!scriptEntry.hasObject("type"))
+        if (!scriptEntry.hasObject("type")) {
             throw new InvalidArgumentsException("Missing type argument!");
+        }
 
-        if (!scriptEntry.hasObject("name"))
+        if (!scriptEntry.hasObject("name")) {
             throw new InvalidArgumentsException("Missing name argument!");
+        }
     }
 
 
@@ -235,7 +237,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
     @TagManager.TagEvents
     public void schematicTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("schematic, schem")) return;
+        if (!event.matches("schematic, schem")) {
+            return;
+        }
 
         if (!event.hasNameContext()) {
             return;

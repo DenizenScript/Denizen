@@ -84,7 +84,9 @@ public class CommandScriptHelper implements Listener {
      * @see #registerDenizenCommand(DenizenCommand)
      */
     public static void removeDenizenCommands() {
-        if (!hasCommandInformation) return;
+        if (!hasCommandInformation) {
+            return;
+        }
         for (String command : denizenCommands.keySet()) {
             knownCommands.remove(command);
             helpTopics.remove(command);
@@ -106,7 +108,9 @@ public class CommandScriptHelper implements Listener {
      * @see #removeDenizenCommands()
      */
     public static void registerDenizenCommand(DenizenCommand command) {
-        if (!hasCommandInformation) return;
+        if (!hasCommandInformation) {
+            return;
+        }
         String name = command.getName();
         // Existing Denizen commands take priority!
         if (!denizenCommands.containsKey(name)) {
@@ -114,7 +118,9 @@ public class CommandScriptHelper implements Listener {
             forceCommand(name, command, new DenizenCommandHelpTopic(command));
             // Register each alias
             for (String alias : command.getAliases()) {
-                if (denizenCommands.containsKey(alias)) continue;
+                if (denizenCommands.containsKey(alias)) {
+                    continue;
+                }
                 forceCommand(alias, command, new CommandAliasHelpTopic("/" + alias, name,
                         DenizenAPI.getCurrentInstance().getServer().getHelpMap()));
             }

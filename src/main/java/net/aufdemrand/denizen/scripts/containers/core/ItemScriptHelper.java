@@ -69,7 +69,8 @@ public class ItemScriptHelper implements Listener {
             List<dItem> ingredients = new ArrayList<dItem>();
 
             boolean shouldRegister = true;
-            recipeLoop: for (String recipeRow : recipeList) {
+            recipeLoop:
+            for (String recipeRow : recipeList) {
                 String[] elements = recipeRow.split("\\|", 3);
 
                 for (String element : elements) {
@@ -130,13 +131,16 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore())
+        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore()) {
             return null;
+        }
         for (String itemLore : item.getItemMeta().getLore()) {
-            if (itemLore.startsWith(dItem.itemscriptIdentifier))
+            if (itemLore.startsWith(dItem.itemscriptIdentifier)) {
                 return item_scripts.get(itemLore.replace(dItem.itemscriptIdentifier, ""));
-            if (itemLore.startsWith(ItemScriptHashID))
+            }
+            if (itemLore.startsWith(ItemScriptHashID)) {
                 return item_scripts_by_hash_id.get(itemLore);
+            }
         }
         return null;
     }
@@ -177,12 +181,14 @@ public class ItemScriptHelper implements Listener {
 
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
-                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty()) {
             return;
+        }
 
         // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory))
+        if (!(event.getInventory() instanceof CraftingInventory)) {
             return;
+        }
 
         // Store the slot type that was clicked
         SlotType slotType = event.getSlotType();
@@ -244,12 +250,14 @@ public class ItemScriptHelper implements Listener {
 
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
-                && ItemScriptContainer.shapelessRecipesMap.isEmpty())
+                && ItemScriptContainer.shapelessRecipesMap.isEmpty()) {
             return;
+        }
 
         // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory))
+        if (!(event.getInventory() instanceof CraftingInventory)) {
             return;
+        }
 
         // Check for special recipe matches if the drag involved a CRAFTING slot,
         // which can have an ID of between 1 and 9 in a CraftingInventory
@@ -298,10 +306,12 @@ public class ItemScriptHelper implements Listener {
 
                             dList recipeList = new dList();
                             for (ItemStack item : inventory.getMatrix()) {
-                                if (item != null)
+                                if (item != null) {
                                     recipeList.add(new dItem(item).identify());
-                                else
+                                }
+                                else {
                                     recipeList.add(new dItem(Material.AIR).identify());
+                                }
                             }
                             context.put("recipe", recipeList);
 
@@ -312,8 +322,9 @@ public class ItemScriptHelper implements Listener {
                                     new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context, true);
 
                             for (String determination : determinations) {
-                                if (determination.toUpperCase().startsWith("CANCELLED"))
+                                if (determination.toUpperCase().startsWith("CANCELLED")) {
                                     return;
+                                }
                                 else if (dItem.matches(determination)) {
                                     result = dItem.valueOf(determination);
                                 }
@@ -352,16 +363,19 @@ public class ItemScriptHelper implements Listener {
                 dItem matrixN = matrix.length <= n || matrix[n] == null ? new dItem(Material.AIR) : new dItem(matrix[n].clone());
 
                 // If one's an item script and the other's not, it's a fail
-                if (valueN.isItemscript() != matrixN.isItemscript())
+                if (valueN.isItemscript() != matrixN.isItemscript()) {
                     continue master;
+                }
                 // If they're both item scripts, and they are different scripts, it's a fail
                 if (valueN.isItemscript() && matrixN.isItemscript()) {
-                    if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName()))
+                    if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName())) {
                         continue master;
+                    }
                 }
                 // If they're both not item scripts, and the materials are different, it's a fail
-                else if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData()))
+                else if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData())) {
                     continue master;
+                }
             }
 
             // If all the items match, return the special recipe's dItem key
@@ -463,13 +477,15 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void boundInventoryClickEvent(InventoryClickEvent event) {
         // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory))
+        if (!(event.getInventory() instanceof CraftingInventory)) {
             return;
+        }
 
         // Proceed only if the click has a cursor item that is bound
         ItemStack item = event.getCursor();
-        if (item == null || !isBound(item))
+        if (item == null || !isBound(item)) {
             return;
+        }
 
         if (event.getInventory().getType() != InventoryType.PLAYER) {
             event.setCancelled(true);
@@ -485,13 +501,15 @@ public class ItemScriptHelper implements Listener {
     @EventHandler
     public void boundInventoryDragEvent(InventoryDragEvent event) {
         // Proceed only if this is a CraftingInventory
-        if (!(event.getInventory() instanceof CraftingInventory))
+        if (!(event.getInventory() instanceof CraftingInventory)) {
             return;
+        }
 
         // Proceed only if the items are bound
         ItemStack item = event.getOldCursor();
-        if (item == null || !isBound(item))
+        if (item == null || !isBound(item)) {
             return;
+        }
 
         if (event.getInventory().getType() != InventoryType.PLAYER) {
             event.setCancelled(true);

@@ -22,20 +22,31 @@ public class PoweredRequirement extends AbstractRequirement {
 
             if (aH.matchesLocation(thisArg)) {
                 blockToCheck = dLocation.valueOf(thisArg).getBlock();
-                if (blockToCheck != null)
+                if (blockToCheck != null) {
                     dB.echoDebug(context.getScriptContainer(), "...block to check is type '" + blockToCheck.getType().toString() + "'");
+                }
             }
 
-            else dB.echoError("Could not match argument '" + thisArg + "'");
+            else {
+                dB.echoError("Could not match argument '" + thisArg + "'");
+            }
         }
 
         if (blockToCheck != null) {
-            if (blockToCheck.isBlockPowered()) outcome = true;
-            else if (blockToCheck.isBlockIndirectlyPowered()) outcome = true;
+            if (blockToCheck.isBlockPowered()) {
+                outcome = true;
+            }
+            else if (blockToCheck.isBlockIndirectlyPowered()) {
+                outcome = true;
+            }
         }
 
-        if (outcome) dB.echoDebug(context.getScriptContainer(), "...block is powered!");
-        else dB.echoDebug(context.getScriptContainer(), "...block is not powered!");
+        if (outcome) {
+            dB.echoDebug(context.getScriptContainer(), "...block is powered!");
+        }
+        else {
+            dB.echoDebug(context.getScriptContainer(), "...block is not powered!");
+        }
 
         return outcome;
     }

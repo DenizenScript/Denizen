@@ -21,9 +21,15 @@ public class ToneUtil {
 
         int semitone = smsg.getData1();
 
-        if (semitone < 54) return (byte) ((semitone - 6) % (18 - 6));
-        else if (semitone > 78) return (byte) ((semitone - 6) % (18 - 6) + 12);
-        else return (byte) (semitone - 54);
+        if (semitone < 54) {
+            return (byte) ((semitone - 6) % (18 - 6));
+        }
+        else if (semitone > 78) {
+            return (byte) ((semitone - 6) % (18 - 6) + 12);
+        }
+        else {
+            return (byte) (semitone - 54);
+        }
     }
 
     // converts midi events into pitch

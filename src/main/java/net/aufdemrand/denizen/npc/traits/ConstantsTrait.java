@@ -47,11 +47,14 @@ public class ConstantsTrait extends Trait {
         getAssignmentConstants();
 
         if (constants.containsKey(name.toLowerCase())) // TODO: shouldDebug
+        {
             return TagManager.tag(constants.get(name.toLowerCase()),
                     new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
-        else if (getAssignmentConstants().containsKey(name.toLowerCase()))
+        }
+        else if (getAssignmentConstants().containsKey(name.toLowerCase())) {
             return TagManager.tag(assignmentConstants.get(name.toLowerCase()),
                     new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+        }
         return null;
     }
 
@@ -104,8 +107,9 @@ public class ConstantsTrait extends Trait {
      * @param name name of the constant, case in-sensitive
      */
     public void removeConstant(String name) {
-        if (constants.containsKey(name.toLowerCase()))
+        if (constants.containsKey(name.toLowerCase())) {
             constants.remove(name.toLowerCase());
+        }
     }
 
 
@@ -124,9 +128,12 @@ public class ConstantsTrait extends Trait {
         // Check to make sure NPC has an assignment
         if (npc.hasTrait(AssignmentTrait.class) && npc.getTrait(AssignmentTrait.class).hasAssignment()) {
             // Check to make sure assignment hasn't changed.. if it has, the assignmentConstants map will be rebuilt
-            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName()))
+            if (assignment != null && assignment.equalsIgnoreCase(npc.getTrait(AssignmentTrait.class).getAssignment().getName())) {
                 return assignmentConstants;
-            else return rebuildAssignmentConstants();
+            }
+            else {
+                return rebuildAssignmentConstants();
+            }
         }
         return assignmentConstants;
     }
@@ -143,15 +150,19 @@ public class ConstantsTrait extends Trait {
             assignment = npc.getTrait(AssignmentTrait.class).getAssignment().getName();
             assignmentConstants.clear();
         }
-        else return assignmentConstants;
+        else {
+            return assignmentConstants;
+        }
 
         try {
-            if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS"))
+            if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS")) {
                 for (StringHolder constant : ScriptRegistry.getScriptContainer(assignment)
-                        .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false))
+                        .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false)) {
                     assignmentConstants.put(constant.str.toLowerCase(),
                             ScriptRegistry.getScriptContainer(assignment)
                                     .getString("DEFAULT CONSTANTS." + constant.str.toUpperCase(), ""));
+                }
+            }
         }
         catch (NullPointerException e) {
             dB.echoError("Constants in assignment script '" + npc.getTrait(AssignmentTrait.class)
@@ -174,7 +185,9 @@ public class ConstantsTrait extends Trait {
     public void describe(CommandSender sender, int page) throws CommandException {
         Paginator paginator = new Paginator().header("Constants for " + npc.getName());
         paginator.addLine("<e>NPC-specific constants: " + (hasNPCConstants() ? "" : "None.") + "");
-        if (hasNPCConstants()) paginator.addLine("<e>Key: <a>Name  <b>Value");
+        if (hasNPCConstants()) {
+            paginator.addLine("<e>Key: <a>Name  <b>Value");
+        }
         for (Entry<String, String> constant : constants.entrySet()) {
             paginator.addLine("<a> " + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
         }
@@ -188,15 +201,18 @@ public class ConstantsTrait extends Trait {
             for (Entry<String, String> constant : getAssignmentConstants().entrySet()) {
                 // If a constant from the Assignment has been overridden by a NPC constant,
                 // change formatting to indicate so.
-                if (constants.containsKey(constant.getKey()))
+                if (constants.containsKey(constant.getKey())) {
                     paginator.addLine("<m>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<r>  <m>" + constant.getValue());
-                else
+                }
+                else {
                     paginator.addLine("<a>" + String.valueOf(constant.getKey().charAt(0)).toUpperCase() + constant.getKey().substring(1) + "<b>  " + constant.getValue());
+                }
             }
             paginator.addLine("");
         }
 
-        if (!paginator.sendPage(sender, page))
+        if (!paginator.sendPage(sender, page)) {
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
+        }
     }
 }

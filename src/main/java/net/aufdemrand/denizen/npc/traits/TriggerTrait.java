@@ -45,16 +45,20 @@ public class TriggerTrait extends Trait implements Listener {
 
     public TriggerTrait() {
         super("triggers");
-        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
-            if (!enabled.containsKey(triggerName))
+        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
+            if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
+            }
+        }
     }
 
 
     public void onSpawn() {
-        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet())
-            if (!enabled.containsKey(triggerName))
+        for (String triggerName : DenizenAPI.getCurrentInstance().getTriggerRegistry().list().keySet()) {
+            if (!enabled.containsKey(triggerName)) {
                 enabled.put(triggerName, Settings.triggerEnabled(triggerName));
+            }
+        }
     }
 
 
@@ -70,12 +74,14 @@ public class TriggerTrait extends Trait implements Listener {
             enabled.put(triggerName.toUpperCase(), toggle);
             return triggerName + " trigger is now " + (toggle ? "enabled." : "disabled.");
         }
-        else return triggerName + " trigger not found!";
+        else {
+            return triggerName + " trigger not found!";
+        }
     }
 
 
     public String toggleTrigger(String triggerName) {
-        if (enabled.containsKey(triggerName.toUpperCase()))
+        if (enabled.containsKey(triggerName.toUpperCase())) {
             if (enabled.get(triggerName.toUpperCase())) {
                 enabled.put(triggerName.toUpperCase(), false);
                 return triggerName + " trigger is now disabled.";
@@ -84,7 +90,10 @@ public class TriggerTrait extends Trait implements Listener {
                 enabled.put(triggerName.toUpperCase(), true);
                 return triggerName + " trigger is now enabled.";
             }
-        else return triggerName + " trigger not found!";
+        }
+        else {
+            return triggerName + " trigger not found!";
+        }
     }
 
 
@@ -94,10 +103,15 @@ public class TriggerTrait extends Trait implements Listener {
 
 
     public boolean isEnabled(String triggerName) {
-        if (!DenizenAPI.getDenizenNPC(npc).getAssignmentTrait().hasAssignment()) return false;
-        if (enabled.containsKey(triggerName.toUpperCase()))
+        if (!DenizenAPI.getDenizenNPC(npc).getAssignmentTrait().hasAssignment()) {
+            return false;
+        }
+        if (enabled.containsKey(triggerName.toUpperCase())) {
             return enabled.get(triggerName.toUpperCase());
-        else return false;
+        }
+        else {
+            return false;
+        }
     }
 
 
@@ -110,17 +124,23 @@ public class TriggerTrait extends Trait implements Listener {
 
 
     public double getCooldownDuration(String triggerName) {
-        if (duration.containsKey(triggerName.toUpperCase()))
+        if (duration.containsKey(triggerName.toUpperCase())) {
             return duration.get(triggerName.toUpperCase());
-        else return Settings.triggerDefaultCooldown(triggerName);
+        }
+        else {
+            return Settings.triggerDefaultCooldown(triggerName);
+        }
     }
 
 
     public CooldownType getCooldownType(String triggerName) {
         try {
-            if (type.containsKey(triggerName.toUpperCase()))
+            if (type.containsKey(triggerName.toUpperCase())) {
                 return type.get(triggerName.toUpperCase());
-            else return CooldownType.valueOf(Settings.triggerDefaultCooldownType(triggerName).toUpperCase());
+            }
+            else {
+                return CooldownType.valueOf(Settings.triggerDefaultCooldownType(triggerName).toUpperCase());
+            }
         }
         catch (Exception e) {
             return CooldownType.PLAYER;
@@ -134,9 +154,12 @@ public class TriggerTrait extends Trait implements Listener {
 
 
     public double getRadius(String triggerName) {
-        if (radius.containsKey(triggerName.toUpperCase()))
+        if (radius.containsKey(triggerName.toUpperCase())) {
             return radius.get(triggerName.toUpperCase());
-        else return Settings.triggerDefaultRange(triggerName);
+        }
+        else {
+            return Settings.triggerDefaultRange(triggerName);
+        }
     }
 
 
@@ -151,15 +174,17 @@ public class TriggerTrait extends Trait implements Listener {
                     + "<e> " + (getRadius(entry.getKey()) == -1 ? "" : getRadius(entry.getKey()));
             paginator.addLine(line);
         }
-        if (!paginator.sendPage(sender, page))
+        if (!paginator.sendPage(sender, page)) {
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
+        }
     }
 
 
     public boolean triggerCooldownOnly(AbstractTrigger triggerClass, dPlayer player) {
         // Check cool down, return false if not yet met
-        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName())))
+        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(triggerClass.getName()))) {
             return false;
+        }
         // Check engaged
         if (EngageCommand.getEngaged(npc)) {
             return false;
@@ -190,11 +215,13 @@ public class TriggerTrait extends Trait implements Listener {
         String trigger_type = triggerClass.getName();
 
         // Check cool down, return false if not yet met
-        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(trigger_type)))
+        if (!DenizenAPI.getCurrentInstance().getTriggerRegistry().checkCooldown(npc, player, triggerClass, getCooldownType(trigger_type))) {
             return new TriggerContext(false);
+        }
 
-        if (context == null)
+        if (context == null) {
             context = new HashMap<String, dObject>();
+        }
 
         // Check engaged
         if (EngageCommand.getEngaged(npc)) {
@@ -210,8 +237,9 @@ public class TriggerTrait extends Trait implements Listener {
                 // If determined available, continue on...
                 // else, return a 'non-triggered' state.
             }
-            else
+            else {
                 return new TriggerContext(false);
+            }
         }
 
         // Set cool down

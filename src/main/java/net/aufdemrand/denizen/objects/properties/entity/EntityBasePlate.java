@@ -16,9 +16,13 @@ public class EntityBasePlate implements Property {
     }
 
     public static EntityBasePlate getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityBasePlate((dEntity) entity);
+        else {
+            return new EntityBasePlate((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -57,7 +61,9 @@ public class EntityBasePlate implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return "null";
+        }
 
         // <--[tag]
         // @attribute <e@entity.base_plate>
@@ -67,9 +73,10 @@ public class EntityBasePlate implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand has a base plate.
         // -->
-        if (attribute.startsWith("base_plate"))
+        if (attribute.startsWith("base_plate")) {
             return new Element(((ArmorStand) dentity.getBukkitEntity()).hasBasePlate())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

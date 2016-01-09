@@ -161,44 +161,58 @@ public class DenizenCommandHandler {
             min = 1, max = 5, permission = "denizen.debug", flags = "scebrxov")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             dB.showStackTraces = !dB.showStackTraces;
             Messaging.sendInfo(sender, (dB.showStackTraces ? "Denizen dBugger is now showing caught " +
                     "exception stack traces." : "Denizen dBugger is now hiding caught stacktraces."));
         }
         if (args.hasFlag('c')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             dB.showColor = !dB.showColor;
             Messaging.sendInfo(sender, (dB.showColor ? "Denizen dBugger is now showing color."
                     : "Denizen dBugger color has been disabled."));
         }
         if (args.hasFlag('o')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             dB.debugOverride = !dB.debugOverride;
             Messaging.sendInfo(sender, (dB.debugOverride ? "Denizen dBugger is now overriding 'debug: false'."
                     : "Denizen dBugger override has been disabled."));
         }
         if (args.hasFlag('e')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming = !net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming;
             Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showEventsTrimming ? "Denizen dBugger is now logging all " +
                     "world events." : "Denizen dBugger is now hiding world events."));
         }
         if (args.hasFlag('b')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder = !net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder;
             Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.showScriptBuilder ? "Denizen dBugger is now logging the " +
                     "ScriptBuilder." : "Denizen dBugger is now hiding ScriptBuilder logging."));
         }
         if (args.hasFlag('r')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             dB.record = !dB.record;
             dB.Recording = new StringBuilder();
             Messaging.sendInfo(sender, (dB.record ? "Denizen dBugger is now recording. Use /denizen " +
                     "submit to finish." : "Denizen dBugger recording disabled."));
         }
         if (args.hasFlag('v')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             net.aufdemrand.denizencore.utilities.debugging.dB.verbose =
                     !net.aufdemrand.denizencore.utilities.debugging.dB.verbose;
             Messaging.sendInfo(sender, (net.aufdemrand.denizencore.utilities.debugging.dB.verbose ? "Denizen dBugger is now verbose." :
@@ -209,15 +223,21 @@ public class DenizenCommandHandler {
             Messaging.sendInfo(sender, "Denizen dBugger filter removed.");
         }
         if (args.hasFlag('n')) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             dB.shouldTrim = !dB.shouldTrim;
             Messaging.sendInfo(sender, (dB.shouldTrim ? "Denizen dBugger is now trimming long messages."
                     : "Denizen dBugger is no longer trimming long messages."));
         }
         if (args.hasValueFlag("filter")) {
-            if (!dB.showDebug) dB.toggle();
+            if (!dB.showDebug) {
+                dB.toggle();
+            }
             for (String filter : args.getFlag("filter").split("\\|")) // TODO: addAll?
+            {
                 dB.filter.add(filter);
+            }
             Messaging.sendInfo(sender, "Denizen dBugger filter now: " + dB.filter.toString());
 
         }
@@ -297,12 +317,17 @@ public class DenizenCommandHandler {
     public void listener(CommandContext args, CommandSender sender) throws CommandException {
 
         dPlayer player = null;
-        if (sender instanceof Player) player = dPlayer.mirrorBukkitPlayer((Player) sender);
+        if (sender instanceof Player) {
+            player = dPlayer.mirrorBukkitPlayer((Player) sender);
+        }
 
-        if (args.hasValueFlag("player"))
+        if (args.hasValueFlag("player")) {
             player = dPlayer.valueOf(args.getFlag("player"));
+        }
 
-        if (player == null) throw new CommandException("Specified player not online or not found!");
+        if (player == null) {
+            throw new CommandException("Specified player not online or not found!");
+        }
 
         Map<String, AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
 
@@ -312,28 +337,32 @@ public class DenizenCommandHandler {
         }
 
         if (args.hasValueFlag("report")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
-                if (quest.getListenerId().equalsIgnoreCase(args.getFlag("report")))
+            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
+                if (quest.getListenerId().equalsIgnoreCase(args.getFlag("report"))) {
                     Messaging.send(sender, quest.report());
+                }
+            }
             return;
 
         }
         else if (args.hasValueFlag("cancel")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
                 if (quest.getListenerId().equalsIgnoreCase(args.getFlag("cancel"))) {
 
                     Messaging.send(sender, "Cancelling '" + quest.getListenerId() + "' for " + player.getName() + ".");
                     quest.cancel();
                 }
+            }
             return;
 
         }
         else if (args.hasValueFlag("finish")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values())
+            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
                 if (quest.getListenerId().equalsIgnoreCase(args.getFlag("finish"))) {
                     Messaging.send(sender, "Force-finishing '" + quest.getListenerId() + "' for " + player.getName() + ".");
                     quest.finish();
                 }
+            }
             return;
 
         }
@@ -349,10 +378,14 @@ public class DenizenCommandHandler {
         paginator.header("Active quest listeners for " + player.getName() + ":");
         paginator.addLine("<e>Key: <a>Type  <b>ID");
 
-        if (listeners == null || listeners.isEmpty())
+        if (listeners == null || listeners.isEmpty()) {
             paginator.addLine("None.");
-        else for (AbstractListener quest : listeners.values())
-            paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
+        }
+        else {
+            for (AbstractListener quest : listeners.values()) {
+                paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
+            }
+        }
 
         paginator.sendPage(sender, args.getInteger(1, 1));
 
@@ -445,9 +478,13 @@ public class DenizenCommandHandler {
     public void scripts(CommandContext args, CommandSender sender) throws CommandException {
         // Fill arguments
         String type = null;
-        if (args.hasValueFlag("type")) type = args.getFlag("type");
+        if (args.hasValueFlag("type")) {
+            type = args.getFlag("type");
+        }
         String filter = null;
-        if (args.hasValueFlag("filter")) filter = args.getFlag("filter");
+        if (args.hasValueFlag("filter")) {
+            filter = args.getFlag("filter");
+        }
         // Get script names from the scripts.yml in memory
         Set<String> scripts = ScriptRegistry._getScriptNames();
         // New Paginator to display script names
@@ -458,24 +495,31 @@ public class DenizenCommandHandler {
             ScriptContainer scriptContainer = ScriptRegistry.getScriptContainer(script);
             // If a --type has been specified...
             if (type != null) {
-                if (scriptContainer.getContainerType().equalsIgnoreCase(type))
+                if (scriptContainer.getContainerType().equalsIgnoreCase(type)) {
                     if (filter != null) {
-                        if (script.contains(filter.toUpperCase()))
+                        if (script.contains(filter.toUpperCase())) {
                             paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+                        }
                     }
-                    else
+                    else {
                         paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+                    }
+                }
                 // If a --filter has been specified...
             }
             else if (filter != null) {
-                if (script.contains(filter.toUpperCase()))
+                if (script.contains(filter.toUpperCase())) {
                     paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+                }
             }
-            else paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+            else {
+                paginator.addLine("<a>" + scriptContainer.getContainerType().substring(0, 3) + "  <b>" + script);
+            }
         }
         // Send the contents of the Paginator to the Player (or Console)
-        if (!paginator.sendPage(sender, args.getInteger(1, 1)))
+        if (!paginator.sendPage(sender, args.getInteger(1, 1))) {
             throw new CommandException("The page " + args.getInteger(1, 1) + " does not exist.");
+        }
     }
 
     @Command(

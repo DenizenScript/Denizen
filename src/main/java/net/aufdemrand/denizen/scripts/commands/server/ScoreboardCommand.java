@@ -141,8 +141,9 @@ public class ScoreboardCommand extends AbstractCommand {
                 scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         scriptEntry.defaultObject("action", new Element("add"));
@@ -152,10 +153,12 @@ public class ScoreboardCommand extends AbstractCommand {
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
-        if (dPlayer.playerNameIsValid(name))
+        if (dPlayer.playerNameIsValid(name)) {
             return Bukkit.getOfflinePlayer(name);
-        else
+        }
+        else {
             return new FakeOfflinePlayer(name);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -244,7 +247,9 @@ public class ScoreboardCommand extends AbstractCommand {
                 if (!lines.isEmpty()) {
                     // If we've gotten this far, but the score is null,
                     // use a score of 0
-                    if (score == null) score = new Element(0);
+                    if (score == null) {
+                        score = new Element(0);
+                    }
 
                     // Set all the score lines in the scoreboard, creating fake players
                     // for those lines that are not meant to track players
@@ -316,13 +321,15 @@ public class ScoreboardCommand extends AbstractCommand {
                 if (act.equals(Action.ADD)) {
                     // If this isn't the main scoreboard, add this viewer
                     // to the map of viewers saved by Denizen
-                    if (!id.asString().equalsIgnoreCase("main"))
+                    if (!id.asString().equalsIgnoreCase("main")) {
                         ScoreboardHelper.viewerMap.put(viewer.getName(), id.asString());
+                    }
 
                     // Make this player view the scoreboard if he/she
                     // is already online
-                    if (viewer.isOnline())
+                    if (viewer.isOnline()) {
                         viewer.getPlayerEntity().setScoreboard(board);
+                    }
                 }
                 // Remove viewers for this scoreboard
                 else if (act.equals(Action.REMOVE)) {
@@ -332,8 +339,9 @@ public class ScoreboardCommand extends AbstractCommand {
                     // Make the player view a blank scoreboard if he/she
                     // is online (in lieu of a scoreboard-removing method
                     // provided by Bukkit)
-                    if (viewer.isOnline())
+                    if (viewer.isOnline()) {
                         viewer.getPlayerEntity().setScoreboard(ScoreboardHelper.createScoreboard());
+                    }
                 }
             }
         }

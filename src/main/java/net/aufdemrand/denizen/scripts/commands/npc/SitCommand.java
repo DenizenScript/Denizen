@@ -23,11 +23,13 @@ public class SitCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
     }
 

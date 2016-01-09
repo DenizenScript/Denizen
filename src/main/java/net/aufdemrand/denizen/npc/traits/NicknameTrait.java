@@ -50,9 +50,13 @@ public class NicknameTrait extends Trait implements Listener {
      * @return the nickname for this NPC
      */
     public String getNickname() {
-        if (nickname == null || nickname.equals("")) return npc.getName();
-        else return TagManager.tag(nickname, // TODO: debug option?
-                new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+        if (nickname == null || nickname.equals("")) {
+            return npc.getName();
+        }
+        else {
+            return TagManager.tag(nickname, // TODO: debug option?
+                    new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
+        }
     }
 
     /**

@@ -21,8 +21,12 @@ public class ItemDye implements Property {
     }
 
     public static ItemDye getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemDye((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemDye((dItem) _item);
+        }
     }
 
     private ItemDye(dItem _item) {
@@ -34,7 +38,9 @@ public class ItemDye implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.dye_color>

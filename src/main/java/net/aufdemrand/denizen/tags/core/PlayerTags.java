@@ -42,9 +42,13 @@ public class PlayerTags implements Listener {
                 public void run() {
                     List<String> history = playerChatHistory.get(event.getPlayer().getName());
                     // If history hasn't been started for this player, initialize a new ArrayList
-                    if (history == null) history = new ArrayList<String>();
+                    if (history == null) {
+                        history = new ArrayList<String>();
+                    }
                     // Maximum history size is specified by config.yml
-                    if (history.size() > maxSize) history.remove(maxSize - 1);
+                    if (history.size() > maxSize) {
+                        history.remove(maxSize - 1);
+                    }
                     // Add message to history
                     history.add(0, event.getMessage());
                     // Store the new history
@@ -62,7 +66,9 @@ public class PlayerTags implements Listener {
     @TagManager.TagEvents
     public void playerTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("player", "pl") || event.replaced()) return;
+        if (!event.matches("player", "pl") || event.replaced()) {
+            return;
+        }
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = event.getAttributes();
@@ -75,7 +81,9 @@ public class PlayerTags implements Listener {
             p = dPlayer.valueOf(attribute.getContext(1));
         }
         if (p == null || !p.isValid()) {
-            if (!event.hasAlternative()) dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
+            if (!event.hasAlternative()) {
+                dB.echoError("Invalid or missing player for tag <" + event.raw_tag + ">!");
+            }
             return;
         }
 

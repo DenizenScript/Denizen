@@ -27,51 +27,62 @@ public class ChatCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             // Default target is the attached Player, if none specified otherwise.
             if (arg.matchesPrefix("target", "targets", "t")) {
-                if (arg.matchesArgumentList(dEntity.class))
+                if (arg.matchesArgumentList(dEntity.class)) {
                     scriptEntry.addObject("targets", arg.asType(dList.class));
+                }
                 specified_targets = true;
             }
 
-            else if (arg.matches("no_target"))
+            else if (arg.matches("no_target")) {
                 scriptEntry.addObject("targets", new dList());
+            }
 
-                // Default talker is the attached NPC, if none specified otherwise.
+            // Default talker is the attached NPC, if none specified otherwise.
             else if (arg.matchesPrefix("talker", "talkers")) {
-                if (arg.matchesArgumentList(dEntity.class))
+                if (arg.matchesArgumentList(dEntity.class)) {
                     scriptEntry.addObject("talkers", arg.asType(dList.class));
+                }
                 specified_talker = true;
 
             }
 
             else if (arg.matchesPrefix("range", "r")) {
-                if (arg.matchesPrimitive(aH.PrimitiveType.Double))
+                if (arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                     scriptEntry.addObject("range", arg.asElement());
+                }
             }
 
-            else if (!scriptEntry.hasObject("message"))
+            else if (!scriptEntry.hasObject("message")) {
                 scriptEntry.addObject("message", new Element(arg.raw_value));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
-        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_targets)
+        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_targets) {
             scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
+        }
 
         // Add default talker as the attached NPC if no recipients set otherwise
-        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !specified_talker)
+        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !specified_talker) {
             scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
+        }
 
         // Verify essential fields are set
-        if (!scriptEntry.hasObject("targets"))
+        if (!scriptEntry.hasObject("targets")) {
             throw new InvalidArgumentsException("Must specify valid targets!");
+        }
 
-        if (!scriptEntry.hasObject("talkers"))
+        if (!scriptEntry.hasObject("talkers")) {
             throw new InvalidArgumentsException("Must specify valid talkers!");
+        }
 
-        if (!scriptEntry.hasObject("message"))
+        if (!scriptEntry.hasObject("message")) {
             throw new InvalidArgumentsException("Must specify a message!");
+        }
 
         scriptEntry.defaultObject("range", new Element(Settings.chatBystandersRange()));
 

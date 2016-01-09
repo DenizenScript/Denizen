@@ -63,7 +63,9 @@ public class CastCommand extends AbstractCommand {
 
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
 
         }
 
@@ -72,8 +74,9 @@ public class CastCommand extends AbstractCommand {
                 (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
 
         // No potion specified? Problem!
-        if (!scriptEntry.hasObject("effect"))
+        if (!scriptEntry.hasObject("effect")) {
             throw new InvalidArgumentsException("Must specify a valid PotionType!");
+        }
 
         scriptEntry.defaultObject("duration", new Duration(60));
         scriptEntry.defaultObject("amplifier", new Element(1));
@@ -109,12 +112,16 @@ public class CastCommand extends AbstractCommand {
 
         // Apply the PotionEffect to the targets!
         for (dEntity entity : entities) {
-            if (entity.getLivingEntity().hasPotionEffect(effect))
+            if (entity.getLivingEntity().hasPotionEffect(effect)) {
                 entity.getLivingEntity().removePotionEffect(effect);
-            if (remove) continue;
+            }
+            if (remove) {
+                continue;
+            }
             PotionEffect potion = new PotionEffect(effect, duration.getTicksAsInt(), amplifier, amb, showP);
-            if (!potion.apply(entity.getLivingEntity()))
+            if (!potion.apply(entity.getLivingEntity())) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Bukkit was unable to apply '" + potion.getType().getName() + "' to '" + entity.toString() + "'.");
+            }
         }
     }
 }

@@ -68,8 +68,9 @@ public class ImprovedOfflinePlayer {
     }
 
     public org.bukkit.inventory.PlayerInventory getInventory() {
-        if (InventoryScriptHelper.offlineInventories.containsKey(getUniqueId()))
+        if (InventoryScriptHelper.offlineInventories.containsKey(getUniqueId())) {
             return InventoryScriptHelper.offlineInventories.get(getUniqueId());
+        }
         PlayerInventory inventory = new PlayerInventory(null);
         inventory.b(this.compound.getList("Inventory", 10));
         org.bukkit.inventory.PlayerInventory inv = new CraftInventoryPlayer(inventory);
@@ -80,12 +81,15 @@ public class ImprovedOfflinePlayer {
     public void setInventory(org.bukkit.inventory.PlayerInventory inventory) {
         CraftInventoryPlayer inv = (CraftInventoryPlayer) inventory;
         this.compound.set("Inventory", inv.getInventory().a(new NBTTagList()));
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public Inventory getEnderChest() {
-        if (InventoryScriptHelper.offlineEnderChests.containsKey(getUniqueId()))
+        if (InventoryScriptHelper.offlineEnderChests.containsKey(getUniqueId())) {
             return InventoryScriptHelper.offlineEnderChests.get(getUniqueId());
+        }
         InventoryEnderChest endchest = new InventoryEnderChest();
         endchest.a(this.compound.getList("EnderItems", 10));
         org.bukkit.inventory.Inventory inv = new CraftInventory(endchest);
@@ -95,7 +99,9 @@ public class ImprovedOfflinePlayer {
 
     public void setEnderChest(Inventory inventory) {
         this.compound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).h());
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public Location getLocation() {
@@ -127,7 +133,9 @@ public class ImprovedOfflinePlayer {
         rotation.add(new NBTTagFloat(location.getYaw()));
         rotation.add(new NBTTagFloat(location.getPitch()));
         this.compound.set("Rotation", rotation);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getHealthFloat() {
@@ -136,7 +144,9 @@ public class ImprovedOfflinePlayer {
 
     public void setHealthFloat(float input) {
         this.compound.setFloat("HealF", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public double getMaxHealth() {
@@ -223,7 +233,9 @@ public class ImprovedOfflinePlayer {
 
     public void setAbilities(PlayerAbilities abilities) {
         abilities.a(this.compound);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getAbsorptionAmount() {
@@ -232,7 +244,9 @@ public class ImprovedOfflinePlayer {
 
     public void setAbsorptionAmount(float input) {
         this.compound.setFloat("AbsorptionAmount", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public AttributeMapBase getAttributes() {
@@ -243,7 +257,9 @@ public class ImprovedOfflinePlayer {
 
     public void setAttributes(AttributeMapBase attributes) {
         this.compound.set("Attributes", GenericAttributes.a(attributes));
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public Location getBedSpawnLocation() {
@@ -265,7 +281,9 @@ public class ImprovedOfflinePlayer {
         this.compound.setInt("SpawnZ", (int) location.getZ());
         this.compound.setString("SpawnWorld", location.getWorld().getName());
         this.compound.setBoolean("SpawnForced", override == null ? false : override);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getExhaustion() {
@@ -274,7 +292,9 @@ public class ImprovedOfflinePlayer {
 
     public void setExhaustion(float input) {
         this.compound.setFloat("foodExhaustionLevel", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getExp() {
@@ -283,7 +303,9 @@ public class ImprovedOfflinePlayer {
 
     public void setExp(float input) {
         this.compound.setFloat("XpP", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getFallDistance() {
@@ -292,7 +314,9 @@ public class ImprovedOfflinePlayer {
 
     public void setFallDistance(float input) {
         this.compound.setFloat("FallDistance", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getFireTicks() {
@@ -301,7 +325,9 @@ public class ImprovedOfflinePlayer {
 
     public void setFireTicks(int input) {
         this.compound.setShort("Fire", (short) input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getFlySpeed() {
@@ -310,7 +336,9 @@ public class ImprovedOfflinePlayer {
 
     public void setFlySpeed(float speed) {
         this.compound.getCompound("abilities").setFloat("flySpeed", speed);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getFoodLevel() {
@@ -319,7 +347,9 @@ public class ImprovedOfflinePlayer {
 
     public void setFoodLevel(int input) {
         this.compound.setInt("foodLevel", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getFoodTickTimer() {
@@ -328,7 +358,9 @@ public class ImprovedOfflinePlayer {
 
     public void setFoodTickTimer(int input) {
         this.compound.setInt("foodTickTimer", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public GameMode getGameMode() {
@@ -338,7 +370,9 @@ public class ImprovedOfflinePlayer {
     @SuppressWarnings("deprecation")//Will most likely break in 1.7
     public void setGameMode(GameMode input) {
         this.compound.setInt("playerGameType", input.getValue());
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getHealthInt() {
@@ -347,7 +381,9 @@ public class ImprovedOfflinePlayer {
 
     public void setHealthInt(int input) {
         this.compound.setShort("Health", (short) input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public boolean getIsInvulnerable() {
@@ -356,7 +392,9 @@ public class ImprovedOfflinePlayer {
 
     public void setIsInvulnerable(boolean input) {
         this.compound.setBoolean("Invulnerable", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public boolean getIsOnGround() {
@@ -365,7 +403,9 @@ public class ImprovedOfflinePlayer {
 
     public void setIsOnGround(boolean input) {
         this.compound.setBoolean("OnGround", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public boolean getIsSleeping() {
@@ -374,7 +414,9 @@ public class ImprovedOfflinePlayer {
 
     public void setIsSleeping(boolean input) {
         this.compound.setBoolean("Sleeping", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getItemInHand() {
@@ -383,7 +425,9 @@ public class ImprovedOfflinePlayer {
 
     public void setItemInHand(int input) {
         this.compound.setInt("SelectedItemSlot", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getLevel() {
@@ -392,7 +436,9 @@ public class ImprovedOfflinePlayer {
 
     public void setLevel(int input) {
         this.compound.setInt("XpLevel", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public UUID getUniqueId() {
@@ -405,7 +451,9 @@ public class ImprovedOfflinePlayer {
 
     public void setPortalCooldown(int input) {
         this.compound.setInt("PortalCooldown", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     @SuppressWarnings("deprecation")//Will most likely break in 1.7
@@ -428,7 +476,9 @@ public class ImprovedOfflinePlayer {
     public void setPotionEffects(ArrayList<PotionEffect> effects) {
         if (effects.isEmpty()) {
             this.compound.remove("ActiveEffects");
-            if (this.autosave) savePlayerData();
+            if (this.autosave) {
+                savePlayerData();
+            }
             return;
         }
         NBTTagList activeEffects = new NBTTagList();
@@ -440,7 +490,9 @@ public class ImprovedOfflinePlayer {
             activeEffects.add(eCompound);
         }
         this.compound.set("ActiveEffects", activeEffects);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getRemainingAir() {
@@ -449,7 +501,9 @@ public class ImprovedOfflinePlayer {
 
     public void setRemainingAir(int input) {
         this.compound.setShort("Air", (short) input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getSaturation() {
@@ -458,7 +512,9 @@ public class ImprovedOfflinePlayer {
 
     public void setSaturation(float input) {
         this.compound.setFloat("foodSaturationLevel", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getScore() {
@@ -467,7 +523,9 @@ public class ImprovedOfflinePlayer {
 
     public void setScore(int input) {
         this.compound.setInt("Score", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public short getTimeAttack() {
@@ -476,7 +534,9 @@ public class ImprovedOfflinePlayer {
 
     public void setTimeAttack(short input) {
         this.compound.setShort("AttackTime", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public short getTimeDeath() {
@@ -485,7 +545,9 @@ public class ImprovedOfflinePlayer {
 
     public void setTimeDeath(short input) {
         this.compound.setShort("DeathTime", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public short getTimeHurt() {
@@ -494,7 +556,9 @@ public class ImprovedOfflinePlayer {
 
     public void setTimeHurt(short input) {
         this.compound.setShort("HurtTime", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public short getTimeSleep() {
@@ -503,7 +567,9 @@ public class ImprovedOfflinePlayer {
 
     public void setTimeSleep(short input) {
         this.compound.setShort("SleepTimer", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public int getTotalExperience() {
@@ -512,7 +578,9 @@ public class ImprovedOfflinePlayer {
 
     public void setTotalExperience(int input) {
         this.compound.setInt("XpTotal", input);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public Vector getVelocity() {
@@ -526,7 +594,9 @@ public class ImprovedOfflinePlayer {
         motion.add(new NBTTagDouble(vector.getY()));
         motion.add(new NBTTagDouble(vector.getZ()));
         this.compound.set("Motion", motion);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 
     public float getWalkSpeed() {
@@ -535,7 +605,9 @@ public class ImprovedOfflinePlayer {
 
     public void setWalkSpeed(float speed) {
         this.compound.getCompound("abilities").setFloat("walkSpeed", speed);
-        if (this.autosave) savePlayerData();
+        if (this.autosave) {
+            savePlayerData();
+        }
     }
 }
 /*

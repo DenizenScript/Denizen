@@ -14,15 +14,21 @@ public class EntityRotation implements Property {
 
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
+        if (!(entity instanceof dEntity)) {
+            return false;
+        }
         return ((dEntity) entity).getBukkitEntityType() == EntityType.PAINTING
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.ITEM_FRAME;
     }
 
     public static EntityRotation getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityRotation((dEntity) entity);
+        else {
+            return new EntityRotation((dEntity) entity);
+        }
     }
 
 
@@ -67,7 +73,9 @@ public class EntityRotation implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.rotation>
@@ -78,9 +86,10 @@ public class EntityRotation implements Property {
         // If the entity can have a rotation, returns the entity's rotation.
         // Currently, only Hanging-type entities can have rotations.
         // -->
-        if (attribute.startsWith("rotation"))
+        if (attribute.startsWith("rotation")) {
             return new Element(getRotation().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

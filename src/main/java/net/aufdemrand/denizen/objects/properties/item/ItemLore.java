@@ -22,8 +22,12 @@ public class ItemLore implements Property {
     }
 
     public static ItemLore getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemLore((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemLore((dItem) _item);
+        }
     }
 
     public boolean hasLore() {
@@ -41,12 +45,15 @@ public class ItemLore implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // deprecated in favor of .escape_contents
         if (attribute.startsWith("lore.escaped")) {
-            if (hasLore())
+            if (hasLore()) {
                 return new Element(getPropertyString()).getAttribute(attribute.fulfill(2));
+            }
         }
 
         // <--[tag]
@@ -79,9 +86,10 @@ public class ItemLore implements Property {
         // @description
         // Returns whether the item has lore set on it.
         // -->
-        if (attribute.startsWith("has_lore"))
+        if (attribute.startsWith("has_lore")) {
             return new Element(hasLore())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -126,8 +134,9 @@ public class ItemLore implements Property {
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             dList lore = mechanism.getValue().asType(dList.class);
-            if (item.isItemscript())
+            if (item.isItemscript()) {
                 lore.add(ItemScriptHelper.createItemScriptID(item.getScriptName()));
+            }
             for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, EscapeTags.unEscape(lore.get(i)));
             }

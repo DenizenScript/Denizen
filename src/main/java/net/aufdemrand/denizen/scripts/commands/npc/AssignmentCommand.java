@@ -21,33 +21,41 @@ public class AssignmentCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesEnum(Action.values())
-                    && !scriptEntry.hasObject("action"))
+                    && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
+            }
 
 
             else if (arg.matchesArgumentType(dScript.class)
                     && !scriptEntry.hasObject("script")) {
                 // Check the type of script.. it must be an assignment-type container
                 if (arg.asType(dScript.class) != null
-                        && arg.asType(dScript.class).getType().equalsIgnoreCase("assignment"))
+                        && arg.asType(dScript.class).getType().equalsIgnoreCase("assignment")) {
                     scriptEntry.addObject("script", arg.asType(dScript.class));
-                else
+                }
+                else {
                     throw new InvalidArgumentsException("Script specified is not an 'assignment-type' container.");
+                }
             }
 
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check required arguments
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an action!");
+        }
 
-        if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script"))
+        if (scriptEntry.getObject("action").equals(Action.SET) && !scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Script specified was missing or invalid.");
+        }
 
     }
 
@@ -60,12 +68,14 @@ public class AssignmentCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), aH.debugObj("action", scriptEntry.getObject("action")) + script.debug());
 
         // Perform desired action
-        if (scriptEntry.getObject("action").equals(Action.SET))
+        if (scriptEntry.getObject("action").equals(Action.SET)) {
             ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .setAssignment(script.getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+        }
 
-        else if (scriptEntry.getObject("action").equals(Action.REMOVE))
+        else if (scriptEntry.getObject("action").equals(Action.REMOVE)) {
             ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .removeAssignment(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+        }
     }
 }

@@ -40,9 +40,10 @@ public class AssignmentTrait extends Trait {
     @Override
     public void load(DataKey key) throws NPCLoadException {
         // Check to make sure assignment is still valid. Throw a dB error if not.
-        if (hasAssignment())
+        if (hasAssignment()) {
             dB.echoError("Missing assignment '" + assignment + "' for NPC '"
                     + npc.getName() + "/" + npc.getId() + "! Perhaps the script has been removed?");
+        }
         npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
     }
 
@@ -69,10 +70,17 @@ public class AssignmentTrait extends Trait {
         if (ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
             this.assignment = assignment.toUpperCase();
             // Add Constants/Trigger trait if not already added to the NPC.
-            if (!npc.hasTrait(ConstantsTrait.class)) npc.addTrait(ConstantsTrait.class);
-            if (!npc.hasTrait(TriggerTrait.class)) npc.addTrait(TriggerTrait.class);
-            if (Settings.healthTraitEnabledByDefault())
-                if (!npc.hasTrait(HealthTrait.class)) npc.addTrait(HealthTrait.class);
+            if (!npc.hasTrait(ConstantsTrait.class)) {
+                npc.addTrait(ConstantsTrait.class);
+            }
+            if (!npc.hasTrait(TriggerTrait.class)) {
+                npc.addTrait(TriggerTrait.class);
+            }
+            if (Settings.healthTraitEnabledByDefault()) {
+                if (!npc.hasTrait(HealthTrait.class)) {
+                    npc.addTrait(HealthTrait.class);
+                }
+            }
             // Reset Constants
             npc.getTrait(ConstantsTrait.class).rebuildAssignmentConstants();
             // 'On Assignment' action.
@@ -80,7 +88,9 @@ public class AssignmentTrait extends Trait {
             return true;
         }
 
-        else return false;
+        else {
+            return false;
+        }
     }
 
     /**
@@ -89,9 +99,12 @@ public class AssignmentTrait extends Trait {
      * @return assignment script name, null if not set or assignment is invalid
      */
     public AssignmentScriptContainer getAssignment() {
-        if (hasAssignment() && ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class))
+        if (hasAssignment() && ScriptRegistry.containsScript(assignment, AssignmentScriptContainer.class)) {
             return ScriptRegistry.getScriptContainer(assignment);
-        else return null;
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -100,7 +113,9 @@ public class AssignmentTrait extends Trait {
      * @return true if NPC has an assignment and it is valid
      */
     public boolean hasAssignment() {
-        if (assignment == null || assignment.equals("")) return false;
+        if (assignment == null || assignment.equals("")) {
+            return false;
+        }
         return ScriptRegistry.containsScript(assignment);
     }
 
@@ -145,15 +160,19 @@ public class AssignmentTrait extends Trait {
         paginator.addLine("<e>Key: <a>Priority  <b>Name");
         if (assignmentScript.contains("INTERACT SCRIPTS")) {
             entriesPresent = true;
-            for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS"))
+            for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS")) {
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
+            }
         }
-        if (!entriesPresent) paginator.addLine("<c>No Interact Scripts assigned.");
+        if (!entriesPresent) {
+            paginator.addLine("<c>No Interact Scripts assigned.");
+        }
         paginator.addLine("");
 
         if (!entriesPresent) {
-            if (!paginator.sendPage(sender, page))
+            if (!paginator.sendPage(sender, page)) {
                 throw new CommandException(Messages.COMMAND_PAGE_MISSING);
+            }
             return;
         }
 
@@ -163,25 +182,35 @@ public class AssignmentTrait extends Trait {
         paginator.addLine("<e>Key: <a>Time  <b>Name");
         if (assignmentScript.contains("SCHEDULED ACTIVITIES")) {
             entriesPresent = true;
-            for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES"))
+            for (String scriptEntry : assignmentScript.getStringList("SCHEDULED ACTIVITIES")) {
                 paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
+            }
         }
-        if (!entriesPresent) paginator.addLine("<c>No scheduled scripts activities.");
+        if (!entriesPresent) {
+            paginator.addLine("<c>No scheduled scripts activities.");
+        }
         paginator.addLine("");
 
         // Actions
         entriesPresent = false;
         paginator.addLine(ChatColor.GRAY + "Actions:");
         paginator.addLine("<e>Key: <a>Action name  <b>Script Size");
-        if (assignmentScript.contains("ACTIONS")) entriesPresent = true;
-        if (entriesPresent)
-            for (StringHolder action : assignmentScript.getConfigurationSection("ACTIONS").getKeys(false))
+        if (assignmentScript.contains("ACTIONS")) {
+            entriesPresent = true;
+        }
+        if (entriesPresent) {
+            for (StringHolder action : assignmentScript.getConfigurationSection("ACTIONS").getKeys(false)) {
                 paginator.addLine("<a>" + action.str + " <b>" + assignmentScript.getStringList("ACTIONS." + action.str).size());
-        else paginator.addLine("<c>No actions defined in the assignment.");
+            }
+        }
+        else {
+            paginator.addLine("<c>No actions defined in the assignment.");
+        }
         paginator.addLine("");
 
-        if (!paginator.sendPage(sender, page))
+        if (!paginator.sendPage(sender, page)) {
             throw new CommandException(Messages.COMMAND_PAGE_MISSING, page);
+        }
     }
 
 
@@ -217,17 +246,22 @@ public class AssignmentTrait extends Trait {
             // If the damager is not this NPC, the damager could still be a
             // projectile shot by this NPC, in which case we want to continue
             if (event.getDamager() instanceof Projectile) {
-                if (((Projectile) event.getDamager()).getShooter() != npc.getEntity()) return;
+                if (((Projectile) event.getDamager()).getShooter() != npc.getEntity()) {
+                    return;
+                }
             }
 
-            else return;
+            else {
+                return;
+            }
         }
 
         dPlayer player = null;
 
         // Check if the entity hit by this NPC is a player
-        if (event.getEntity() instanceof Player)
+        if (event.getEntity() instanceof Player) {
             player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
+        }
 
         // TODO: Context containing the entity hit
         DenizenAPI.getDenizenNPC(npc).action("hit", player);

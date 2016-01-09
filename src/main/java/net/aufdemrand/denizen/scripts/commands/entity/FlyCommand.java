@@ -79,7 +79,9 @@ public class FlyCommand extends AbstractCommand {
                 scriptEntry.addObject("speed", arg.asElement());
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player's locations as the location if one is not specified
@@ -92,10 +94,12 @@ public class FlyCommand extends AbstractCommand {
         scriptEntry.defaultObject("rotationThreshold", new Element(15));
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
-        if (!scriptEntry.hasObject("origin"))
+        }
+        if (!scriptEntry.hasObject("origin")) {
             throw new InvalidArgumentsException("Must specify an origin!");
+        }
     }
 
     @SuppressWarnings("unchecked")

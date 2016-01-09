@@ -47,8 +47,9 @@ public class StatsRecord extends Thread {
         }
         finally {
             try {
-                if (in != null)
+                if (in != null) {
                     in.close();
+                }
             }
             catch (Exception e) {
                 dB.echoError(e);

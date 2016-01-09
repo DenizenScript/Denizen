@@ -22,8 +22,9 @@ public class LiquidRequirement extends AbstractRequirement {
         boolean outcome = false;
         Block blockToCheck = null;
 
-        if (args.size() < 1)
+        if (args.size() < 1) {
             throw new RequirementCheckException("Must provide a BOOKMARK:block of the block to be checked!");
+        }
 
         /* Get arguments */
 
@@ -31,17 +32,26 @@ public class LiquidRequirement extends AbstractRequirement {
 
             if (aH.matchesLocation(thisArg)) {
                 blockToCheck = dLocation.valueOf(thisArg).getBlock();
-                if (blockToCheck != null)
+                if (blockToCheck != null) {
                     dB.echoDebug(context.getScriptContainer(), "...block to check is type '" + blockToCheck.getType().toString() + "'");
+                }
             }
 
-            else dB.echoError("Could not match argument '" + thisArg + "'");
+            else {
+                dB.echoError("Could not match argument '" + thisArg + "'");
+            }
         }
 
-        if (blockToCheck != null && blockToCheck.isLiquid()) outcome = true;
+        if (blockToCheck != null && blockToCheck.isLiquid()) {
+            outcome = true;
+        }
 
-        if (outcome) dB.echoDebug(context.getScriptContainer(), "...block is liquid!");
-        else dB.echoDebug(context.getScriptContainer(), "...block is not liquid!");
+        if (outcome) {
+            dB.echoDebug(context.getScriptContainer(), "...block is liquid!");
+        }
+        else {
+            dB.echoDebug(context.getScriptContainer(), "...block is not liquid!");
+        }
 
         return outcome;
     }

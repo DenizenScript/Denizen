@@ -30,8 +30,12 @@ public class ItemPatterns implements Property {
     }
 
     public static ItemPatterns getFrom(dObject item) {
-        if (!describes(item)) return null;
-        else return new ItemPatterns((dItem) item);
+        if (!describes(item)) {
+            return null;
+        }
+        else {
+            return new ItemPatterns((dItem) item);
+        }
     }
 
 
@@ -52,7 +56,9 @@ public class ItemPatterns implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.patterns>

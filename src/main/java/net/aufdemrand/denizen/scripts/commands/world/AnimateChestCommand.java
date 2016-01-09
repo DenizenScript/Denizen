@@ -30,41 +30,52 @@ public class AnimateChestCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(ChestAction.values()))
+                    && arg.matchesEnum(ChestAction.values())) {
                 scriptEntry.addObject("action", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrefix("sound")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("sound", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("players")
-                    && arg.matchesArgumentList(dPlayer.class))
+                    && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             scriptEntry.addObject("action", new Element("OPEN"));
+        }
 
-        if (!scriptEntry.hasObject("sound"))
+        if (!scriptEntry.hasObject("sound")) {
             scriptEntry.addObject("sound", Element.TRUE);
+        }
 
         if (!scriptEntry.hasObject("players")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+            }
             else // TODO: Perhaps instead add all players in sight range?
+            {
                 throw new InvalidArgumentsException("Missing 'players' argument!");
+            }
         }
     }
 
@@ -87,7 +98,9 @@ public class AnimateChestCommand extends AbstractCommand {
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (dPlayer player : players) {
-                    if (sound.asBoolean()) player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                    if (sound.asBoolean()) {
+                        player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                    }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
                 }
@@ -95,8 +108,9 @@ public class AnimateChestCommand extends AbstractCommand {
 
             case CLOSE:
                 for (dPlayer player : players) {
-                    if (sound.asBoolean())
+                    if (sound.asBoolean()) {
                         player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                    }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 0));
                 }

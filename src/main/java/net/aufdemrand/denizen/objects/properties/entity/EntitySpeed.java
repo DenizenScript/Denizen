@@ -14,8 +14,9 @@ import org.bukkit.entity.Minecart;
 public class EntitySpeed implements Property {
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity))
+        if (!(entity instanceof dEntity)) {
             return false;
+        }
         dEntity ent = (dEntity) entity;
         if (ent.isLivingEntity()) {
             return true;
@@ -34,9 +35,13 @@ public class EntitySpeed implements Property {
     }
 
     public static EntitySpeed getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntitySpeed((dEntity) entity);
+        else {
+            return new EntitySpeed((dEntity) entity);
+        }
     }
 
 
@@ -94,7 +99,9 @@ public class EntitySpeed implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.speed>
@@ -104,8 +111,9 @@ public class EntitySpeed implements Property {
         // @description
         // Returns how fast the entity can move.
         // -->
-        if (attribute.startsWith("speed"))
+        if (attribute.startsWith("speed")) {
             return getSpeed().getAttribute(attribute.fulfill(1));
+        }
 
 
         return null;

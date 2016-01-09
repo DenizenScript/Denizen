@@ -398,10 +398,12 @@ public class MetricsLite {
             e.printStackTrace();
         }
         finally {
-            if (gzos != null) try {
-                gzos.close();
-            }
-            catch (IOException ignore) {
+            if (gzos != null) {
+                try {
+                    gzos.close();
+                }
+                catch (IOException ignore) {
+                }
             }
         }
 

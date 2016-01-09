@@ -47,34 +47,42 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));
-                if (arg.getValue().equalsIgnoreCase("removeall"))
+                if (arg.getValue().equalsIgnoreCase("removeall")) {
                     scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
+                }
             }
 
             else if (arg.matchesArgumentType(dChunk.class)
-                    && !scriptEntry.hasObject("location"))
+                    && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dChunk.class).getCenter());
+            }
 
             else if (arg.matchesArgumentType(dLocation.class)
-                    && !scriptEntry.hasObject("location"))
+                    && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (arg.matchesArgumentType(Duration.class)
-                    && !scriptEntry.hasObject("duration"))
+                    && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Missing location argument!");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             scriptEntry.addObject("action", new Element("ADD"));
+        }
 
-        if (!scriptEntry.hasObject("duration"))
+        if (!scriptEntry.hasObject("duration")) {
             scriptEntry.addObject("duration", new Duration(0));
+        }
     }
 
     @Override
@@ -94,21 +102,25 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
         switch (Action.valueOf(action.asString())) {
             case ADD:
-                if (length.getSeconds() != 0)
+                if (length.getSeconds() != 0) {
                     chunkDelays.put(chunkString, System.currentTimeMillis() + length.getMillis());
-                else
+                }
+                else {
                     chunkDelays.put(chunkString, (long) 0);
+                }
                 dB.echoDebug(scriptEntry, "...added chunk " + chunk.getX() + ", " + chunk.getZ() + " with a delay of " + length.getSeconds() + " seconds.");
-                if (!chunk.isLoaded())
+                if (!chunk.isLoaded()) {
                     chunk.load();
+                }
                 break;
             case REMOVE:
                 if (chunkDelays.containsKey(chunkString)) {
                     chunkDelays.remove(chunkString);
                     dB.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                 }
-                else
+                else {
                     dB.echoError("Chunk was not on the load list!");
+                }
                 break;
             case REMOVEALL:
                 dB.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
@@ -125,33 +137,40 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     public void stopUnload(ChunkUnloadEvent e) {
         String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ();
         if (chunkDelays.containsKey(chunkString)) {
-            if (chunkDelays.get(chunkString) == 0)
+            if (chunkDelays.get(chunkString) == 0) {
                 e.setCancelled(true);
+            }
 
-            else if (System.currentTimeMillis() < chunkDelays.get(chunkString))
+            else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
                 e.setCancelled(true);
+            }
 
-            else
+            else {
                 chunkDelays.remove(chunkString);
+            }
         }
     }
 
     public class ChunkLoadCommandNPCEvents implements Listener {
         @EventHandler
         public void stopDespawn(NPCDespawnEvent e) {
-            if (e.getNPC() == null || !e.getNPC().isSpawned())
+            if (e.getNPC() == null || !e.getNPC().isSpawned()) {
                 return;
+            }
             Chunk chnk = e.getNPC().getEntity().getLocation().getChunk();
             String chunkString = chnk.getX() + ", " + chnk.getZ();
             if (chunkDelays.containsKey(chunkString)) {
-                if (chunkDelays.get(chunkString) == 0)
+                if (chunkDelays.get(chunkString) == 0) {
                     e.setCancelled(true);
+                }
 
-                else if (System.currentTimeMillis() < chunkDelays.get(chunkString))
+                else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
                     e.setCancelled(true);
+                }
 
-                else
+                else {
                     chunkDelays.remove(chunkString);
+                }
             }
         }
     }

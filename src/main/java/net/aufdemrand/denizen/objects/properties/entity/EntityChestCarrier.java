@@ -17,9 +17,13 @@ public class EntityChestCarrier implements Property {
     }
 
     public static EntityChestCarrier getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityChestCarrier((dEntity) entity);
+        else {
+            return new EntityChestCarrier((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -53,7 +57,9 @@ public class EntityChestCarrier implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.carries_chest>
@@ -63,9 +69,10 @@ public class EntityChestCarrier implements Property {
         // @description
         // If the entity is a horse, returns whether it is carrying a chest.
         // -->
-        if (attribute.startsWith("carries_chest"))
+        if (attribute.startsWith("carries_chest")) {
             return new Element(((Horse) entity.getBukkitEntity()).isCarryingChest())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

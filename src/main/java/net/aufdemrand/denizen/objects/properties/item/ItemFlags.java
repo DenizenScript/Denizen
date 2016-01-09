@@ -19,8 +19,12 @@ public class ItemFlags implements Property {
     }
 
     public static ItemFlags getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemFlags((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemFlags((dItem) _item);
+        }
     }
 
     private ItemFlags(dItem _item) {
@@ -43,7 +47,9 @@ public class ItemFlags implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.flags>

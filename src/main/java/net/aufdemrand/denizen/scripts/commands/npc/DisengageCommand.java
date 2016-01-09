@@ -21,8 +21,9 @@ public class DisengageCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Make sure NPC is available
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null)
+        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
     }
 

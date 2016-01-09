@@ -23,7 +23,7 @@ public class RequirementRegistry implements dRegistry {
 
     @Override
     public void disableCoreMembers() {
-        for (RegistrationableInstance member : instances.values())
+        for (RegistrationableInstance member : instances.values()) {
             try {
                 member.onDisable();
             }
@@ -31,18 +31,27 @@ public class RequirementRegistry implements dRegistry {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
+        }
     }
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-        if (classes.containsKey(clazz)) return clazz.cast(instances.get(classes.get(clazz)));
-        else return null;
+        if (classes.containsKey(clazz)) {
+            return clazz.cast(instances.get(classes.get(clazz)));
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
     public AbstractRequirement get(String requirementName) {
-        if (instances.containsKey(requirementName.toUpperCase())) return instances.get(requirementName.toUpperCase());
-        else return null;
+        if (instances.containsKey(requirementName.toUpperCase())) {
+            return instances.get(requirementName.toUpperCase());
+        }
+        else {
+            return null;
+        }
     }
 
     @Override

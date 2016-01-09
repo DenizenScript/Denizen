@@ -118,8 +118,9 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
         playerMoveEvent(evt);
-        if (evt.isCancelled())
+        if (evt.isCancelled()) {
             event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -161,14 +162,18 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             return;
         }
 
-        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) return;
+        if (event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+            return;
+        }
 
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
         List<dCuboid> match = new ArrayList<dCuboid>();
         String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName()); // TODO: UUID?
         if (player_cuboids.containsKey(namelow)) // TODO: Clear on quit?
+        {
             match = player_cuboids.get(namelow);
+        }
 
         List<dCuboid> exits = new ArrayList<dCuboid>(match);
         exits.removeAll(cuboids);
@@ -176,7 +181,9 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         List<dCuboid> enters = new ArrayList<dCuboid>(cuboids);
         enters.removeAll(match);
 
-        if (exits.isEmpty() && enters.isEmpty()) return;
+        if (exits.isEmpty() && enters.isEmpty()) {
+            return;
+        }
 
         if (!exits.isEmpty()) {
             if (broad_detection) {
@@ -184,12 +191,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 for (dCuboid cuboid : exits) {
                     cuboid_context.add(cuboid.identify());
                 }
-                if (Fire(event, cuboid_context, "player exits notable cuboid"))
+                if (Fire(event, cuboid_context, "player exits notable cuboid")) {
                     return;
+                }
             }
             for (dCuboid cuboid : exits) {
-                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple()))
+                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple())) {
                     return;
+                }
             }
         }
 
@@ -199,12 +208,14 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 for (dCuboid cuboid : enters) {
                     cuboid_context.add(cuboid.identify());
                 }
-                if (Fire(event, cuboid_context, "player enters notable cuboid"))
+                if (Fire(event, cuboid_context, "player enters notable cuboid")) {
                     return;
+                }
             }
             for (dCuboid cuboid : enters) {
-                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple()))
+                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple())) {
                     return;
+                }
             }
         }
 

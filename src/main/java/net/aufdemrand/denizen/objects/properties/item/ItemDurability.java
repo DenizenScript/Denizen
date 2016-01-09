@@ -15,8 +15,12 @@ public class ItemDurability implements Property {
     }
 
     public static ItemDurability getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemDurability((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemDurability((dItem) _item);
+        }
     }
 
 
@@ -29,7 +33,9 @@ public class ItemDurability implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.durability>
@@ -39,9 +45,10 @@ public class ItemDurability implements Property {
         // @description
         // Returns the current durability (number of uses) on the item.
         // -->
-        if (attribute.startsWith("durability"))
+        if (attribute.startsWith("durability")) {
             return new Element(item.getItemStack().getDurability())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <i@item.max_durability>
@@ -51,9 +58,10 @@ public class ItemDurability implements Property {
         // Returns the maximum durability (number of uses) of this item.
         // For use with <@link tag i@item.durability> and <@link mechanism dItem.durability>.
         // -->
-        if (attribute.startsWith("max_durability"))
+        if (attribute.startsWith("max_durability")) {
             return new Element(item.getMaterial().getMaterial().getMaxDurability())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -61,10 +69,12 @@ public class ItemDurability implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() != 0)
+        if (item.getItemStack().getDurability() != 0) {
             return String.valueOf(item.getItemStack().getDurability());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override

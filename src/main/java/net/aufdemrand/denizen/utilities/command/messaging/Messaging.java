@@ -21,8 +21,9 @@ public class Messaging {
                     message = messageColor + message;
                 }
             }
-            else
+            else {
                 message = messageColor + message;
+            }
         }
         return message;
     }

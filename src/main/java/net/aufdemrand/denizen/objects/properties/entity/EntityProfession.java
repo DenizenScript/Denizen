@@ -13,15 +13,21 @@ public class EntityProfession implements Property {
 
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
+        if (!(entity instanceof dEntity)) {
+            return false;
+        }
         // Check if the entity is a Villager, the only EntityType that can be a Professional
         return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
     }
 
     public static EntityProfession getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityProfession((dEntity) entity);
+        else {
+            return new EntityProfession((dEntity) entity);
+        }
     }
 
 
@@ -66,7 +72,9 @@ public class EntityProfession implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.profession>
@@ -78,9 +86,10 @@ public class EntityProfession implements Property {
         // Currently, only Villager-type entities can have professions.
         // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
         // -->
-        if (attribute.startsWith("profession"))
+        if (attribute.startsWith("profession")) {
             return new Element(getProfession().name().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

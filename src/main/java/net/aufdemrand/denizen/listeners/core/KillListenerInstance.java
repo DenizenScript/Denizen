@@ -72,30 +72,36 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         // are passed through to here.
         for (aH.Argument arg : args) {
 
-            if (arg.matchesEnum(KillType.values()) && type == null)
+            if (arg.matchesEnum(KillType.values()) && type == null) {
                 this.type = KillType.valueOf(arg.getValue().toUpperCase());
+            }
 
             else if (arg.matchesPrefix("qty, q")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
+            }
 
-            else if (arg.matchesPrefix("region, r"))
+            else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
+            }
 
             else if (arg.matchesPrefix("cuboid, c")
-                    && arg.matchesArgumentType(dCuboid.class))
+                    && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);
+            }
 
-            else if (arg.matchesPrefix("targets, target, t, name, names"))
+            else if (arg.matchesPrefix("targets, target, t, name, names")) {
                 targets = arg.asType(dList.class);
+            }
             else if (arg.matchesPrefix("mobnames, mn")) {
                 names = arg.asType(dList.class);
             }
 
         }
 
-        if (targets == null)
+        if (targets == null) {
             targets = new dList("*");
+        }
 
         if (names == null) {
             names = new dList("*");
@@ -141,7 +147,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         store("Quantity", required);
         store("Current Kills", kills_so_far);
         store("Region", region);
-        if (cuboid != null) store("Cuboid", cuboid.identify());
+        if (cuboid != null) {
+            store("Cuboid", cuboid.identify());
+        }
 
         // At this point, deconstructed() is called.
     }
@@ -192,7 +200,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
     @EventHandler
     public void listen(EntityDeathEvent event) {
         // Only continue if the event is an event for the player that owns this listener.
-        if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
+        if (event.getEntity().getKiller() != player.getPlayerEntity()) {
+            return;
+        }
 
         // If REGION argument specified, check. If not in region, don't count kill!
         if (region != null) {
@@ -200,8 +210,11 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
         //
         // ENTITY type Kill Listener
@@ -212,9 +225,11 @@ public class KillListenerInstance extends AbstractListener implements Listener {
             boolean count_it = false;
             // Check targets, if any match entity killed, count_it!
             for (String target : targets) {
-                if (dEntity.valueOf(target) != null)
-                    if (ent.comparesTo(dEntity.valueOf(target)) == 1)
+                if (dEntity.valueOf(target) != null) {
+                    if (ent.comparesTo(dEntity.valueOf(target)) == 1) {
                         count_it = true;
+                    }
+                }
             }
             boolean right_name = false;
             for (String name : names) {
@@ -241,7 +256,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         //
         else if (type == KillType.NPC) {
             // If a NPC wasn't killed, return.
-            if (!CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
+            if (!CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+                return;
+            }
             // Get the NPC killed
             dNPC npc = dNPC.mirrorCitizensNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
             boolean count_it = false;
@@ -250,13 +267,15 @@ public class KillListenerInstance extends AbstractListener implements Listener {
             for (String target : targets) {
                 // Check against a physical NPC object (n@7, n@18, etc.)
                 if (dNPC.valueOf(target) != null) {
-                    if (dNPC.valueOf(target).getId() == npc.getId())
+                    if (dNPC.valueOf(target).getId() == npc.getId()) {
                         count_it = true;
+                    }
                 }
                 // Cannot be 'else if' since dNPC.valueOf will return true for names now, as well as ids.
                 // Check against name of NPC (n@fullwall, aufdemrand, etc)... object notation is optional.
-                if (npc.getName().equalsIgnoreCase(target.toLowerCase().replace("n@", "")))
+                if (npc.getName().equalsIgnoreCase(target.toLowerCase().replace("n@", ""))) {
                     count_it = true;
+                }
             }
             // If NPC was matched or targets contains '*', increment
             // the kills so far.
@@ -275,17 +294,23 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         //
         else if (type == KillType.PLAYER) {
             // Check to make sure entity is a Player, and not a NPC
-            if (event.getEntityType() != EntityType.PLAYER) return;
-            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) return;
+            if (event.getEntityType() != EntityType.PLAYER) {
+                return;
+            }
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
+                return;
+            }
 
             // Get player killed
             dPlayer player = dPlayer.mirrorBukkitPlayer((Player) event.getEntity());
             boolean count_it = false;
             // Check targets, if any match entity killed, count_it!
             for (String target : targets) {
-                if (dPlayer.valueOf(target) != null)
-                    if (dPlayer.valueOf(target).getName().equalsIgnoreCase(player.getName()))
+                if (dPlayer.valueOf(target) != null) {
+                    if (dPlayer.valueOf(target).getName().equalsIgnoreCase(player.getName())) {
                         count_it = true;
+                    }
+                }
             }
             // If an entity was found, or targets is '*', increment the
             // kills_so_far
@@ -305,31 +330,40 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         else if (type == KillType.GROUP) {
             // Require the entity to be a Player
             if (event.getEntityType() == EntityType.PLAYER)
-                // Iterate through groups on the Player
+            // Iterate through groups on the Player
+            {
                 for (String group : Depends.permissions.getPlayerGroups((Player) event.getEntity()))
-                    // If a group matches, count it!
+                // If a group matches, count it!
+                {
                     if (targets.contains(group.toUpperCase())) {
                         kills_so_far++;
                         dB.log(player.getName() + " killed " + ((Player) event.getEntity()).getName().toUpperCase() + " of group " + group + ".");
                         check();
                         break;
                     }
+                }
+            }
         }
     }
 
 
     public void check() {
         // Check current kills vs. required kills; finish() if necessary.
-        if (kills_so_far >= required)
+        if (kills_so_far >= required) {
             finish();
+        }
     }
 
 
     @TagManager.TagEvents
     public void listenTag(ReplaceableTagEvent event) {
 
-        if (!event.matches("LISTENER")) return;
-        if (!event.getType().equalsIgnoreCase(id)) return;
+        if (!event.matches("LISTENER")) {
+            return;
+        }
+        if (!event.getType().equalsIgnoreCase(id)) {
+            return;
+        }
 
         if (event.getValue().equalsIgnoreCase("region")) {
             event.setReplaced(region);

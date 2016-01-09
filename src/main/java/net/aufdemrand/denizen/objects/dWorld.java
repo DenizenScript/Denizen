@@ -30,9 +30,15 @@ public class dWorld implements dObject, Adjustable {
     static Map<String, dWorld> worlds = new HashMap<String, dWorld>();
 
     public static dWorld mirrorBukkitWorld(World world) {
-        if (world == null) return null;
-        if (worlds.containsKey(world.getName())) return worlds.get(world.getName());
-        else return new dWorld(world);
+        if (world == null) {
+            return null;
+        }
+        if (worlds.containsKey(world.getName())) {
+            return worlds.get(world.getName());
+        }
+        else {
+            return new dWorld(world);
+        }
     }
 
 
@@ -61,7 +67,9 @@ public class dWorld implements dObject, Adjustable {
     }
 
     public static dWorld valueOf(String string, boolean announce) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         string = string.replace("w@", "");
 
@@ -80,7 +88,9 @@ public class dWorld implements dObject, Adjustable {
             if (worlds.containsKey(returnable.getName())) {
                 return worlds.get(returnable.getName());
             }
-            else return new dWorld(returnable);
+            else {
+                return new dWorld(returnable);
+            }
         }
         else if (announce) {
             dB.echoError("Invalid World! '" + string
@@ -127,8 +137,12 @@ public class dWorld implements dObject, Adjustable {
     }
 
     public dWorld(String prefix, World world) {
-        if (prefix == null) this.prefix = "World";
-        else this.prefix = prefix;
+        if (prefix == null) {
+            this.prefix = "World";
+        }
+        else {
+            this.prefix = prefix;
+        }
         this.world_name = world.getName();
         if (!worlds.containsKey(world.getName())) {
             worlds.put(world.getName(), this);
@@ -235,8 +249,9 @@ public class dWorld implements dObject, Adjustable {
                 ArrayList<dPlayer> players = new ArrayList<dPlayer>();
 
                 for (Player player : ((dWorld) object).getWorld().getPlayers()) {
-                    if (!dEntity.isNPC(player))
+                    if (!dEntity.isNPC(player)) {
                         players.add(new dPlayer(player));
+                    }
                 }
 
                 return new dList(players)
@@ -273,8 +288,9 @@ public class dWorld implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList chunks = new dList();
-                for (Chunk ent : ((dWorld) object).getWorld().getLoadedChunks())
+                for (Chunk ent : ((dWorld) object).getWorld().getLoadedChunks()) {
                     chunks.add(new dChunk((CraftChunk) ent).identify());
+                }
 
                 return chunks.getAttribute(attribute.fulfill(1));
             }
@@ -289,7 +305,7 @@ public class dWorld implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int random = CoreUtilities.getRandom().nextInt(((dWorld) object).getWorld().getLoadedChunks().length);
-                return new dChunk((CraftChunk)((dWorld) object).getWorld().getLoadedChunks()[random])
+                return new dChunk((CraftChunk) ((dWorld) object).getWorld().getLoadedChunks()[random])
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -590,10 +606,18 @@ public class dWorld implements dObject, Adjustable {
                     long time = ((dWorld) object).getWorld().getTime();
                     String period;
 
-                    if (time >= 23000) period = "dawn";
-                    else if (time >= 13500) period = "night";
-                    else if (time >= 12500) period = "dusk";
-                    else period = "day";
+                    if (time >= 23000) {
+                        period = "dawn";
+                    }
+                    else if (time >= 13500) {
+                        period = "night";
+                    }
+                    else if (time >= 12500) {
+                        period = "dusk";
+                    }
+                    else {
+                        period = "day";
+                    }
 
                     return new Element(period).getAttribute(attribute.fulfill(1));
                 }
@@ -612,7 +636,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("moon_phase", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element((int)((((dWorld) object).getWorld().getFullTime() / 24000) % 8) + 1)
+                return new Element((int) ((((dWorld) object).getWorld().getFullTime() / 24000) % 8) + 1)
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -673,7 +697,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("weather_duration", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Duration((long)((dWorld) object).getWorld().getWeatherDuration())
+                return new Duration((long) ((dWorld) object).getWorld().getWeatherDuration())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -723,7 +747,9 @@ public class dWorld implements dObject, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
@@ -739,7 +765,9 @@ public class dWorld implements dObject, Adjustable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -816,8 +844,9 @@ public class dWorld implements dObject, Adjustable {
             else {
                 diff = Difficulty.getByValue(value.asInt());
             }
-            if (diff != null)
+            if (diff != null) {
                 getWorld().setDifficulty(diff);
+            }
         }
 
         // <--[mechanism]
@@ -1019,12 +1048,14 @@ public class dWorld implements dObject, Adjustable {
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
-            if (mechanism.fulfilled())
+            if (mechanism.fulfilled()) {
                 break;
+            }
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
 
     }
 }

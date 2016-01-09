@@ -25,8 +25,9 @@ public class PathBlockExaminer implements BlockExaminer {
     // Unfortunately for this to work properly, it needs
     // to have a NPC attached to the Examiner.
     public PathBlockExaminer(dNPC npc, List<dMaterial> filter) {
-        if (filter != null)
+        if (filter != null) {
             pathing_materials = filter;
+        }
 
         this.npc = npc;
     }
@@ -44,22 +45,26 @@ public class PathBlockExaminer implements BlockExaminer {
         Material in = source.getMaterialAt(pos);
 
         // Discourage walking up a Z level
-        if (point.getVector().getBlockY() > npc.getEntity().getLocation().getBlockY())
+        if (point.getVector().getBlockY() > npc.getEntity().getLocation().getBlockY()) {
             return 5f;
+        }
 
         // Encourage materials that are not in the filter
         for (dMaterial mat : pathing_materials) {
             // Discourage walking through web
-            if (above == Material.WEB || in == Material.WEB)
+            if (above == Material.WEB || in == Material.WEB) {
                 return 1F;
+            }
 
             // Discourage liquid
-            if (isLiquid(above, below, in))
+            if (isLiquid(above, below, in)) {
                 return 1F;
+            }
 
             // Encourage pathing materials
-            if (below == mat.getMaterial())
+            if (below == mat.getMaterial()) {
                 return 0F;
+            }
         }
 
         return .5f;
@@ -97,8 +102,9 @@ public class PathBlockExaminer implements BlockExaminer {
     private static boolean contains(Material[] search, Material... find) {
         for (Material haystack : search) {
             for (Material needle : find) {
-                if (haystack == needle)
+                if (haystack == needle) {
                     return true;
+                }
             }
         }
         return false;

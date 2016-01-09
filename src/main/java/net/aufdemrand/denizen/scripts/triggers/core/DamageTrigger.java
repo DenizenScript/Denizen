@@ -65,8 +65,9 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
     @EventHandler
     public void damageTrigger(EntityDamageByEntityEvent event) {
 
-        if (event.getEntity() == null)
+        if (event.getEntity() == null) {
             return;
+        }
 
         dEntity damager = new dEntity(event.getDamager());
 
@@ -81,10 +82,12 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
 
         if (CitizensAPI.getNPCRegistry().isNPC(event.getEntity())) {
             dNPC npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getNPC(event.getEntity()));
-            if (npc == null)
+            if (npc == null) {
                 return;
-            if (npc.getCitizen() == null)
+            }
+            if (npc.getCitizen() == null) {
                 return;
+            }
 
             context.put("damager", damager);
 
@@ -93,16 +96,24 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (damager.isPlayer()) {
                 dplayer = damager.getDenizenPlayer();
             }
-            else return;
+            else {
+                return;
+            }
 
-            if (!npc.getCitizen().hasTrait(TriggerTrait.class)) return;
-            if (!npc.getTriggerTrait().isEnabled(name)) return;
+            if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
+                return;
+            }
+            if (!npc.getTriggerTrait().isEnabled(name)) {
+                return;
+            }
 
             // Get the TriggerContext
             TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, dplayer);
 
             // Return if the trigger wasn't triggered.
-            if (!trigger.wasTriggered()) return;
+            if (!trigger.wasTriggered()) {
+                return;
+            }
 
             // ..or if the determination was cancelled.
             if (trigger.hasDetermination()
@@ -119,7 +130,8 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             if (script != null) {
                 Map<String, String> idMap = script.getIdMapFor(this.getClass(), dplayer);
                 if (!idMap.isEmpty())
-                    // Iterate through the different id entries in the step's click trigger
+                // Iterate through the different id entries in the step's click trigger
+                {
                     for (Map.Entry<String, String> entry : idMap.entrySet()) {
                         // Tag the entry value to account for replaceables
                         // TODO: script arg?
@@ -129,13 +141,16 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                         // matches the item that the player is holding.
                         if (dItem.valueOf(entry_value).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0
                                 && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
-                                dplayer, npc, entry.getKey()))
+                                dplayer, npc, entry.getKey())) {
                             id = entry.getKey();
+                        }
                     }
+                }
             }
 
-            if (!parse(npc, dplayer, script, id, context))
+            if (!parse(npc, dplayer, script, id, context)) {
                 npc.action("no damage trigger", dplayer);
+            }
         }
     }
 

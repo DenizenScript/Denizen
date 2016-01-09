@@ -137,8 +137,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             drops_list.filter(dItem.class);
             for (String drop : drops_list) {
                 dItem item = dItem.valueOf(drop);
-                if (item != null)
+                if (item != null) {
                     drops.add(item.identify()); // TODO: Why not just store the dItem in an arraylist?
+                }
             }
         }
 

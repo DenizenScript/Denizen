@@ -16,9 +16,13 @@ public class EntitySkeleton implements Property {
     }
 
     public static EntitySkeleton getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntitySkeleton((dEntity) entity);
+        else {
+            return new EntitySkeleton((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -52,7 +56,9 @@ public class EntitySkeleton implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.skeleton_type>
@@ -63,9 +69,10 @@ public class EntitySkeleton implements Property {
         // If the entity is a skeleton, returns what type of skeleton it is.
         // Can return NORMAL or WITHER.
         // -->
-        if (attribute.startsWith("skeleton_type"))
+        if (attribute.startsWith("skeleton_type")) {
             return new Element(((Skeleton) skeleton.getBukkitEntity())
                     .getSkeletonType().name()).getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

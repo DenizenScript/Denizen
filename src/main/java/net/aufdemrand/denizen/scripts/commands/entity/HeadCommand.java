@@ -29,23 +29,29 @@ public class HeadCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("material")
                     && arg.matchesArgumentType(dMaterial.class)
-                    && !arg.matchesPrefix("skin", "s"))
+                    && !arg.matchesPrefix("skin", "s")) {
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
+            }
 
             else if (!scriptEntry.hasObject("skin")
-                    && (arg.matchesPrefix("skin", "s")))
+                    && (arg.matchesPrefix("skin", "s"))) {
                 scriptEntry.addObject("skin", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matches("player")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
+            }
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class))
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or the Player as the default entity
@@ -53,8 +59,9 @@ public class HeadCommand extends AbstractCommand {
                 (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
                 (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
 
-        if (!scriptEntry.hasObject("skin") && !scriptEntry.hasObject("material"))
+        if (!scriptEntry.hasObject("skin") && !scriptEntry.hasObject("material")) {
             throw new InvalidArgumentsException("Must specify a skin or material!");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -80,15 +87,17 @@ public class HeadCommand extends AbstractCommand {
             item.setItemMeta(itemMeta);
 
         }
-        else if (material != null)
+        else if (material != null) {
             item = new ItemStack(material.getMaterial());
+        }
 
         // Loop through entities, apply the item/skin
 
         for (dEntity entity : entities) {
             if (entity.isCitizensNPC()) {
-                if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class))
+                if (!entity.getDenizenNPC().getCitizen().hasTrait(Equipment.class)) {
                     entity.getDenizenNPC().getCitizen().addTrait(Equipment.class);
+                }
                 Equipment trait = entity.getDenizenNPC().getCitizen().getTrait(Equipment.class);
                 trait.set(1, item);
 
@@ -98,11 +107,13 @@ public class HeadCommand extends AbstractCommand {
 
             }
             else {
-                if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null)
+                if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null) {
                     entity.getLivingEntity().getEquipment().setHelmet(item);
+                }
 
-                else
+                else {
                     dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
+                }
 
             }
         }

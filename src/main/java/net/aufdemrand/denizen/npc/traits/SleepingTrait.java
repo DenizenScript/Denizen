@@ -20,11 +20,15 @@ public class SleepingTrait extends Trait {
 
     @Override
     public void run() {
-        if (npc == null || bedLocation == null) return;
+        if (npc == null || bedLocation == null) {
+            return;
+        }
 
         //if (npc.getEntity().getPassenger() == null && sitting) eh.mount(eh);
 
-        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) wakeUp();
+        if (!Utilities.checkLocation((LivingEntity) npc.getEntity(), bedLocation, 1)) {
+            wakeUp();
+        }
     }
 
     /**
@@ -104,7 +108,9 @@ public class SleepingTrait extends Trait {
      */
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (bedLocation == null) return;
+        if (bedLocation == null) {
+            return;
+        }
         if (event.getBlock().getLocation().equals(bedLocation)) {
             event.setCancelled(true);
         }

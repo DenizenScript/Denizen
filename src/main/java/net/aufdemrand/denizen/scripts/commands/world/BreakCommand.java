@@ -29,31 +29,37 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentType(dEntity.class))
+                    && arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("entity", arg.asType(dEntity.class));
+            }
 
             else if (!scriptEntry.hasObject("radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Double))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("radius", arg.asElement());
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Make sure location and entity were fulfilled
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entity",
                 (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null));
 
-        if (!scriptEntry.hasObject("entity"))
+        if (!scriptEntry.hasObject("entity")) {
             throw new InvalidArgumentsException("Must specify an entity!");
+        }
 
         scriptEntry.defaultObject("radius", new Element(2));
 

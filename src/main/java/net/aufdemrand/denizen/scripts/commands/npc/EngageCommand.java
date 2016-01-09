@@ -20,8 +20,9 @@ public class EngageCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Check for NPC
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
         // Parse arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -31,8 +32,9 @@ public class EngageCommand extends AbstractCommand {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
@@ -48,10 +50,12 @@ public class EngageCommand extends AbstractCommand {
         // Report to dB
         dB.report(scriptEntry, getName(), duration.debug());
 
-        if (duration.getSecondsAsInt() > 0)
+        if (duration.getSecondsAsInt() > 0) {
             setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), duration.getSecondsAsInt());
-        else
+        }
+        else {
             setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), true);
+        }
 
     }
 
@@ -68,9 +72,11 @@ public class EngageCommand extends AbstractCommand {
      * @return if the dNPC is currently engaged
      */
     public static boolean getEngaged(NPC npc) {
-        if (currentlyEngaged.containsKey(npc))
-            if (currentlyEngaged.get(npc) > System.currentTimeMillis())
+        if (currentlyEngaged.containsKey(npc)) {
+            if (currentlyEngaged.get(npc) > System.currentTimeMillis()) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -83,9 +89,13 @@ public class EngageCommand extends AbstractCommand {
      * @param engaged true sets the dNPC engaged, false sets the dNPC as disengaged
      */
     public static void setEngaged(NPC npc, boolean engaged) {
-        if (engaged) currentlyEngaged.put(npc, System.currentTimeMillis()
-                + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
-        if (!engaged) currentlyEngaged.remove(npc);
+        if (engaged) {
+            currentlyEngaged.put(npc, System.currentTimeMillis()
+                    + (long) (Duration.valueOf(Settings.engageTimeoutInSeconds()).getSeconds()) * 1000);
+        }
+        if (!engaged) {
+            currentlyEngaged.remove(npc);
+        }
     }
 
     /**

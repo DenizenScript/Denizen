@@ -84,27 +84,33 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 
         for (aH.Argument arg : args) {
 
-            if (type == null && arg.matchesEnum(TravelType.values()))
+            if (type == null && arg.matchesEnum(TravelType.values())) {
                 type = TravelType.valueOf(arg.getValue().toUpperCase());
+            }
 
-                // Distance/radius should be first, that way they aren't accidently
-                // intrepreted as NPCs.
+            // Distance/radius should be first, that way they aren't accidently
+            // intrepreted as NPCs.
             else if (arg.matchesPrefix("d, distance")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 distance_required = aH.getIntegerFrom(arg.getValue());
+            }
 
             else if (arg.matchesPrefix("r, radius")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 radius = aH.getIntegerFrom(arg.getValue());
+            }
 
-            else if (arg.matchesArgumentType(dCuboid.class))
+            else if (arg.matchesArgumentType(dCuboid.class)) {
                 end_cuboid = arg.asType(dCuboid.class);
+            }
 
-            else if (arg.matchesArgumentType(dLocation.class))
+            else if (arg.matchesArgumentType(dLocation.class)) {
                 end_point = arg.asType(dLocation.class);
+            }
 
-            else if (arg.matchesArgumentType(dNPC.class))
+            else if (arg.matchesArgumentType(dNPC.class)) {
                 target = arg.asType(dNPC.class);
+            }
 
         }
 
@@ -166,8 +172,12 @@ public class TravelListenerInstance extends AbstractListener implements Listener
         store("Distance", distance_required);
         store("Radius", radius);
         store("Blocks Walked", blocks_walked);
-        if (end_point != null) store("End Location", end_point.identify());
-        if (end_cuboid != null) store("End Cuboid", end_cuboid.identify());
+        if (end_point != null) {
+            store("End Location", end_point.identify());
+        }
+        if (end_cuboid != null) {
+            store("End Cuboid", end_cuboid.identify());
+        }
     }
 
     @Override
@@ -193,9 +203,13 @@ public class TravelListenerInstance extends AbstractListener implements Listener
     @EventHandler
     public void walking(PlayerMoveEvent event) {
         // Only continue if the player moving owns this Listener
-        if (!event.getPlayer().equals(player.getPlayerEntity())) return;
+        if (!event.getPlayer().equals(player.getPlayerEntity())) {
+            return;
+        }
         // Don't look if the player hasn't moved a block yet...
-        if (event.getTo().getBlock().equals(event.getFrom().getBlock())) return;
+        if (event.getTo().getBlock().equals(event.getFrom().getBlock())) {
+            return;
+        }
 
         ////////////
         // DISTANCE type Location Listener
@@ -209,7 +223,9 @@ public class TravelListenerInstance extends AbstractListener implements Listener
         // TOLOCATION type Location Listener
         ///////
         else if (type == TravelType.TOLOCATION) {
-            if (!player.getPlayerEntity().getLocation().getWorld().equals(end_point.getWorld())) return;
+            if (!player.getPlayerEntity().getLocation().getWorld().equals(end_point.getWorld())) {
+                return;
+            }
             //if (player.getLocation().distance(endPoint) <= radius) {
             if (Utilities.checkLocation(player.getPlayerEntity(), end_point, radius)) {
                 finish();
@@ -230,7 +246,8 @@ public class TravelListenerInstance extends AbstractListener implements Listener
 
     private void check() {
 
-        if (blocks_walked >= distance_required)
+        if (blocks_walked >= distance_required) {
             finish();
+        }
     }
 }

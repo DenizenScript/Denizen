@@ -52,7 +52,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
         // Check if NPC has triggers.. no use going any further if this NPC doesn't have
         // ANY triggers enabled!
-        if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
+        if (!event.getNPC().hasTrait(TriggerTrait.class)) {
+            return;
+        }
 
         // The rest of the methods beyond this point require a dNPC object, which can easily be
         // obtained if a valid NPC object is available:
@@ -60,7 +62,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
 
         // Now, check if the 'click trigger' specifically is enabled. 'name' is inherited from the
         // super AbstractTrigger and contains the name of the trigger that was use in registration.
-        if (!npc.getTriggerTrait().isEnabled(name)) return;
+        if (!npc.getTriggerTrait().isEnabled(name)) {
+            return;
+        }
 
         // We'll get the player too, since it makes reading the next few methods a bit easier:
         dPlayer player = dPlayer.mirrorBukkitPlayer(event.getClicker());
@@ -71,7 +75,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // If available (not engaged, and cool), .trigger sets cool down and returns true.
         TriggerTrait.TriggerContext trigger = npc.getTriggerTrait().trigger(this, player);
 
-        if (!trigger.wasTriggered()) return;
+        if (!trigger.wasTriggered()) {
+            return;
+        }
 
         if (trigger.hasDetermination()
                 && trigger.getDetermination().equalsIgnoreCase("cancelled")) {
@@ -105,7 +111,8 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         if (script != null) {
             Map<String, String> idMap = script.getIdMapFor(this.getClass(), player);
             if (!idMap.isEmpty())
-                // Iterate through the different id entries in the step's click trigger
+            // Iterate through the different id entries in the step's click trigger
+            {
                 for (Map.Entry<String, String> entry : idMap.entrySet()) {
                     // Tag the entry value to account for replaceables
                     // TODO: script arg?
@@ -119,9 +126,11 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                     }
                     if (item != null && item.comparesTo(player.getPlayerEntity().getItemInHand()) >= 0
                             && script.checkSpecificTriggerScriptRequirementsFor(this.getClass(),
-                            player, npc, entry.getKey()))
+                            player, npc, entry.getKey())) {
                         id = entry.getKey();
+                    }
                 }
+            }
         }
 
         // If id is still null after this, it's assumed that the trigger's 'base script' will be used.
@@ -133,8 +142,9 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
         // Parses the trigger. Requires if parse returns false there probably is no trigger
         // script specified in the interact script that was selected, in which case
         // we'll call the action 'on no click trigger'.
-        if (!parse(npc, player, script, id))
+        if (!parse(npc, player, script, id)) {
             npc.action("no click trigger", player);
+        }
     }
 
     @Override

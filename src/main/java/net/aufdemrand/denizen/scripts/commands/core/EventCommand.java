@@ -31,12 +31,14 @@ public class EventCommand extends AbstractCommand {
                 scriptEntry.addObject("events", arg.asType(dList.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("events"))
+        if (!scriptEntry.hasObject("events")) {
             throw new InvalidArgumentsException("Must specify a list of event names!");
+        }
 
         scriptEntry.defaultObject("context", new dList());
 

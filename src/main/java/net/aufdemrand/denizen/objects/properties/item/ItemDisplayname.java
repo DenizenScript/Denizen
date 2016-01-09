@@ -17,8 +17,12 @@ public class ItemDisplayname implements Property {
     }
 
     public static ItemDisplayname getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemDisplayname((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemDisplayname((dItem) _item);
+        }
     }
 
     private ItemDisplayname(dItem _item) {
@@ -35,7 +39,9 @@ public class ItemDisplayname implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.display>

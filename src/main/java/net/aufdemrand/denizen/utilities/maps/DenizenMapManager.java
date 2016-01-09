@@ -41,8 +41,9 @@ public class DenizenMapManager {
         downloadedByUrl.clear();
         mapsConfig = YamlConfiguration.loadConfiguration(mapsFile);
         ConfigurationSection mapsSection = mapsConfig.getConfigurationSection("MAPS");
-        if (mapsSection == null)
+        if (mapsSection == null) {
             return;
+        }
         for (String key : mapsSection.getKeys(false)) {
             short mapId = Short.valueOf(key);
             MapView mapView = Bukkit.getServer().getMap(mapId);
@@ -58,8 +59,9 @@ public class DenizenMapManager {
             }
             else {
                 oldRenderers = mapView.getRenderers();
-                for (MapRenderer oldRenderer : oldRenderers)
+                for (MapRenderer oldRenderer : oldRenderers) {
                     mapView.removeRenderer(oldRenderer);
+                }
             }
             DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
                     mapsSection.getBoolean(key + ".auto update", false));
@@ -81,17 +83,20 @@ public class DenizenMapManager {
                     String file = objectsData.getString(objectKey + ".image");
                     int width = objectsData.getInt(objectKey + ".width", 0);
                     int height = objectsData.getInt(objectKey + ".height", 0);
-                    if (file.toLowerCase().endsWith(".gif"))
+                    if (file.toLowerCase().endsWith(".gif")) {
                         object = new MapAnimatedImage(xTag, yTag, visibilityTag, debug, file, width, height);
-                    else
+                    }
+                    else {
                         object = new MapImage(xTag, yTag, visibilityTag, debug, file, width, height);
+                    }
                 }
                 else if (type.equals("TEXT")) {
                     object = new MapText(xTag, yTag, visibilityTag, debug,
                             objectsData.getString(objectKey + ".text"));
                 }
-                if (object != null)
+                if (object != null) {
                     renderer.addObject(object);
+                }
             }
             mapView.addRenderer(renderer);
             mapRenderers.put(mapId, renderer);
@@ -101,15 +106,17 @@ public class DenizenMapManager {
             if (!mapRenderers.containsKey(id)) {
                 MapView mapView = Bukkit.getServer().getMap(id);
                 if (mapView != null) {
-                    for (MapRenderer renderer : entry.getValue())
+                    for (MapRenderer renderer : entry.getValue()) {
                         mapView.addRenderer(renderer);
+                    }
                 }
                 // If it's null, the server no longer has the map - don't do anything about it
             }
         }
         ConfigurationSection downloadedImages = mapsConfig.getConfigurationSection("DOWNLOADED");
-        if (downloadedImages == null)
+        if (downloadedImages == null) {
             return;
+        }
         for (String image : downloadedImages.getKeys(false)) {
             downloadedByUrl.put(downloadedImages.getString(image).toLowerCase(), image.replace("DOT", "."));
         }
@@ -117,11 +124,13 @@ public class DenizenMapManager {
 
     public static void saveMaps() {
         for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
-            if (entry.getValue().isActive())
+            if (entry.getValue().isActive()) {
                 mapsConfig.set("MAPS." + entry.getKey(), entry.getValue().getSaveData());
+            }
         }
-        for (Map.Entry<String, String> entry : downloadedByUrl.entrySet())
+        for (Map.Entry<String, String> entry : downloadedByUrl.entrySet()) {
             mapsConfig.set("DOWNLOADED." + entry.getValue().replace(".", "DOT"), entry.getKey());
+        }
         try {
             mapsConfig.save(mapsFile);
         }
@@ -167,9 +176,10 @@ public class DenizenMapManager {
 
     public static String getActualFile(String file) {
         String fileLower = file.toLowerCase();
-        if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://"))
+        if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
             return new File(imagesFolder, file).getPath();
-        else
+        }
+        else {
             try {
                 return downloadImage(new URL(file));
             }
@@ -177,17 +187,20 @@ public class DenizenMapManager {
                 dB.echoError("URL is malformed: " + file);
                 return null;
             }
+        }
     }
 
     private static String downloadImage(URL url) {
         try {
-            if (!imageDownloads.exists())
+            if (!imageDownloads.exists()) {
                 imageDownloads.mkdirs();
+            }
             String urlString = url.toString().toLowerCase();
             if (downloadedByUrl.containsKey(urlString)) {
                 File image = new File(imageDownloads, downloadedByUrl.get(urlString));
-                if (image.exists())
+                if (image.exists()) {
                     return image.getPath();
+                }
             }
             URLConnection connection = url.openConnection();
             BufferedInputStream in = new BufferedInputStream(connection.getInputStream());

@@ -55,7 +55,9 @@ public class ScoreboardHelper {
                 .getScoreboards().getConfigurationSection("Scoreboards");
 
         // Go no further if we have no scoreboards saved
-        if (rootSection == null) return;
+        if (rootSection == null) {
+            return;
+        }
 
         Scoreboard board = null;
 
@@ -74,8 +76,9 @@ public class ScoreboardHelper {
                     dPlayer player = dPlayer.valueOf(viewer);
                     viewerMap.put(player.getName(), id);
 
-                    if (player.isOnline())
+                    if (player.isOnline()) {
                         player.getPlayerEntity().setScoreboard(board);
+                    }
                 }
             }
 
@@ -83,7 +86,9 @@ public class ScoreboardHelper {
                     .getConfigurationSection(id + ".Objectives");
 
             // Go no further if we have no objectives saved
-            if (objSection == null) return;
+            if (objSection == null) {
+                return;
+            }
 
             // Iterate through objectives
             for (String obj : objSection.getKeys(false)) {
@@ -92,11 +97,13 @@ public class ScoreboardHelper {
                 String criteria = objSection.getString(obj + ".Criteria");
 
                 // Use default criteria if necessary
-                if (criteria == null)
+                if (criteria == null) {
                     criteria = "dummy";
+                }
                 // Use default display slot if necessary
-                if (displaySlot == null)
+                if (displaySlot == null) {
                     displaySlot = "NONE";
+                }
 
                 // Register the objective and set it up
                 Objective o = board.registerNewObjective(obj, criteria);
@@ -161,10 +168,12 @@ public class ScoreboardHelper {
                     String displaySlot;
                     // If the display slot is null, save it as "NONE";
                     // otherwise, save it with its regular name
-                    if (obj.getDisplaySlot() != null)
+                    if (obj.getDisplaySlot() != null) {
                         displaySlot = obj.getDisplaySlot().name();
-                    else
+                    }
+                    else {
                         displaySlot = "NONE";
+                    }
 
                     DenizenAPI.getCurrentInstance().getScoreboards()
                             .set(objPath + ".Display slot", displaySlot);
@@ -225,7 +234,9 @@ public class ScoreboardHelper {
             sc.setScore(1);
             sc.setScore(0);
         }
-        else sc.setScore(score);
+        else {
+            sc.setScore(score);
+        }
     }
 
     /**
@@ -267,8 +278,9 @@ public class ScoreboardHelper {
     }
 
     private static Map.Entry<Team, String> createTeam(Scoreboard scoreboard, String text) {
-        if (text.length() <= 16)
+        if (text.length() <= 16) {
             return new HashMap.SimpleEntry<Team, String>(null, text);
+        }
         if (text.length() <= 32) {
             Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
             team.setPrefix(text.substring(0, text.length() - 16));
@@ -279,8 +291,9 @@ public class ScoreboardHelper {
         Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
         team.setPrefix(iterator.next());
         String result = iterator.next();
-        if (text.length() > 32)
+        if (text.length() > 32) {
             team.setSuffix(iterator.next());
+        }
         return new HashMap.SimpleEntry<Team, String>(team, result);
     }
 
@@ -331,8 +344,9 @@ public class ScoreboardHelper {
      * @param id the id of the Scoreboard
      */
     public static void deleteScoreboard(String id) {
-        if (id.equalsIgnoreCase("main"))
+        if (id.equalsIgnoreCase("main")) {
             clearScoreboard(getMain());
+        }
         else {
             clearScoreboard(getScoreboard(id));
             scoreboardMap.remove(id.toUpperCase());

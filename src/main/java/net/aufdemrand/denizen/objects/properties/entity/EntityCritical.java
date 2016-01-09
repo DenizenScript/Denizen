@@ -16,9 +16,13 @@ public class EntityCritical implements Property {
     }
 
     public static EntityCritical getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityCritical((dEntity) entity);
+        else {
+            return new EntityCritical((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -37,10 +41,12 @@ public class EntityCritical implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!((Arrow) critical.getBukkitEntity()).isCritical())
+        if (!((Arrow) critical.getBukkitEntity()).isCritical()) {
             return null;
-        else
+        }
+        else {
             return "true";
+        }
     }
 
     @Override
@@ -55,7 +61,9 @@ public class EntityCritical implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.critical>
@@ -65,9 +73,10 @@ public class EntityCritical implements Property {
         // @description
         // If the entity is an arrow, returns whether the arrow is critical.
         // -->
-        if (attribute.startsWith("critical"))
+        if (attribute.startsWith("critical")) {
             return new Element(((Arrow) critical.getBukkitEntity()).isCritical())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

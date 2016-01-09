@@ -70,8 +70,9 @@ public class WhileCommand extends BracedCommand {
             }
         }
 
-        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback"))
+        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback")) {
             throw new InvalidArgumentsException("Must specify a comparison value or 'stop' or 'next'!");
+        }
 
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
 
@@ -149,8 +150,9 @@ public class WhileCommand extends BracedCommand {
                 if (System.currentTimeMillis() - data.LastChecked < 50) {
                     data.instaTicks++;
                     int max = Settings.whileMaxLoops();
-                    if (data.instaTicks > max && max != 0)
+                    if (data.instaTicks > max && max != 0) {
                         return;
+                    }
                 }
                 else {
                     data.instaTicks = 0;

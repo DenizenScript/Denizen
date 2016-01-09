@@ -154,15 +154,19 @@ public abstract class AbstractListener {
                 + ".Listener Type", type);
         denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id
                 + ".Finish Script", scriptName.toString());
-        if (npc != null) denizen.getSaves().set("Listeners." + player.getSaveName() + "."
-                + id + ".Linked NPCID", npc.getId());
+        if (npc != null) {
+            denizen.getSaves().set("Listeners." + player.getSaveName() + "."
+                    + id + ".Linked NPCID", npc.getId());
+        }
 
         onSave();
 
         try {
-            if (!savable.isEmpty())
-                for (Entry<String, Object> entry : savable.entrySet())
+            if (!savable.isEmpty()) {
+                for (Entry<String, Object> entry : savable.entrySet()) {
                     denizen.getSaves().set("Listeners." + player.getSaveName() + "." + id + "." + entry.getKey(), entry.getValue());
+                }
+            }
         }
         catch (Exception e) {
             dB.echoError("Problem saving listener '" + id + "' for " + player.getSaveName() + "!");

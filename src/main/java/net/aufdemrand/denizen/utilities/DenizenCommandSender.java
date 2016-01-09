@@ -33,8 +33,9 @@ public class DenizenCommandSender extends ColouredConsoleSender {
     @Override
     public void sendMessage(String s) {
         output.add(s);
-        if (!silent)
+        if (!silent) {
             Bukkit.getServer().getConsoleSender().sendMessage(s);
+        }
     }
 
     @Override

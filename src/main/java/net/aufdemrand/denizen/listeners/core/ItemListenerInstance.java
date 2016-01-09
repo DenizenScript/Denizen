@@ -37,26 +37,32 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
         for (aH.Argument arg : args) {
 
-            if (arg.matchesEnum(ItemType.values()) && type == null)
+            if (arg.matchesEnum(ItemType.values()) && type == null) {
                 this.type = ItemType.valueOf(arg.getValue().toUpperCase());
+            }
 
             else if (arg.matchesPrefix("qty, q")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
+            }
 
-            else if (arg.matchesPrefix("items, item, i, name, names"))
+            else if (arg.matchesPrefix("items, item, i, name, names")) {
                 items = arg.asType(dList.class);
+            }
 
-            else if (arg.matchesPrefix("region, r"))
+            else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
+            }
 
             else if (arg.matchesPrefix("cuboid, c")
-                    && arg.matchesArgumentType(dCuboid.class))
+                    && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);
+            }
         }
 
-        if (items == null)
+        if (items == null) {
             items = new dList("*");
+        }
 
         if (type == null) {
             dB.echoError("Missing TYPE argument! Valid: CRAFT, SMELT, FISH");
@@ -84,8 +90,11 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             }
 
             // Same with the CUBOID argument...
-            if (cuboid != null)
-                if (!cuboid.isInsideCuboid(player.getLocation())) return;
+            if (cuboid != null) {
+                if (!cuboid.isInsideCuboid(player.getLocation())) {
+                    return;
+                }
+            }
 
             // Put the type of this inventory in a string and check if it matches the
             // listener's type
@@ -98,8 +107,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
 
                 //if item isn't a required item, then return
                 if (!items.contains(item.getType().name().toLowerCase())
-                        && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*"))
+                        && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*")) {
                     return;
+                }
 
                 if (event.isShiftClick()) {
                     // Save the quantity of items of this type that the player had
@@ -139,7 +149,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     @EventHandler
     public void listenFish(PlayerFishEvent event) {
         // Only continue if the event is an event for the player that owns this listener.
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
 
         // If REGION argument specified, check. If not in region, don't count kill!
         if (region != null) {
@@ -147,11 +159,15 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
         }
 
         // Same with the CUBOID argument...
-        if (cuboid != null)
-            if (!cuboid.isInsideCuboid(player.getLocation())) return;
+        if (cuboid != null) {
+            if (!cuboid.isInsideCuboid(player.getLocation())) {
+                return;
+            }
+        }
 
-        if (event.getState().toString().equals("CAUGHT_FISH"))
+        if (event.getState().toString().equals("CAUGHT_FISH")) {
             increment("FISH", 1);
+        }
     }
 
     @Override
@@ -162,7 +178,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             store("Quantity Needed", this.required);
             store("Quantity Done", this.items_so_far);
             store("Region", region);
-            if (cuboid != null) store("Cuboid", cuboid.identify());
+            if (cuboid != null) {
+                store("Cuboid", cuboid.identify());
+            }
         }
         catch (Exception e) {
             dB.echoError("Unable to save ITEM listener for '" + player.getName() + "'!");

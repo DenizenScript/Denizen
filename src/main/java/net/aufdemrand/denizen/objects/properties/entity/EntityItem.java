@@ -20,9 +20,13 @@ public class EntityItem implements Property {
     }
 
     public static EntityItem getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityItem((dEntity) entity);
+        else {
+            return new EntityItem((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -36,11 +40,13 @@ public class EntityItem implements Property {
     dEntity item;
 
     public dItem getItem() {
-        if (item.getBukkitEntity() instanceof Item)
+        if (item.getBukkitEntity() instanceof Item) {
             return new dItem(((Item) item.getBukkitEntity()).getItemStack());
-        else
+        }
+        else {
             return new dItem(((Enderman) item.getBukkitEntity())
                     .getCarriedMaterial().toItemStack());
+        }
     }
 
     /////////
@@ -50,10 +56,12 @@ public class EntityItem implements Property {
     @Override
     public String getPropertyString() {
         dItem item = getItem();
-        if (item.getItemStack().getType() != Material.AIR)
+        if (item.getItemStack().getType() != Material.AIR) {
             return item.identify();
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override
@@ -68,7 +76,9 @@ public class EntityItem implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.item>
@@ -78,8 +88,9 @@ public class EntityItem implements Property {
         // @description
         // If the entity is a dropped item or an Enderman, returns the dItem the entity holds.
         // -->
-        if (attribute.startsWith("item"))
+        if (attribute.startsWith("item")) {
             return getItem().getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -98,12 +109,14 @@ public class EntityItem implements Property {
         // -->
 
         if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-            if (item.getBukkitEntity() instanceof Item)
+            if (item.getBukkitEntity() instanceof Item) {
                 ((Item) item.getBukkitEntity()).setItemStack(mechanism.getValue()
                         .asType(dItem.class).getItemStack());
-            else
+            }
+            else {
                 ((Enderman) item.getBukkitEntity()).setCarriedMaterial(
                         mechanism.getValue().asType(dItem.class).getItemStack().getData());
+            }
         }
     }
 }

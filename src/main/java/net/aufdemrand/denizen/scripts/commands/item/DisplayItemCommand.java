@@ -23,29 +23,37 @@ public class DisplayItemCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesArgumentType(Duration.class)
-                    && !scriptEntry.hasObject("duration"))
+                    && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
             else if (arg.matchesArgumentType(dLocation.class)
-                    && !scriptEntry.hasObject("location"))
+                    && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (arg.matchesArgumentType(dItem.class)
-                    && !scriptEntry.hasObject("item"))
+                    && !scriptEntry.hasObject("item")) {
                 scriptEntry.addObject("item", arg.asType(dItem.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check required args
-        if (!scriptEntry.hasObject("item"))
+        if (!scriptEntry.hasObject("item")) {
             throw new InvalidArgumentsException("Must specify an item to display.");
+        }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
-        if (!scriptEntry.hasObject("duration"))
+        if (!scriptEntry.hasObject("duration")) {
             scriptEntry.addObject("duration", Duration.valueOf("1m"));
+        }
     }
 
     @Override

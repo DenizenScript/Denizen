@@ -25,7 +25,7 @@ public class TriggerRegistry implements dRegistry {
 
     @Override
     public void disableCoreMembers() {
-        for (RegistrationableInstance member : instances.values())
+        for (RegistrationableInstance member : instances.values()) {
             try {
                 member.onDisable();
             }
@@ -33,18 +33,27 @@ public class TriggerRegistry implements dRegistry {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
+        }
     }
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
-        if (classes.containsKey(clazz)) return clazz.cast(instances.get(classes.get(clazz)));
-        else return null;
+        if (classes.containsKey(clazz)) {
+            return clazz.cast(instances.get(classes.get(clazz)));
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
     public AbstractTrigger get(String triggerName) {
-        if (instances.containsKey(triggerName.toUpperCase())) return instances.get(triggerName.toUpperCase());
-        else return null;
+        if (instances.containsKey(triggerName.toUpperCase())) {
+            return instances.get(triggerName.toUpperCase());
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -87,18 +96,28 @@ public class TriggerRegistry implements dRegistry {
         switch (cooldownType) {
             case NPC:
                 // Check npcCooldown
-                if (!npcCooldown.containsKey(npc.getId())) return true;
-                else if (!npcCooldown.get(npc.getId()).containsKey(triggerClass.name)) return true;
-                else if (System.currentTimeMillis() > npcCooldown.get(npc.getId()).get(triggerClass.name)) return true;
+                if (!npcCooldown.containsKey(npc.getId())) {
+                    return true;
+                }
+                else if (!npcCooldown.get(npc.getId()).containsKey(triggerClass.name)) {
+                    return true;
+                }
+                else if (System.currentTimeMillis() > npcCooldown.get(npc.getId()).get(triggerClass.name)) {
+                    return true;
+                }
                 break;
 
             case PLAYER:
                 // Check playerCooldown
-                if (!playerCooldown.containsKey(player.getName() + "/" + npc.getId())) return true;
-                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name))
+                if (!playerCooldown.containsKey(player.getName() + "/" + npc.getId())) {
                     return true;
-                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name))
+                }
+                else if (!playerCooldown.get(player.getName() + "/" + npc.getId()).containsKey(triggerClass.name)) {
                     return true;
+                }
+                else if (System.currentTimeMillis() > playerCooldown.get(player.getName() + "/" + npc.getId()).get(triggerClass.name)) {
+                    return true;
+                }
                 break;
         }
 
@@ -113,8 +132,9 @@ public class TriggerRegistry implements dRegistry {
         switch (cooldownType) {
             case NPC:
                 // set npcCooldown
-                if (npcCooldown.containsKey(npc.getId()))
+                if (npcCooldown.containsKey(npc.getId())) {
                     triggerMap = npcCooldown.get(npc.getId());
+                }
                 if (noCooldown && triggerMap.containsKey(triggerClass.name)) {
                     triggerMap.remove(triggerClass.name);
                 }
@@ -126,8 +146,9 @@ public class TriggerRegistry implements dRegistry {
 
             case PLAYER:
                 // set playerCooldown
-                if (playerCooldown.containsKey(player.getName() + "/" + npc.getId()))
+                if (playerCooldown.containsKey(player.getName() + "/" + npc.getId())) {
                     triggerMap = playerCooldown.get(player.getName() + "/" + npc.getId());
+                }
                 if (noCooldown && playerCooldown.containsKey(player.getName() + "/" + npc.getId())) {
                     triggerMap.remove(player.getName() + "/" + npc.getId());
                 }

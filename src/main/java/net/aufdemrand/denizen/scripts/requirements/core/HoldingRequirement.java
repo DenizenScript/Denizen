@@ -20,23 +20,29 @@ public class HoldingRequirement extends AbstractRequirement {
         dItem itemToCheck = null;
 
         for (String thisArg : args) {
-            if (aH.matchesQuantity(thisArg))
+            if (aH.matchesQuantity(thisArg)) {
                 quantity = aH.getIntegerFrom(thisArg);
+            }
 
             else if (aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
                 exact = true;
             }
 
-            else itemToCheck = dItem.valueOf(thisArg);
+            else {
+                itemToCheck = dItem.valueOf(thisArg);
+            }
         }
 
-        if (itemToCheck != null)
+        if (itemToCheck != null) {
             itemToCheck.getItemStack().setAmount(quantity);
+        }
 
-        if (exact)
+        if (exact) {
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().equals(itemToCheck.getItemStack());
-        else
+        }
+        else {
             outcome = context.getPlayer().getPlayerEntity().getItemInHand().isSimilar(itemToCheck.getItemStack());
+        }
 
         dB.echoDebug(context.getScriptContainer(), "Outcome: " + ((outcome) ? (exact) ? "Player is holding exact item" : "Player is holding item" : ""));
 

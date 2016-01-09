@@ -17,9 +17,13 @@ public class EntityPainting implements Property {
     }
 
     public static EntityPainting getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityPainting((dEntity) entity);
+        else {
+            return new EntityPainting((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -53,7 +57,9 @@ public class EntityPainting implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.painting_width>
@@ -63,9 +69,10 @@ public class EntityPainting implements Property {
         // @description
         // If the entity is a painting, returns its width.
         // -->
-        if (attribute.startsWith("painting_width"))
+        if (attribute.startsWith("painting_width")) {
             return new Element(((Painting) painting.getBukkitEntity()).getArt().getBlockWidth())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.painting_height>
@@ -75,9 +82,10 @@ public class EntityPainting implements Property {
         // @description
         // If the entity is a painting, returns its height.
         // -->
-        if (attribute.startsWith("painting_height"))
+        if (attribute.startsWith("painting_height")) {
             return new Element(((Painting) painting.getBukkitEntity()).getArt().getBlockHeight())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <e@entity.painting>
@@ -87,9 +95,10 @@ public class EntityPainting implements Property {
         // @description
         // If the entity is a painting, returns what art it shows.
         // -->
-        if (attribute.startsWith("painting"))
+        if (attribute.startsWith("painting")) {
             return new Element(((Painting) painting.getBukkitEntity()).getArt().name())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

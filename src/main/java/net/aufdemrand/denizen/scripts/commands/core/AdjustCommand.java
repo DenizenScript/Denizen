@@ -32,15 +32,18 @@ public class AdjustCommand extends AbstractCommand {
 
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("object"))
+        if (!scriptEntry.hasObject("object")) {
             throw new InvalidArgumentsException("You must specify an object!");
+        }
 
-        if (!scriptEntry.hasObject("mechanism"))
+        if (!scriptEntry.hasObject("mechanism")) {
             throw new InvalidArgumentsException("You must specify a mechanism!");
+        }
     }
 
 
@@ -80,8 +83,9 @@ public class AdjustCommand extends AbstractCommand {
             dObject fetched;
 
             // Check to make sure this is a valid constructor by checking the 'matches' static method
-            if (!ObjectFetcher.checkMatch(object_class, object))
+            if (!ObjectFetcher.checkMatch(object_class, object)) {
                 throw new CommandExecutionException('\'' + object + "' is returning null.");
+            }
 
             // Get the object with the 'valueOf' static method
             fetched = ObjectFetcher.getObjectFrom(object_class, object);
@@ -96,8 +100,9 @@ public class AdjustCommand extends AbstractCommand {
             ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));
 
             // Add it to the entry for later access
-            if (objects.size() == 1)
+            if (objects.size() == 1) {
                 scriptEntry.addObject("result", fetched);
+            }
             result.add(fetched.identify());
 
             // :)

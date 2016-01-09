@@ -27,18 +27,21 @@ public class DenizenSpeechController implements SpeechController {
         if (isNPC) {
             NPCSpeechEvent event = new NPCSpeechEvent(context, "denizen_chat");
             Bukkit.getServer().getPluginManager().callEvent(event);
-            if (event.isCancelled())
+            if (event.isCancelled()) {
                 return;
+            }
         }
         (CitizensAPI.getSpeechFactory().getVocalChord("denizen_chat")).talk(context);
     }
 
     @Override
     public void speak(SpeechContext context) {
-        if (context instanceof DenizenSpeechContext)
+        if (context instanceof DenizenSpeechContext) {
             speak((DenizenSpeechContext) context);
-        else
+        }
+        else {
             speak(context, "chat");
+        }
     }
 
     @Override
@@ -47,8 +50,9 @@ public class DenizenSpeechController implements SpeechController {
         if (isNPC) {
             NPCSpeechEvent event = new NPCSpeechEvent(context, vocalChordName);
             Bukkit.getServer().getPluginManager().callEvent(event);
-            if (event.isCancelled())
+            if (event.isCancelled()) {
                 return;
+            }
             vocalChordName = event.getVocalChordName();
         }
         CitizensAPI.getSpeechFactory().getVocalChord(vocalChordName).talk(context);

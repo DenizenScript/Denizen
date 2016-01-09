@@ -69,7 +69,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("n@") && !arg.hasPrefix()) {
                 if (dNPC.valueOf(arg.getValue()) == null) // TODO: Optimize
+                {
                     throw new InvalidArgumentsException("Invalid NPC target.");
+                }
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dNPC.class));
 
@@ -77,14 +79,18 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.startsWith("p@") && !arg.hasPrefix()) {
                 if (dPlayer.valueOf(arg.getValue()) == null) // TODO: Optimize
+                {
                     throw new InvalidArgumentsException("Invalid Player target.");
+                }
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dPlayer.class));
             }
             else if (!scriptEntry.hasObject("flag_target")
                     && !arg.hasPrefix()) {
                 if (dEntity.valueOf(arg.getValue()) == null) // TODO: Optimize
+                {
                     throw new InvalidArgumentsException("Invalid Entity target.");
+                }
                 specified_target = true;
                 scriptEntry.addObject("flag_target", arg.asType(dEntity.class));
             }
@@ -134,26 +140,33 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 String[] flagArgs = arg.raw_value.split(":", 3);
                 scriptEntry.addObject("flag_name", new Element(flagArgs[0].toUpperCase()));
 
-                if (flagArgs[1].equals("->"))
+                if (flagArgs[1].equals("->")) {
                     scriptEntry.addObject("action", FlagManager.Action.INSERT);
+                }
 
-                else if (flagArgs[1].equals("<-"))
+                else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("action", FlagManager.Action.REMOVE);
+                }
 
-                else if (flagArgs[1].equals("||") || flagArgs[1].equals("|"))
+                else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("action", FlagManager.Action.SPLIT);
+                }
 
-                else if (flagArgs[1].equals("++") || flagArgs[1].equals("+"))
+                else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
+                }
 
-                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-"))
+                else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
                     scriptEntry.addObject("action", FlagManager.Action.DECREASE);
+                }
 
-                else if (flagArgs[1].equals("**") || flagArgs[1].equals("*"))
+                else if (flagArgs[1].equals("**") || flagArgs[1].equals("*")) {
                     scriptEntry.addObject("action", FlagManager.Action.MULTIPLY);
+                }
 
-                else if (flagArgs[1].equals("//") || flagArgs[1].equals("/"))
+                else if (flagArgs[1].equals("//") || flagArgs[1].equals("/")) {
                     scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
+                }
 
                 else {
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
@@ -164,19 +177,24 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 scriptEntry.addObject("value", new Element(flagArgs[2]));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Set defaults
-        if (!specified_target)
+        if (!specified_target) {
             scriptEntry.defaultObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+        }
 
         // Check required arguments
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify a flag action or value.");
+        }
 
-        if (!scriptEntry.hasObject("flag_target"))
+        if (!scriptEntry.hasObject("flag_target")) {
             throw new InvalidArgumentsException("Must specify a flag target!");
+        }
     }
 
 
@@ -213,28 +231,37 @@ public class FlagCommand extends AbstractCommand implements Listener {
         Flag flag;
 
         // Returns existing flag (if existing), or a new flag if not
-        if (flag_target instanceof Element)
+        if (flag_target instanceof Element) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(name.asString());
+        }
 
-        else if (flag_target instanceof dPlayer)
+        else if (flag_target instanceof dPlayer) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
+        }
 
-        else if (flag_target instanceof dNPC)
+        else if (flag_target instanceof dNPC) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
+        }
 
-        else if (flag_target instanceof dEntity)
+        else if (flag_target instanceof dEntity) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
+        }
 
-        else throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
+        else {
+            throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
+        }
 
         // Do the action!
         flag.doAction(action, value, index);
 
         // Set flag duration
-        if (flag.StillValid() && duration != null && duration.getSeconds() > 0)
+        if (flag.StillValid() && duration != null && duration.getSeconds() > 0) {
             flag.setExpiration(System.currentTimeMillis()
                     + Double.valueOf(duration.getSeconds() * 1000).longValue());
+        }
 
-        else if (flag.StillValid() && flag.expiration().getMillis() != 0L) flag.setExpiration(0L);
+        else if (flag.StillValid() && flag.expiration().getMillis() != 0L) {
+            flag.setExpiration(0L);
+        }
     }
 }

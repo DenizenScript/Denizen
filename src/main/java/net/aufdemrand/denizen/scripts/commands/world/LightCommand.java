@@ -19,21 +19,25 @@ public class LightCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("light")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("light", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("reset")
-                    && arg.matches("reset"))
+                    && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
         }
 

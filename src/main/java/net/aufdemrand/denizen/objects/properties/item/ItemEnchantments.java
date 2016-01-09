@@ -22,8 +22,12 @@ public class ItemEnchantments implements Property {
     }
 
     public static ItemEnchantments getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemEnchantments((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemEnchantments((dItem) _item);
+        }
     }
 
 
@@ -36,7 +40,9 @@ public class ItemEnchantments implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         Set<Map.Entry<Enchantment, Integer>> enchantments = GetEnchantments();
 
@@ -65,8 +71,9 @@ public class ItemEnchantments implements Property {
         if (attribute.startsWith("enchantments.with_levels")) {
             if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(enchantment.getKey().getName() + "," + enchantment.getValue());
+                }
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(2));
             }
@@ -83,8 +90,9 @@ public class ItemEnchantments implements Property {
         if (attribute.startsWith("enchantments.levels")) {
             if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(String.valueOf(enchantment.getValue()));
+                }
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(2));
             }
@@ -102,9 +110,10 @@ public class ItemEnchantments implements Property {
                 && attribute.hasContext(2)) {
             if (enchantments.size() > 0) {
                 for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
-                    if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2)))
+                    if (enchantment.getKey().getName().equalsIgnoreCase(attribute.getContext(2))) {
                         return new Element(enchantment.getValue())
                                 .getAttribute(attribute.fulfill(2));
+                    }
                 }
             }
             return new Element(0)
@@ -122,8 +131,9 @@ public class ItemEnchantments implements Property {
         if (attribute.startsWith("enchantments")) {
             if (enchantments.size() > 0) {
                 List<String> enchants = new ArrayList<String>();
-                for (Map.Entry<Enchantment, Integer> enchantment : enchantments)
+                for (Map.Entry<Enchantment, Integer> enchantment : enchantments) {
                     enchants.add(enchantment.getKey().getName());
+                }
                 return new dList(enchants)
                         .getAttribute(attribute.fulfill(1));
             }
@@ -133,10 +143,12 @@ public class ItemEnchantments implements Property {
     }
 
     public Set<Map.Entry<Enchantment, Integer>> GetEnchantments() {
-        if (item.getItemStack().getEnchantments().size() > 0)
+        if (item.getItemStack().getEnchantments().size() > 0) {
             return item.getItemStack().getEnchantments().entrySet();
-        else if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta)
+        }
+        else if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof EnchantmentStorageMeta) {
             return ((EnchantmentStorageMeta) item.getItemStack().getItemMeta()).getStoredEnchants().entrySet();
+        }
         return new HashSet<Map.Entry<Enchantment, Integer>>();
     }
 
@@ -151,8 +163,9 @@ public class ItemEnchantments implements Property {
             }
             return returnable.substring(0, returnable.length() - 1);
         }
-        else
+        else {
             return null;
+        }
     }
 
     @Override
@@ -177,12 +190,14 @@ public class ItemEnchantments implements Property {
 
         if (mechanism.matches("enchantments")) {
             for (String enchant : mechanism.getValue().asType(dList.class)) {
-                if (!enchant.contains(","))
+                if (!enchant.contains(",")) {
                     dB.echoError("Invalid enchantment format, use name,level|...");
+                }
                 else {
                     String[] data = enchant.split(",", 2);
-                    if (Integer.valueOf(data[1]) == null)
+                    if (Integer.valueOf(data[1]) == null) {
                         dB.echoError("Cannot apply enchantment '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
+                    }
                     else {
                         try {
                             Enchantment ench = Enchantment.getByName(data[0].toUpperCase());
@@ -192,11 +207,13 @@ public class ItemEnchantments implements Property {
                                     meta.addStoredEnchant(ench, Integer.valueOf(data[1]), true);
                                     item.getItemStack().setItemMeta(meta);
                                 }
-                                else
+                                else {
                                     item.getItemStack().addUnsafeEnchantment(ench, Integer.valueOf(data[1]));
+                                }
                             }
-                            else
+                            else {
                                 dB.echoError("Unknown enchantment '" + data[0] + "'");
+                            }
                         }
                         catch (NullPointerException e) {
                             dB.echoError("Unknown enchantment '" + data[0] + "'");

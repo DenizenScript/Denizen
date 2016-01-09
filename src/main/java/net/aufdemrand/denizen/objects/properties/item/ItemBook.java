@@ -22,8 +22,12 @@ public class ItemBook implements Property {
     }
 
     public static ItemBook getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemBook((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemBook((dItem) _item);
+        }
     }
 
 
@@ -36,7 +40,9 @@ public class ItemBook implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         if (attribute.startsWith("book")) {
             BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
@@ -160,10 +166,12 @@ public class ItemBook implements Property {
                 output.append(EscapeTags.Escape(page)).append("|");
             }
         }
-        if (output.length() <= 6)
+        if (output.length() <= 6) {
             return null;
-        else
+        }
+        else {
             return output.substring(0, output.length() - 1);
+        }
     }
 
     @Override
@@ -206,8 +214,9 @@ public class ItemBook implements Property {
                     else {
                         meta.setAuthor(EscapeTags.unEscape(data.get(1)));
                         meta.setTitle(EscapeTags.unEscape(data.get(3)));
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < 4; i++) {
                             data.remove(0); // No .removeRange?
+                        }
                     }
                 }
                 if (!data.get(0).equalsIgnoreCase("pages")) {

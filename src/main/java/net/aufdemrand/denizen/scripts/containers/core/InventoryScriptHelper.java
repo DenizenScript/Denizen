@@ -29,10 +29,12 @@ public class InventoryScriptHelper implements Listener {
     }
 
     public static void _savePlayerInventories() {
-        for (Map.Entry<UUID, PlayerInventory> offlineInv : offlineInventories.entrySet())
+        for (Map.Entry<UUID, PlayerInventory> offlineInv : offlineInventories.entrySet()) {
             new ImprovedOfflinePlayer(offlineInv.getKey()).setInventory(offlineInv.getValue());
-        for (Map.Entry<UUID, Inventory> offlineEnderChest : offlineEnderChests.entrySet())
+        }
+        for (Map.Entry<UUID, Inventory> offlineEnderChest : offlineEnderChests.entrySet()) {
             new ImprovedOfflinePlayer(offlineEnderChest.getKey()).setEnderChest(offlineEnderChest.getValue());
+        }
     }
 
     @EventHandler
@@ -51,7 +53,8 @@ public class InventoryScriptHelper implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
-        if (tempInventoryScripts.containsKey(inventory) && inventory.getViewers().isEmpty())
+        if (tempInventoryScripts.containsKey(inventory) && inventory.getViewers().isEmpty()) {
             tempInventoryScripts.remove(inventory);
+        }
     }
 }

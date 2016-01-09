@@ -22,7 +22,9 @@ public class ConstantTags implements Listener {
 
     @TagManager.TagEvents
     public void constantTags(ReplaceableTagEvent event) {
-        if (!event.matches("cons")) return;
+        if (!event.matches("cons")) {
+            return;
+        }
 
         if (!event.hasValue()) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid constant! " +
@@ -33,10 +35,12 @@ public class ConstantTags implements Listener {
         dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "constant: tags are deprecated! Use <npc.constant[]>!");
 
         NPC npc = null;
-        if (event.getType() != null && event.getType().matches("\\d+"))
+        if (event.getType() != null && event.getType().matches("\\d+")) {
             npc = CitizensAPI.getNPCRegistry().getById(Integer.valueOf(event.getType()));
-        else if (((BukkitTagContext) event.getContext()).npc != null)
+        }
+        else if (((BukkitTagContext) event.getContext()).npc != null) {
             npc = ((BukkitTagContext) event.getContext()).npc.getCitizen();
+        }
 
         if (npc == null) {
             dB.echoError("Constant tag '" + event.raw_tag + " does not contain a valid NPC! " +

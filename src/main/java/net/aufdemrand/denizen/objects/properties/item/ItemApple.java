@@ -16,8 +16,12 @@ public class ItemApple implements Property {
     }
 
     public static ItemApple getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemApple((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemApple((dItem) _item);
+        }
     }
 
 
@@ -30,7 +34,9 @@ public class ItemApple implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.apple_enchanted>
@@ -51,10 +57,12 @@ public class ItemApple implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() == 1)
+        if (item.getItemStack().getDurability() == 1) {
             return "true";
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override

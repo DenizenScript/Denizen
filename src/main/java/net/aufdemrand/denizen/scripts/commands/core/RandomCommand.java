@@ -27,22 +27,28 @@ public class RandomCommand extends BracedCommand {
             }
 
             else if (!scriptEntry.hasObject("possibilities")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("possibilities", arg.asElement());
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
 
         }
 
         if (!scriptEntry.hasObject("braces")) {
-            if (!scriptEntry.hasObject("possibilities"))
+            if (!scriptEntry.hasObject("possibilities")) {
                 throw new InvalidArgumentsException("Missing possibilities!");
+            }
 
-            if (scriptEntry.getElement("possibilities").asInt() <= 1)
+            if (scriptEntry.getElement("possibilities").asInt() <= 1) {
                 throw new InvalidArgumentsException("Must randomly select more than one item.");
+            }
 
-            if (scriptEntry.getResidingQueue().getQueueSize() < scriptEntry.getElement("possibilities").asInt())
+            if (scriptEntry.getResidingQueue().getQueueSize() < scriptEntry.getElement("possibilities").asInt()) {
                 throw new InvalidArgumentsException("Invalid Size! Random # must not be larger than the script!");
+            }
         }
 
     }
@@ -69,10 +75,12 @@ public class RandomCommand extends BracedCommand {
 
         int selected = CoreUtilities.getRandom().nextInt(possibilities);
         // Try to not duplicate
-        if (selected == previous || selected == previous2 || selected == previous3)
+        if (selected == previous || selected == previous2 || selected == previous3) {
             selected = CoreUtilities.getRandom().nextInt(possibilities);
-        if (selected == previous || selected == previous2 || selected == previous3)
+        }
+        if (selected == previous || selected == previous2 || selected == previous3) {
             selected = CoreUtilities.getRandom().nextInt(possibilities);
+        }
         previous3 = previous2;
         previous2 = previous;
         previous = selected;
@@ -87,8 +95,9 @@ public class RandomCommand extends BracedCommand {
 
             for (int x = 0; x < possibilities; x++) {
 
-                if (x != selected)
+                if (x != selected) {
                     queue.removeEntry(0);
+                }
 
                 else {
                     dB.echoDebug(scriptEntry, "...selected '" + queue.getEntry(0).getCommandName() + ": "

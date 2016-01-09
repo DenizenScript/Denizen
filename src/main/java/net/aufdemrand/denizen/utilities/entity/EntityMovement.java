@@ -21,65 +21,75 @@ public class EntityMovement {
     private final static Map<UUID, BukkitTask> followTasks = new HashMap<UUID, BukkitTask>();
 
     public static void stopFollowing(Entity follower) {
-        if (follower == null)
+        if (follower == null) {
             return;
+        }
         UUID uuid = follower.getUniqueId();
-        if (followTasks.containsKey(uuid))
+        if (followTasks.containsKey(uuid)) {
             followTasks.get(uuid).cancel();
+        }
     }
 
     public static void stopWalking(Entity entity) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient))
+        if (!(nmsEntity instanceof EntityInsentient)) {
             return;
+        }
         ((EntityInsentient) nmsEntity).getNavigation().n();
     }
 
     public static void toggleAI(Entity entity, boolean hasAI) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient))
+        if (!(nmsEntity instanceof EntityInsentient)) {
             return;
+        }
         nmsEntity.getDataWatcher().watch(15, (byte) (hasAI ? 0 : 1));
     }
 
     public static boolean isAIDisabled(Entity entity) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntity instanceof EntityInsentient))
+        if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
+        }
         return nmsEntity.getDataWatcher().getByte(15) != 0;
     }
 
     public static double getSpeed(Entity entity) {
         net.minecraft.server.v1_8_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient))
+        if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return 0.0;
+        }
         EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
         return nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).b();
     }
 
     public static void setSpeed(Entity entity, double speed) {
         net.minecraft.server.v1_8_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient))
+        if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
+        }
         EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
     }
 
     public static void follow(final Entity target, final Entity follower, final double speed, final double lead,
                               final double maxRange, final boolean allowWander) {
-        if (target == null || follower == null)
+        if (target == null || follower == null) {
             return;
+        }
 
         final net.minecraft.server.v1_8_R3.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
-        if (!(nmsEntityFollower instanceof EntityInsentient))
+        if (!(nmsEntityFollower instanceof EntityInsentient)) {
             return;
+        }
         final EntityInsentient nmsFollower = (EntityInsentient) nmsEntityFollower;
         final NavigationAbstract followerNavigation = nmsFollower.getNavigation();
 
         UUID uuid = follower.getUniqueId();
 
-        if (followTasks.containsKey(uuid))
+        if (followTasks.containsKey(uuid)) {
             followTasks.get(uuid).cancel();
+        }
 
         final int locationNearInt = (int) Math.floor(lead);
         final boolean hasMax = maxRange > lead;
@@ -129,12 +139,14 @@ public class EntityMovement {
     }
 
     public static void walkTo(final Entity entity, Location location, double speed, final Runnable callback) {
-        if (entity == null || location == null)
+        if (entity == null || location == null) {
             return;
+        }
 
         net.minecraft.server.v1_8_R3.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
-        if (!(nmsEntityEntity instanceof EntityInsentient))
+        if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
+        }
         final EntityInsentient nmsEntity = (EntityInsentient) nmsEntityEntity;
         final NavigationAbstract entityNavigation = nmsEntity.getNavigation();
 
@@ -154,11 +166,13 @@ public class EntityMovement {
                 @Override
                 public void run() {
                     if (entityNavigation.m() || path.b()) {
-                        if (callback != null)
+                        if (callback != null) {
                             callback.run();
+                        }
                         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
-                        if (aiDisabled)
+                        if (aiDisabled) {
                             toggleAI(entity, false);
+                        }
                         cancel();
                     }
                 }

@@ -57,8 +57,9 @@ public class Utilities {
         }
 
         // No safe Locations found
-        if (locations.isEmpty())
+        if (locations.isEmpty()) {
             return null;
+        }
 
         // Return a random Location from the list
         return locations.get(CoreUtilities.getRandom().nextInt(locations.size()));
@@ -110,10 +111,12 @@ public class Utilities {
 
         // Send message to bystanders
         for (Player target : Bukkit.getOnlinePlayers()) {
-            if (target != player.getPlayerEntity())
+            if (target != player.getPlayerEntity()) {
                 if (target.getWorld().equals(player.getPlayerEntity().getWorld())
-                        && target.getLocation().distance(player.getPlayerEntity().getLocation()) <= range)
+                        && target.getLocation().distance(player.getPlayerEntity().getLocation()) <= range) {
                     target.sendMessage(bystanderFormat);
+                }
+            }
         }
     }
 
@@ -177,17 +180,24 @@ public class Utilities {
      * @return true if within the specified location, false otherwise.
      */
     public static boolean checkLocation(LivingEntity entity, Location theLocation, double theLeeway) {
-        if (entity.getWorld() != theLocation.getWorld())
+        if (entity.getWorld() != theLocation.getWorld()) {
             return false;
+        }
 
         Location entityLocation = entity.getLocation();
 
         if (Math.abs(entityLocation.getX() - theLocation.getX())
-                > theLeeway) return false;
+                > theLeeway) {
+            return false;
+        }
         if (Math.abs(entityLocation.getY() - theLocation.getY())
-                > theLeeway) return false;
+                > theLeeway) {
+            return false;
+        }
         if (Math.abs(entityLocation.getZ() - theLocation.getZ())
-                > theLeeway) return false;
+                > theLeeway) {
+            return false;
+        }
 
         return true;
     }
@@ -201,8 +211,9 @@ public class Utilities {
      */
     public static boolean checkLocation(Location baseLocation, Location theLocation, double theLeeway) {
 
-        if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName()))
+        if (!baseLocation.getWorld().getName().equals(theLocation.getWorld().getName())) {
             return false;
+        }
 
         return baseLocation.distanceSquared(theLocation) < theLeeway * theLeeway;
     }
@@ -254,9 +265,10 @@ public class Utilities {
         BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
 
         for (BlockFace blockFace : blockFaces) {
-            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1)))
+            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1))) {
                 ((org.bukkit.material.Sign) signState.getData())
                         .setFacingDirection(blockFace);
+            }
         }
         signState.update();
     }
@@ -271,15 +283,22 @@ public class Utilities {
      */
     public static boolean isBlock(Location block, Location location) {
 
-        if (!block.getWorld().getName().equals(location.getWorld().getName()))
+        if (!block.getWorld().getName().equals(location.getWorld().getName())) {
             return false;
+        }
 
         if (Math.abs(block.getBlockX() - location.getBlockX())
-                > 0) return false;
+                > 0) {
+            return false;
+        }
         if (Math.abs(block.getBlockY() - location.getBlockY())
-                > 0) return false;
+                > 0) {
+            return false;
+        }
         if (Math.abs(block.getBlockZ() - location.getBlockZ())
-                > 0) return false;
+                > 0) {
+            return false;
+        }
 
         return true;
     }
@@ -307,8 +326,9 @@ public class Utilities {
                     }
                     java.io.InputStream is = jar.getInputStream(file);
                     java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
-                    while (is.available() > 0)
+                    while (is.available() > 0) {
                         fos.write(is.read());
+                    }
                     fos.close();
                     is.close();
                     return;

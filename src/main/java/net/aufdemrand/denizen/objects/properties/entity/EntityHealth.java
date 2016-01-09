@@ -20,9 +20,13 @@ public class EntityHealth implements Property {
     }
 
     public static EntityHealth getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityHealth((dEntity) entity);
+        else {
+            return new EntityHealth((dEntity) entity);
+        }
     }
 
 
@@ -58,7 +62,9 @@ public class EntityHealth implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.health.formatted>
@@ -70,18 +76,25 @@ public class EntityHealth implements Property {
         // -->
         if (attribute.startsWith("health.formatted")) {
             double maxHealth = entity.getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
+            if (attribute.hasContext(2)) {
                 maxHealth = attribute.getIntContext(2);
-            if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10)
+            }
+            if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10) {
                 return new Element("dying").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40)
+            }
+            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40) {
                 return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75)
+            }
+            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75) {
                 return new Element("injured").getAttribute(attribute.fulfill(2));
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1)
+            }
+            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
                 return new Element("scraped").getAttribute(attribute.fulfill(2));
+            }
 
-            else return new Element("healthy").getAttribute(attribute.fulfill(2));
+            else {
+                return new Element("healthy").getAttribute(attribute.fulfill(2));
+            }
         }
 
         // <--[tag]
@@ -91,9 +104,10 @@ public class EntityHealth implements Property {
         // @description
         // Returns the maximum health of the entity.
         // -->
-        if (attribute.startsWith("health.max"))
+        if (attribute.startsWith("health.max")) {
             return new Element(entity.getLivingEntity().getMaxHealth())
                     .getAttribute(attribute.fulfill(2));
+        }
 
         // <--[tag]
         // @attribute <e@entity.health.percentage>
@@ -104,8 +118,9 @@ public class EntityHealth implements Property {
         // -->
         if (attribute.startsWith("health.percentage")) {
             double maxHealth = entity.getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2))
+            if (attribute.hasContext(2)) {
                 maxHealth = attribute.getIntContext(2);
+            }
             return new Element((entity.getLivingEntity().getHealth() / maxHealth) * 100)
                     .getAttribute(attribute.fulfill(2));
         }
@@ -117,9 +132,10 @@ public class EntityHealth implements Property {
         // @description
         // Returns the current health of the entity.
         // -->
-        if (attribute.startsWith("health"))
+        if (attribute.startsWith("health")) {
             return new Element(entity.getLivingEntity().getHealth())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -140,13 +156,38 @@ public class EntityHealth implements Property {
         // -->
         if (mechanism.matches("max_health") && mechanism.requireDouble()) {
             if (entity.isCitizensNPC()) {
-                if (entity.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class))
+                if (entity.getDenizenNPC().getCitizen().hasTrait(HealthTrait.class)) {
                     entity.getDenizenNPC().getCitizen().getTrait(HealthTrait.class).setMaxhealth(mechanism.getValue().asInt());
-                else
+                }
+                else {
                     dB.echoError("NPC doesn't have health trait!");
+                }
             }
             else if (entity.isLivingEntity()) {
                 entity.getLivingEntity().setMaxHealth(mechanism.getValue().asDouble());
+            }
+            else {
+                dB.echoError("Entity is not alive!");
+            }
+        }
+
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name health_data
+        // @input Element(Decimal)/Element(Decimal)
+        // @description
+        // Sets the amount of health the entity has, and the maximum health it has.
+        // The entity must be living.
+        // @tags
+        // <e@entity.health>
+        // <e@entity.health.max>
+        // -->
+        if (mechanism.matches("health_data")) {
+            if (entity.isLivingEntity()) {
+                List<String> values = CoreUtilities.split(mechanism.getValue().asString(), '/');
+                entity.getLivingEntity().setMaxHealth(Double.valueOf(values.get(1)));
+                entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
             }
             else {
                 dB.echoError("Entity is not alive!");
@@ -167,28 +208,6 @@ public class EntityHealth implements Property {
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             if (entity.isLivingEntity()) {
                 entity.getLivingEntity().setHealth(mechanism.getValue().asDouble());
-            }
-            else {
-                dB.echoError("Entity is not alive!");
-            }
-        }
-
-        // <--[mechanism]
-        // @object dEntity
-        // @name health_data
-        // @input Element(Decimal)/Element(Decimal)
-        // @description
-        // Sets the amount of health the entity has, and the maximum health it has.
-        // The entity must be living.
-        // @tags
-        // <e@entity.health>
-        // <e@entity.health.max>
-        // -->
-        if (mechanism.matches("health_data")) {
-            if (entity.isLivingEntity()) {
-                List<String> values = CoreUtilities.split(mechanism.getValue().asString(), '/');
-                entity.getLivingEntity().setMaxHealth(Double.valueOf(values.get(1)));
-                entity.getLivingEntity().setHealth(Double.valueOf(values.get(0)));
             }
             else {
                 dB.echoError("Entity is not alive!");

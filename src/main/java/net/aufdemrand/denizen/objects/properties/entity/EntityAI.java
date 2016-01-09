@@ -16,9 +16,13 @@ public class EntityAI implements Property {
     }
 
     public static EntityAI getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityAI((dEntity) entity);
+        else {
+            return new EntityAI((dEntity) entity);
+        }
     }
 
 
@@ -54,7 +58,9 @@ public class EntityAI implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.has_ai>
@@ -64,9 +70,10 @@ public class EntityAI implements Property {
         // Returns whether the entity uses the default Minecraft
         // AI to roam and look around.
         // -->
-        if (attribute.startsWith("has_ai"))
+        if (attribute.startsWith("has_ai")) {
             return new Element(!EntityMovement.isAIDisabled(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
+        }
 
 
         return null;

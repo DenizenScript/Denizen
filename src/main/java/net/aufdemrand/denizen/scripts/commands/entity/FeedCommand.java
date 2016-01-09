@@ -19,48 +19,59 @@ public class FeedCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (arg.matchesPrimitive(aH.PrimitiveType.Integer)
-                    && !scriptEntry.hasObject("amount"))
+                    && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());
+            }
 
             else if (arg.matchesArgumentType(dPlayer.class)
                     && !scriptEntry.hasObject("targetplayer")
-                    && !scriptEntry.hasObject("targetnpc"))
+                    && !scriptEntry.hasObject("targetnpc")) {
                 scriptEntry.addObject("targetplayer", arg.asType(dPlayer.class));
+            }
 
             else if (arg.matchesArgumentType(dNPC.class)
                     && !scriptEntry.hasObject("targetplayer")
-                    && !scriptEntry.hasObject("targetnpc"))
+                    && !scriptEntry.hasObject("targetnpc")) {
                 scriptEntry.addObject("targetnpc", arg.asType(dNPC.class));
+            }
 
-                // Backwards compatibility
+            // Backwards compatibility
             else if (arg.matches("NPC")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+            }
 
             else if (arg.matches("PLAYER")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
 
         }
 
         if (!scriptEntry.hasObject("targetplayer") &&
                 !scriptEntry.hasObject("targetnpc")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
-            else if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+            }
+            else if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("Must specify a player!");
+            }
         }
 
-        if (!scriptEntry.hasObject("amount"))
+        if (!scriptEntry.hasObject("amount")) {
             scriptEntry.addObject("amount", new Element(9999)); // TODO: 9999?
+        }
     }
 
     @Override
@@ -84,7 +95,9 @@ public class FeedCommand extends AbstractCommand {
         }
         else if (player != null) {
             if (95999 - player.getPlayerEntity().getFoodLevel() < amount.asInt()) // Setting hunger too high = error
+            {
                 amount = new Element(95999 - player.getPlayerEntity().getFoodLevel());
+            }
             player.getPlayerEntity().setFoodLevel(player.getPlayerEntity().getFoodLevel() + amount.asInt());
         }
         else {

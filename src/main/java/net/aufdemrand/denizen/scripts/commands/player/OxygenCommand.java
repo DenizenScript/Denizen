@@ -40,11 +40,13 @@ public class OxygenCommand extends AbstractCommand {
 
         }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
+        }
 
-        if (!scriptEntry.hasObject("amount"))
+        if (!scriptEntry.hasObject("amount")) {
             throw new InvalidArgumentsException("Must specify a valid amount!");
+        }
 
         scriptEntry.defaultObject("type", new Element("REMAINING")).defaultObject("mode", new Element("SET"));
 

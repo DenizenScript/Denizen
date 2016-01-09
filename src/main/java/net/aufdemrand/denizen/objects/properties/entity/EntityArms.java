@@ -16,9 +16,13 @@ public class EntityArms implements Property {
     }
 
     public static EntityArms getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityArms((dEntity) entity);
+        else {
+            return new EntityArms((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -57,7 +61,9 @@ public class EntityArms implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return "null";
+        }
 
         // <--[tag]
         // @attribute <e@entity.arms>
@@ -67,9 +73,10 @@ public class EntityArms implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand has arms.
         // -->
-        if (attribute.startsWith("arms"))
+        if (attribute.startsWith("arms")) {
             return new Element(((ArmorStand) dentity.getBukkitEntity()).hasGravity())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

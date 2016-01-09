@@ -59,14 +59,17 @@ public class BlockLight {
                     Chunk chunk = entry.getKey();
                     if (chunk.bukkitChunk.isLoaded()) {
                         List<BlockLight> blockLights = entry.getValue();
-                        if (blockLights.isEmpty())
+                        if (blockLights.isEmpty()) {
                             continue;
+                        }
                         PlayerChunkMap playerChunkMap = blockLights.get(0).worldServer.getPlayerChunkMap();
-                        for (BlockLight light : blockLights)
+                        for (BlockLight light : blockLights) {
                             light.reset(false);
+                        }
                         updateChunk(chunk, playerChunkMap);
-                        for (BlockLight light : blockLights)
+                        for (BlockLight light : blockLights) {
                             light.update(light.cachedLight, false);
+                        }
                         updateChunk(chunk, playerChunkMap);
                     }
                 }
@@ -113,8 +116,9 @@ public class BlockLight {
         else {
             blockLight = new BlockLight(location, duration);
             lightsByLocation.put(location, blockLight);
-            if (!lightsByChunk.containsKey(blockLight.chunk))
+            if (!lightsByChunk.containsKey(blockLight.chunk)) {
                 lightsByChunk.put(blockLight.chunk, new ArrayList<BlockLight>());
+            }
             lightsByChunk.get(blockLight.chunk).add(blockLight);
         }
         blockLight.update(lightLevel, true);
@@ -126,12 +130,14 @@ public class BlockLight {
         if (lightsByLocation.containsKey(location)) {
             BlockLight blockLight = lightsByLocation.get(location);
             blockLight.reset(true);
-            if (blockLight.removeTask != null)
+            if (blockLight.removeTask != null) {
                 blockLight.removeTask.cancel();
+            }
             lightsByLocation.remove(location);
             lightsByChunk.get(blockLight.chunk).remove(blockLight);
-            if (lightsByChunk.get(blockLight.chunk).isEmpty())
+            if (lightsByChunk.get(blockLight.chunk).isEmpty()) {
                 lightsByChunk.remove(blockLight.chunk);
+            }
         }
     }
 
@@ -165,10 +171,12 @@ public class BlockLight {
             worldServer.a(EnumSkyBlock.BLOCK, position, lightLevel);
             Block adjacentAir = null;
             for (BlockFace face : adjacentFaces) {
-                if (position.getY() == 0 && face == BlockFace.DOWN)
+                if (position.getY() == 0 && face == BlockFace.DOWN) {
                     continue;
-                if (position.getY() == (craftWorld.getMaxHeight() - 1) && face == BlockFace.UP)
+                }
+                if (position.getY() == (craftWorld.getMaxHeight() - 1) && face == BlockFace.UP) {
                     continue;
+                }
                 Block possible = block.getRelative(face);
                 if (possible.getType() == Material.AIR) {
                     adjacentAir = possible;

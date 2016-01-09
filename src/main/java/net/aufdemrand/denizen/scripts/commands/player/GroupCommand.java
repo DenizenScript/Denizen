@@ -38,14 +38,17 @@ public class GroupCommand extends AbstractCommand {
 
         }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify valid action!");
+        }
 
-        if (!scriptEntry.hasObject("group"))
+        if (!scriptEntry.hasObject("group")) {
             throw new InvalidArgumentsException("Must specify a group name!");
+        }
 
     }
 
@@ -60,24 +63,29 @@ public class GroupCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
 
         World bukkitWorld = null;
-        if (world != null)
+        if (world != null) {
             bukkitWorld = world.getWorld();
+        }
 
         OfflinePlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer();
         boolean inGroup = Depends.permissions.playerInGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
 
         switch (Action.valueOf(action.asString().toUpperCase())) {
             case ADD:
-                if (inGroup)
+                if (inGroup) {
                     dB.echoDebug(scriptEntry, "Player " + player.getName() + " is already in group " + group);
-                else
+                }
+                else {
                     Depends.permissions.playerAddGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
+                }
                 return;
             case REMOVE:
-                if (!inGroup)
+                if (!inGroup) {
                     dB.echoDebug(scriptEntry, "Player " + player.getName() + " is not in group " + group);
-                else
+                }
+                else {
                     Depends.permissions.playerRemoveGroup((bukkitWorld == null ? null : bukkitWorld.getName()), player, group.asString());
+                }
                 return;
             case SET:
                 for (String grp : Depends.permissions.getPlayerGroups((bukkitWorld == null ? null : bukkitWorld.getName()), player)) {

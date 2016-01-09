@@ -16,9 +16,13 @@ public class EntityElder implements Property {
     }
 
     public static EntityElder getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityElder((dEntity) entity);
+        else {
+            return new EntityElder((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -36,7 +40,9 @@ public class EntityElder implements Property {
     }
 
     private void setElder(boolean elder) {
-        if (entity == null) return;
+        if (entity == null) {
+            return;
+        }
 
         ((Guardian) (entity.getBukkitEntity())).setElder(elder);
     }
@@ -47,10 +53,12 @@ public class EntityElder implements Property {
 
     @Override
     public String getPropertyString() {
-        if (!getElder())
+        if (!getElder()) {
             return null;
-        else
+        }
+        else {
             return "true";
+        }
     }
 
     @Override
@@ -65,7 +73,9 @@ public class EntityElder implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.elder>
@@ -75,9 +85,10 @@ public class EntityElder implements Property {
         // @description
         // If the entity is a guardian, returns whether it is elder.
         // -->
-        if (attribute.startsWith("elder"))
+        if (attribute.startsWith("elder")) {
             return new Element(getElder())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

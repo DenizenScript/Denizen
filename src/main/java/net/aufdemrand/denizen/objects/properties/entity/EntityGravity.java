@@ -16,9 +16,13 @@ public class EntityGravity implements Property {
     }
 
     public static EntityGravity getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityGravity((dEntity) entity);
+        else {
+            return new EntityGravity((dEntity) entity);
+        }
     }
 
     ///////////////////
@@ -57,7 +61,9 @@ public class EntityGravity implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.gravity>
@@ -67,9 +73,10 @@ public class EntityGravity implements Property {
         // @description
         // If the entity is an armor stand, returns whether the armor stand has gravity.
         // -->
-        if (attribute.startsWith("gravity"))
+        if (attribute.startsWith("gravity")) {
             return new Element(((ArmorStand) dentity.getBukkitEntity()).hasGravity())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }

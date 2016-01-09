@@ -27,14 +27,18 @@ public class DespawnCommand extends AbstractCommand {
                 scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("Must specify a valid list of NPCs!");
+            }
         }
 
     }
@@ -52,8 +56,9 @@ public class DespawnCommand extends AbstractCommand {
 
         for (dNPC npc : npcs) {
             if (npc.isSpawned()) {
-                if (npc.getCitizen().hasTrait(Spawned.class))
+                if (npc.getCitizen().hasTrait(Spawned.class)) {
                     npc.getCitizen().getTrait(Spawned.class).setSpawned(false);
+                }
                 npc.getCitizen().despawn(DespawnReason.PLUGIN);
             }
         }

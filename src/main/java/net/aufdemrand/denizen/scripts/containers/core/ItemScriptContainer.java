@@ -161,13 +161,16 @@ public class ItemScriptContainer extends ScriptContainer {
             // Check validity of material
             if (contains("MATERIAL")) {
                 String material = TagManager.tag(getString("MATERIAL"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
-                if (material.startsWith("m@"))
+                if (material.startsWith("m@")) {
                     material = material.substring(2);
+                }
                 stack = dItem.valueOf(material);
             }
 
             // Make sure we're working with a valid base ItemStack
-            if (stack == null) return null;
+            if (stack == null) {
+                return null;
+            }
 
             ItemMeta meta = stack.getItemStack().getItemMeta();
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();

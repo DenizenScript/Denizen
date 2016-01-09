@@ -186,14 +186,22 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 
     @EventHandler
     public void mobKilled(EntityDeathEvent event) {
-        if (type != ItemDropType.MOBKILL) return;
+        if (type != ItemDropType.MOBKILL) {
+            return;
+        }
         dB.log("...checking kill");
-        if (event.getEntity().getKiller() != player.getPlayerEntity()) return;
+        if (event.getEntity().getKiller() != player.getPlayerEntity()) {
+            return;
+        }
         dB.log("...killed by player");
-        if (event.getEntity().getType() != mob) return;
+        if (event.getEntity().getType() != mob) {
+            return;
+        }
         dB.log("...proper mob");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) {
+                return;
+            }
         }
         dB.log("...within range");
         if (region != null) {
@@ -213,14 +221,22 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 
     @EventHandler
     public void blockMined(BlockBreakEvent event) {
-        if (type != ItemDropType.BLOCKBREAK) return;
+        if (type != ItemDropType.BLOCKBREAK) {
+            return;
+        }
         dB.log("...checking blockbreakevent");
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
         dB.log("...mined by player");
-        if (event.getBlock().getType() != block) return;
+        if (event.getBlock().getType() != block) {
+            return;
+        }
         dB.log("...proper block mined");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) {
+                return;
+            }
         }
         dB.log("...within range");
         if (region != null) {
@@ -238,14 +254,22 @@ public class ItemDropListenerInstance extends AbstractListener implements Listen
 
     @EventHandler
     public void blockPlaced(BlockPlaceEvent event) {
-        if (type != ItemDropType.BLOCKPLACE) return;
+        if (type != ItemDropType.BLOCKPLACE) {
+            return;
+        }
         dB.log("...checking blockplaceevent");
-        if (event.getPlayer() != player.getPlayerEntity()) return;
+        if (event.getPlayer() != player.getPlayerEntity()) {
+            return;
+        }
         dB.log("...placed by player");
-        if (event.getBlock().getType() != block) return;
+        if (event.getBlock().getType() != block) {
+            return;
+        }
         dB.log("...proper block placed");
         if (location != null) {
-            if (location.distance(player.getPlayerEntity().getLocation()) > radius) return;
+            if (location.distance(player.getPlayerEntity().getLocation()) > radius) {
+                return;
+            }
         }
         dB.log("...within range");
         if (region != null) {

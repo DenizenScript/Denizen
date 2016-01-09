@@ -27,31 +27,39 @@ public class CopyBlockCommand extends AbstractCommand {
             // CopyBlock can move a single 'location' ...
             if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")
-                    && !arg.matchesPrefix("t", "to"))
+                    && !arg.matchesPrefix("t", "to")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
-                // ... or and entire cuboid ...
+            // ... or and entire cuboid ...
             else if (arg.matchesArgumentType(dCuboid.class)
-                    && !scriptEntry.hasObject("cuboid"))
+                    && !scriptEntry.hasObject("cuboid")) {
                 scriptEntry.addObject("cuboid", arg.asType(dCuboid.class));
+            }
 
-                // ... to a location.
+            // ... to a location.
             else if (arg.matchesArgumentType(dLocation.class)
-                    && arg.matchesPrefix("t", "to"))
+                    && arg.matchesPrefix("t", "to")) {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
+            }
 
-            else if (arg.matches("remove_original"))
+            else if (arg.matches("remove_original")) {
                 scriptEntry.addObject("remove", Element.TRUE);
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check required arguments
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cuboid"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("cuboid")) {
             throw new InvalidArgumentsException("Must specify a source location or cuboid.");
+        }
 
-        if (!scriptEntry.hasObject("destination"))
+        if (!scriptEntry.hasObject("destination")) {
             throw new InvalidArgumentsException("Must specify a destination location.");
+        }
 
         // Set defaults
         scriptEntry.defaultObject("remove", Element.FALSE);
@@ -70,8 +78,12 @@ public class CopyBlockCommand extends AbstractCommand {
 
         List<Location> locations = new ArrayList<Location>();
 
-        if (copy_location != null) locations.add(copy_location);
-        else if (copy_cuboid != null) locations.addAll(copy_cuboid.getBlockLocations()); // TODO: make this work?...
+        if (copy_location != null) {
+            locations.add(copy_location);
+        }
+        else if (copy_cuboid != null) {
+            locations.addAll(copy_cuboid.getBlockLocations()); // TODO: make this work?...
+        }
 
         for (Location loc : locations) {
 

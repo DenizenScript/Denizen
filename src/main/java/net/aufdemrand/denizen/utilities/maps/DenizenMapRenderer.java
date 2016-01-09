@@ -25,10 +25,12 @@ public class DenizenMapRenderer extends MapRenderer {
     }
 
     public void addObject(MapObject object) {
-        if (active)
+        if (active) {
             mapObjects.add(object);
-        else
+        }
+        else {
             throw new IllegalStateException("DenizenMapRenderer is not active");
+        }
     }
 
     public List<MapRenderer> getOldRenderers() {
@@ -36,8 +38,9 @@ public class DenizenMapRenderer extends MapRenderer {
     }
 
     public void deactivate() {
-        if (!active)
+        if (!active) {
             throw new IllegalStateException("Already deactivated");
+        }
         this.active = false;
         mapObjects.clear();
         oldMapRenderers.clear();

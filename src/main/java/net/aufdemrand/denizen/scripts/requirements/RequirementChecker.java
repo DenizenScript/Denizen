@@ -33,8 +33,9 @@ public class RequirementChecker {
         // Requirement node "NONE"? No requirements in the LIST? No need to
         // continue, return true.
         //
-        if (context.mode.getMode() == RequirementsMode.Mode.NONE || context.list.isEmpty())
+        if (context.mode.getMode() == RequirementsMode.Mode.NONE || context.list.isEmpty()) {
             return true;
+        }
 
         //
         // Actual requirements that need checking, alert the debugger
@@ -99,13 +100,15 @@ public class RequirementChecker {
                         dB.echoApproval("Checking 'VALUEOF " + arg + "... requirement met!");
                         numberMet++;
                     }
-                    else
+                    else {
                         dB.echoApproval("Checking '-VALUEOF " + arg + "...requirement not met!");
+                    }
 
                 }
                 else {
-                    if (!negativeRequirement)
+                    if (!negativeRequirement) {
                         dB.echoApproval("Checking 'VALUEOF " + arg + "...requirement not met!");
+                    }
 
                     else {
                         dB.echoApproval("Checking '-VALUEOF " + arg + "...requirement met!");// Not met!
@@ -172,9 +175,11 @@ public class RequirementChecker {
         // Check numberMet with mode-type
 
         // ALL mode
-        if (context.mode.getMode() == RequirementsMode.Mode.ALL && numberMet == context.list.size()) return true;
+        if (context.mode.getMode() == RequirementsMode.Mode.ALL && numberMet == context.list.size()) {
+            return true;
+        }
 
-            // ANY # mode
+        // ANY # mode
         else if (context.mode.getMode() == RequirementsMode.Mode.ANY_NUM) {
             return (numberMet >= context.mode.modeInt);
         }

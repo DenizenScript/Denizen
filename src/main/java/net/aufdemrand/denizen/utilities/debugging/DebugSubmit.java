@@ -73,8 +73,9 @@ public class DebugSubmit extends Thread {
                 }
             }
             // Prevent errors if the debug was submitted by the server
-            if (playerlist.length() < 2)
+            if (playerlist.length() < 2) {
                 playerlist.append("No Online Players, ");
+            }
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                     + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
@@ -101,8 +102,9 @@ public class DebugSubmit extends Thread {
         }
         finally {
             try {
-                if (in != null)
+                if (in != null) {
                     in.close();
+                }
             }
             catch (Exception e) {
                 dB.echoError(e);

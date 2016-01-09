@@ -187,10 +187,12 @@ public class CommandScriptContainer extends ScriptContainer {
             queue.setContextSource(oecs);
         }
         queue.start();
-        if (DetermineCommand.hasOutcome(id))
+        if (DetermineCommand.hasOutcome(id)) {
             return dList.valueOf(DetermineCommand.getOutcome(id).get(0));
-        else
+        }
+        else {
             return new ArrayList<String>();
+        }
     }
 
     public boolean hasAllowedHelpProcedure() {

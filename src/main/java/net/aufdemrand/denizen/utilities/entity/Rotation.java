@@ -48,7 +48,9 @@ public class Rotation {
         }
 
         else if (entity instanceof LivingEntity) {
-            if (entity instanceof EnderDragon) yaw = normalizeYaw(yaw - 180);
+            if (entity instanceof EnderDragon) {
+                yaw = normalizeYaw(yaw - 180);
+            }
             look(entity, yaw, pitch);
         }
 
@@ -73,8 +75,9 @@ public class Rotation {
                     yaw -= 360.0F;
                 }
                 livingHandle.aK = yaw;
-                if (!(handle instanceof EntityHuman))
+                if (!(handle instanceof EntityHuman)) {
                     livingHandle.aI = yaw;
+                }
                 livingHandle.aL = yaw;
             }
             handle.pitch = pitch;
@@ -103,7 +106,9 @@ public class Rotation {
         double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
         Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
-        if (l == null || l.pos == null) return null;
+        if (l == null || l.pos == null) {
+            return null;
+        }
         Vector finalVec = new Vector(l.pos.a, l.pos.b, l.pos.c);
         MapTraceResult mtr = new MapTraceResult();
         switch (l.direction) {
@@ -186,7 +191,9 @@ public class Rotation {
      */
 
     public static void faceLocation(Entity from, Location at) {
-        if (from.getWorld() != at.getWorld()) return;
+        if (from.getWorld() != at.getWorld()) {
+            return;
+        }
         Location origin = from instanceof LivingEntity ? ((LivingEntity) from).getEyeLocation()
                 : from.getLocation().getBlock().getLocation().add(0.5, 0.5, 0.5);
         Location rotated = faceLocation(origin, at);
@@ -279,7 +286,9 @@ public class Rotation {
 
     public static float normalizeYaw(float yaw) {
         yaw = yaw % 360;
-        if (yaw < 0) yaw += 360.0;
+        if (yaw < 0) {
+            yaw += 360.0;
+        }
         return yaw;
     }
 
@@ -325,25 +334,35 @@ public class Rotation {
     public static String getCardinal(float yaw) {
         yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.
-        if (0 <= yaw && yaw < 22.5)
+        if (0 <= yaw && yaw < 22.5) {
             return "south";
-        else if (22.5 <= yaw && yaw < 67.5)
+        }
+        else if (22.5 <= yaw && yaw < 67.5) {
             return "southwest";
-        else if (67.5 <= yaw && yaw < 112.5)
+        }
+        else if (67.5 <= yaw && yaw < 112.5) {
             return "west";
-        else if (112.5 <= yaw && yaw < 157.5)
+        }
+        else if (112.5 <= yaw && yaw < 157.5) {
             return "northwest";
-        else if (157.5 <= yaw && yaw < 202.5)
+        }
+        else if (157.5 <= yaw && yaw < 202.5) {
             return "north";
-        else if (202.5 <= yaw && yaw < 247.5)
+        }
+        else if (202.5 <= yaw && yaw < 247.5) {
             return "northeast";
-        else if (247.5 <= yaw && yaw < 292.5)
+        }
+        else if (247.5 <= yaw && yaw < 292.5) {
             return "east";
-        else if (292.5 <= yaw && yaw < 337.5)
+        }
+        else if (292.5 <= yaw && yaw < 337.5) {
             return "southeast";
-        else if (337.5 <= yaw && yaw < 360.0)
+        }
+        else if (337.5 <= yaw && yaw < 360.0) {
             return "south";
-        else
+        }
+        else {
             return null;
+        }
     }
 }

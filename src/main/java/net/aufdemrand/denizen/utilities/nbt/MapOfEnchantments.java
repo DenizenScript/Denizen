@@ -17,25 +17,34 @@ public class MapOfEnchantments extends HashMap<Enchantment, Integer> {
 
     public String asDScriptList() {
         String dScriptList = "";
-        if (this.isEmpty()) return dScriptList;
-        for (Enchantment enchantment : this.keySet())
+        if (this.isEmpty()) {
+            return dScriptList;
+        }
+        for (Enchantment enchantment : this.keySet()) {
             dScriptList = dScriptList + enchantment.getName() + "|";
+        }
         return dScriptList.substring(0, dScriptList.length() - 1);
     }
 
     public String asDScriptListWithLevels() {
         String dScriptList = "";
-        if (this.isEmpty()) return dScriptList;
-        for (Entry<Enchantment, Integer> enchantment : this.entrySet())
+        if (this.isEmpty()) {
+            return dScriptList;
+        }
+        for (Entry<Enchantment, Integer> enchantment : this.entrySet()) {
             dScriptList = dScriptList + enchantment.getKey().getName() + "|" + enchantment.getValue() + "|";
+        }
         return dScriptList.substring(0, dScriptList.length() - 1);
     }
 
     public String asDScriptListLevelsOnly() {
         String dScriptList = "";
-        if (this.isEmpty()) return dScriptList;
-        for (Integer enchantment : this.values())
+        if (this.isEmpty()) {
+            return dScriptList;
+        }
+        for (Integer enchantment : this.values()) {
             dScriptList = dScriptList + enchantment + "|";
+        }
         return dScriptList.substring(0, dScriptList.length() - 1);
 
     }

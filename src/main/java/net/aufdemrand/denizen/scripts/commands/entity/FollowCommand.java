@@ -21,52 +21,64 @@ public class FollowCommand extends AbstractCommand {
         // Parse Arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("stop") &&
-                    arg.matches("STOP"))
+                    arg.matches("STOP")) {
                 scriptEntry.addObject("stop", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("lead") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
-                    arg.matchesPrefix("l", "lead"))
+                    arg.matchesPrefix("l", "lead")) {
                 scriptEntry.addObject("lead", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("max") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
-                    arg.matchesPrefix("max"))
+                    arg.matchesPrefix("max")) {
                 scriptEntry.addObject("max", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("allow_wander") &&
-                    arg.matches("allow_wander"))
+                    arg.matches("allow_wander")) {
                 scriptEntry.addObject("allow_wander", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("speed") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Percentage) &&
-                    arg.matchesPrefix("s", "speed"))
+                    arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesPrefix("followers", "follower") &&
-                    arg.matchesArgumentList(dEntity.class))
+                    arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class));
+            }
 
             else if (!scriptEntry.hasObject("target") &&
-                    arg.matchesArgumentType(dEntity.class))
+                    arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
         if (!scriptEntry.hasObject("target")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("This command requires a linked player!");
+            }
         }
         if (!scriptEntry.hasObject("entities")) {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 throw new InvalidArgumentsException("This command requires a linked NPC!");
-            else
+            }
+            else {
                 scriptEntry.addObject("entities",
                         new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
+            }
         }
 
         scriptEntry.defaultObject("stop", new Element(false)).defaultObject("allow_wander", new Element(false));
@@ -96,24 +108,30 @@ public class FollowCommand extends AbstractCommand {
         for (dEntity entity : entities.filter(dEntity.class)) {
             if (entity.isCitizensNPC()) {
                 dNPC npc = entity.getDenizenNPC();
-                if (lead != null)
+                if (lead != null) {
                     npc.getNavigator().getLocalParameters().distanceMargin(lead.asDouble());
+                }
 
-                if (speed != null)
+                if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
+                }
 
-                if (stop.asBoolean())
+                if (stop.asBoolean()) {
                     npc.getNavigator().cancelNavigation();
-                else
+                }
+                else {
                     npc.getNavigator().setTarget(target.getBukkitEntity(), false);
+                }
             }
             else {
-                if (stop.asBoolean())
+                if (stop.asBoolean()) {
                     EntityMovement.stopFollowing(entity.getBukkitEntity());
-                else
+                }
+                else {
                     EntityMovement.follow(target.getBukkitEntity(), entity.getBukkitEntity(),
                             speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble() : 5,
                             maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean());
+                }
             }
         }
 

@@ -78,7 +78,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("password", arg.asElement());
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         if (!scriptEntry.hasObject("sqlid")) {
@@ -108,8 +110,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 + (query != null ? query.debug() : ""));
 
         if (!action.asString().equalsIgnoreCase("connect") &&
-                (!action.asString().equalsIgnoreCase("query") || !scriptEntry.shouldWaitFor()))
+                (!action.asString().equalsIgnoreCase("query") || !scriptEntry.shouldWaitFor())) {
             scriptEntry.setFinished(true);
+        }
 
         try {
             if (action.asString().equalsIgnoreCase("connect")) {
@@ -133,7 +136,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     @Override
                     public void run() {
                         Connection con = null;
-                        if (dB.verbose) dB.echoDebug(scriptEntry, "Connecting to " + server.asString());
+                        if (dB.verbose) {
+                            dB.echoDebug(scriptEntry, "Connecting to " + server.asString());
+                        }
                         try {
                             con = getConnection(username.asString(), password.asString(), server.asString());
                         }
@@ -143,11 +148,15 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                 public void run() {
                                     dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
                                     scriptEntry.setFinished(true);
-                                    if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
+                                    if (dB.verbose) {
+                                        dB.echoError(scriptEntry.getResidingQueue(), e);
+                                    }
                                 }
                             }, 1);
                         }
-                        if (dB.verbose) dB.echoDebug(scriptEntry, "Connection did not error");
+                        if (dB.verbose) {
+                            dB.echoDebug(scriptEntry, "Connection did not error");
+                        }
                         final Connection conn = con;
                         if (con != null) {
                             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -164,7 +173,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                 @Override
                                 public void run() {
                                     scriptEntry.setFinished(true);
-                                    if (dB.verbose) dB.echoDebug(scriptEntry, "Connecting errored!");
+                                    if (dB.verbose) {
+                                        dB.echoDebug(scriptEntry, "Connecting errored!");
+                                    }
                                 }
                             }, 1);
                         }
@@ -233,7 +244,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                     public void run() {
                                         dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
                                         scriptEntry.setFinished(true);
-                                        if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
+                                        if (dB.verbose) {
+                                            dB.echoError(scriptEntry.getResidingQueue(), e);
+                                        }
                                     }
                                 }, 1);
                             }
@@ -296,7 +309,9 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         }
         catch (SQLException e) {
             dB.echoError(scriptEntry.getResidingQueue(), "SQL Exception: " + e.getMessage());
-            if (dB.verbose) dB.echoError(scriptEntry.getResidingQueue(), e);
+            if (dB.verbose) {
+                dB.echoError(scriptEntry.getResidingQueue(), e);
+            }
         }
     }
 

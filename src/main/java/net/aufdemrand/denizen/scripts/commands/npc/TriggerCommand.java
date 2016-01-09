@@ -23,37 +23,46 @@ public class TriggerCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("cooldown")
                     && arg.matchesPrefix("cooldown", "c")
-                    && arg.matchesArgumentType(Duration.class))
+                    && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("cooldown", arg.asType(Duration.class));
+            }
 
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("radius", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("toggle")
-                    && arg.matchesEnum(Toggle.values()))
+                    && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("toggle", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("npc")
-                    && arg.matchesArgumentType(dNPC.class))
+                    && arg.matchesArgumentType(dNPC.class)) {
                 scriptEntry.addObject("npc", arg.asType(dNPC.class));
+            }
 
-            else if (!scriptEntry.hasObject("trigger"))
+            else if (!scriptEntry.hasObject("trigger")) {
                 scriptEntry.addObject("trigger", arg.asElement());
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("trigger"))
+        if (!scriptEntry.hasObject("trigger")) {
             throw new InvalidArgumentsException("Missing name argument!");
+        }
 
-        if (!scriptEntry.hasObject("toggle"))
+        if (!scriptEntry.hasObject("toggle")) {
             scriptEntry.addObject("toggle", new Element("TOGGLE"));
+        }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !scriptEntry.hasObject("npc"))
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !scriptEntry.hasObject("npc")) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
+        }
 
     }
 
@@ -73,7 +82,9 @@ public class TriggerCommand extends AbstractCommand {
                         npc.debug());
 
         // Add trigger trait
-        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) npc.getCitizen().addTrait(TriggerTrait.class);
+        if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
+            npc.getCitizen().addTrait(TriggerTrait.class);
+        }
 
         TriggerTrait trait = npc.getCitizen().getTrait(TriggerTrait.class);
 
@@ -92,10 +103,12 @@ public class TriggerCommand extends AbstractCommand {
                 break;
         }
 
-        if (radius != null)
+        if (radius != null) {
             trait.setLocalRadius(trigger.asString(), radius.asInt());
+        }
 
-        if (cooldown != null)
+        if (cooldown != null) {
             trait.setLocalCooldown(trigger.asString(), cooldown.getSeconds());
+        }
     }
 }

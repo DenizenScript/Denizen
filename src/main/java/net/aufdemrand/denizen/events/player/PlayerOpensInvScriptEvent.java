@@ -52,7 +52,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
         String lower = CoreUtilities.toLowerCase(s);
         String inv = CoreUtilities.getXthArg(2, lower);
         String nname = NotableManager.isSaved(inventory) ?
-                CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)):
+                CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)) :
                 "\0";
         if (!inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))

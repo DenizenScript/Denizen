@@ -24,8 +24,9 @@ public class QueueCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
                 if (scriptEntry.getObject("action") == Action.DELAY
-                        && arg.matchesArgumentType(Duration.class))
+                        && arg.matchesArgumentType(Duration.class)) {
                     scriptEntry.addObject("delay", arg.asType(Duration.class));
+                }
             }
 
             // No prefix required to specify the queue
@@ -36,7 +37,9 @@ public class QueueCommand extends AbstractCommand {
             }
 
             // ...but we also need to error out this command if the queue was not found.
-            else throw new InvalidArgumentsException("The specified queue could not be found: " + arg.raw_value);
+            else {
+                throw new InvalidArgumentsException("The specified queue could not be found: " + arg.raw_value);
+            }
 
         }
 
@@ -44,11 +47,13 @@ public class QueueCommand extends AbstractCommand {
         scriptEntry.defaultObject("queue", scriptEntry.getResidingQueue());
 
         // Check required args
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an action. Valid: CLEAR, DELAY, PAUSE, RESUME");
+        }
 
-        if (scriptEntry.getObject("action") == Action.DELAY && !scriptEntry.hasObject("delay"))
+        if (scriptEntry.getObject("action") == Action.DELAY && !scriptEntry.hasObject("delay")) {
             throw new InvalidArgumentsException("Must specify a delay.");
+        }
 
     }
 
@@ -85,15 +90,18 @@ public class QueueCommand extends AbstractCommand {
                 return;
 
             case RESUME:
-                if (queue instanceof Delayable)
+                if (queue instanceof Delayable) {
                     ((Delayable) queue).setPaused(false);
+                }
                 return;
 
             case DELAY:
-                if (queue instanceof Delayable)
+                if (queue instanceof Delayable) {
                     ((Delayable) queue).delayFor(delay);
-                else
+                }
+                else {
                     queue.forceToTimed(delay);
+                }
                 return;
 
         }

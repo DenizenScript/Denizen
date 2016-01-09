@@ -17,9 +17,13 @@ public class EntitySize implements Property {
     }
 
     public static EntitySize getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntitySize((dEntity) entity);
+        else {
+            return new EntitySize((dEntity) entity);
+        }
     }
 
 
@@ -55,7 +59,9 @@ public class EntitySize implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.size>

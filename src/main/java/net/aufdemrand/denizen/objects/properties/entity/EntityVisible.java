@@ -6,24 +6,23 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 
-public class EntityJumpStrength implements Property {
-
+public class EntityVisible implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntityType() == EntityType.HORSE;
+                ((dEntity) entity).getBukkitEntityType() == EntityType.ARMOR_STAND;
     }
 
-    public static EntityJumpStrength getFrom(dObject entity) {
+    public static EntityVisible getFrom(dObject entity) {
         if (!describes(entity)) {
             return null;
         }
 
         else {
-            return new EntityJumpStrength((dEntity) entity);
+            return new EntityVisible((dEntity) entity);
         }
     }
 
@@ -32,11 +31,14 @@ public class EntityJumpStrength implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntityJumpStrength(dEntity ent) {
+    private EntityVisible(dEntity ent) {
         entity = ent;
+        stand = (ArmorStand) ent.getBukkitEntity();
     }
 
     dEntity entity;
+
+    ArmorStand stand;
 
     /////////
     // Property Methods
@@ -44,12 +46,15 @@ public class EntityJumpStrength implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Horse) entity.getBukkitEntity()).getJumpStrength());
+        if (!((ArmorStand) entity.getBukkitEntity()).isVisible()) {
+            return "false";
+        }
+        return null;
     }
 
     @Override
     public String getPropertyId() {
-        return "jump_strength";
+        return "visible";
     }
 
 
@@ -65,17 +70,16 @@ public class EntityJumpStrength implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.jump_strength>
-        // @returns Element(Number)
-        // @mechanism dEntity.jump_strength
-        // @group properties
+        // @attribute <e@entity.visible>
+        // @returns Element(Boolean)
+        // @group attributes
         // @description
-        // Returns the power of a horse's jump.
+        // Returns whether the armor stand is visible.
         // -->
-        if (attribute.startsWith("jump_strength")) {
-            return new Element(((Horse) entity.getBukkitEntity()).getJumpStrength())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("visible")) {
+            return new Element(stand.isVisible()).getAttribute(attribute.fulfill(1));
         }
+
 
         return null;
     }
@@ -85,17 +89,15 @@ public class EntityJumpStrength implements Property {
 
         // <--[mechanism]
         // @object dEntity
-        // @name jump_strength
-        // @input Element(Number)
+        // @name visible
+        // @input Element(Boolean)
         // @description
-        // Sets the power of the horse's jump.
+        // Sets whether the armor stand is visible.
         // @tags
-        // <e@entity.jump_strength>
+        // <e@entity.visible>
         // -->
-
-        if (mechanism.matches("jump_strength") && mechanism.requireDouble()) {
-            ((Horse) entity.getBukkitEntity()).setJumpStrength(mechanism.getValue().asDouble());
+        if (mechanism.matches("visible") && mechanism.requireBoolean()) {
+            stand.setVisible(mechanism.getValue().asBoolean());
         }
     }
 }
-

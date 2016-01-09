@@ -16,9 +16,13 @@ public class OxygenRequirement extends AbstractRequirement {
     @Override
     public boolean check(RequirementsContext context, List<String> args) throws RequirementCheckException {
         // Make sure player isn't null and then check oxygen.
-        if (context.getPlayer() == null) return false;
+        if (context.getPlayer() == null) {
+            return false;
+        }
 
-        if (args.size() < 1) throw new RequirementCheckException("Must specify amount/quantity!");
+        if (args.size() < 1) {
+            throw new RequirementCheckException("Must specify amount/quantity!");
+        }
 
         Range range = Range.BELOW;
         int val = context.getPlayer().getPlayerEntity().getMaximumAir();

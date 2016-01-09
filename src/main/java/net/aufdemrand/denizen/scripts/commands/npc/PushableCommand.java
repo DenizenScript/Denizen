@@ -61,8 +61,8 @@ public class PushableCommand extends AbstractCommand {
 
         dB.report(scriptEntry, getName(),
                 (state != null ? state.debug() : "") +
-                (delay != null ? delay.debug() : "") +
-                (returnable != null ? returnable.debug() : ""));
+                        (delay != null ? delay.debug() : "") +
+                        (returnable != null ? returnable.debug() : ""));
 
         if (delay != null) {
             trait.setDelay(delay.getSecondsAsInt());

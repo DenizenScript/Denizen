@@ -37,20 +37,24 @@ public class GiveCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("type")
-                    && arg.matches("money", "coins"))
+                    && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
+            }
 
             else if (!scriptEntry.hasObject("type")
-                    && arg.matches("xp", "exp", "experience"))
+                    && arg.matches("xp", "exp", "experience")) {
                 scriptEntry.addObject("type", Type.EXP);
+            }
 
             else if (!scriptEntry.hasObject("engrave")
-                    && arg.matches("engrave"))
+                    && arg.matches("engrave")) {
                 scriptEntry.addObject("engrave", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("unlimit_stack_size")
-                    && arg.matches("unlimit_stack_size"))
+                    && arg.matches("unlimit_stack_size")) {
                 scriptEntry.addObject("unlimit_stack_size", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")) {
@@ -60,16 +64,19 @@ public class GiveCommand extends AbstractCommand {
 
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("t", "to")
-                    && arg.matchesArgumentType(dInventory.class))
+                    && arg.matchesArgumentType(dInventory.class)) {
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
+            }
 
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer))
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("slot", arg.asElement());
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
 
         }
 
@@ -81,14 +88,17 @@ public class GiveCommand extends AbstractCommand {
 
         Type type = (Type) scriptEntry.getObject("type");
 
-        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null)
+        if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
             scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getInventory() : null);
+        }
 
-        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY)
+        if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
             throw new InvalidArgumentsException("Must specify an inventory to give to!");
+        }
 
-        if (type == Type.ITEM && scriptEntry.getObject("items") == null)
+        if (type == Type.ITEM && scriptEntry.getObject("items") == null) {
             throw new InvalidArgumentsException("Must specify item/items!");
+        }
 
     }
 
@@ -105,8 +115,9 @@ public class GiveCommand extends AbstractCommand {
         Object items_object = scriptEntry.getObject("items");
         List<dItem> items = null;
 
-        if (items_object != null)
+        if (items_object != null) {
             items = (List<dItem>) items_object;
+        }
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("Type", type.name())
@@ -120,10 +131,12 @@ public class GiveCommand extends AbstractCommand {
         switch (type) {
 
             case MONEY:
-                if (Depends.economy != null)
+                if (Depends.economy != null) {
                     Depends.economy.depositPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
-                else
+                }
+                else {
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+                }
                 break;
 
             case EXP:
@@ -139,17 +152,20 @@ public class GiveCommand extends AbstractCommand {
                         dB.echoError("Cannot give air!");
                         continue;
                     }
-                    if (set_quantity)
+                    if (set_quantity) {
                         is.setAmount(qty.asInt());
-                    if (engrave.asBoolean())
+                    }
+                    if (engrave.asBoolean()) {
                         is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
+                    }
 
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt() - 1, limited, is);
 
                     if (!leftovers.isEmpty()) {
                         dB.echoDebug(scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");
-                        for (ItemStack leftoverItem : leftovers)
+                        for (ItemStack leftoverItem : leftovers) {
                             inventory.getLocation().getWorld().dropItem(inventory.getLocation(), leftoverItem);
+                        }
                     }
                 }
                 break;

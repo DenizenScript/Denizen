@@ -31,8 +31,9 @@ public class FlaggedRequirement extends AbstractRequirement {
 
         for (String arg : args) {
 
-            if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg))
+            if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg)) {
                 type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
+            }
 
             else if (arg.split(":", 2).length > 1) {
                 String[] flagArgs = arg.split(":");
@@ -47,8 +48,9 @@ public class FlaggedRequirement extends AbstractRequirement {
                 }
             }
 
-            else
+            else {
                 name = arg.toUpperCase();
+            }
         }
 
         FlagManager flagMng = DenizenAPI.getCurrentInstance().flagManager();
@@ -67,16 +69,20 @@ public class FlaggedRequirement extends AbstractRequirement {
         }
 
         if (index.length() == 0) {
-            if (flag.getLast().asString().equalsIgnoreCase(value))
+            if (flag.getLast().asString().equalsIgnoreCase(value)) {
                 outcome = true;
-            else
+            }
+            else {
                 dB.echoDebug(context.getScriptContainer(), "... does not match '" + flag.getLast().asString() + "'.");
+            }
         }
         else if (index.matches("\\d+")) {
-            if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value))
+            if (flag.get(Integer.parseInt(index)).asString().equalsIgnoreCase(value)) {
                 outcome = true;
-            else
+            }
+            else {
                 dB.echoDebug(context.getScriptContainer(), "... does not match '" + flag.get(Integer.parseInt(index)).asString() + "'.");
+            }
         }
 
         return outcome;

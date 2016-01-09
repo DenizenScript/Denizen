@@ -30,24 +30,30 @@ public class DenizenChat implements VocalChord {
 
     @Override
     public void talk(SpeechContext speechContext) {
-        if (!(speechContext instanceof DenizenSpeechContext)) return;
+        if (!(speechContext instanceof DenizenSpeechContext)) {
+            return;
+        }
 
         DenizenSpeechContext context = (DenizenSpeechContext) speechContext;
 
         Talkable talker = context.getTalker();
-        if (talker == null) return;
+        if (talker == null) {
+            return;
+        }
 
         ScriptEntry entry = context.getScriptEntry();
         ScriptQueue queue = entry.getResidingQueue();
 
         String defTalker = null;
-        if (queue.hasDefinition("talker"))
+        if (queue.hasDefinition("talker")) {
             defTalker = queue.getDefinition("talker");
+        }
         queue.addDefinition("talker", new dEntity(talker.getEntity()).identify());
 
         String defMessage = null;
-        if (queue.hasDefinition("message"))
+        if (queue.hasDefinition("message")) {
             defMessage = queue.getDefinition("message");
+        }
         queue.addDefinition("message", context.getMessage());
 
         // Chat to the world using Denizen chat settings
@@ -66,13 +72,15 @@ public class DenizenChat implements VocalChord {
             // Check if bystanders hear targeted chat
             if (context.isBystandersEnabled()) {
                 String defTarget = null;
-                if (queue.hasDefinition("target"))
+                if (queue.hasDefinition("target")) {
                     defTarget = queue.getDefinition("target");
+                }
                 queue.addDefinition("target", new dEntity(context.iterator().next().getEntity()).identify());
                 String bystanderText = TagManager.tag(Settings.chatWithTargetToBystandersFormat(), new BukkitTagContext(entry, false));
                 talkToBystanders(talker, bystanderText, context);
-                if (defTarget != null)
+                if (defTarget != null) {
                     queue.addDefinition("target", defTarget);
+                }
             }
         }
 
@@ -85,8 +93,9 @@ public class DenizenChat implements VocalChord {
             }
             if (context.isBystandersEnabled()) {
                 String[] format = Settings.chatMultipleTargetsFormat().split("%target%");
-                if (format.length <= 1)
+                if (format.length <= 1) {
                     dB.echoError("Invalid 'Commands.Chat.Options.Multiple targets format' in config.yml! Must have at least 1 %target%");
+                }
                 StringBuilder parsed = new StringBuilder();
                 Iterator<Talkable> iter = context.iterator();
                 int i = 0;
@@ -101,30 +110,35 @@ public class DenizenChat implements VocalChord {
                 String targets = TagManager.tag(parsed.toString(), new BukkitTagContext(entry, false));
 
                 String defTargets = null;
-                if (queue.hasDefinition("targets"))
+                if (queue.hasDefinition("targets")) {
                     defTargets = queue.getDefinition("targets");
+                }
                 queue.addDefinition("targets", targets);
 
                 String bystanderText = TagManager.tag(Settings.chatWithTargetsToBystandersFormat(), new BukkitTagContext(entry, false));
                 talkToBystanders(talker, bystanderText, context);
 
-                if (defTargets != null)
+                if (defTargets != null) {
                     queue.addDefinition("targets", defTargets);
+                }
             }
         }
 
-        if (defMessage != null)
+        if (defMessage != null) {
             queue.addDefinition("message", defMessage);
-        if (defTalker != null)
+        }
+        if (defTalker != null) {
             queue.addDefinition("talker", defTalker);
+        }
     }
 
     private void talkToBystanders(Talkable talkable, String text, DenizenSpeechContext context) {
         double range = context.getChatRange();
         List<Entity> bystanderEntities = new ArrayList<Entity>();
         if (range == 0D) {
-            for (Player player : Bukkit.getServer().getOnlinePlayers())
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 bystanderEntities.add(player);
+            }
         }
         else {
             bystanderEntities = talkable.getEntity().getNearbyEntities(range, range, range);

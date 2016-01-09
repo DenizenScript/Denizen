@@ -19,8 +19,9 @@ public class EnchantedRequirement extends AbstractRequirement {
         boolean outcome = false;
         CheckType checkType = null;
 
-        if (args.size() < 1)
+        if (args.size() < 1) {
             throw new RequirementCheckException("Must provide arguments!");
+        }
 
         /* Get arguments */
 
@@ -31,22 +32,29 @@ public class EnchantedRequirement extends AbstractRequirement {
                 dB.echoDebug(context.getScriptContainer(), "...will check item in hand");
             }
 
-            else dB.echoError("Could not match argument '" + thisArg + "'");
+            else {
+                dB.echoError("Could not match argument '" + thisArg + "'");
+            }
         }
 
         if (checkType != null) {
             switch (checkType) {
 
                 case ITEMINHAND:
-                    if (!context.getPlayer().getPlayerEntity().getItemInHand().getEnchantments().isEmpty())
+                    if (!context.getPlayer().getPlayerEntity().getItemInHand().getEnchantments().isEmpty()) {
                         outcome = true;
+                    }
                     break;
 
             }
         }
 
-        if (outcome) dB.echoDebug(context.getScriptContainer(), "...item is enchanted.");
-        else dB.echoDebug(context.getScriptContainer(), "...item is not enchanted!");
+        if (outcome) {
+            dB.echoDebug(context.getScriptContainer(), "...item is enchanted.");
+        }
+        else {
+            dB.echoDebug(context.getScriptContainer(), "...item is not enchanted!");
+        }
 
         return outcome;
     }

@@ -68,7 +68,9 @@ public class dItem implements dObject, Notable, Adjustable {
      * @return an Item, or null if incorrectly formatted
      */
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         Matcher m;
         dItem stack = null;
@@ -143,7 +145,9 @@ public class dItem implements dObject, Notable, Adjustable {
                 else {
                     dMaterial mat = dMaterial.valueOf(material);
                     stack = new dItem(mat.getMaterial());
-                    if (mat.hasData()) stack.setDurability(mat.getData());
+                    if (mat.hasData()) {
+                        stack.setDurability(mat.getData());
+                    }
                 }
 
                 if (m.group(2) != null) {
@@ -156,12 +160,15 @@ public class dItem implements dObject, Notable, Adjustable {
                 return stack;
             }
             catch (Exception e) {
-                if (!string.equalsIgnoreCase("none") && !nope)
+                if (!string.equalsIgnoreCase("none") && !nope) {
                     dB.log("Does not match a valid item ID or material: " + string);
+                }
             }
         }
 
-        if (!nope) dB.log("valueOf dItem returning null: " + string);
+        if (!nope) {
+            dB.log("valueOf dItem returning null: " + string);
+        }
 
         // No match! Return null.
         return null;
@@ -174,12 +181,15 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public static boolean matches(String arg) {
 
-        if (arg == null) return false;
+        if (arg == null) {
+            return false;
+        }
 
         // All dObjects should 'match' if there is a proper
         // ObjectFetcher identifier
-        if (arg.toLowerCase().startsWith("i@"))
+        if (arg.toLowerCase().startsWith("i@")) {
             return true;
+        }
 
         // Try a quick and simple item/book script match
         if (ScriptRegistry.containsScript(arg, ItemScriptContainer.class)) {
@@ -225,10 +235,12 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public dItem(ItemStack item) {
-        if (item == null)
+        if (item == null) {
             this.item = new ItemStack(Material.AIR, 0);
-        else
+        }
+        else {
             this.item = item;
+        }
     }
 
     public dItem(Item item) {
@@ -263,7 +275,9 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public int comparesTo(ItemStack item) {
-        if (item == null) return -1;
+        if (item == null) {
+            return -1;
+        }
 
         int determination = 0;
         ItemStack compared = getItemStack();
@@ -271,15 +285,21 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // Will return -1 if these are not the same
         // Material IDs
-        if (compared.getTypeId() != compared_to.getTypeId()) return -1;
+        if (compared.getTypeId() != compared_to.getTypeId()) {
+            return -1;
+        }
 
         // If compared_to has item meta, and compared does not, return -1
         if (compared_to.hasItemMeta()) {
-            if (!compared.hasItemMeta()) return -1;
+            if (!compared.hasItemMeta()) {
+                return -1;
+            }
 
             // If compared_to has a display name, and compared does not, return -1
             if (compared_to.getItemMeta().hasDisplayName()) {
-                if (!compared.getItemMeta().hasDisplayName()) return -1;
+                if (!compared.getItemMeta().hasDisplayName()) {
+                    return -1;
+                }
 
                 // If compared_to's display name does not at least start with compared's item name,
                 // return -1.
@@ -289,50 +309,65 @@ public class dItem implements dObject, Notable, Adjustable {
                     // If the compared item has a longer display name than compared_to,
                     // it is similar, but modified. Perhaps 'engraved' or something?
                     if (compared.getItemMeta().getDisplayName().length() >
-                            compared_to.getItemMeta().getDisplayName().length())
+                            compared_to.getItemMeta().getDisplayName().length()) {
                         determination++;
+                    }
                 }
 
-                else return -1;
+                else {
+                    return -1;
+                }
             }
 
             // If compared_to has lore, and compared does not, return -1
             if (compared_to.getItemMeta().hasLore()) {
-                if (!compared.getItemMeta().hasLore()) return -1;
+                if (!compared.getItemMeta().hasLore()) {
+                    return -1;
+                }
 
                 // If compared doesn't have a piece of lore contained in compared_to, return -1
                 for (String lore : compared_to.getItemMeta().getLore()) {
-                    if (!compared.getItemMeta().getLore().contains(lore)) return -1;
+                    if (!compared.getItemMeta().getLore().contains(lore)) {
+                        return -1;
+                    }
                 }
 
                 // If the compared item has more lore than compared to, it is similar, but modified.
                 // Still qualifies for a match, but it seems the item may be a 'better' item, so increase
                 // the determination.
-                if (compared.getItemMeta().getLore().size() > compared_to.getItemMeta().getLore().size())
+                if (compared.getItemMeta().getLore().size() > compared_to.getItemMeta().getLore().size()) {
                     determination++;
+                }
             }
 
             if (!compared_to.getItemMeta().getEnchants().isEmpty()) {
-                if (compared.getItemMeta().getEnchants().isEmpty()) return -1;
+                if (compared.getItemMeta().getEnchants().isEmpty()) {
+                    return -1;
+                }
 
                 for (Map.Entry<Enchantment, Integer> enchant : compared_to.getItemMeta().getEnchants().entrySet()) {
                     if (!compared.getItemMeta().getEnchants().containsKey(enchant.getKey())
-                            || compared.getItemMeta().getEnchants().get(enchant.getKey()) < enchant.getValue())
+                            || compared.getItemMeta().getEnchants().get(enchant.getKey()) < enchant.getValue()) {
                         return -1;
+                    }
                 }
 
-                if (compared.getItemMeta().getEnchants().size() > compared_to.getItemMeta().getEnchants().size())
+                if (compared.getItemMeta().getEnchants().size() > compared_to.getItemMeta().getEnchants().size()) {
                     determination++;
+                }
             }
         }
 
         if (isRepairable()) {
-            if (compared.getDurability() < compared_to.getDurability())
+            if (compared.getDurability() < compared_to.getDurability()) {
                 determination++;
+            }
         }
         else
             // Check data
-            if (getItemStack().getData().getData() != item.getData().getData()) return -1;
+            if (getItemStack().getData().getData() != item.getData().getData()) {
+                return -1;
+            }
 
         return determination;
     }
@@ -392,10 +427,12 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public String getScriptName() {
         ItemScriptContainer cont = ItemScriptHelper.getItemScriptContainer(item);
-        if (cont != null)
+        if (cont != null) {
             return cont.getName();
-        else
+        }
+        else {
             return null;
+        }
     }
 
     public dMaterial getMaterial() {
@@ -407,8 +444,9 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public void setAmount(int value) {
-        if (item != null)
+        if (item != null) {
             item.setAmount(value);
+        }
     }
 
     public int getMaxStackSize() {
@@ -416,20 +454,24 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public int getAmount() {
-        if (item != null)
+        if (item != null) {
             return item.getAmount();
-        else
+        }
+        else {
             return 0;
+        }
     }
 
     public void setDurability(short value) {
-        if (item != null)
+        if (item != null) {
             item.setDurability(value);
+        }
     }
 
     public void setData(byte value) {
-        if (item != null)
+        if (item != null) {
             item.getData().setData(value);
+        }
     }
 
     public boolean isRepairable() {
@@ -467,7 +509,9 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public String identify() {
 
-        if (item == null) return "i@air";
+        if (item == null) {
+            return "i@air";
+        }
 
         if (item.getTypeId() != 0) {
 
@@ -492,7 +536,9 @@ public class dItem implements dObject, Notable, Adjustable {
 
     @Override
     public String identifySimple() {
-        if (item == null) return "null";
+        if (item == null) {
+            return "null";
+        }
 
         if (item.getTypeId() != 0) {
 
@@ -525,7 +571,9 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public String identifyNoIdentifier() {
 
-        if (item == null) return "null";
+        if (item == null) {
+            return "null";
+        }
 
         if (item.getTypeId() != 0) {
 
@@ -548,7 +596,9 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String identifySimpleNoIdentifier() {
-        if (item == null) return "null";
+        if (item == null) {
+            return "null";
+        }
 
         if (item.getTypeId() != 0) {
 
@@ -903,7 +953,9 @@ public class dItem implements dObject, Notable, Adjustable {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
@@ -935,54 +987,69 @@ public class dItem implements dObject, Notable, Adjustable {
         if (attribute.startsWith("formatted")) {
             String id = getMaterial().realName().toLowerCase().replace('_', ' ');
 
-            if (id.equals("air"))
+            if (id.equals("air")) {
                 return new Element("nothing")
                         .getAttribute(attribute.fulfill(1));
+            }
 
-            if (id.equals("ice") || id.equals("dirt"))
+            if (id.equals("ice") || id.equals("dirt")) {
                 return new Element(id)
                         .getAttribute(attribute.fulfill(1));
+            }
 
             if (getItemStack().getAmount() > 1) {
-                if (id.equals("cactus"))
+                if (id.equals("cactus")) {
                     return new Element("cactuses")
                             .getAttribute(attribute.fulfill(1));
+                }
 
-                if (id.endsWith(" off"))
+                if (id.endsWith(" off")) {
                     id = new String(id.substring(0, id.length() - 4));
-                if (id.endsWith(" on"))
+                }
+                if (id.endsWith(" on")) {
                     id = new String(id.substring(0, id.length() - 3));
+                }
 
                 if (id.equals("rotten flesh") || id.equals("cooked fish")
-                        || id.equals("raw fish") || id.endsWith("s"))
+                        || id.equals("raw fish") || id.endsWith("s")) {
                     return new Element(id)
                             .getAttribute(attribute.fulfill(1));
-                if (id.endsWith("y"))
+                }
+                if (id.endsWith("y")) {
                     return new Element(id.substring(0, id.length() - 1) + "ies")
                             .getAttribute(attribute.fulfill(1));  // ex: lily -> lilies
-                if (id.endsWith("sh") || id.endsWith("ch"))
+                }
+                if (id.endsWith("sh") || id.endsWith("ch")) {
                     return new Element(id + "es")
                             .getAttribute(attribute.fulfill(1));
+                }
                 // else
                 return new Element(id + "s")
                         .getAttribute(attribute.fulfill(1)); // iron sword -> iron swords
 
             }
             else {
-                if (id.equals("cactus")) return new Element("a cactus").getAttribute(attribute.fulfill(1));
-                if (id.endsWith("s")) return new Element(id).getAttribute(attribute.fulfill(1));
+                if (id.equals("cactus")) {
+                    return new Element("a cactus").getAttribute(attribute.fulfill(1));
+                }
+                if (id.endsWith("s")) {
+                    return new Element(id).getAttribute(attribute.fulfill(1));
+                }
 
-                if (id.endsWith(" off"))
+                if (id.endsWith(" off")) {
                     return new Element("a " + id.substring(0, id.length() - 4))
                             .getAttribute(attribute.fulfill(1));
-                if (id.endsWith(" on"))
+                }
+                if (id.endsWith(" on")) {
                     return new Element("a " + id.substring(0, id.length() - 3))
                             .getAttribute(attribute.fulfill(1));
+                }
 
                 if (id.startsWith("a") || id.startsWith("e") || id.startsWith("i")
-                        || id.startsWith("o") || id.startsWith("u"))
+                        || id.startsWith("o") || id.startsWith("u")) {
                     return new Element("an " + id)
                             .getAttribute(attribute.fulfill(1));// ex: emerald -> an emerald
+                }
                 // else
                 return new Element("a " + id)
                         .getAttribute(attribute.fulfill(1));// ex: diamond -> a diamond
@@ -992,7 +1059,9 @@ public class dItem implements dObject, Notable, Adjustable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -1009,12 +1078,14 @@ public class dItem implements dObject, Notable, Adjustable {
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
-            if (mechanism.fulfilled())
+            if (mechanism.fulfilled()) {
                 break;
+            }
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
 
     }
 }

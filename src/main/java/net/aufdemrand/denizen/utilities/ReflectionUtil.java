@@ -69,25 +69,30 @@ public abstract class ReflectionUtil {
     private static Class<?>[] toPrimitiveTypeArray(Object[] objects) {
         int a = objects != null ? objects.length : 0;
         Class<?>[] types = new Class<?>[a];
-        for (int i = 0; i < a; i++)
+        for (int i = 0; i < a; i++) {
             types[i] = getPrimitiveType(objects[i].getClass());
+        }
         return types;
     }
 
     private static Class<?>[] toPrimitiveTypeArray(Class<?>[] classes) {
         int a = classes != null ? classes.length : 0;
         Class<?>[] types = new Class<?>[a];
-        for (int i = 0; i < a; i++)
+        for (int i = 0; i < a; i++) {
             types[i] = getPrimitiveType(classes[i]);
+        }
         return types;
     }
 
     private static boolean equalsTypeArray(Class<?>[] a, Class<?>[] o) {
-        if (a.length != o.length)
+        if (a.length != o.length) {
             return false;
-        for (int i = 0; i < a.length; i++)
-            if (!a[i].equals(o[i]) && !a[i].isAssignableFrom(o[i]))
+        }
+        for (int i = 0; i < a.length; i++) {
+            if (!a[i].equals(o[i]) && !a[i].isAssignableFrom(o[i])) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -103,8 +108,9 @@ public abstract class ReflectionUtil {
         Class<?>[] t = toPrimitiveTypeArray(paramTypes);
         for (Constructor<?> c : clazz.getConstructors()) {
             Class<?>[] types = toPrimitiveTypeArray(c.getParameterTypes());
-            if (equalsTypeArray(types, t))
+            if (equalsTypeArray(types, t)) {
                 return c;
+            }
         }
         return null;
     }
@@ -125,8 +131,9 @@ public abstract class ReflectionUtil {
         Class<?>[] t = toPrimitiveTypeArray(paramTypes);
         for (Method m : clazz.getMethods()) {
             Class<?>[] types = toPrimitiveTypeArray(m.getParameterTypes());
-            if (m.getName().equals(name) && equalsTypeArray(types, t))
+            if (m.getName().equals(name) && equalsTypeArray(types, t)) {
                 return m;
+            }
         }
         return null;
     }
@@ -152,7 +159,8 @@ public abstract class ReflectionUtil {
     }
 
     public static void setValues(Object obj, FieldEntry... entrys) throws Exception {
-        for (FieldEntry f : entrys)
+        for (FieldEntry f : entrys) {
             setValue(obj, f);
+        }
     }
 }

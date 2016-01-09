@@ -26,34 +26,42 @@ public class AnchorCommand extends AbstractCommand {
         for (Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("action")
-                    && arg.matchesEnum(Action.values()))
+                    && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
+            }
 
 
             else if (!scriptEntry.hasObject("range")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("range", "r"))
+                    && arg.matchesPrefix("range", "r")) {
                 scriptEntry.addObject("range", arg.asElement());
+            }
 
 
             else if (!scriptEntry.hasObject("id")
-                    && arg.matchesPrefix("id", "i"))
+                    && arg.matchesPrefix("id", "i")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
 
 
             else if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check required arguments
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
+        }
 
-        if (!scriptEntry.hasObject("action"))
+        if (!scriptEntry.hasObject("action")) {
             throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values());
+        }
 
     }
 
@@ -76,8 +84,9 @@ public class AnchorCommand extends AbstractCommand {
 
         dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
-        if (!npc.getCitizen().hasTrait(Anchors.class))
+        if (!npc.getCitizen().hasTrait(Anchors.class)) {
             npc.getCitizen().addTrait(Anchors.class);
+        }
 
         switch (action) {
 
@@ -88,43 +97,52 @@ public class AnchorCommand extends AbstractCommand {
             case ASSUME: {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
-                if (n == null)
+                if (n == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                else
+                }
+                else {
                     npc.getEntity().teleport(n.getLocation());
+                }
             }
             return;
 
             case WALKNEAR: {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
-                if (n == null)
+                if (n == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                else if (range == null)
+                }
+                else if (range == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Must specify a range!");
-                else
+                }
+                else {
                     npc.getNavigator().setTarget(
                             Utilities.getWalkableLocationNear(n.getLocation(), range.asInt()));
+                }
             }
             return;
 
             case WALKTO: {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
-                if (n == null)
+                if (n == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                else
+                }
+                else {
                     npc.getNavigator().setTarget(n.getLocation());
+                }
             }
             return;
 
             case REMOVE: {
                 Anchor n = npc.getCitizen().getTrait(Anchors.class)
                         .getAnchor(id.asString());
-                if (n == null)
+                if (n == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid anchor name '" + id.asString() + "'");
-                else
+                }
+                else {
                     npc.getCitizen().getTrait(Anchors.class).removeAnchor(n);
+                }
             }
         }
 

@@ -45,8 +45,9 @@ public class dNPCRegistry implements Listener {
 
     public dNPCRegistry(Denizen denizen) {
         plugin = denizen;
-        if (Depends.citizens != null)
+        if (Depends.citizens != null) {
             plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        }
         actionHandler = new ActionHandler(plugin);
     }
 
@@ -68,7 +69,9 @@ public class dNPCRegistry implements Listener {
     }
 
     public static void _registerNPC(dNPC denizenNPC) {
-        if (denizenNPC == null || !denizenNPC.isValid()) return;
+        if (denizenNPC == null || !denizenNPC.isValid()) {
+            return;
+        }
         int id = denizenNPC.getId();
         if (!denizenNPCs.containsKey(id)) {
             denizenNPCs.put(id, denizenNPC);
@@ -79,7 +82,9 @@ public class dNPCRegistry implements Listener {
     }
 
     private static void _registerNPC(NPC npc) {
-        if (npc == null) return;
+        if (npc == null) {
+            return;
+        }
         if (!denizenNPCs.containsKey(npc.getId())) {
             _registerNPC(new dNPC(npc));
         }
@@ -94,17 +99,22 @@ public class dNPCRegistry implements Listener {
      * @return a dNPC
      */
     public static dNPC getDenizen(NPC npc) {
-        if (npc == null) return null;
-        if (!denizenNPCs.containsKey(npc.getId()))
+        if (npc == null) {
+            return null;
+        }
+        if (!denizenNPCs.containsKey(npc.getId())) {
             _registerNPC(npc);
+        }
         return denizenNPCs.get(npc.getId());
     }
 
     public static dNPC getDenizen(int id) {
-        if (denizenNPCs.containsKey(id))
+        if (denizenNPCs.containsKey(id)) {
             return denizenNPCs.get(id);
-        else
+        }
+        else {
             return null;
+        }
     }
 
     /**
@@ -114,9 +124,12 @@ public class dNPCRegistry implements Listener {
      * @return the NPC's dInventory
      */
     public static Inventory getInventory(NPC npc) {
-        if (npc == null) return null;
-        if (!npcInventories.containsKey(npc.getId()))
+        if (npc == null) {
+            return null;
+        }
+        if (!npcInventories.containsKey(npc.getId())) {
             _registerNPC(npc);
+        }
         return npcInventories.get(npc.getId());
     }
 
@@ -140,8 +153,9 @@ public class dNPCRegistry implements Listener {
                     dB.echoError("Report this error to aufdemrand! Err: posconcurrency1");
                 }
             }
-            else if (npc.getValue().isSpawned())
+            else if (npc.getValue().isSpawned()) {
                 npcs.add(npc.getValue());
+            }
         }
         return npcs;
     }
@@ -193,11 +207,13 @@ public class dNPCRegistry implements Listener {
         dNPC npc = getDenizen(event.getNPC().getId());
 
         // Do world script event 'On NPC Despawns'
-        if (npc != null)
+        if (npc != null) {
             OldEventManager.doEvents(Arrays.asList("npc despawns"), new BukkitScriptEntryData(null, npc), null);
+        }
 
-        if (npc != null)
+        if (npc != null) {
             npc.action("despawn", null);
+        }
     }
 
 
@@ -233,8 +249,9 @@ public class dNPCRegistry implements Listener {
             dNPC npc = (dNPC) inventory.getHolder();
             npc.getInventory().setContents(inventory.getContents());
             Equipment equipment = npc.getEquipmentTrait();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++) {
                 equipment.set(i, inventory.getItem(i));
+            }
         }
     }
 }

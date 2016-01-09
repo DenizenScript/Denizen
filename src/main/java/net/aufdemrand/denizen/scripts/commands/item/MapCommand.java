@@ -94,14 +94,16 @@ public class MapCommand extends AbstractCommand {
 
         }
 
-        if (!scriptEntry.hasObject("map-id") && !scriptEntry.hasObject("new"))
+        if (!scriptEntry.hasObject("map-id") && !scriptEntry.hasObject("new")) {
             throw new InvalidArgumentsException("Must specify a map ID or create a new map!");
+        }
 
         if (!scriptEntry.hasObject("reset")
                 && !scriptEntry.hasObject("reset-loc")
                 && !scriptEntry.hasObject("image")
-                && !scriptEntry.hasObject("script"))
+                && !scriptEntry.hasObject("script")) {
             throw new InvalidArgumentsException("Must specify a valid action to perform!");
+        }
 
         scriptEntry.defaultObject("reset", new Element(false)).defaultObject("resize", new Element(false))
                 .defaultObject("x-value", new Element(0)).defaultObject("y-value", new Element(0));
@@ -135,8 +137,9 @@ public class MapCommand extends AbstractCommand {
         }
         else if (id != null) {
             map = Bukkit.getServer().getMap((short) id.asInt());
-            if (map == null)
+            if (map == null) {
                 throw new CommandExecutionException("No map found for ID '" + id.asInt() + "'!");
+            }
         }
         else {
             throw new CommandExecutionException("The map command failed somehow! Report this to a developer!");
@@ -162,12 +165,14 @@ public class MapCommand extends AbstractCommand {
             if (image != null) {
                 int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
                 int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
-                if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif"))
+                if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
                     dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
                             wide, high));
-                else
+                }
+                else {
                     dmr.addObject(new MapImage(x.asString(), y.asString(), "true", false, image.asString(),
                             wide, high));
+                }
             }
         }
 

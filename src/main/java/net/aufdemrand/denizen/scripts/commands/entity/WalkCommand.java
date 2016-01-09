@@ -35,49 +35,59 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("location")
-                    && arg.matchesArgumentType(dLocation.class))
+                    && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
+            }
 
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Percentage)
-                    && arg.matchesPrefix("s, speed"))
+                    && arg.matchesPrefix("s, speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("auto_range")
-                    && arg.matches("auto_range"))
+                    && arg.matches("auto_range")) {
                 scriptEntry.addObject("auto_range", Element.TRUE);
+            }
 
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("radius"))
+                    && arg.matchesPrefix("radius")) {
                 scriptEntry.addObject("radius", arg.asElement());
+            }
 
             else if (!scriptEntry.hasObject("stop")
-                    && arg.matches("stop"))
+                    && arg.matches("stop")) {
                 scriptEntry.addObject("stop", new Element(true));
+            }
 
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentList(dEntity.class))
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+            }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
 
         // Check for required information
 
-        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop"))
+        if (!scriptEntry.hasObject("location") && !scriptEntry.hasObject("stop")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
         if (!scriptEntry.hasObject("entities")) {
             if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null
                     || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid()
-                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned())
+                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
-            else
+            }
+            else {
                 scriptEntry.addObject("entities",
                         Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
+            }
         }
 
         scriptEntry.defaultObject("stop", new Element(false));
@@ -129,14 +139,16 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 if (auto_range != null
                         && auto_range == Element.TRUE) {
                     double distance = npc.getLocation().distance(loc);
-                    if (npc.getNavigator().getLocalParameters().range() < distance + 10)
+                    if (npc.getNavigator().getLocalParameters().range() < distance + 10) {
                         npc.getNavigator().getLocalParameters().range((float) distance + 10);
+                    }
                 }
 
                 npc.getNavigator().setTarget(loc);
 
-                if (speed != null)
+                if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
+                }
 
                 if (radius != null) {
                     npc.getNavigator().getLocalParameters().addRunCallback(WalkCommandCitizensEvents
@@ -160,10 +172,12 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         if (scriptEntry.shouldWaitFor()) {
             held.add(scriptEntry);
-            if (!npcs.isEmpty())
+            if (!npcs.isEmpty()) {
                 scriptEntry.addObject("tally", npcs);
-            if (!waitForEntities.isEmpty())
+            }
+            if (!waitForEntities.isEmpty()) {
                 scriptEntry.addObject("entities", waitForEntities);
+            }
         }
 
     }

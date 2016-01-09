@@ -23,7 +23,9 @@ public class WalkCommandCitizensEvents implements Listener {
     @EventHandler
     public void finish(NavigationCompleteEvent e) {
 
-        if (WalkCommand.held.isEmpty()) return;
+        if (WalkCommand.held.isEmpty()) {
+            return;
+        }
 
         checkHeld(e);
 
@@ -32,7 +34,9 @@ public class WalkCommandCitizensEvents implements Listener {
     @EventHandler
     public void cancel(NavigationCancelEvent e) {
 
-        if (WalkCommand.held.isEmpty()) return;
+        if (WalkCommand.held.isEmpty()) {
+            return;
+        }
 
         checkHeld(e);
 
@@ -40,8 +44,9 @@ public class WalkCommandCitizensEvents implements Listener {
 
 
     public void checkHeld(NavigationEvent e) {
-        if (e.getNPC() == null)
+        if (e.getNPC() == null) {
             return;
+        }
 
         // Check each held entry -- the scriptExecuter is waiting on
         // the entry to be marked 'waited for'.

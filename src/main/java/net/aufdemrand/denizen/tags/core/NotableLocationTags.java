@@ -20,7 +20,9 @@ public class NotableLocationTags implements Listener {
     @TagManager.TagEvents
     public void notableTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("NOTABLE")) return;
+        if (!event.matches("NOTABLE")) {
+            return;
+        }
 
         dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "notable: tags are deprecated! Use <l@NotableName>!");
         String tag = event.raw_tag;
@@ -31,7 +33,9 @@ public class NotableLocationTags implements Listener {
             tag = tag.split(":", 2)[1];
         }
 
-        else if (event.hasNameContext()) id = event.getNameContext();
+        else if (event.hasNameContext()) {
+            id = event.getNameContext();
+        }
 
         if (NotableManager.isType(id, dLocation.class)) {
             dB.echoError("Notable tag '" + event.raw_tag + "': id was not found.");

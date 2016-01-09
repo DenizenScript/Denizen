@@ -17,8 +17,12 @@ public class ItemSpawnEgg implements Property {
     }
 
     public static ItemSpawnEgg getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemSpawnEgg((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemSpawnEgg((dItem) _item);
+        }
     }
 
 
@@ -31,7 +35,9 @@ public class ItemSpawnEgg implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.spawn_egg_entity>

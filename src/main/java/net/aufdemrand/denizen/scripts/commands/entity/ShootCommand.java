@@ -129,7 +129,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 scriptEntry.addObject("no_rotate", new Element(true));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or player's locations as the origin if one is not specified
@@ -145,11 +147,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
-        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation"))
+        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -235,8 +239,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         // can be fetched.
         scriptEntry.addObject("shot_entities", entityList);
 
-        if (spread == null)
+        if (spread == null) {
             Position.mount(Conversion.convertEntities(entities));
+        }
 
         // Get the entity at the bottom of the entity list, because
         // only its gravity should be affected and tracked considering
@@ -266,7 +271,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             Vector to = destination.clone().add(lead.clone().multiply(hangTime)).toVector();
             relative = to.clone().subtract(originLocation.toVector());
             Double dist = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
-            if (dist == 0) dist = 0.1d;
+            if (dist == 0) {
+                dist = 0.1d;
+            }
             testAng = Velocity.launchAngle(originLocation, to, v, relative.getY(), g);
             relative.setY(Math.tan(testAng) * dist);
             relative = relative.normalize();
@@ -362,12 +369,14 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         Entity arrow = event.getDamager();
 
         // First, quickly confirm it's a projectile (relevant at all)
-        if (!(arrow instanceof Projectile))
+        if (!(arrow instanceof Projectile)) {
             return;
+        }
 
         // Second, more slowly check if we shot it
-        if (!arrows.containsKey(arrow.getUniqueId()))
+        if (!arrows.containsKey(arrow.getUniqueId())) {
             return;
+        }
 
         // Replace its entry with the hit entity.
         arrows.remove(arrow.getUniqueId());

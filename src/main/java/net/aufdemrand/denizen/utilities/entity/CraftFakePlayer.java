@@ -104,8 +104,9 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         if (skin != null) {
             GameProfile skinProfile = new GameProfile(null, skin);
             skinProfile = ItemSkullskin.fillGameProfile(skinProfile);
-            for (Property texture : skinProfile.getProperties().get("textures"))
+            for (Property texture : skinProfile.getProperties().get("textures")) {
                 gameProfile.getProperties().put("textures", texture);
+            }
         }
         UUID uuid = UUID.randomUUID();
         if (uuid.version() == 4) {

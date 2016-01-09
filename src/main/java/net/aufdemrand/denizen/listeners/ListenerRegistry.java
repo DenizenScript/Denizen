@@ -65,13 +65,17 @@ public class ListenerRegistry implements dRegistry, Listener {
     public void addListenerFor(dPlayer player,
                                AbstractListener instance,
                                String id) {
-        if (player == null || id == null) return;
+        if (player == null || id == null) {
+            return;
+        }
         // Get current instances
         Map<String, AbstractListener> playerListeners;
-        if (listeners.containsKey(player.getName()))
+        if (listeners.containsKey(player.getName())) {
             playerListeners = listeners.get(player.getName());
-        else
+        }
+        else {
             playerListeners = new HashMap<String, AbstractListener>();
+        }
         // Insert instance into hash-map
         playerListeners.put(id.toLowerCase(), instance);
         listeners.put(player.getName(), playerListeners);
@@ -86,13 +90,17 @@ public class ListenerRegistry implements dRegistry, Listener {
      * @param id     the id of the listener instance
      */
     public void removeListenerFor(dPlayer player, String id) {
-        if (player == null || id == null) return;
+        if (player == null || id == null) {
+            return;
+        }
         // Get current instances
         Map<String, AbstractListener> playerListeners;
-        if (listeners.containsKey(player.getName()))
+        if (listeners.containsKey(player.getName())) {
             playerListeners = listeners.get(player.getName());
-        else
+        }
+        else {
             return;
+        }
         // Remove instance from hash-map
         playerListeners.remove(id.toLowerCase());
         listeners.put(player.getName(), playerListeners);
@@ -108,7 +116,9 @@ public class ListenerRegistry implements dRegistry, Listener {
      * @param id     id of the listener to cancel
      */
     public void cancel(dPlayer player, String id) {
-        if (player == null || id == null) return;
+        if (player == null || id == null) {
+            return;
+        }
         // Removes listener
         removeListenerFor(player, id);
         // Fires bukkit event
@@ -130,11 +140,13 @@ public class ListenerRegistry implements dRegistry, Listener {
                        dNPC npc,
                        String id,
                        dScript on_finish) {
-        if (player == null || id == null) return;
+        if (player == null || id == null) {
+            return;
+        }
         // Remove listener instance from the player
         removeListenerFor(player, id);
         // Run finish script
-        if (on_finish != null)
+        if (on_finish != null) {
             try {
                 // TODO: Add context to this
                 ((TaskScriptContainer) on_finish.getContainer())
@@ -145,6 +157,7 @@ public class ListenerRegistry implements dRegistry, Listener {
                 dB.echoError("Tried to run the finish task for: " + id + "/" + player.getName() + ","
                         + "but it seems not to be valid!");
             }
+        }
 
         Bukkit.getPluginManager().callEvent(new ListenerFinishEvent(player, id));
     }
@@ -152,8 +165,9 @@ public class ListenerRegistry implements dRegistry, Listener {
     public AbstractListener getListenerFor(dPlayer player, String listenerId) {
         if (listeners.containsKey(player.getName())) {
             Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-            if (playerListeners.containsKey(listenerId.toLowerCase()))
+            if (playerListeners.containsKey(listenerId.toLowerCase())) {
                 return playerListeners.get(listenerId.toLowerCase());
+            }
         }
         return null;
     }
@@ -197,7 +211,7 @@ public class ListenerRegistry implements dRegistry, Listener {
         // AbstractListener, which should be fine considering in-progress
         // AbstractListeners deconstruct automatically based on PlayerLogoutEvent
         // which is also run on a server disable or restart.
-        for (RegistrationableInstance member : types.values())
+        for (RegistrationableInstance member : types.values()) {
             try {
                 member.onDisable();
             }
@@ -205,21 +219,26 @@ public class ListenerRegistry implements dRegistry, Listener {
                 dB.echoError("Unable to disable '" + member.getClass().getName() + "'!");
                 dB.echoError(e);
             }
+        }
     }
 
     @Override
     public <T extends RegistrationableInstance> T get(Class<T> clazz) {
         if (types.containsValue(clazz)) {
-            for (RegistrationableInstance ri : types.values())
-                if (ri.getClass() == clazz)
+            for (RegistrationableInstance ri : types.values()) {
+                if (ri.getClass() == clazz) {
                     return clazz.cast(ri);
+                }
+            }
         }
         return null;
     }
 
     @Override
     public AbstractListenerType get(String listenerType) {
-        if (types.containsKey(listenerType.toUpperCase())) return types.get(listenerType.toUpperCase());
+        if (types.containsKey(listenerType.toUpperCase())) {
+            return types.get(listenerType.toUpperCase());
+        }
         return null;
     }
 
@@ -235,10 +254,14 @@ public class ListenerRegistry implements dRegistry, Listener {
         dPlayer player = new dPlayer(event.getPlayer());
 
         // Any saves quest listeners in progress?
-        if (!denizen.getSaves().contains("Listeners." + player.getSaveName())) return;
+        if (!denizen.getSaves().contains("Listeners." + player.getSaveName())) {
+            return;
+        }
         Set<String> inProgress = denizen.getSaves().getConfigurationSection("Listeners." + player.getSaveName()).getKeys(false);
         // If empty, no quest listeners to load.
-        if (inProgress.isEmpty()) return;
+        if (inProgress.isEmpty()) {
+            return;
+        }
 
         // TODO: Players.SAVENAME.Listeners?
         String path = "Listeners." + player.getSaveName() + ".";
@@ -249,9 +272,12 @@ public class ListenerRegistry implements dRegistry, Listener {
             try {
                 String type = denizen.getSaves().getString(path + listenerId + ".Listener Type");
                 dNPC npc = null;
-                if (denizen.getSaves().contains(path + listenerId + ".Linked NPCID"))
+                if (denizen.getSaves().contains(path + listenerId + ".Linked NPCID")) {
                     npc = DenizenAPI.getDenizenNPC(CitizensAPI.getNPCRegistry().getById(denizen.getSaves().getInt(path + listenerId + ".Linked NPCID")));
-                if (get(type) == null) return;
+                }
+                if (get(type) == null) {
+                    return;
+                }
                 dB.log(event.getPlayer().getName() + " has a LISTENER in progress. Loading '" + listenerId + "'.");
                 get(type).createInstance(dPlayer.mirrorBukkitPlayer(event.getPlayer()), listenerId).load(dPlayer.mirrorBukkitPlayer(event.getPlayer()), npc, listenerId, type);
             }

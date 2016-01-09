@@ -79,12 +79,15 @@ public class EquipCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Make sure at least one equipment argument was used
-        if (equipment.isEmpty())
+        if (equipment.isEmpty()) {
             throw new InvalidArgumentsException("Must specify equipment!");
+        }
 
         scriptEntry.addObject("equipment", equipment);
 
@@ -119,11 +122,21 @@ public class EquipCommand extends AbstractCommand {
 
                     Equipment trait = npc.getEquipmentTrait();
 
-                    if (equipment.get("hand") != null) trait.set(0, equipment.get("hand").getItemStack());
-                    if (equipment.get("head") != null) trait.set(1, equipment.get("head").getItemStack());
-                    if (equipment.get("chest") != null) trait.set(2, equipment.get("chest").getItemStack());
-                    if (equipment.get("legs") != null) trait.set(3, equipment.get("legs").getItemStack());
-                    if (equipment.get("boots") != null) trait.set(4, equipment.get("boots").getItemStack());
+                    if (equipment.get("hand") != null) {
+                        trait.set(0, equipment.get("hand").getItemStack());
+                    }
+                    if (equipment.get("head") != null) {
+                        trait.set(1, equipment.get("head").getItemStack());
+                    }
+                    if (equipment.get("chest") != null) {
+                        trait.set(2, equipment.get("chest").getItemStack());
+                    }
+                    if (equipment.get("legs") != null) {
+                        trait.set(3, equipment.get("legs").getItemStack());
+                    }
+                    if (equipment.get("boots") != null) {
+                        trait.set(4, equipment.get("boots").getItemStack());
+                    }
                 }
 
             }
@@ -134,32 +147,41 @@ public class EquipCommand extends AbstractCommand {
                 if (livingEntity != null) {
 
                     if (livingEntity.getType() == EntityType.HORSE) {
-                        if (equipment.get("saddle") != null)
+                        if (equipment.get("saddle") != null) {
                             ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
-                        if (equipment.get("horse_armor") != null)
+                        }
+                        if (equipment.get("horse_armor") != null) {
                             ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
+                        }
                     }
                     else if (livingEntity.getType() == EntityType.PIG) {
                         if (equipment.get("saddle") != null) {
                             dItem saddle = equipment.get("saddle");
-                            if (saddle.getItemStack().getType() == Material.SADDLE)
+                            if (saddle.getItemStack().getType() == Material.SADDLE) {
                                 ((Pig) livingEntity).setSaddle(true);
-                            else
+                            }
+                            else {
                                 ((Pig) livingEntity).setSaddle(false);
+                            }
                         }
                     }
                     else {
 
-                        if (equipment.get("hand") != null)
+                        if (equipment.get("hand") != null) {
                             livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
-                        if (equipment.get("head") != null)
+                        }
+                        if (equipment.get("head") != null) {
                             livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
-                        if (equipment.get("chest") != null)
+                        }
+                        if (equipment.get("chest") != null) {
                             livingEntity.getEquipment().setChestplate(equipment.get("chest").getItemStack());
-                        if (equipment.get("legs") != null)
+                        }
+                        if (equipment.get("legs") != null) {
                             livingEntity.getEquipment().setLeggings(equipment.get("legs").getItemStack());
-                        if (equipment.get("boots") != null)
+                        }
+                        if (equipment.get("boots") != null) {
                             livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
+                        }
                     }
                 }
             }

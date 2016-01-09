@@ -24,7 +24,9 @@ public class MoneyRequirement extends AbstractRequirement {
                     quantity = aH.getDoubleFrom(arg);
                     dB.echoDebug(context.getScriptContainer(), "...quantity set to: " + quantity);
                 }
-                else throw new RequirementCheckException("Unknown argument '" + arg + "'!");
+                else {
+                    throw new RequirementCheckException("Unknown argument '" + arg + "'!");
+                }
             }
 
             balance = Depends.economy.getBalance(context.getPlayer().getName());

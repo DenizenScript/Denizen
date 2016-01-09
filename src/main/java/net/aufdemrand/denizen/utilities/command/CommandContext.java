@@ -38,8 +38,9 @@ public class CommandContext {
                     continue;
                 }
                 for (int inner = i + 1; inner < args.length; inner++) {
-                    if (args[inner].isEmpty())
+                    if (args[inner].isEmpty()) {
                         continue;
+                    }
                     String test = args[inner].trim();
                     quoted += " " + test;
                     if (test.charAt(test.length() - 1) == quote) {
@@ -56,8 +57,9 @@ public class CommandContext {
         for (i = 1; i < args.length; ++i) {
             // second pass for flags
             int length = args[i].length();
-            if (length == 0)
+            if (length == 0) {
                 continue;
+            }
             if (i + 1 < args.length && length > 2 && VALUE_FLAG.matcher(args[i]).matches()) {
                 int inner = i + 1;
                 while (args[inner].length() == 0) {
@@ -75,16 +77,18 @@ public class CommandContext {
                 }
             }
             else if (FLAG.matcher(args[i]).matches()) {
-                for (int k = 1; k < args[i].length(); k++)
+                for (int k = 1; k < args[i].length(); k++) {
                     flags.add(args[i].charAt(k));
+                }
                 args[i] = "";
             }
         }
         List<String> copied = new ArrayList<String>();
         for (String arg : args) {
             arg = arg.trim();
-            if (arg == null || arg.isEmpty())
+            if (arg == null || arg.isEmpty()) {
                 continue;
+            }
             copied.add(arg.trim());
         }
         this.args = copied.toArray(new String[copied.size()]);
@@ -175,8 +179,9 @@ public class CommandContext {
     public String getJoinedStrings(int initialIndex, char delimiter) {
         initialIndex = initialIndex + 1;
         StringBuilder buffer = new StringBuilder(args[initialIndex]);
-        for (int i = initialIndex + 1; i < args.length; i++)
+        for (int i = initialIndex + 1; i < args.length; i++) {
             buffer.append(delimiter).append(args[i]);
+        }
         return buffer.toString().trim();
     }
 
@@ -187,12 +192,15 @@ public class CommandContext {
     }
 
     public Location getSenderLocation() throws CommandException {
-        if (location != null || sender == null)
+        if (location != null || sender == null) {
             return location;
-        if (sender instanceof Player)
+        }
+        if (sender instanceof Player) {
             location = ((Player) sender).getLocation();
-        else if (sender instanceof BlockCommandSender)
+        }
+        else if (sender instanceof BlockCommandSender) {
             location = ((BlockCommandSender) sender).getBlock().getLocation();
+        }
         if (hasValueFlag("location")) {
             location = parseLocation(location, getFlag("location"));
         }
@@ -245,20 +253,23 @@ public class CommandContext {
                     if (denizen) {
                         worldName = parts[5].replaceFirst("w@", "");
                     }
-                    else
+                    else {
                         pitch = Float.parseFloat(parts[5]);
+                    }
                 case 5:
                     if (denizen) {
                         pitch = Float.parseFloat(parts[4]);
                     }
-                    else
+                    else {
                         yaw = Float.parseFloat(parts[4]);
+                    }
                 case 4:
                     if (denizen && parts.length > 4) {
                         yaw = Float.parseFloat(parts[3]);
                     }
-                    else
+                    else {
                         worldName = parts[3].replaceFirst("w@", "");
+                    }
                 case 3:
                     x = Double.parseDouble(parts[0]);
                     y = Double.parseDouble(parts[1]);
@@ -268,14 +279,16 @@ public class CommandContext {
                     throw new CommandException("Location could not be parsed or was not found.");
             }
             World world = Bukkit.getWorld(worldName);
-            if (world == null)
+            if (world == null) {
                 throw new CommandException("Location could not be parsed or was not found.");
+            }
             return new Location(world, x, y, z, yaw, pitch);
         }
         else {
             Player search = Bukkit.getPlayerExact(flag);
-            if (search == null)
+            if (search == null) {
                 throw new CommandException("No player could be found by that name.");
+            }
             return search.getLocation();
         }
     }

@@ -103,8 +103,9 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnLocation(String string) {
-        if (aH.matchesLocation("location:" + string))
+        if (aH.matchesLocation("location:" + string)) {
             respawnLocation = string;
+        }
     }
 
     public void setRespawnDelay(int seconds) {
@@ -112,8 +113,9 @@ public class HealthTrait extends Trait implements Listener {
     }
 
     public void setRespawnDelay(String string) {
-        if (aH.matchesDuration("duration:" + string))
+        if (aH.matchesDuration("duration:" + string)) {
             respawnDelay = string;
+        }
     }
 
     public String getRespawnLocationAsString() {
@@ -163,8 +165,12 @@ public class HealthTrait extends Trait implements Listener {
                 if (npc.getEntity().getLocation().getY() < -1000) {
                     npc.despawn(DespawnReason.DEATH);
                     if (respawn) {
-                        if (npc.isSpawned()) npc.getEntity().teleport(getRespawnLocation());
-                        else npc.spawn(getRespawnLocation());
+                        if (npc.isSpawned()) {
+                            npc.getEntity().teleport(getRespawnLocation());
+                        }
+                        else {
+                            npc.spawn(getRespawnLocation());
+                        }
                     }
                 }
             }
@@ -182,8 +188,12 @@ public class HealthTrait extends Trait implements Listener {
      * @return current health points
      */
     public double getHealth() {
-        if (!npc.isSpawned()) return 0;
-        else return ((LivingEntity) npc.getEntity()).getHealth();
+        if (!npc.isSpawned()) {
+            return 0;
+        }
+        else {
+            return ((LivingEntity) npc.getEntity()).getHealth();
+        }
     }
 
     /**
@@ -226,8 +236,9 @@ public class HealthTrait extends Trait implements Listener {
      * @param health total health points
      */
     public void setHealth(double health) {
-        if (npc.getEntity() != null)
+        if (npc.getEntity() != null) {
             ((LivingEntity) npc.getEntity()).setHealth(health);
+        }
     }
 
     public void die() {
@@ -238,7 +249,9 @@ public class HealthTrait extends Trait implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
 
-        if (event.getEntity().getEntityId() != entityId) return;
+        if (event.getEntity().getEntityId() != entityId) {
+            return;
+        }
 
         event.getDrops().clear();
     }
@@ -263,11 +276,14 @@ public class HealthTrait extends Trait implements Listener {
         // Don't use NPCDamageEvent because it doesn't work well
 
         // Check if the event pertains to this NPC
-        if (event.getEntity() != npc.getEntity() || dying) return;
+        if (event.getEntity() != npc.getEntity() || dying) {
+            return;
+        }
 
         // Make sure this is a killing blow
-        if (this.getHealth() - event.getFinalDamage() > 0)
+        if (this.getHealth() - event.getFinalDamage() > 0) {
             return;
+        }
 
         dying = true;
         player = null;
@@ -288,18 +304,20 @@ public class HealthTrait extends Trait implements Listener {
 
             // Check if the damager was a player and, if so, attach
             // that player to the action's ScriptEntry
-            if (killerEntity instanceof Player)
+            if (killerEntity instanceof Player) {
                 player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
+            }
 
-                // If the damager was a projectile, take its shooter into
-                // account as well
+            // If the damager was a projectile, take its shooter into
+            // account as well
             else if (killerEntity instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
                 if (shooter != null && shooter instanceof LivingEntity) {
 
                     context.put("shooter", new dEntity((LivingEntity) shooter));
-                    if (shooter instanceof Player)
+                    if (shooter instanceof Player) {
                         player = dPlayer.mirrorBukkitPlayer((Player) shooter);
+                    }
 
                     DenizenAPI.getDenizenNPC(npc).action("death by " +
                             ((LivingEntity) shooter).getType().toString(), player, context);
@@ -329,13 +347,16 @@ public class HealthTrait extends Trait implements Listener {
 
         // One of the actions above may have removed the NPC, so check if the
         // NPC's entity still exists before proceeding
-        if (npc.getEntity() == null)
+        if (npc.getEntity() == null) {
             return;
+        }
 
         loc = dLocation.valueOf(TagManager.tag(respawnLocation, // TODO: debug option?
                 new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null)));
 
-        if (loc == null) loc = npc.getEntity().getLocation();
+        if (loc == null) {
+            loc = npc.getEntity().getLocation();
+        }
 
         if (animatedeath) {
             // Cancel navigation to keep the NPC from damaging players
@@ -354,8 +375,12 @@ public class HealthTrait extends Trait implements Listener {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                     new Runnable() {
                         public void run() {
-                            if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) return;
-                            else npc.spawn(loc);
+                            if (CitizensAPI.getNPCRegistry().getById(npc.getId()) == null || npc.isSpawned()) {
+                                return;
+                            }
+                            else {
+                                npc.spawn(loc);
+                            }
                         }
                     }, (Duration.valueOf(respawnDelay).getTicks()));
         }

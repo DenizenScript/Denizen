@@ -111,7 +111,9 @@ public class BukkitWorldScriptHelper implements Listener {
             int hour = Double.valueOf(world.getTime() / 1000).intValue(); // TODO: What is this conversion math
             hour = hour + 6;
             // Get the hour
-            if (hour >= 24) hour = hour - 24;
+            if (hour >= 24) {
+                hour = hour - 24;
+            }
 
             dWorld currentWorld = new dWorld(world);
 
@@ -179,10 +181,12 @@ public class BukkitWorldScriptHelper implements Listener {
 
         dList recipeList = new dList();
         for (ItemStack item : inventory.getMatrix()) {
-            if (item != null)
+            if (item != null) {
                 recipeList.add(new dItem(item).identify());
-            else
+            }
+            else {
                 recipeList.add(new dItem(Material.AIR).identify());
+            }
         }
         context.put("recipe", recipeList);
 
@@ -395,8 +399,9 @@ public class BukkitWorldScriptHelper implements Listener {
                 @Override
                 public void run() {
                     player.getPlayerEntity().updateInventory();
-                    if (holder != null && holder instanceof Player)
+                    if (holder != null && holder instanceof Player) {
                         ((Player) holder).updateInventory();
+                    }
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
@@ -413,8 +418,9 @@ public class BukkitWorldScriptHelper implements Listener {
         }
         if (ScoreboardHelper.viewerMap.containsKey(event.getPlayer().getName())) {
             Scoreboard score = ScoreboardHelper.getScoreboard(ScoreboardHelper.viewerMap.get(event.getPlayer().getName()));
-            if (score != null)
+            if (score != null) {
                 event.getPlayer().setScoreboard(score);
+            }
         }
     }
 
@@ -426,7 +432,9 @@ public class BukkitWorldScriptHelper implements Listener {
             @Override
             public void run() {
                 // If currently recording debug information, add the chat message to debug output
-                if (dB.record) dB.log(message);
+                if (dB.record) {
+                    dB.log(message);
+                }
             }
         }, 1);
     }
@@ -452,11 +460,14 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerEditBook(PlayerEditBookEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         Map<String, dObject> context = new HashMap<String, dObject>();
-        if (event.isSigning()) context.put("title", new Element(event.getNewBookMeta().getTitle()));
+        if (event.isSigning()) {
+            context.put("title", new Element(event.getNewBookMeta().getTitle()));
+        }
         context.put("pages", new Element(event.getNewBookMeta().getPageCount()));
         context.put("book", new dItem(event.getPlayer().getInventory().getItem(event.getSlot())));
         context.put("signing", new Element(event.isSigning()));
@@ -471,17 +482,20 @@ public class BukkitWorldScriptHelper implements Listener {
         String determination = doEvents(events,
                 null, dEntity.getPlayerFrom(event.getPlayer()), context);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
-        else if (determination.toUpperCase().startsWith("NOT_SIGNING"))
+        }
+        else if (determination.toUpperCase().startsWith("NOT_SIGNING")) {
             event.setSigning(false);
+        }
         else if (dScript.matches(determination)) {
             dScript script = dScript.valueOf(determination);
             if (script.getContainer() instanceof BookScriptContainer) {
                 dItem book = ((BookScriptContainer) script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
                 event.setNewBookMeta((BookMeta) book.getItemStack().getItemMeta());
-                if (book.getItemStack().getType() == Material.BOOK_AND_QUILL)
+                if (book.getItemStack().getType() == Material.BOOK_AND_QUILL) {
                     event.setSigning(false);
+                }
             }
             else {
                 dB.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
@@ -512,8 +526,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
@@ -536,11 +551,15 @@ public class BukkitWorldScriptHelper implements Listener {
         }
         // The only other action is PHYSICAL, which is triggered when a player
         // stands on a pressure plate
-        else interactions = new String[]{"player stands on"};
+        else {
+            interactions = new String[]{"player stands on"};
+        }
         context.put("click_type", new Element(action.name()));
 
         for (String interaction : interactions) // TODO: addAll?
+        {
             events.add(interaction);
+        }
 
         if (event.hasItem()) {
             item = new dItem(event.getItem());
@@ -602,10 +621,12 @@ public class BukkitWorldScriptHelper implements Listener {
 
         String determination = doEvents(events, null, player, context, true).toUpperCase();
 
-        if (determination.startsWith("CANCELLED:FALSE"))
+        if (determination.startsWith("CANCELLED:FALSE")) {
             event.setCancelled(false);
-        else if (determination.startsWith("CANCELLED"))
+        }
+        else if (determination.startsWith("CANCELLED")) {
             event.setCancelled(true);
+        }
     }
 
     // <--[event]
@@ -631,8 +652,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteractStand(PlayerInteractAtEntityEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("location", new dLocation(event.getPlayer().getWorld(),
@@ -644,7 +666,9 @@ public class BukkitWorldScriptHelper implements Listener {
         dItem item = new dItem(event.getPlayer().getItemInHand());
         context.put("item", item);
         dNPC npc = null;
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
+        if (entity.isCitizensNPC()) {
+            npc = entity.getDenizenNPC();
+        }
         List<String> events = new ArrayList<String>();
         events.add("player right clicks at entity");
         events.add("player right clicks at " + entity.identifyType());
@@ -702,8 +726,9 @@ public class BukkitWorldScriptHelper implements Listener {
     @EventHandler
     public void playerInteractEntity(PlayerInteractEntityEvent event) {
 
-        if (dEntity.isNPC(event.getPlayer()))
+        if (dEntity.isNPC(event.getPlayer())) {
             return;
+        }
 
         String determination;
         dNPC npc = null;
@@ -716,7 +741,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("entity", entity.getDenizenObject());
         context.put("item", item);
 
-        if (entity.isCitizensNPC()) npc = entity.getDenizenNPC();
+        if (entity.isCitizensNPC()) {
+            npc = entity.getDenizenNPC();
+        }
 
         List<String> events = new ArrayList<String>();
         events.add("player right clicks entity");
@@ -759,8 +786,9 @@ public class BukkitWorldScriptHelper implements Listener {
 
         determination = doEvents(events, npc, dEntity.getPlayerFrom(event.getPlayer()), context, true);
 
-        if (determination.toUpperCase().startsWith("CANCELLED"))
+        if (determination.toUpperCase().startsWith("CANCELLED")) {
             event.setCancelled(true);
+        }
     }
 
 

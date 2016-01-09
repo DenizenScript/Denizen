@@ -43,8 +43,9 @@ public class ExplodeCommand extends AbstractCommand {
                 scriptEntry.addObject("fire", "");
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
         // Use default values if necessary

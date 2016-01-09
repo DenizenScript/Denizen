@@ -13,15 +13,21 @@ import org.bukkit.inventory.ItemStack;
 public class EntityPotion implements Property {
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
+        if (!(entity instanceof dEntity)) {
+            return false;
+        }
         // Check if the entity is a SPLASH_POTION, the EntityType alias for ThrownPotion
         return ((dEntity) entity).getBukkitEntityType() == EntityType.SPLASH_POTION;
     }
 
     public static EntityPotion getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityPotion((dEntity) entity);
+        else {
+            return new EntityPotion((dEntity) entity);
+        }
     }
 
 
@@ -36,13 +42,16 @@ public class EntityPotion implements Property {
     }
 
     private ThrownPotion getPotion() {
-        if (potion == null) return null;
+        if (potion == null) {
+            return null;
+        }
         return (ThrownPotion) potion.getBukkitEntity();
     }
 
     public void setPotion(ItemStack item) {
-        if (potion != null)
+        if (potion != null) {
             ((ThrownPotion) potion.getBukkitEntity()).setItem(item);
+        }
     }
 
 
@@ -52,7 +61,9 @@ public class EntityPotion implements Property {
 
     @Override
     public String getPropertyString() {
-        if (potion == null) return null;
+        if (potion == null) {
+            return null;
+        }
         return new dItem(getPotion().getItem()).identify();
     }
 
@@ -68,7 +79,9 @@ public class EntityPotion implements Property {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.potion>

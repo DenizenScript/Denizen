@@ -36,18 +36,23 @@ public class LeashCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("holder")
                     && arg.matchesPrefix("holder", "h")) {
 
-                if (arg.matchesArgumentType(dEntity.class))
+                if (arg.matchesArgumentType(dEntity.class)) {
                     scriptEntry.addObject("holder", arg.asType(dEntity.class));
-                else if (arg.matchesArgumentType(dLocation.class))
+                }
+                else if (arg.matchesArgumentType(dLocation.class)) {
                     scriptEntry.addObject("holder", arg.asType(dLocation.class));
+                }
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
 
         if (!scriptEntry.hasObject("cancel")) {
 

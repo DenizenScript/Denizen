@@ -38,18 +38,22 @@ public class ActionCommand extends AbstractCommand {
                 scriptEntry.addObject("actions", arg.asType(dList.class));
             }
 
-            else
+            else {
                 arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("actions"))
+        if (!scriptEntry.hasObject("actions")) {
             throw new InvalidArgumentsException("Must specify a list of action names!");
+        }
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC())
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
-            else
+            }
+            else {
                 throw new InvalidArgumentsException("Must specify an NPC to use!");
+            }
         }
 
         scriptEntry.defaultObject("context", new dList());

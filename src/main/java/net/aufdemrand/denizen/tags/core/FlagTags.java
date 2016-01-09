@@ -33,9 +33,13 @@ public class FlagTags implements Listener {
 
     @TagManager.TagEvents
     public void flagTag(ReplaceableTagEvent event) {
-        if (!event.matches("FLAG")) return;
+        if (!event.matches("FLAG")) {
+            return;
+        }
 
-        if (!event.hasValue()) return;
+        if (!event.hasValue()) {
+            return;
+        }
 
         dB.echoError(event.getAttributes().getScriptEntry().getResidingQueue(), "flag.x: tags are deprecated! Use <x.flag[]>, EG, <global.flag[name]>!");
 
@@ -94,11 +98,14 @@ public class FlagTags implements Listener {
             dPlayer player = ((BukkitTagContext) event.getContext()).player;
 
             // No name? No flag replacement!
-            if (player == null) return;
+            if (player == null) {
+                return;
+            }
 
             if (denizen.flagManager().getPlayerFlag(player, flagName).get(index).isEmpty()) {
-                if (replaceType.toString().equals("ISEXPIRED"))
+                if (replaceType.toString().equals("ISEXPIRED")) {
                     event.setReplaced("true");
+                }
             }
             else {
                 FlagManager.Flag flag = denizen.flagManager().getPlayerFlag(player, flagName);

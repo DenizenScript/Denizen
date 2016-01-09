@@ -18,7 +18,9 @@ public class SneakingTrait extends Trait implements Listener {
     @Override
     public void onSpawn() {
         eh = ((CraftPlayer) npc.getEntity()).getHandle();
-        if (sneaking) sneak();
+        if (sneaking) {
+            sneak();
+        }
     }
 
     // <--[action]

@@ -80,8 +80,9 @@ public class EntityScriptContainer extends ScriptContainer {
                 }
             }
 
-            if (entity == null || entity.isUnique())
+            if (entity == null || entity.isUnique()) {
                 return null;
+            }
 
             entity.setEntityScript(getName());
         }

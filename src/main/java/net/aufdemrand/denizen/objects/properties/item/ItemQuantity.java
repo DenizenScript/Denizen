@@ -15,8 +15,12 @@ public class ItemQuantity implements Property {
     }
 
     public static ItemQuantity getFrom(dObject _item) {
-        if (!describes(_item)) return null;
-        else return new ItemQuantity((dItem) _item);
+        if (!describes(_item)) {
+            return null;
+        }
+        else {
+            return new ItemQuantity((dItem) _item);
+        }
     }
 
 
@@ -29,7 +33,9 @@ public class ItemQuantity implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <i@item.quantity>
@@ -39,9 +45,10 @@ public class ItemQuantity implements Property {
         // @description
         // Returns the number of items in the dItem's itemstack.
         // -->
-        if (attribute.startsWith("quantity") || attribute.startsWith("qty"))
+        if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
             return new Element(item.getItemStack().getAmount())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <i@item.max_stack>
@@ -51,9 +58,10 @@ public class ItemQuantity implements Property {
         // Returns the max number of this item possible in a single stack of this type.
         // For use with <@link tag i@item.quantity> and <@link mechanism dItem.quantity>.
         // -->
-        if (attribute.startsWith("max_stack"))
+        if (attribute.startsWith("max_stack")) {
             return new Element(item.getItemStack().getMaxStackSize())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -61,10 +69,12 @@ public class ItemQuantity implements Property {
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getAmount() > 1)
+        if (item.getItemStack().getAmount() > 1) {
             return String.valueOf(item.getItemStack().getAmount());
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override

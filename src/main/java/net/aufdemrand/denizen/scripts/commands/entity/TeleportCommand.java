@@ -40,16 +40,20 @@ public class TeleportCommand extends AbstractCommand {
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("location"))
+        if (!scriptEntry.hasObject("location")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
         // Use player or NPC as default entity
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
                     (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
+        }
 
     }
 
@@ -68,8 +72,9 @@ public class TeleportCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"
             // world event and other plugins
-            if (entity.isSpawned() && entity.getBukkitEntityType() != EntityType.PLAYER)
+            if (entity.isSpawned() && entity.getBukkitEntityType() != EntityType.PLAYER) {
                 Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
+            }
             entity.spawnAt(location);
         }
     }

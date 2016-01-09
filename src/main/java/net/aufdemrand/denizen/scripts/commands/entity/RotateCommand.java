@@ -73,7 +73,9 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
         // Use the NPC or the Player as the default entity
@@ -87,8 +89,9 @@ public class RotateCommand extends AbstractCommand implements Holdable {
         scriptEntry.defaultObject("frequency", Duration.valueOf("1t"));
 
         // Check to make sure required arguments have been filled
-        if (!scriptEntry.hasObject("entities"))
+        if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -113,12 +116,19 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
         // Add entities to the rotatingEntities list or remove
         // them from it
-        for (dEntity entity : entities)
-            if (cancel) rotatingEntities.remove(entity.getUUID());
-            else rotatingEntities.add(entity.getUUID());
+        for (dEntity entity : entities) {
+            if (cancel) {
+                rotatingEntities.remove(entity.getUUID());
+            }
+            else {
+                rotatingEntities.add(entity.getUUID());
+            }
+        }
 
         // Go no further if we are canceling a rotation
-        if (cancel) return;
+        if (cancel) {
+            return;
+        }
 
         // Run a task that will keep rotating the entities
         BukkitRunnable task = new BukkitRunnable() {

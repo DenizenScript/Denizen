@@ -40,22 +40,28 @@ public class SwitchCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("locations") &&
-                    arg.matchesArgumentList(dLocation.class))
+                    arg.matchesArgumentList(dLocation.class)) {
                 scriptEntry.addObject("locations", arg.asType(dList.class));
+            }
 
             else if (!scriptEntry.hasObject("duration") &&
-                    arg.matchesArgumentType(Duration.class))
+                    arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
+            }
 
             else if (!scriptEntry.hasObject("state") &&
-                    arg.matchesEnum(SwitchState.values()))
+                    arg.matchesEnum(SwitchState.values())) {
                 scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
+            }
 
-            else arg.reportUnhandled();
+            else {
+                arg.reportUnhandled();
+            }
         }
 
-        if (!scriptEntry.hasObject("locations"))
+        if (!scriptEntry.hasObject("locations")) {
             throw new InvalidArgumentsException("Must specify a location!");
+        }
 
         scriptEntry.defaultObject("duration", new Duration(0));
         scriptEntry.defaultObject("switchstate", new Element("TOGGLE"));
@@ -79,12 +85,13 @@ public class SwitchCommand extends AbstractCommand {
             // If duration set, schedule a delayed task.
             if (duration > 0) {
                 // If this block already had a delayed task, cancel it.
-                if (taskMap.containsKey(interactLocation))
+                if (taskMap.containsKey(interactLocation)) {
                     try {
                         DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation));
                     }
                     catch (Exception e) {
                     }
+                }
                 dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
                 taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
@@ -130,10 +137,12 @@ public class SwitchCommand extends AbstractCommand {
             try {
                 if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
                     Location block;
-                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK)
+                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK) {
                         block = interactLocation.clone().add(0, -1, 0);
-                    else
+                    }
+                    else {
                         block = interactLocation;
+                    }
                     block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
                 }
                 else {

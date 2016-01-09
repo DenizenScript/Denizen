@@ -43,9 +43,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public static List<dCuboid> getNotableCuboidsContaining(Location location) {
         List<dCuboid> cuboids = new ArrayList<dCuboid>();
-        for (dCuboid cuboid : NotableManager.getAllType(dCuboid.class))
-            if (cuboid.isInsideCuboid(location))
+        for (dCuboid cuboid : NotableManager.getAllType(dCuboid.class)) {
+            if (cuboid.isInsideCuboid(location)) {
                 cuboids.add(cuboid);
+            }
+        }
 
         return cuboids;
     }
@@ -71,7 +73,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
      */
     @Fetchable("cu")
     public static dCuboid valueOf(String string, TagContext context) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
 
         ////////
         // Match location formats
@@ -105,8 +109,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             }
 
             // Ensure validity and return the created cuboid
-            if (toReturn.pairs.size() > 0)
+            if (toReturn.pairs.size() > 0) {
                 return toReturn;
+            }
         }
 
         ////////
@@ -115,8 +120,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         m = cuboid_by_saved.matcher(string);
 
-        if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class))
+        if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class)) {
             return (dCuboid) NotableManager.getSavedObject(m.group(2));
+        }
 
         dB.echoError("valueOf dCuboid returning null: " + string);
 
@@ -131,13 +137,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public static boolean matches(String string) {
         // Starts with cu@? Assume match.
-        if (string.toLowerCase().startsWith("cu@")) return true;
+        if (string.toLowerCase().startsWith("cu@")) {
+            return true;
+        }
 
         Matcher m;
 
         // Check for named cuboid: cu@notable_cuboid
         m = cuboid_by_saved.matcher(string);
-        if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class)) return true;
+        if (m.matches() && NotableManager.isType(m.group(2), dCuboid.class)) {
+            return true;
+        }
 
         // Check for standard cuboid format: cu@x,y,z,world|x,y,z,world|...
         m = cuboidLocations.matcher(string.replace("cu@", ""));
@@ -166,10 +176,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
 
         public void changePoint(int number, dLocation point) {
-            if (number == 1)
+            if (number == 1) {
                 this.point_1 = point;
-            else if (number == 2)
+            }
+            else if (number == 2) {
                 this.point_2 = point;
+            }
             regenerate();
         }
 
@@ -247,14 +259,18 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public boolean isInsideCuboid(Location location) {
         for (LocationPair pair : pairs) {
-            if (!location.getWorld().equals(pair.low.getWorld()))
+            if (!location.getWorld().equals(pair.low.getWorld())) {
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX()))
+            }
+            if (!Utilities.isBetween(pair.low.getBlockX(), pair.high.getBlockX() + 1, location.getBlockX())) {
                 continue;
-            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY()))
+            }
+            if (!Utilities.isBetween(pair.low.getBlockY(), pair.high.getBlockY() + 1, location.getBlockY())) {
                 continue;
-            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ()))
+            }
+            if (Utilities.isBetween(pair.low.getBlockZ(), pair.high.getBlockZ() + 1, location.getBlockZ())) {
                 return true;
+            }
         }
 
         // Does not match any of the pairs
@@ -328,8 +344,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         y,
                         loc_1.getBlockZ()).identify());
                 index++;
-                if (index > max)
+                if (index > max) {
                     return list;
+                }
             }
 
             for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
@@ -353,8 +370,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_2.getBlockY(),
                         loc_1.getBlockZ()).identify());
                 index++;
-                if (index > max)
+                if (index > max) {
                     return list;
+                }
             }
 
             for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
@@ -378,8 +396,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc_1.getBlockY(),
                         z).identify());
                 index++;
-                if (index > max)
+                if (index > max) {
                     return list;
+                }
             }
         }
 
@@ -392,8 +411,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     private boolean matchesMaterialList(Location loc, List<dMaterial> materials) {
-        if (materials == null)
+        if (materials == null) {
             return true;
+        }
         dMaterial mat = dMaterial.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
         for (dMaterial material : materials) {
             if (mat.equals(material) || (mat.getMaterial() == material.getMaterial()
@@ -450,8 +470,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             }
                         }
                         index++;
-                        if (index > max)
+                        if (index > max) {
                             return list;
+                        }
                     }
                 }
             }
@@ -527,16 +548,20 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 .add(x, y, z));
                         if (!filter.isEmpty()) {
                             // Check filter
-                            for (dObject material : filter)
+                            for (dObject material : filter) {
                                 if (loc.getBlock().getType().name().equalsIgnoreCase(((dMaterial) material)
-                                        .getMaterial().name()))
+                                        .getMaterial().name())) {
                                     list.add(loc);
+                                }
+                            }
                         }
-                        else
+                        else {
                             list.add(loc);
+                        }
                         index++;
-                        if (index > max)
+                        if (index > max) {
                             return list;
+                        }
                     }
                 }
             }
@@ -588,8 +613,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                             list.add(loc.identify());
                         }
                         index++;
-                        if (index > max)
+                        if (index > max) {
                             return list;
+                        }
                     }
                 }
             }
@@ -599,24 +625,29 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     }
 
     public World getWorld() {
-        if (pairs.size() == 0)
+        if (pairs.size() == 0) {
             return null;
+        }
         return pairs.get(0).high.getWorld();
     }
 
     public dLocation getHigh(int index) {
-        if (index < 0)
+        if (index < 0) {
             return null;
-        if (index >= pairs.size())
+        }
+        if (index >= pairs.size()) {
             return null;
+        }
         return pairs.get(index).high;
     }
 
     public dLocation getLow(int index) {
-        if (index < 0)
+        if (index < 0) {
             return null;
-        if (index >= pairs.size())
+        }
+        if (index >= pairs.size()) {
             return null;
+        }
         return pairs.get(index).low;
     }
 
@@ -685,8 +716,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     @Override
     public String identify() {
-        if (isUnique())
+        if (isUnique()) {
             return "cu@" + NotableManager.getSavedId(this);
+        }
 
         else {
             return identifyFull();
@@ -742,12 +774,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (attribute.hasContext(1))
+                if (attribute.hasContext(1)) {
                     return new dList(((dCuboid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
                             .getAttribute(attribute.fulfill(1));
-                else
+                }
+                else {
                     return new dList(((dCuboid) object).getBlocks())
                             .getAttribute(attribute.fulfill(1));
+                }
             }
         });
         registerTag("get_blocks", registeredTags.get("blocks"));
@@ -776,10 +810,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int member = attribute.getIntContext(1);
-                if (member < 1)
+                if (member < 1) {
                     member = 1;
-                if (member > ((dCuboid) object).pairs.size())
+                }
+                if (member > ((dCuboid) object).pairs.size()) {
                     member = ((dCuboid) object).pairs.size();
+                }
                 return new dCuboid(((dCuboid) object).pairs.get(member - 1).low, ((dCuboid) object).pairs.get(member - 1).high)
                         .getAttribute(attribute.fulfill(1));
             }
@@ -798,12 +834,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("spawnable_blocks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (attribute.hasContext(1))
+                if (attribute.hasContext(1)) {
                     return new dList(((dCuboid) object).getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
                             .getAttribute(attribute.fulfill(1));
-                else
+                }
+                else {
                     return new dList(((dCuboid) object).getSpawnableBlocks())
                             .getAttribute(attribute.fulfill(1));
+                }
             }
         });
         registerTag("get_spawnable_blocks", registeredTags.get("spawnable_blocks"));
@@ -933,14 +971,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 LocationPair pair;
-                if (!attribute.hasContext(1))
+                if (!attribute.hasContext(1)) {
                     pair = ((dCuboid) object).pairs.get(0);
+                }
                 else {
                     int member = attribute.getIntContext(1);
-                    if (member < 1)
+                    if (member < 1) {
                         member = 1;
-                    if (member > ((dCuboid) object).pairs.size())
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
                         member = ((dCuboid) object).pairs.size();
+                    }
                     pair = ((dCuboid) object).pairs.get(member - 1);
                 }
                 Location base = pair.high.clone().add(pair.low.clone());
@@ -963,14 +1004,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 LocationPair pair;
-                if (!attribute.hasContext(1))
+                if (!attribute.hasContext(1)) {
                     pair = ((dCuboid) object).pairs.get(0);
+                }
                 else {
                     int member = attribute.getIntContext(1);
-                    if (member < 1)
+                    if (member < 1) {
                         member = 1;
-                    if (member > ((dCuboid) object).pairs.size())
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
                         member = ((dCuboid) object).pairs.size();
+                    }
                     pair = ((dCuboid) object).pairs.get(member - 1);
                 }
                 Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
@@ -988,14 +1032,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("max", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (!attribute.hasContext(1))
+                if (!attribute.hasContext(1)) {
                     return ((dCuboid) object).pairs.get(0).high.getAttribute(attribute.fulfill(1));
+                }
                 else {
                     int member = attribute.getIntContext(1);
-                    if (member < 1)
+                    if (member < 1) {
                         member = 1;
-                    if (member > ((dCuboid) object).pairs.size())
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
                         member = ((dCuboid) object).pairs.size();
+                    }
                     return ((dCuboid) object).pairs.get(member - 1).high.getAttribute(attribute.fulfill(1));
                 }
             }
@@ -1011,14 +1058,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("min", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                if (!attribute.hasContext(1))
+                if (!attribute.hasContext(1)) {
                     return ((dCuboid) object).pairs.get(0).low.getAttribute(attribute.fulfill(1));
+                }
                 else {
                     int member = attribute.getIntContext(1);
-                    if (member < 1)
+                    if (member < 1) {
                         member = 1;
-                    if (member > ((dCuboid) object).pairs.size())
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
                         member = ((dCuboid) object).pairs.size();
+                    }
                     return ((dCuboid) object).pairs.get(member - 1).low.getAttribute(attribute.fulfill(1));
                 }
             }
@@ -1041,18 +1091,24 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     dLocation loc = dLocation.valueOf(attribute.getContext(1));
                     dCuboid cuboid = ((dCuboid) object).clone();
                     if (loc != null) {
-                        if (loc.getX() < cuboid.pairs.get(0).low.getX())
+                        if (loc.getX() < cuboid.pairs.get(0).low.getX()) {
                             cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), loc.getX(), cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
-                        if (loc.getY() < cuboid.pairs.get(0).low.getY())
+                        }
+                        if (loc.getY() < cuboid.pairs.get(0).low.getY()) {
                             cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), loc.getY(), cuboid.pairs.get(0).low.getZ());
-                        if (loc.getZ() < cuboid.pairs.get(0).low.getZ())
+                        }
+                        if (loc.getZ() < cuboid.pairs.get(0).low.getZ()) {
                             cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), loc.getZ());
-                        if (loc.getX() > cuboid.pairs.get(0).high.getX())
+                        }
+                        if (loc.getX() > cuboid.pairs.get(0).high.getX()) {
                             cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), loc.getX(), cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
-                        if (loc.getY() > cuboid.pairs.get(0).high.getY())
+                        }
+                        if (loc.getY() > cuboid.pairs.get(0).high.getY()) {
                             cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), loc.getY(), cuboid.pairs.get(0).high.getZ());
-                        if (loc.getZ() > cuboid.pairs.get(0).high.getZ())
+                        }
+                        if (loc.getZ() > cuboid.pairs.get(0).high.getZ()) {
                             cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), loc.getZ());
+                        }
                         return cuboid.getAttribute(attribute.fulfill(1));
                     }
                 }
@@ -1073,9 +1129,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 ArrayList<dPlayer> players = new ArrayList<dPlayer>();
-                for (Player player : Bukkit.getOnlinePlayers())
-                    if (((dCuboid) object).isInsideCuboid(player.getLocation()))
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (((dCuboid) object).isInsideCuboid(player.getLocation())) {
                         players.add(dPlayer.mirrorBukkitPlayer(player));
+                    }
+                }
                 return new dList(players).getAttribute(attribute.fulfill(1));
             }
         });
@@ -1093,8 +1151,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     ArrayList<dNPC> npcs = new ArrayList<dNPC>();
                     for (NPC npc : CitizensAPI.getNPCRegistry()) {
                         dNPC dnpc = dNPC.mirrorCitizensNPC(npc);
-                        if (((dCuboid) object).isInsideCuboid(dnpc.getLocation()))
+                        if (((dCuboid) object).isInsideCuboid(dnpc.getLocation())) {
                             npcs.add(dnpc);
+                        }
                     }
                     return new dList(npcs).getAttribute(attribute.fulfill(1));
                 }
@@ -1127,8 +1186,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                                 }
                             }
                         }
-                        else
+                        else {
                             entities.add(new dEntity(ent));
+                        }
                     }
                 }
                 return new dList(entities).getAttribute(attribute.fulfill(1));
@@ -1146,8 +1206,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 ArrayList<dEntity> entities = new ArrayList<dEntity>();
                 for (Entity ent : ((dCuboid) object).getWorld().getLivingEntities()) {
-                    if (ent.isValid() && ((dCuboid) object).isInsideCuboid(ent.getLocation()) && !dEntity.isCitizensNPC(ent))
+                    if (ent.isValid() && ((dCuboid) object).isInsideCuboid(ent.getLocation()) && !dEntity.isCitizensNPC(ent)) {
                         entities.add(new dEntity(ent));
+                    }
                 }
                 return new dList(entities).getAttribute(attribute.fulfill(1));
             }
@@ -1167,11 +1228,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (LocationPair pair : obj.pairs) {
                     int minY = pair.low.getBlockY();
                     Chunk minChunk = pair.low.getChunk();
-                    if (obj.isInsideCuboid(new Location(obj.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16)))
+                    if (obj.isInsideCuboid(new Location(obj.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16))) {
                         chunks.add(minChunk);
+                    }
                     Chunk maxChunk = pair.high.getChunk();
-                    if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15)))
+                    if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                         chunks.add(maxChunk);
+                    }
                     dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
                     dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
                     for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
@@ -1181,8 +1244,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     }
                 }
                 dList list = new dList();
-                for (Chunk chunk : chunks)
+                for (Chunk chunk : chunks) {
                     list.add(new dChunk(chunk).identify());
+                }
                 return list.getAttribute(attribute.fulfill(1));
             }
         });
@@ -1209,8 +1273,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     }
                 }
                 dList list = new dList();
-                for (Chunk chunk : chunks)
+                for (Chunk chunk : chunks) {
                     list.add(new dChunk(chunk).identify());
+                }
                 return list.getAttribute(attribute.fulfill(1));
             }
         });
@@ -1273,7 +1338,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     @Override
     public String getAttribute(Attribute attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
 
         // TODO: Scrap getAttribute, make this functionality a core system
         String attrLow = CoreUtilities.toLowerCase(attribute.getAttributeWithoutContext(1));
@@ -1289,7 +1356,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
-            if (returned != null) return returned;
+            if (returned != null) {
+                return returned;
+            }
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -1308,8 +1377,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("outset")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
                 mod = value.asInt();
+            }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
                 pair.high.add(mod, mod, mod);
@@ -1323,8 +1393,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("expand")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
                 mod = value.asInt();
+            }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
                 pair.high.add(mod, mod, mod);
@@ -1339,8 +1410,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("set_location")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'."))
+            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
                 mod = value.asInt();
+            }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
                 pair.high.add(mod, mod, mod);
@@ -1356,12 +1428,14 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
-            if (mechanism.fulfilled())
+            if (mechanism.fulfilled()) {
                 break;
+            }
         }
 
-        if (!mechanism.fulfilled())
+        if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
+        }
 
     }
 }

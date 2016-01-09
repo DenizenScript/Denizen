@@ -16,7 +16,9 @@ public class EntityColor implements Property {
 
 
     public static boolean describes(dObject entity) {
-        if (!(entity instanceof dEntity)) return false;
+        if (!(entity instanceof dEntity)) {
+            return false;
+        }
         EntityType type = ((dEntity) entity).getBukkitEntityType();
         return type == EntityType.SHEEP ||
                 type == EntityType.HORSE ||
@@ -26,9 +28,13 @@ public class EntityColor implements Property {
     }
 
     public static EntityColor getFrom(dObject entity) {
-        if (!describes(entity)) return null;
+        if (!describes(entity)) {
+            return null;
+        }
 
-        else return new EntityColor((dEntity) entity);
+        else {
+            return new EntityColor((dEntity) entity);
+        }
     }
 
 
@@ -45,25 +51,32 @@ public class EntityColor implements Property {
     private String getColor() {
         EntityType type = colored.getBukkitEntityType();
 
-        if (type == EntityType.HORSE)
+        if (type == EntityType.HORSE) {
             return ((Horse) colored.getBukkitEntity()).getColor().name() + "|" +
                     ((Horse) colored.getBukkitEntity()).getStyle().name() + "|" +
                     ((Horse) colored.getBukkitEntity()).getVariant().name();
+        }
 
-        else if (type == EntityType.SHEEP)
+        else if (type == EntityType.SHEEP) {
             return ((Sheep) colored.getBukkitEntity()).getColor().name();
+        }
 
-        else if (type == EntityType.WOLF)
+        else if (type == EntityType.WOLF) {
             return ((Wolf) colored.getBukkitEntity()).getCollarColor().name();
+        }
 
-        else if (type == EntityType.OCELOT)
+        else if (type == EntityType.OCELOT) {
             return ((Ocelot) colored.getBukkitEntity()).getCatType().name();
+        }
 
-        else if (type == EntityType.RABBIT)
+        else if (type == EntityType.RABBIT) {
             return RabbitType.getRabbitType((Rabbit) colored.getBukkitEntity()).name();
+        }
 
         else // Should never happen
+        {
             return null;
+        }
     }
 
     /////////
@@ -119,7 +132,9 @@ public class EntityColor implements Property {
     @Override
     public String getAttribute(Attribute attribute) {
 
-        if (attribute == null) return "null";
+        if (attribute == null) {
+            return null;
+        }
 
         // <--[tag]
         // @attribute <e@entity.color>
@@ -133,9 +148,10 @@ public class EntityColor implements Property {
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // -->
-        if (attribute.startsWith("color"))
+        if (attribute.startsWith("color")) {
             return new Element(getColor().toLowerCase())
                     .getAttribute(attribute.fulfill(1));
+        }
 
         return null;
     }
@@ -163,36 +179,43 @@ public class EntityColor implements Property {
 
             if (type == EntityType.HORSE) {
                 dList horse_info = mechanism.getValue().asType(dList.class);
-                if (horse_info.size() > 0 && new Element(horse_info.get(0)).matchesEnum(Horse.Color.values()))
+                if (horse_info.size() > 0 && new Element(horse_info.get(0)).matchesEnum(Horse.Color.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setColor(Horse.Color.valueOf(horse_info.get(0).toUpperCase()));
-                if (horse_info.size() > 1 && new Element(horse_info.get(1)).matchesEnum(Horse.Style.values()))
+                }
+                if (horse_info.size() > 1 && new Element(horse_info.get(1)).matchesEnum(Horse.Style.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setStyle(Horse.Style.valueOf(horse_info.get(1).toUpperCase()));
-                if (horse_info.size() > 2 && new Element(horse_info.get(2)).matchesEnum(Horse.Variant.values()))
+                }
+                if (horse_info.size() > 2 && new Element(horse_info.get(2)).matchesEnum(Horse.Variant.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setVariant(Horse.Variant.valueOf(horse_info.get(2).toUpperCase()));
+                }
             }
 
             else if (type == EntityType.SHEEP
-                    && mechanism.getValue().matchesEnum(DyeColor.values()))
+                    && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Sheep) colored.getBukkitEntity())
                         .setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
 
             else if (type == EntityType.WOLF
-                    && mechanism.getValue().matchesEnum(DyeColor.values()))
+                    && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Wolf) colored.getBukkitEntity())
                         .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
 
             else if (type == EntityType.OCELOT
-                    && mechanism.getValue().matchesEnum(Ocelot.Type.values()))
+                    && mechanism.getValue().matchesEnum(Ocelot.Type.values())) {
                 ((Ocelot) colored.getBukkitEntity())
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
 
             else if (type == EntityType.RABBIT
-                    && mechanism.getValue().matchesEnum(RabbitType.values()))
+                    && mechanism.getValue().matchesEnum(RabbitType.values())) {
                 RabbitType.setRabbitType((Rabbit) colored.getBukkitEntity(),
                         RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
 
         }
     }
