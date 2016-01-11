@@ -2987,7 +2987,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.money>
         // @Usage
         // Use to take money from the player.
-        // - take money qty:10
+        // - take money quantity:20
         // @Usage
         // Use to take an arrow from the player's enderchest.
         // - take arrow from:<player.enderchest>
