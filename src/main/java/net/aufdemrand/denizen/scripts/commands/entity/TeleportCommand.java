@@ -12,7 +12,9 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -72,8 +74,13 @@ public class TeleportCommand extends AbstractCommand {
         for (dEntity entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"
             // world event and other plugins
-            if (entity.isSpawned() && entity.getBukkitEntityType() != EntityType.PLAYER) {
-                Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
+            if (entity.isSpawned()) {
+                if (entity.getBukkitEntityType() != EntityType.PLAYER) {
+                    Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
+                }
+                else {
+                    Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent((Player)entity.getBukkitEntity(), entity.getLocation(), location));
+                }
             }
             entity.spawnAt(location);
         }
