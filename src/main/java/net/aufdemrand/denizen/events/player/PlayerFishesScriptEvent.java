@@ -131,7 +131,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         Entity hookEntity = event.getHook();
         dEntity.rememberEntity(hookEntity);
         hook = new dEntity(hookEntity);
-        state = new Element(event.getState().name());
+        state = new Element(event.getState().toString());
         item = null;
         entity = null;
         Entity caughtEntity = event.getCaught();
