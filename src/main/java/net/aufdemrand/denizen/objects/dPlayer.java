@@ -1148,10 +1148,10 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
-            if (ban != null && ban.getExpiration().after(new Date())) {
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
+            if (ban == null) {
+                return Element.FALSE.getAttribute(attribute.fulfill(1));
             }
-            return Element.FALSE.getAttribute(attribute.fulfill(1));
+            return new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
