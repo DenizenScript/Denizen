@@ -115,7 +115,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityHeals(EntityRegainHealthEvent event) {
         entity = new dEntity(event.getEntity());
         amount = new Element(event.getAmount());

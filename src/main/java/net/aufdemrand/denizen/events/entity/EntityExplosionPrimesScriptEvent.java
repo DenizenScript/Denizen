@@ -97,7 +97,7 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityExplosionPrimes(ExplosionPrimeEvent event) {
         entity = new dEntity(event.getEntity());
         radius = event.getRadius();

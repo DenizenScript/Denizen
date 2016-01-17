@@ -89,7 +89,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerKicked(PlayerKickEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

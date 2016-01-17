@@ -92,7 +92,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onLiquidSpreads(BlockFromToEvent event) {
         destination = new dLocation(event.getToBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());

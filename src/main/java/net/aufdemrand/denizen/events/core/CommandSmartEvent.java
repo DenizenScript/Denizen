@@ -177,7 +177,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // "FULFILLED" to tell Bukkit the command was handled.
     //
     // -->
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Map<String, dObject> context = new HashMap<String, dObject>();
 
@@ -227,7 +227,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void serverCommand(ServerCommandEvent event) {
 
         if (event.getCommand().trim().length() == 0) {

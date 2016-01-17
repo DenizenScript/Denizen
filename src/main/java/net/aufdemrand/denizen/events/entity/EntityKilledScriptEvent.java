@@ -171,7 +171,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityKilled(EntityDamageEvent event) {
         entity = new dEntity(event.getEntity());
         // Check for possibility of death first

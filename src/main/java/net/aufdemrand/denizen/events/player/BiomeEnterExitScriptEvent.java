@@ -116,7 +116,7 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerEntersExitsBiome(PlayerMoveEvent event) {
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());

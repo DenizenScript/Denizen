@@ -96,7 +96,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerChangesXP(PlayerExpChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -154,7 +154,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerBreaksBlock(BlockBreakEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

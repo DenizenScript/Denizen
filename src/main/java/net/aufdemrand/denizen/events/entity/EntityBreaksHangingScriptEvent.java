@@ -137,7 +137,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onHangingBreaks(HangingBreakByEntityEvent event) {
         hanging = new dEntity(event.getEntity());
         cause = new Element(event.getCause().name());

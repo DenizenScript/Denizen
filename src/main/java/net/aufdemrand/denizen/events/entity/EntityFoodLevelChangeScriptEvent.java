@@ -103,7 +103,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityFoodLevelChanged(FoodLevelChangeEvent event) {
         entity = new dEntity(event.getEntity());
         food = event.getFoodLevel();

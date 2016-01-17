@@ -113,7 +113,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerStatisticIncrements(PlayerStatisticIncrementEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

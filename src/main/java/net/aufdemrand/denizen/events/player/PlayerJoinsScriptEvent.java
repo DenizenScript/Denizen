@@ -90,7 +90,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerJoins(PlayerJoinEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

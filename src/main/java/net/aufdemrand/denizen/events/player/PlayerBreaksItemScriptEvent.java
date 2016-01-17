@@ -95,7 +95,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerItemBreak(PlayerItemBreakEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

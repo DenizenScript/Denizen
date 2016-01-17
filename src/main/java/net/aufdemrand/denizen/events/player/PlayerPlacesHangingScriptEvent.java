@@ -106,7 +106,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void pnPlayerPlacesHanging(HangingPlaceEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

@@ -90,7 +90,7 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerQuits(PlayerQuitEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

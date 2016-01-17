@@ -123,7 +123,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onVehicleCollidesEntity(VehicleEntityCollisionEvent event) {
         entity = new dEntity(event.getEntity());
         vehicle = new dEntity(event.getVehicle());

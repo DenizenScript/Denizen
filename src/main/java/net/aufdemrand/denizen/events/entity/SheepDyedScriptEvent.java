@@ -120,7 +120,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onSheepDyed(SheepDyeWoolEvent event) {
         entity = new dEntity(event.getEntity());
         color = DyeColor.valueOf(event.getColor().toString());

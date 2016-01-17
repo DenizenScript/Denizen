@@ -83,7 +83,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerJumps(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
