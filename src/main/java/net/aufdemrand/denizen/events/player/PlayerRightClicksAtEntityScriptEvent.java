@@ -12,37 +12,37 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 // <--[event]
 // @Events
-// player right clicks entity
-// player right clicks entity in <area>
-// player right clicks entity in notable cuboid
-// player right clicks <entity>
-// player right clicks <entity> in <area>
-// player right clicks <entity> in notable cuboid
+// player right clicks at entity
+// player right clicks at entity in <area>
+// player right clicks at entity in notable cuboid
+// player right clicks at <entity>
+// player right clicks at <entity> in <area>
+// player right clicks at <entity> in notable cuboid
 //
-// @Regex ^on player right clicks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+// @Regex ^on player right clicks at [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
 //
 // @Switch with <item>
 //
 // @Cancellable true
 //
-// @Triggers when a player right clicks on an entity.
+// @Triggers when a player right clicks at an entity (Similar to right clicks entity, but for armor stands).
 //
 // @Context
-// <context.entity> returns the dEntity the player is clicking on.
+// <context.entity> returns the dEntity the player is clicking at.
 // <context.item> returns the dItem the player is clicking with.
 // <context.cuboids> NOTE: DEPRECATED IN FAVOUR OF <context.location.cuboids>
-// <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOUR OF <context.entity.location>
+// <context.location> returns a dLocation on the entity that was clicked.
 //
 // -->
 
-public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
-    PlayerRightClicksEntityScriptEvent instance;
-    PlayerInteractEntityEvent event;
+    PlayerRightClicksAtEntityScriptEvent instance;
+    PlayerInteractAtEntityEvent event;
     dEntity entity;
     dItem item;
     dLocation location;
@@ -51,14 +51,14 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player right clicks") && !CoreUtilities.getXthArg(3, lower).equals("at");
+        return lower.startsWith("player right clicks at");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(3, lower))) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(4, lower))) {
             return false;
         }
         if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
@@ -68,8 +68,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return false;
         }
         // Deprecated in favor of with: format
-        if (CoreUtilities.xthArgEquals(4, lower, "with")) {
-            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(5, lower))) {
+        if (CoreUtilities.xthArgEquals(5, lower, "with")) {
+            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(6, lower))) {
                 return false;
             }
         }
@@ -78,7 +78,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public String getName() {
-        return "PlayerRightClicksEntity";
+        return "PlayerRightClicksAtEntity";
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public void destroy() {
-        PlayerInteractEntityEvent.getHandlerList().unregister(this);
+        PlayerInteractAtEntityEvent.getHandlerList().unregister(this);
     }
 
 
@@ -120,10 +120,10 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     }
 
     @EventHandler
-    public void playerRightClicksEntity(PlayerInteractEntityEvent event) {
+    public void playerRightClicksAtEntity(PlayerInteractAtEntityEvent event) {
         entity = new dEntity(event.getRightClicked());
         item = new dItem(event.getPlayer().getItemInHand());
-        location = new dLocation(event.getRightClicked().getLocation());
+        location = new dLocation(event.getClickedPosition().toLocation(event.getPlayer().getWorld()));
         cuboids = new dList();
         for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identify());
