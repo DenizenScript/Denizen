@@ -129,7 +129,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityExplodes(EntityExplodeEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getLocation());

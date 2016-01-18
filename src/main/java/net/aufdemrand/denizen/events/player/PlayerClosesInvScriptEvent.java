@@ -102,7 +102,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerClosesInv(InventoryCloseEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

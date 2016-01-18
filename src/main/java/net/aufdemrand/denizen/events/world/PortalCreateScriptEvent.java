@@ -94,7 +94,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPortalCreate(PortalCreateEvent event) {
         world = new dWorld(event.getWorld());
         reason = new Element(event.getReason().toString());

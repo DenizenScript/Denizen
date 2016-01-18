@@ -1323,7 +1323,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dList(dLocation)
         // @description
         // Returns a full list of points along the path from this location to the given location.
-        // The default radius, if unspecified, is 2.
+        // Uses a max range of 100 blocks from the start.
         // -->
         if (attribute.startsWith("find_path")
                 && attribute.hasContext(1)) {
@@ -1331,30 +1331,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (two == null) {
                 return null;
             }
-            attribute = attribute.fulfill(1);
-            int radius = 2;
-            // <--[tag]
-            // @attribute <l@location.find_path[<location>].radius[<#>]>
-            // @returns dList(dLocation)
-            // @description
-            // Returns a full list of points along the path from this location to the given location.
-            // The default radius, if unspecified, is 2.
-            // -->
-            if (attribute.startsWith("radius")
-                    && attribute.hasContext(1)) {
-                radius = new Element(attribute.getContext(1)).asInt();
-                attribute = attribute.fulfill(1);
-            }
-            PathFinder.Node node = PathFinder.findPath(this, two, radius);
-            if (node == null) {
-                return null;
-            }
+            List<dLocation> locs = PathFinder.getPath(this, two);
             dList list = new dList();
-            while (node != null) {
-                list.add(node.position.identify());
-                node = node.next;
+            for (dLocation loc: locs) {
+                list.add(loc.identify());
             }
-            return list.getAttribute(attribute);
+            return list.getAttribute(attribute.fulfill(1));
         }
 
 

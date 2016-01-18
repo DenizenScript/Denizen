@@ -98,7 +98,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerLogin(PlayerLoginEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

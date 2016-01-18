@@ -123,7 +123,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerFishes(PlayerFishEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -131,7 +131,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         Entity hookEntity = event.getHook();
         dEntity.rememberEntity(hookEntity);
         hook = new dEntity(hookEntity);
-        state = new Element(event.getState().name());
+        state = new Element(event.getState().toString());
         item = null;
         entity = null;
         Entity caughtEntity = event.getCaught();

@@ -123,7 +123,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
         origin = dInventory.mirrorBukkitInventory(event.getSource());
         destination = dInventory.mirrorBukkitInventory(event.getDestination());

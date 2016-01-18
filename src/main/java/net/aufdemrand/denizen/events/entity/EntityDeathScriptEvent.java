@@ -182,7 +182,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         entity = new dEntity(event.getEntity());
 

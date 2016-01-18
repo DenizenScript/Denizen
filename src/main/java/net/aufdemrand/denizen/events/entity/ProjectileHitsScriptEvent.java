@@ -136,7 +136,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onProjectileHits(ProjectileHitEvent event) {
         projectile = new dEntity(event.getEntity());
         if (projectile.getLocation() == null) {

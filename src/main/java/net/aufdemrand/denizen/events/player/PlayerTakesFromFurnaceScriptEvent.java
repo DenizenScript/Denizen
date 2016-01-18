@@ -99,7 +99,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerTakesFromFurnace(FurnaceExtractEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

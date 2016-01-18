@@ -106,7 +106,7 @@ public class BucketFillScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
         entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());

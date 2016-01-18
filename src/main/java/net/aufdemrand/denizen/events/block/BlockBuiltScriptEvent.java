@@ -109,7 +109,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         old_material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());

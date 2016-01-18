@@ -111,7 +111,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     //
     //
     // -->
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -123,7 +123,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerLeave(PlayerQuitEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -134,7 +134,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         playerMoveEvent(pme);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
@@ -156,7 +156,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         playerMoveEvent(evt);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void playerMoveEvent(PlayerMoveEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

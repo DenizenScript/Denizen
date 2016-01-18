@@ -95,7 +95,7 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityEntersPortal(EntityPortalEnterEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getLocation());

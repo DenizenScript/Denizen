@@ -85,7 +85,7 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onChunkLoad(ChunkLoadEvent event) {
         chunk = new dChunk(event.getChunk());
         world = new dWorld(event.getWorld());

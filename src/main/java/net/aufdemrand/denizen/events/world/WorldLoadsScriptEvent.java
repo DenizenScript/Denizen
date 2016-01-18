@@ -78,7 +78,7 @@ public class WorldLoadsScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onWorldLoads(WorldLoadEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;

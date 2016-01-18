@@ -126,7 +126,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerDragsInInv(InventoryDragEvent event) {
         if (dEntity.isCitizensNPC(event.getWhoClicked())) {
             return;

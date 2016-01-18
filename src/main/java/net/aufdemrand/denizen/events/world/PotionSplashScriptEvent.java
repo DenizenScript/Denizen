@@ -98,7 +98,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPotionSplash(PotionSplashEvent event) {
         entity = new dEntity(event.getEntity());
         potion = new dItem(event.getPotion().getItem());

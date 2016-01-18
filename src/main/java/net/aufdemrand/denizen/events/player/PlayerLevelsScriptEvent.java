@@ -101,7 +101,7 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerLevels(PlayerLevelChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

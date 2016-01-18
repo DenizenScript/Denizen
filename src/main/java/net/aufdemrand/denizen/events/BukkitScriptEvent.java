@@ -144,4 +144,27 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return false;
     }
 
+    public boolean tryEntity(dEntity entity, String comparedto) {
+        if (comparedto == null || comparedto.length() == 0 || entity == null) {
+            return false;
+        }
+        comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.equals("entity")) {
+            return true;
+        }
+        if (comparedto.equals("npc")) {
+            return entity.isCitizensNPC();
+        }
+        if (comparedto.equals("player")) {
+            return entity.isPlayer();
+        }
+        if (entity.getEntityScript() != null && comparedto.equals(CoreUtilities.toLowerCase(entity.getEntityScript()))) {
+            return true;
+        }
+        if (comparedto.equals(entity.getEntityType().getLowercaseName())) {
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -85,7 +85,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onFireworkBursts(FireworkExplodeEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(entity.getLocation());

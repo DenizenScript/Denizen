@@ -167,7 +167,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     class SyncChatHandler implements Listener {
-        @EventHandler(ignoreCancelled = true)
+        @EventHandler
         public void onSyncChat(PlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
@@ -186,7 +186,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     class AsyncChatHandler implements Listener {
-        @EventHandler(ignoreCancelled = true)
+        @EventHandler
         public void onAsyncChat(AsyncPlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
