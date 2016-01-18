@@ -108,6 +108,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
             return;
         }
         item = new dItem(event.getItem());
+        cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);

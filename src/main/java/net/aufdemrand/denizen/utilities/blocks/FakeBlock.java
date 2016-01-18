@@ -92,7 +92,7 @@ public class FakeBlock {
         cancelTime = -1;
         material = null;
         location.getBlock().getState().update();
-        blocks.get(player.getPlayerEntity().getUniqueId()).remove(location);
+        blocks.get(player.getOfflinePlayer().getUniqueId()).remove(location);
     }
 
 

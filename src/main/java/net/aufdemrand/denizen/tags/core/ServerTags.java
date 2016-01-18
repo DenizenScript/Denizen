@@ -971,6 +971,16 @@ public class ServerTags implements Listener {
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
         }
 
+        // <--[tag]
+        // @attribute <server.port>
+        // @returns Element(Number)
+        // @description
+        // Returns the port that the server is running on.
+        // -->
+        else if (attribute.startsWith("port")) {
+            event.setReplaced(new Element(Bukkit.getServer().getPort()).getAttribute(attribute.fulfill(1)));
+        }
+
         // TODO: Add everything else from Bukkit.getServer().*
 
     }

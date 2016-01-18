@@ -12,19 +12,19 @@ import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 
 public class ItemUnbreakable implements Property {
 
-    public static boolean describes(dObject item) {
-        return item instanceof dItem;
+    public static boolean describes(dObject object) {
+        return object instanceof dItem;
     }
 
-    public static ItemUnbreakable getFrom(dObject _item) {
-        if (!describes(_item)) {
+    public static ItemUnbreakable getFrom(dObject object) {
+        if (!describes(object)) {
             return null;
         }
-        return new ItemUnbreakable((dItem) _item);
+        return new ItemUnbreakable((dItem) object);
     }
 
-    private ItemUnbreakable(dItem _item) {
-        item = _item;
+    private ItemUnbreakable(dItem item) {
+        this.item = item;
     }
 
     dItem item;
@@ -44,7 +44,7 @@ public class ItemUnbreakable implements Property {
         // Returns whether an item has the unbreakable flag.
         // -->
         if (attribute.startsWith("unbreakable")) {
-            return new Element(Boolean.valueOf(getPropertyString() != null)).getAttribute(attribute.fulfill(1));
+            return new Element(getPropertyString() != null).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -52,8 +52,8 @@ public class ItemUnbreakable implements Property {
 
     public String getPropertyString() {
         ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        if ((itemStack != null) && (itemStack.hasTag()) &&
-                (itemStack.getTag().getBoolean("Unbreakable"))) {
+        if (itemStack != null && itemStack.hasTag() &&
+                itemStack.getTag().getBoolean("Unbreakable")) {
             return "true";
         }
         return null;
@@ -74,7 +74,7 @@ public class ItemUnbreakable implements Property {
         // @tags
         // <i@item.unbreakable>
         // -->
-        if ((mechanism.matches("unbreakable")) && (mechanism.requireBoolean())) {
+        if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
             ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
             NBTTagCompound tag = itemStack.hasTag() ? itemStack.getTag() : new NBTTagCompound();
             tag.setInt("Unbreakable", mechanism.getValue().asBoolean() ? 1 : 0);
