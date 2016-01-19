@@ -745,11 +745,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.facing_blocks[<#>}>
+        // @attribute <l@location.facing_blocks[<#>]>
         // @returns dList(dLocation)
         // @description
-        // Finds all blocks in the direction this location is facing,
-        // optionally with a custom range. (Default is 100)
+        // Finds all block locations in the direction this location is facing,
+        // optionally with a custom range (default is 100).
+        // For example a location at 0,0,0 facing straight up
+        // will include 0,1,0 0,2,0 and so on.
         // -->
         if (attribute.startsWith("facing_blocks")) {
             int range = attribute.getIntContext(1);
