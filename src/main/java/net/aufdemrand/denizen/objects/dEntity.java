@@ -33,6 +33,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
@@ -2230,9 +2231,9 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("target")) {
             if (getBukkitEntity() instanceof Creature) {
-                dEntity target = new dEntity(((Creature) getLivingEntity()).getTarget());
+                Entity target = ((Creature) getLivingEntity()).getTarget();
                 if (target != null) {
-                    return target.getAttribute(attribute.fulfill(1));
+                    return new dEntity(target).getAttribute(attribute.fulfill(1));
                 }
             }
             return null;
@@ -2248,6 +2249,18 @@ public class dEntity implements dObject, Adjustable {
         if (attribute.startsWith("time_lived")) {
             return new Duration(entity.getTicksLived() / 20)
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.pickup_delay>
+        // @returns Duration
+        // @group attributes
+        // @description
+        // Returns how long the entity has lived.
+        // -->
+        if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
+                && getBukkitEntity() instanceof Item) {
+            return new Duration(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -2633,6 +2646,19 @@ public class dEntity implements dObject, Adjustable {
             getLivingEntity().playEffect(EntityEffect.DEATH);
         }
 
+        // <--[mechanism]
+        // @object dEntity
+        // @name pickup_delay
+        // @input Duration
+        // @description
+        // Sets the pickup delay of this Item Entity.
+        // @tags
+        // <e@entity.pickup_delay>
+        // -->
+        if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
+                getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
+            ((Item) getBukkitEntity()).setPickupDelay(value.asType(Duration.class).getTicksAsInt());
+        }
 
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
