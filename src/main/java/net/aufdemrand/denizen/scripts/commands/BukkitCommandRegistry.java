@@ -833,7 +833,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -848,6 +848,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // For all three usages, you can optionally specify an integer with 'quantity:'
         // prefix to drop multiple items/entities/xp.
         // For items, you can add 'speed:' to modify the launch velocity.
+        // You can also add 'delay:' to set the pickup delay of the item.
 
         // @Tags
         // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
@@ -857,16 +858,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>.get_spawnable_blocks.random>
 
         // @Usage
-        // Use to reward a player
+        // Use to reward a player with 500 xp.
         // - drop xp quantity:500 <player.location>
 
         // @Usage
-        // Use to drop a nasty surprise (exploding TNT)
+        // Use to drop a nasty surprise (exploding TNT).
         // - drop e@primed_tnt <player.location>
+
+        // @Usage
+        // Use to drop an item with a pickup delay at the player's location.
+        // - drop i@diamond_sword <player.location> delay:20s
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)", 1);
+                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
 
 
         // <--[command]
