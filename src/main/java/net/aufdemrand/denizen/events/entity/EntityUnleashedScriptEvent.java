@@ -59,7 +59,7 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
         }
 
         if (lower.contains("because")) {
-            if (!CoreUtilities.getXthArg(3, lower).equals(reason.toString().toLowerCase())) {
+            if (!CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(reason.toString()))) {
                 return false;
             }
         }

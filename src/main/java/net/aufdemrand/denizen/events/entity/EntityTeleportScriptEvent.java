@@ -88,7 +88,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        String dlow = determination.toLowerCase();
+        String dlow = CoreUtilities.toLowerCase(determination);
         if (dlow.startsWith("origin:")) {
             dLocation new_from = dLocation.valueOf(determination.substring("origin:".length()));
             if (new_from != null) {

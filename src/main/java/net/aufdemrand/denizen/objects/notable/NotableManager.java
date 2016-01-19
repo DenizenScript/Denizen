@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.objects.ObjectFetcher;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,7 +45,7 @@ public class NotableManager {
 
 
     public static boolean isSaved(String id) {
-        return notableObjects.containsKey(id.toLowerCase());
+        return notableObjects.containsKey(CoreUtilities.toLowerCase(id));
     }
 
 
@@ -54,8 +55,8 @@ public class NotableManager {
 
 
     public static Notable getSavedObject(String id) {
-        if (notableObjects.containsKey(id.toLowerCase())) {
-            return notableObjects.get(id.toLowerCase());
+        if (notableObjects.containsKey(CoreUtilities.toLowerCase(id))) {
+            return notableObjects.get(CoreUtilities.toLowerCase(id));
         }
         else {
             return null;
@@ -72,7 +73,8 @@ public class NotableManager {
 
 
     public static boolean isType(String id, Class type) {
-        return (typeTracker.containsKey(id.toLowerCase())) && typeTracker.get(id.toLowerCase()) == type;
+        return (typeTracker.containsKey(CoreUtilities.toLowerCase(id)))
+                && typeTracker.get(CoreUtilities.toLowerCase(id)) == type;
     }
 
 
@@ -80,24 +82,24 @@ public class NotableManager {
         if (object == null) {
             return;
         }
-        notableObjects.put(id.toLowerCase(), object);
-        reverseObjects.put(object, id.toLowerCase());
-        typeTracker.put(id.toLowerCase(), object.getClass());
+        notableObjects.put(CoreUtilities.toLowerCase(id), object);
+        reverseObjects.put(object, CoreUtilities.toLowerCase(id));
+        typeTracker.put(CoreUtilities.toLowerCase(id), object.getClass());
     }
 
 
     public static void remove(String id) {
-        Notable obj = notableObjects.get(id.toLowerCase());
-        notableObjects.remove(id.toLowerCase());
+        Notable obj = notableObjects.get(CoreUtilities.toLowerCase(id));
+        notableObjects.remove(CoreUtilities.toLowerCase(id));
         reverseObjects.remove(obj);
-        typeTracker.remove(id.toLowerCase());
+        typeTracker.remove(CoreUtilities.toLowerCase(id));
     }
 
     public static void remove(Notable obj) {
         String id = reverseObjects.get(obj);
-        notableObjects.remove(id.toLowerCase());
+        notableObjects.remove(CoreUtilities.toLowerCase(id));
         reverseObjects.remove(obj);
-        typeTracker.remove(id.toLowerCase());
+        typeTracker.remove(CoreUtilities.toLowerCase(id));
     }
 
     public static <T extends dObject> List<T> getAllType(Class<T> type) {
@@ -165,7 +167,7 @@ public class NotableManager {
             //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
             //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
 
-            notables.set(getClassId(getClass(notable.getValue())) + "." + notable.getKey().toLowerCase().replace(".", "DOT"),
+            notables.set(getClassId(getClass(notable.getValue())) + "." + CoreUtilities.toLowerCase(notable.getKey()).replace(".", "DOT"),
                     notable.getValue().getSaveObject());
         }
 

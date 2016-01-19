@@ -44,7 +44,7 @@ public class dChunk implements dObject, Adjustable {
             return null;
         }
 
-        string = string.toLowerCase().replace("ch@", "");
+        string = CoreUtilities.toLowerCase(string).replace("ch@", "");
 
         ////////
         // Match location formats
@@ -71,10 +71,9 @@ public class dChunk implements dObject, Adjustable {
 
 
     public static boolean matches(String string) {
-        if (string.toLowerCase().startsWith("ch@")) {
+        if (CoreUtilities.toLowerCase(string).startsWith("ch@")) {
             return true;
         }
-
         else {
             return false;
         }

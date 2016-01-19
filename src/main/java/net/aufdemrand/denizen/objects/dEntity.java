@@ -1577,7 +1577,7 @@ public class dEntity implements dObject, Adjustable {
                 else {
                     search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags) {
-                        if (flag.toLowerCase().contains(search)) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
                             searchFlags.add(flag);
                         }
                     }

@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 
@@ -56,7 +57,7 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        return getProfession().name().toLowerCase();
+        return CoreUtilities.toLowerCase(getProfession().name());
     }
 
     @Override
@@ -87,7 +88,7 @@ public class EntityProfession implements Property {
         // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
         // -->
         if (attribute.startsWith("profession")) {
-            return new Element(getProfession().name().toLowerCase())
+            return new Element(CoreUtilities.toLowerCase(getProfession().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 

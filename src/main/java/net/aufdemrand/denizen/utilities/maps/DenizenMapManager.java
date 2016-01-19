@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -83,7 +84,7 @@ public class DenizenMapManager {
                     String file = objectsData.getString(objectKey + ".image");
                     int width = objectsData.getInt(objectKey + ".width", 0);
                     int height = objectsData.getInt(objectKey + ".height", 0);
-                    if (file.toLowerCase().endsWith(".gif")) {
+                    if (CoreUtilities.toLowerCase(file).endsWith(".gif")) {
                         object = new MapAnimatedImage(xTag, yTag, visibilityTag, debug, file, width, height);
                     }
                     else {
@@ -118,7 +119,7 @@ public class DenizenMapManager {
             return;
         }
         for (String image : downloadedImages.getKeys(false)) {
-            downloadedByUrl.put(downloadedImages.getString(image).toLowerCase(), image.replace("DOT", "."));
+            downloadedByUrl.put(CoreUtilities.toLowerCase(downloadedImages.getString(image)), image.replace("DOT", "."));
         }
     }
 
@@ -175,7 +176,7 @@ public class DenizenMapManager {
     }
 
     public static String getActualFile(String file) {
-        String fileLower = file.toLowerCase();
+        String fileLower = CoreUtilities.toLowerCase(file);
         if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
             return new File(imagesFolder, file).getPath();
         }
@@ -195,7 +196,7 @@ public class DenizenMapManager {
             if (!imageDownloads.exists()) {
                 imageDownloads.mkdirs();
             }
-            String urlString = url.toString().toLowerCase();
+            String urlString = CoreUtilities.toLowerCase(url.toString());
             if (downloadedByUrl.containsKey(urlString)) {
                 File image = new File(imageDownloads, downloadedByUrl.get(urlString));
                 if (image.exists()) {

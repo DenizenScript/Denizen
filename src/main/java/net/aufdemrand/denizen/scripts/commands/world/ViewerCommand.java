@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -260,15 +261,15 @@ public class ViewerCommand extends AbstractCommand implements Listener {
             FileConfiguration saves = DenizenAPI.getCurrentInstance().getSaves();
 
             // Save content
-            saves.set("Viewers." + id.toLowerCase() + ".content", content);
+            saves.set("Viewers." + CoreUtilities.toLowerCase(id) + ".content", content);
             // Save location
-            saves.set("Viewers." + id.toLowerCase() + ".location", location.identify());
+            saves.set("Viewers." + CoreUtilities.toLowerCase(id) + ".location", location.identify());
         }
 
         void remove() {
             FileConfiguration saves = DenizenAPI.getCurrentInstance().getSaves();
 
-            saves.set("Viewers." + id.toLowerCase(), null);
+            saves.set("Viewers." + CoreUtilities.toLowerCase(id), null);
         }
 
     }
@@ -286,7 +287,7 @@ public class ViewerCommand extends AbstractCommand implements Listener {
 
         if (saves.contains("Viewers")) {
             for (final String id : saves.getConfigurationSection("Viewers").getKeys(false)) {
-                Viewer viewer = new Viewer(id, saves.getString("Viewers." + id.toLowerCase() + ".content"), dLocation.valueOf(saves.getString("Viewers." + id.toLowerCase() + ".location")));
+                Viewer viewer = new Viewer(id, saves.getString("Viewers." + CoreUtilities.toLowerCase(id) + ".content"), dLocation.valueOf(saves.getString("Viewers." + CoreUtilities.toLowerCase(id) + ".location")));
                 viewers.put(id, viewer);
                 if (viewer.getContent().startsWith("LOCATION")) {
                     int task = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), new Runnable() {

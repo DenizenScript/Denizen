@@ -235,7 +235,7 @@ public class ServerTags implements Listener {
                 else {
                     search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags) {
-                        if (flag.toLowerCase().contains(search)) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
                             searchFlags.add(flag);
                         }
                     }
@@ -603,13 +603,13 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("match_player") && attribute.hasContext(1)) {
             Player matchPlayer = null;
-            String matchInput = attribute.getContext(1).toLowerCase();
+            String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (player.getName().toLowerCase().equals(matchInput)) {
+                if (CoreUtilities.toLowerCase(player.getName()).equals(matchInput)) {
                     matchPlayer = player;
                     break;
                 }
-                else if (player.getName().toLowerCase().contains(matchInput) && matchPlayer == null) {
+                else if (CoreUtilities.toLowerCase(player.getName()).contains(matchInput) && matchPlayer == null) {
                     matchPlayer = player;
                 }
             }
@@ -631,13 +631,13 @@ public class ServerTags implements Listener {
         // -->
         if (attribute.startsWith("match_offline_player") && attribute.hasContext(1)) {
             UUID matchPlayer = null;
-            String matchInput = attribute.getContext(1).toLowerCase();
+            String matchInput = CoreUtilities.toLowerCase(attribute.getContext(1));
             for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
-                if (entry.getKey().toLowerCase().equals(matchInput)) {
+                if (CoreUtilities.toLowerCase(entry.getKey()).equals(matchInput)) {
                     matchPlayer = entry.getValue();
                     break;
                 }
-                else if (entry.getKey().toLowerCase().contains(matchInput) && matchPlayer == null) {
+                else if (CoreUtilities.toLowerCase(entry.getKey()).contains(matchInput) && matchPlayer == null) {
                     matchPlayer = entry.getValue();
                 }
             }

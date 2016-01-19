@@ -149,7 +149,7 @@ public class EntityColor implements Property {
         // For rabbit types, see <@link language rabbit types>.
         // -->
         if (attribute.startsWith("color")) {
-            return new Element(getColor().toLowerCase())
+            return new Element(CoreUtilities.toLowerCase(getColor()))
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -38,7 +38,7 @@ public class dPlugin implements dObject {
             return null;
         }
 
-        string = string.toLowerCase().replace("pl@", "");
+        string = CoreUtilities.toLowerCase(string).replace("pl@", "");
 
         try {
             // Attempt to match from plugin list, as PluginManager#getPlugin is case sensitive
@@ -57,7 +57,7 @@ public class dPlugin implements dObject {
     }
 
     public static boolean matches(String arg) {
-        if (arg.toLowerCase().startsWith("pl@")) {
+        if (CoreUtilities.toLowerCase(arg).startsWith("pl@")) {
             return true;
         }
         for (Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {

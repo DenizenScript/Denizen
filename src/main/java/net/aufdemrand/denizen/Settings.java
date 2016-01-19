@@ -2,6 +2,7 @@ package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class Settings {
 
@@ -132,7 +133,8 @@ public class Settings {
 
     public static boolean triggerEnabled(String triggerName) {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Enabled", true);
+                .getBoolean("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
+                        + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Enabled", true);
     }
 
     /*
@@ -144,7 +146,8 @@ public class Settings {
 
     public static double triggerDefaultCooldown(String triggerName) {
         return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Cooldown", "5s")).getSeconds();
+                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
+                        + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown", "5s")).getSeconds();
     }
 
     /*
@@ -157,7 +160,8 @@ public class Settings {
 
     public static double triggerDefaultRange(String triggerName) {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Range", -1);
+                .getDouble("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
+                        + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Range", -1);
     }
 
     /*
@@ -169,7 +173,8 @@ public class Settings {
 
     public static String triggerDefaultCooldownType(String triggerName) {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase() + triggerName.substring(1).toLowerCase() + ".Cooldown Type", "Player");
+                .getString("Triggers." + String.valueOf(triggerName.charAt(0)).toUpperCase()
+                        + CoreUtilities.toLowerCase(triggerName.substring(1)) + ".Cooldown Type", "Player");
     }
 
     /*

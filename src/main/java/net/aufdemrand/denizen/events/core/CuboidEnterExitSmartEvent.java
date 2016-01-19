@@ -55,7 +55,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 }
                 else {
                     // Add this to the watch list, regardless of whether it's valid, in case it becomes valid later
-                    cuboids_to_watch.add(m.group(1).toLowerCase());
+                    cuboids_to_watch.add(CoreUtilities.toLowerCase(m.group(1)));
                 }
 
                 // We'll set should_register to true, but keep iterating through the matches

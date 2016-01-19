@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -73,7 +74,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
     public void increment(String object, int amount) {
         items_so_far = items_so_far + amount;
         dB.log(ChatColor.YELLOW + "// " + player.getName() + " " +
-                type.toString().toLowerCase() + "ed " + amount + " " + object + ".");
+                CoreUtilities.toLowerCase(type.toString()) + "ed " + amount + " " + object + ".");
         check();
     }
 
@@ -106,7 +107,7 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                 final ItemStack item = new ItemStack(event.getCurrentItem());
 
                 //if item isn't a required item, then return
-                if (!items.contains(item.getType().name().toLowerCase())
+                if (!items.contains(CoreUtilities.toLowerCase(item.getType().name()))
                         && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*")) {
                     return;
                 }

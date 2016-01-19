@@ -1663,7 +1663,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the formatted biome name at the location.
         // -->
         if (attribute.startsWith("biome.formatted")) {
-            return new Element(getBlock().getBiome().name().toLowerCase().replace('_', ' '))
+            return new Element(CoreUtilities.toLowerCase(getBlock().getBiome().name()).replace('_', ' '))
                     .getAttribute(attribute.fulfill(2));
         }
 

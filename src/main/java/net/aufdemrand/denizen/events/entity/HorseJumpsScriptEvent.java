@@ -62,12 +62,12 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         String arg2 = CoreUtilities.getXthArg(1, lower);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
 
-        if (!entity.matchesEntity(tamed) || !tamed.equals(variant.toString().toLowerCase())) {
+        if (!entity.matchesEntity(tamed) || !tamed.equals(CoreUtilities.toLowerCase(variant.toString()))) {
             return false;
         }
 
         if (CoreUtilities.getXthArg(2, lower).equals("jumps")) {
-            if (!arg1.equals(color.toString().toLowerCase())) {
+            if (!arg1.equals(CoreUtilities.toLowerCase(color.toString()))) {
                 return false;
             }
         }

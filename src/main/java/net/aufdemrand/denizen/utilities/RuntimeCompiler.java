@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.interfaces.dExternal;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 import org.bukkit.ChatColor;
@@ -26,14 +27,14 @@ public class RuntimeCompiler {
     private final static FilenameFilter jarFilter = new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
-            return (name.toLowerCase().endsWith(".jar"));
+            return (CoreUtilities.toLowerCase(name).endsWith(".jar"));
         }
     };
 
     private final static FilenameFilter javaFilter = new FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
-            return (name.toLowerCase().endsWith(".java"));
+            return (CoreUtilities.toLowerCase(name).endsWith(".java"));
         }
     };
 

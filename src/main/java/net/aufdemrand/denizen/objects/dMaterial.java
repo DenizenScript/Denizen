@@ -516,8 +516,8 @@ public class dMaterial implements dObject {
     @Fetchable("m")
     public static dMaterial valueOf(String string, TagContext context) {
 
-        if (string.toLowerCase().matches("random")
-                || string.toLowerCase().matches("m@random")) {
+        if (CoreUtilities.toLowerCase(string).matches("random")
+                || CoreUtilities.toLowerCase(string).matches("m@random")) {
 
             // Get a random material
             return new dMaterial(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
@@ -740,9 +740,9 @@ public class dMaterial implements dObject {
             return "m@" + forcedIdentityLow;
         }
         if (getData() != null && getData() > 0) {
-            return "m@" + material.name().toLowerCase() + "," + getData();
+            return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return "m@" + material.name().toLowerCase();
+        return "m@" + CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyFull() {
@@ -750,9 +750,9 @@ public class dMaterial implements dObject {
             return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
         if (getData() != null && getData() > 0) {
-            return "m@" + material.name().toLowerCase() + "," + getData();
+            return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return "m@" + material.name().toLowerCase();
+        return "m@" + CoreUtilities.toLowerCase(material.name());
     }
 
     @Override
@@ -760,7 +760,7 @@ public class dMaterial implements dObject {
         if (forcedIdentity != null) {
             return "m@" + forcedIdentityLow;
         }
-        return "m@" + material.name().toLowerCase();
+        return "m@" + CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyNoIdentifier() {
@@ -768,16 +768,16 @@ public class dMaterial implements dObject {
             return forcedIdentityLow;
         }
         if (getData() != null && getData() > 0) {
-            return material.name().toLowerCase() + "," + getData();
+            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return material.name().toLowerCase();
+        return CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifySimpleNoIdentifier() {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        return material.name().toLowerCase();
+        return CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyFullNoIdentifier() {
@@ -785,9 +785,9 @@ public class dMaterial implements dObject {
             return forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
         if (getData() != null && getData() > 0) {
-            return material.name().toLowerCase() + "," + getData();
+            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return material.name().toLowerCase();
+        return CoreUtilities.toLowerCase(material.name());
     }
 
     @Override
@@ -799,7 +799,7 @@ public class dMaterial implements dObject {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        return material.name().toLowerCase();
+        return CoreUtilities.toLowerCase(material.name());
     }
 
     @Override
@@ -1026,7 +1026,7 @@ public class dMaterial implements dObject {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(((dMaterial) object).forcedIdentity != null ? ((dMaterial) object).forcedIdentityLow :
-                        ((dMaterial) object).material.name().toLowerCase())
+                        CoreUtilities.toLowerCase(((dMaterial) object).material.name()))
                         .getAttribute(attribute.fulfill(1));
             }
         });

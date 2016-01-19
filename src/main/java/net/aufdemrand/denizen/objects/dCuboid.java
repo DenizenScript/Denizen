@@ -137,7 +137,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     public static boolean matches(String string) {
         // Starts with cu@? Assume match.
-        if (string.toLowerCase().startsWith("cu@")) {
+        if (CoreUtilities.toLowerCase(string).startsWith("cu@")) {
             return true;
         }
 

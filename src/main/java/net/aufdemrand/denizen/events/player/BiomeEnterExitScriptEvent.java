@@ -67,10 +67,10 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
         String biome_test = lower.substring(lower.lastIndexOf(" ") + 1);
         String direction = lower.substring(lower.indexOf(" ") + 1, lower.lastIndexOf(" ") - 1);
 
-        return !(old_biome.toString().toLowerCase().equals(new_biome.toString().toLowerCase()))
+        return !(CoreUtilities.toLowerCase(old_biome.toString()).equals(CoreUtilities.toLowerCase(new_biome.toString())))
                 && (biome_test.equals("biome")
-                || (direction.equals("enters") && biome_test.equals(new_biome.toString().toLowerCase()))
-                || (direction.equals("exits") && biome_test.equals(old_biome.toString().toLowerCase())));
+                || (direction.equals("enters") && biome_test.equals(CoreUtilities.toLowerCase(new_biome.toString())))
+                || (direction.equals("exits") && biome_test.equals(CoreUtilities.toLowerCase(old_biome.toString()))));
     }
 
     @Override
