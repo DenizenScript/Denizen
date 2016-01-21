@@ -755,17 +755,26 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (target == null) {
                 return null;
             }
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <l@location.points_between[<location>].distance[<#.#>]>
+            // @returns dList(dLocation)
+            // @description
+            // Finds all locations between this location and another, separated by the specified distance each.
+            // -->
+            double rad = 1d;
+            if (attribute.startsWith("distance")) {
+                rad = attribute.getIntContext(1);
+                attribute = attribute.fulfill(1);
+            }
             dList list = new dList();
             org.bukkit.util.Vector rel = this.toVector().subtract(target.toVector());
             double len = rel.length();
             rel = rel.multiply(1d / len);
-            for (int i = 0; i < len; i++) {
+            for (double i = 0d; i < len; i += rad) {
                 list.add(new dLocation(this.clone().add(rel.clone().multiply(i))).identify());
             }
-            if (len > Math.floor(len)) {
-                list.add(target.identify());
-            }
-            return list.getAttribute(attribute.fulfill(1));
+            return list.getAttribute(attribute);
         }
 
         // <--[tag]
