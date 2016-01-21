@@ -745,6 +745,30 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.points_between[<location>]>
+        // @returns dList(dLocation)
+        // @description
+        // Finds all locations between this location and another, separated by 1 block-width each.
+        // -->
+        if (attribute.startsWith("points_between")) {
+            dLocation target = dLocation.valueOf(attribute.getContext(1));
+            if (target == null) {
+                return null;
+            }
+            dList list = new dList();
+            org.bukkit.util.Vector rel = this.toVector().subtract(target.toVector());
+            double len = rel.length();
+            rel = rel.multiply(1d / len);
+            for (int i = 0; i < len; i++) {
+                list.add(new dLocation(this.clone().add(rel.clone().multiply(i))).identify());
+            }
+            if (len > Math.floor(len)) {
+                list.add(target.identify());
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.facing_blocks[<#>]>
         // @returns dList(dLocation)
         // @description
