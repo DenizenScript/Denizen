@@ -93,7 +93,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerSprint(PlayerToggleSprintEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

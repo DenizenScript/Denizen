@@ -102,12 +102,13 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerConsumes(PlayerItemConsumeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
         item = new dItem(event.getItem());
+        cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);

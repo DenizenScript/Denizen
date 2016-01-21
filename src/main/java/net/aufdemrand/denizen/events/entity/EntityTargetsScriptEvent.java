@@ -134,7 +134,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityTargets(EntityTargetEvent event) {
         entity = new dEntity(event.getEntity());
         reason = new Element(event.getReason().toString());

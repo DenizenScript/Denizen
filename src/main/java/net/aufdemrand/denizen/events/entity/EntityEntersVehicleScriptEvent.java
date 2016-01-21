@@ -101,7 +101,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityEntersVehicle(VehicleEnterEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = new dEntity(event.getEntered());

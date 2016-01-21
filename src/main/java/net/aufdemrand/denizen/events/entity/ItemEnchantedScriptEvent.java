@@ -132,7 +132,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onItemEnchanted(EnchantItemEvent event) {
         entity = new dEntity(event.getEnchanter());
         location = new dLocation(event.getEnchantBlock().getLocation());

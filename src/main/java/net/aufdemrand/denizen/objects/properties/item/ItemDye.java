@@ -73,15 +73,14 @@ public class ItemDye implements Property {
 
         // <--[mechanism]
         // @object dItem
-        // @name dye
+        // @name dye_color
         // @input dColor
         // @description
         // Sets the leather armor item's dye color in the format RED,GREEN,BLUE
-        // See <@link language Property Escaping>
         // @tags
-        // <i@item.lore>
+        // <i@item.dye_color>
         // -->
-        if (mechanism.matches("dye") && mechanism.requireObject(dColor.class)) {
+        if ((mechanism.matches("dye") || mechanism.matches("dye_color")) && mechanism.requireObject(dColor.class)) {
             dColor color = mechanism.getValue().asType(dColor.class);
             LeatherArmorMeta meta = ((LeatherArmorMeta) item.getItemStack().getItemMeta());
             meta.setColor(color.getColor());

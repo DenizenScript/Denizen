@@ -93,7 +93,7 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerScrollsHotbar(PlayerItemHeldEvent event) {
         new_slot = new Element(event.getNewSlot() + 1);
         previous_slot = new Element(event.getPreviousSlot() + 1);

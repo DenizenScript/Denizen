@@ -80,7 +80,7 @@ public class WorldSavesScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onWorldSaves(WorldSaveEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;

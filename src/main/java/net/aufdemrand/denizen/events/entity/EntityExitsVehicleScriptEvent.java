@@ -101,7 +101,7 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityExitsVehicle(VehicleExitEvent event) {
         vehicle = new dEntity(event.getVehicle());
         entity = new dEntity(event.getExited());

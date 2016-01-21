@@ -93,7 +93,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerSneak(PlayerToggleSneakEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

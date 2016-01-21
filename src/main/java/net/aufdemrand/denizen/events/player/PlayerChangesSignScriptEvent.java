@@ -131,7 +131,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerChangesSign(SignChangeEvent event) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;

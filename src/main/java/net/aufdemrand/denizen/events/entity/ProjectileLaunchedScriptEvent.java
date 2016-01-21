@@ -90,7 +90,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
         Entity projectile = event.getEntity();
         dEntity.rememberEntity(projectile);

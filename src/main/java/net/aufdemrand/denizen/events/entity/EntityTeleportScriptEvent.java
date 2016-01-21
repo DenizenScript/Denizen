@@ -137,9 +137,8 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityTeleports(EntityTeleportEvent event) {
-        // TODO: cuboids?
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         entity = new dEntity(event.getEntity());
@@ -153,13 +152,11 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         event.setTo(to);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerTeleports(PlayerTeleportEvent event) {
-
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());
         entity = new dEntity(event.getPlayer());

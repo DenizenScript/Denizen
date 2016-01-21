@@ -99,7 +99,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());

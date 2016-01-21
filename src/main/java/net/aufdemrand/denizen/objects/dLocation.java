@@ -745,6 +745,61 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.points_between[<location>]>
+        // @returns dList(dLocation)
+        // @description
+        // Finds all locations between this location and another, separated by 1 block-width each.
+        // -->
+        if (attribute.startsWith("points_between")) {
+            dLocation target = dLocation.valueOf(attribute.getContext(1));
+            if (target == null) {
+                return null;
+            }
+            attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <l@location.points_between[<location>].distance[<#.#>]>
+            // @returns dList(dLocation)
+            // @description
+            // Finds all locations between this location and another, separated by the specified distance each.
+            // -->
+            double rad = 1d;
+            if (attribute.startsWith("distance")) {
+                rad = attribute.getIntContext(1);
+                attribute = attribute.fulfill(1);
+            }
+            dList list = new dList();
+            org.bukkit.util.Vector rel = this.toVector().subtract(target.toVector());
+            double len = rel.length();
+            rel = rel.multiply(1d / len);
+            for (double i = 0d; i < len; i += rad) {
+                list.add(new dLocation(this.clone().add(rel.clone().multiply(i))).identify());
+            }
+            return list.getAttribute(attribute);
+        }
+
+        // <--[tag]
+        // @attribute <l@location.facing_blocks[<#>]>
+        // @returns dList(dLocation)
+        // @description
+        // Finds all block locations in the direction this location is facing,
+        // optionally with a custom range (default is 100).
+        // For example a location at 0,0,0 facing straight up
+        // will include 0,1,0 0,2,0 and so on.
+        // -->
+        if (attribute.startsWith("facing_blocks")) {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 100;
+            }
+            dList list = new dList();
+            BlockIterator iterator = new BlockIterator(this, 0, range);
+            while (iterator.hasNext()) {
+                list.add(new dLocation(iterator.next().getLocation()).identify());
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.line_of_sight[<location>]>
         // @returns Element(Boolean)
         // @description
@@ -1303,7 +1358,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dList(dLocation)
         // @description
         // Returns a full list of points along the path from this location to the given location.
-        // The default radius, if unspecified, is 2.
+        // Uses a max range of 100 blocks from the start.
         // -->
         if (attribute.startsWith("find_path")
                 && attribute.hasContext(1)) {
@@ -1311,30 +1366,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (two == null) {
                 return null;
             }
-            attribute = attribute.fulfill(1);
-            int radius = 2;
-            // <--[tag]
-            // @attribute <l@location.find_path[<location>].radius[<#>]>
-            // @returns dList(dLocation)
-            // @description
-            // Returns a full list of points along the path from this location to the given location.
-            // The default radius, if unspecified, is 2.
-            // -->
-            if (attribute.startsWith("radius")
-                    && attribute.hasContext(1)) {
-                radius = new Element(attribute.getContext(1)).asInt();
-                attribute = attribute.fulfill(1);
-            }
-            PathFinder.Node node = PathFinder.findPath(this, two, radius);
-            if (node == null) {
-                return null;
-            }
+            List<dLocation> locs = PathFinder.getPath(this, two);
             dList list = new dList();
-            while (node != null) {
-                list.add(node.position.identify());
-                node = node.next;
+            for (dLocation loc: locs) {
+                list.add(loc.identify());
             }
-            return list.getAttribute(attribute);
+            return list.getAttribute(attribute.fulfill(1));
         }
 
 

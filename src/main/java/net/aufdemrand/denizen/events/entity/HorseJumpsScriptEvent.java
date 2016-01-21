@@ -116,7 +116,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onHorseJumps(HorseJumpEvent event) {
         entity = new dEntity(event.getEntity());
         color = new Element(event.getEntity().getColor().name());

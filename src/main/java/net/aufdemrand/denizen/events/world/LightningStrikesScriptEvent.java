@@ -86,7 +86,7 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onLightningStrikes(LightningStrikeEvent event) {
         lightning = new dEntity(event.getLightning());
         location = new dLocation(event.getLightning().getLocation());

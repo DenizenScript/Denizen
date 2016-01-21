@@ -110,7 +110,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onItemMerges(ItemMergeEvent event) {
         Item entity = event.getEntity();
         Item target = event.getTarget();

@@ -82,7 +82,7 @@ public class WorldUnloadsScriptEvent extends ScriptEvent implements Listener {
         return super.getContext(name);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onWorldUnloads(WorldUnloadEvent event) {
         world = new dWorld(event.getWorld());
         cancelled = event.isCancelled();
