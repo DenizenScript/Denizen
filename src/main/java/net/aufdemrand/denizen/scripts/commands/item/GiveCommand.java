@@ -132,7 +132,7 @@ public class GiveCommand extends AbstractCommand {
 
             case MONEY:
                 if (Depends.economy != null) {
-                    Depends.economy.depositPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
+                    Depends.economy.depositPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer(), qty.asDouble());
                 }
                 else {
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");

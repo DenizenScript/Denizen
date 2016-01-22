@@ -166,7 +166,7 @@ public class TakeCommand extends AbstractCommand {
 
             case MONEY:
                 if (Depends.economy != null) {
-                    Depends.economy.withdrawPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), qty.asDouble());
+                    Depends.economy.withdrawPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer(), qty.asDouble());
                 }
                 else {
                     dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
