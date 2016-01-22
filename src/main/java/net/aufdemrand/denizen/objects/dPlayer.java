@@ -833,7 +833,7 @@ public class dPlayer implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(2));
                 }
 
-                return new Element(Depends.economy.getBalance(getName())) // TODO: Vault UUID support?
+                return new Element(Depends.economy.getBalance(getOfflinePlayer()))
                         .getAttribute(attribute.fulfill(1));
 
             }
