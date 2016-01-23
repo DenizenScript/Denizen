@@ -833,7 +833,7 @@ public class dPlayer implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(2));
                 }
 
-                return new Element(Depends.economy.getBalance(getName())) // TODO: Vault UUID support?
+                return new Element(Depends.economy.getBalance(getOfflinePlayer()))
                         .getAttribute(attribute.fulfill(1));
 
             }
@@ -1136,7 +1136,7 @@ public class dPlayer implements dObject, Adjustable {
             return new Element(getMaxHealth()).getAttribute(attribute.fulfill(2));
         }
 
-        if (attribute.startsWith("health")) {
+        if (attribute.matches("health")) {
             return new Element(getHealth()).getAttribute(attribute.fulfill(1));
         }
 
@@ -1232,6 +1232,7 @@ public class dPlayer implements dObject, Adjustable {
                 return null;
             }
             dList list = new dList();
+            // TODO: optionally specify world
             for (String group : Depends.permissions.getGroups()) {
                 if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
                     list.add(group);

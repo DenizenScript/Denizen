@@ -740,13 +740,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
-        // @attribute <n@npc.vulnerable>
+        // @attribute <n@npc.invulnerable>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is currently vulnerable.
+        // returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
-        if (attribute.startsWith("vulnerable")) {
+        if (attribute.startsWith("invulnerable") || attribute.startsWith("vulnerable")) {
             return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
         }
 
