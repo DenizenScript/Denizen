@@ -438,6 +438,25 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_files[<path>]>
+        // @returns dList
+        // @description
+        // Returns a list of all files in the specified directory. The starting path is /plugins/Denizen.
+        // -->
+        if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
+            File[] files = DenizenAPI.getCurrentInstance().getDataFolder().listFiles();
+            if (files == null) {
+                return;
+            }
+            dList list = new dList();
+            for (File file: files) {
+                list.add(file.getName());
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.has_permissions>
         // @returns Element(Boolean)
         // @description
