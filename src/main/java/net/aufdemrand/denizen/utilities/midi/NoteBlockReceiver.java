@@ -125,6 +125,8 @@ public class NoteBlockReceiver implements Receiver {
         }
     }
 
+    public Runnable onFinish = null;
+
     @Override
     public void close() {
         entities = null;
@@ -137,6 +139,9 @@ public class NoteBlockReceiver implements Receiver {
         if (sequencer != null) {
             sequencer.close();
             sequencer = null;
+        }
+        if (onFinish != null) {
+            onFinish.run();
         }
     }
 }

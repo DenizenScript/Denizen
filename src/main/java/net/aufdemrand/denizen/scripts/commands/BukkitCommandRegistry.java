@@ -1885,8 +1885,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - midi file:Denizen <player.location>
 
         // @Usage
-        // Use to play a midi song file at a given location to the specified player
-        // - midi file:Denizen <server.list_online_players>
+        // Use to play a midi song file at a given location to the specified player, and wait for it to finish.
+        // - ~midi file:Denizen <server.list_online_players>
 
         // -->
         registerCoreMember(MidiCommand.class,

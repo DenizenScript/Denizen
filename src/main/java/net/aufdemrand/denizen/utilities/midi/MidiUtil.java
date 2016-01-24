@@ -36,7 +36,7 @@ public class MidiUtil {
         sequencer.start();
     }
 
-    public static void playMidi(File file, float tempo, float volume, List<dEntity> entities) {
+    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, List<dEntity> entities) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(entities, entities.get(0).getUUID().toString());
             receiver.VOLUME_RANGE = volume;
@@ -45,16 +45,17 @@ public class MidiUtil {
             for (dEntity entity : entities) {
                 stopMidi(entity.getUUID().toString());
             }
-
             receivers.put(entities.get(0).getUUID().toString(), receiver);
             startSequencer(file, tempo, receiver);
+            return receiver;
         }
         catch (Exception e) {
             dB.echoError(e);
+            return null;
         }
     }
 
-    public static void playMidi(File file, float tempo, float volume, dLocation location) {
+    public static NoteBlockReceiver playMidi(File file, float tempo, float volume, dLocation location) {
         try {
             NoteBlockReceiver receiver = new NoteBlockReceiver(location, location.identify());
             receiver.VOLUME_RANGE = volume;
@@ -62,11 +63,12 @@ public class MidiUtil {
             // stop playing it
             stopMidi(location.identify());
             receivers.put(location.identify(), receiver);
-
             startSequencer(file, tempo, receiver);
+            return receiver;
         }
         catch (Exception e) {
             dB.echoError(e);
+            return null;
         }
     }
 
