@@ -20,7 +20,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Action
-        // @Syntax Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
+        // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
         // @Required 1
         // @Stable unstable
         // @Short Manually fires an NPC action.
@@ -46,7 +46,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
         // -->
         registerCoreMember(ActionCommand.class,
-                "ACTION", "Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
+                "ACTION", "action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
 
 
         // <--[command]
@@ -757,7 +757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Despawn
-        // @Syntax Despawn (<npc>|...)
+        // @Syntax despawn (<npc>|...)
         // @Required 0
         // @Stable stable
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
@@ -788,7 +788,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Disengage
-        // @Syntax disengage (npc:<npc>)
+        // @Syntax disengage
         // @Required 0
         // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
@@ -823,7 +823,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(DisengageCommand.class,
-                    "DISENGAGE", "disengage (npc:<npc>)", 0);
+                    "DISENGAGE", "disengage", 0);
         }
 
 
@@ -904,7 +904,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Engage
-        // @Syntax engage (<duration>) (npc:<npc>)
+        // @Syntax engage (<duration>)
         // @Required 0
         // @Stable stable
         // @Short Temporarily disables a NPCs toggled interact script-container triggers.
@@ -950,7 +950,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
-                    "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
+                    "ENGAGE", "engage (<duration>)", 0);
         }
 
 

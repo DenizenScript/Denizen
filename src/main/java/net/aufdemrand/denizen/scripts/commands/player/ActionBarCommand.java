@@ -28,9 +28,8 @@ public class ActionBarCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matchesPrefix("format", "f")) {
-                FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
-                format = ScriptRegistry.getScriptContainer(formatStr);
+                FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
                     dB.echoError("Could not find format script matching '" + formatStr + '\'');
                 }
