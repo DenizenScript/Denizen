@@ -14,6 +14,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.Trait;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class CreateCommand extends AbstractCommand {
 
@@ -83,8 +84,18 @@ public class CreateCommand extends AbstractCommand {
         // Add the created NPC into the script entry so it can be utilized if need be.
         scriptEntry.addObject("created_npc", created);
 
-        if (loc != null) {
-            created.getCitizen().spawn(loc);
+        if (created.isSpawned()) {
+            if (loc != null) {
+                created.getCitizen().teleport(loc, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            }
+            else {
+                created.getCitizen().despawn();
+            }
+        }
+        else {
+            if (loc != null) {
+                created.getCitizen().spawn(loc);
+            }
         }
         if (traits != null) {
             for (String trait_name : traits) {

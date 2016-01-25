@@ -1299,7 +1299,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         // @returns Element
         // @group conversion
         // @description
-        // Returns a full reusable item identification for this cuboid, with extra, generally useless data.
+        // Returns a full reusable identification for this cuboid, with extra, generally useless data.
         // -->
         registerTag("full", new TagRunnable() {
             @Override
