@@ -51,10 +51,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ActionBar
-        // @Syntax ActionBar ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
         // @Required 1
         // @Stable stable
-        // @Short Send a message to a player's action bar.
+        // @Short Sends a message to a player's action bar.
         // @Author Fortifier42
         // @group player
 
@@ -76,7 +76,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
         // -->
         registerCoreMember(ActionBarCommand.class,
-                "ACTIONBAR", "ActionBar [\"<text>\"] (targets:<player>|...)", 1);
+                "ACTIONBAR", "actionbar [<text>] (targets:<player>|...)", 1);
 
 
         // <--[command]
@@ -270,7 +270,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Announce
-        // @Syntax announce ["<text>"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
+        // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Announces a message for everyone online to read.
@@ -307,7 +307,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // -->
         registerCoreMember(AnnounceCommand.class,
-                "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
+                "ANNOUNCE", "announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
 
 
         // <--[command]
@@ -535,7 +535,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
         // @Name Chat
-        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
+        // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Causes a NPC/NPCs to send a chat message to nearby players.
@@ -583,7 +583,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(ChatCommand.class,
-                    "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
+                    "CHAT", "chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
         }
 
 
@@ -1997,7 +1997,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Narrate
-        // @Syntax narrate ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Syntax narrate [<text>] (targets:<player>|...) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shows some text to the player.
@@ -2017,7 +2017,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
         // -->
         registerCoreMember(NarrateCommand.class,
-                "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
+                "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>)", 1);
 
 
         // <--[command]
