@@ -483,12 +483,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to set an entity on fire.
         // - burn <player> duration:10s
-        // - narrate 'You are on fire!'
 
         // @Usage
         // Use to cancel fire on entities.
         // - burn <player.location.find.living_entities.within[10]> duration:0
-        // - narrate 'You have cast a spell of reduce burn!'
 
         // -->
         registerCoreMember(BurnCommand.class,
@@ -521,12 +519,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.has_effect[<effect>]>
 
         // @Usage
-        // Use to apply an effect to an entity
-        // - cast jump <player> d:120 p:3
-        // - narrate "You have been given the temporary ability to jump like a kangaroo."
+        // Use to cast an effect onto the player for 120 seconds with a power of 3.
+        // - cast jump d:120 p:3
 
         // @Usage
-        // Use to remove an effect from an entity
+        // Use to remove an effect from the player.
         // - if <player.has_effect[jump]> {
         //   - cast jump remove <player>
         //   }
@@ -576,9 +573,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to have a NPC talk to a group of individuals.
         // - flag <npc> talk_targets:!
-        // - foreach <npc.location.find.living_entities.within[6]> {
-        //     - if <def[value].is_player> && <def[value].flag[clan_initiate]>
-        //       flag <npc> talk_targets:->:<def[value]>
+        // - foreach <npc.location.find.players.within[6]> {
+        //     - if <def[value].has_flag[clan_initiate]> {
+        //       - flag <npc> talk_targets:->:<def[value]>
+        //     }
         //   }
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
@@ -2006,7 +2004,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group player
         // @Description
-        // Prints some text into the targets chat area. If no target is specified it will default to the attached player
+        // Prints some text into the target's chat area. If no target is specified it will default to the attached player
         // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
         // format script.
         // @Tags
