@@ -50,6 +50,36 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name ActionBar
+        // @Syntax ActionBar ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Required 1
+        // @Stable stable
+        // @Short Send a message to a player's action bar.
+        // @Author Fortifier42
+        // @group player
+
+        // @Description
+        // Sends a message to the target's action bar area. If no target is specified it will default to the attached
+        // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+        // format script.
+
+        // @Usage
+        // Use to send a message to the player's action bar.
+        // - actionbar "Hey there <player.name>!"
+
+        // @Usage
+        // Use to send a message to a list of players.
+        // - actionbar "Hey, welcome to the server!" targets:p@Fortifier42|p@mcmonkey4eva|p@Morphan1
+
+        // @Usage
+        // Use to send a message to a list of players, with a formatted message.
+        // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
+        // -->
+        registerCoreMember(ActionBarCommand.class,
+                "ACTIONBAR", "ActionBar [\"<text>\"] (targets:<player>|...)", 1);
+
+
+        // <--[command]
         // @Name Adjust
         // @Syntax adjust [<dObject>|...] [<mechanism>](:<value>)
         // @Required 2
