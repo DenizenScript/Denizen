@@ -5,6 +5,7 @@ import com.google.common.collect.ListMultimap;
 import net.aufdemrand.denizen.utilities.command.exceptions.*;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -58,7 +59,7 @@ public class CommandManager {
         // must put command into split.
         String[] newArgs = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
-        newArgs[0] = command.getName().toLowerCase();
+        newArgs[0] = CoreUtilities.toLowerCase(command.getName());
 
         Object[] newMethodArgs = new Object[methodArgs.length + 1];
         System.arraycopy(methodArgs, 0, newMethodArgs, 1, methodArgs.length);
@@ -82,11 +83,11 @@ public class CommandManager {
 
     // Attempt to execute a command.
     private void executeMethod(String[] args, CommandSender sender, Object[] methodArgs) throws CommandException {
-        String cmdName = args[0].toLowerCase();
+        String cmdName = CoreUtilities.toLowerCase(args[0]);
         String modifier = args.length > 1 ? args[1] : "";
-        boolean help = modifier.toLowerCase().equals("help");
+        boolean help = CoreUtilities.toLowerCase(modifier).equals("help");
 
-        Method method = commands.get(cmdName + " " + modifier.toLowerCase());
+        Method method = commands.get(cmdName + " " + CoreUtilities.toLowerCase(modifier));
         if (method == null && !help) {
             method = commands.get(cmdName + " *");
         }
@@ -206,7 +207,7 @@ public class CommandManager {
      */
     public String getClosestCommandModifier(String command, String modifier) {
         int minDist = Integer.MAX_VALUE;
-        command = command.toLowerCase();
+        command = CoreUtilities.toLowerCase(command);
         String closest = "";
         for (String cmd : commands.keySet()) {
             String[] split = cmd.split(" ");
@@ -257,7 +258,7 @@ public class CommandManager {
      */
     public List<CommandInfo> getCommands(String command) {
         List<CommandInfo> cmds = new ArrayList<CommandInfo>();
-        command = command.toLowerCase();
+        command = CoreUtilities.toLowerCase(command);
         for (Map.Entry<String, Method> entry : commands.entrySet()) {
             if (!entry.getKey().startsWith(command) || entry.getValue() == null) {
                 continue;
@@ -301,8 +302,8 @@ public class CommandManager {
      * @return Whether the command is handled
      */
     public boolean hasCommand(org.bukkit.command.Command cmd, String modifier) {
-        String cmdName = cmd.getName().toLowerCase();
-        return commands.containsKey(cmdName + " " + modifier.toLowerCase()) || commands.containsKey(cmdName + " *");
+        String cmdName = CoreUtilities.toLowerCase(cmd.getName());
+        return commands.containsKey(cmdName + " " + CoreUtilities.toLowerCase(modifier)) || commands.containsKey(cmdName + " *");
     }
 
     // Returns whether a CommandSender has permission.
@@ -420,7 +421,7 @@ public class CommandManager {
             name = "NPC";
         }
         Paginator paginator = new Paginator().header(capitalize(name) + " Help");
-        for (String line : getLines(sender, name.toLowerCase())) {
+        for (String line : getLines(sender, CoreUtilities.toLowerCase(name))) {
             paginator.addLine(line);
         }
         if (!paginator.sendPage(sender, page)) {

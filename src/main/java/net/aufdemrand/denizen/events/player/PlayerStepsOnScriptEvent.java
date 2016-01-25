@@ -51,7 +51,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return s.toLowerCase().startsWith("player steps on");
+        return CoreUtilities.toLowerCase(s).startsWith("player steps on");
     }
 
     @Override

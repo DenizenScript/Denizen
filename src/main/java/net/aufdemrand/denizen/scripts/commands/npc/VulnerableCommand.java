@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
@@ -17,44 +18,34 @@ public class VulnerableCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
-        Toggle vulnerable = Toggle.TRUE;
-        // TODO: UPDATE COMMAND PARSING
-        for (String arg : scriptEntry.getArguments()) {
-            if (aH.matchesState(arg)) {
-                vulnerable = Toggle.valueOf(aH.getStringFrom(arg).toUpperCase());
+        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+            if (!scriptEntry.hasObject("action") && arg.matchesEnum(Toggle.values())) {
+                scriptEntry.addObject("action", arg.asElement());
+            }
+            else {
+                arg.reportUnhandled();
             }
         }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null) {
+        scriptEntry.defaultObject("action", new Element("toggle"));
+        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
-
-        // Add objects that need to be passed to execute() to the scriptEntry
-        scriptEntry.addObject("vulnerable", vulnerable);
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         // Fetch objects
-        Toggle toggle = (Toggle) scriptEntry.getObject("vulnerable");
+        Element action = scriptEntry.getElement("action");
+
+        BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().toString()) +
-                        aH.debugObj("Toggle", toggle.toString()));
+        dB.report(scriptEntry, getName(), entryData.getNPC().debug() + action.debug());
 
-        NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
+        NPC npc = entryData.getNPC().getCitizen();
+        Toggle toggle = Toggle.valueOf(action.asString().toUpperCase());
 
-        boolean vulnerable;
-
-        if (toggle == Toggle.TOGGLE) {
-            vulnerable = !npc.data().get(NPC.DEFAULT_PROTECTED_METADATA, true);
-        }
-
-        else {
-            vulnerable = Boolean.valueOf(toggle.toString());
-        }
-
-        npc.data().set(NPC.DEFAULT_PROTECTED_METADATA, !vulnerable);
+        npc.setProtected(!(toggle == Toggle.TOGGLE ? npc.isProtected() : action.asBoolean()));
     }
 }

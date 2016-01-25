@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.command;
 
 import net.aufdemrand.denizen.utilities.command.exceptions.CommandException;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -71,7 +72,7 @@ public class CommandContext {
                 }
 
                 if (inner != -1) {
-                    valueFlags.put(args[i].toLowerCase().substring(2), args[inner]);
+                    valueFlags.put(CoreUtilities.toLowerCase(args[i]).substring(2), args[inner]);
                     args[i] = "";
                     args[inner] = "";
                 }

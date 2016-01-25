@@ -112,7 +112,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public static boolean matches(String string) {
 
         // If using object notation, assume it's valid
-        if (string.toLowerCase().startsWith("n@")) {
+        if (CoreUtilities.toLowerCase(string).startsWith("n@")) {
             return true;
         }
 
@@ -665,7 +665,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 else {
                     search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags) {
-                        if (flag.toLowerCase().contains(search)) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
                             searchFlags.add(flag);
                         }
                     }

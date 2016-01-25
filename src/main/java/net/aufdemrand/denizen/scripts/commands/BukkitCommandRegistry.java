@@ -50,6 +50,36 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name ActionBar
+        // @Syntax ActionBar ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Required 1
+        // @Stable stable
+        // @Short Send a message to a player's action bar.
+        // @Author Fortifier42
+        // @group player
+
+        // @Description
+        // Sends a message to the target's action bar area. If no target is specified it will default to the attached
+        // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+        // format script.
+
+        // @Usage
+        // Use to send a message to the player's action bar.
+        // - actionbar "Hey there <player.name>!"
+
+        // @Usage
+        // Use to send a message to a list of players.
+        // - actionbar "Hey, welcome to the server!" targets:p@Fortifier42|p@mcmonkey4eva|p@Morphan1
+
+        // @Usage
+        // Use to send a message to a list of players, with a formatted message.
+        // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
+        // -->
+        registerCoreMember(ActionBarCommand.class,
+                "ACTIONBAR", "ActionBar [\"<text>\"] (targets:<player>|...)", 1);
+
+
+        // <--[command]
         // @Name Adjust
         // @Syntax adjust [<dObject>|...] [<mechanism>](:<value>)
         // @Required 2
@@ -453,12 +483,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to set an entity on fire.
         // - burn <player> duration:10s
-        // - narrate 'You are on fire!'
 
         // @Usage
         // Use to cancel fire on entities.
         // - burn <player.location.find.living_entities.within[10]> duration:0
-        // - narrate 'You have cast a spell of reduce burn!'
 
         // -->
         registerCoreMember(BurnCommand.class,
@@ -491,12 +519,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.has_effect[<effect>]>
 
         // @Usage
-        // Use to apply an effect to an entity
-        // - cast jump <player> d:120 p:3
-        // - narrate "You have been given the temporary ability to jump like a kangaroo."
+        // Use to cast an effect onto the player for 120 seconds with a power of 3.
+        // - cast jump d:120 p:3
 
         // @Usage
-        // Use to remove an effect from an entity
+        // Use to remove an effect from the player.
         // - if <player.has_effect[jump]> {
         //   - cast jump remove <player>
         //   }
@@ -546,9 +573,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to have a NPC talk to a group of individuals.
         // - flag <npc> talk_targets:!
-        // - foreach <npc.location.find.living_entities.within[6]> {
-        //     - if <def[value].is_player> && <def[value].flag[clan_initiate]>
-        //       flag <npc> talk_targets:->:<def[value]>
+        // - foreach <npc.location.find.players.within[6]> {
+        //     - if <def[value].has_flag[clan_initiate]> {
+        //       - flag <npc> talk_targets:->:<def[value]>
+        //     }
         //   }
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
@@ -833,7 +861,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -848,6 +876,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // For all three usages, you can optionally specify an integer with 'quantity:'
         // prefix to drop multiple items/entities/xp.
         // For items, you can add 'speed:' to modify the launch velocity.
+        // You can also add 'delay:' to set the pickup delay of the item.
 
         // @Tags
         // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
@@ -857,16 +886,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>.get_spawnable_blocks.random>
 
         // @Usage
-        // Use to reward a player
+        // Use to reward a player with 500 xp.
         // - drop xp quantity:500 <player.location>
 
         // @Usage
-        // Use to drop a nasty surprise (exploding TNT)
+        // Use to drop a nasty surprise (exploding TNT).
         // - drop e@primed_tnt <player.location>
+
+        // @Usage
+        // Use to drop an item with a pickup delay at the player's location.
+        // - drop i@diamond_sword <player.location> delay:20s
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)", 1);
+                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
 
 
         // <--[command]
@@ -1971,7 +2004,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group player
         // @Description
-        // Prints some text into the targets chat area. If no target is specified it will default to the attached player
+        // Prints some text into the target's chat area. If no target is specified it will default to the attached player
         // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
         // format script.
         // @Tags

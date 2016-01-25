@@ -108,7 +108,7 @@ public class dBiome implements dObject, Adjustable {
 
     @Override
     public String identify() {
-        return "b@" + biome.getName().toLowerCase();
+        return "b@" + CoreUtilities.toLowerCase(biome.getName());
     }
 
     @Override

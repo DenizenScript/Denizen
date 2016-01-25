@@ -63,14 +63,14 @@ public class FishCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dLocation location = scriptEntry.getdObject("location");
-        Element katch = scriptEntry.getElement("catch");
+        Element catchtype = scriptEntry.getElement("catch");
         Element stop = scriptEntry.getElement("stop");
         Element percent = scriptEntry.getElement("percent");
 
         dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
         FishingTrait trait = npc.getFishingTrait();
 
-        dB.report(scriptEntry, getName(), location.debug() + katch.debug() + percent.debug() + stop.debug());
+        dB.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
 
         if (stop.asBoolean()) {
             trait.stopFishing();
@@ -80,7 +80,7 @@ public class FishCommand extends AbstractCommand {
         npc.getEquipmentTrait().set(0, new ItemStack(Material.FISHING_ROD));
 
         trait.setCatchPercent(percent.asInt());
-        trait.setCatchType(FishingTrait.CatchType.valueOf(katch.asString().toUpperCase()));
+        trait.setCatchType(FishingTrait.CatchType.valueOf(catchtype.asString().toUpperCase()));
         trait.startFishing(location);
 
     }

@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizencore.interfaces.dRegistry;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.core.TaskScriptContainer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -77,7 +78,7 @@ public class ListenerRegistry implements dRegistry, Listener {
             playerListeners = new HashMap<String, AbstractListener>();
         }
         // Insert instance into hash-map
-        playerListeners.put(id.toLowerCase(), instance);
+        playerListeners.put(CoreUtilities.toLowerCase(id), instance);
         listeners.put(player.getName(), playerListeners);
     }
 
@@ -102,7 +103,7 @@ public class ListenerRegistry implements dRegistry, Listener {
             return;
         }
         // Remove instance from hash-map
-        playerListeners.remove(id.toLowerCase());
+        playerListeners.remove(CoreUtilities.toLowerCase(id));
         listeners.put(player.getName(), playerListeners);
     }
 
@@ -165,8 +166,8 @@ public class ListenerRegistry implements dRegistry, Listener {
     public AbstractListener getListenerFor(dPlayer player, String listenerId) {
         if (listeners.containsKey(player.getName())) {
             Map<String, AbstractListener> playerListeners = listeners.get(player.getName());
-            if (playerListeners.containsKey(listenerId.toLowerCase())) {
-                return playerListeners.get(listenerId.toLowerCase());
+            if (playerListeners.containsKey(CoreUtilities.toLowerCase(listenerId))) {
+                return playerListeners.get(CoreUtilities.toLowerCase(listenerId));
             }
         }
         return null;

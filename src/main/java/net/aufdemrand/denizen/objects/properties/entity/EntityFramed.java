@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.entity.EntityType;
@@ -68,7 +69,7 @@ public class EntityFramed implements Property {
         if (hasItem()) {
             return getItem().identify()
                     + (getItemFrameEntity().getRotation() == Rotation.NONE ? ""
-                    : '|' + getItemFrameEntity().getRotation().name().toLowerCase());
+                    : '|' + CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()));
         }
         else {
             return null;
@@ -101,7 +102,7 @@ public class EntityFramed implements Property {
         // If the entity is an item frame, returns the rotation of the material currently framed.
         // -->
         if (attribute.startsWith("framed_item_rotation")) {
-            return new Element(getItemFrameEntity().getRotation().name().toLowerCase())
+            return new Element(CoreUtilities.toLowerCase(getItemFrameEntity().getRotation().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 

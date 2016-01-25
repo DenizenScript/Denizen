@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class ListenCommand extends AbstractCommand {
                 if (DenizenAPI.getCurrentInstance().getListenerRegistry()
                         .getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) != null
                         && DenizenAPI.getCurrentInstance().getListenerRegistry().getListenersFor(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer())
-                        .containsKey(id.asString().toLowerCase())) {
+                        .containsKey(CoreUtilities.toLowerCase(id.asString()))) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Cancelled creation of NEW listener! Listener ID '" + id.asString() + "' already exists!");
                     break;
                 }

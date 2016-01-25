@@ -187,7 +187,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // All dObjects should 'match' if there is a proper
         // ObjectFetcher identifier
-        if (arg.toLowerCase().startsWith("i@")) {
+        if (CoreUtilities.toLowerCase(arg).startsWith("i@")) {
             return true;
         }
 
@@ -440,7 +440,7 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public String getMaterialName() {
-        return getItemStack().getType().name().toLowerCase();
+        return CoreUtilities.toLowerCase(getItemStack().getType().name());
     }
 
     public void setAmount(int value) {
@@ -985,7 +985,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         if (attribute.startsWith("formatted")) {
-            String id = getMaterial().realName().toLowerCase().replace('_', ' ');
+            String id = CoreUtilities.toLowerCase(getMaterial().realName()).replace('_', ' ');
 
             if (id.equals("air")) {
                 return new Element("nothing")

@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -57,7 +58,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
                 if (cmd != null) {
                     dList split = dList.valueOf(cmd);
                     for (String str : split) {
-                        cmds.add(new CommandHandlerData(str.toLowerCase(), cmd));
+                        cmds.add(new CommandHandlerData(CoreUtilities.toLowerCase(str), cmd));
                     }
                 }
                 pass = true;
@@ -91,7 +92,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
     private List<String> getAll(String cmd) {
         List<String> newEvents = new ArrayList<String>();
-        cmd = cmd.toLowerCase();
+        cmd = CoreUtilities.toLowerCase(cmd);
         for (CommandHandlerData chd : cmds) {
             if (chd.name.equalsIgnoreCase(cmd)) {
                 newEvents.add(chd.event + " command");

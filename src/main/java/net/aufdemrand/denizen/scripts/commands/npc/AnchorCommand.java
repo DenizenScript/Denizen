@@ -74,15 +74,13 @@ public class AnchorCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
         Element range = (Element) scriptEntry.getObject("range");
         Element id = (Element) scriptEntry.getObject("id");
+        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
         // Report to dB
         dB.report(scriptEntry, getName(),
-                aH.debugObj("NPC", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().toString())
-                        + action.name() + id.debug()
+                npc.debug() + action.name() + id.debug()
                         + (location != null ? location.debug() : "")
                         + (range != null ? range.debug() : ""));
-
-        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
         if (!npc.getCitizen().hasTrait(Anchors.class)) {
             npc.getCitizen().addTrait(Anchors.class);

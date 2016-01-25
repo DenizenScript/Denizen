@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 
 public class NoteCommand extends AbstractCommand {
@@ -69,7 +70,7 @@ public class NoteCommand extends AbstractCommand {
             return;
         }
 
-        String object_type = object.split("@")[0].toLowerCase();
+        String object_type = CoreUtilities.toLowerCase(object.split("@")[0]);
         Class object_class = ObjectFetcher.getObjectClass(object_type);
 
         if (object_class == null) {

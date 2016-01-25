@@ -81,7 +81,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         Integer pos = lower.indexOf(" because ") + 9;
         if (pos > 9) {
             Integer end = lower.indexOf(" ", pos) < 0 ? lower.length() : lower.indexOf(" ", pos);
-            if (!lower.substring(pos, end).equals(reason.toString().toLowerCase())) {
+            if (!lower.substring(pos, end).equals(CoreUtilities.toLowerCase(reason.toString()))) {
                 return false;
             }
         }

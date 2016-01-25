@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.command.exception.CommandException;
 import net.citizensnpcs.api.persistence.Persist;
@@ -46,13 +47,13 @@ public class ConstantsTrait extends Trait {
 
         getAssignmentConstants();
 
-        if (constants.containsKey(name.toLowerCase())) // TODO: shouldDebug
+        if (constants.containsKey(CoreUtilities.toLowerCase(name))) // TODO: shouldDebug
         {
-            return TagManager.tag(constants.get(name.toLowerCase()),
+            return TagManager.tag(constants.get(CoreUtilities.toLowerCase(name)),
                     new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         }
-        else if (getAssignmentConstants().containsKey(name.toLowerCase())) {
-            return TagManager.tag(assignmentConstants.get(name.toLowerCase()),
+        else if (getAssignmentConstants().containsKey(CoreUtilities.toLowerCase(name))) {
+            return TagManager.tag(assignmentConstants.get(CoreUtilities.toLowerCase(name)),
                     new BukkitTagContext(null, DenizenAPI.getDenizenNPC(npc), false, null, true, null));
         }
         return null;
@@ -95,7 +96,7 @@ public class ConstantsTrait extends Trait {
      * @param value value of the constant
      */
     public void setConstant(String name, String value) {
-        constants.put(name.toLowerCase(), value);
+        constants.put(CoreUtilities.toLowerCase(name), value);
     }
 
 
@@ -107,8 +108,8 @@ public class ConstantsTrait extends Trait {
      * @param name name of the constant, case in-sensitive
      */
     public void removeConstant(String name) {
-        if (constants.containsKey(name.toLowerCase())) {
-            constants.remove(name.toLowerCase());
+        if (constants.containsKey(CoreUtilities.toLowerCase(name))) {
+            constants.remove(CoreUtilities.toLowerCase(name));
         }
     }
 
@@ -158,7 +159,7 @@ public class ConstantsTrait extends Trait {
             if (ScriptRegistry.getScriptContainer(assignment).contains("DEFAULT CONSTANTS")) {
                 for (StringHolder constant : ScriptRegistry.getScriptContainer(assignment)
                         .getConfigurationSection("DEFAULT CONSTANTS").getKeys(false)) {
-                    assignmentConstants.put(constant.str.toLowerCase(),
+                    assignmentConstants.put(CoreUtilities.toLowerCase(constant.str),
                             ScriptRegistry.getScriptContainer(assignment)
                                     .getString("DEFAULT CONSTANTS." + constant.str.toUpperCase(), ""));
                 }
