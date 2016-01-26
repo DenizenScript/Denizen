@@ -2814,6 +2814,25 @@ public class dPlayer implements dObject, Adjustable {
             getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name money
+        // @input Element(Number)
+        // @description
+        // Set the amount of money a player has with the linked economy plugin.
+        // (Only if supported by the registered Economy system.)
+        // -->
+        if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
+            double bal = Depends.economy.getBalance(getOfflinePlayer());
+            double goal = value.asDouble();
+            if (goal > bal) {
+                Depends.economy.depositPlayer(getOfflinePlayer(), goal - bal);
+            }
+            else if (bal > goal) {
+                Depends.economy.withdrawPlayer(getOfflinePlayer(), bal - goal);
+            }
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);
