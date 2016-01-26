@@ -24,7 +24,7 @@ public class NarrateCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
 
-        if (scriptEntry.getArguments().size() > 4) {
+        if (scriptEntry.getArguments().size() > 4) { // TODO: Use this more often!
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
         }
 
@@ -32,9 +32,8 @@ public class NarrateCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format", "f")) {
-                FormatScriptContainer format = null;
                 String formatStr = arg.getValue();
-                format = ScriptRegistry.getScriptContainer(formatStr);
+                FormatScriptContainer format = ScriptRegistry.getScriptContainer(formatStr);
                 if (format == null) {
                     dB.echoError("Could not find format script matching '" + formatStr + '\'');
                 }

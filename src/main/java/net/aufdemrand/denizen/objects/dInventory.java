@@ -194,7 +194,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (m.matches()) {
 
             // Set the type of the inventory holder
-            String type = m.group(2).toLowerCase();
+            String type = CoreUtilities.toLowerCase(m.group(2));
             // Set the name/id/location of the inventory holder
             String holder = m.group(3);
 
@@ -267,7 +267,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public static boolean matches(String arg) {
 
         // Every single dInventory should have the in@ prefix. No exceptions.
-        return arg.toLowerCase().startsWith("in@");
+        return CoreUtilities.toLowerCase(arg).startsWith("in@");
 
     }
 
@@ -328,7 +328,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(String idType) {
-        this.idType = idType.toLowerCase();
+        this.idType = CoreUtilities.toLowerCase(idType);
         for (Mechanism mechanism : mechanisms) {
             adjust(mechanism);
         }
@@ -1357,7 +1357,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("contains.display") && attribute.hasContext(2)) {
             String search_string = attribute.getContext(2);
             boolean strict = false;
-            if (search_string.toLowerCase().startsWith("strict:") && search_string.length() > 7) {
+            if (CoreUtilities.toLowerCase(search_string).startsWith("strict:") && search_string.length() > 7) {
                 strict = true;
                 search_string = search_string.substring(7);
             }
@@ -1406,16 +1406,16 @@ public class dInventory implements dObject, Notable, Adjustable {
             else {
                 for (ItemStack item : getContents()) {
                     if (item != null && item.getType() == Material.WRITTEN_BOOK
-                            && ((BookMeta) item.getItemMeta()).getTitle()
-                            .toLowerCase().contains(search_string.toLowerCase())) {
+                            && CoreUtilities.toLowerCase(((BookMeta) item.getItemMeta()).getTitle())
+                            .contains(CoreUtilities.toLowerCase(search_string))) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;
                         }
                     }
                     else if (item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName() &&
-                            item.getItemMeta().getDisplayName().toLowerCase()
-                                    .contains(search_string.toLowerCase())) {
+                            CoreUtilities.toLowerCase(item.getItemMeta().getDisplayName())
+                                    .contains(CoreUtilities.toLowerCase(search_string))) {
                         found_items += item.getAmount();
                         if (found_items >= qty) {
                             break;
@@ -1439,7 +1439,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("contains.lore") && attribute.hasContext(2)) {
             String search_string = attribute.getContext(2);
             boolean strict = false;
-            if (search_string.toLowerCase().startsWith("strict:")) {
+            if (CoreUtilities.toLowerCase(search_string).startsWith("strict:")) {
                 strict = true;
                 search_string = search_string.substring(7);
             }
@@ -1500,7 +1500,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                         lines:
                         for (String line : lore) {
                             for (String item_line : item_lore) {
-                                if (item_line.toLowerCase().contains(line.toLowerCase())) {
+                                if (CoreUtilities.toLowerCase(item_line).contains(CoreUtilities.toLowerCase(line))) {
                                     loreCount++;
                                     continue lines;
                                 }

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -46,15 +47,16 @@ public class EngageCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Duration duration = scriptEntry.getdObject("duration");
+        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
         // Report to dB
-        dB.report(scriptEntry, getName(), duration.debug());
+        dB.report(scriptEntry, getName(), npc.debug() + duration.debug());
 
         if (duration.getSecondsAsInt() > 0) {
-            setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), duration.getSecondsAsInt());
+            setEngaged(npc.getCitizen(), duration.getSecondsAsInt());
         }
         else {
-            setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), true);
+            setEngaged(npc.getCitizen(), true);
         }
 
     }

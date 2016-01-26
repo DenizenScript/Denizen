@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
@@ -241,13 +242,34 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             return;
         }
 
+        Attribute attribute = event.getAttributes().fulfill(1);
+
+        // <--[tag]
+        // @attribute <schematic.list>
+        // @returns dList(Element)
+        // @description
+        // Returns a list of all loaded schematics.
+        // -->
+        if (attribute.startsWith("list")) {
+            event.setReplaced(new dList(schematics.keySet()).getAttribute(attribute.fulfill(1)));
+        }
+
         if (!event.hasNameContext()) {
             return;
         }
 
         String id = event.getNameContext().toUpperCase();
 
-        Attribute attribute = event.getAttributes().fulfill(1);
+
+        // <--[tag]
+        // @attribute <schematic[<name>].is_loaded>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the schematic is loaded into the server.
+        // -->
+        if (attribute.startsWith("is_loaded")) {
+            event.setReplaced(new Element(schematics.containsKey(id)).getAttribute(attribute.fulfill(1)));
+        }
 
         if (!schematics.containsKey(id)) {
             // Meta below
@@ -272,7 +294,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the schematic exists.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("exists")) {
             event.setReplaced(new Element(true)
@@ -285,7 +306,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns Element(Number)
         // @description
         // Returns the height (Y) of the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("height")) {
             event.setReplaced(new Element(set.y_length)
@@ -298,7 +318,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns Element(Number)
         // @description
         // Returns the length (Z) of the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("length")) {
             event.setReplaced(new Element(set.z_height)
@@ -311,7 +330,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns Element(Number)
         // @description
         // Returns the width (X) of the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("width")) {
             event.setReplaced(new Element(set.x_width)
@@ -324,7 +342,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns dMaterial
         // @description
         // Returns the material for the block at the location in the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("block")) {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
@@ -341,7 +358,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns dLocation
         // @description
         // Returns the origin location of the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("origin")) {
             event.setReplaced(new dLocation(null, set.center_x, set.center_y, set.center_z)
@@ -354,7 +370,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns Element(Number)
         // @description
         // Returns the number of blocks in the schematic.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("blocks")) {
             event.setReplaced(new Element(set.blocks.size())
@@ -367,7 +382,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         // @returns dCuboid
         // @description
         // Returns a cuboid of where the schematic would be if it was pasted at an origin.
-        // @plugin WorldEdit
         // -->
         if (attribute.startsWith("cuboid") && attribute.hasContext(1)) {
             dLocation origin = dLocation.valueOf(attribute.getContext(1));

@@ -16,6 +16,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public String getCommandName() {
-        return getString("NAME", null).toLowerCase();
+        return CoreUtilities.toLowerCase(getString("NAME", null));
     }
 
     public String getDescription() {

@@ -185,7 +185,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         }
         damage = new Element(event.getDamage());
         final_damage = new Element(event.getFinalDamage());
-        cause = new Element(event.getCause().name().toLowerCase());
+        cause = new Element(CoreUtilities.toLowerCase(event.getCause().name()));
         damager = null;
         projectile = null;
         if (event instanceof EntityDamageByEntityEvent) {

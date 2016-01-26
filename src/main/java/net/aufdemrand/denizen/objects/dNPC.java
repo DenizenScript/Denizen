@@ -112,7 +112,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     public static boolean matches(String string) {
 
         // If using object notation, assume it's valid
-        if (string.toLowerCase().startsWith("n@")) {
+        if (CoreUtilities.toLowerCase(string).startsWith("n@")) {
             return true;
         }
 
@@ -665,7 +665,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
                 else {
                     search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags) {
-                        if (flag.toLowerCase().contains(search)) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
                             searchFlags.add(flag);
                         }
                     }
@@ -740,13 +740,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
-        // @attribute <n@npc.vulnerable>
+        // @attribute <n@npc.invulnerable>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is currently vulnerable.
+        // returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
-        if (attribute.startsWith("vulnerable")) {
+        if (attribute.startsWith("invulnerable") || attribute.startsWith("vulnerable")) {
             return new Element(getCitizen().data().get(NPC.DEFAULT_PROTECTED_METADATA, true)).getAttribute(attribute.fulfill(1));
         }
 

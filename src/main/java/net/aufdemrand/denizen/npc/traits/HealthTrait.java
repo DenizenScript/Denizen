@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
@@ -291,7 +292,7 @@ public class HealthTrait extends Trait implements Listener {
         // Save entityId for EntityDeath event
         entityId = npc.getEntity().getEntityId();
 
-        String deathCause = event.getCause().toString().toLowerCase().replace('_', ' ');
+        String deathCause = CoreUtilities.toLowerCase(event.getCause().toString()).replace('_', ' ');
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("damage", new Element(event.getDamage()));
         context.put("death_cause", new Element(deathCause));

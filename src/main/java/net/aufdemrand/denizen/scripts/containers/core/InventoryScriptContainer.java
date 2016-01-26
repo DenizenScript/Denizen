@@ -142,7 +142,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 + items + "]... Ignoring it");
                         continue;
                     }
-                    String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[");
+                    String[] itemsInLine = items.substring(1, items.length() - 1).split("\\[?\\]?\\s+\\[", -1);
                     for (String item : itemsInLine) {
                         if (contains("DEFINITIONS." + item)) {
                             dItem def = dItem.valueOf(TagManager.tag(getString("DEFINITIONS." + item), context), player, npc);

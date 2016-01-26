@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
@@ -57,7 +58,7 @@ public class EntityRotation implements Property {
 
     @Override
     public String getPropertyString() {
-        return getRotation().name().toLowerCase();
+        return CoreUtilities.toLowerCase(getRotation().name());
     }
 
     @Override
@@ -87,7 +88,7 @@ public class EntityRotation implements Property {
         // Currently, only Hanging-type entities can have rotations.
         // -->
         if (attribute.startsWith("rotation")) {
-            return new Element(getRotation().name().toLowerCase())
+            return new Element(CoreUtilities.toLowerCase(getRotation().name()))
                     .getAttribute(attribute.fulfill(1));
         }
 

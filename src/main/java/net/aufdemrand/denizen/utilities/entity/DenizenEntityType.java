@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.entity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -32,7 +33,7 @@ public class DenizenEntityType {
     private DenizenEntityType(EntityType entityType) {
         this.bukkitEntityType = entityType;
         this.name = entityType.name();
-        this.lowercaseName = name.toLowerCase();
+        this.lowercaseName = CoreUtilities.toLowerCase(name);
         this.gravity = Gravity.getGravity(entityType);
         this.createMethod = null;
     }
@@ -54,7 +55,7 @@ public class DenizenEntityType {
         }
         this.bukkitEntityType = bukkitEntityType;
         this.name = name.toUpperCase();
-        this.lowercaseName = name.toLowerCase();
+        this.lowercaseName = CoreUtilities.toLowerCase(name);
         this.gravity = gravity;
         Method finalMethod = null;
         if (entityType != null) {

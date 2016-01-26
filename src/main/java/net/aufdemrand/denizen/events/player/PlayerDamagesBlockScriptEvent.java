@@ -89,7 +89,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.toLowerCase().equals("instabreak")) {
+        if (CoreUtilities.toLowerCase(determination).equals("instabreak")) {
             instabreak = true;
         }
         return super.applyDetermination(container, determination);

@@ -20,7 +20,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Action
-        // @Syntax Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
+        // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
         // @Required 1
         // @Stable unstable
         // @Short Manually fires an NPC action.
@@ -46,7 +46,37 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
         // -->
         registerCoreMember(ActionCommand.class,
-                "ACTION", "Action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
+                "ACTION", "action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
+
+
+        // <--[command]
+        // @Name ActionBar
+        // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
+        // @Required 1
+        // @Stable stable
+        // @Short Sends a message to a player's action bar.
+        // @Author Fortifier42
+        // @group player
+
+        // @Description
+        // Sends a message to the target's action bar area. If no target is specified it will default to the attached
+        // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+        // format script.
+
+        // @Usage
+        // Use to send a message to the player's action bar.
+        // - actionbar "Hey there <player.name>!"
+
+        // @Usage
+        // Use to send a message to a list of players.
+        // - actionbar "Hey, welcome to the server!" targets:p@Fortifier42|p@mcmonkey4eva|p@Morphan1
+
+        // @Usage
+        // Use to send a message to a list of players, with a formatted message.
+        // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
+        // -->
+        registerCoreMember(ActionBarCommand.class,
+                "ACTIONBAR", "actionbar [<text>] (targets:<player>|...)", 1);
 
 
         // <--[command]
@@ -240,7 +270,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Announce
-        // @Syntax announce ["<text>"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
+        // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Announces a message for everyone online to read.
@@ -277,7 +307,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // -->
         registerCoreMember(AnnounceCommand.class,
-                "ANNOUNCE", "announce [\"<text>\"] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
+                "ANNOUNCE", "announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
 
 
         // <--[command]
@@ -453,12 +483,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to set an entity on fire.
         // - burn <player> duration:10s
-        // - narrate 'You are on fire!'
 
         // @Usage
         // Use to cancel fire on entities.
         // - burn <player.location.find.living_entities.within[10]> duration:0
-        // - narrate 'You have cast a spell of reduce burn!'
 
         // -->
         registerCoreMember(BurnCommand.class,
@@ -491,12 +519,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.has_effect[<effect>]>
 
         // @Usage
-        // Use to apply an effect to an entity
-        // - cast jump <player> d:120 p:3
-        // - narrate "You have been given the temporary ability to jump like a kangaroo."
+        // Use to cast an effect onto the player for 120 seconds with a power of 3.
+        // - cast jump d:120 p:3
 
         // @Usage
-        // Use to remove an effect from an entity
+        // Use to remove an effect from the player.
         // - if <player.has_effect[jump]> {
         //   - cast jump remove <player>
         //   }
@@ -508,7 +535,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Should the chat command be in the NPC group instead?
         // <--[command]
         // @Name Chat
-        // @Syntax chat ["<text>"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
+        // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
         // @Stable stable
         // @Short Causes a NPC/NPCs to send a chat message to nearby players.
@@ -546,16 +573,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to have a NPC talk to a group of individuals.
         // - flag <npc> talk_targets:!
-        // - foreach <npc.location.find.living_entities.within[6]> {
-        //     - if <def[value].is_player> && <def[value].flag[clan_initiate]>
-        //       flag <npc> talk_targets:->:<def[value]>
+        // - foreach <npc.location.find.players.within[6]> {
+        //     - if <def[value].has_flag[clan_initiate]> {
+        //       - flag <npc> talk_targets:->:<def[value]>
+        //     }
         //   }
         // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
 
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(ChatCommand.class,
-                    "CHAT", "chat [\"<text>\"] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
+                    "CHAT", "chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
         }
 
 
@@ -729,7 +757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Despawn
-        // @Syntax Despawn (<npc>|...)
+        // @Syntax despawn (<npc>|...)
         // @Required 0
         // @Stable stable
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
@@ -760,7 +788,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Disengage
-        // @Syntax disengage (npc:<npc>)
+        // @Syntax disengage
         // @Required 0
         // @Stable stable
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
@@ -795,7 +823,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(DisengageCommand.class,
-                    "DISENGAGE", "disengage (npc:<npc>)", 0);
+                    "DISENGAGE", "disengage", 0);
         }
 
 
@@ -833,7 +861,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Drop
-        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>)
+        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
@@ -848,6 +876,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // For all three usages, you can optionally specify an integer with 'quantity:'
         // prefix to drop multiple items/entities/xp.
         // For items, you can add 'speed:' to modify the launch velocity.
+        // You can also add 'delay:' to set the pickup delay of the item.
 
         // @Tags
         // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
@@ -857,21 +886,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>.get_spawnable_blocks.random>
 
         // @Usage
-        // Use to reward a player
+        // Use to reward a player with 500 xp.
         // - drop xp quantity:500 <player.location>
 
         // @Usage
-        // Use to drop a nasty surprise (exploding TNT)
+        // Use to drop a nasty surprise (exploding TNT).
         // - drop e@primed_tnt <player.location>
+
+        // @Usage
+        // Use to drop an item with a pickup delay at the player's location.
+        // - drop i@diamond_sword <player.location> delay:20s
 
         // -->
         registerCoreMember(DropCommand.class,
-                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>)", 1);
+                "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
 
 
         // <--[command]
         // @Name Engage
-        // @Syntax engage (<duration>) (npc:<npc>)
+        // @Syntax engage (<duration>)
         // @Required 0
         // @Stable stable
         // @Short Temporarily disables a NPCs toggled interact script-container triggers.
@@ -917,7 +950,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
-                    "ENGAGE", "engage (<duration>) (npc:<npc>)", 0);
+                    "ENGAGE", "engage (<duration>)", 0);
         }
 
 
@@ -1868,7 +1901,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
         // must be a valid midi file with the extension '.mid'. It will continuously play the song as
         // noteblock songs at the given location or group of players until the song ends. If no location or
-        // entitiy is specified, by default this will play for the attached player.
+        // entity is specified, by default this will play for the attached player.
         //
         // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
         // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions
@@ -1877,16 +1910,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
 
         // @Usage
-        // Use to play a midi song file on the current player
+        // Use to play a midi song file on the current player/
         // - midi file:Denizen
 
         // @Usage
-        // Use to play a midi song file at a given location
+        // Use to play a midi song file at a given location/
         // - midi file:Denizen <player.location>
 
         // @Usage
-        // Use to play a midi song file at a given location to the specified player
-        // - midi file:Denizen <server.list_online_players>
+        // Use to play a midi song file at a given location to the specified player(s), and wait for it to finish.
+        // - ~midi file:Denizen <server.list_online_players>
 
         // -->
         registerCoreMember(MidiCommand.class,
@@ -1964,14 +1997,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Narrate
-        // @Syntax narrate ["<text>"] (targets:<player>|...) (format:<name>)
+        // @Syntax narrate [<text>] (targets:<player>|...) (format:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shows some text to the player.
         // @Author aufdemrand
         // @Group player
         // @Description
-        // Prints some text into the targets chat area. If no target is specified it will default to the attached player
+        // Prints some text into the target's chat area. If no target is specified it will default to the attached player
         // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
         // format script.
         // @Tags
@@ -1984,7 +2017,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
         // -->
         registerCoreMember(NarrateCommand.class,
-                "NARRATE", "narrate [\"<text>\"] (targets:<player>|...) (format:<name>)", 1);
+                "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>)", 1);
 
 
         // <--[command]

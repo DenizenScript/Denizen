@@ -7,14 +7,12 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.Mechanism;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +68,11 @@ public class DropCommand extends AbstractCommand {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
             }
 
+            else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(Duration.class)
+                    && arg.matchesPrefix("delay", "d")) {
+                scriptEntry.addObject("delay", arg.asType(Duration.class));
+            }
+
             else {
                 arg.reportUnhandled();
             }
@@ -110,6 +113,7 @@ public class DropCommand extends AbstractCommand {
         Element speed = scriptEntry.getElement("speed");
         List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
         dEntity entity = (dEntity) scriptEntry.getObject("entity");
+        Duration delay = (Duration) scriptEntry.getObject("delay");
 
 
         // Report to dB
@@ -117,7 +121,8 @@ public class DropCommand extends AbstractCommand {
                 action.debug() + location.debug() + qty.debug()
                         + (items != null ? aH.debugList("items", items) : "")
                         + (entity != null ? entity.debug() : "")
-                        + (speed != null ? speed.debug() : ""));
+                        + (speed != null ? speed.debug() : "")
+                        + (delay != null ? delay.debug() : ""));
 
         dList entityList = new dList();
 
@@ -138,6 +143,9 @@ public class DropCommand extends AbstractCommand {
                         dEntity e = new dEntity(location.getWorld().dropItem(location, item.getItemStack()));
                         if (e.isValid()) {
                             e.setVelocity(e.getVelocity().multiply(speed != null ? speed.asDouble() : 1d));
+                            if (delay != null) {
+                                ((Item) e.getBukkitEntity()).setPickupDelay(delay.getTicksAsInt());
+                            }
                         }
                         entityList.add(e.toString());
                     }

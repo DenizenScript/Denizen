@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.maps.*;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
@@ -53,7 +54,7 @@ public class MapScriptContainer extends ScriptContainer {
                     String image = objectSection.getString("IMAGE");
                     int width = aH.getIntegerFrom(objectSection.getString("WIDTH", "0"));
                     int height = aH.getIntegerFrom(objectSection.getString("HEIGHT", "0"));
-                    if (image.toLowerCase().endsWith(".gif")) {
+                    if (CoreUtilities.toLowerCase(image).endsWith(".gif")) {
                         renderer.addObject(new MapAnimatedImage(x, y, visible, debug, image, width, height));
                     }
                     else {

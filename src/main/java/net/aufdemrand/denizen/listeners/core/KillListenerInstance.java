@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
@@ -273,7 +274,9 @@ public class KillListenerInstance extends AbstractListener implements Listener {
                 }
                 // Cannot be 'else if' since dNPC.valueOf will return true for names now, as well as ids.
                 // Check against name of NPC (n@fullwall, aufdemrand, etc)... object notation is optional.
-                if (npc.getName().equalsIgnoreCase(target.toLowerCase().replace("n@", ""))) {
+
+                if (CoreUtilities.toLowerCase(npc.getName())
+                        .equals(CoreUtilities.toLowerCase(target).replace("n@", ""))) {
                     count_it = true;
                 }
             }

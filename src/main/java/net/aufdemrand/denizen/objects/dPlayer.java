@@ -66,8 +66,8 @@ public class dPlayer implements dObject, Adjustable {
             dB.echoError("Null player " + player.toString());
             return;
         }
-        if (!playerNames.containsKey(player.getName().toLowerCase())) {
-            playerNames.put(player.getName().toLowerCase(), player.getUniqueId());
+        if (!playerNames.containsKey(CoreUtilities.toLowerCase(player.getName()))) {
+            playerNames.put(CoreUtilities.toLowerCase(player.getName()), player.getUniqueId());
         }
     }
 
@@ -130,8 +130,8 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // Match as a player name
-        if (playerNames.containsKey(string.toLowerCase())) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(string.toLowerCase()));
+        if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
+            OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
             return new dPlayer(player);
         }
 
@@ -151,7 +151,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // If passed a identified object that starts with 'p@', return true
         // even if the player doesn't technically exist.
-        if (arg.toLowerCase().startsWith("p@")) {
+        if (CoreUtilities.toLowerCase(arg).startsWith("p@")) {
             return true;
         }
 
@@ -174,7 +174,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public static boolean playerNameIsValid(String name) {
-        return playerNames.containsKey(name.toLowerCase());
+        return playerNames.containsKey(CoreUtilities.toLowerCase(name));
     }
 
 
@@ -768,7 +768,7 @@ public class dPlayer implements dObject, Adjustable {
                 else {
                     search = CoreUtilities.toLowerCase(search);
                     for (String flag : allFlags) {
-                        if (flag.toLowerCase().contains(search)) {
+                        if (CoreUtilities.toLowerCase(flag).contains(search)) {
                             searchFlags.add(flag);
                         }
                     }
@@ -833,7 +833,7 @@ public class dPlayer implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(2));
                 }
 
-                return new Element(Depends.economy.getBalance(getName())) // TODO: Vault UUID support?
+                return new Element(Depends.economy.getBalance(getOfflinePlayer()))
                         .getAttribute(attribute.fulfill(1));
 
             }
@@ -886,7 +886,7 @@ public class dPlayer implements dObject, Adjustable {
                     // if we have a context for entity types, check the entity
                     if (attribute.hasContext(1)) {
                         String context = attribute.getContext(1);
-                        if (context.toLowerCase().startsWith("li@")) {
+                        if (CoreUtilities.toLowerCase(context).startsWith("li@")) {
                             context = context.substring(3);
                         }
                         for (String ent : context.split("\\|")) {
@@ -1136,7 +1136,7 @@ public class dPlayer implements dObject, Adjustable {
             return new Element(getMaxHealth()).getAttribute(attribute.fulfill(2));
         }
 
-        if (attribute.startsWith("health")) {
+        if (attribute.matches("health")) {
             return new Element(getHealth()).getAttribute(attribute.fulfill(1));
         }
 
@@ -1232,6 +1232,7 @@ public class dPlayer implements dObject, Adjustable {
                 return null;
             }
             dList list = new dList();
+            // TODO: optionally specify world
             for (String group : Depends.permissions.getGroups()) {
                 if (Depends.permissions.playerInGroup(null, offlinePlayer, group)) {
                     list.add(group);

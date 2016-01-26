@@ -204,12 +204,9 @@ import java.util.logging.Logger;
 // |   m@random - fetches a random material
 //
 // + ----- dList -------+
-// | object notation: li@,fl@  can reference unique objects: yes  can be notable: no
+// | object notation: li@  can reference unique objects: yes  can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   li@<items|...> - fetches a new list with the elements specified, separated by a pipe (|) character
-// |   li@val[<items|...>] - slightly more verbose, but tag friendly way to fetch a new list (allows periods)
-// |   fl@<server_flag_name> - fetches the flag list value of the specified server flag, as a dList
-// |   fl[<player_object/npc_object]@<flag_name> - fetches the flag list value of the specified player/NPC's flag, as a dList
 //
 // + ----- dScript -------+
 // | object notation: s@    can reference unique objects: yes     can be notable: no
@@ -220,7 +217,7 @@ import java.util.logging.Logger;
 // | object notation: d@    can reference unique objects: no      can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   d@<duration> - fetches a duration object with the specified amount of time
-// |   d@<low>|<high> - fetches a duration that is randomly selected between the specified 'low' and 'high'
+// |   d@<low>-<high> - fetches a duration that is randomly selected between the specified 'low' and 'high'
 //
 // + ----- dPlugin -------+
 // | object notation: pl@    can reference unique objects: yes     can be notable: no
@@ -660,6 +657,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerItemTakesDamageScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());

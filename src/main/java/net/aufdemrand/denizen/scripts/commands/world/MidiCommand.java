@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
+import net.aufdemrand.denizen.utilities.midi.NoteBlockReceiver;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -13,12 +14,13 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class MidiCommand extends AbstractCommand {
+public class MidiCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -95,7 +97,7 @@ public class MidiCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         boolean cancel = scriptEntry.hasObject("cancel");
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
@@ -120,11 +122,24 @@ public class MidiCommand extends AbstractCommand {
 
         // Play the midi
         if (!cancel) {
+            NoteBlockReceiver rec;
             if (location != null) {
-                MidiUtil.playMidi(file, tempo, volume, location);
+                 rec = MidiUtil.playMidi(file, tempo, volume, location);
             }
             else {
-                MidiUtil.playMidi(file, tempo, volume, entities);
+                rec = MidiUtil.playMidi(file, tempo, volume, entities);
+            }
+            if (rec == null) {
+                dB.echoError(scriptEntry.getResidingQueue(), "Something went wrong playing a midi!");
+                scriptEntry.setFinished(true);
+            }
+            else {
+                rec.onFinish = new Runnable() {
+                    @Override
+                    public void run() {
+                        scriptEntry.setFinished(true);
+                    }
+                };
             }
         }
         else {
@@ -134,6 +149,7 @@ public class MidiCommand extends AbstractCommand {
             else {
                 MidiUtil.stopMidi(entities);
             }
+            scriptEntry.setFinished(true);
         }
     }
 }

@@ -171,10 +171,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         // in front of the shooter and set it as the destination
         final dLocation destination = scriptEntry.hasObject("destination") ?
                 (dLocation) scriptEntry.getObject("destination") :
-                (originEntity != null ? new dLocation(originEntity.getEyeLocation()
-                        .add(originEntity.getEyeLocation().getDirection()
-                                .multiply(30)))
-                        : null);
+                (originEntity != null ? new dLocation(originEntity.getEyeLocation().clone()
+                        .add(originEntity.getEyeLocation().clone().getDirection().multiply(30)))
+                        : (originLocation != null ? new dLocation(originLocation.clone().add(
+                        originLocation.getDirection().multiply(30))): null));
 
         // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {
