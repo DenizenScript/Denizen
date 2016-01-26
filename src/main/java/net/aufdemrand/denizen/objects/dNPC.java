@@ -532,6 +532,16 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         }
 
         // <--[tag]
+        // @attribute <n@npc.pushable>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the NPC is pushable.
+        // -->
+        if (attribute.startsWith("pushable") || attribute.startsWith("is_pushable")) {
+            return new Element(getPushableTrait().isPushable()).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.has_trigger[<trigger>]>
         // @returns Element(Boolean)
         // @description
