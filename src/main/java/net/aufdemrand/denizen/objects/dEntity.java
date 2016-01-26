@@ -1181,6 +1181,26 @@ public class dEntity implements dObject, Adjustable {
         return 0;
     }
 
+    public boolean comparedTo(String compare) {
+        compare = CoreUtilities.toLowerCase(compare);
+        if (compare.equals("entity")) {
+            return true;
+        }
+        else if (compare.equals("player")) {
+            return isPlayer();
+        }
+        else if (compare.equals("npc")) {
+            return isCitizensNPC() || isNPC();
+        }
+        else if (getEntityScript() != null && compare.equals(CoreUtilities.toLowerCase(getEntityScript()))) {
+            return true;
+        }
+        else if (compare.equals(getEntityType().getLowercaseName())) {
+            return true;
+        }
+        return false;
+    }
+
 
     /////////////////////
     //  dObject Methods
