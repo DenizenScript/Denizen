@@ -1952,7 +1952,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Money
-        // @Syntax money [give/take/set] (quantity:<#.#>) (to/from:<player>|...)
+        // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)
         // @Required 1
         // @Stable stable
         // @Short Manage a player's money.
@@ -1966,23 +1966,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
         // @Tags
         // <p@player.money>
+
         // @Usage
         // Use to give 1 money to the player.
         // - money give
+
         // @Usage
         // Use to take 10 money from a player.
         // - money take quantity:10 from:p@mcmonkey4eva
+
         // @Usage
         // Use to give all players on the server 100 money.
         // - money give quantity:100 to:<server.list_players>
 
         // @Usage
         // Use to set the money of all online players to 250.
-        // - money set quantity:250 to:<server.list_online_players>
+        // - money set quantity:250 players:<server.list_online_players>
         // -->
         if (Depends.economy != null) {
             registerCoreMember(MoneyCommand.class,
-                    "MONEY", "money [give/take] (quantity:<#.#>) (to/from:<player>|...)", 1);
+                    "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
         }
 
 
@@ -2091,13 +2094,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // TODO: Document Command Details
         // @Tags
-        // TODO: Document Command Details
+        // <server.list_notables[<type>]>
+        // <cu@cuboid.notable_name>
+        // <in@inventory.notable_name>
+        // <i@item.notable_name>
+        // <l@location.notable_name>
         // @Usage
         // Use to add a notable cuboid.
         // - note cu@1,2,3,world|4,5,6,world as:mycuboid
         // @Usage
         // Use to remove a notable cuboid.
         // - note remove as:mycuboid
+        // @Usage
+        // Use to note a location.
+        // - note l@10,5,10,world as:mylocation
         // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>/remove] [as:<name>]", 2);
@@ -2165,7 +2175,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // See <@link language Particle Effects> for a list of valid effect names.
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2185,7 +2195,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2267,16 +2277,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)
         // @Required 1
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
         // @Author David Cernat, mcmonkey
         // @Group entity
         // @Description
-        // Pushes entities through the air in a straight line at a certain speed and for a certain duration, triggering a script when they hit an obstacle or stop flying.
+        // Pushes entities through the air in a straight line at a certain speed and for a certain duration,
+        // triggering a script when they hit an obstacle or stop flying. You can specify the script to be run
+        // with the (script:<name>) argument, and optionally specify definitions to be available in this script
+        // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
+        // when they stop moving.
         // @Tags
-        // TODO: Document Command Details
+        // <e@entity.velocity>
         // @Usage
         // Use to launch an arrow straight towards a target
         // - push arrow destination:<player.location>
@@ -2287,7 +2301,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
 
 
         // <--[command]
@@ -2824,7 +2838,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air, useful for things like firing arrows.
@@ -2851,7 +2865,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
 
 
         // <--[command]

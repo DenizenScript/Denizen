@@ -34,7 +34,7 @@ public class MoneyCommand extends AbstractCommand {
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("quantity", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from") &&
+            else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
                     arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
             }
