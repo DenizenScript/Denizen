@@ -63,7 +63,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(2, lower);
+        String mat = CoreUtilities.getXthArg(3, lower);
         if (!tryMaterial(material, mat)) {
             return false;
         }

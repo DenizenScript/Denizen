@@ -2821,6 +2821,8 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Set the amount of money a player has with the linked economy plugin.
         // (Only if supported by the registered Economy system.)
+        // @tags
+        // <p@player.money>
         // -->
         if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
             double bal = Depends.economy.getBalance(getOfflinePlayer());
