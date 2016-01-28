@@ -1338,11 +1338,11 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public boolean matchesEntity(String ent) {
-        if (ent.equalsIgnoreCase("npc")) {
-            return this.isCitizensNPC();
-        }
         if (ent.equalsIgnoreCase("entity")) {
             return true;
+        }
+        if (ent.equalsIgnoreCase("npc")) {
+            return this.isCitizensNPC();
         }
         if (ent.equalsIgnoreCase("player")) {
             return this.isPlayer();
