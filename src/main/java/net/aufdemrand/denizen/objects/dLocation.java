@@ -32,6 +32,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Button;
+import org.bukkit.material.Lever;
 import org.bukkit.util.*;
 
 import java.util.*;
@@ -1882,6 +1884,27 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("furnace_cook_time")) {
             return new Element(((Furnace) getBlock().getState()).getCookTime())
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.attached_to>
+        // @returns dLocation
+        // @description
+        // Returns the block this block is attached to.
+        // (Only if it is a lever or button!)
+        // -->
+        if (attribute.startsWith("attached_to")) {
+            BlockFace face = BlockFace.SELF;
+            BlockState state = getBlock().getState();
+            if (state instanceof Lever) {
+                face = ((Lever)state).getAttachedFace();
+            }
+            else if (state instanceof Button) {
+                face = ((Button)state).getAttachedFace();
+            }
+            if (face != BlockFace.SELF) {
+                return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
+            }
         }
 
         // Iterate through this object's properties' attributes

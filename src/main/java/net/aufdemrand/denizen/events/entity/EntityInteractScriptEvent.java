@@ -47,7 +47,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public dEntity entity;
     public dLocation location;
     private dMaterial material;
-    public dList cuboids;
     public EntityInteractEvent event;
 
     @Override
@@ -110,6 +109,10 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favour of context.location.cuboids
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -120,9 +123,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
         cancelled = event.isCancelled();
         this.event = event;
         fire();
