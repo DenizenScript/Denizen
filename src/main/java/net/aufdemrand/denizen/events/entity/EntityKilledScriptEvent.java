@@ -87,9 +87,11 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
         String arg3 = CoreUtilities.getXthArg(3, lower);
         String attacker = cmd.equals("kills") ? arg0 : arg2.equals("by") ? arg3 : "";
         String target = cmd.equals("kills") ? arg2 : arg0;
-        if (attacker.length() > 0) {
+
+        if (!attacker.isEmpty()) {
             if (damager != null) {
-                if (!damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                if (!cause.asString().equals(attacker) &&
+                        !tryEntity(projectile, attacker) && !tryEntity(damager, attacker)) {
                     return false;
                 }
             }
@@ -97,11 +99,16 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 return false;
             }
         }
-        if (!entity.matchesEntity(target)) {
+
+        if (!tryEntity(entity, target)) {
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

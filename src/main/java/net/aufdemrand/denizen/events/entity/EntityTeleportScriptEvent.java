@@ -66,8 +66,17 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, CoreUtilities.toLowerCase(s)))
-                && runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), from);
+        String lower = CoreUtilities.toLowerCase(s);
+
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, from)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

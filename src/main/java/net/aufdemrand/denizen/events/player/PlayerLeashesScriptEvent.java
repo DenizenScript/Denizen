@@ -49,13 +49,16 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String target = CoreUtilities.getXthArg(2, lower);
-        if (target.length() > 0) {
-            if (!target.equals(CoreUtilities.toLowerCase(entity.getName()))) {
-                return false;
-            }
+
+        if (!tryEntity(entity, CoreUtilities.getXthArg(2, lower))) {
+            return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

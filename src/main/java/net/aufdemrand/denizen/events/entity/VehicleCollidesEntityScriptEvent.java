@@ -65,17 +65,19 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String veh = CoreUtilities.getXthArg(0, lower);
-        if (!vehicle.matchesEntity(veh)) {
+        if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        String ent = CoreUtilities.getXthArg(3, lower);
-        if (!entity.matchesEntity(ent)) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(3, lower))) {
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, vehicle.getLocation());
+        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -2484,7 +2484,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("show_boss_bar")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isInt()) {
                     BossHealthBar.displayTextBar(split[1], getPlayerEntity(), new Element(split[0]).asInt());
@@ -2512,7 +2512,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("fake_experience")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
@@ -2550,7 +2550,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("fake_health")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
@@ -2591,7 +2591,7 @@ public class dPlayer implements dObject, Adjustable {
         // - adjust <player> fake_equipment:<player>|head|i@jack_o_lantern
         // -->
         if (mechanism.matches("fake_equipment")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
@@ -2693,7 +2693,7 @@ public class dPlayer implements dObject, Adjustable {
         // - adjust <player> tab_list_info:<header>|<footer>
         // -->
         if (mechanism.matches("tab_list_info")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0) {
                     String header = split[0];
@@ -2720,7 +2720,7 @@ public class dPlayer implements dObject, Adjustable {
         // Shows the player fake lines on a sign.
         // -->
         if (mechanism.matches("sign_update")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
                     dList lines = dList.valueOf(split[1]);

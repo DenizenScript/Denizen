@@ -49,17 +49,22 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String ent = CoreUtilities.getXthArg(3, lower).equals("sheep") ? "sheep" : CoreUtilities.getXthArg(2, lower);
-        if (!ent.equals("sheep") && !entity.matchesEntity(ent)) {
+        String ent = CoreUtilities.xthArgEquals(3, lower, "sheep") ? "sheep" : CoreUtilities.getXthArg(2, lower);
+
+        if (!ent.equals("sheep") && !tryEntity(entity, ent)) {
             return false;
         }
 
-        String color = CoreUtilities.getXthArg(3, lower).equals("sheep") ? CoreUtilities.getXthArg(2, lower) : "";
+        String color = CoreUtilities.xthArgEquals(3, lower, "sheep") ? CoreUtilities.getXthArg(2, lower) : "";
         if (color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

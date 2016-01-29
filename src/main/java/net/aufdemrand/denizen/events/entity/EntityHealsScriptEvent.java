@@ -61,14 +61,21 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
-        String cause = CoreUtilities.getXthArg(3, lower);
-        if (cause.length() > 0 && !cause.equals(CoreUtilities.toLowerCase(reason.toString()))) {
+
+        if (CoreUtilities.getXthArg(2, lower).equals("because") &&
+                !CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(reason.toString()))) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+             return false;
+        }
+
+        return true;
     }
 
     @Override

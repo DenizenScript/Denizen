@@ -54,17 +54,19 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        if (lower.contains("because")) {
-            if (!CoreUtilities.getXthArg(3, lower).equals(CoreUtilities.toLowerCase(reason.toString()))) {
-                return false;
-            }
+        if (lower.contains("because") && !CoreUtilities.xthArgEquals(3, lower, CoreUtilities.toLowerCase(reason.asString()))) {
+            return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

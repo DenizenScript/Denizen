@@ -43,7 +43,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).startsWith("sneak");
+        return CoreUtilities.getXthArg(2, CoreUtilities.toLowerCase(s)).equals("sneaking");
     }
 
     @Override
@@ -57,7 +57,11 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

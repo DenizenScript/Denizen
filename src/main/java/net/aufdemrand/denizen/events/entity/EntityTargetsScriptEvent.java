@@ -64,14 +64,13 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
+
         String victim = CoreUtilities.getXthArg(2, lower);
-        if (!victim.equals("in") && !victim.equals("because") && target != null && victim.length() > 0) {
-            if (!target.matchesEntity(victim)) {
-                return false;
-            }
+        if (!victim.equals("in") && !victim.equals("because") && !tryEntity(target, victim)) {
+            return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, location)) {
@@ -85,6 +84,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
                 return false;
             }
         }
+
         return true;
     }
 

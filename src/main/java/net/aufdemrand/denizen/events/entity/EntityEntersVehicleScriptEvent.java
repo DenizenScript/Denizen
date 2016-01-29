@@ -55,13 +55,17 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))
+                || !tryEntity(vehicle, CoreUtilities.getXthArg(2, lower))) {
             return false;
         }
-        if (!vehicle.matchesEntity(CoreUtilities.getXthArg(2, lower))) {
+
+        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, vehicle.getLocation());
+
+        return true;
     }
 
     @Override

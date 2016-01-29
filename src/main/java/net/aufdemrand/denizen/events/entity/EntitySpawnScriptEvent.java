@@ -65,7 +65,12 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+            return false;
+        }
+
+        if (CoreUtilities.xthArgEquals(2, lower, "because")
+                && !CoreUtilities.getXthArg(3, lower).equalsIgnoreCase(reason.toString())) {
             return false;
         }
 
@@ -73,9 +78,6 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "because")) {
-            return CoreUtilities.getXthArg(3, lower).equalsIgnoreCase(reason.toString());
-        }
         return true;
     }
 

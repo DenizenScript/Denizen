@@ -65,7 +65,16 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String target = CoreUtilities.getXthArg(0, lower);
-        return entity.matchesEntity(target) && runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!tryEntity(entity, target)) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

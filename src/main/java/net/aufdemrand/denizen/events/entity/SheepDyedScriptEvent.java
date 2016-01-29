@@ -53,27 +53,24 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return (cmd.equals("dyed") || cmd.equals("dyes"));
+        return lower.startsWith("sheep dyed") || lower.startsWith("player dyes sheep");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String sheep = cmd.equals("dyed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(3, lower);
-        if (!entity.matchesEntity(sheep)) {
+
+        String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        if (!new_color.isEmpty() && !new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
             return false;
         }
 
-        String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
-        if (new_color.length() > 0) {
-            if (!new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
-                return false;
-            }
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        return true;
     }
 
     @Override
