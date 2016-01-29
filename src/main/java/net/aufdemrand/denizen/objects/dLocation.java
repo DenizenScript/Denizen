@@ -34,6 +34,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
 import org.bukkit.util.*;
 
 import java.util.*;
@@ -1895,12 +1896,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("attached_to")) {
             BlockFace face = BlockFace.SELF;
-            BlockState state = getBlock().getState();
-            if (state instanceof Lever) {
-                face = ((Lever)state).getAttachedFace();
+            MaterialData data = getBlock().getState().getData();
+            if (data instanceof Lever) {
+                face = ((Lever)data).getAttachedFace();
             }
-            else if (state instanceof Button) {
-                face = ((Button)state).getAttachedFace();
+            else if (data instanceof Button) {
+                face = ((Button)data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
                 return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
