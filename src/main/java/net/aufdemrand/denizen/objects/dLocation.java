@@ -1084,16 +1084,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <l@location.find.blocks[<block>|...].within[<#.#>]>
+            // @attribute <l@location.find.blocks[<block>|...].within[<#>]>
             // @returns dList
             // @description
             // Returns a list of matching blocks within a radius.
+            // Note: current implementation measures the center of nearby block's distance from the exact given location.
             // -->
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
@@ -1105,35 +1106,35 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int max = Settings.blockTagsMaxBlocks();
                 int index = 0;
 
-                // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
-                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
+                Location tstart = getBlock().getLocation();
 
                 fullloop:
-                for (double x = -(radius); x <= radius; x++) {
-                    for (double y = -(radius); y <= radius; y++) {
-                        for (double z = -(radius); z <= radius; z++) {
+                for (int x = -(radius); x <= radius; x++) {
+                    for (int y = -(radius); y <= radius; y++) {
+                        if (y < 0 || y > 255) {
+                            continue;
+                        }
+                        for (int z = -(radius); z <= radius; z++) {
                             index++;
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
+                            if (Utilities.checkLocation(this, tstart.add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
-                                        if (material.hasData() && material.getData() != 0) {
-                                            if (material.matchesMaterialData(getBlock()
-                                                    .getLocation().add(x, y, z).getBlock().getType().getNewData(getBlock()
-                                                            .getLocation().add(x, y, z).getBlock().getData()))) {
-                                                found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        if (material.hasData() && material.getData() != 0) { // TODO: less arbitrary matching
+                                            if (material.matchesMaterialData(tstart.add(x, y, z).getBlock().getState().getData())) {
+                                                found.add(new dLocation(tstart.add(x, y, z)));
                                             }
                                         }
-                                        else if (material.getMaterial() == getBlock().getLocation().add(x, y, z).getBlock().getType()) {
-                                            found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        else if (material.getMaterial() == tstart.add(x, y, z).getBlock().getType()) {
+                                            found.add(new dLocation(tstart.add(x, y, z)));
                                         }
                                     }
                                 }
                                 else {
-                                    found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                    found.add(new dLocation(tstart.add(x, y, z)));
                                 }
                             }
                         }
