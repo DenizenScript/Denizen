@@ -1934,11 +1934,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
 
         // @Usage
-        // Use to play a midi song file on the current player/
+        // Use to play a midi song file on the current player.
         // - midi file:Denizen
 
         // @Usage
-        // Use to play a midi song file at a given location/
+        // Use to play a midi song file at a given location.
         // - midi file:Denizen <player.location>
 
         // @Usage
