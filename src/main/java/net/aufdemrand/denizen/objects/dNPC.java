@@ -1154,15 +1154,15 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         // <--[mechanism]
         // @object dNPC
-        // @name set_name
+        // @name name
         // @input Element
         // @description
         // Sets the name of the NPC.
         // @tags
         // <n@npc.name>
         // -->
-        if (mechanism.matches("set_name")) {
-            getCitizen().setName(value.asString().length() > 16 ? value.asString().substring(0, 16) : value.asString());
+        if (mechanism.matches("name") || mechanism.matches("set_name")) {
+            getCitizen().setName(value.asString().length() > 64 ? value.asString().substring(0, 64) : value.asString());
         }
 
         // <--[mechanism]
