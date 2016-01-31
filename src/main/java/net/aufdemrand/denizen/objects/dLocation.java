@@ -1120,21 +1120,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(this, tstart.add(x + 0.5, y + 0.5, z + 0.5), radius)) {
+                            if (Utilities.checkLocation(this, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
                                         if (material.hasData() && material.getData() != 0) { // TODO: less arbitrary matching
-                                            if (material.matchesMaterialData(tstart.add(x, y, z).getBlock().getState().getData())) {
-                                                found.add(new dLocation(tstart.add(x, y, z)));
+                                            if (material.matchesMaterialData(tstart.clone().add(x, y, z).getBlock().getState().getData())) {
+                                                found.add(new dLocation(tstart.clone().add(x, y, z)));
                                             }
                                         }
-                                        else if (material.getMaterial() == tstart.add(x, y, z).getBlock().getType()) {
-                                            found.add(new dLocation(tstart.add(x, y, z)));
+                                        else if (material.getMaterial() == tstart.clone().add(x, y, z).getBlock().getType()) {
+                                            found.add(new dLocation(tstart.clone().add(x, y, z)));
                                         }
                                     }
                                 }
                                 else {
-                                    found.add(new dLocation(tstart.add(x, y, z)));
+                                    found.add(new dLocation(tstart.clone().add(x, y, z)));
                                 }
                             }
                         }
