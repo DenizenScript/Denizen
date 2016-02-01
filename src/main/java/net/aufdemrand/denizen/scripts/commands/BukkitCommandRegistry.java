@@ -1135,6 +1135,31 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(FailCommand.class,
                 "FAIL", "fail (script:<name>)", 0);
 
+        // <--[command]
+        // @Name FakeItem
+        // @Syntax fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Required 2
+        // @Stable stable
+        // @Short Show a fake item in a player's inventory.
+        // @Author Morphan1
+        // @Group item
+        // @Description
+        // This command allows you to display an item in an inventory that is not really there.
+        // To make it automatically disappear at a specific time, use the 'duration:' argument.
+        // By default, it will use any inventory the player currently has open. To force it to use only the player's
+        // inventory, use the 'player_only' argument.
+        // @Tags
+        // None
+        // @Usage
+        // Use to show a clientside-only pumpkin on the player's head.
+        // - fakeitem i@pumpkin slot:40
+        // @Usage
+        // Use to show a fake book in the player's hand for 1 tick.
+        // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
+        // -->
+        registerCoreMember(FakeItemCommand.class,
+                "FAKEITEM", "fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
+
 
         // <--[command]
         // @Name Feed
@@ -1351,7 +1376,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
-
 
         // <--[command]
         // @Name Group
