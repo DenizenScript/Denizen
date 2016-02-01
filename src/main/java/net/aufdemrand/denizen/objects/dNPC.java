@@ -483,7 +483,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.name.nickname>
         // @returns Element
         // @description
-        // returns the NPC's display name.
+        // Returns the NPC's display name.
         // -->
         if (attribute.startsWith("name.nickname")) {
             return new Element(getCitizen().hasTrait(NicknameTrait.class) ? getCitizen().getTrait(NicknameTrait.class)
@@ -494,7 +494,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.name>
         // @returns Element
         // @description
-        // returns the name of the NPC.
+        // Returns the name of the NPC.
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName())
@@ -561,7 +561,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.anchor.list>
         // @returns dList
         // @description
-        // returns a list of anchor names currently assigned to the NPC.
+        // Returns a list of anchor names currently assigned to the NPC.
         // -->
         if (attribute.startsWith("anchor.list")
                 || attribute.startsWith("anchors.list")) {
@@ -576,7 +576,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.has_anchors>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC has anchors assigned.
+        // Returns whether the NPC has anchors assigned.
         // -->
         if (attribute.startsWith("has_anchors")) {
             return (new Element(getCitizen().getTrait(Anchors.class).getAnchors().size() > 0))
@@ -587,7 +587,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.anchor[<name>]>
         // @returns dLocation
         // @description
-        // returns the location associated with the specified anchor, or null if it doesn't exist.
+        // Returns the location associated with the specified anchor, or null if it doesn't exist.
         // -->
         if (attribute.startsWith("anchor")) {
             if (attribute.hasContext(1)
@@ -602,7 +602,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.has_flag[<flag_name>]>
         // @returns Element(Boolean)
         // @description
-        // returns true if the NPC has the specified flag, otherwise returns false.
+        // Returns true if the NPC has the specified flag, otherwise returns false.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
@@ -619,7 +619,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.flag[<flag_name>]>
         // @returns Flag dList
         // @description
-        // returns the specified flag from the NPC.
+        // Returns the specified flag from the NPC.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
@@ -689,7 +689,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.constant[<constant_name>]>
         // @returns Element
         // @description
-        // returns the specified constant from the NPC.
+        // Returns the specified constant from the NPC.
         // -->
         if (attribute.startsWith("constant")) {
             if (attribute.hasContext(1)) {
@@ -742,7 +742,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.is_engaged>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is currently engaged.
+        // Returns whether the NPC is currently engaged.
         // See <@link command engage>
         // -->
         if (attribute.startsWith("engaged") || attribute.startsWith("is_engaged")) {
@@ -753,7 +753,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.invulnerable>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is currently invulnerable.
+        // Returns whether the NPC is currently invulnerable.
         // See <@link command vulnerable>
         // -->
         if (attribute.startsWith("invulnerable") || attribute.startsWith("vulnerable")) {
@@ -764,7 +764,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.id>
         // @returns Element(Number)
         // @description
-        // returns the NPC's ID number.
+        // Returns the NPC's ID number.
         // -->
         if (attribute.startsWith("id")) {
             return new Element(getId()).getAttribute(attribute.fulfill(1));
@@ -774,7 +774,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.owner>
         // @returns dPlayer/Element
         // @description
-        // returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
+        // Returns the owner of the NPC as a dPlayer if it's a player, otherwise as just the name.
         // -->
         if (attribute.startsWith("owner")) {
             String owner = getOwner();
@@ -794,7 +794,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.has_skin>
         // @returns Element
         // @description
-        // returns whether the NPC has a custom skinskin.
+        // Returns whether the NPC has a custom skinskin.
         // -->
         if (attribute.startsWith("has_skin")) {
             return new Element(getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)).getAttribute(attribute.fulfill(1));
@@ -804,7 +804,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.skin_blob>
         // @returns Element
         // @description
-        // returns the NPC's custom skin blob, if any.
+        // Returns the NPC's custom skin blob, if any.
         // -->
         if (attribute.startsWith("skin_blob")) {
             if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
@@ -816,7 +816,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.skin>
         // @returns Element
         // @description
-        // returns the NPC's custom skin, if any.
+        // Returns the NPC's custom skin, if any.
         // -->
         if (attribute.startsWith("skin")) {
             if (getCitizen().data().has(NPC.PLAYER_SKIN_UUID_METADATA)) {
@@ -838,7 +838,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.is_spawned>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is spawned.
+        // Returns whether the NPC is spawned.
         // -->
         if (attribute.startsWith("is_spawned")) {
             return new Element(isSpawned()).getAttribute(attribute.fulfill(1));
@@ -876,7 +876,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.location.previous_location>
         // @returns dLocation
         // @description
-        // returns the NPC's previous navigated location.
+        // Returns the NPC's previous navigated location.
         // -->
         if (attribute.startsWith("location.previous_location")) {
             return (NPCTags.previousLocations.containsKey(getId())
@@ -889,7 +889,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @returns dLocation
         // @mechanism dNPC.teleport_on_stuck
         // @description
-        // returns whether the NPC teleports when it is stuck.
+        // Returns whether the NPC teleports when it is stuck.
         // -->
         if (attribute.startsWith("teleport_on_stuck")) {
             return new Element(getNavigator().getDefaultParameters().stuckAction() == TeleportStuckAction.INSTANCE)
@@ -912,7 +912,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.script>
         // @returns dScript
         // @description
-        // returns the NPC's assigned script.
+        // Returns the NPC's assigned script.
         // -->
         if (attribute.startsWith("script")) {
             NPC citizen = getCitizen();
@@ -929,7 +929,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.is_navigating>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is currently navigating.
+        // Returns whether the NPC is currently navigating.
         // -->
         if (attribute.startsWith("navigator.is_navigating")) {
             return new Element(getNavigator().isNavigating()).getAttribute(attribute.fulfill(2));
@@ -939,7 +939,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.speed>
         // @returns Element(Number)
         // @description
-        // returns the current speed of the NPC.
+        // Returns the current speed of the NPC.
         // -->
         if (attribute.startsWith("navigator.speed")) {
             return new Element(getNavigator().getLocalParameters().speed())
@@ -950,7 +950,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.range>
         // @returns Element(Number)
         // @description
-        // returns the maximum pathfinding range.
+        // Returns the maximum pathfinding range.
         // -->
         if (attribute.startsWith("navigator.range")) {
             return new Element(getNavigator().getLocalParameters().range())
@@ -961,7 +961,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.attack_range>
         // @returns Element(Number)
         // @description
-        // returns the maximum attack range.
+        // Returns the maximum attack range.
         // -->
         if (attribute.startsWith("navigator.attack_range")) {
             return new Element(getNavigator().getLocalParameters().attackRange())
@@ -972,7 +972,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.attack_strategy>
         // @returns Element
         // @description
-        // returns the NPC's attack strategy.
+        // Returns the NPC's attack strategy.
         // -->
         if (attribute.startsWith("navigator.attack_strategy")) {
             return new Element(getNavigator().getLocalParameters().attackStrategy().toString())
@@ -983,7 +983,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.speed_modifier>
         // @returns Element(Number)
         // @description
-        // returns the NPC movement speed modifier.
+        // Returns the NPC movement speed modifier.
         // -->
         if (attribute.startsWith("navigator.speed_modifier")) {
             return new Element(getNavigator().getLocalParameters().speedModifier())
@@ -994,7 +994,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.base_speed>
         // @returns Element(Number)
         // @description
-        // returns the base navigation speed.
+        // Returns the base navigation speed.
         // -->
         if (attribute.startsWith("navigator.base_speed")) {
             return new Element(getNavigator().getLocalParameters().baseSpeed())
@@ -1005,7 +1005,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.avoid_water>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC will avoid water.
+        // Returns whether the NPC will avoid water.
         // -->
         if (attribute.startsWith("navigator.avoid_water")) {
             return new Element(getNavigator().getLocalParameters().avoidWater())
@@ -1016,7 +1016,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.target_location>
         // @returns dLocation
         // @description
-        // returns the location the NPC is curently navigating towards.
+        // Returns the location the NPC is curently navigating towards.
         // -->
         if (attribute.startsWith("navigator.target_location")) {
             return (getNavigator().getTargetAsLocation() != null
@@ -1028,7 +1028,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.is_fighting>
         // @returns Element(Boolean)
         // @description
-        // returns whether the NPC is in combat.
+        // Returns whether the NPC is in combat.
         // -->
         if (attribute.startsWith("navigator.is_fighting")) {
             return new Element(getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().isAggressive())
@@ -1039,7 +1039,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.target_type>
         // @returns Element
         // @description
-        // returns the entity type of the target.
+        // Returns the entity type of the target.
         // -->
         if (attribute.startsWith("navigator.target_type"))
         // TODO: IMPROVE
@@ -1053,7 +1053,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @attribute <n@npc.navigator.target_entity>
         // @returns dEntity
         // @description
-        // returns the entity being targeted.
+        // Returns the entity being targeted.
         // -->
         if (attribute.startsWith("navigator.target_entity")) {
             return (getNavigator().getEntityTarget() != null && getNavigator().getEntityTarget().getTarget() != null

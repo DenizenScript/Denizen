@@ -117,7 +117,7 @@ public class ServerTags implements Listener {
         // @attribute <server.object_is_valid[<object>]>
         // @returns Element(boolean)
         // @description
-        // returns whether the object is a valid object (non-null), as well as not an Element.
+        // Returns whether the object is a valid object (non-null), as well as not an Element.
         // -->
         if (attribute.startsWith("object_is_valid")) {
             dObject o = ObjectFetcher.pickObjectFor(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
@@ -129,7 +129,7 @@ public class ServerTags implements Listener {
         // @attribute <server.has_whitelist>
         // @returns Element(boolean)
         // @description
-        // returns true if the server's whitelist is active, otherwise returns false.
+        // Returns true if the server's whitelist is active, otherwise returns false.
         // -->
         if (attribute.startsWith("has_whitelist")) {
             event.setReplaced(new Element(Bukkit.hasWhitelist()).getAttribute(attribute.fulfill(1)));
@@ -140,7 +140,7 @@ public class ServerTags implements Listener {
         // @attribute <server.has_flag[<flag_name>]>
         // @returns Element(boolean)
         // @description
-        // returns true if the server has the specified flag, otherwise returns false.
+        // Returns true if the server has the specified flag, otherwise returns false.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
@@ -159,7 +159,7 @@ public class ServerTags implements Listener {
         // @attribute <server.flag[<name>]>
         // @returns Flag dList
         // @description
-        // returns the specified flag from the server.
+        // Returns the specified flag from the server.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;

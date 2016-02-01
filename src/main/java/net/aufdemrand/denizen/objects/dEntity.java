@@ -1518,7 +1518,7 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.has_flag[<flag_name>]>
         // @returns Element(Boolean)
         // @description
-        // returns true if the entity has the specified flag, otherwise returns false.
+        // Returns true if the entity has the specified flag, otherwise returns false.
         // -->
         if (attribute.startsWith("has_flag")) {
             String flag_name;
@@ -1539,7 +1539,7 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.flag[<flag_name>]>
         // @returns Flag dList
         // @description
-        // returns the specified flag from the entity.
+        // Returns the specified flag from the entity.
         // -->
         if (attribute.startsWith("flag")) {
             String flag_name;
@@ -1728,7 +1728,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dLocation
         // @group location
         // @description
-        // returns a 2D location indicating where on the map the entity's looking at.
+        // Returns a 2D location indicating where on the map the entity's looking at.
         // Each coordinate is in the range of 0 to 128.
         // -->
         if (attribute.startsWith("map_trace")) {
@@ -1777,7 +1777,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dLocation
         // @group location
         // @description
-        // returns the location of the entity's eyes.
+        // Returns the location of the entity's eyes.
         // -->
         if (attribute.startsWith("eye_location")) {
             return new dLocation(getEyeLocation())

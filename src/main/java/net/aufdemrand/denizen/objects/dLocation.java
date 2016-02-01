@@ -1405,7 +1405,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.chunk>
         // @returns dChunk
         // @description
-        // returns the chunk that this location belongs to.
+        // Returns the chunk that this location belongs to.
         // -->
         if (attribute.startsWith("chunk") ||
                 attribute.startsWith("get_chunk")) {
@@ -1416,7 +1416,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.raw>
         // @returns dLocation
         // @description
-        // returns the raw representation of this location,
+        // Returns the raw representation of this location,
         //         ignoring any notables it might match.
         // -->
         if (attribute.startsWith("raw")) {

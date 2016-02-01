@@ -38,7 +38,7 @@ public class BukkitListProperties implements Property {
         // @attribute <li@list.formatted>
         // @returns Element
         // @description
-        // returns the list in a human-readable format.
+        // Returns the list in a human-readable format.
         // EG, a list of "n@3|p@bob|potato" will return "GuardNPC, bob, and potato".
         // -->
         if (attribute.startsWith("formatted")) {
@@ -86,7 +86,7 @@ public class BukkitListProperties implements Property {
         // @attribute <fl@flag_name.expiration>
         // @returns Duration
         // @description
-        // returns a Duration of the time remaining on the flag, if it
+        // Returns a Duration of the time remaining on the flag, if it
         // has an expiration.
         // -->
         if (list.flag != null && attribute.startsWith("expiration")) {
