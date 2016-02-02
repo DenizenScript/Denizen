@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -13,7 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 
-public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -32,13 +33,13 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
     //
     // -->
 
-    public PlayerLeashesScriptEvent() {
+    public PlayerLeashesEntityScriptEvent() {
         instance = this;
     }
 
-    public static PlayerLeashesScriptEvent instance;
+    public static PlayerLeashesEntityScriptEvent instance;
     public dEntity entity;
-    public dEntity holder;
+    public dPlayer holder;
     public PlayerLeashEntityEvent event;
 
     @Override
@@ -63,7 +64,7 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public String getName() {
-        return "PlayerLeashes";
+        return "PlayerLeashesEntity";
     }
 
     @Override
@@ -83,7 +84,7 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(holder.isPlayer() ? holder.getDenizenPlayer() : null, null);
+        return new BukkitScriptEntryData(holder, null);
     }
 
     @Override
@@ -102,10 +103,10 @@ public class PlayerLeashesScriptEvent extends BukkitScriptEvent implements Liste
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        holder = new dEntity(event.getPlayer());
+        holder = new dPlayer(event.getPlayer());
         entity = new dEntity(event.getEntity());
-        this.event = event;
         cancelled = event.isCancelled();
+        this.event = event;
         fire();
         event.setCancelled(cancelled);
     }

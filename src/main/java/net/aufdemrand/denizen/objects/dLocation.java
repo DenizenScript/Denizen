@@ -35,7 +35,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
-import org.bukkit.util.*;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
@@ -1366,7 +1365,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             List<dLocation> locs = PathFinder.getPath(this, two);
             dList list = new dList();
-            for (dLocation loc: locs) {
+            for (dLocation loc : locs) {
                 list.add(loc.identify());
             }
             return list.getAttribute(attribute.fulfill(1));
@@ -1893,10 +1892,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockFace face = BlockFace.SELF;
             MaterialData data = getBlock().getState().getData();
             if (data instanceof Lever) {
-                face = ((Lever)data).getAttachedFace();
+                face = ((Lever) data).getAttachedFace();
             }
             else if (data instanceof Button) {
-                face = ((Button)data).getAttachedFace();
+                face = ((Button) data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
                 return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
