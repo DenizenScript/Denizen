@@ -70,7 +70,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as boots.
+        // Returns the item the entity is wearing as boots.
         // -->
         if (attribute.startsWith("equipment.boots")) {
             if (entity.getLivingEntity().getEquipment().getBoots() != null) {
@@ -88,7 +88,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as a chestplate.
+        // Returns the item the entity is wearing as a chestplate.
         // -->
         else if (attribute.startsWith("equipment.chestplate") ||
                 attribute.startsWith("equipment.chest")) {
@@ -107,7 +107,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as a helmet.
+        // Returns the item the entity is wearing as a helmet.
         // -->
         else if (attribute.startsWith("equipment.helmet") ||
                 attribute.startsWith("equipment.head")) {
@@ -126,7 +126,7 @@ public class EntityEquipment implements Property {
         // @returns dItem
         // @group inventory
         // @description
-        // returns the item the entity is wearing as leggings.
+        // Returns the item the entity is wearing as leggings.
         // -->
         else if (attribute.startsWith("equipment.leggings") ||
                 attribute.startsWith("equipment.legs")) {
@@ -145,7 +145,7 @@ public class EntityEquipment implements Property {
         // @returns dList
         // @group inventory
         // @description
-        // returns a dList containing the entity's equipment.
+        // Returns a dList containing the entity's equipment.
         // -->
         else if (attribute.startsWith("equipment")) {
             return entity.getEquipment().getAttribute(attribute.fulfill(1));

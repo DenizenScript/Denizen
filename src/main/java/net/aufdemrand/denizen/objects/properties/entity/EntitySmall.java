@@ -6,22 +6,22 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.entity.Slime;
+import org.bukkit.entity.ArmorStand;
 
-public class EntitySize implements Property {
+public class EntitySmall implements Property {
 
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntity() instanceof Slime;
+                ((dEntity) entity).getBukkitEntity() instanceof ArmorStand;
     }
 
-    public static EntitySize getFrom(dObject entity) {
+    public static EntitySmall getFrom(dObject entity) {
         if (!describes(entity)) {
             return null;
         }
         else {
-            return new EntitySize((dEntity) entity);
+            return new EntitySmall((dEntity) entity);
         }
     }
 
@@ -30,8 +30,8 @@ public class EntitySize implements Property {
     // Instance Fields and Methods
     /////////////
 
-    private EntitySize(dEntity ent) {
-        entity = ent;
+    private EntitySmall(dEntity entity) {
+        this.entity = entity;
     }
 
     dEntity entity;
@@ -42,12 +42,15 @@ public class EntitySize implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(((Slime) entity.getBukkitEntity()).getSize());
+        if (((ArmorStand) entity.getBukkitEntity()).isSmall()) {
+            return "true";
+        }
+        return null;
     }
 
     @Override
     public String getPropertyId() {
-        return "size";
+        return "small";
     }
 
 
@@ -63,15 +66,15 @@ public class EntitySize implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.size>
-        // @returns Element(Number)
-        // @mechanism dEntity.size
+        // @attribute <e@entity.is_small>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.is_small
         // @group properties
         // @description
-        // Returns the size of a slime-type entity (1-120).
+        // Returns whether the armor stand is small.
         // -->
-        if (attribute.startsWith("size")) {
-            return new Element(((Slime) entity.getBukkitEntity()).getSize())
+        if (attribute.startsWith("is_small")) {
+            return new Element(((ArmorStand) entity.getBukkitEntity()).isSmall())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -83,15 +86,15 @@ public class EntitySize implements Property {
 
         // <--[mechanism]
         // @object dEntity
-        // @name size
-        // @input Element(Number)
+        // @name is_small
+        // @input Element(Boolean)
         // @description
-        // Sets the size of a slime-type entity (1-120).
+        // Sets whether the armor stand is small.
         // @tags
-        // <e@entity.size>
+        // <e@entity.is_small>
         // -->
-        if (mechanism.matches("size") && mechanism.requireInteger()) {
-            ((Slime) entity.getBukkitEntity()).setSize(mechanism.getValue().asInt());
+        if (mechanism.matches("is_small") && mechanism.requireBoolean()) {
+            ((ArmorStand) entity.getBukkitEntity()).setSmall(mechanism.getValue().asBoolean());
         }
     }
 }

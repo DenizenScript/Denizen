@@ -36,7 +36,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     }
 
     public static ProjectileLaunchedScriptEvent instance;
-    public dEntity entity;
+    public dEntity projectile;
     private dLocation location;
     public ProjectileLaunchEvent event;
 
@@ -51,7 +51,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String projTest = CoreUtilities.getXthArg(0, lower);
-        if (!projTest.equals("projectile") && !entity.matchesEntity(projTest)) {
+
+        if (!projTest.equals("projectile") && !tryEntity(projectile, projTest)) {
             return false;
         }
 
@@ -85,7 +86,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return projectile;
         }
         return super.getContext(name);
     }
@@ -94,7 +95,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     public void onProjectileLaunched(ProjectileLaunchEvent event) {
         Entity projectile = event.getEntity();
         dEntity.rememberEntity(projectile);
-        entity = new dEntity(projectile);
+        this.projectile = new dEntity(projectile);
         location = new dLocation(event.getEntity().getLocation());
         cancelled = event.isCancelled();
         this.event = event;

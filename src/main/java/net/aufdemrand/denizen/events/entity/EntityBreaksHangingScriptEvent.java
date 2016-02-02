@@ -69,21 +69,23 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
         String hang = CoreUtilities.getXthArg(2, lower);
-        if (!breaker.matchesEntity(entName)) {
+
+        if (!tryEntity(breaker, entName)) {
             return false;
         }
-        if (!hang.equals("hanging") && !hanging.matchesEntity(hang)) {
+
+        if (!hang.equals("hanging") && !tryEntity(hanging, hang)) {
             return false;
         }
+
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "because")) {
-            if (!CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
-                return false;
-            }
+        if (CoreUtilities.xthArgEquals(3, lower, "because") && !CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+            return false;
         }
+
         return true;
     }
 

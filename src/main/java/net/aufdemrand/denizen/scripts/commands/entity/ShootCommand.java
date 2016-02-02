@@ -93,8 +93,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
-
+                    && (arg.matchesArgumentType(dScript.class)
+                    || arg.matchesPrefix("script"))) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
@@ -127,6 +127,10 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
                 scriptEntry.addObject("no_rotate", new Element(true));
+            }
+
+            else if (arg.matchesPrefix("def", "define", "context")) {
+                scriptEntry.addObject("definitions", arg.asType(dList.class));
             }
 
             else {
@@ -184,6 +188,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        final dList definitions = (dList) scriptEntry.getObject("definitions");
         dEntity shooter = (dEntity) scriptEntry.getObject("shooter");
 
         Element height = scriptEntry.getElement("height");
@@ -204,7 +209,8 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 (shooter != null ? shooter.debug() : "") +
                 (spread != null ? spread.debug() : "") +
                 (lead != null ? lead.debug() : "") +
-                (no_rotate ? aH.debugObj("no_rotate", "true") : ""));
+                (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                (definitions != null ? definitions.debug() : ""));
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue
@@ -345,7 +351,23 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                             }
                         }
                         queue.addDefinition("hit_entities", hitEntities.identify());
-
+                        if (definitions != null) {
+                            int x = 1;
+                            String[] definition_names = null;
+                            try {
+                                definition_names = script.getContainer().getString("definitions").split("\\|");
+                            }
+                            catch (Exception e) {
+                                // TODO: less lazy handling
+                            }
+                            for (String definition : definitions) {
+                                String name = definition_names != null && definition_names.length >= x ?
+                                        definition_names[x - 1].trim() : String.valueOf(x);
+                                queue.addDefinition(name, definition);
+                                dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
+                                x++;
+                            }
+                        }
                         // Start it!
                         queue.start();
                     }

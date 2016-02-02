@@ -59,7 +59,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         String lower = CoreUtilities.toLowerCase(s);
         String item_test = CoreUtilities.getXthArg(0, lower);
 
-        if (!item_test.equals("item") && !tryItem(item, item_test)) {
+        if (!tryItem(item, item_test)) {
             return false;
         }
 

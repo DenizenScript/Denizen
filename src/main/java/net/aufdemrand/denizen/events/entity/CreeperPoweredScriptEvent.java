@@ -50,13 +50,17 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String reason = CoreUtilities.getXthArg(3, lower);
 
         if (CoreUtilities.getXthArg(2, lower).equals("because")
-                && !reason.equals(CoreUtilities.toLowerCase(cause.toString()))) {
+                && !CoreUtilities.xthArgEquals(3, lower, CoreUtilities.toLowerCase(cause.toString()))) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, event.getEntity().getLocation());
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

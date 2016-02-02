@@ -50,9 +50,20 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String target = CoreUtilities.getXthArg(0, lower);
-        return entity.matchesEntity(target)
-                && checkSwitch(lower, "cause", CoreUtilities.toLowerCase(cause.asString()))
-                && runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!tryEntity(entity, target)) {
+            return false;
+        }
+
+        if (!checkSwitch(lower, "cause", CoreUtilities.toLowerCase(cause.asString()))) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

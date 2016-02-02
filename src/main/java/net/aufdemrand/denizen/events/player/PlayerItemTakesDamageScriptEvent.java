@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -125,5 +126,14 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         fire();
         event.setCancelled(cancelled);
         event.setDamage(damage.asInt());
+        final Player p = event.getPlayer();
+        if (cancelled) {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    p.updateInventory();
+                }
+            }, 1);
+        }
     }
 }

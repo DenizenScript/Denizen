@@ -53,17 +53,20 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String ent = CoreUtilities.getXthArg(0, lower);
-        if (!vehicle.matchesEntity(ent)) {
+
+        if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(3, lower);
-        if (!tryMaterial(material, mat)) {
+        if (!tryMaterial(material, CoreUtilities.getXthArg(3, lower))) {
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, location);
+        if (!runInCheck(scriptContainer, s, lower, location)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

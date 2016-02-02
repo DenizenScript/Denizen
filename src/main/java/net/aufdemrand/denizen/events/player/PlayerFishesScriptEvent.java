@@ -59,22 +59,22 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String fish = CoreUtilities.getXthArg(2, lower);
-        if (entity != null && fish.length() > 0) {
-            if (!entity.matchesEntity(fish)) {
+
+        if (entity != null && !fish.isEmpty() && !tryEntity(entity, fish)) {
+            return false;
+        }
+
+        List<String> data = CoreUtilities.split(lower, ' ');
+        for (int index = 0; index < data.size(); index++) {
+            if (data.get(index).equals("while") && !data.get(index + 1).equalsIgnoreCase(state.asString())) {
                 return false;
             }
         }
-        List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).equals("while")) {
-                if (!data.get(index + 1).equalsIgnoreCase(state.asString())) {
-                    return false;
-                }
-            }
-        }
+
         if (!runInCheck(scriptContainer, s, lower, hook.getLocation())) {
             return false;
         }
+
         return true;
     }
 
