@@ -32,10 +32,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.util.*;
+import org.bukkit.material.Button;
+import org.bukkit.material.Lever;
+import org.bukkit.material.MaterialData;
+import org.bukkit.util.BlockIterator;
 
 import java.util.*;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1081,16 +1083,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             attribute.fulfill(1);
 
             // <--[tag]
-            // @attribute <l@location.find.blocks[<block>|...].within[<#.#>]>
+            // @attribute <l@location.find.blocks[<block>|...].within[<#>]>
             // @returns dList
             // @description
             // Returns a list of matching blocks within a radius.
+            // Note: current implementation measures the center of nearby block's distance from the exact given location.
             // -->
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
                 ArrayList<dLocation> found = new ArrayList<dLocation>();
-                double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
+                int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
@@ -1102,35 +1105,35 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int max = Settings.blockTagsMaxBlocks();
                 int index = 0;
 
-                // dB.log(materials + " " + radius + " ");
                 attribute.fulfill(2);
-                Location loc = getBlock().getLocation().add(0.5f, 0.5f, 0.5f);
+                Location tstart = getBlock().getLocation();
 
                 fullloop:
-                for (double x = -(radius); x <= radius; x++) {
-                    for (double y = -(radius); y <= radius; y++) {
-                        for (double z = -(radius); z <= radius; z++) {
+                for (int x = -(radius); x <= radius; x++) {
+                    for (int y = -(radius); y <= radius; y++) {
+                        if (y < 0 || y > 255) {
+                            continue;
+                        }
+                        for (int z = -(radius); z <= radius; z++) {
                             index++;
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
+                            if (Utilities.checkLocation(this, tstart.clone().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
-                                        if (material.hasData() && material.getData() != 0) {
-                                            if (material.matchesMaterialData(getBlock()
-                                                    .getLocation().add(x, y, z).getBlock().getType().getNewData(getBlock()
-                                                            .getLocation().add(x, y, z).getBlock().getData()))) {
-                                                found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        if (material.hasData() && material.getData() != 0) { // TODO: less arbitrary matching
+                                            if (material.matchesMaterialData(tstart.clone().add(x, y, z).getBlock().getState().getData())) {
+                                                found.add(new dLocation(tstart.clone().add(x, y, z)));
                                             }
                                         }
-                                        else if (material.getMaterial() == getBlock().getLocation().add(x, y, z).getBlock().getType()) {
-                                            found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                        else if (material.getMaterial() == tstart.clone().add(x, y, z).getBlock().getType()) {
+                                            found.add(new dLocation(tstart.clone().add(x, y, z)));
                                         }
                                     }
                                 }
                                 else {
-                                    found.add(new dLocation(getBlock().getLocation().add(x + 0.5, y, z + 0.5)));
+                                    found.add(new dLocation(tstart.clone().add(x, y, z)));
                                 }
                             }
                         }
@@ -1285,11 +1288,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.hasContext(2)) {
                 dList ent_list = new dList();
                 if (attribute.hasContext(1)) {
-                    for (String ent : dList.valueOf(attribute.getContext(1))) {
-                        if (dEntity.matches(ent)) {
-                            ent_list.add(ent.toUpperCase());
-                        }
-                    }
+                    ent_list = dList.valueOf(attribute.getContext(1));
                 }
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
@@ -1298,10 +1297,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
-                            String type = current.getEntityType().getName();
                             for (String ent : ent_list) {
-                                if ((type.equals(ent) ||
-                                        current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
+                                if (current.comparedTo(ent)) {
                                     found.add(current);
                                     break;
                                 }
@@ -1368,7 +1365,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             List<dLocation> locs = PathFinder.getPath(this, two);
             dList list = new dList();
-            for (dLocation loc: locs) {
+            for (dLocation loc : locs) {
                 list.add(loc.identify());
             }
             return list.getAttribute(attribute.fulfill(1));
@@ -1408,7 +1405,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.chunk>
         // @returns dChunk
         // @description
-        // returns the chunk that this location belongs to.
+        // Returns the chunk that this location belongs to.
         // -->
         if (attribute.startsWith("chunk") ||
                 attribute.startsWith("get_chunk")) {
@@ -1419,7 +1416,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.raw>
         // @returns dLocation
         // @description
-        // returns the raw representation of this location,
+        // Returns the raw representation of this location,
         //         ignoring any notables it might match.
         // -->
         if (attribute.startsWith("raw")) {
@@ -1882,6 +1879,27 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("furnace_cook_time")) {
             return new Element(((Furnace) getBlock().getState()).getCookTime())
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.attached_to>
+        // @returns dLocation
+        // @description
+        // Returns the block this block is attached to.
+        // (Only if it is a lever or button!)
+        // -->
+        if (attribute.startsWith("attached_to")) {
+            BlockFace face = BlockFace.SELF;
+            MaterialData data = getBlock().getState().getData();
+            if (data instanceof Lever) {
+                face = ((Lever) data).getAttachedFace();
+            }
+            else if (data instanceof Button) {
+                face = ((Button) data).getAttachedFace();
+            }
+            if (face != BlockFace.SELF) {
+                return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
+            }
         }
 
         // Iterate through this object's properties' attributes

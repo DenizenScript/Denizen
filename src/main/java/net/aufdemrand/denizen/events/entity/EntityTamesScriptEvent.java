@@ -59,19 +59,16 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
         String cmd = CoreUtilities.getXthArg(1, lower);
         String ownerTest = cmd.equals("tames") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
         String tamed = cmd.equals("tamed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
-        if (ownerTest.length() > 0) {
-            if (owner != null) {
-                if (!owner.matchesEntity(ownerTest)) {
-                    return false;
-                }
-            }
+
+        if (!tryEntity(owner, ownerTest) || !!tryEntity(entity, tamed)) {
+            return false;
         }
-        if (tamed.length() > 0) {
-            if (!entity.matchesEntity(tamed)) {
-                return false;
-            }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        return true;
     }
 
     @Override

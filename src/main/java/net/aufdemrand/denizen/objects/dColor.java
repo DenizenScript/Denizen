@@ -203,7 +203,7 @@ public class dColor implements dObject {
         // @attribute <co@color.red>
         // @returns Element(Number)
         // @description
-        // returns the red value of this color.
+        // Returns the red value of this color.
         // -->
         registerTag("red", new TagRunnable() {
             @Override
@@ -216,7 +216,7 @@ public class dColor implements dObject {
         // @attribute <co@color.green>
         // @returns Element(Number)
         // @description
-        // returns the green value of this color.
+        // Returns the green value of this color.
         // -->
         registerTag("green", new TagRunnable() {
             @Override
@@ -229,7 +229,7 @@ public class dColor implements dObject {
         // @attribute <co@color.blue>
         // @returns Element(Number)
         // @description
-        // returns the blue value of this color.
+        // Returns the blue value of this color.
         // -->
         registerTag("blue", new TagRunnable() {
             @Override
@@ -242,7 +242,7 @@ public class dColor implements dObject {
         // @attribute <co@color.rgb>
         // @returns Element
         // @description
-        // returns the RGB value of this color.
+        // Returns the RGB value of this color.
         // EG, 255,0,255
         // -->
         registerTag("rgb", new TagRunnable() {
@@ -257,7 +257,7 @@ public class dColor implements dObject {
         // @attribute <co@color.hue>
         // @returns Element(Number)
         // @description
-        // returns the hue value of this color.
+        // Returns the hue value of this color.
         // -->
         registerTag("hue", new TagRunnable() {
             @Override
@@ -270,7 +270,7 @@ public class dColor implements dObject {
         // @attribute <co@color.saturation>
         // @returns Element(Number)
         // @description
-        // returns the saturation value of this color.
+        // Returns the saturation value of this color.
         // -->
         registerTag("saturation", new TagRunnable() {
             @Override
@@ -283,7 +283,7 @@ public class dColor implements dObject {
         // @attribute <co@color.brightness>
         // @returns Element(Number)
         // @description
-        // returns the brightness value of this color.
+        // Returns the brightness value of this color.
         // -->
         registerTag("brightness", new TagRunnable() {
             @Override
@@ -296,7 +296,7 @@ public class dColor implements dObject {
         // @attribute <co@color.hsv>
         // @returns Element
         // @description
-        // returns the HSV value of this color.
+        // Returns the HSV value of this color.
         // EG, 100,100,255
         // -->
         registerTag("hsv", new TagRunnable() {
@@ -311,7 +311,7 @@ public class dColor implements dObject {
         // @attribute <co@color.name>
         // @returns Element
         // @description
-        // returns the name of this color (or red,green,blue if none).
+        // Returns the name of this color (or red,green,blue if none).
         // -->
         registerTag("name", new TagRunnable() {
             @Override
@@ -324,7 +324,7 @@ public class dColor implements dObject {
         // @attribute <co@color.mix[<color>]>
         // @returns dColor
         // @description
-        // returns the color that results if you mix this color with another.
+        // Returns the color that results if you mix this color with another.
         // -->
         registerTag("mix", new TagRunnable() {
             @Override

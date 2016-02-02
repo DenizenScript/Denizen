@@ -6,6 +6,10 @@ import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Hanging;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Vehicle;
 
 import java.util.List;
 
@@ -30,13 +34,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
 
-        String it = CoreUtilities.getXthArg(index + 1, s);
-        if (it.equalsIgnoreCase("notable")) {
+        String it = CoreUtilities.getXthArg(index + 1, lower);
+        if (it.equals("notable")) {
             String subit = CoreUtilities.getXthArg(index + 2, lower);
-            if (subit.equalsIgnoreCase("cuboid")) {
+            if (subit.equals("cuboid")) {
                 return dCuboid.getNotableCuboidsContaining(location).size() > 0;
             }
-            else if (subit.equalsIgnoreCase("ellipsoid")) {
+            else if (subit.equals("ellipsoid")) {
                 return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
             }
             else {
@@ -45,7 +49,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         else if (dWorld.matches(it)) {
-            return location.getWorld().getName().equalsIgnoreCase(it);
+            return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(it);
         }
         else if (dCuboid.matches(it)) {
             dCuboid cuboid = dCuboid.valueOf(it);
@@ -79,9 +83,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
-        String with = getSwitch(s, "with");
+        String with = getSwitch(lower, "with");
         if (with != null) {
-            if (with.equalsIgnoreCase("item")) {
+            if (with.equals("item")) {
                 return true;
             }
             dItem it = dItem.valueOf(with);
@@ -97,71 +101,80 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean tryItem(dItem item, String comparedto) {
-        if (comparedto.equalsIgnoreCase("item")) {
-            return true;
-        }
-        if (comparedto.length() == 0) {
-            dB.echoError("tryItem missing item value when compared to " + item.identifyNoIdentifier());
+        if (comparedto == null || comparedto.isEmpty() || item == null) {
             return false;
+        }
+        comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.equals("item")) {
+            return true;
         }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
-        if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+        ;
+        if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
             return true;
         }
-        if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
+        else if (CoreUtilities.toLowerCase(item.identifyMaterialNoIdentifier()).equals(comparedto)) {
             return true;
         }
-        if (item.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
+        else if (CoreUtilities.toLowerCase(item.identifySimpleNoIdentifier()).equals(comparedto)) {
+            return true;
+        }
+        else if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
             return true;
         }
         item.setDurability((short) 0);
-        if (item.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
-            return true;
-        }
-        if (item.identifyMaterialNoIdentifier().equalsIgnoreCase(comparedto)) {
-            return true;
-        }
-        return false;
+        return CoreUtilities.toLowerCase(item.identifyMaterialNoIdentifier()).equals(comparedto);
     }
 
     public boolean tryMaterial(dMaterial mat, String comparedto) {
-        if (comparedto == null || comparedto.length() == 0) {
+        if (comparedto == null || comparedto.isEmpty() || mat == null) {
             return false;
         }
-        if (comparedto.equalsIgnoreCase("block") || comparedto.equalsIgnoreCase("material")) {
+        comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
-        if (mat.identifyNoIdentifier().equalsIgnoreCase(comparedto)) {
+        else if (CoreUtilities.toLowerCase(mat.identifyNoIdentifier()).equals(comparedto)) {
             return true;
         }
-        if (mat.identifySimpleNoIdentifier().equalsIgnoreCase(comparedto)) {
+        else if (CoreUtilities.toLowerCase(mat.identifySimpleNoIdentifier()).equals(comparedto)) {
             return true;
         }
-        if (mat.identifyFullNoIdentifier().equalsIgnoreCase(comparedto)) {
+        else if (CoreUtilities.toLowerCase(mat.identifyFullNoIdentifier()).equals(comparedto)) {
             return true;
         }
         return false;
     }
 
     public boolean tryEntity(dEntity entity, String comparedto) {
-        if (comparedto == null || comparedto.length() == 0 || entity == null) {
+        if (comparedto == null || comparedto.isEmpty() || entity == null) {
             return false;
         }
+        Entity bEntity = entity.getBukkitEntity();
         comparedto = CoreUtilities.toLowerCase(comparedto);
         if (comparedto.equals("entity")) {
             return true;
         }
-        if (comparedto.equals("npc")) {
+        else if (comparedto.equals("npc")) {
             return entity.isCitizensNPC();
         }
-        if (comparedto.equals("player")) {
+        else if (comparedto.equals("player")) {
             return entity.isPlayer();
         }
-        if (entity.getEntityScript() != null && comparedto.equals(CoreUtilities.toLowerCase(entity.getEntityScript()))) {
+        else if (comparedto.equals("vehicle")) {
+            return bEntity instanceof Vehicle;
+        }
+        else if (comparedto.equals("projectile")) {
+            return bEntity instanceof Projectile;
+        }
+        else if (comparedto.equals("hanging")) {
+            return bEntity instanceof Hanging;
+        }
+        else if (entity.getEntityScript() != null && comparedto.equals(CoreUtilities.toLowerCase(entity.getEntityScript()))) {
             return true;
         }
-        if (comparedto.equals(entity.getEntityType().getLowercaseName())) {
+        else if (comparedto.equals(entity.getEntityType().getLowercaseName())) {
             return true;
         }
         return false;

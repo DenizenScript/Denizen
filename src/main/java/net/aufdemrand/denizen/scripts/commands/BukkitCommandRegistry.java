@@ -385,7 +385,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Ban
-        // @Syntax ban ({ADD}/REMOVE) [<player>|...] (reason:<text>) (duration:<duration>)
+        // @Syntax ban ({add}/remove) [<player>|...] (reason:<text>) (duration:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Ban or un-ban a player or list of players.
@@ -421,7 +421,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // -->
         registerCoreMember(BanCommand.class,
-                "BAN", "ban ({ADD}/REMOVE) [<player>|...] (reason:<text>) (duration:<duration>)", 1);
+                "BAN", "ban ({add}/remove) [<player>|...] (reason:<text>) (duration:<duration>)", 1);
 
 
         // <--[command]
@@ -1135,6 +1135,31 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(FailCommand.class,
                 "FAIL", "fail (script:<name>)", 0);
 
+        // <--[command]
+        // @Name FakeItem
+        // @Syntax fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Required 2
+        // @Stable stable
+        // @Short Show a fake item in a player's inventory.
+        // @Author Morphan1
+        // @Group item
+        // @Description
+        // This command allows you to display an item in an inventory that is not really there.
+        // To make it automatically disappear at a specific time, use the 'duration:' argument.
+        // By default, it will use any inventory the player currently has open. To force it to use only the player's
+        // inventory, use the 'player_only' argument.
+        // @Tags
+        // None
+        // @Usage
+        // Use to show a clientside-only pumpkin on the player's head.
+        // - fakeitem i@pumpkin slot:40
+        // @Usage
+        // Use to show a fake book in the player's hand for 1 tick.
+        // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
+        // -->
+        registerCoreMember(FakeItemCommand.class,
+                "FAKEITEM", "fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
+
 
         // <--[command]
         // @Name Feed
@@ -1351,7 +1376,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
-
 
         // <--[command]
         // @Name Group
@@ -1910,11 +1934,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
 
         // @Usage
-        // Use to play a midi song file on the current player/
+        // Use to play a midi song file on the current player.
         // - midi file:Denizen
 
         // @Usage
-        // Use to play a midi song file at a given location/
+        // Use to play a midi song file at a given location.
         // - midi file:Denizen <player.location>
 
         // @Usage
@@ -1924,6 +1948,45 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)", 1);
+
+
+        // <--[command]
+        // @Name Money
+        // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)
+        // @Required 1
+        // @Stable stable
+        // @Short Manage a player's money.
+        // @Author Fortifier42
+        // @Group player
+        // @Plugin Vault
+        // @Description
+        // Give money to, take money from, and set the balance of a player.
+        // If no quantity is specified it defaults to '1'. You can specify a list of
+        // players to give to or take from. If no player(s) are specified defaults to the attached player.
+        // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
+        // @Tags
+        // <p@player.money>
+
+        // @Usage
+        // Use to give 1 money to the player.
+        // - money give
+
+        // @Usage
+        // Use to take 10 money from a player.
+        // - money take quantity:10 from:p@mcmonkey4eva
+
+        // @Usage
+        // Use to give all players on the server 100 money.
+        // - money give quantity:100 to:<server.list_players>
+
+        // @Usage
+        // Use to set the money of all online players to 250.
+        // - money set quantity:250 players:<server.list_online_players>
+        // -->
+        if (Depends.economy != null) {
+            registerCoreMember(MoneyCommand.class,
+                    "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
+        }
 
 
         // <--[command]
@@ -2031,13 +2094,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // TODO: Document Command Details
         // @Tags
-        // TODO: Document Command Details
+        // <server.list_notables[<type>]>
+        // <cu@cuboid.notable_name>
+        // <in@inventory.notable_name>
+        // <i@item.notable_name>
+        // <l@location.notable_name>
         // @Usage
         // Use to add a notable cuboid.
         // - note cu@1,2,3,world|4,5,6,world as:mycuboid
         // @Usage
         // Use to remove a notable cuboid.
         // - note remove as:mycuboid
+        // @Usage
+        // Use to note a location.
+        // - note l@10,5,10,world as:mylocation
         // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>/remove] [as:<name>]", 2);
@@ -2105,7 +2175,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // See <@link language Particle Effects> for a list of valid effect names.
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2125,7 +2195,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
         // @Tags
-        // TODO: Document Command Details
+        // None
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2207,16 +2277,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Push
-        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (duration:<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)
+        // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)
         // @Required 1
         // @Stable stable
         // @Short Pushes entities through the air in a straight line.
         // @Author David Cernat, mcmonkey
         // @Group entity
         // @Description
-        // Pushes entities through the air in a straight line at a certain speed and for a certain duration, triggering a script when they hit an obstacle or stop flying.
+        // Pushes entities through the air in a straight line at a certain speed and for a certain duration,
+        // triggering a script when they hit an obstacle or stop flying. You can specify the script to be run
+        // with the (script:<name>) argument, and optionally specify definitions to be available in this script
+        // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
+        // when they stop moving.
         // @Tags
-        // TODO: Document Command Details
+        // <e@entity.velocity>
         // @Usage
         // Use to launch an arrow straight towards a target
         // - push arrow destination:<player.location>
@@ -2227,7 +2301,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // -->
         registerCoreMember(PushCommand.class,
-                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (<script>) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
+                "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
 
 
         // <--[command]
@@ -2764,7 +2838,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
         // @Stable stable
         // @Short Shoots an entity through the air, useful for things like firing arrows.
@@ -2791,7 +2865,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
 
 
         // <--[command]

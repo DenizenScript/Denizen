@@ -49,7 +49,10 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
-        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), pig.getLocation());
+        if (!runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), pig.getLocation())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

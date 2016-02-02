@@ -66,18 +66,18 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String entName = CoreUtilities.getXthArg(0, lower);
-        if (!entity.matchesEntity(entName)) {
+
+        if (!tryEntity(entity, entName)) {
             return false;
         }
 
-        String mat1 = CoreUtilities.getXthArg(2, lower);
-        if (!tryMaterial(old_material, mat1)) {
+        if (!tryMaterial(old_material, CoreUtilities.getXthArg(2, lower))) {
             return false;
         }
 
         if (CoreUtilities.xthArgEquals(3, lower, "into")) {
             String mat2 = CoreUtilities.getXthArg(4, lower);
-            if (mat2.length() == 0) {
+            if (mat2.isEmpty()) {
                 dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
                 return false;
             }

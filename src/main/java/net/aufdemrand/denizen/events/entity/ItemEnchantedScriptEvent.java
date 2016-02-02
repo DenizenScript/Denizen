@@ -68,6 +68,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String itemTest = CoreUtilities.getXthArg(0, lower);
+
         if (!itemTest.equals("item") && !tryItem(item, itemTest)) {
             return false;
         }

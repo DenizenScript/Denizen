@@ -282,7 +282,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.loaded_chunks>
         // @returns dList(dChunk)
         // @description
-        // returns a list of all the currently loaded chunks.
+        // Returns a list of all the currently loaded chunks.
         // -->
         registerTag("loaded_chunks", new TagRunnable() {
             @Override
@@ -299,7 +299,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.random_loaded_chunk>
         // @returns dChunk
         // @description
-        // returns a random loaded chunk.
+        // Returns a random loaded chunk.
         // -->
         registerTag("random_loaded_chunk", new TagRunnable() {
             @Override
@@ -314,7 +314,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.sea_level>
         // @returns Element(Number)
         // @description
-        // returns the level of the sea.
+        // Returns the level of the sea.
         // -->
         registerTag("sea_level", new TagRunnable() {
             @Override
@@ -328,7 +328,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.spawn_location>
         // @returns dLocation
         // @description
-        // returns the spawn location of the world.
+        // Returns the spawn location of the world.
         // -->
         registerTag("spawn_location", new TagRunnable() {
             @Override
@@ -347,7 +347,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.name>
         // @returns Element
         // @description
-        // returns the name of the world.
+        // Returns the name of the world.
         // -->
         registerTag("name", new TagRunnable() {
             @Override
@@ -361,7 +361,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.seed>
         // @returns Element
         // @description
-        // returns the world seed.
+        // Returns the world seed.
         // -->
         registerTag("seed", new TagRunnable() {
             @Override
@@ -492,7 +492,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.difficulty>
         // @returns Element
         // @description
-        // returns the name of the difficulty level.
+        // Returns the name of the difficulty level.
         // -->
         registerTag("difficulty", new TagRunnable() {
             @Override
@@ -599,7 +599,7 @@ public class dWorld implements dObject, Adjustable {
                 // @attribute <w@world.time.period>
                 // @returns Element
                 // @description
-                // returns the time as 'day', 'night', 'dawn', or 'dusk'.
+                // Returns the time as 'day', 'night', 'dawn', or 'dusk'.
                 // -->
                 else if (attribute.startsWith("period")) {
 
@@ -631,7 +631,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.moon_phase>
         // @returns Element(Number)
         // @description
-        // returns the current phase of the moon, as an integer from 1 to 8.
+        // Returns the current phase of the moon, as an integer from 1 to 8.
         // -->
         registerTag("moon_phase", new TagRunnable() {
             @Override
@@ -650,7 +650,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.has_storm>
         // @returns Element(Boolean)
         // @description
-        // returns whether there is currently a storm in this world.
+        // Returns whether there is currently a storm in this world.
         // -->
         registerTag("has_storm", new TagRunnable() {
             @Override

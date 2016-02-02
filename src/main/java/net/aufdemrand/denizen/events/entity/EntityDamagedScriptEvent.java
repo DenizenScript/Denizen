@@ -94,13 +94,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 CoreUtilities.getXthArg(2, lower).equals("by") ? CoreUtilities.getXthArg(3, lower) : "";
         String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
 
-        if (attacker.length() > 0) {
+        if (!attacker.isEmpty()) {
             if (damager != null) {
-                boolean projectileMatched = false;
-                if (projectile != null) {
-                    projectileMatched = projectile.matchesEntity(attacker);
-                }
-                if (!projectileMatched && !damager.matchesEntity(attacker) && !cause.asString().equals(attacker)) {
+                if (!cause.asString().equals(attacker) && !tryEntity(projectile, attacker) && !tryEntity(damager, attacker)) {
                     return false;
                 }
             }
@@ -110,10 +106,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        if (target.length() > 0) {
-            if (!entity.matchesEntity(target)) {
-                return false;
-            }
+
+        if (!tryEntity(entity, target)) {
+            return false;
         }
 
         if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {

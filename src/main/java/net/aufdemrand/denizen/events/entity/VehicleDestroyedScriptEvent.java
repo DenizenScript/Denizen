@@ -62,15 +62,20 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         String cmd = CoreUtilities.getXthArg(1, lower);
         String veh = cmd.equals("destroyed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
         String ent = cmd.equals("destroys") ? CoreUtilities.getXthArg(0, lower) : "";
-        if (!vehicle.matchesEntity(veh)) {
+
+        if (!tryEntity(vehicle, veh)) {
             return false;
         }
-        if (ent.length() > 0) {
-            if (entity == null || !entity.matchesEntity(ent)) {
-                return false;
-            }
+
+        if (ent.length() > 0 && (entity == null || !tryEntity(entity, ent))) {
+            return false;
         }
-        return runInCheck(scriptContainer, s, lower, vehicle.getLocation());
+
+        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -679,7 +679,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.chat_history[#]>
         // @returns Element
         // @description
-        // returns the last thing the player said.
+        // Returns the last thing the player said.
         // If a number is specified, returns an earlier thing the player said.
         // Works with offline players.
         // -->
@@ -704,7 +704,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.flag[<flag_name>]>
         // @returns Flag dList
         // @description
-        // returns the specified flag from the player.
+        // Returns the specified flag from the player.
         // Works with offline players.
         // -->
         if (attribute.startsWith("flag") && attribute.hasContext(1)) {
@@ -730,7 +730,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_flag[<flag_name>]>
         // @returns Element(Boolean)
         // @description
-        // returns true if the Player has the specified flag, otherwise returns false.
+        // Returns true if the Player has the specified flag, otherwise returns false.
         // Works with offline players.
         // -->
         if (attribute.startsWith("has_flag") && attribute.hasContext(1)) {
@@ -802,7 +802,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.money>
         // @returns Element(Decimal)
         // @description
-        // returns the amount of money the player has with the registered Economy system.
+        // Returns the amount of money the player has with the registered Economy system.
         // May work offline depending on economy plugin.
         // -->
 
@@ -813,7 +813,7 @@ public class dPlayer implements dObject, Adjustable {
                 // @attribute <p@player.money.currency_singular>
                 // @returns Element
                 // @description
-                // returns the name of a single piece of currency - EG: Dollar
+                // Returns the name of a single piece of currency - EG: Dollar
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency_singular")) {
@@ -825,7 +825,7 @@ public class dPlayer implements dObject, Adjustable {
                 // @attribute <p@player.money.currency>
                 // @returns Element
                 // @description
-                // returns the name of multiple pieces of currency - EG: Dollars
+                // Returns the name of multiple pieces of currency - EG: Dollars
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency")) {
@@ -1030,7 +1030,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.save_name>
         // @returns Element
         // @description
-        // returns the ID used to save the player in Denizen's saves.yml file.
+        // Returns the ID used to save the player in Denizen's saves.yml file.
         // Works with offline players.
         // -->
         if (attribute.startsWith("save_name")) {
@@ -1074,7 +1074,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.first_played>
         // @returns Duration
         // @description
-        // returns the millisecond time of when the player first logged on to this server.
+        // Returns the millisecond time of when the player first logged on to this server.
         // Works with offline players.
         // -->
         if (attribute.startsWith("first_played")) {
@@ -1091,7 +1091,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_played_before>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player has played before.
+        // Returns whether the player has played before.
         // Works with offline players.
         // Note: This will just always return true.
         // -->
@@ -1104,7 +1104,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.health.is_scaled>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player's health bar is currently being scaled.
+        // Returns whether the player's health bar is currently being scaled.
         // -->
         if (attribute.startsWith("health.is_scaled")) {
             return new Element(getPlayerEntity().isHealthScaled())
@@ -1115,7 +1115,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.health.scale>
         // @returns Element(Decimal)
         // @description
-        // returns the current scale for the player's health bar
+        // Returns the current scale for the player's health bar
         // -->
         if (attribute.startsWith("health.scale")) {
             return new Element(getPlayerEntity().getHealthScale())
@@ -1144,7 +1144,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_banned>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is banned.
+        // Returns whether the player is banned.
         // -->
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
@@ -1161,7 +1161,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_online>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently online.
+        // Returns whether the player is currently online.
         // Works with offline players (returns false in that case).
         // -->
         if (attribute.startsWith("is_online")) {
@@ -1172,7 +1172,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_op>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is a full server operator.
+        // Returns whether the player is a full server operator.
         // Works with offline players.
         // -->
         if (attribute.startsWith("is_op")) {
@@ -1184,7 +1184,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_whitelisted>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is whitelisted.
+        // Returns whether the player is whitelisted.
         // Works with offline players.
         // -->
         if (attribute.startsWith("is_whitelisted")) {
@@ -1196,7 +1196,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.last_played>
         // @returns Duration
         // @description
-        // returns the datestamp of when the player was last seen in duration.
+        // Returns the datestamp of when the player was last seen in duration.
         // Works with offline players.
         // -->
         if (attribute.startsWith("last_played")) {
@@ -1221,7 +1221,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.groups>
         // @returns dList
         // @description
-        // returns a list of all groups the player is in.
+        // Returns a list of all groups the player is in.
         // May work with offline players, depending on permission plugin.
         // -->
         if (attribute.startsWith("groups")) {
@@ -1254,7 +1254,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.ban_info.expiration>
             // @returns Duration
             // @description
-            // returns the expiration of the player's ban, if they are banned.
+            // Returns the expiration of the player's ban, if they are banned.
             // -->
             if (attribute.startsWith("expiration")) {
                 return new Duration(ban.getExpiration().getTime() / 50)
@@ -1264,7 +1264,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.ban_info.reason>
             // @returns Element
             // @description
-            // returns the reason for the player's ban, if they are banned.
+            // Returns the reason for the player's ban, if they are banned.
             // -->
             else if (attribute.startsWith("reason")) {
                 return new Element(ban.getReason())
@@ -1274,7 +1274,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.ban_info.created>
             // @returns Duration
             // @description
-            // returns when the player's ban was created, if they are banned.
+            // Returns when the player's ban was created, if they are banned.
             // -->
             else if (attribute.startsWith("created")) {
                 return new Duration(ban.getCreated().getTime() / 50)
@@ -1287,7 +1287,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.in_group[<group_name>]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is in the specified group (requires the player to be online)
+        // Returns whether the player is in the specified group (requires the player to be online)
         // -->
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
@@ -1303,7 +1303,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.in_group[<group_name>].global>
             // @returns Element(Boolean)
             // @description
-            // returns whether the player has the group with no regard to the
+            // Returns whether the player has the group with no regard to the
             // player's current world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
@@ -1319,7 +1319,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.in_group[<group_name>].world>
             // @returns Element(Boolean)
             // @description
-            // returns whether the player has the group in regards to the
+            // Returns whether the player has the group in regards to the
             // player's current world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
@@ -1342,7 +1342,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_permission[permission.node]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player has the specified node.
+        // Returns whether the player has the specified node.
         // (Requires the player to be online)
         // -->
         if (attribute.startsWith("permission")
@@ -1354,7 +1354,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.has_permission[permission.node].global>
             // @returns Element(Boolean)
             // @description
-            // returns whether the player has the specified node, regardless of world.
+            // Returns whether the player has the specified node, regardless of world.
             // (Works with offline players)
             // (Note: this may or may not be functional with your permissions system.)
             // -->
@@ -1376,7 +1376,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.has_permission[permission.node].world[<world name>]>
             // @returns Element(Boolean)
             // @description
-            // returns whether the player has the specified node in regards to the
+            // Returns whether the player has the specified node in regards to the
             // specified world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
@@ -1410,7 +1410,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.inventory>
         // @returns dInventory
         // @description
-        // returns a dInventory of the player's current inventory.
+        // Returns a dInventory of the player's current inventory.
         // Works with offline players.
         // -->
         if (attribute.startsWith("inventory")) {
@@ -1466,7 +1466,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.item_in_hand.slot>
         // @returns Element(Number)
         // @description
-        // returns the slot location of the player's selected item.
+        // Returns the slot location of the player's selected item.
         // -->
         if (attribute.startsWith("item_in_hand.slot")) {
             return new Element(getPlayerEntity().getInventory().getHeldItemSlot() + 1)
@@ -1557,7 +1557,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.selected_npc>
         // @returns dNPC
         // @description
-        // returns the dNPC that the player currently has selected with
+        // Returns the dNPC that the player currently has selected with
         // '/npc select', null if no player selected.
         // -->
         if (attribute.startsWith("selected_npc")) {
@@ -1575,7 +1575,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.entity>
         // @returns dEntity
         // @description
-        // returns the dEntity object of the player.
+        // Returns the dEntity object of the player.
         // (Note: This should never actually be needed. <p@player> is considered a valid dEntity by script commands.)
         // -->
         if (attribute.startsWith("entity") && !attribute.startsWith("entity_")) {
@@ -1592,7 +1592,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.ip>
         // @returns Element
         // @description
-        // returns the player's IP address host name.
+        // Returns the player's IP address host name.
         // -->
         if (attribute.startsWith("ip") ||
                 attribute.startsWith("host_name")) {
@@ -1602,7 +1602,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.ip.address>
             // @returns Element
             // @description
-            // returns the player's IP address.
+            // Returns the player's IP address.
             // -->
             if (attribute.startsWith("address")) {
                 return new Element(getPlayerEntity().getAddress().toString())
@@ -1617,7 +1617,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.name.display>
         // @returns Element
         // @description
-        // returns the display name of the player, which may contain
+        // Returns the display name of the player, which may contain
         // prefixes and suffixes, colors, etc.
         // -->
         if (attribute.startsWith("name.display")) {
@@ -1629,7 +1629,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.name.list>
         // @returns Element
         // @description
-        // returns the name of the player as shown in the player list.
+        // Returns the name of the player as shown in the player list.
         // -->
         if (attribute.startsWith("name.list")) {
             return new Element(getPlayerEntity().getPlayerListName())
@@ -1651,7 +1651,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.name>
         // @returns Element
         // @description
-        // returns the name of the player.
+        // Returns the name of the player.
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName()).getAttribute(attribute.fulfill(1));
@@ -1661,7 +1661,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_finished[<script>]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player has finished the specified script.
+        // Returns whether the player has finished the specified script.
         // -->
         if (attribute.startsWith("has_finished")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
@@ -1677,7 +1677,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.has_failed[<script>]>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player has failed the specified script.
+        // Returns whether the player has failed the specified script.
         // -->
         if (attribute.startsWith("has_failed")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
@@ -1697,7 +1697,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.compass_target>
         // @returns dLocation
         // @description
-        // returns the location of the player's compass target.
+        // Returns the location of the player's compass target.
         // -->
         if (attribute.startsWith("compass_target")) {
             Location target = getPlayerEntity().getCompassTarget();
@@ -1729,7 +1729,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.can_fly>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is allowed to fly.
+        // Returns whether the player is allowed to fly.
         // @mechanism dPlayer.can_fly
         // -->
         if (attribute.startsWith("can_fly") || attribute.startsWith("allowed_flight")) {
@@ -1741,7 +1741,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.fly_speed>
         // @returns Element(Decimal)
         // @description
-        // returns the speed the player can fly at.
+        // Returns the speed the player can fly at.
         // -->
         if (attribute.startsWith("fly_speed")) {
             return new Element(getPlayerEntity().getFlySpeed())
@@ -1752,7 +1752,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.food_level.formatted>
         // @returns Element
         // @description
-        // returns a 'formatted' value of the player's current food level.
+        // Returns a 'formatted' value of the player's current food level.
         // May be 'starving', 'famished', 'parched, 'hungry' or 'healthy'.
         // -->
         if (attribute.startsWith("food_level.formatted")) {
@@ -1782,7 +1782,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.saturation>
         // @returns Element(Decimal)
         // @description
-        // returns the current saturation of the player.
+        // Returns the current saturation of the player.
         // -->
         if (attribute.startsWith("saturation")) {
             return new Element(getPlayerEntity().getSaturation())
@@ -1793,7 +1793,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.food_level>
         // @returns Element(Number)
         // @description
-        // returns the current food level of the player.
+        // Returns the current food level of the player.
         // -->
         if (attribute.startsWith("food_level")) {
             return new Element(getPlayerEntity().getFoodLevel())
@@ -1804,7 +1804,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.gamemode>
         // @returns Element
         // @description
-        // returns the name of the gamemode the player is currently set to.
+        // Returns the name of the gamemode the player is currently set to.
         // -->
         if (attribute.startsWith("gamemode")) {
             attribute = attribute.fulfill(1);
@@ -1812,7 +1812,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.gamemode.id>
             // @returns Element(Number)
             // @description
-            // returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
+            // Returns the gamemode ID of the player. 0 = survival, 1 = creative, 2 = adventure, 3 = spectator
             // -->
             if (attribute.startsWith("id")) {
                 return new Element(getPlayerEntity().getGameMode().getValue())
@@ -1826,7 +1826,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_blocking>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently blocking.
+        // Returns whether the player is currently blocking.
         // -->
         if (attribute.startsWith("is_blocking")) {
             return new Element(getPlayerEntity().isBlocking())
@@ -1837,7 +1837,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.ping>
         // @returns Element(Number)
         // @description
-        // returns the player's current ping.
+        // Returns the player's current ping.
         // -->
         if (attribute.startsWith("ping")) {
             return new Element(((CraftPlayer) getPlayerEntity()).getHandle().ping)
@@ -1848,7 +1848,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_flying>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently flying.
+        // Returns whether the player is currently flying.
         // -->
         if (attribute.startsWith("is_flying")) {
             return new Element(getPlayerEntity().isFlying())
@@ -1859,7 +1859,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_sleeping>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently sleeping.
+        // Returns whether the player is currently sleeping.
         // -->
         if (attribute.startsWith("is_sleeping")) {
             return new Element(getPlayerEntity().isSleeping())
@@ -1870,7 +1870,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_sneaking>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently sneaking.
+        // Returns whether the player is currently sneaking.
         // -->
         if (attribute.startsWith("is_sneaking")) {
             return new Element(getPlayerEntity().isSneaking())
@@ -1881,7 +1881,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.is_sprinting>
         // @returns Element(Boolean)
         // @description
-        // returns whether the player is currently sprinting.
+        // Returns whether the player is currently sprinting.
         // -->
         if (attribute.startsWith("is_sprinting")) {
             return new Element(getPlayerEntity().isSprinting())
@@ -1940,7 +1940,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.time_asleep>
         // @returns Duration
         // @description
-        // returns the time the player has been asleep.
+        // Returns the time the player has been asleep.
         // -->
         if (attribute.startsWith("time_asleep")) {
             return new Duration(getPlayerEntity().getSleepTicks() / 20)
@@ -1951,7 +1951,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.time>
         // @returns Element(Number)
         // @description
-        // returns the time the player is currently experiencing. This time could differ from
+        // Returns the time the player is currently experiencing. This time could differ from
         // the time that the rest of the world is currently experiencing if a 'time' or 'freeze_time'
         // mechanism is being used on the player.
         // -->
@@ -1964,7 +1964,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.walk_speed>
         // @returns Element(Decimal)
         // @description
-        // returns the speed the player can walk at.
+        // Returns the speed the player can walk at.
         // -->
         if (attribute.startsWith("walk_speed")) {
             return new Element(getPlayerEntity().getWalkSpeed())
@@ -1975,7 +1975,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.weather>
         // @returns Element
         // @description
-        // returns the type of weather the player is experiencing. This will be different
+        // Returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if
         // the weather is currently being forced onto the player.
         // Returns null if the player does not currently have any forced weather.
@@ -1994,7 +1994,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.xp.level>
         // @returns Element(Number)
         // @description
-        // returns the number of XP levels the player has.
+        // Returns the number of XP levels the player has.
         // -->
         if (attribute.startsWith("xp.level")) {
             return new Element(getPlayerEntity().getLevel())
@@ -2005,7 +2005,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.xp.to_next_level>
         // @returns Element(Number)
         // @description
-        // returns the amount of XP needed to get to the next level.
+        // Returns the amount of XP needed to get to the next level.
         // -->
         if (attribute.startsWith("xp.to_next_level")) {
             return new Element(getPlayerEntity().getExpToLevel())
@@ -2016,7 +2016,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.xp.total>
         // @returns Element(Number)
         // @description
-        // returns the total amount of experience points.
+        // Returns the total amount of experience points.
         // -->
         if (attribute.startsWith("xp.total")) {
             return new Element(getPlayerEntity().getTotalExperience())
@@ -2027,7 +2027,7 @@ public class dPlayer implements dObject, Adjustable {
         // @attribute <p@player.xp>
         // @returns Element(Decimal)
         // @description
-        // returns the percentage of experience points to the next level.
+        // Returns the percentage of experience points to the next level.
         // -->
         if (attribute.startsWith("xp")) {
             return new Element(getPlayerEntity().getExp() * 100)
@@ -2484,7 +2484,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("show_boss_bar")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isInt()) {
                     BossHealthBar.displayTextBar(split[1], getPlayerEntity(), new Element(split[0]).asInt());
@@ -2512,7 +2512,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("fake_experience")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
@@ -2550,7 +2550,7 @@ public class dPlayer implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("fake_health")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
@@ -2591,7 +2591,7 @@ public class dPlayer implements dObject, Adjustable {
         // - adjust <player> fake_equipment:<player>|head|i@jack_o_lantern
         // -->
         if (mechanism.matches("fake_equipment")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
@@ -2693,7 +2693,7 @@ public class dPlayer implements dObject, Adjustable {
         // - adjust <player> tab_list_info:<header>|<footer>
         // -->
         if (mechanism.matches("tab_list_info")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0) {
                     String header = split[0];
@@ -2720,7 +2720,7 @@ public class dPlayer implements dObject, Adjustable {
         // Shows the player fake lines on a sign.
         // -->
         if (mechanism.matches("sign_update")) {
-            if (value.asString().length() > 0) {
+            if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
                     dList lines = dList.valueOf(split[1]);
@@ -2812,6 +2812,27 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("is_banned") && mechanism.requireBoolean()) {
             getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name money
+        // @input Element(Number)
+        // @description
+        // Set the amount of money a player has with the linked economy plugin.
+        // (Only if supported by the registered Economy system.)
+        // @tags
+        // <p@player.money>
+        // -->
+        if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
+            double bal = Depends.economy.getBalance(getOfflinePlayer());
+            double goal = value.asDouble();
+            if (goal > bal) {
+                Depends.economy.depositPlayer(getOfflinePlayer(), goal - bal);
+            }
+            else if (bal > goal) {
+                Depends.economy.withdrawPlayer(getOfflinePlayer(), bal - goal);
+            }
         }
 
         // Iterate through this object's properties' mechanisms

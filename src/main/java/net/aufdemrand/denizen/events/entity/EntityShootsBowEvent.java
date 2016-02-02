@@ -75,7 +75,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
         String attacker = CoreUtilities.getXthArg(0, lower);
         String item = CoreUtilities.getXthArg(2, lower);
 
-        if (!entity.matchesEntity(attacker)) {
+        if (!tryEntity(entity, attacker)) {
             return false;
         }
 
@@ -83,7 +83,12 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
+
     }
 
     @Override

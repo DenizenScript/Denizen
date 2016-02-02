@@ -50,7 +50,16 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return entity.matchesEntity(CoreUtilities.getXthArg(0, lower)) && runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+            return false;
+        }
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
 
     }
 

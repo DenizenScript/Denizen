@@ -47,7 +47,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public dEntity entity;
     public dLocation location;
     private dMaterial material;
-    public dList cuboids;
+    private dList cuboids;
     public EntityInteractEvent event;
 
     @Override
@@ -59,12 +59,12 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
 
-        if (!entity.matchesEntity(CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(2, lower);
-        if (!tryMaterial(material, mat)) {
+        String mat = CoreUtilities.getXthArg(3, lower);
+        if (!tryMaterial(material, CoreUtilities.getXthArg(2, lower))) {
             return false;
         }
 
@@ -110,6 +110,10 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favour of context.location.cuboids
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -120,6 +124,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        cuboids = new dList();
         for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
             cuboids.add(cuboid.identifySimple());
         }
