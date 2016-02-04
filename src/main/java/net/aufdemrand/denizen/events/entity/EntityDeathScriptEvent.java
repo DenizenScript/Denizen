@@ -34,7 +34,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on [^\s]+ (death|dies)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    //
     // @Triggers when an entity dies.
     //
     // @Context

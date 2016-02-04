@@ -35,6 +35,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     // <entity> kills entity (in <area>)
     // <entity> kills <entity> (in <area>)
     //
+    // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Cancellable true
     //
     // @Triggers when an entity is killed.
