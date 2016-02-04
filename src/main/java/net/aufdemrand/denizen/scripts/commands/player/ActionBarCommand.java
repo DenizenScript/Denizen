@@ -15,8 +15,6 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
 
-import java.text.Format;
-import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
 
