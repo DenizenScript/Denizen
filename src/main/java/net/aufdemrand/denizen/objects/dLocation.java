@@ -621,9 +621,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @mechanism dLocation.patterns
         // @description
         // Lists the patterns of the banner at this location in the form "li@COLOR/PATTERN|COLOR/PATTERN" etc.
-        // TODO: Local meta for these links
-        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
-        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // Available colors: black, blue, brown, cyan, gray, green, light_blue, lime, magenta, orange, pink
+        // purple, red, silver, white, and yellow.
+        // Available patterns: base, border, bricks, circle_middle, creeper, cross, curly_border, diagonal_left,
+        // diagonal_left_mirror, diagonal_right, diagonal_right_mirror, flower, gradient, gradient_up, half_horizontal,
+        // half_horizontal_mirror, half_vertical, half_vertical_mirror, mojang, rhombus_middle, skull,
+        // square_bottom_left, square_bottom_right, square_top_left, square_top_right, straight_cross, stripe_bottom,
+        // stripe_center, stripe_downleft, stripe_downright, stripe_left, stripe_middle, stripe_right, stripe_small,
+        // stripe_top, triangle_bottom, triangle_top, triangles_bottom, and triangles_top
         // -->
         if (attribute.startsWith("patterns")) {
             dList list = new dList();
