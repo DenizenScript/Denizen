@@ -35,10 +35,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Button;
 import org.bukkit.material.Lever;
 import org.bukkit.material.MaterialData;
-import org.bukkit.util.*;
+import org.bukkit.util.BlockIterator;
 
 import java.util.*;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1289,11 +1288,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     && attribute.hasContext(2)) {
                 dList ent_list = new dList();
                 if (attribute.hasContext(1)) {
-                    for (String ent : dList.valueOf(attribute.getContext(1))) {
-                        if (dEntity.matches(ent)) {
-                            ent_list.add(ent.toUpperCase());
-                        }
-                    }
+                    ent_list = dList.valueOf(attribute.getContext(1));
                 }
                 ArrayList<dEntity> found = new ArrayList<dEntity>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
@@ -1302,10 +1297,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     if (Utilities.checkLocation(this, entity.getLocation(), radius)) {
                         dEntity current = new dEntity(entity);
                         if (!ent_list.isEmpty()) {
-                            String type = current.getEntityType().getName();
                             for (String ent : ent_list) {
-                                if ((type.equals(ent) ||
-                                        current.identify().equalsIgnoreCase(ent)) && entity.isValid()) {
+                                if (current.comparedTo(ent)) {
                                     found.add(current);
                                     break;
                                 }
@@ -1372,7 +1365,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             List<dLocation> locs = PathFinder.getPath(this, two);
             dList list = new dList();
-            for (dLocation loc: locs) {
+            for (dLocation loc : locs) {
                 list.add(loc.identify());
             }
             return list.getAttribute(attribute.fulfill(1));
@@ -1412,7 +1405,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.chunk>
         // @returns dChunk
         // @description
-        // returns the chunk that this location belongs to.
+        // Returns the chunk that this location belongs to.
         // -->
         if (attribute.startsWith("chunk") ||
                 attribute.startsWith("get_chunk")) {
@@ -1423,7 +1416,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.raw>
         // @returns dLocation
         // @description
-        // returns the raw representation of this location,
+        // Returns the raw representation of this location,
         //         ignoring any notables it might match.
         // -->
         if (attribute.startsWith("raw")) {
@@ -1899,10 +1892,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockFace face = BlockFace.SELF;
             MaterialData data = getBlock().getState().getData();
             if (data instanceof Lever) {
-                face = ((Lever)data).getAttachedFace();
+                face = ((Lever) data).getAttachedFace();
             }
             else if (data instanceof Button) {
-                face = ((Button)data).getAttachedFace();
+                face = ((Button) data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
                 return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));

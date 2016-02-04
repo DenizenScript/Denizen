@@ -54,7 +54,8 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String counts = CoreUtilities.getXthArg(3, lower);
-        if (CoreUtilities.getXthArg(2, lower).equals("into") && counts.length() > 0) {
+
+        if (CoreUtilities.xthArgEquals(2, lower, "into") && !counts.isEmpty()) {
             try {
                 if (Integer.parseInt(counts) != count) {
                     return false;
@@ -64,7 +65,12 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
                 return false;
             }
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+
+        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

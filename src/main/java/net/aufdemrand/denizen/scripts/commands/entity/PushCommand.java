@@ -66,8 +66,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
             }
 
             else if (!scriptEntry.hasObject("script")
-                    && arg.matchesArgumentType(dScript.class)) {
-
+                    && (arg.matchesArgumentType(dScript.class)
+                    || arg.matchesPrefix("script"))) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
@@ -95,6 +95,10 @@ public class PushCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("no_damage")
                     && arg.matches("no_damage")) {
                 scriptEntry.addObject("no_damage", new Element(true));
+            }
+
+            else if (arg.matchesPrefix("def", "define", "context")) {
+                scriptEntry.addObject("definitions", arg.asType(dList.class));
             }
 
             else {
@@ -158,12 +162,12 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final dScript script = (dScript) scriptEntry.getObject("script");
+        final dList definitions = (dList) scriptEntry.getObject("definitions");
 
         final double speed = scriptEntry.getElement("speed").asDouble();
         final int maxTicks = ((Duration) scriptEntry.getObject("duration")).getTicksAsInt();
 
         Element force_along = scriptEntry.getElement("force_along");
-
         Element precision = scriptEntry.getElement("precision");
 
         // Report to dB
@@ -176,7 +180,8 @@ public class PushCommand extends AbstractCommand implements Holdable {
                 force_along.debug() +
                 precision.debug() +
                 (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
-                (no_damage ? aH.debugObj("no_damage", "true") : ""));
+                (no_damage ? aH.debugObj("no_damage", "true") : "") +
+                (definitions != null ? definitions.debug() : ""));
 
         final boolean forceAlong = force_along.asBoolean();
 
@@ -280,6 +285,23 @@ public class PushCommand extends AbstractCommand implements Holdable {
                         }
                         queue.addDefinition("pushed_entities", entityList.toString());
                         queue.addDefinition("last_entity", lastEntity.identify());
+                        if (definitions != null) {
+                            int x = 1;
+                            String[] definition_names = null;
+                            try {
+                                definition_names = script.getContainer().getString("definitions").split("\\|");
+                            }
+                            catch (Exception e) {
+                                // TODO: less lazy handling
+                            }
+                            for (String definition : definitions) {
+                                String name = definition_names != null && definition_names.length >= x ?
+                                        definition_names[x - 1].trim() : String.valueOf(x);
+                                queue.addDefinition(name, definition);
+                                dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
+                                x++;
+                            }
+                        }
                         queue.start();
                     }
                     scriptEntry.setFinished(true);

@@ -22,8 +22,8 @@ public class KickCommand extends AbstractCommand {
             if (arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());
             }
-            else if (arg.matchesPrefix("targets", "target")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+            else if (arg.matchesPrefix("targets", "target", "players")
+                    || arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
         }

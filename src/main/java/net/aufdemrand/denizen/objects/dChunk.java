@@ -172,7 +172,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.add[<#>,<#>]>
         // @returns dChunk
         // @description
-        // returns the chunk with the specified coordinates added to it.
+        // Returns the chunk with the specified coordinates added to it.
         // -->
         registerTag("add", new TagRunnable() {
             @Override
@@ -199,7 +199,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.sub[<#>,<#>]>
         // @returns dChunk
         // @description
-        // returns the chunk with the specified coordinates subtracted from it.
+        // Returns the chunk with the specified coordinates subtracted from it.
         // -->
         registerTag("sub", new TagRunnable() {
             @Override
@@ -226,7 +226,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.is_loaded>
         // @returns Element(Boolean)
         // @description
-        // returns true if the chunk is currently loaded into memory.
+        // Returns true if the chunk is currently loaded into memory.
         // -->
         registerTag("is_loaded", new TagRunnable() {
             @Override
@@ -239,7 +239,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.x>
         // @returns Element(Number)
         // @description
-        // returns the x coordinate of the chunk.
+        // Returns the x coordinate of the chunk.
         // -->
         registerTag("x", new TagRunnable() {
             @Override
@@ -252,7 +252,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.z>
         // @returns Element(Number)
         // @description
-        // returns the z coordinate of the chunk.
+        // Returns the z coordinate of the chunk.
         // -->
         registerTag("z", new TagRunnable() {
             @Override
@@ -265,7 +265,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.world>
         // @returns dWorld
         // @description
-        // returns the world associated with the chunk.
+        // Returns the world associated with the chunk.
         // -->
         registerTag("world", new TagRunnable() {
             @Override
@@ -278,7 +278,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.cuboid>
         // @returns dCuboid
         // @description
-        // returns a cuboid of this chunk.
+        // Returns a cuboid of this chunk.
         // -->
         registerTag("cuboid", new TagRunnable() {
             @Override
@@ -294,7 +294,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.entities>
         // @returns dList(dEntity)
         // @description
-        // returns a list of entities in the chunk.
+        // Returns a list of entities in the chunk.
         // -->
         registerTag("entities", new TagRunnable() {
             @Override
@@ -312,7 +312,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.living_entities>
         // @returns dList(dEntity)
         // @description
-        // returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
+        // Returns a list of living entities in the chunk. This includes Players, mobs, NPCs, etc., but excludes
         // dropped items, experience orbs, etc.
         // -->
         registerTag("living_entities", new TagRunnable() {
@@ -333,7 +333,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.players>
         // @returns dList(dPlayer)
         // @description
-        // returns a list of players in the chunk.
+        // Returns a list of players in the chunk.
         // -->
         registerTag("players", new TagRunnable() {
             @Override
@@ -353,7 +353,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.height_map>
         // @returns dList(Element)
         // @description
-        // returns a list of the height of each block in the chunk.
+        // Returns a list of the height of each block in the chunk.
         // -->
         registerTag("height_map", new TagRunnable() {
             @Override
@@ -370,7 +370,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.average_height>
         // @returns Element(Decimal)
         // @description
-        // returns the average height of the blocks in the chunk.
+        // Returns the average height of the blocks in the chunk.
         // -->
         registerTag("average_height", new TagRunnable() {
             @Override
@@ -411,7 +411,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.surface_blocks>
         // @returns dList(dLocation)
         // @description
-        // returns a list of the highest non-air surface blocks in the chunk.
+        // Returns a list of the highest non-air surface blocks in the chunk.
         // -->
         registerTag("surface_blocks", new TagRunnable() {
             @Override
@@ -432,7 +432,7 @@ public class dChunk implements dObject, Adjustable {
         // @attribute <ch@chunk.spawn_slimes>
         // @returns dList(dLocation)
         // @description
-        // returns whether the chunk is a specially located 'slime spawner' chunk.
+        // Returns whether the chunk is a specially located 'slime spawner' chunk.
         // -->
         registerTag("spawn_slimes", new TagRunnable() {
             @Override

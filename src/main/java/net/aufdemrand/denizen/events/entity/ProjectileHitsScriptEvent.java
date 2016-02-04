@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -75,24 +76,27 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        String pTest = cmd.equals("hits") ? CoreUtilities.getXthArg(0, lower) :
-                CoreUtilities.getXthArg(3, lower).equals("with") ? CoreUtilities.getXthArg(4, lower) : "";
+        String pTest = "";
 
-        if (pTest.length() > 0 && !projectile.matchesEntity(pTest)) {
+        if (cmd.equals("hits")) {
+            pTest = CoreUtilities.getXthArg(0, lower);
+        }
+        else if (cmd.equals("shoots") && CoreUtilities.xthArgEquals(3, lower, "with")) {
+            pTest = CoreUtilities.getXthArg(4, lower);
+        }
+        if (!pTest.isEmpty() && !pTest.equals("projectile") && !tryEntity(projectile, pTest)) {
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(2, lower);
-        if (!tryMaterial(material, mat)) {
+        if (!tryMaterial(material, CoreUtilities.getXthArg(2, lower))) {
             return false;
         }
 
-        String sTest = cmd.equals("shoots") ? CoreUtilities.getXthArg(0, lower) : "";
-        if (shooter != null && sTest.length() > 0 && !shooter.matchesEntity(sTest)) {
+        if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
+        return true;
 
-        return runInCheck(scriptContainer, s, lower, location);
     }
 
 

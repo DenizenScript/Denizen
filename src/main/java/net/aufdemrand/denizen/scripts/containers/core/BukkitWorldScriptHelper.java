@@ -146,6 +146,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // <item> crafted
     // <material> crafted
     //
+    // @Regex ^[^\s]+ crafted$
+    //
     // @Triggers when an item's recipe is correctly formed.
     // @Context
     // <context.inventory> returns the dInventory of the crafting inventory.
@@ -261,6 +263,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player (<click type>) clicks (<material>) (in <inventory type>) (with <item>)
     // player (<click type>) clicks (<item>) (in <inventory type>) (with <material>)
     // player (<click type>) clicks (<material>) (in <inventory type>) (with <material>)
+    //
+    // @Regex ^player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
@@ -444,6 +448,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player edits book
     // player signs book
     //
+    // @Regex ^player (edits|signs) book$
+    //
     // @Triggers when a player edits or signs a book.
     // @Context
     // <context.title> returns the name of the book, if any.
@@ -509,6 +515,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
+    //
+    // @Regex ^player ((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))$
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context

@@ -51,8 +51,8 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String veh = CoreUtilities.getXthArg(0, lower);
-        if (!vehicle.matchesEntity(veh)) {
+
+        if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 

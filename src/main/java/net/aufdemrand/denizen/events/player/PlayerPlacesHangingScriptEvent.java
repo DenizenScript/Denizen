@@ -59,7 +59,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String hangCheck = CoreUtilities.getXthArg(2, lower);
-        if (!hanging.matchesEntity(hangCheck)) {
+        if (!tryEntity(hanging, hangCheck)) {
             return false;
         }
 

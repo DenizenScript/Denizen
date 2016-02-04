@@ -68,26 +68,21 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!tryMaterial(material, mat)) {
             return false;
         }
-
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;
         }
-
         if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {
             return false;
         }
         // Deprecated in favor of with: format
-        if (CoreUtilities.xthArgEquals(3, lower, "with")) {
-            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(4, lower))) {
-                return false;
-            }
+        if (CoreUtilities.xthArgEquals(3, lower, "with")
+                && !tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(4, lower))) {
+            return false;
         }
-
         return true;
     }
 
