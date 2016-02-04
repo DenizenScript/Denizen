@@ -22,6 +22,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -2732,6 +2733,52 @@ public class dPlayer implements dObject, Adjustable {
             }
             else {
                 dB.echoError("Must specify a valid location and at least one sign line!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name banner_update
+        // @input dLocation|Element(|dList)
+        // @description
+        // Shows the player a fake base color and, optionally, patterns on a banner. Input must be
+        // in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // -->
+        if (mechanism.matches("banner_update")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]");
+                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
+                if (split.length > 2) {
+                    List<String> splitList;
+                    for (int i = 2; i > split.length; i++) {
+                        String string = split[i];
+                        try {
+                            splitList = CoreUtilities.split(string, '/', 2);
+                            patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
+                                    PatternType.valueOf(splitList.get(1).toUpperCase())));
+                        }
+                        catch (Exception e) {
+                            dB.echoError("Could not apply pattern to banner: " + string);
+                        }
+                    }
+                }
+                if (dLocation.matches(split[0]) && split.length > 1) {
+                    dLocation location = dLocation.valueOf(split[0]);
+                    DyeColor base;
+                    try {
+                        base = DyeColor.valueOf(split[1].toUpperCase());
+                    }
+                    catch (Exception e) {
+                        dB.echoError("Could not apply base color to banner: " + split[1]);
+                        return;
+                    }
+                    BannerUpdate.updateBanner(getPlayerEntity(), location, base, patterns);
+                }
+                else {
+                    dB.echoError("Must specify a valid location and a base color!");
+                }
             }
         }
 
