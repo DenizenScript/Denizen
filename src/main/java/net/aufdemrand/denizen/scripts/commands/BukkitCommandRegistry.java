@@ -2359,7 +2359,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - queue <server.flag[OtherQueue]> resume
         // -->
         registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]", 1);
+                "QUEUE", "queue (<queue>) [clear/stop/pause/resume/delay:<#>]", 1);
 
 
         // <--[command]
