@@ -1137,7 +1137,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name FakeItem
-        // @Syntax fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Syntax fakeitem [<item>|...] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
         // @Stable stable
         // @Short Show a fake item in a player's inventory.

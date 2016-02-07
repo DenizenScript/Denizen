@@ -46,8 +46,8 @@ public class FakeItemCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("item")
-                    && arg.matchesArgumentType(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(dItem.class));
+                    && arg.matchesArgumentList(dItem.class)) {
+                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class));
             }
 
             else if (!scriptEntry.hasObject("players")
@@ -83,33 +83,45 @@ public class FakeItemCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dItem item = scriptEntry.getdObject("item");
-        final Element slot = scriptEntry.getElement("slot");
+        List<dItem> items = (List<dItem>) scriptEntry.getObject("item");
+        final Element elSlot = scriptEntry.getElement("slot");
         Duration duration = scriptEntry.getdObject("duration");
         final List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
         final Element player_only = scriptEntry.getElement("player_only");
 
-        dB.report(scriptEntry, getName(), item.debug() + slot.debug() + duration.debug()
+        dB.report(scriptEntry, getName(), aH.debugList("items", items) + elSlot.debug() + duration.debug()
                 + aH.debugList("players", players) + player_only.debug());
 
-        net.minecraft.server.v1_8_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+        int slot = elSlot.asInt() - 1;
 
-        for (dPlayer player : players) {
-            setSlot((CraftPlayer) player.getPlayerEntity(), slot.asInt() - 1, itemStack, player_only.asBoolean());
-        }
+        for (dItem item : items) {
+            if (item == null) {
+                slot++;
+                continue;
+            }
 
-        if (duration.getSeconds() > 0) {
-            DenizenCore.schedule(new OneTimeSchedulable(new Runnable() {
-                @Override
-                public void run() {
-                    for (dPlayer player : players) {
-                        CraftPlayer craftPlayer = (CraftPlayer) player.getPlayerEntity();
-                        ItemStack original = CraftItemStack.asNMSCopy(craftPlayer.getOpenInventory()
-                                .getItem(translateSlot(craftPlayer, slot.asInt() - 1, player_only.asBoolean())));
-                        setSlot(craftPlayer, slot.asInt() - 1, original, player_only.asBoolean());
+            net.minecraft.server.v1_8_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+
+            for (dPlayer player : players) {
+                setSlot((CraftPlayer) player.getPlayerEntity(), slot, itemStack, player_only.asBoolean());
+            }
+
+            final int slotSnapshot = slot;
+            slot++;
+
+            if (duration.getSeconds() > 0) {
+                DenizenCore.schedule(new OneTimeSchedulable(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (dPlayer player : players) {
+                            CraftPlayer craftPlayer = (CraftPlayer) player.getPlayerEntity();
+                            ItemStack original = CraftItemStack.asNMSCopy(craftPlayer.getOpenInventory()
+                                    .getItem(translateSlot(craftPlayer, slotSnapshot, player_only.asBoolean())));
+                            setSlot(craftPlayer, slotSnapshot, original, player_only.asBoolean());
+                        }
                     }
-                }
-            }, (float) duration.getSeconds()));
+                }, (float) duration.getSeconds()));
+            }
         }
     }
 
