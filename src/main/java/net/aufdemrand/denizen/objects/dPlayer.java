@@ -2464,12 +2464,27 @@ public class dPlayer implements dObject, Adjustable {
         // <--[mechanism]
         // @object dPlayer
         // @name hide_entity
-        // @input dEntity
+        // @input dEntity(|Element(Boolean))
         // @description
-        // Hides an entity from the player.
+        // Hides an entity from the player. You can optionally also specify a boolean to determine
+        // whether the entity should be kept in the tab list (players only).
         // -->
-        if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
-            HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+        if (mechanism.matches("hide_entity")) {
+            if (!value.asString().isEmpty()) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                    if (split.length > 1 && new Element(split[1]).isBoolean()) {
+                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
+                                new Element(split[1]).asBoolean());
+                    }
+                    else {
+                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
+                    }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid entity!");
+                }
+            }
         }
 
         // <--[mechanism]

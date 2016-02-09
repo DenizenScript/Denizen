@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.EntityTracker;
 import net.minecraft.server.v1_8_R3.EntityTrackerEntry;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -21,10 +22,7 @@ public class HideEntity {
 
     public static Map<UUID, Set<UUID>> hiddenEntities = new HashMap<UUID, Set<UUID>>();
 
-    public static void hideEntity(Player player, Entity entity) {
-        if (dEntity.isPlayer(entity)) {
-            player.hidePlayer((Player)entity);
-        }
+    public static void hideEntity(Player player, Entity entity, boolean keepInTabList) {
         CraftPlayer craftPlayer = (CraftPlayer)player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
@@ -42,14 +40,14 @@ public class HideEntity {
                 if (entry != null) {
                     entry.clear(entityPlayer);
                 }
+                if (dEntity.isPlayer(entity) && !keepInTabList) {
+                    entityPlayer.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, (EntityPlayer) other));
+                }
             }
         }
     }
 
     public static void showEntity(Player player, Entity entity) {
-        if (dEntity.isPlayer(entity)) {
-            player.showPlayer((Player)entity);
-        }
         CraftPlayer craftPlayer = (CraftPlayer)player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
@@ -60,6 +58,9 @@ public class HideEntity {
                 hidden.remove(entityUUID);
                 EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
                 net.minecraft.server.v1_8_R3.Entity other = ((CraftEntity)entity).getHandle();
+                if (dEntity.isPlayer(entity)) {
+                    entityPlayer.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) other));
+                }
                 EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
                 if(entry != null && !entry.trackedPlayers.contains(entityPlayer)) {
                     entry.updatePlayer(entityPlayer);
