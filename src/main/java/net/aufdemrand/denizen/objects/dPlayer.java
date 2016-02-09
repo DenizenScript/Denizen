@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
 import net.aufdemrand.denizencore.objects.*;
@@ -2454,10 +2455,10 @@ public class dPlayer implements dObject, Adjustable {
         // @name show_entity
         // @input dEntity
         // @description
-        // Shows the player an entity. (Must be a player or player NPC).
+        // Shows the player an entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().showPlayer((Player) value.asType(dEntity.class).getLivingEntity());
+            HideEntity.showEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2465,10 +2466,10 @@ public class dPlayer implements dObject, Adjustable {
         // @name hide_entity
         // @input dEntity
         // @description
-        // Hides an entity from the player. (Must be a player or player NPC).
+        // Hides an entity from the player.
         // -->
         if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().hidePlayer((Player) value.asType(dEntity.class).getLivingEntity());
+            HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
