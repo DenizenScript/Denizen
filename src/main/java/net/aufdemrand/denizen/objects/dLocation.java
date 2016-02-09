@@ -322,6 +322,83 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         return hasInventory() ? new dInventory(getBukkitInventory()) : null;
     }
 
+    public BlockFace getSkullBlockFace(int rotation) {
+        switch (rotation) {
+            case 0:
+                return BlockFace.NORTH;
+            case 1:
+                return BlockFace.NORTH_NORTH_EAST;
+            case 2:
+                return BlockFace.NORTH_EAST;
+            case 3:
+                return BlockFace.EAST_NORTH_EAST;
+            case 4:
+                return BlockFace.EAST;
+            case 5:
+                return BlockFace.EAST_SOUTH_EAST;
+            case 6:
+                return BlockFace.SOUTH_EAST;
+            case 7:
+                return BlockFace.SOUTH_SOUTH_EAST;
+            case 8:
+                return BlockFace.SOUTH;
+            case 9:
+                return BlockFace.SOUTH_SOUTH_WEST;
+            case 10:
+                return BlockFace.SOUTH_WEST;
+            case 11:
+                return BlockFace.WEST_SOUTH_WEST;
+            case 12:
+                return BlockFace.WEST;
+            case 13:
+                return BlockFace.WEST_NORTH_WEST;
+            case 14:
+                return BlockFace.NORTH_WEST;
+            case 15:
+                return BlockFace.NORTH_NORTH_WEST;
+            default:
+                return null;
+        }
+    }
+
+    public byte getSkullRotation(BlockFace face) {
+        switch (face) {
+            case NORTH:
+                return 0;
+            case NORTH_NORTH_EAST:
+                return 1;
+            case NORTH_EAST:
+                return 2;
+            case EAST_NORTH_EAST:
+                return 3;
+            case EAST:
+                return 4;
+            case EAST_SOUTH_EAST:
+                return 5;
+            case SOUTH_EAST:
+                return 6;
+            case SOUTH_SOUTH_EAST:
+                return 7;
+            case SOUTH:
+                return 8;
+            case SOUTH_SOUTH_WEST:
+                return 9;
+            case SOUTH_WEST:
+                return 10;
+            case WEST_SOUTH_WEST:
+                return 11;
+            case WEST:
+                return 12;
+            case WEST_NORTH_WEST:
+                return 13;
+            case NORTH_WEST:
+                return 14;
+            case NORTH_NORTH_WEST:
+                return 15;
+        }
+        return -1;
+    }
+
     public int compare(Location loc1, Location loc2) {
         if (loc1 == null || loc2 == null || loc1.equals(loc2)) {
             return 0;
@@ -538,10 +615,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <i@item.patterns>
+        // @attribute <l@location.patterns>
         // @returns dList
         // @group properties
-        // @mechanism dItem.patterns
+        // @mechanism dLocation.patterns
         // @description
         // Lists the patterns of the banner at this location in the form "li@COLOR/PATTERN|COLOR/PATTERN" etc.
         // TODO: Local meta for these links
@@ -554,6 +631,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
             }
             return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.head_rotation>
+        // @returns Element(Number)
+        // @description
+        // Gets the rotation of the head at this location. Can be 1-16.
+        // @mechanism dLocation.head_rotation
+        // -->
+        if (attribute.startsWith("head_rotation")) {
+            return new Element(getSkullRotation(((Skull) getBlock().getState()).getRotation()) + 1)
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2134,6 +2223,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Banner banner = (Banner) getBlock().getState();
             banner.setPatterns(patterns);
             banner.update();
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name head_rotation
+        // @input Element(Number)
+        // @description
+        // Sets the rotation of the head at this location. Must be 1-16.
+        // @tags
+        // <l@location.head_rotation>
+        // -->
+        if (mechanism.matches("head_rotation") && mechanism.requireInteger()) {
+            ((Skull) getBlock().getState()).setRotation(getSkullBlockFace(value.asInt()-1));
         }
 
         // <--[mechanism]
