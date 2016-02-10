@@ -38,7 +38,7 @@ public class PacketOutHandler {
                 int pos = chat_position.getInt(cPacket);
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).getText());
+                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.fire();
