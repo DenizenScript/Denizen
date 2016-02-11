@@ -59,7 +59,12 @@ public class dEllipsoid implements dObject, Notable {
             return null;
         }
 
-        dLocation location = new dLocation(dWorld.valueOf(split.get(3), false).getWorld(),
+        dWorld world = dWorld.valueOf(split.get(3), false);
+        if (world == null) {
+            return null;
+        }
+
+        dLocation location = new dLocation(world.getWorld(),
                 aH.getDoubleFrom(split.get(0)), aH.getDoubleFrom(split.get(1)), aH.getDoubleFrom(split.get(2)));
         dLocation size = new dLocation(null, aH.getDoubleFrom(split.get(4)),
                 aH.getDoubleFrom(split.get(5)), aH.getDoubleFrom(split.get(6)));
