@@ -2002,8 +2002,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
         // spawned. Accepts a location, which the entities will be teleported to on mounting.
         // @Tags
-        // <e@entity.get_vehicle>
-        // <e@entity.is_inside_vehicle>
+        // <e@entity.vehicle>
+        // <e@entity.inside_vehicle>
         // @Usage
         // Use to mount an NPC on top of a player.
         // - mount <npc>|<player>
