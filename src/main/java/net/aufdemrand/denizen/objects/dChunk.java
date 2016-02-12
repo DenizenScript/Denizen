@@ -53,17 +53,21 @@ public class dChunk implements dObject, Adjustable {
         String[] parts = string.split(",");
         if (parts.length == 3) {
             try {
-                return new dChunk((CraftChunk) dWorld.valueOf(parts[2]).getWorld()
+                return new dChunk((CraftChunk) dWorld.valueOf(parts[2], context).getWorld()
                         .getChunkAt(Integer.valueOf(parts[0]), Integer.valueOf(parts[1])));
             }
             catch (Exception e) {
-                dB.log("valueOf dChunk returning null: " + "ch@" + string);
+                if (context == null || context.debug) {
+                    dB.log("valueOf dChunk returning null: " + "ch@" + string);
+                }
                 return null;
             }
 
         }
         else {
-            dB.log("valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+            if (context == null || context.debug) {
+                dB.log("valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+            }
         }
 
         return null;
