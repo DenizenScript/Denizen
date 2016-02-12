@@ -138,6 +138,7 @@ public class InventoryScriptContainer extends ScriptContainer {
             if (size == 0) {
                 size = getInventoryType().getDefaultSize();
             }
+            boolean[] filledSlots = new boolean[size];
             if (contains("SLOTS")) {
                 ItemStack[] finalItems = new ItemStack[size];
                 int itemsAdded = 0;
@@ -174,6 +175,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                                         + item + "]... Ignoring it and assuming \"AIR\"");
                             }
                         }
+                        filledSlots[itemsAdded] = !item.isEmpty();
                         itemsAdded++;
                     }
                 }
@@ -207,8 +209,16 @@ public class InventoryScriptContainer extends ScriptContainer {
                     if (DetermineCommand.hasOutcome(id)) {
                         dList list = dList.valueOf(DetermineCommand.getOutcome(id).get(0));
                         if (list != null) {
+                            int x = 0;
                             for (dItem item : list.filter(dItem.class)) {
-                                inventory.add(0, item.getItemStack());
+                                while (x < filledSlots.length && filledSlots[x]) {
+                                    x++;
+                                }
+                                if (x == filledSlots.length - 1 && filledSlots[x]) {
+                                    break;
+                                }
+                                inventory.setSlots(x, item.getItemStack());
+                                filledSlots[x] = true;
                             }
                         }
                     }
