@@ -17,10 +17,7 @@ import net.aufdemrand.denizencore.utilities.scheduling.OneTimeSchedulable;
 import net.minecraft.server.v1_8_R3.ItemStack;
 import net.minecraft.server.v1_8_R3.PacketPlayOutSetSlot;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +73,7 @@ public class FakeItemCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("duration", Duration.ZERO).defaultObject("player_only", new Element(false))
-                .defaultObject("players", Arrays.asList(((BukkitScriptEntryData)scriptEntry.entryData).getPlayer()));
+                .defaultObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
 
     }
 

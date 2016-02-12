@@ -19,7 +19,7 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     // @Events
     // chunk unloads (in <world>)
     //
-    // @Regex ^on player unloads( in [^\s]+)?$
+    // @Regex ^on chunk unloads( in [^\s]+)?$
     //
     // @Warning This event will fire *extremely* rapidly and often!
     //

@@ -103,7 +103,7 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        holder = new dPlayer(event.getPlayer());
+        holder = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         entity = new dEntity(event.getEntity());
         cancelled = event.isCancelled();
         this.event = event;

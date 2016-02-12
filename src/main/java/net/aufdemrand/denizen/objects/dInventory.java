@@ -1114,6 +1114,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             destination.setContents(this.getContents());
         }
     }
+    public dInventory setSlots(int slot, ItemStack... items) {
+        return setSlots(slot, items, items.length);
+    }
 
     /**
      * Set items in an inventory, starting with a specified slot
@@ -1122,17 +1125,17 @@ public class dInventory implements dObject, Notable, Adjustable {
      * @param items The items to add
      * @return The resulting dInventory
      */
-    public dInventory setSlots(int slot, ItemStack... items) {
+    public dInventory setSlots(int slot, ItemStack[] items, int c) {
 
         if (inventory == null || items == null) {
             return this;
         }
 
-        for (int i = 0; i < items.length; i++) {
-            ItemStack item = items[i];
-            if (item == null) {
-                continue; // TODO: Should we allow setting null (air)?
+        for (int i = 0; i < c; i++) {
+            if (i >= items.length || items[i] == null) {
+                inventory.setItem(slot + i, new ItemStack(Material.AIR));
             }
+            ItemStack item = items[i];
             if (slot + i < 0 || slot + i >= inventory.getSize()) {
                 break;
             }
