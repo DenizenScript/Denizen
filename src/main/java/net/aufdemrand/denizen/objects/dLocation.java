@@ -1201,11 +1201,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
                 attribute.fulfill(2);
                 Location tstart = getBlock().getLocation();
+                double tstartY = tstart.getY();
 
                 fullloop:
                 for (int x = -(radius); x <= radius; x++) {
                     for (int y = -(radius); y <= radius; y++) {
-                        if (y < 0 || y > 255) {
+                        double newY = y + tstartY;
+                        if (newY < 0 || newY > 255) {
                             continue;
                         }
                         for (int z = -(radius); z <= radius; z++) {
