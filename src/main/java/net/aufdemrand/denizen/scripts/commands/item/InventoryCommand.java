@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
+import java.util.AbstractMap;
 import java.util.List;
 
 public class InventoryCommand extends AbstractCommand {
@@ -108,13 +109,15 @@ public class InventoryCommand extends AbstractCommand {
 
         // Get objects
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
-        dInventory origin = (dInventory) scriptEntry.getObject("origin");
-        dInventory destination = (dInventory) scriptEntry.getObject("destination");
+        AbstractMap.SimpleEntry<Integer, dInventory> originentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("origin");
+        dInventory origin = originentry.getValue();
+        AbstractMap.SimpleEntry<Integer, dInventory> destinationentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("destination");
+        dInventory destination = destinationentry.getValue();
         Element slot = scriptEntry.getElement("slot");
 
         dB.report(scriptEntry, getName(),
                 aH.debugObj("actions", actions.toString())
-                        + destination.debug()
+                        + (destination.debug())
                         + (origin != null ? origin.debug() : "")
                         + slot.debug());
 
@@ -194,7 +197,7 @@ public class InventoryCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.setSlots(slot.asInt() - 1, origin.getContents());
+                    destination.setSlots(slot.asInt() - 1, origin.getContents(), originentry.getKey());
                     break;
 
                 // Keep only items from the origin's contents in the
