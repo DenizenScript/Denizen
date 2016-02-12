@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -7,13 +8,22 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.scripts.ScriptBuilder;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class InventoryScriptContainer extends ScriptContainer {
 
@@ -99,7 +109,6 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
                 else {
                     dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
-                    // TODO: Maybe actually construct a default chest inventory at this point?
                 }
             }
             int size = 0;
@@ -174,6 +183,36 @@ public class InventoryScriptContainer extends ScriptContainer {
                             contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
                 }
                 inventory.setContents(finalItems);
+            }
+            if (contains("PROCEDURAL ITEMS")) {
+                if (inventory == null) {
+                    size = InventoryType.CHEST.getDefaultSize();
+                    inventory = new dInventory(size, contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
+                }
+                List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "PROCEDURAL ITEMS");
+                if (!entries.isEmpty()) {
+                    long id = DetermineCommand.getNewId();
+                    ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                    InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("INV_SCRIPT_ITEM_PROC"));
+                    queue.addEntries(entries);
+                    queue.setReqId(id);
+                    if (contains("DEFINITIONS")) {
+                        YamlConfiguration section = getConfigurationSection("DEFINITIONS");
+                        for (StringHolder string : section.getKeys(false)) {
+                            String definition = string.str;
+                            queue.addDefinition(definition, section.getString(definition));
+                        }
+                    }
+                    queue.start();
+                    if (DetermineCommand.hasOutcome(id)) {
+                        dList list = dList.valueOf(DetermineCommand.getOutcome(id).get(0));
+                        if (list != null) {
+                            for (dItem item : list.filter(dItem.class)) {
+                                inventory.add(0, item.getItemStack());
+                            }
+                        }
+                    }
+                }
             }
         }
         catch (Exception e) {
