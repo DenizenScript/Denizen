@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.events.world;
+package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
@@ -16,7 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 
-public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
@@ -37,11 +37,11 @@ public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listene
     // -->
 
 
-    public BucketEmptyScriptEvent() {
+    public PlayerEmptiesBucketScriptEvent() {
         instance = this;
     }
 
-    public static BucketEmptyScriptEvent instance;
+    public static PlayerEmptiesBucketScriptEvent instance;
 
     public dEntity entity;
     public dItem item;
@@ -67,7 +67,7 @@ public class BucketEmptyScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public String getName() {
-        return "BucketEmpty";
+        return "PlayerEmptiesBucket";
     }
 
     @Override

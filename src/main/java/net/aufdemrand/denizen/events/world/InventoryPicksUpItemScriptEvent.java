@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 
-public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
+public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: Add in <area>
     // <--[event]
@@ -34,11 +34,11 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
     //
     // -->
 
-    public InvPicksUpItemScriptEvent() {
+    public InventoryPicksUpItemScriptEvent() {
         instance = this;
     }
 
-    public static InvPicksUpItemScriptEvent instance;
+    public static InventoryPicksUpItemScriptEvent instance;
     public dInventory inventory;
     public dItem item;
     public InventoryPickupItemEvent event;
@@ -69,7 +69,7 @@ public class InvPicksUpItemScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public String getName() {
-        return "InvPicksUpItem";
+        return "InventoryPicksUpItem";
     }
 
     @Override

@@ -1,15 +1,8 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
-import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.objects.Duration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

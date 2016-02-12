@@ -1,9 +1,10 @@
-package net.aufdemrand.denizen.scripts.commands.world;
+package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -21,7 +22,7 @@ import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
-public class BreakCommand extends AbstractCommand implements Holdable { // TODO: Should this be a NPC command?
+public class BreakCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -33,9 +34,9 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
-            else if (!scriptEntry.hasObject("entity")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                scriptEntry.addObject("entity", arg.asType(dEntity.class));
+            else if (!scriptEntry.hasObject("npc")
+                    && arg.matchesArgumentType(dNPC.class)) {
+                scriptEntry.addObject("npc", arg.asType(dNPC.class));
             }
 
             else if (!scriptEntry.hasObject("radius")
@@ -54,11 +55,13 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
         }
 
         // Use the NPC or the Player as the default entity
-        scriptEntry.defaultObject("entity",
-                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null));
-
-        if (!scriptEntry.hasObject("entity")) {
-            throw new InvalidArgumentsException("Must specify an entity!");
+        if (!scriptEntry.hasObject("npc")) {
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+                scriptEntry.addObject("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+            }
+            else {
+                throw new InvalidArgumentsException("Must specify a valid NPC!");
+            }
         }
 
         scriptEntry.defaultObject("radius", new Element(2));
@@ -80,7 +83,7 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final dEntity entity = (dEntity) scriptEntry.getObject("entity");
+        final dNPC npc = (dNPC) scriptEntry.getObject("entity");
         Element radius = scriptEntry.getElement("radius");
 
         final HashMap<String, dObject> context = new HashMap<String, dObject>();
@@ -88,23 +91,21 @@ public class BreakCommand extends AbstractCommand implements Holdable { // TODO:
         context.put("location", location);
         context.put("material", material);
 
-        dB.report(scriptEntry, getName(), location.debug() + entity.debug() + radius.debug());
+        dB.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
 
         final ScriptEntry se = scriptEntry;
         BlockBreaker.BlockBreakerConfiguration config = new BlockBreaker.BlockBreakerConfiguration();
-        config.item(entity.getLivingEntity().getEquipment().getItemInHand());
+        config.item(npc.getLivingEntity().getEquipment().getItemInHand());
         config.radius(radius.asDouble());
         config.callback(new Runnable() {
             @Override
             public void run() {
-                if (entity.isCitizensNPC()) {
-                    DenizenAPI.getDenizenNPC(entity.getDenizenNPC().getCitizen()).action("dig", null, context);
-                    se.setFinished(true);
-                }
+                npc.action("dig", null, context);
+                se.setFinished(true);
             }
         });
 
-        final CitizensBlockBreaker breaker = new CitizensBlockBreaker(entity.getLivingEntity(),
+        final CitizensBlockBreaker breaker = new CitizensBlockBreaker(npc.getLivingEntity(),
                 location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);

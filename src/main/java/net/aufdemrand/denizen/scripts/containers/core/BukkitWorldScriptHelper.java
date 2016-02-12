@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -25,7 +24,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -139,72 +141,6 @@ public class BukkitWorldScriptHelper implements Listener {
     /////////////////////
     //   INVENTORY EVENTS
     /////////////////
-
-    // <--[event]
-    // @Events
-    // item crafted
-    // <item> crafted
-    // <material> crafted
-    //
-    // @Regex ^on [^\s]+ crafted$
-    //
-    // @Triggers when an item's recipe is correctly formed.
-    // @Context
-    // <context.inventory> returns the dInventory of the crafting inventory.
-    // <context.item> returns the dItem to be crafted.
-    // <context.recipe> returns a dList of dItems in the recipe.
-    //
-    // @Determine
-    // "CANCELLED" to stop the item from being crafted.
-    // dItem to change the item that is crafted.
-    //
-    // -->
-    @EventHandler
-    public void craftItemEvent(PrepareItemCraftEvent event) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        List<String> events = new ArrayList<String>();
-        events.add("item crafted");
-
-        CraftingInventory inventory = event.getInventory();
-        context.put("inventory", new dInventory(inventory));
-
-        Recipe recipe = event.getRecipe();
-        if (recipe == null) {
-            return;
-        }
-        dItem result = recipe.getResult() != null ? new dItem(recipe.getResult()) : null;
-        if (result != null) {
-            context.put("item", result);
-            events.add(result.identifySimple() + " crafted");
-            events.add(result.identifyMaterial() + " crafted");
-            events.add(result.identifySimpleNoIdentifier() + " crafted");
-            events.add(result.identifyMaterialNoIdentifier() + " crafted");
-        }
-
-        dList recipeList = new dList();
-        for (ItemStack item : inventory.getMatrix()) {
-            if (item != null) {
-                recipeList.add(new dItem(item).identify());
-            }
-            else {
-                recipeList.add(new dItem(Material.AIR).identify());
-            }
-        }
-        context.put("recipe", recipeList);
-
-        Player player = (Player) event.getView().getPlayer();
-
-        String determination = doEvents(events, null, dEntity.getPlayerFrom(player), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            inventory.setResult(null);
-            player.updateInventory();
-        }
-        else if (dItem.matches(determination)) {
-            inventory.setResult(dItem.valueOf(determination).getItemStack());
-            player.updateInventory();
-        }
-    }
 
     // <--[language]
     // @Name Inventory Actions
@@ -441,72 +377,6 @@ public class BukkitWorldScriptHelper implements Listener {
                 }
             }
         }, 1);
-    }
-
-    // <--[event]
-    // @Events
-    // player edits book
-    // player signs book
-    //
-    // @Regex ^on player (edits|signs) book$
-    //
-    // @Triggers when a player edits or signs a book.
-    // @Context
-    // <context.title> returns the name of the book, if any.
-    // <context.pages> returns the number of pages in the book.
-    // <context.book> returns the book item being edited.
-    // <context.signing> returns whether the book is about to be signed.
-    //
-    // @Determine
-    // "CANCELLED" to prevent the book from being edited.
-    // "NOT_SIGNING" to prevent the book from being signed.
-    // dScript to set the book information to set it to instead.
-    //
-    // -->
-    @EventHandler
-    public void playerEditBook(PlayerEditBookEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer())) {
-            return;
-        }
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        if (event.isSigning()) {
-            context.put("title", new Element(event.getNewBookMeta().getTitle()));
-        }
-        context.put("pages", new Element(event.getNewBookMeta().getPageCount()));
-        context.put("book", new dItem(event.getPlayer().getInventory().getItem(event.getSlot())));
-        context.put("signing", new Element(event.isSigning()));
-
-        ArrayList<String> events = new ArrayList<String>();
-
-        events.add("player edits book");
-        if (event.isSigning()) {
-            events.add("player signs book");
-        }
-
-        String determination = doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            event.setCancelled(true);
-        }
-        else if (determination.toUpperCase().startsWith("NOT_SIGNING")) {
-            event.setSigning(false);
-        }
-        else if (dScript.matches(determination)) {
-            dScript script = dScript.valueOf(determination);
-            if (script.getContainer() instanceof BookScriptContainer) {
-                dItem book = ((BookScriptContainer) script.getContainer()).getBookFrom(dPlayer.mirrorBukkitPlayer(event.getPlayer()), null);
-                event.setNewBookMeta((BookMeta) book.getItemStack().getItemMeta());
-                if (book.getItemStack().getType() == Material.BOOK_AND_QUILL) {
-                    event.setSigning(false);
-                }
-            }
-            else {
-                dB.echoError("Script '" + determination + "' is valid, but not of type 'book'!");
-            }
-        }
     }
 
     // <--[event]
