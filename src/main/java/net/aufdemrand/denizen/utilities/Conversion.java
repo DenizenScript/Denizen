@@ -10,6 +10,7 @@ import org.bukkit.Color;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,16 +78,18 @@ public class Conversion {
      * @return The dInventory retrieved by parsing the argument
      */
 
-    public static dInventory getInventory(Argument arg, ScriptEntry scriptEntry) {
+    public static AbstractMap.SimpleEntry<Integer, dInventory> getInventory(Argument arg, ScriptEntry scriptEntry) {
         String string = arg.getValue();
 
         if (dInventory.matches(string)) {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
             if (data != null) {
-                return dInventory.valueOf(string, data.getTagContext());
+                dInventory inv = dInventory.valueOf(string, data.getTagContext());
+                return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
             }
             else {
-                return dInventory.valueOf(string, null);
+                dInventory inv = dInventory.valueOf(string, null);
+                return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
             }
         }
         else if (arg.matchesArgumentList(dItem.class)) {
@@ -94,13 +97,15 @@ public class Conversion {
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             dInventory inventory = new dInventory(dInventory.maxSlots);
             inventory.setContents(items);
-            return inventory;
+            return new AbstractMap.SimpleEntry<Integer, dInventory>(items.length, inventory);
         }
         else if (dLocation.matches(string)) {
-            return dLocation.valueOf(string).getInventory();
+            dInventory inv = dLocation.valueOf(string).getInventory();
+            return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
         }
         else if (dEntity.matches(string)) {
-            return dEntity.valueOf(string).getInventory();
+            dInventory inv = dEntity.valueOf(string).getInventory();
+            return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
         }
 
         return null;

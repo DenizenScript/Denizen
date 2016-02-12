@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
 import net.aufdemrand.denizencore.objects.*;
@@ -22,6 +23,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -2453,21 +2455,36 @@ public class dPlayer implements dObject, Adjustable {
         // @name show_entity
         // @input dEntity
         // @description
-        // Shows the player an entity. (Must be a player or player NPC).
+        // Shows the player an entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().showPlayer((Player) value.asType(dEntity.class).getLivingEntity());
+            HideEntity.showEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
         // @object dPlayer
         // @name hide_entity
-        // @input dEntity
+        // @input dEntity(|Element(Boolean))
         // @description
-        // Hides an entity from the player. (Must be a player or player NPC).
+        // Hides an entity from the player. You can optionally also specify a boolean to determine
+        // whether the entity should be kept in the tab list (players only).
         // -->
-        if (mechanism.matches("hide_entity") && mechanism.requireObject(dEntity.class)) {
-            getPlayerEntity().hidePlayer((Player) value.asType(dEntity.class).getLivingEntity());
+        if (mechanism.matches("hide_entity")) {
+            if (!value.asString().isEmpty()) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+                if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
+                    if (split.length > 1 && new Element(split[1]).isBoolean()) {
+                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
+                                new Element(split[1]).asBoolean());
+                    }
+                    else {
+                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
+                    }
+                }
+                else {
+                    dB.echoError("'" + split[0] + "' is not a valid entity!");
+                }
+            }
         }
 
         // <--[mechanism]
@@ -2732,6 +2749,52 @@ public class dPlayer implements dObject, Adjustable {
             }
             else {
                 dB.echoError("Must specify a valid location and at least one sign line!");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name banner_update
+        // @input dLocation|Element(|dList)
+        // @description
+        // Shows the player a fake base color and, optionally, patterns on a banner. Input must be
+        // in the form: "LOCATION|BASE_COLOR(|COLOR/PATTERN|...)"
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
+        // -->
+        if (mechanism.matches("banner_update")) {
+            if (value.asString().length() > 0) {
+                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]");
+                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
+                if (split.length > 2) {
+                    List<String> splitList;
+                    for (int i = 2; i > split.length; i++) {
+                        String string = split[i];
+                        try {
+                            splitList = CoreUtilities.split(string, '/', 2);
+                            patterns.add(new org.bukkit.block.banner.Pattern(DyeColor.valueOf(splitList.get(0).toUpperCase()),
+                                    PatternType.valueOf(splitList.get(1).toUpperCase())));
+                        }
+                        catch (Exception e) {
+                            dB.echoError("Could not apply pattern to banner: " + string);
+                        }
+                    }
+                }
+                if (dLocation.matches(split[0]) && split.length > 1) {
+                    dLocation location = dLocation.valueOf(split[0]);
+                    DyeColor base;
+                    try {
+                        base = DyeColor.valueOf(split[1].toUpperCase());
+                    }
+                    catch (Exception e) {
+                        dB.echoError("Could not apply base color to banner: " + split[1]);
+                        return;
+                    }
+                    BannerUpdate.updateBanner(getPlayerEntity(), location, base, patterns);
+                }
+                else {
+                    dB.echoError("Must specify a valid location and a base color!");
+                }
             }
         }
 

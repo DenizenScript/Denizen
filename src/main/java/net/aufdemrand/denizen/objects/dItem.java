@@ -68,7 +68,7 @@ public class dItem implements dObject, Notable, Adjustable {
      * @return an Item, or null if incorrectly formatted
      */
     public static dItem valueOf(String string, dPlayer player, dNPC npc) {
-        if (string == null) {
+        if (string == null || string.equals("")) {
             return null;
         }
 

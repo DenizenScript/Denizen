@@ -31,16 +31,20 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity damaged (by <cause>) (in <area>) (with:<item>)
-    // <entity> damaged (by <cause>) (in <area>) (with:<item>)
-    // entity damages entity (in <area>) (with:<item>)
-    // entity damages <entity> (in <area>) (with:<item>)
-    // entity damaged by entity (in <area>) (with:<item>)
-    // entity damaged by <entity> (in <area>) (with:<item>)
-    // <entity> damages entity (in <area>) (with:<item>)
-    // <entity> damaged by entity (in <area>) (with:<item>)
-    // <entity> damaged by <entity> (in <area>) (with:<item>)
-    // <entity> damages <entity> (in <area>) (with:<item>)
+    // entity damaged (by <cause>) (in <area>)
+    // <entity> damaged (by <cause>) (in <area>)
+    // entity damages entity (in <area>)
+    // entity damages <entity> (in <area>)
+    // entity damaged by entity (in <area>)
+    // entity damaged by <entity> (in <area>)
+    // <entity> damages entity (in <area>)
+    // <entity> damaged by entity (in <area>)
+    // <entity> damaged by <entity> (in <area>)
+    // <entity> damages <entity> (in <area>)
+    //
+    // @Regex ^on [^\s]+ ((damages [^\s]+)|damaged( by [^\s]+)?)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
+    // @Switch with <item>
     //
     // @Cancellable true
     //

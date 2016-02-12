@@ -62,7 +62,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Events
     // server start
     //
-    // @Regex ^server start$
+    // @Regex ^on server start$
     //
     // @Triggers when the server starts
     //
@@ -97,7 +97,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // time changes (in <world>)
     // time <0-23> in <world>
     //
-    // @Regex ^time [^\s]+( in [^\s]+)$
+    // @Regex ^on time [^\s]+( in [^\s]+)$
     //
     // @Triggers when the current time changes in a world (once per mine-hour).
     //
@@ -145,6 +145,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // item crafted
     // <item> crafted
     // <material> crafted
+    //
+    // @Regex ^on [^\s]+ crafted$
     //
     // @Triggers when an item's recipe is correctly formed.
     // @Context
@@ -261,6 +263,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player (<click type>) clicks (<material>) (in <inventory type>) (with <item>)
     // player (<click type>) clicks (<item>) (in <inventory type>) (with <material>)
     // player (<click type>) clicks (<material>) (in <inventory type>) (with <material>)
+    //
+    // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
     //
     // @Triggers when a player clicks in an inventory.
     // @Context
@@ -444,6 +448,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player edits book
     // player signs book
     //
+    // @Regex ^on player (edits|signs) book$
+    //
     // @Triggers when a player edits or signs a book.
     // @Context
     // <context.title> returns the name of the book, if any.
@@ -509,6 +515,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // player (<click type>) clicks (<material>) (with <item>) (in <area>)
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
+    //
+    // @Regex ^on player ((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context

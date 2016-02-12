@@ -1137,7 +1137,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name FakeItem
-        // @Syntax fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Syntax fakeitem [<item>|...] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
         // @Stable stable
         // @Short Show a fake item in a player's inventory.
@@ -2002,8 +2002,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
         // spawned. Accepts a location, which the entities will be teleported to on mounting.
         // @Tags
-        // <e@entity.get_vehicle>
-        // <e@entity.is_inside_vehicle>
+        // <e@entity.vehicle>
+        // <e@entity.inside_vehicle>
         // @Usage
         // Use to mount an NPC on top of a player.
         // - mount <npc>|<player>
@@ -2359,7 +2359,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - queue <server.flag[OtherQueue]> resume
         // -->
         registerCoreMember(QueueCommand.class,
-                "QUEUE", "queue (queue:<id>) [clear/stop/pause/resume/delay:<#>]", 1);
+                "QUEUE", "queue (<queue>) [clear/stop/pause/resume/delay:<#>]", 1);
 
 
         // <--[command]

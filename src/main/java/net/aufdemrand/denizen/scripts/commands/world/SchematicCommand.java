@@ -242,6 +242,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             return;
         }
 
+        String id = event.hasNameContext() ? event.getNameContext().toUpperCase(): null;
+
         Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
@@ -254,21 +256,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             event.setReplaced(new dList(schematics.keySet()).getAttribute(attribute.fulfill(1)));
         }
 
-        if (!event.hasNameContext()) {
+        if (id == null) {
             return;
-        }
-
-        String id = event.getNameContext().toUpperCase();
-
-
-        // <--[tag]
-        // @attribute <schematic[<name>].is_loaded>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the schematic is loaded into the server.
-        // -->
-        if (attribute.startsWith("is_loaded")) {
-            event.setReplaced(new Element(schematics.containsKey(id)).getAttribute(attribute.fulfill(1)));
         }
 
         if (!schematics.containsKey(id)) {

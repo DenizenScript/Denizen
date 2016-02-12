@@ -1,13 +1,17 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
 import io.netty.buffer.Unpooled;
+import net.aufdemrand.denizen.events.player.PlayerReceivesMessageScriptEvent;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
+import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
+import net.aufdemrand.denizencore.objects.Element;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
 
@@ -29,6 +33,16 @@ public class PacketOutHandler {
             if (packet instanceof PacketPlayOutChat) {
                 if (ExecuteCommand.silencedPlayers.contains(player.getUniqueID())) {
                     return true;
+                }
+                PacketPlayOutChat cPacket = (PacketPlayOutChat) packet;
+                int pos = chat_position.getInt(cPacket);
+                if (pos != 2) {
+                    PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
+                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
+                    event.system = new Element(pos == 1);
+                    event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
+                    event.fire();
+                    return event.cancelled;
                 }
             }
             else if (packet instanceof PacketPlayOutSetSlot) {
@@ -65,6 +79,26 @@ public class PacketOutHandler {
                         }
                     }, 5);
                 }
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntity) {
+                PacketPlayOutSpawnEntity sePacket = (PacketPlayOutSpawnEntity) packet;
+                int entityId = spawn_entityId.getInt(sePacket);
+                return entityIsHiding(player, entityId);
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntityLiving) {
+                PacketPlayOutSpawnEntityLiving selPacket = (PacketPlayOutSpawnEntityLiving) packet;
+                int entityId = spawn_living_entityId.getInt(selPacket);
+                return entityIsHiding(player, entityId);
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntityPainting) {
+                PacketPlayOutSpawnEntityPainting sepPacket = (PacketPlayOutSpawnEntityPainting) packet;
+                int entityId = spawn_painting_entityId.getInt(sepPacket);
+                return entityIsHiding(player, entityId);
+            }
+            else if (packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
+                PacketPlayOutSpawnEntityExperienceOrb seePacket = (PacketPlayOutSpawnEntityExperienceOrb) packet;
+                int entityId = spawn_experience_entityId.getInt(seePacket);
+                return entityIsHiding(player, entityId);
             }
             else if (packet instanceof PacketPlayOutPlayerInfo) {
                 PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
@@ -143,18 +177,45 @@ public class PacketOutHandler {
         return itemStack;
     }
 
+    private static boolean entityIsHiding(EntityPlayer player, int entityId) {
+        UUID playerUUID = player.getUniqueID();
+        if (!HideEntity.hiddenEntities.containsKey(playerUUID)) {
+            return false;
+        }
+        EntityTracker tracker = ((WorldServer) player.world).tracker;
+        EntityTrackerEntry entry = tracker.trackedEntities.get(entityId);
+        if (entry == null) {
+            return false;
+        }
+        UUID entityUUID = entry.tracker.getUniqueID();
+        if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
+            entry.clear(player);
+            return true;
+        }
+        return false;
+    }
+
 
     //////////////////////////////////
     //// Packet Fields
     ///////////
 
+    private static final Field chat_message, chat_position;
     private static final Field set_slot_windowId, set_slot_slotId, set_slot_itemStack;
     private static final Field window_items_windowId, window_items_itemStackArray;
     private static final Field named_spawn_entityId, named_spawn_entityUUID;
+    private static final Field spawn_entityId;
+    private static final Field spawn_living_entityId;
+    private static final Field spawn_painting_entityId;
+    private static final Field spawn_experience_entityId;
     private static final Field custom_name, custom_serializer;
 
     static {
-        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
+        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
+        chat_message = fields.get("a");
+        chat_position = fields.get("b");
+
+        fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
         set_slot_windowId = fields.get("a");
         set_slot_slotId = fields.get("b");
         set_slot_itemStack = fields.get("c");
@@ -166,6 +227,18 @@ public class PacketOutHandler {
         fields = PacketHelper.registerFields(PacketPlayOutNamedEntitySpawn.class);
         named_spawn_entityId = fields.get("a");
         named_spawn_entityUUID = fields.get("b");
+
+        fields = PacketHelper.registerFields(PacketPlayOutSpawnEntity.class);
+        spawn_entityId = fields.get("a"); // Other fields currently irrelevant
+
+        fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
+        spawn_living_entityId = fields.get("a"); // Other fields currently irrelevant
+
+        fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityPainting.class);
+        spawn_painting_entityId = fields.get("a"); // Other fields currently irrelevant
+
+        fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityExperienceOrb.class);
+        spawn_experience_entityId = fields.get("a"); // Other fields currently irrelevant
 
         fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
         custom_name = fields.get("a");
