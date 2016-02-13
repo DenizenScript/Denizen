@@ -18,13 +18,13 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 import java.util.List;
 
-public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
     // player levels up (from <level>) (to <level>) (in <area>)
     //
-    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$$
+    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Cancellable false
     //
@@ -36,11 +36,11 @@ public class PlayerLevelsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // -->
 
-    public PlayerLevelsScriptEvent() {
+    public PlayerLevelsUpScriptEvent() {
         instance = this;
     }
 
-    public static PlayerLevelsScriptEvent instance;
+    public static PlayerLevelsUpScriptEvent instance;
     public int new_level;
     public int old_level;
     public dPlayer player;
