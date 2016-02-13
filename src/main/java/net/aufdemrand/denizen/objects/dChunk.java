@@ -58,7 +58,7 @@ public class dChunk implements dObject, Adjustable {
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.log("valueOf dChunk returning null: " + "ch@" + string);
+                    dB.log("Minor: valueOf dChunk returning null: " + "ch@" + string);
                 }
                 return null;
             }
@@ -66,7 +66,7 @@ public class dChunk implements dObject, Adjustable {
         }
         else {
             if (context == null || context.debug) {
-                dB.log("valueOf dChunk unable to handle malformed format: " + "ch@" + string);
+                dB.log("Minor: valueOf dChunk unable to handle malformed format: " + "ch@" + string);
             }
         }
 
