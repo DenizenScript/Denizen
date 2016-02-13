@@ -195,7 +195,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
@@ -218,14 +218,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
-                    dB.echoError("valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
                 }
                 return null;
             }
         }
 
         if (context == null || context.debug) {
-            dB.log("valueOf dLocation returning null: " + string);
+            dB.log("Minor: valueOf dLocation returning null: " + string);
         }
 
         return null;
