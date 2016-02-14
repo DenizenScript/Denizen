@@ -20,6 +20,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.milkbowl.vault.chat.Chat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -138,7 +139,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         if (announce) {
-            dB.echoError("Invalid Player! '" + string + "' could not be found.");
+            dB.log("Minor: Invalid Player! '" + string + "' could not be found.");
         }
 
         return null;
@@ -806,6 +807,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns the amount of money the player has with the registered Economy system.
         // May work offline depending on economy plugin.
+        // @mechanism dPlayer.money
         // -->
 
         if (attribute.startsWith("money")) {
@@ -1051,6 +1053,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the location of the player's bed spawn location, null if
         // it doesn't exist.
         // Works with offline players.
+        // @mechanism dPlayer.bed_spawn_location
         // -->
         if (attribute.startsWith("bed_spawn")) {
             if (getOfflinePlayer().getBedSpawnLocation() == null) {
@@ -1147,6 +1150,7 @@ public class dPlayer implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether the player is banned.
+        // @mechanism dPlayer.is_banned
         // -->
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
@@ -1176,6 +1180,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns whether the player is a full server operator.
         // Works with offline players.
+        // @mechanism dPlayer.is_op
         // -->
         if (attribute.startsWith("is_op")) {
             return new Element(getOfflinePlayer().isOp())
@@ -1188,6 +1193,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Returns whether the player is whitelisted.
         // Works with offline players.
+        // @mechanism dPlayer.is_whitelisted
         // -->
         if (attribute.startsWith("is_whitelisted")) {
             return new Element(getOfflinePlayer().isWhitelisted())
@@ -2036,6 +2042,41 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (Depends.chat != null) {
+
+            // <--[tag]
+            // @attribute <p@player.chat_prefix>
+            // @returns Element
+            // @description
+            // Returns the player's chat prefix.
+            // NOTE: May work with offline players.
+            // @mechanism dPlayer.chat_prefix
+            // -->
+            if (attribute.startsWith("chat_prefix")) {
+                String prefix = Depends.chat.getPlayerPrefix(getWorld().getName(), getOfflinePlayer());
+                if (prefix == null) {
+                    return null;
+                }
+                return new Element(prefix).getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <p@player.chat_suffix>
+            // @returns Element
+            // @description
+            // Returns the player's chat suffix.
+            // NOTE: May work with offline players.
+            // @mechanism dPlayer.chat_suffix
+            // -->
+            else if (attribute.startsWith("chat_suffix")) {
+                String suffix = Depends.chat.getPlayerSuffix(getWorld().getName(), getOfflinePlayer());
+                if (suffix == null) {
+                    return null;
+                }
+                return new Element(suffix).getAttribute(attribute.fulfill(1));
+            }
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -2119,7 +2160,7 @@ public class dPlayer implements dObject, Adjustable {
         // @tags
         // None
         // -->
-        // TODO: Player achievement/statistics tags.
+        // TODO: Player achievement tags.
         if (mechanism.matches("award_achievement") && mechanism.requireEnum(false, Achievement.values())) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
         }
@@ -2850,6 +2891,8 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Changes whether the player is whitelisted or not.
+        // @tags
+        // <p@player.is_whitelisted>
         // -->
         if (mechanism.matches("is_whitelisted") && mechanism.requireBoolean()) {
             getPlayerEntity().setWhitelisted(mechanism.getValue().asBoolean());
@@ -2861,6 +2904,8 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Changes whether the player is a server operator or not.
+        // @tags
+        // <p@player.is_op>
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
             getPlayerEntity().setOp(mechanism.getValue().asBoolean());
@@ -2872,6 +2917,11 @@ public class dPlayer implements dObject, Adjustable {
         // @input Element(Boolean)
         // @description
         // Set whether the player is banned or not.
+        // @tags
+        // <p@player.is_banned>
+        // <p@player.ban_info.expiration>
+        // <p@player.ban_info.reason>
+        // <p@player.ban_info.created>
         // -->
         if (mechanism.matches("is_banned") && mechanism.requireBoolean()) {
             getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
@@ -2895,6 +2945,34 @@ public class dPlayer implements dObject, Adjustable {
             }
             else if (bal > goal) {
                 Depends.economy.withdrawPlayer(getOfflinePlayer(), bal - goal);
+            }
+        }
+
+        if (Depends.chat != null) {
+            // <--[mechanism]
+            // @object dPlayer
+            // @name chat_prefix
+            // @input Element
+            // @description
+            // Set the player's chat prefix.
+            // @tags
+            // <p@player.chat_prefix>
+            // -->
+            if (mechanism.matches("chat_prefix")) {
+                Depends.chat.setPlayerPrefix(getPlayerEntity(), value.asString());
+            }
+
+            // <--[mechanism]
+            // @object dPlayer
+            // @name chat_suffix
+            // @input Element
+            // @description
+            // Set the player's chat suffix.
+            // @tags
+            // <p@player.chat_suffix>
+            // -->
+            if (mechanism.matches("chat_suffix")) {
+                Depends.chat.setPlayerSuffix(getPlayerEntity(), value.asString());
             }
         }
 

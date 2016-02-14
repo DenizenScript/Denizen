@@ -53,7 +53,7 @@ public class HealthTrait extends Trait implements Listener {
 // Enable Health trait via dScript: - trait state:true health
 // Enable Health trait via npc command: /npc health --set # (-r)
 //
-// Enable automatic respawn (default delay 300t): /npc respawn [delay in ticks]
+// Enable automatic respawn (default delay 300t): /npc health --respawndelay [delay as a duration]
 // Set respawn location: - flag <npc> respawn_location:<location>
 //
 // Related Tags

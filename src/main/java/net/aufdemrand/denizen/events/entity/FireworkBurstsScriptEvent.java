@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.events.entity;
 
-    /*
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -13,10 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FireworkExplodeEvent;
 
-// TODO: Allow me when we update
 public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: <-- [ event ]
+    // <--[event]
     // @Events
     // firework bursts (in <area>)
     //
@@ -98,4 +96,3 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         event.setCancelled(cancelled);
     }
 }
-    */

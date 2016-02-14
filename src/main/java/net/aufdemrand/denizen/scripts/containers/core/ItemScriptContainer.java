@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;

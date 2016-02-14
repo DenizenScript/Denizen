@@ -100,7 +100,13 @@ public class InventoryCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory() : null);
+                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
+                        new AbstractMap.SimpleEntry<Integer, dInventory>(0,
+                                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory()): null);
+
+        if (!scriptEntry.hasObject("destination")) {
+            throw new InvalidArgumentsException("Must specify a Destination Inventory!");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -110,7 +116,7 @@ public class InventoryCommand extends AbstractCommand {
         // Get objects
         List<String> actions = (List<String>) scriptEntry.getObject("actions");
         AbstractMap.SimpleEntry<Integer, dInventory> originentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("origin");
-        dInventory origin = originentry.getValue();
+        dInventory origin = originentry != null ? originentry.getValue() : null;
         AbstractMap.SimpleEntry<Integer, dInventory> destinationentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("destination");
         dInventory destination = destinationentry.getValue();
         Element slot = scriptEntry.getElement("slot");
