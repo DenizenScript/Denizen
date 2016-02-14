@@ -139,7 +139,7 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         if (announce) {
-            dB.echoError("Invalid Player! '" + string + "' could not be found.");
+            dB.log("Minor: Invalid Player! '" + string + "' could not be found.");
         }
 
         return null;
