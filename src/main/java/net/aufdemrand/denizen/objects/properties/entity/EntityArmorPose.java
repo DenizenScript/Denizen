@@ -85,7 +85,8 @@ public class EntityArmorPose implements Property {
         // @description
         // Returns a list of all poses and angles for the armor stand in the
         // format: PART|ANGLE|...
-        // For example, HEAD|l@12,3,45|BODY|l@54,32,1|etc...
+        // For example, head|4.5,3,4.5|body|5.4,3.2,1
+        // Angles are in radians!
         // -->
         if (attribute.startsWith("armor_pose_list")) {
             return getPoseList().getAttribute(attribute.fulfill(1));
@@ -98,6 +99,7 @@ public class EntityArmorPose implements Property {
         // @description
         // Returns the current angle pose for the specified part.
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
+        // Angles are in radians!
         // -->
         else if (attribute.startsWith("armor_pose") && attribute.hasContext(1)) {
             String name = attribute.getContext(1);
@@ -126,8 +128,9 @@ public class EntityArmorPose implements Property {
         // @description
         // Sets the angle for various parts of the armor stand in the
         // format: PART|ANGLE|...
-        // For example, head|12,3,45|body|54,32,1
+        // For example, head|4.5,3,4.5|body|5.4,3.2,1
         // Valid parts: HEAD, BODY, LEFT_ARM, RIGHT_ARM, LEFT_LEG, RIGHT_LEG
+        // Angles are in radians!
         // @tags
         // <e@entity.armor_pose_list>
         // <e@entity.armor_pose[<part>]>

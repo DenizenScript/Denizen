@@ -22,8 +22,6 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Warning not yet implemented
-    //
     // @Triggers when a firework bursts (explodes).
     //
     // @Context
