@@ -1197,7 +1197,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @tags
         // <n@npc.skin>
         // -->
-        if (mechanism.matches("skin")) {
+        if (mechanism.matches("skin_blob")) {
             if (!mechanism.hasValue()) {
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
             }
