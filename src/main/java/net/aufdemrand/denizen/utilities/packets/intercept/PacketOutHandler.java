@@ -63,7 +63,10 @@ public class PacketOutHandler {
             }
             else if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                 PacketPlayOutNamedEntitySpawn nesPacket = (PacketPlayOutNamedEntitySpawn) packet;
-                // int entityId = named_spawn_entityId.getInt(nesPacket);
+                int entityId = named_spawn_entityId.getInt(nesPacket);
+                if (entityIsHiding(player, entityId)) {
+                    return true;
+                }
                 UUID entityUUID = (UUID) named_spawn_entityUUID.get(nesPacket);
                 final Entity entity = ((WorldServer) player.getWorld()).getEntity(entityUUID);
                 if (entity instanceof EntityFakePlayer) {
