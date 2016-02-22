@@ -41,6 +41,7 @@ public class PacketOutHandler {
                     event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
+                    event.cancelled = false;
                     event.fire();
                     return event.cancelled;
                 }
