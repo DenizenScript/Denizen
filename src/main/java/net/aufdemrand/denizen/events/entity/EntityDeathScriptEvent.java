@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -192,7 +193,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        entity = new dEntity(event.getEntity());
+
+        LivingEntity livingEntity = event.getEntity();
+        dEntity.rememberEntity(livingEntity);
+        entity = new dEntity(livingEntity);
 
         dPlayer player = null;
 
@@ -255,5 +259,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         if (message != null && subEvent != null) {
             subEvent.setDeathMessage(message.asString());
         }
+
+        dEntity.forgetEntity(livingEntity);
     }
 }
