@@ -204,8 +204,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             player = entity.getDenizenPlayer();
         }
 
-        // If this entity has a stored killer, get it and then
-        // remove it from the entityKillers map
         damager = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null) {
