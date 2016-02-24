@@ -91,6 +91,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (CoreUtilities.toLowerCase(determination).equals("instabreak")) {
             instabreak = true;
+            return true;
         }
         return super.applyDetermination(container, determination);
     }
