@@ -67,10 +67,9 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
         String biome_test = lower.substring(lower.lastIndexOf(" ") + 1);
         String direction = lower.substring(lower.indexOf(" ") + 1, lower.lastIndexOf(" ") - 1);
 
-        return !(CoreUtilities.toLowerCase(old_biome.toString()).equals(CoreUtilities.toLowerCase(new_biome.toString())))
-                && (biome_test.equals("biome")
+        return biome_test.equals("biome")
                 || (direction.equals("enters") && biome_test.equals(CoreUtilities.toLowerCase(new_biome.toString())))
-                || (direction.equals("exits") && biome_test.equals(CoreUtilities.toLowerCase(old_biome.toString()))));
+                || (direction.equals("exits") && biome_test.equals(CoreUtilities.toLowerCase(old_biome.toString())));
     }
 
     @Override
@@ -122,6 +121,9 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
         to = new dLocation(event.getTo());
         old_biome = new Element(from.getBlock().getBiome().name());
         new_biome = new Element(to.getBlock().getBiome().name());
+        if (old_biome.identify().equals(new_biome.identify())) {
+            return;
+        }
         cancelled = event.isCancelled();
         this.event = event;
         fire();
