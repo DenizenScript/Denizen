@@ -386,7 +386,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // player (<click type>) clicks block (with <item>)
     // player stands on <pressure plate>
     //
-    // @Regex ^on player ((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context
