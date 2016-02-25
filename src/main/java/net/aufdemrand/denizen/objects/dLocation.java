@@ -860,7 +860,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             // -->
             double rad = 1d;
             if (attribute.startsWith("distance")) {
-                rad = attribute.getIntContext(1);
+                rad = attribute.getDoubleContext(1);
                 attribute = attribute.fulfill(1);
             }
             dList list = new dList();
