@@ -29,6 +29,7 @@ public class PathFinder {
             while (!plan.isComplete()) {
                 Vector v = plan.getCurrentVector();
                 path.add(new dLocation(start.getWorld(), v.getX(), v.getY(), v.getZ()));
+                plan.update(null);
             }
             return path;
         }
