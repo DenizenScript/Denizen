@@ -113,8 +113,8 @@ public class ItemFirework implements Property {
         // @input dList
         // @description
         // Sets the firework's settings.
-        // Each item in the list is formatting as: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
-        // EG: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
+        // Each item in the list is formatted as: TRAIL,FLICKER,TYPE,RED,GREEN,BLUE,RED,GREEN,BLUE
+        // For example: true,false,BALL,255,0,0,0,255,0 would create a trailing ball firework that fades from red to green.
         // Optionally add a list entry that's just a single number to set the power.
         // @tags
         // <i@item.firework>

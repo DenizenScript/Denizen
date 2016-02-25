@@ -20,7 +20,6 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.milkbowl.vault.chat.Chat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -39,7 +38,12 @@ import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class dPlayer implements dObject, Adjustable {
@@ -1556,6 +1560,18 @@ public class dPlayer implements dObject, Adjustable {
             return new Element(sidebar.getIncrement()).getAttribute(attribute.fulfill(2));
         }
 
+        // <--[tag]
+        // @attribute <p@player.skin_blob>
+        // @returns Element
+        // @description
+        // Returns the player's current skin blob.
+        // @mechanism dPlayer.skin_blob
+        // -->
+        if (attribute.startsWith("skin_blob")) {
+            return new Element(PlayerProfileEditor.getPlayerSkinBlob(getPlayerEntity()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
 
         /////////////////////
         //   CITIZENS ATTRIBUTES
@@ -2883,6 +2899,17 @@ public class dPlayer implements dObject, Adjustable {
             else {
                 PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
             }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name skin_blob
+        // @input Element
+        // @description
+        // Changes the skin of the player to the specified blob.
+        // -->
+        if (mechanism.matches("skin_blob")) {
+            PlayerProfileEditor.setPlayerSkinBlob(getPlayerEntity(), value.asString());
         }
 
         // <--[mechanism]

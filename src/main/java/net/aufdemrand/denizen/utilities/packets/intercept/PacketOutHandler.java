@@ -41,6 +41,7 @@ public class PacketOutHandler {
                     event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
+                    event.cancelled = false;
                     event.fire();
                     return event.cancelled;
                 }
@@ -63,7 +64,10 @@ public class PacketOutHandler {
             }
             else if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                 PacketPlayOutNamedEntitySpawn nesPacket = (PacketPlayOutNamedEntitySpawn) packet;
-                // int entityId = named_spawn_entityId.getInt(nesPacket);
+                int entityId = named_spawn_entityId.getInt(nesPacket);
+                if (entityIsHiding(player, entityId)) {
+                    return true;
+                }
                 UUID entityUUID = (UUID) named_spawn_entityUUID.get(nesPacket);
                 final Entity entity = ((WorldServer) player.getWorld()).getEntity(entityUUID);
                 if (entity instanceof EntityFakePlayer) {

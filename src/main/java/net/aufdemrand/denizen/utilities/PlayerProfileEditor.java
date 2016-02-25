@@ -112,6 +112,17 @@ public class PlayerProfileEditor {
         updatePlayer(player, true);
     }
 
+    public static void setPlayerSkinBlob(Player player, String blob) {
+        GameProfile gameProfile = getFakeProfile(player);
+        gameProfile.getProperties().get("textures").clear();
+        gameProfile.getProperties().put("textures", new Property("textures", blob));
+        updatePlayer(player, true);
+    }
+
+    public static String getPlayerSkinBlob(Player player) {
+        return getFakeProfile(player).getProperties().get("textures").iterator().next().getValue();
+    }
+
     private static void updatePlayer(Player player, final boolean isSkinChanging) {
         final EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         final UUID uuid = player.getUniqueId();

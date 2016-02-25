@@ -864,7 +864,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 attribute = attribute.fulfill(1);
             }
             dList list = new dList();
-            org.bukkit.util.Vector rel = this.toVector().subtract(target.toVector());
+            org.bukkit.util.Vector rel = target.toVector().subtract(this.toVector());
             double len = rel.length();
             rel = rel.multiply(1d / len);
             for (double i = 0d; i < len; i += rad) {

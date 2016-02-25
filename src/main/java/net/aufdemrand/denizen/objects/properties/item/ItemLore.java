@@ -135,7 +135,7 @@ public class ItemLore implements Property {
             ItemMeta meta = item.getItemStack().getItemMeta();
             dList lore = mechanism.getValue().asType(dList.class);
             if (item.isItemscript()) {
-                lore.add(ItemScriptHelper.createItemScriptID(item.getScriptName()));
+                lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));
             }
             for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, EscapeTags.unEscape(lore.get(i)));
