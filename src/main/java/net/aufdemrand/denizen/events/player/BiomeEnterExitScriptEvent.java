@@ -64,8 +64,8 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String biome_test = lower.substring(lower.lastIndexOf(" ") + 1);
-        String direction = lower.substring(lower.indexOf(" ") + 1, lower.lastIndexOf(" ") - 1);
+        String biome_test = lower.substring(lower.lastIndexOf(' ') + 1);
+        String direction = lower.substring(lower.indexOf(' ') + 1, lower.lastIndexOf(' ')).trim();
 
         return biome_test.equals("biome")
                 || (direction.equals("enters") && biome_test.equals(CoreUtilities.toLowerCase(new_biome.toString())))
