@@ -84,6 +84,10 @@ public class MapScriptContainer extends ScriptContainer {
                     }
                     renderer.addObject(new MapCursor(x, y, visible, debug, objectSection.getString("DIRECTION", "0"), cursor));
                 }
+                else if (type.equals("DOT")) {
+                    renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("RADIUS", "1"),
+                            objectSection.getString("COLOR", "black")));
+                }
             }
         }
         DenizenMapManager.setMap(mapView, renderer);
