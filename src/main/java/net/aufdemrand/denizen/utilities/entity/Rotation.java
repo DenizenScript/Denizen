@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityLiving;
-import net.minecraft.server.v1_8_R3.MovingObjectPosition;
-import net.minecraft.server.v1_8_R3.Vec3D;
+import net.minecraft.server.v1_9_R1.EntityHuman;
+import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R1.MovingObjectPosition;
+import net.minecraft.server.v1_9_R1.Vec3D;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -55,7 +55,7 @@ public class Rotation {
         }
 
         else {
-            net.minecraft.server.v1_8_R3.Entity handle = ((CraftEntity) entity).getHandle();
+            net.minecraft.server.v1_9_R1.Entity handle = ((CraftEntity) entity).getHandle();
             handle.yaw = yaw;
             handle.pitch = pitch;
         }
@@ -63,7 +63,7 @@ public class Rotation {
 
     // Taken from C2 NMS class for less dependency on C2
     private static void look(Entity entity, float yaw, float pitch) {
-        net.minecraft.server.v1_8_R3.Entity handle = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_9_R1.Entity handle = ((CraftEntity) entity).getHandle();
         if (handle != null) {
             handle.yaw = yaw;
             if (handle instanceof EntityLiving) {

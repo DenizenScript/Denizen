@@ -3,9 +3,9 @@ package net.aufdemrand.denizen.utilities.entity;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.utilities.entity.network.FakeNetworkManager;
 import net.aufdemrand.denizen.utilities.entity.network.FakePlayerConnection;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayer extends EntityPlayer {

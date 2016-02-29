@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities.packets.intercept;
 
 import net.aufdemrand.denizen.utilities.DenizenAtomicIntegerFieldUpdater;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

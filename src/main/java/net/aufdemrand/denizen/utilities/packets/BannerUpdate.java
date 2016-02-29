@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.craftbukkit.v1_8_R3.block.CraftBanner;
+import org.bukkit.craftbukkit.v1_9_R1.block.CraftBanner;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

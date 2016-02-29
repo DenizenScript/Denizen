@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_8_R3.EntityArrow;
+import net.minecraft.server.v1_9_R1.EntityArrow;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 
 public class FakeArrowEntity extends EntityArrow {
 

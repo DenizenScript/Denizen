@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.minecraft.server.v1_8_R3.EntityLiving;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +24,7 @@ public class CustomNBT {
             return false;
         }
         NBTTagCompound tag;
-        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
         if (!cis.hasTag()) {
             return false;
         }
@@ -38,7 +38,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!cis.hasTag()) {
             cis.setTag(new NBTTagCompound());
@@ -56,7 +56,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag;
         if (!cis.hasTag()) {
             cis.setTag(new NBTTagCompound());
@@ -71,7 +71,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_8_R3.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
         NBTTagCompound tag = null;
         // Do stuff with tag
         if (!cis.hasTag()) {
@@ -87,7 +87,7 @@ public class CustomNBT {
             return null;
         }
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -106,7 +106,7 @@ public class CustomNBT {
             return null;
         }
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -125,7 +125,7 @@ public class CustomNBT {
             return false;
         }
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag
@@ -140,7 +140,7 @@ public class CustomNBT {
             return null;
         }
         Entity bukkitEntity = entity;
-        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
+        net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
         NBTTagCompound tag = new NBTTagCompound();
 
         // Writes the entity's NBT data to tag

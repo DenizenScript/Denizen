@@ -342,7 +342,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onEnable() {
         try {
-            net.minecraft.server.v1_8_R3.Block.getById(0);
+            net.minecraft.server.v1_9_R1.Block.getById(0);
         }
         catch (NoClassDefFoundError e) {
             getLogger().warning("-------------------------------------");
@@ -1567,7 +1567,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public Thread getMainThread() {
-        return net.minecraft.server.v1_8_R3.MinecraftServer.getServer().primaryThread;
+        return net.minecraft.server.v1_9_R1.MinecraftServer.getServer().primaryThread;
     }
 }
 

@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
