@@ -50,7 +50,7 @@ import java.util.UUID;
  * @version 1.6.0
  * @author one4me
  */
-// TODO: 1.9
+
 public class ImprovedOfflinePlayer {
 
     private UUID player;
@@ -107,18 +107,15 @@ public class ImprovedOfflinePlayer {
     public Location getLocation() {
         NBTTagList position = this.compound.getList("Pos", 6);
         NBTTagList rotation = this.compound.getList("Rotation", 5);
-        // TODO: 1.9
-        /*
         return new Location(
                 Bukkit.getWorld(new UUID(this.compound.getLong("WorldUUIDMost"),
                         this.compound.getLong("WorldUUIDLeast"))),
-                position.d(0),
-                position.d(1),
-                position.d(2),
-                rotation.e(0),
-                rotation.e(1)
-        );*/
-        return null;
+                position.e(0),
+                position.e(1),
+                position.e(2),
+                rotation.f(0),
+                rotation.f(1)
+        );
     }
 
     public void setLocation(Location location) {
@@ -588,8 +585,7 @@ public class ImprovedOfflinePlayer {
 
     public Vector getVelocity() {
         NBTTagList list = this.compound.getList("Motion", 6);
-        // TODO: 1.9 return new Vector(list.d(0), list.d(1), list.d(2));
-        return null;
+        return new Vector(list.e(0), list.e(1), list.e(2));
     }
 
     public void setVelocity(Vector vector) {

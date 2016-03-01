@@ -1,7 +1,11 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.PacketPlayOutTileEntityData;
+import net.minecraft.server.v1_9_R1.TileEntityBanner;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
@@ -18,9 +22,9 @@ public class BannerUpdate {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutTileEntityData.class);
-        tile_location = fields.get("a");// TODO: 1.9
-        tile_action = fields.get("b");// TODO: 1.9
-        tile_data = fields.get("c");// TODO: 1.9
+        tile_location = fields.get("a");
+        tile_action = fields.get("b");
+        tile_data = fields.get("c");
     }
 
     public static PacketPlayOutTileEntityData getTileEntityDataPacket(Location location, DyeColor base, List<Pattern> patterns) {
@@ -31,7 +35,7 @@ public class BannerUpdate {
             tile_action.set(packet, 6);
 
             NBTTagCompound compound = new NBTTagCompound();
-// TODO: 1.9            ((CraftBanner) location.getBlock().getState()).getTileEntity().b(compound);
+            ((CraftBanner) location.getBlock().getState()).getTileEntity().save(compound);
 
             NBTTagList nbtPatterns = new NBTTagList();
             for (Pattern pattern : patterns) {

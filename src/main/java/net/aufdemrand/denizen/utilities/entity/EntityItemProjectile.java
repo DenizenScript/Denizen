@@ -26,23 +26,22 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         bukkitEntity = new CraftItemProjectile((CraftServer) Bukkit.getServer(), this);
     }
 
-    // TODO: 1.9 @Override
-    public void t_() {
-        // TODO: 1.9     K();
+    @Override
+    public void m() {
+        this.U();
         BlockPosition blockposition = new BlockPosition(locX, locY, locZ);
         IBlockData iblockdata = world.getType(blockposition);
         Block block = iblockdata.getBlock();
 
         // TODO: 1.9
-        /*
-          if (block.getMaterial() != Material.AIR) {
-            AxisAlignedBB axisalignedbb = block.a(world, blockposition, iblockdata);
+        if (block.getBlockData().getMaterial() != Material.AIR) {
+            AxisAlignedBB axisalignedbb = block.a(iblockdata, world, blockposition);
 
             if ((axisalignedbb != null) && (axisalignedbb.a(new Vec3D(locX, locY, locZ)))) {
                 CraftEventFactory.callProjectileHitEvent(this);
                 this.die();
             }
-        }*/
+        }
         age += 1;
         Vec3D vec3d = new Vec3D(locX, locY, locZ);
         Vec3D vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
@@ -51,7 +50,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         vec3d = new Vec3D(locX, locY, locZ);
         vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
         if (movingobjectposition != null) {
-            // TODO: 1.9         vec3d1 = new Vec3D(movingobjectposition.pos.a, movingobjectposition.pos.b, movingobjectposition.pos.c);
+            vec3d1 = new Vec3D(movingobjectposition.pos.x, movingobjectposition.pos.y, movingobjectposition.pos.z);
         }
 
         Entity entity = null;
@@ -91,19 +90,17 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
                 this.die();
             }
             else if (movingobjectposition.a() != null) {
-                // TODO: 1.9
-                /*
-                if (block.getMaterial() != Material.AIR) {
-                    motX = ((float) (movingobjectposition.pos.a - locX));
-                    motY = ((float) (movingobjectposition.pos.b - locY));
-                    motZ = ((float) (movingobjectposition.pos.c - locZ));
+                if (block.getBlockData().getMaterial() != Material.AIR) {
+                    motX = ((float) (movingobjectposition.pos.x - locX));
+                    motY = ((float) (movingobjectposition.pos.y - locY));
+                    motZ = ((float) (movingobjectposition.pos.z - locZ));
                     float f3 = MathHelper.sqrt(motX * motX + motY * motY + motZ * motZ);
                     locX -= motX / f3 * 0.0500000007450581D;
                     locY -= motY / f3 * 0.0500000007450581D;
                     locZ -= motZ / f3 * 0.0500000007450581D;
                     CraftEventFactory.callProjectileHitEvent(this);
                     this.die();
-                }*/
+                }
             }
         }
 

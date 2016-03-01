@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
+import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -24,6 +25,8 @@ import net.minecraft.server.v1_9_R1.PacketPlayOutGameStateChange;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -2551,7 +2554,8 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Shows the player a boss health bar with the specified text as a name.
         // Use with no input value to remove the bar.
-        // Optionally, precede the text with a number indicating the health value. EG:
+        // Optionally, precede the text with a number indicating the health value
+        // based on an arbitrary scale of 0 to 200. EG:
         // - adjust <player> show_boss_bar:Hello
         // - adjust <player> show_boss_bar:100|Hello
         // @tags
@@ -2560,15 +2564,17 @@ public class dPlayer implements dObject, Adjustable {
         if (mechanism.matches("show_boss_bar")) {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
-                if (split.length == 2 && new Element(split[0]).isInt()) {
-                    BossHealthBar.displayTextBar(split[1], getPlayerEntity(), new Element(split[0]).asInt());
+                if (split.length == 2 && new Element(split[0]).isDouble()) {
+                    BossBarManager.showBossBar(getPlayerEntity(), true, split[1], new Element(split[0]).asDouble()/200,
+                            BarColor.PURPLE, BarStyle.SOLID);
                 }
                 else {
-                    BossHealthBar.displayTextBar(value.asString(), getPlayerEntity(), 200);
+                    BossBarManager.showBossBar(getPlayerEntity(), true, split[0], 1.0,
+                            BarColor.PURPLE, BarStyle.SOLID);
                 }
             }
             else {
-                BossHealthBar.removeTextBar(getPlayerEntity());
+                BossBarManager.removeBossBars(getPlayerEntity());
             }
         }
 

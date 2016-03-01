@@ -14,8 +14,8 @@ public class ActionBar {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
-        chat_message = fields.get("a");// TODO: 1.9
-        chat_type = fields.get("b");// TODO: 1.9
+        chat_message = fields.get("a");
+        chat_type = fields.get("b");
     }
 
     public static PacketPlayOutChat getActionBarPacket(String message) {
