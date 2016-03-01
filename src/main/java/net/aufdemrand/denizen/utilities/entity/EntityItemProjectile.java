@@ -33,7 +33,6 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         IBlockData iblockdata = world.getType(blockposition);
         Block block = iblockdata.getBlock();
 
-        // TODO: 1.9
         if (block.getBlockData().getMaterial() != Material.AIR) {
             AxisAlignedBB axisalignedbb = block.a(iblockdata, world, blockposition);
 

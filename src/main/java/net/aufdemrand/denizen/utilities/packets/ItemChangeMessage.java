@@ -26,9 +26,9 @@ public class ItemChangeMessage implements Listener {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
-        slot_inventoryId = fields.get("a");// TODO: 1.9
-        slot_slotId = fields.get("b");// TODO: 1.9
-        slot_item = fields.get("c");// TODO: 1.9
+        slot_inventoryId = fields.get("a");
+        slot_slotId = fields.get("b");
+        slot_item = fields.get("c");
         DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new ItemChangeMessage(),
                 DenizenAPI.getCurrentInstance());
     }

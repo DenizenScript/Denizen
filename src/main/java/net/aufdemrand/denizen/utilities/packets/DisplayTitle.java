@@ -14,11 +14,11 @@ public class DisplayTitle {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutTitle.class);
-        title_action = fields.get("a");// TODO: 1.9
-        chat_component = fields.get("b");// TODO: 1.9
-        fade_in_ticks = fields.get("c");// TODO: 1.9
-        stay_ticks = fields.get("d");// TODO: 1.9
-        fade_out_ticks = fields.get("e");// TODO: 1.9
+        title_action = fields.get("a");
+        chat_component = fields.get("b");
+        fade_in_ticks = fields.get("c");
+        stay_ticks = fields.get("d");
+        fade_out_ticks = fields.get("e");
     }
 
     public static PacketPlayOutTitle getTitlePacket(String title) {

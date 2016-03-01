@@ -9,7 +9,7 @@ import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
-// TODO: 1.9
+
 public abstract class AbstractListenerPlayIn extends PlayerConnection {
 
     protected final PlayerConnection oldListener;

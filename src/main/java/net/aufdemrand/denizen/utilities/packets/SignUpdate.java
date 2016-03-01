@@ -18,9 +18,9 @@ public class SignUpdate {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutUpdateSign.class);
-        sign_world = fields.get("a");// TODO: 1.9
-        sign_location = fields.get("b");// TODO: 1.9
-        sign_lines = fields.get("c");// TODO: 1.9
+        sign_world = fields.get("a");
+        sign_location = fields.get("b");
+        sign_lines = fields.get("c");
     }
 
     public static PacketPlayOutUpdateSign getSignUpdatePacket(Location location, String[] lines) {

@@ -19,7 +19,7 @@ public class SignEditor {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutOpenSignEditor.class);
-        sign_location = fields.get("a");// TODO: 1.9
+        sign_location = fields.get("a");
     }
 
     public static PacketPlayOutOpenSignEditor getSignEditorPacket(Location location) {
@@ -41,7 +41,7 @@ public class SignEditor {
             // Prevent client crashing by sending current state of the sign
             PacketHelper.sendPacket(player, sign.getUpdatePacket());
             ((TileEntitySign) sign).isEditable = true;
-            ((TileEntitySign) sign).a(((CraftPlayer) player).getHandle());// TODO: 1.9
+            ((TileEntitySign) sign).a(((CraftPlayer) player).getHandle());
             PacketHelper.sendPacket(player, signEditorPacket);
         }
         else {
