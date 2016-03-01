@@ -243,11 +243,6 @@ public class BlockLight {
                 map.flagDirty(position);
             }
 
-            // TODO: 1.9   @Override
-            public void b(BlockPosition position) {
-                map.flagDirty(position);
-            }
-
             @Override
             public void b(int arg0, BlockPosition arg1, int arg2) {
             }
@@ -274,20 +269,8 @@ public class BlockLight {
             public void a(int arg0, BlockPosition arg1, int arg2) {
             }
 
-            // TODO: 1.9  @Override
-            public void a(String arg0, double arg1, double arg2, double arg3, float arg4, float arg5) {
-            }
-
-            // TODO: 1.9   @Override
-            public void a(EntityHuman arg0, String arg1, double arg2, double arg3, double arg4, float arg5, float arg6) {
-            }
-
             @Override
             public void a(int arg0, boolean arg1, double arg2, double arg3, double arg4, double arg5, double arg6, double arg7, int... arg8) {
-            }
-
-            // TODO: 1.9  @Override
-            public void a(String arg0, BlockPosition arg1) {
             }
 
             @Override

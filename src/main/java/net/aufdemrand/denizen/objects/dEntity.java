@@ -2066,8 +2066,8 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            // TODO: 1.9        return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
-            // TODO: 1.9              .getAttribute(attribute.fulfill(1));
+            return new Element(((CraftAnimals) getLivingEntity()).getHandle().isInLove())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2537,10 +2537,10 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true")) {
-                    // TODO: 1.9        ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
+                    ((CraftAnimals) getLivingEntity()).getHandle().c((EntityHuman) null);
                 }
                 else {
-                    // TODO: 1.9        ((CraftAnimals) getLivingEntity()).getHandle().cq();
+                    ((CraftAnimals) getLivingEntity()).getHandle().resetLove();
                 }
             }
         }

@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-// TODO: 1.9
+
 public class DenizenNetworkManager extends NetworkManager {
 
     private final NetworkManager oldManager;
@@ -36,8 +36,8 @@ public class DenizenNetworkManager extends NetworkManager {
         oldManager.channelActive(channelhandlercontext);
     }
 
-    public void a(EnumProtocol enumprotocol) {
-// TODO: 1.9        oldManager.a(enumprotocol);
+    public void setProtocol(EnumProtocol enumprotocol) {
+        oldManager.setProtocol(enumprotocol);
     }
 
     public void channelInactive(ChannelHandlerContext channelhandlercontext) throws Exception {
@@ -59,19 +59,19 @@ public class DenizenNetworkManager extends NetworkManager {
         }
     }
 
-    public void a(PacketListener packetlistener) {
-// TODO: 1.9        oldManager.a(packetlistener);
+    public void setPacketListener(PacketListener packetlistener) {
+        oldManager.setPacketListener(packetlistener);
     }
 
-    public void handle(Packet packet) {
+    public void sendPacket(Packet packet) {
         // If the packet sending isn't cancelled, allow normal sending
-        if (!PacketOutHandler.handle(player, packet)) {
-            // TODO: 1.9           oldManager.handle(packet);
+        if (!PacketOutHandler.sendPacket(player, packet)) {
+            oldManager.sendPacket(packet);
         }
     }
 
-    public void a(Packet packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
-        // TODO: 1.9      oldManager.a(packet, genericfuturelistener, agenericfuturelistener);
+    public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
+        oldManager.sendPacket(packet, genericfuturelistener, agenericfuturelistener);
     }
 
     public void a() {
@@ -86,43 +86,40 @@ public class DenizenNetworkManager extends NetworkManager {
         oldManager.close(ichatbasecomponent);
     }
 
-    public boolean c() {
-        // TODO: 1.9       return oldManager.c();
-        return false;
+    public boolean isLocal() {
+       return oldManager.isLocal();
     }
 
     public void a(SecretKey secretkey) {
         oldManager.a(secretkey);
     }
 
-    public boolean g() {
-        // TODO: 1.9       return oldManager.g();
-        return false;
+    public boolean isConnected() {
+        return oldManager.isConnected();
     }
 
     public boolean h() {
         return oldManager.h();
     }
 
-    public PacketListener getPacketListener() {
-        // TODO: 1.9     return oldManager.getPacketListener();
-        return null;
+    public PacketListener i() {
+        return oldManager.i();
     }
 
     public IChatBaseComponent j() {
         return oldManager.j();
     }
 
-    public void k() {
-        // TODO: 1.9      oldManager.k();
+    public void stopReading() {
+        oldManager.stopReading();
     }
 
-    public void a(int i) {
-        // TODO: 1.9 oldManager.a(i);
+    public void setCompressionLevel(int i) {
+        oldManager.setCompressionLevel(i);
     }
 
-    public void l() {
-        // TODO: 1.9     oldManager.l();
+    public void handleDisconnection() {
+        oldManager.handleDisconnection();
     }
 
     protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet object) throws Exception {

@@ -16,7 +16,7 @@ public class EntityFakePlayer extends EntityPlayer {
         playerinteractmanager.setGameMode(WorldSettings.EnumGamemode.SURVIVAL);
         NetworkManager networkManager = new FakeNetworkManager(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection(minecraftserver, networkManager, this);
-        // TODO: 1.9   networkManager.a(playerConnection);
+        networkManager.setPacketListener(playerConnection);
         // TODO: 1.9    datawatcher.watch(10, (byte) 127);
         worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }

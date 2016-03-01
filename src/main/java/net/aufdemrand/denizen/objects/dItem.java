@@ -804,10 +804,9 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                // TODO: 1.9        String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).C().getChatModifier().toString();
-                // TODO: 1.9         return new Element(JSON.substring(176, JSON.length() - 185))
-                // TODO: 1.9               .getAttribute(attribute.fulfill(1));
-                return "1.9 UPDATE AWAITING";
+                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).B().getChatModifier().toString();
+                return new Element(JSON.substring(176, JSON.length() - 185))
+                        .getAttribute(attribute.fulfill(1));
             }
         });
 

@@ -18,7 +18,7 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.UUID;
-// TODO: 1.9
+
 public class PacketOutHandler {
 
     /**
@@ -28,7 +28,7 @@ public class PacketOutHandler {
      * @param packet the client-bound packet
      * @return whether to cancel sending the packet
      */
-    public static boolean handle(final EntityPlayer player, Packet packet) {
+    public static boolean sendPacket(final EntityPlayer player, Packet packet) {
         try {
             if (packet instanceof PacketPlayOutChat) {
                 if (ExecuteCommand.silencedPlayers.contains(player.getUniqueID())) {
@@ -38,7 +38,7 @@ public class PacketOutHandler {
                 int pos = chat_position.getInt(cPacket);
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    // TODO: 1.9       event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
+                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).toPlainText());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.cancelled = false;
@@ -121,18 +121,18 @@ public class PacketOutHandler {
                     // The trades
                     for (int i = 0; i < trades; i++) {
                         // The first item cost
-                        // TODO: 1.9             ItemStack buyItem1 = serializer.i();
-                        // TODO: 1.9        newSerializer.a(removeItemScriptLore(buyItem1));
+                        ItemStack buyItem1 = serializer.k();
+                        newSerializer.a(removeItemScriptLore(buyItem1));
                         // The item to be bought
-                        // TODO: 1.9             ItemStack buyItem3 = serializer.i();
-                        // TODO: 1.9          newSerializer.a(removeItemScriptLore(buyItem3));
+                        ItemStack buyItem3 = serializer.k();
+                        newSerializer.a(removeItemScriptLore(buyItem3));
                         // Whether there is a second item cost
                         boolean hasItem2 = serializer.readBoolean();
                         newSerializer.writeBoolean(hasItem2);
                         // The second item cost, if there is one
                         if (hasItem2) {
-                            // TODO: 1.9              ItemStack buyItem2 = serializer.i();
-                            // TODO: 1.9                newSerializer.a(removeItemScriptLore(buyItem2));
+                            ItemStack buyItem2 = serializer.k();
+                            newSerializer.a(removeItemScriptLore(buyItem2));
                         }
                         // Has used max times
                         boolean usedMax = serializer.readBoolean();
@@ -167,7 +167,7 @@ public class PacketOutHandler {
                 String line = lore.getString(i);
                 if (line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                     hash = line;
-                    // TODO: 1.9         lore.a(i);
+                    lore.remove(i);
                     break;
                 }
             }
@@ -191,11 +191,11 @@ public class PacketOutHandler {
         if (entry == null) {
             return false;
         }
-        // TODO: 1.9      UUID entityUUID = entry.tracker.getUniqueID();
-// TODO: 1.9        if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
-        // TODO: 1.9          entry.clear(player);
-        // TODO: 1.9          return true;
-        // TODO: 1.9     }
+        UUID entityUUID = entry.b().getUniqueID();
+        if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
+            entry.clear(player);
+            return true;
+        }
         return false;
     }
 
@@ -216,36 +216,36 @@ public class PacketOutHandler {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
-        chat_message = fields.get("a");// TODO: 1.9
-        chat_position = fields.get("b");// TODO: 1.9
+        chat_message = fields.get("a");
+        chat_position = fields.get("b");
 
         fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
-        set_slot_windowId = fields.get("a");// TODO: 1.9
-        set_slot_slotId = fields.get("b");// TODO: 1.9
-        set_slot_itemStack = fields.get("c");// TODO: 1.9
+        set_slot_windowId = fields.get("a");
+        set_slot_slotId = fields.get("b");
+        set_slot_itemStack = fields.get("c");
 
         fields = PacketHelper.registerFields(PacketPlayOutWindowItems.class);
-        window_items_windowId = fields.get("a");// TODO: 1.9
-        window_items_itemStackArray = fields.get("b");// TODO: 1.9
+        window_items_windowId = fields.get("a");
+        window_items_itemStackArray = fields.get("b");
 
         fields = PacketHelper.registerFields(PacketPlayOutNamedEntitySpawn.class);
-        named_spawn_entityId = fields.get("a");// TODO: 1.9
-        named_spawn_entityUUID = fields.get("b");// TODO: 1.9
+        named_spawn_entityId = fields.get("a");
+        named_spawn_entityUUID = fields.get("b");
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntity.class);
-        spawn_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
+        spawn_entityId = fields.get("a"); // Other fields currently irrelevant
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
-        spawn_living_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
+        spawn_living_entityId = fields.get("a"); // Other fields currently irrelevant
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityPainting.class);
-        spawn_painting_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
+        spawn_painting_entityId = fields.get("a"); // Other fields currently irrelevant
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityExperienceOrb.class);
-        spawn_experience_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
+        spawn_experience_entityId = fields.get("a"); // Other fields currently irrelevant
 
         fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
-        custom_name = fields.get("a");// TODO: 1.9
-        custom_serializer = fields.get("b");// TODO: 1.9
+        custom_name = fields.get("a");
+        custom_serializer = fields.get("b");
     }
 }

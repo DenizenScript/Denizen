@@ -16,37 +16,11 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FishingTrait extends Trait {
-/* // TODO: 1.9
-    private static final List junkResults = Arrays.asList(new PossibleFishingResult[]{(
-            new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F),
-            new PossibleFishingResult(new ItemStack(Items.LEATHER), 10),
-            new PossibleFishingResult(new ItemStack(Items.BONE), 10),
-            new PossibleFishingResult(new ItemStack(Items.POTION), 10),
-            new PossibleFishingResult(new ItemStack(Items.STRING), 5),
-            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F),
-            new PossibleFishingResult(new ItemStack(Items.BOWL), 10),
-            new PossibleFishingResult(new ItemStack(Items.STICK), 5),
-            new PossibleFishingResult(new ItemStack(Items.DYE, 10, 0), 1),
-            new PossibleFishingResult(new ItemStack(Blocks.TRIPWIRE_HOOK), 10),
-            new PossibleFishingResult(new ItemStack(Items.ROTTEN_FLESH), 10)});
-    private static final List treasureResults = Arrays.asList(new PossibleFishingResult[]{
-            new PossibleFishingResult(new ItemStack(Blocks.WATERLILY), 1),
-            new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1),
-            new PossibleFishingResult(new ItemStack(Items.SADDLE), 1),
-            (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(),
-            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(),
-            (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a()});
-    private static final List fishResults = Arrays.asList(new PossibleFishingResult[]{
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.COD.a()), 60),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.CLOWNFISH.a()), 2),
-            new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.PUFFERFISH.a()), 13)});
-*/
-    public static enum CatchType {NONE, DEFAULT, JUNK, TREASURE, FISH}
+
+    public enum CatchType {NONE, DEFAULT, JUNK, TREASURE, FISH}
 
     @Persist("fishing")
     private boolean fishing = false;
@@ -307,21 +281,27 @@ public class FishingTrait extends Trait {
 
     private ItemStack catchRandomJunk() {
         fishHook.owner.a(StatisticList.A, 1);
-// TODO: 1.9        return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), junkResults)).a(CoreUtilities.getRandom());
-        return null;
+        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.am).a(CoreUtilities.getRandom(), playerFishEvent2.a());
+        return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
 
     private ItemStack catchRandomTreasure() {
         fishHook.owner.a(StatisticList.B, 1);
-        // TODO: 1.9     return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), treasureResults)).a(CoreUtilities.getRandom());
-        return null;
+        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.an).a(CoreUtilities.getRandom(), playerFishEvent2.a());
+        return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
 
     private ItemStack catchRandomFish() {
         //float f3 = f - f2;
         fishHook.owner.a(StatisticList.z, 1);
-        // TODO: 1.9     return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), fishResults)).a(CoreUtilities.getRandom());
-        return null;
+        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.ao).a(CoreUtilities.getRandom(), playerFishEvent2.a());
+        return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
 
     /**

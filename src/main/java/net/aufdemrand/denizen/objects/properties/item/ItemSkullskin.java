@@ -198,7 +198,7 @@ public class ItemSkullskin implements Property {
                     if (dB.verbose) {
                         dB.log("Filling profile name/textures!");
                     }
-                    // TODO: 1.9          gameProfile1 = MinecraftServer.getServer().aD().fillProfileProperties(gameProfile1, true);
+                    gameProfile1 = MinecraftServer.getServer().ay().fillProfileProperties(gameProfile1, true);
                 }
                 return gameProfile1;
             }

@@ -1247,15 +1247,15 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             int data = item.getMaterial().getData((byte) 0);
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
-                    // TODO: 1.9              ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    // TODO: 1.9               ((ItemController.ItemNPC) getEntity()).setType(mat, data);
+                    ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
+                    ((ItemController.ItemNPC) getEntity()).setType(mat, data);
                     break;
                 case ITEM_FRAME:
-                    // TODO: 1.9                  ((ItemFrame) getEntity()).getItem().setType(mat);
-                    // TODO: 1.9                   ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
+                    ((ItemFrame) getEntity()).getItem().setType(mat);
+                    ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
                     break;
                 case FALLING_BLOCK:
-// TODO: 1.9                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
                     break;
                 default:
                     dB.echoError("NPC is the not an item type!");
