@@ -54,7 +54,8 @@ public class DenizenNetworkManager extends NetworkManager {
                 packet.a(this.packetListener);
             }
             catch (Exception e) {
-                dB.echoError(e);
+                // Do nothing
+                //dB.echoError(e);
             }
         }
     }
@@ -126,6 +127,9 @@ public class DenizenNetworkManager extends NetworkManager {
         this.a(channelhandlercontext, object);
     }
 
+    public SocketAddress getRawAddress() {
+        return oldManager.getRawAddress();
+    }
 
     //////////////////////////////////
     //// Reflection Methods/Fields

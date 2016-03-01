@@ -196,6 +196,26 @@ public abstract class AbstractListenerPlayIn extends PlayerConnection {
     }
 
     @Override
+    public void a(PacketPlayInBoatMove packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInTeleportAccept packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInUseItem packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInVehicleMove packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
         oldListener.a(iChatBaseComponent);
     }

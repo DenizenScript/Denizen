@@ -8,6 +8,7 @@ import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapView;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class MapDot extends MapObject {
@@ -19,6 +20,15 @@ public class MapDot extends MapObject {
         super(xTag, yTag, visibilityTag, debug);
         this.radiusTag = radiusTag;
         this.colorTag = colorTag;
+    }
+
+    @Override
+    public Map<String, Object> getSaveData() {
+        Map<String, Object> data = super.getSaveData();
+        data.put("type", "DOT");
+        data.put("radius", radiusTag);
+        data.put("color", colorTag);
+        return data;
     }
 
     @Override
