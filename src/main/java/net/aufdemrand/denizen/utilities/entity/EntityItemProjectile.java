@@ -26,21 +26,23 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         bukkitEntity = new CraftItemProjectile((CraftServer) Bukkit.getServer(), this);
     }
 
-    @Override
+    // TODO: 1.9 @Override
     public void t_() {
-        K();
+        // TODO: 1.9     K();
         BlockPosition blockposition = new BlockPosition(locX, locY, locZ);
         IBlockData iblockdata = world.getType(blockposition);
         Block block = iblockdata.getBlock();
 
-        if (block.getMaterial() != Material.AIR) {
+        // TODO: 1.9
+        /*
+          if (block.getMaterial() != Material.AIR) {
             AxisAlignedBB axisalignedbb = block.a(world, blockposition, iblockdata);
 
             if ((axisalignedbb != null) && (axisalignedbb.a(new Vec3D(locX, locY, locZ)))) {
                 CraftEventFactory.callProjectileHitEvent(this);
                 this.die();
             }
-        }
+        }*/
         age += 1;
         Vec3D vec3d = new Vec3D(locX, locY, locZ);
         Vec3D vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
@@ -49,7 +51,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         vec3d = new Vec3D(locX, locY, locZ);
         vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
         if (movingobjectposition != null) {
-            vec3d1 = new Vec3D(movingobjectposition.pos.a, movingobjectposition.pos.b, movingobjectposition.pos.c);
+            // TODO: 1.9         vec3d1 = new Vec3D(movingobjectposition.pos.a, movingobjectposition.pos.b, movingobjectposition.pos.c);
         }
 
         Entity entity = null;
@@ -89,6 +91,8 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
                 this.die();
             }
             else if (movingobjectposition.a() != null) {
+                // TODO: 1.9
+                /*
                 if (block.getMaterial() != Material.AIR) {
                     motX = ((float) (movingobjectposition.pos.a - locX));
                     motY = ((float) (movingobjectposition.pos.b - locY));
@@ -99,7 +103,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
                     locZ -= motZ / f3 * 0.0500000007450581D;
                     CraftEventFactory.callProjectileHitEvent(this);
                     this.die();
-                }
+                }*/
             }
         }
 

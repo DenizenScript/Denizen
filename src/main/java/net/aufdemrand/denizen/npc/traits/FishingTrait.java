@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FishingTrait extends Trait {
-
+/* // TODO: 1.9
     private static final List junkResults = Arrays.asList(new PossibleFishingResult[]{(
             new PossibleFishingResult(new ItemStack(Items.LEATHER_BOOTS), 10)).a(0.9F),
             new PossibleFishingResult(new ItemStack(Items.LEATHER), 10),
@@ -45,7 +45,7 @@ public class FishingTrait extends Trait {
             new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25),
             new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.CLOWNFISH.a()), 2),
             new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.PUFFERFISH.a()), 13)});
-
+*/
     public static enum CatchType {NONE, DEFAULT, JUNK, TREASURE, FISH}
 
     @Persist("fishing")
@@ -307,18 +307,21 @@ public class FishingTrait extends Trait {
 
     private ItemStack catchRandomJunk() {
         fishHook.owner.a(StatisticList.A, 1);
-        return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), junkResults)).a(CoreUtilities.getRandom());
+// TODO: 1.9        return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), junkResults)).a(CoreUtilities.getRandom());
+        return null;
     }
 
     private ItemStack catchRandomTreasure() {
         fishHook.owner.a(StatisticList.B, 1);
-        return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), treasureResults)).a(CoreUtilities.getRandom());
+        // TODO: 1.9     return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), treasureResults)).a(CoreUtilities.getRandom());
+        return null;
     }
 
     private ItemStack catchRandomFish() {
         //float f3 = f - f2;
         fishHook.owner.a(StatisticList.z, 1);
-        return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), fishResults)).a(CoreUtilities.getRandom());
+        // TODO: 1.9     return ((PossibleFishingResult) WeightedRandom.a(CoreUtilities.getRandom(), fishResults)).a(CoreUtilities.getRandom());
+        return null;
     }
 
     /**

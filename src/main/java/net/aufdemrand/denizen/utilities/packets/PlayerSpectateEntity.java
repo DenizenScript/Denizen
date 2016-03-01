@@ -14,7 +14,7 @@ public class PlayerSpectateEntity {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutCamera.class);
-        entity_id = fields.get("a");
+        entity_id = fields.get("a");// TODO: 1.9
     }
 
     public static PacketPlayOutCamera getCameraPacket(Entity entity) {

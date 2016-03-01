@@ -15,8 +15,8 @@ public class OpenBook {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
-        channel = fields.get("a");
-        packet_data = fields.get("b");
+        channel = fields.get("a");// TODO: 1.9
+        packet_data = fields.get("b");// TODO: 1.9
     }
 
     public static PacketPlayOutCustomPayload getOpenBookPacket() {

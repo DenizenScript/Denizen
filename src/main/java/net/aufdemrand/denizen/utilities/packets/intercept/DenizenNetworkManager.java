@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-
+// TODO: 1.9
 public class DenizenNetworkManager extends NetworkManager {
 
     private final NetworkManager oldManager;
@@ -37,7 +37,7 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public void a(EnumProtocol enumprotocol) {
-        oldManager.a(enumprotocol);
+// TODO: 1.9        oldManager.a(enumprotocol);
     }
 
     public void channelInactive(ChannelHandlerContext channelhandlercontext) throws Exception {
@@ -60,18 +60,18 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public void a(PacketListener packetlistener) {
-        oldManager.a(packetlistener);
+// TODO: 1.9        oldManager.a(packetlistener);
     }
 
     public void handle(Packet packet) {
         // If the packet sending isn't cancelled, allow normal sending
         if (!PacketOutHandler.handle(player, packet)) {
-            oldManager.handle(packet);
+            // TODO: 1.9           oldManager.handle(packet);
         }
     }
 
     public void a(Packet packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener, GenericFutureListener<? extends Future<? super Void>>... agenericfuturelistener) {
-        oldManager.a(packet, genericfuturelistener, agenericfuturelistener);
+        // TODO: 1.9      oldManager.a(packet, genericfuturelistener, agenericfuturelistener);
     }
 
     public void a() {
@@ -87,7 +87,8 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public boolean c() {
-        return oldManager.c();
+        // TODO: 1.9       return oldManager.c();
+        return false;
     }
 
     public void a(SecretKey secretkey) {
@@ -95,7 +96,8 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public boolean g() {
-        return oldManager.g();
+        // TODO: 1.9       return oldManager.g();
+        return false;
     }
 
     public boolean h() {
@@ -103,7 +105,8 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public PacketListener getPacketListener() {
-        return oldManager.getPacketListener();
+        // TODO: 1.9     return oldManager.getPacketListener();
+        return null;
     }
 
     public IChatBaseComponent j() {
@@ -111,15 +114,15 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public void k() {
-        oldManager.k();
+        // TODO: 1.9      oldManager.k();
     }
 
     public void a(int i) {
-        oldManager.a(i);
+        // TODO: 1.9 oldManager.a(i);
     }
 
     public void l() {
-        oldManager.l();
+        // TODO: 1.9     oldManager.l();
     }
 
     protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet object) throws Exception {

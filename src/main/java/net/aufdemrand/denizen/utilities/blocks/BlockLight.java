@@ -184,7 +184,7 @@ public class BlockLight {
                 }
             }
             if (adjacentAir != null) {
-                worldServer.x(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
+                // TODO: 1.9    worldServer.x(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
             }
             this.cachedLight = lightLevel;
         }
@@ -234,11 +234,16 @@ public class BlockLight {
         final PlayerChunkMap map = ((CraftWorld) world).getHandle().getPlayerChunkMap();
         return new IWorldAccess() {
             @Override
+            public void a(net.minecraft.server.v1_9_R1.World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
+
+            }
+
+            @Override
             public void a(BlockPosition position) {
                 map.flagDirty(position);
             }
 
-            @Override
+            // TODO: 1.9   @Override
             public void b(BlockPosition position) {
                 map.flagDirty(position);
             }
@@ -256,14 +261,24 @@ public class BlockLight {
             }
 
             @Override
+            public void a(EntityHuman entityHuman, SoundEffect soundEffect, SoundCategory soundCategory, double v, double v1, double v2, float v3, float v4) {
+
+            }
+
+            @Override
+            public void a(SoundEffect soundEffect, BlockPosition blockPosition) {
+
+            }
+
+            @Override
             public void a(int arg0, BlockPosition arg1, int arg2) {
             }
 
-            @Override
+            // TODO: 1.9  @Override
             public void a(String arg0, double arg1, double arg2, double arg3, float arg4, float arg5) {
             }
 
-            @Override
+            // TODO: 1.9   @Override
             public void a(EntityHuman arg0, String arg1, double arg2, double arg3, double arg4, float arg5, float arg6) {
             }
 
@@ -271,7 +286,7 @@ public class BlockLight {
             public void a(int arg0, boolean arg1, double arg2, double arg3, double arg4, double arg5, double arg6, double arg7, int... arg8) {
             }
 
-            @Override
+            // TODO: 1.9  @Override
             public void a(String arg0, BlockPosition arg1) {
             }
 

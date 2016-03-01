@@ -18,7 +18,7 @@ import org.bukkit.Bukkit;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.UUID;
-
+// TODO: 1.9
 public class PacketOutHandler {
 
     /**
@@ -38,7 +38,7 @@ public class PacketOutHandler {
                 int pos = chat_position.getInt(cPacket);
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
+                    // TODO: 1.9       event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.cancelled = false;
@@ -121,18 +121,18 @@ public class PacketOutHandler {
                     // The trades
                     for (int i = 0; i < trades; i++) {
                         // The first item cost
-                        ItemStack buyItem1 = serializer.i();
-                        newSerializer.a(removeItemScriptLore(buyItem1));
+                        // TODO: 1.9             ItemStack buyItem1 = serializer.i();
+                        // TODO: 1.9        newSerializer.a(removeItemScriptLore(buyItem1));
                         // The item to be bought
-                        ItemStack buyItem3 = serializer.i();
-                        newSerializer.a(removeItemScriptLore(buyItem3));
+                        // TODO: 1.9             ItemStack buyItem3 = serializer.i();
+                        // TODO: 1.9          newSerializer.a(removeItemScriptLore(buyItem3));
                         // Whether there is a second item cost
                         boolean hasItem2 = serializer.readBoolean();
                         newSerializer.writeBoolean(hasItem2);
                         // The second item cost, if there is one
                         if (hasItem2) {
-                            ItemStack buyItem2 = serializer.i();
-                            newSerializer.a(removeItemScriptLore(buyItem2));
+                            // TODO: 1.9              ItemStack buyItem2 = serializer.i();
+                            // TODO: 1.9                newSerializer.a(removeItemScriptLore(buyItem2));
                         }
                         // Has used max times
                         boolean usedMax = serializer.readBoolean();
@@ -167,7 +167,7 @@ public class PacketOutHandler {
                 String line = lore.getString(i);
                 if (line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                     hash = line;
-                    lore.a(i);
+                    // TODO: 1.9         lore.a(i);
                     break;
                 }
             }
@@ -191,11 +191,11 @@ public class PacketOutHandler {
         if (entry == null) {
             return false;
         }
-        UUID entityUUID = entry.tracker.getUniqueID();
-        if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
-            entry.clear(player);
-            return true;
-        }
+        // TODO: 1.9      UUID entityUUID = entry.tracker.getUniqueID();
+// TODO: 1.9        if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
+        // TODO: 1.9          entry.clear(player);
+        // TODO: 1.9          return true;
+        // TODO: 1.9     }
         return false;
     }
 
@@ -216,36 +216,36 @@ public class PacketOutHandler {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
-        chat_message = fields.get("a");
-        chat_position = fields.get("b");
+        chat_message = fields.get("a");// TODO: 1.9
+        chat_position = fields.get("b");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
-        set_slot_windowId = fields.get("a");
-        set_slot_slotId = fields.get("b");
-        set_slot_itemStack = fields.get("c");
+        set_slot_windowId = fields.get("a");// TODO: 1.9
+        set_slot_slotId = fields.get("b");// TODO: 1.9
+        set_slot_itemStack = fields.get("c");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutWindowItems.class);
-        window_items_windowId = fields.get("a");
-        window_items_itemStackArray = fields.get("b");
+        window_items_windowId = fields.get("a");// TODO: 1.9
+        window_items_itemStackArray = fields.get("b");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutNamedEntitySpawn.class);
-        named_spawn_entityId = fields.get("a");
-        named_spawn_entityUUID = fields.get("b");
+        named_spawn_entityId = fields.get("a");// TODO: 1.9
+        named_spawn_entityUUID = fields.get("b");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntity.class);
-        spawn_entityId = fields.get("a"); // Other fields currently irrelevant
+        spawn_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
-        spawn_living_entityId = fields.get("a"); // Other fields currently irrelevant
+        spawn_living_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityPainting.class);
-        spawn_painting_entityId = fields.get("a"); // Other fields currently irrelevant
+        spawn_painting_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityExperienceOrb.class);
-        spawn_experience_entityId = fields.get("a"); // Other fields currently irrelevant
+        spawn_experience_entityId = fields.get("a"); // Other fields currently irrelevant// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
-        custom_name = fields.get("a");
-        custom_serializer = fields.get("b");
+        custom_name = fields.get("a");// TODO: 1.9
+        custom_serializer = fields.get("b");// TODO: 1.9
     }
 }

@@ -109,7 +109,7 @@ public class Rotation {
         if (l == null || l.pos == null) {
             return null;
         }
-        Vector finalVec = new Vector(l.pos.a, l.pos.b, l.pos.c);
+        Vector finalVec = null; // TODO: 1.9new Vector(l.pos.a, l.pos.b, l.pos.c);
         MapTraceResult mtr = new MapTraceResult();
         switch (l.direction) {
             case NORTH:
@@ -143,7 +143,7 @@ public class Rotation {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
         if (l != null && l.pos != null) {
-            return new Location(start.getWorld(), l.pos.a, l.pos.b, l.pos.c);
+            // TODO: 1.9  return new Location(start.getWorld(), l.pos.a, l.pos.b, l.pos.c);
         }
         return null;
     }

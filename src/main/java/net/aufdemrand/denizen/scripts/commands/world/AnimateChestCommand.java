@@ -99,7 +99,7 @@ public class AnimateChestCommand extends AbstractCommand {
             case OPEN:
                 for (dPlayer player : players) {
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                        player.getPlayerEntity().playSound(location, Sound.BLOCK_CHEST_OPEN, 1, 1);
                     }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
@@ -109,7 +109,7 @@ public class AnimateChestCommand extends AbstractCommand {
             case CLOSE:
                 for (dPlayer player : players) {
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                        player.getPlayerEntity().getWorld().playSound(location, Sound.BLOCK_CHEST_CLOSE, 1, 1);
                     }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 0));

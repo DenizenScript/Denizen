@@ -41,11 +41,13 @@ public class BiomeNMS {
     }
 
     public float getHumidity() {
-        return biomeBase.humidity;
+        // TODO: 1.9       return biomeBase.humidity;
+        return 0;
     }
 
     public float getTemperature() {
-        return biomeBase.temperature;
+        // TODO: 1.9    return biomeBase.temperature;
+        return 0;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
@@ -100,11 +102,11 @@ public class BiomeNMS {
     }
 
     public void setHumidity(float humidity) {
-        biomeBase.humidity = humidity;
+        // TODO: 1.9  biomeBase.humidity = humidity;
     }
 
     public void setTemperature(float temperature) {
-        biomeBase.temperature = temperature;
+        // TODO: 1.9     biomeBase.temperature = temperature;
     }
 
     public void changeBlockBiome(Location location) {
@@ -116,7 +118,7 @@ public class BiomeNMS {
 
             if (chunk != null) {
                 byte[] biomevals = chunk.getBiomeIndex();
-                biomevals[((z & 0xF) << 4) | (x & 0xF)] = (byte) biomeBase.id;
+                // TODO: 1.9   biomevals[((z & 0xF) << 4) | (x & 0xF)] = (byte) biomeBase.id;
             }
         }
     }

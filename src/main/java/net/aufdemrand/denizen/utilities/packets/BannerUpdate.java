@@ -18,9 +18,9 @@ public class BannerUpdate {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutTileEntityData.class);
-        tile_location = fields.get("a");
-        tile_action = fields.get("b");
-        tile_data = fields.get("c");
+        tile_location = fields.get("a");// TODO: 1.9
+        tile_action = fields.get("b");// TODO: 1.9
+        tile_data = fields.get("c");// TODO: 1.9
     }
 
     public static PacketPlayOutTileEntityData getTileEntityDataPacket(Location location, DyeColor base, List<Pattern> patterns) {
@@ -31,7 +31,7 @@ public class BannerUpdate {
             tile_action.set(packet, 6);
 
             NBTTagCompound compound = new NBTTagCompound();
-            ((CraftBanner) location.getBlock().getState()).getTileEntity().b(compound);
+// TODO: 1.9            ((CraftBanner) location.getBlock().getState()).getTileEntity().b(compound);
 
             NBTTagList nbtPatterns = new NBTTagList();
             for (Pattern pattern : patterns) {

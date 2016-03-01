@@ -15,14 +15,14 @@ public class PlayerBars {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutExperience.class);
-        xp_current = fields.get("a");
-        xp_total = fields.get("b");
-        xp_level = fields.get("c");
+        xp_current = fields.get("a");// TODO: 1.9
+        xp_total = fields.get("b");// TODO: 1.9
+        xp_level = fields.get("c");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutUpdateHealth.class);
-        health_health = fields.get("a");
-        health_food = fields.get("b");
-        health_saturation = fields.get("c");
+        health_health = fields.get("a");// TODO: 1.9
+        health_food = fields.get("b");// TODO: 1.9
+        health_saturation = fields.get("c");// TODO: 1.9
     }
 
     public static PacketPlayOutExperience getExperiencePacket(float exp, int level) {

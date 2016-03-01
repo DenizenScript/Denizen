@@ -5,18 +5,20 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_9_R1.BlockPosition;
-import net.minecraft.server.v1_9_R1.Entity;
-import net.minecraft.server.v1_9_R1.EntityHuman;
-import net.minecraft.server.v1_9_R1.IWorldAccess;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.entity.LivingEntity;
-
+// TODO: 1.9
 public class DenizenWorldAccess implements IWorldAccess {
+    @Override
+    public void a(World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
+
+    }
+
     @Override
     public void a(BlockPosition blockPosition) {
     }
 
-    @Override
+    // TODO: 1.9  @Override
     public void b(BlockPosition blockPosition) {
     }
 
@@ -25,10 +27,20 @@ public class DenizenWorldAccess implements IWorldAccess {
     }
 
     @Override
-    public void a(String s, double v, double v1, double v2, float v3, float v4) {
+    public void a(EntityHuman entityHuman, SoundEffect soundEffect, SoundCategory soundCategory, double v, double v1, double v2, float v3, float v4) {
+
     }
 
     @Override
+    public void a(SoundEffect soundEffect, BlockPosition blockPosition) {
+
+    }
+
+    // TODO: 1.9    @Override
+    public void a(String s, double v, double v1, double v2, float v3, float v4) {
+    }
+
+    // TODO: 1.9   @Override
     public void a(EntityHuman entityHuman, String s, double v, double v1, double v2, float v3, float v4) {
     }
 
@@ -61,7 +73,7 @@ public class DenizenWorldAccess implements IWorldAccess {
         EntityScriptHelper.unlinkEntity(entity.getBukkitEntity());
     }
 
-    @Override
+    // TODO: 1.9   @Override
     public void a(String s, BlockPosition blockPosition) {
     }
 

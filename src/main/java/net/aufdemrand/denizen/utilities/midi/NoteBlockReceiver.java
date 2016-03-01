@@ -94,7 +94,7 @@ public class NoteBlockReceiver implements Receiver {
         float pitch = (float) ToneUtil.midiToPitch(message);
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
 
-        Sound instrument = Sound.NOTE_PIANO;
+        Sound instrument = Sound.BLOCK_NOTE_HAT;
         if (patch != null) {
             instrument = MidiUtil.patchToInstrument(patch);
         }

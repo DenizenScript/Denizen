@@ -54,37 +54,37 @@ public class BossHealthBar {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSpawnEntityLiving.class);
-        spawn_entityId = fields.get("a");
-        spawn_entityType = fields.get("b");
-        spawn_locationX = fields.get("c");
-        spawn_locationY = fields.get("d");
-        spawn_locationZ = fields.get("e");
-        spawn_velocityX = fields.get("f");
-        spawn_velocityY = fields.get("g");
-        spawn_velocityZ = fields.get("h");
-        spawn_yaw = fields.get("i");
-        spawn_pitch = fields.get("j");
-        spawn_headPitch = fields.get("k");
-        spawn_data = fields.get("l");
+        spawn_entityId = fields.get("a");// TODO: 1.9
+        spawn_entityType = fields.get("b");// TODO: 1.9
+        spawn_locationX = fields.get("c");// TODO: 1.9
+        spawn_locationY = fields.get("d");// TODO: 1.9
+        spawn_locationZ = fields.get("e");// TODO: 1.9
+        spawn_velocityX = fields.get("f");// TODO: 1.9
+        spawn_velocityY = fields.get("g");// TODO: 1.9
+        spawn_velocityZ = fields.get("h");// TODO: 1.9
+        spawn_yaw = fields.get("i");// TODO: 1.9
+        spawn_pitch = fields.get("j");// TODO: 1.9
+        spawn_headPitch = fields.get("k");// TODO: 1.9
+        spawn_data = fields.get("l");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutEntityDestroy.class);
-        destroy_entityList = fields.get("a");
+        destroy_entityList = fields.get("a");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutEntityMetadata.class);
-        metadata_entityId = fields.get("a");
-        metadata_data = fields.get("b");
+        metadata_entityId = fields.get("a");// TODO: 1.9
+        metadata_data = fields.get("b");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayInClientCommand.class);
-        ccommand_command = fields.get("a");
+        ccommand_command = fields.get("a");// TODO: 1.9
 
         fields = PacketHelper.registerFields(PacketPlayOutEntityTeleport.class);
-        teleport_entityId = fields.get("a");
-        teleport_x = fields.get("b");
-        teleport_y = fields.get("c");
-        teleport_z = fields.get("d");
-        teleport_yaw = fields.get("e");
-        teleport_pitch = fields.get("f");
-        teleport_onGround = fields.get("g");
+        teleport_entityId = fields.get("a");// TODO: 1.9
+        teleport_x = fields.get("b");// TODO: 1.9
+        teleport_y = fields.get("c");// TODO: 1.9
+        teleport_z = fields.get("d");// TODO: 1.9
+        teleport_yaw = fields.get("e");// TODO: 1.9
+        teleport_pitch = fields.get("f");// TODO: 1.9
+        teleport_onGround = fields.get("g");// TODO: 1.9
     }
 
     //Accessing packets
@@ -164,10 +164,10 @@ public class BossHealthBar {
 
     public static DataWatcher getWatcher(String text, int health) {
         DataWatcher watcher = new DataWatcher(null);
-        watcher.a(0, (byte) 0x20); //Flags, 0x20 = invisible
-        watcher.a(2, text); //Entity name
-        watcher.a(3, (byte) 1); //Show name, 1 = show, 0 = don't show
-        watcher.a(6, (float) health * 1.5F); // Account for 1.8 switch from Ender Dragon to Wither by multiplying by 1.5
+// TODO: 1.9        watcher.a(0, (byte) 0x20); //Flags, 0x20 = invisible
+// TODO: 1.9        watcher.a(2, text); //Entity name
+// TODO: 1.9        watcher.a(3, (byte) 1); //Show name, 1 = show, 0 = don't show
+// TODO: 1.9        watcher.a(6, (float) health * 1.5F); // Account for 1.8 switch from Ender Dragon to Wither by multiplying by 1.5
         return watcher;
     }
 

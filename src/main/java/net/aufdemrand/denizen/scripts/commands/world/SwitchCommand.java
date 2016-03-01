@@ -152,11 +152,12 @@ public class SwitchCommand extends AbstractCommand {
                             new BlockPosition(interactLocation.getBlockX(),
                                     interactLocation.getBlockY(),
                                     interactLocation.getBlockZ());
-                    Block.getById(interactLocation.getBlock().getType().getId())
+                    // TODO: 1.9
+                 /*   Block.getById(interactLocation.getBlock().getType().getId())
                             .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
                                     pos,
                                     ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                                    craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+                                    craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);*/
                 }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +

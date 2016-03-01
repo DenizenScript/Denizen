@@ -43,7 +43,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        nmsEntity.getDataWatcher().watch(15, (byte) (hasAI ? 0 : 1));
+        // TODO: 1.9     nmsEntity.getDataWatcher().watch(15, (byte) (hasAI ? 0 : 1));
     }
 
     public static boolean isAIDisabled(Entity entity) {
@@ -51,7 +51,8 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
         }
-        return nmsEntity.getDataWatcher().getByte(15) != 0;
+        // TODO: 1.9   return nmsEntity.getDataWatcher().getByte(15) != 0;
+        return false;
     }
 
     public static double getSpeed(Entity entity) {
@@ -165,7 +166,8 @@ public class EntityMovement {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (entityNavigation.m() || path.b()) {
+                    // TODO: 1.9
+                    /*        if (entityNavigation.m() || path.b()) {
                         if (callback != null) {
                             callback.run();
                         }
@@ -174,7 +176,7 @@ public class EntityMovement {
                             toggleAI(entity, false);
                         }
                         cancel();
-                    }
+                    }*/
                 }
             }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }

@@ -95,10 +95,11 @@ public class EntitySilent implements Property {
     }
 
     private static boolean isSilent(Entity entity) {
-        return ((CraftEntity) entity).getHandle().R();
+        // TODO: 1.9   return ((CraftEntity) entity).getHandle().R();
+        return false;
     }
 
     private static void setSilent(Entity entity, boolean silent) {
-        ((CraftEntity) entity).getHandle().b(silent);
+        // TODO: 1.9  ((CraftEntity) entity).getHandle().b(silent);
     }
 }

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.minecraft.server.v1_9_R1.EntityArrow;
+import net.minecraft.server.v1_9_R1.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
@@ -15,8 +16,13 @@ public class FakeArrowEntity extends EntityArrow {
         bukkitEntity = new CraftFakeArrow((CraftServer) Bukkit.getServer(), this);
     }
 
-    @Override
+    // TODO: 1.9  @Override
     public void t_() {
         // Do nothing
+    }
+
+    @Override
+    protected ItemStack j() {
+        return null;// TODO: 1.9
     }
 }

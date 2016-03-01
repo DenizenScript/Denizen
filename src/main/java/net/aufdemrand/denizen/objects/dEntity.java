@@ -2066,8 +2066,8 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
-                    .getAttribute(attribute.fulfill(1));
+            // TODO: 1.9        return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
+            // TODO: 1.9              .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2537,10 +2537,10 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true")) {
-                    ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
+                    // TODO: 1.9        ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
                 }
                 else {
-                    ((CraftAnimals) getLivingEntity()).getHandle().cq();
+                    // TODO: 1.9        ((CraftAnimals) getLivingEntity()).getHandle().cq();
                 }
             }
         }
@@ -2646,11 +2646,12 @@ public class dEntity implements dObject, Adjustable {
                     new BlockPosition(interactLocation.getBlockX(),
                             interactLocation.getBlockY(),
                             interactLocation.getBlockZ());
-            Block.getById(interactLocation.getBlock().getType().getId())
+            // TODO: 1.9
+            /*   Block.getById(interactLocation.getBlock().getType().getId())
                     .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
                             pos,
                             ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);*/
         }
 
         // <--[mechanism]

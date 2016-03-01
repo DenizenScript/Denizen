@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-
+// TODO: 1.9
 public class DenizenPacketListener extends AbstractListenerPlayIn {
 
     public DenizenPacketListener(NetworkManager networkManager, EntityPlayer entityPlayer) {
@@ -105,8 +105,8 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayInResourcePackStatus.class);
-        resource_pack_hash = fields.get("a");
-        resource_pack_status = fields.get("b");
+        resource_pack_hash = fields.get("a");// TODO: 1.9
+        resource_pack_status = fields.get("b");// TODO: 1.9
         fields = PacketHelper.registerFields(NBTTagList.class);
         nbttaglist_list = fields.get("list");
     }
