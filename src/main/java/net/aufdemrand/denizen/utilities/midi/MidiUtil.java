@@ -107,7 +107,6 @@ public class MidiUtil {
     public static Sound patchToInstrument(int patch) {
         // look up the instrument matching the patch
         switch (instruments[patch]) {
-            // TODO: 1.9 -> Accuracy of sound renames
             case 1:
                 return Sound.BLOCK_NOTE_BASS;
             case 2:
