@@ -2659,12 +2659,13 @@ public class dEntity implements dObject, Adjustable {
                     new BlockPosition(interactLocation.getBlockX(),
                             interactLocation.getBlockY(),
                             interactLocation.getBlockZ());
-            // TODO: 1.9
-            /*   Block.getById(interactLocation.getBlock().getType().getId())
+
+            Block.getById(interactLocation.getBlock().getType().getId())
                     .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
                             pos,
                             ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);*/
+                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND, null,
+                            EnumDirection.NORTH, 0f, 0f, 0f);
         }
 
         // <--[mechanism]
