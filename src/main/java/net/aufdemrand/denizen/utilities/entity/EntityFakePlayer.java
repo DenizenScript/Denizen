@@ -17,7 +17,7 @@ public class EntityFakePlayer extends EntityPlayer {
         NetworkManager networkManager = new FakeNetworkManager(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection(minecraftserver, networkManager, this);
         networkManager.setPacketListener(playerConnection);
-        // TODO: 1.9    datawatcher.watch(10, (byte) 127);
+        datawatcher.set(EntityHuman.bp, (byte) 127);
         worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 

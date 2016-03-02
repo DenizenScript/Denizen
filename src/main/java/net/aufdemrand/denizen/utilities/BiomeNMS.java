@@ -100,11 +100,21 @@ public class BiomeNMS {
     }
 
     public void setHumidity(float humidity) {
-        // TODO: 1.9  biomeBase.humidity = humidity;
+        try {
+            HUMIDITY.set(biomeBase, humidity);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public void setTemperature(float temperature) {
-        // TODO: 1.9     biomeBase.temperature = temperature;
+        try {
+            TEMPERATURE.set(biomeBase, temperature);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public void changeBlockBiome(Location location) {
@@ -166,11 +176,15 @@ public class BiomeNMS {
     private static final Map<Class<? extends Entity>, Integer> ENTITY_CLASS_ID_MAP;
     private static final Field DOES_RAIN;
     private static final Field DOES_SNOW;
+    private static final Field HUMIDITY;
+    private static final Field TEMPERATURE;
 
     static {
         Map<Class<? extends Entity>, Integer> map = null;
         Field rains = null;
         Field snows = null;
+        Field humidity = null;
+        Field temperature = null;
         try {
             Field field = EntityTypes.class.getDeclaredField("f");
             field.setAccessible(true);
@@ -180,15 +194,29 @@ public class BiomeNMS {
             dB.echoError(e);
         }
         try {
-            rains = BiomeBase.class.getDeclaredField("ay");
+            rains = BiomeBase.class.getDeclaredField("G");
             rains.setAccessible(true);
         }
         catch (Exception e) {
             dB.echoError(e);
         }
         try {
-            snows = BiomeBase.class.getDeclaredField("ax");
+            snows = BiomeBase.class.getDeclaredField("F");
             snows.setAccessible(true);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+        try {
+            humidity = BiomeBase.class.getDeclaredField("D");
+            humidity.setAccessible(true);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+        try {
+            temperature = BiomeBase.class.getDeclaredField("C");
+            temperature.setAccessible(true);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -196,5 +224,7 @@ public class BiomeNMS {
         ENTITY_CLASS_ID_MAP = map;
         DOES_RAIN = rains;
         DOES_SNOW = snows;
+        HUMIDITY = humidity;
+        TEMPERATURE = temperature;
     }
 }
