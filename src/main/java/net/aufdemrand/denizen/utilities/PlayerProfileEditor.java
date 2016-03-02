@@ -44,7 +44,7 @@ public class PlayerProfileEditor {
         Field pidGameProfile = null;
         Field pidDisplayName = null;
         try {
-            profileField = EntityHuman.class.getDeclaredField("bH");
+            profileField = EntityHuman.class.getDeclaredField("bR");
             profileField.setAccessible(true);
             profileIdField = GameProfile.class.getDeclaredField("id");
             profileIdField.setAccessible(true);
