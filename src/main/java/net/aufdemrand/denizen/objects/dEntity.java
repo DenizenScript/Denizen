@@ -1714,7 +1714,20 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
-            return new dItem(getLivingEntity().getEquipment().getItemInHand())
+            return new dItem(getLivingEntity().getEquipment().getItemInMainHand())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.item_in_offhand>
+        // @returns dItem
+        // @group inventory
+        // @description
+        // Returns the item the entity is holding in their off hand, or i@air if none.
+        // -->
+        if (attribute.startsWith("item_in_hand") ||
+                attribute.startsWith("iteminhand")) {
+            return new dItem(getLivingEntity().getEquipment().getItemInOffHand())
                     .getAttribute(attribute.fulfill(1));
         }
 
