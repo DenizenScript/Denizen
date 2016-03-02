@@ -166,17 +166,17 @@ public class EntityMovement {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    // TODO: 1.9
-                    /*        if (entityNavigation.m() || path.b()) {
+                    if (entityNavigation.n() || path.b()) {
                         if (callback != null) {
                             callback.run();
                         }
                         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
-                        if (aiDisabled) {
-                            toggleAI(entity, false);
-                        }
+                        // TODO: 1.9
+                        //if (aiDisabled) {
+                        //    toggleAI(entity, false);
+                        //}
                         cancel();
-                    }*/
+                    }
                 }
             }.runTaskTimer(DenizenAPI.getCurrentInstance(), 1, 1);
         }
