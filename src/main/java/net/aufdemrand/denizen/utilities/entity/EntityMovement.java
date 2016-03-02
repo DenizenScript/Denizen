@@ -43,7 +43,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        // TODO: 1.9     nmsEntity.getDataWatcher().watch(15, (byte) (hasAI ? 0 : 1));
+        ((EntityInsentient) nmsEntity).m(!hasAI);
     }
 
     public static boolean isAIDisabled(Entity entity) {
@@ -51,8 +51,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
         }
-        // TODO: 1.9   return nmsEntity.getDataWatcher().getByte(15) != 0;
-        return false;
+        return ((EntityInsentient) nmsEntity).cR();
     }
 
     public static double getSpeed(Entity entity) {
@@ -171,10 +170,9 @@ public class EntityMovement {
                             callback.run();
                         }
                         nmsEntity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(oldSpeed);
-                        // TODO: 1.9
-                        //if (aiDisabled) {
-                        //    toggleAI(entity, false);
-                        //}
+                        if (aiDisabled) {
+                            toggleAI(entity, false);
+                        }
                         cancel();
                     }
                 }
