@@ -15,15 +15,16 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_8_R3.Block;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.EnumDirection;
+import net.minecraft.server.v1_9_R1.Block;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.EnumDirection;
+import net.minecraft.server.v1_9_R1.EnumHand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -152,11 +153,13 @@ public class SwitchCommand extends AbstractCommand {
                             new BlockPosition(interactLocation.getBlockX(),
                                     interactLocation.getBlockY(),
                                     interactLocation.getBlockZ());
+
                     Block.getById(interactLocation.getBlock().getType().getId())
                             .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
                                     pos,
                                     ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                                    craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+                                    craftPlayer != null ? craftPlayer.getHandle() : null,
+                                    EnumHand.MAIN_HAND, null, EnumDirection.NORTH, 0f, 0f, 0f);
                 }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +

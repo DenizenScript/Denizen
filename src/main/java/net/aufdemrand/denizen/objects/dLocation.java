@@ -21,12 +21,12 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R3.TileEntitySkull;
+import net.minecraft.server.v1_9_R1.TileEntitySkull;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -860,7 +860,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             // -->
             double rad = 1d;
             if (attribute.startsWith("distance")) {
-                rad = attribute.getIntContext(1);
+                rad = attribute.getDoubleContext(1);
                 attribute = attribute.fulfill(1);
             }
             dList list = new dList();

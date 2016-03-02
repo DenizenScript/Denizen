@@ -18,7 +18,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -804,7 +804,7 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).C().getChatModifier().toString();
+                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).B().getChatModifier().toString();
                 return new Element(JSON.substring(176, JSON.length() - 185))
                         .getAttribute(attribute.fulfill(1));
             }

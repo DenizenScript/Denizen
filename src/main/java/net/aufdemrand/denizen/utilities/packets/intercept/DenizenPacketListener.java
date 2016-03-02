@@ -6,8 +6,8 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_8_R3.*;
-import net.minecraft.server.v1_8_R3.PacketPlayInResourcePackStatus.EnumResourcePackStatus;
+import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R1.PacketPlayInResourcePackStatus.EnumResourcePackStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -106,7 +106,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayInResourcePackStatus.class);
         resource_pack_hash = fields.get("a");
-        resource_pack_status = fields.get("b");
+        resource_pack_status = fields.get("status");
         fields = PacketHelper.registerFields(NBTTagList.class);
         nbttaglist_list = fields.get("list");
     }

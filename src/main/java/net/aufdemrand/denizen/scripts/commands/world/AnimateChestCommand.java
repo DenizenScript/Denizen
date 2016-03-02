@@ -11,12 +11,12 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.minecraft.server.v1_8_R3.Block;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.PacketPlayOutBlockAction;
+import net.minecraft.server.v1_9_R1.Block;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.PacketPlayOutBlockAction;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,7 +99,7 @@ public class AnimateChestCommand extends AbstractCommand {
             case OPEN:
                 for (dPlayer player : players) {
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().playSound(location, Sound.CHEST_OPEN, 1, 1);
+                        player.getPlayerEntity().playSound(location, Sound.BLOCK_CHEST_OPEN, 1, 1);
                     }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
@@ -109,7 +109,7 @@ public class AnimateChestCommand extends AbstractCommand {
             case CLOSE:
                 for (dPlayer player : players) {
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().getWorld().playSound(location, Sound.CHEST_CLOSE, 1, 1);
+                        player.getPlayerEntity().getWorld().playSound(location, Sound.BLOCK_CHEST_CLOSE, 1, 1);
                     }
                     ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
                             new PacketPlayOutBlockAction(blockPosition, block, 1, 0));

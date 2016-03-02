@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_9_R1.EnumItemSlot;
+import net.minecraft.server.v1_9_R1.PacketPlayOutEntityEquipment;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,14 +14,21 @@ import java.util.Map;
 public class EntityEquipment {
 
     public enum EquipmentSlots {
-        HAND(0), BOOTS(1), LEGS(2), CHEST(3), HEAD(4);
-        private int slot;
+        HAND(EnumItemSlot.MAINHAND),
+        MAIN_HAND(EnumItemSlot.MAINHAND),
+        OFF_HAND(EnumItemSlot.OFFHAND),
+        BOOTS(EnumItemSlot.FEET),
+        LEGS(EnumItemSlot.LEGS),
+        CHEST(EnumItemSlot.CHEST),
+        HEAD(EnumItemSlot.HEAD);
 
-        EquipmentSlots(int slot) {
+        private EnumItemSlot slot;
+
+        EquipmentSlots(EnumItemSlot slot) {
             this.slot = slot;
         }
 
-        public int getSlot() {
+        public EnumItemSlot getSlot() {
             return slot;
         }
     }
@@ -34,7 +42,7 @@ public class EntityEquipment {
         equipment_itemstack = fields.get("c");
     }
 
-    public static PacketPlayOutEntityEquipment getEquipmentPacket(LivingEntity entity, int slot, ItemStack item) {
+    public static PacketPlayOutEntityEquipment getEquipmentPacket(LivingEntity entity, EnumItemSlot slot, ItemStack item) {
         PacketPlayOutEntityEquipment equipmentPacket = new PacketPlayOutEntityEquipment();
         try {
             equipment_entityId.set(equipmentPacket, entity.getEntityId());
@@ -48,21 +56,17 @@ public class EntityEquipment {
     }
 
     public static void showEquipment(Player player, LivingEntity entity, EquipmentSlots slot, ItemStack item) {
-        int slotNumber = entity.equals(player) ? slot.getSlot() - 1 : slot.getSlot();
-        if (slotNumber == -1) {
-            dB.echoError("Cannot force a player to see themselves holding a different item.");
-            return;
-        }
-        PacketPlayOutEntityEquipment equipmentPacket = getEquipmentPacket(entity, slotNumber, item);
+        PacketPlayOutEntityEquipment equipmentPacket = getEquipmentPacket(entity, slot.getSlot(), item);
         PacketHelper.sendPacket(player, equipmentPacket);
     }
 
     public static void resetEquipment(Player player, LivingEntity entity) {
         org.bukkit.inventory.EntityEquipment equipment = entity.getEquipment();
-        PacketHelper.sendPacket(player, getEquipmentPacket(entity, 0, equipment.getItemInHand()));
-        PacketHelper.sendPacket(player, getEquipmentPacket(entity, 1, equipment.getBoots()));
-        PacketHelper.sendPacket(player, getEquipmentPacket(entity, 2, equipment.getLeggings()));
-        PacketHelper.sendPacket(player, getEquipmentPacket(entity, 3, equipment.getChestplate()));
-        PacketHelper.sendPacket(player, getEquipmentPacket(entity, 4, equipment.getHelmet()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.MAINHAND, equipment.getItemInMainHand()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.OFFHAND, equipment.getItemInOffHand()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.FEET, equipment.getBoots()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.LEGS, equipment.getLeggings()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.CHEST, equipment.getChestplate()));
+        PacketHelper.sendPacket(player, getEquipmentPacket(entity, EnumItemSlot.HEAD, equipment.getHelmet()));
     }
 }

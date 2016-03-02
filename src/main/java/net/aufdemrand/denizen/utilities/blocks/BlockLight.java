@@ -3,15 +3,15 @@ package net.aufdemrand.denizen.utilities.blocks;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Duration;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.CraftChunk;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -184,7 +184,7 @@ public class BlockLight {
                 }
             }
             if (adjacentAir != null) {
-                worldServer.x(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
+                worldServer.w(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
             }
             this.cachedLight = lightLevel;
         }
@@ -234,12 +234,12 @@ public class BlockLight {
         final PlayerChunkMap map = ((CraftWorld) world).getHandle().getPlayerChunkMap();
         return new IWorldAccess() {
             @Override
-            public void a(BlockPosition position) {
-                map.flagDirty(position);
+            public void a(net.minecraft.server.v1_9_R1.World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
+
             }
 
             @Override
-            public void b(BlockPosition position) {
+            public void a(BlockPosition position) {
                 map.flagDirty(position);
             }
 
@@ -256,23 +256,21 @@ public class BlockLight {
             }
 
             @Override
+            public void a(EntityHuman entityHuman, SoundEffect soundEffect, SoundCategory soundCategory, double v, double v1, double v2, float v3, float v4) {
+
+            }
+
+            @Override
+            public void a(SoundEffect soundEffect, BlockPosition blockPosition) {
+
+            }
+
+            @Override
             public void a(int arg0, BlockPosition arg1, int arg2) {
             }
 
             @Override
-            public void a(String arg0, double arg1, double arg2, double arg3, float arg4, float arg5) {
-            }
-
-            @Override
-            public void a(EntityHuman arg0, String arg1, double arg2, double arg3, double arg4, float arg5, float arg6) {
-            }
-
-            @Override
             public void a(int arg0, boolean arg1, double arg2, double arg3, double arg4, double arg5, double arg6, double arg7, int... arg8) {
-            }
-
-            @Override
-            public void a(String arg0, BlockPosition arg1) {
             }
 
             @Override

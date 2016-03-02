@@ -14,10 +14,10 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.scheduling.OneTimeSchedulable;
-import net.minecraft.server.v1_8_R3.ItemStack;
-import net.minecraft.server.v1_8_R3.PacketPlayOutSetSlot;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_9_R1.ItemStack;
+import net.minecraft.server.v1_9_R1.PacketPlayOutSetSlot;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,7 +97,7 @@ public class FakeItemCommand extends AbstractCommand {
                 continue;
             }
 
-            net.minecraft.server.v1_8_R3.ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
+            net.minecraft.server.v1_9_R1.ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
 
             for (dPlayer player : players) {
                 setSlot((CraftPlayer) player.getPlayerEntity(), slot, itemStack, player_only.asBoolean());

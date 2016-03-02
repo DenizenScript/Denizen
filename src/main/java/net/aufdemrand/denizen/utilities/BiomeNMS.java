@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
 import java.lang.reflect.Field;
@@ -41,11 +41,11 @@ public class BiomeNMS {
     }
 
     public float getHumidity() {
-        return biomeBase.humidity;
+        return biomeBase.getHumidity();
     }
 
     public float getTemperature() {
-        return biomeBase.temperature;
+        return biomeBase.getTemperature();
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
@@ -100,11 +100,21 @@ public class BiomeNMS {
     }
 
     public void setHumidity(float humidity) {
-        biomeBase.humidity = humidity;
+        try {
+            HUMIDITY.set(biomeBase, humidity);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public void setTemperature(float temperature) {
-        biomeBase.temperature = temperature;
+        try {
+            TEMPERATURE.set(biomeBase, temperature);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
     }
 
     public void changeBlockBiome(Location location) {
@@ -116,7 +126,7 @@ public class BiomeNMS {
 
             if (chunk != null) {
                 byte[] biomevals = chunk.getBiomeIndex();
-                biomevals[((z & 0xF) << 4) | (x & 0xF)] = (byte) biomeBase.id;
+                biomevals[((z & 0xF) << 4) | (x & 0xF)] = (byte) BiomeBase.a(biomeBase);
             }
         }
     }
@@ -166,11 +176,15 @@ public class BiomeNMS {
     private static final Map<Class<? extends Entity>, Integer> ENTITY_CLASS_ID_MAP;
     private static final Field DOES_RAIN;
     private static final Field DOES_SNOW;
+    private static final Field HUMIDITY;
+    private static final Field TEMPERATURE;
 
     static {
         Map<Class<? extends Entity>, Integer> map = null;
         Field rains = null;
         Field snows = null;
+        Field humidity = null;
+        Field temperature = null;
         try {
             Field field = EntityTypes.class.getDeclaredField("f");
             field.setAccessible(true);
@@ -180,15 +194,29 @@ public class BiomeNMS {
             dB.echoError(e);
         }
         try {
-            rains = BiomeBase.class.getDeclaredField("ay");
+            rains = BiomeBase.class.getDeclaredField("G");
             rains.setAccessible(true);
         }
         catch (Exception e) {
             dB.echoError(e);
         }
         try {
-            snows = BiomeBase.class.getDeclaredField("ax");
+            snows = BiomeBase.class.getDeclaredField("F");
             snows.setAccessible(true);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+        try {
+            humidity = BiomeBase.class.getDeclaredField("D");
+            humidity.setAccessible(true);
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+        try {
+            temperature = BiomeBase.class.getDeclaredField("C");
+            temperature.setAccessible(true);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -196,5 +224,7 @@ public class BiomeNMS {
         ENTITY_CLASS_ID_MAP = map;
         DOES_RAIN = rains;
         DOES_SNOW = snows;
+        HUMIDITY = humidity;
+        TEMPERATURE = temperature;
     }
 }

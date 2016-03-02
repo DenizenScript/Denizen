@@ -7,15 +7,15 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.7-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <name>Denizen</name>
     <description>Scriptable Minecraft and Citizens2</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.8.8-R0.1-SNAPSHOT</craftbukkit.version>
+        <craftbukkit.version>1.9-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
-        <citizens.version>2.0.16-SNAPSHOT</citizens.version>
+        <citizens.version>2.0.17-SNAPSHOT</citizens.version>
         <build.number>Unknown</build.number>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>

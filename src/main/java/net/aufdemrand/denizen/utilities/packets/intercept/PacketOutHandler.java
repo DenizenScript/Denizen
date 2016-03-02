@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
@@ -28,7 +28,7 @@ public class PacketOutHandler {
      * @param packet the client-bound packet
      * @return whether to cancel sending the packet
      */
-    public static boolean handle(final EntityPlayer player, Packet packet) {
+    public static boolean sendPacket(final EntityPlayer player, Packet packet) {
         try {
             if (packet instanceof PacketPlayOutChat) {
                 if (ExecuteCommand.silencedPlayers.contains(player.getUniqueID())) {
@@ -38,7 +38,7 @@ public class PacketOutHandler {
                 int pos = chat_position.getInt(cPacket);
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).c());
+                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).toPlainText());
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.cancelled = false;
@@ -121,17 +121,17 @@ public class PacketOutHandler {
                     // The trades
                     for (int i = 0; i < trades; i++) {
                         // The first item cost
-                        ItemStack buyItem1 = serializer.i();
+                        ItemStack buyItem1 = serializer.k();
                         newSerializer.a(removeItemScriptLore(buyItem1));
                         // The item to be bought
-                        ItemStack buyItem3 = serializer.i();
+                        ItemStack buyItem3 = serializer.k();
                         newSerializer.a(removeItemScriptLore(buyItem3));
                         // Whether there is a second item cost
                         boolean hasItem2 = serializer.readBoolean();
                         newSerializer.writeBoolean(hasItem2);
                         // The second item cost, if there is one
                         if (hasItem2) {
-                            ItemStack buyItem2 = serializer.i();
+                            ItemStack buyItem2 = serializer.k();
                             newSerializer.a(removeItemScriptLore(buyItem2));
                         }
                         // Has used max times
@@ -167,7 +167,7 @@ public class PacketOutHandler {
                 String line = lore.getString(i);
                 if (line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
                     hash = line;
-                    lore.a(i);
+                    lore.remove(i);
                     break;
                 }
             }
@@ -191,7 +191,7 @@ public class PacketOutHandler {
         if (entry == null) {
             return false;
         }
-        UUID entityUUID = entry.tracker.getUniqueID();
+        UUID entityUUID = entry.b().getUniqueID();
         if (HideEntity.hiddenEntities.get(playerUUID).contains(entityUUID)) {
             entry.clear(player);
             return true;

@@ -5,19 +5,17 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.IWorldAccess;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.entity.LivingEntity;
 
 public class DenizenWorldAccess implements IWorldAccess {
     @Override
-    public void a(BlockPosition blockPosition) {
+    public void a(World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
+
     }
 
     @Override
-    public void b(BlockPosition blockPosition) {
+    public void a(BlockPosition blockPosition) {
     }
 
     @Override
@@ -25,11 +23,13 @@ public class DenizenWorldAccess implements IWorldAccess {
     }
 
     @Override
-    public void a(String s, double v, double v1, double v2, float v3, float v4) {
+    public void a(EntityHuman entityHuman, SoundEffect soundEffect, SoundCategory soundCategory, double v, double v1, double v2, float v3, float v4) {
+
     }
 
     @Override
-    public void a(EntityHuman entityHuman, String s, double v, double v1, double v2, float v3, float v4) {
+    public void a(SoundEffect soundEffect, BlockPosition blockPosition) {
+
     }
 
     @Override
@@ -38,6 +38,7 @@ public class DenizenWorldAccess implements IWorldAccess {
 
     @Override
     public void a(Entity entity) {
+
     }
 
     // Entity despawn
@@ -62,11 +63,8 @@ public class DenizenWorldAccess implements IWorldAccess {
     }
 
     @Override
-    public void a(String s, BlockPosition blockPosition) {
-    }
-
-    @Override
     public void a(int i, BlockPosition blockPosition, int i1) {
+
     }
 
     @Override
@@ -75,5 +73,6 @@ public class DenizenWorldAccess implements IWorldAccess {
 
     @Override
     public void b(int i, BlockPosition blockPosition, int i1) {
+
     }
 }

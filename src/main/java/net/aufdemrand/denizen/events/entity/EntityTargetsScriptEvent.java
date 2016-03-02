@@ -69,7 +69,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         }
 
         String victim = CoreUtilities.getXthArg(2, lower);
-        if (!victim.equals("in") && !victim.equals("because") && !tryEntity(target, victim)) {
+        if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && !tryEntity(target, victim)) {
             return false;
         }
 

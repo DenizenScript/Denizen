@@ -6,7 +6,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
 public class EntitySilent implements Property {
@@ -95,10 +95,10 @@ public class EntitySilent implements Property {
     }
 
     private static boolean isSilent(Entity entity) {
-        return ((CraftEntity) entity).getHandle().R();
+        return ((CraftEntity) entity).getHandle().ad();
     }
 
     private static void setSilent(Entity entity, boolean silent) {
-        ((CraftEntity) entity).getHandle().b(silent);
+        ((CraftEntity) entity).getHandle().c(silent);
     }
 }

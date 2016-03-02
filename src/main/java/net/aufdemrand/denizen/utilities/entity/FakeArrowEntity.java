@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_8_R3.EntityArrow;
+import net.minecraft.server.v1_9_R1.EntityArrow;
+import net.minecraft.server.v1_9_R1.ItemStack;
+import net.minecraft.server.v1_9_R1.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 
 public class FakeArrowEntity extends EntityArrow {
 
@@ -16,7 +18,12 @@ public class FakeArrowEntity extends EntityArrow {
     }
 
     @Override
-    public void t_() {
+    public void m() {
         // Do nothing
+    }
+
+    @Override
+    protected ItemStack j() {
+        return new ItemStack(Items.ARROW);
     }
 }

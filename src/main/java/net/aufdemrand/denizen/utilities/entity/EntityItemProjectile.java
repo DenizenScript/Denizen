@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 
 import java.util.List;
 
@@ -27,14 +27,14 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
     }
 
     @Override
-    public void t_() {
-        K();
+    public void m() {
+        this.U();
         BlockPosition blockposition = new BlockPosition(locX, locY, locZ);
         IBlockData iblockdata = world.getType(blockposition);
         Block block = iblockdata.getBlock();
 
-        if (block.getMaterial() != Material.AIR) {
-            AxisAlignedBB axisalignedbb = block.a(world, blockposition, iblockdata);
+        if (block.getBlockData().getMaterial() != Material.AIR) {
+            AxisAlignedBB axisalignedbb = block.a(iblockdata, world, blockposition);
 
             if ((axisalignedbb != null) && (axisalignedbb.a(new Vec3D(locX, locY, locZ)))) {
                 CraftEventFactory.callProjectileHitEvent(this);
@@ -49,7 +49,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         vec3d = new Vec3D(locX, locY, locZ);
         vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
         if (movingobjectposition != null) {
-            vec3d1 = new Vec3D(movingobjectposition.pos.a, movingobjectposition.pos.b, movingobjectposition.pos.c);
+            vec3d1 = new Vec3D(movingobjectposition.pos.x, movingobjectposition.pos.y, movingobjectposition.pos.z);
         }
 
         Entity entity = null;
@@ -89,10 +89,10 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
                 this.die();
             }
             else if (movingobjectposition.a() != null) {
-                if (block.getMaterial() != Material.AIR) {
-                    motX = ((float) (movingobjectposition.pos.a - locX));
-                    motY = ((float) (movingobjectposition.pos.b - locY));
-                    motZ = ((float) (movingobjectposition.pos.c - locZ));
+                if (block.getBlockData().getMaterial() != Material.AIR) {
+                    motX = ((float) (movingobjectposition.pos.x - locX));
+                    motY = ((float) (movingobjectposition.pos.y - locY));
+                    motZ = ((float) (movingobjectposition.pos.z - locZ));
                     float f3 = MathHelper.sqrt(motX * motX + motY * motY + motZ * motZ);
                     locX -= motX / f3 * 0.0500000007450581D;
                     locY -= motY / f3 * 0.0500000007450581D;

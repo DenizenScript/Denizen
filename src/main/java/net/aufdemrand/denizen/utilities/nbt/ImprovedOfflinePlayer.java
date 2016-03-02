@@ -4,11 +4,11 @@ package net.aufdemrand.denizen.utilities.nbt;
 
 import com.google.common.io.Files;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -110,11 +110,11 @@ public class ImprovedOfflinePlayer {
         return new Location(
                 Bukkit.getWorld(new UUID(this.compound.getLong("WorldUUIDMost"),
                         this.compound.getLong("WorldUUIDLeast"))),
-                position.d(0),
-                position.d(1),
-                position.d(2),
-                rotation.e(0),
-                rotation.e(1)
+                position.e(0),
+                position.e(1),
+                position.e(2),
+                rotation.f(0),
+                rotation.f(1)
         );
     }
 
@@ -585,7 +585,7 @@ public class ImprovedOfflinePlayer {
 
     public Vector getVelocity() {
         NBTTagList list = this.compound.getList("Motion", 6);
-        return new Vector(list.d(0), list.d(1), list.d(2));
+        return new Vector(list.e(0), list.e(1), list.e(2));
     }
 
     public void setVelocity(Vector vector) {

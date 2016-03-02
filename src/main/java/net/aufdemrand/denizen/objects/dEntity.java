@@ -21,16 +21,16 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftAnimals;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -271,7 +271,7 @@ public class dEntity implements dObject, Adjustable {
             return rememberedEntities.get(id);
         }
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
+            net.minecraft.server.v1_9_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {
@@ -1714,7 +1714,20 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
-            return new dItem(getLivingEntity().getEquipment().getItemInHand())
+            return new dItem(getLivingEntity().getEquipment().getItemInMainHand())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.item_in_offhand>
+        // @returns dItem
+        // @group inventory
+        // @description
+        // Returns the item the entity is holding in their off hand, or i@air if none.
+        // -->
+        if (attribute.startsWith("item_in_offhand") ||
+                attribute.startsWith("iteminoffhand")) {
+            return new dItem(getLivingEntity().getEquipment().getItemInOffHand())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2066,7 +2079,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether the animal entity is trying to with another of its kind.
         // -->
         if (attribute.startsWith("breeding") || attribute.startsWith("is_breeding")) {
-            return new Element(((CraftAnimals) getLivingEntity()).getHandle().ce())
+            return new Element(((CraftAnimals) getLivingEntity()).getHandle().isInLove())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2537,10 +2550,10 @@ public class dEntity implements dObject, Adjustable {
             dList list = dList.valueOf(value.asString());
             if (list.size() > 1) {
                 if (list.get(0).equalsIgnoreCase("true")) {
-                    ((CraftAnimals) getLivingEntity()).getHandle().a((EntityHuman) null);
+                    ((CraftAnimals) getLivingEntity()).getHandle().c((EntityHuman) null);
                 }
                 else {
-                    ((CraftAnimals) getLivingEntity()).getHandle().cq();
+                    ((CraftAnimals) getLivingEntity()).getHandle().resetLove();
                 }
             }
         }
@@ -2646,11 +2659,13 @@ public class dEntity implements dObject, Adjustable {
                     new BlockPosition(interactLocation.getBlockX(),
                             interactLocation.getBlockY(),
                             interactLocation.getBlockZ());
+
             Block.getById(interactLocation.getBlock().getType().getId())
                     .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
                             pos,
                             ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumDirection.NORTH, 0f, 0f, 0f);
+                            craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND, null,
+                            EnumDirection.NORTH, 0f, 0f, 0f);
         }
 
         // <--[mechanism]

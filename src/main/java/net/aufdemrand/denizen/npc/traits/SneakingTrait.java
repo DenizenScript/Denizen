@@ -3,8 +3,8 @@ package net.aufdemrand.denizen.npc.traits;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import net.minecraft.server.v1_9_R1.EntityHuman;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 
@@ -44,7 +44,7 @@ public class SneakingTrait extends Trait implements Listener {
             return;
         }
 
-        eh.getDataWatcher().watch(0, (byte) 0x02);
+        eh.setSneaking(true);
 
         sneaking = true;
     }
@@ -56,7 +56,7 @@ public class SneakingTrait extends Trait implements Listener {
         // Notated in SittingTrait
         DenizenAPI.getDenizenNPC(npc).action("stand", null);
 
-        eh.getDataWatcher().watch(0, (byte) 0x00);
+        eh.setSneaking(false);
 
         sneaking = false;
     }
