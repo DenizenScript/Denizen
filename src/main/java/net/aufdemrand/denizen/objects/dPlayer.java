@@ -2558,9 +2558,11 @@ public class dPlayer implements dObject, Adjustable {
         // based on an arbitrary scale of 0 to 200. EG:
         // - adjust <player> show_boss_bar:Hello
         // - adjust <player> show_boss_bar:100|Hello
+        // NOTE: This will soon be replaced with a command!
         // @tags
         // None
         // -->
+        // TODO: Command!
         if (mechanism.matches("show_boss_bar")) {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
