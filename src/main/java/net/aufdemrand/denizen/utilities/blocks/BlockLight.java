@@ -184,7 +184,7 @@ public class BlockLight {
                 }
             }
             if (adjacentAir != null) {
-                // TODO: 1.9    worldServer.x(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
+                worldServer.w(new BlockPosition(adjacentAir.getX(), adjacentAir.getY(), adjacentAir.getZ()));
             }
             this.cachedLight = lightLevel;
         }
