@@ -462,6 +462,36 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name BossBar
+        // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
+        // @Required 1
+        // @Stable stable
+        // @Short Shows players a boss bar.
+        // @Author Morphan1
+        // @Group server
+        // @Description
+        // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
+        // values and remove the bar.
+        //
+        // Requires an ID. Progress must be between 0 and 1.
+        //
+        // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+        // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
+        // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
+
+        // @Usage
+        // Shows a message to all online players.
+        // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
+
+        // @Usage
+        // Update the boss bar's color and progress.
+        // - bossbar MyMessageID color:blue progress:0.2
+        // -->
+        registerCoreMember(BossBarCommand.class,
+                "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
+
+
+        // <--[command]
         // @Name Burn
         // @Syntax burn [<entity>|...] (duration:<value>)
         // @Required 1
