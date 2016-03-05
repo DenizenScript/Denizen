@@ -38,11 +38,19 @@ public class PacketOutHandler {
                 int pos = chat_position.getInt(cPacket);
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    event.message = new Element(((IChatBaseComponent) chat_message.get(cPacket)).toPlainText());
+                    IChatBaseComponent baseComponent = (IChatBaseComponent) chat_message.get(cPacket);
+                    event.message = new Element(baseComponent.toPlainText());
+                    event.rawJson = new Element(IChatBaseComponent.ChatSerializer.a(baseComponent));
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.cancelled = false;
                     event.fire();
+                    if (event.messageModified) {
+                        chat_message.set(cPacket, new ChatComponentText(event.message.asString()));
+                    }
+                    else if (event.rawJsonModified) {
+                        chat_message.set(cPacket, IChatBaseComponent.ChatSerializer.a(event.rawJson.asString()));
+                    }
                     return event.cancelled;
                 }
             }
