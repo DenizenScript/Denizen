@@ -1819,8 +1819,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You might choose to use this to record some important things, for example, every time a player
         // uses a dangerous command you might log the player's name and their location, so you'll know
         // who to blame if you find something damaged.
-        // Remember that the file location is inside the server's primary folder. You might want to prefix
-        // file names with a folder name, EG: 'file:logs/security.log'
+        // Remember that the file location is inside the server's primary folder. You most likely want to prefix
+        // file names with a folder name, For example: 'file:logs/security.log'
         //
         // Warning: Remember that file operations are dangerous! A typo in the filename could ruin your server.
         // It's recommended you use this command minimally.

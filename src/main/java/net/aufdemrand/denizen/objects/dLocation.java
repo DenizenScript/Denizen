@@ -758,7 +758,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns the formatted simple version of the dLocation's block coordinates.
-        // EG: X 'x', Y 'y', Z 'z', in world 'world'
+        // In the format: X 'x', Y 'y', Z 'z', in world 'world'
+        // For example, X '1', Y '2', Z '3', in world 'world_nether'
         // -->
         if (attribute.startsWith("simple.formatted")) {
             return new Element("X '" + getBlockX()
@@ -772,7 +773,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns a simple version of the dLocation's block coordinates.
-        // EG: x,y,z,world
+        // In the format: x,y,z,world
+        // For example: 1,2,3,world_nether
         // -->
         if (attribute.startsWith("simple")) {
             if (getWorld() == null) {
@@ -1477,7 +1479,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns the location formatted for a Citizens command.
-        // EG: x.x:y.y:z.z:world
+        // In the format: x.x:y.y:z.z:world
+        // For example: 1.0:2.0:3.0:world_nether
         // -->
         if (attribute.startsWith("formatted.citizens")) {
             return new Element(getX() + ":" + getY() + ":" + getZ() + ":" + getWorld().getName()).getAttribute(attribute.fulfill(2));
@@ -1488,7 +1491,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns the formatted version of the dLocation.
-        // EG: 'X 'x.x', Y 'y.y', Z 'z.z', in world 'world'
+        // In the format: X 'x.x', Y 'y.y', Z 'z.z', in world 'world'
+        // For example: X '1.0', Y '2.0', Z '3.0', in world 'world_nether'
         // -->
         if (attribute.startsWith("formatted")) {
             return new Element("X '" + getX()
@@ -2237,12 +2241,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @name head_rotation
         // @input Element(Number)
         // @description
-        // Sets the rotation of the head at this location. Must be 1-16.
+        // Sets the rotation of the head at this location. Must be an integer 1 to 16.
         // @tags
         // <l@location.head_rotation>
         // -->
         if (mechanism.matches("head_rotation") && mechanism.requireInteger()) {
-            ((Skull) getBlock().getState()).setRotation(getSkullBlockFace(value.asInt()-1));
+            ((Skull) getBlock().getState()).setRotation(getSkullBlockFace(value.asInt() - 1));
         }
 
         // <--[mechanism]
