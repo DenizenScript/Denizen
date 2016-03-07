@@ -44,8 +44,8 @@ public class EntityInfected implements Property {
     dEntity infected;
 
     public boolean isInfected() {
-        return (infected.getBukkitEntity() instanceof Zombie
-                && ((Zombie) infected.getBukkitEntity()).isVillager());
+        return infected.getBukkitEntity() instanceof Zombie
+                && ((Zombie) infected.getBukkitEntity()).isVillager();
     }
 
     public void setInfected(boolean bool) {
@@ -93,11 +93,12 @@ public class EntityInfected implements Property {
 
     @Override
     public String getPropertyString() {
-        //if (isInfected())
-        //    return "true";
-        //else return null;
-        // TODO: Finish up trait. Needs mechanisms and a way to un-infect.
-        return null;
+        if (isInfected()) {
+            return "true";
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -135,6 +136,17 @@ public class EntityInfected implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // TODO
+        // <--[mechanism]
+        // @object dEntity
+        // @name is_infected
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is infected.
+        // @tags
+        // <e@entity.is_infected>
+        // -->
+        if (mechanism.matches("is_infected") && mechanism.requireBoolean()) {
+            setInfected(mechanism.getValue().asBoolean());
+        }
     }
 }

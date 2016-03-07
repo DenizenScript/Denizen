@@ -63,8 +63,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(3, lower);
-        if (!tryMaterial(material, CoreUtilities.getXthArg(2, lower))) {
+        if (!tryMaterial(material, CoreUtilities.getXthArg(3, lower))) {
             return false;
         }
 
@@ -110,10 +109,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favour of context.location.cuboids
-            dList cuboids = new dList();
-            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                cuboids.add(cuboid.identifySimple());
-            }
             return cuboids;
         }
         return super.getContext(name);

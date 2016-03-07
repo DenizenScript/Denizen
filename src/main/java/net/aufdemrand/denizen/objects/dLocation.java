@@ -141,16 +141,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Match location formats
 
         // Split values
-        String[] split = StringUtils.split(string, ',');
+        List<String> split = CoreUtilities.split(string, ',');
 
-        if (split.length == 2)
-        // If 4 values, wordless 2D location format
+        if (split.size() == 2)
+        // If 4 values, world-less 2D location format
         // x,y
         {
             try {
                 return new dLocation(null,
-                        Double.valueOf(split[0]),
-                        Double.valueOf(split[1]));
+                        Double.valueOf(split.get(0)),
+                        Double.valueOf(split.get(1)));
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
@@ -159,21 +159,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return null;
             }
         }
-        if (split.length == 3)
+        else if (split.size() == 3)
         // If 3 values, either worldless location format
         // x,y,z or 2D location format x,y,world
         {
             try {
-                World world = Bukkit.getWorld(split[2]);
+                World world = Bukkit.getWorld(split.get(2));
                 if (world != null) {
                     return new dLocation(world,
-                            Double.valueOf(split[0]),
-                            Double.valueOf(split[1]));
+                            Double.valueOf(split.get(0)),
+                            Double.valueOf(split.get(1)));
                 }
                 return new dLocation(null,
-                        Double.valueOf(split[0]),
-                        Double.valueOf(split[1]),
-                        Double.valueOf(split[2]));
+                        Double.valueOf(split.get(0)),
+                        Double.valueOf(split.get(1)),
+                        Double.valueOf(split.get(2)));
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
@@ -183,15 +183,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
-        else if (split.length == 4)
+        else if (split.size() == 4)
         // If 4 values, standard dScript location format
         // x,y,z,world
         {
             try {
-                return new dLocation(Bukkit.getWorld(split[3]),
-                        Double.valueOf(split[0]),
-                        Double.valueOf(split[1]),
-                        Double.valueOf(split[2]));
+                return new dLocation(Bukkit.getWorld(split.get(3)),
+                        Double.valueOf(split.get(0)),
+                        Double.valueOf(split.get(1)),
+                        Double.valueOf(split.get(2)));
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
@@ -202,18 +202,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
 
-        else if (split.length == 6)
+        else if (split.size() == 6)
 
         // If 6 values, location with pitch/yaw
         // x,y,z,yaw,pitch,world
         {
             try {
-                return new dLocation(Bukkit.getWorld(split[5]),
-                        Double.valueOf(split[0]),
-                        Double.valueOf(split[1]),
-                        Double.valueOf(split[2]),
-                        Float.valueOf(split[3]),
-                        Float.valueOf(split[4]));
+                return new dLocation(Bukkit.getWorld(split.get(5)),
+                        Double.valueOf(split.get(0)),
+                        Double.valueOf(split.get(1)),
+                        Double.valueOf(split.get(2)),
+                        Float.valueOf(split.get(3)),
+                        Float.valueOf(split.get(4)));
 
             }
             catch (Exception e) {

@@ -663,7 +663,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLevelsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());

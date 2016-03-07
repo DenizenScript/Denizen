@@ -47,8 +47,8 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     public Statistic statistic;
     public Integer previous_value;
     public Integer new_value;
-    public dMaterial material = null;
-    public dEntity entity = null;
+    public dMaterial material;
+    public dEntity entity;
     public PlayerStatisticIncrementEvent event;
 
     @Override
@@ -61,7 +61,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         String lower = CoreUtilities.toLowerCase(s);
         String stat = CoreUtilities.getXthArg(2, lower);
 
-        if (!stat.equals(CoreUtilities.toLowerCase(statistic.toString())) && !stat.equals("increments")) {
+        if (!stat.equals("increments") && !stat.equals(CoreUtilities.toLowerCase(statistic.toString()))) {
             return false;
         }
 
