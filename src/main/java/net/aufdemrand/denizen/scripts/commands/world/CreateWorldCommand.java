@@ -32,6 +32,12 @@ public class CreateWorldCommand extends AbstractCommand {
                 scriptEntry.addObject("worldtype", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("environment")
+                    && arg.matchesPrefix("environment")
+                    && arg.matchesEnum(World.Environment.values())) {
+                scriptEntry.addObject("environment", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("world_name")) {
                 scriptEntry.addObject("world_name", arg.asElement());
             }
@@ -49,6 +55,8 @@ public class CreateWorldCommand extends AbstractCommand {
         if (!scriptEntry.hasObject("worldtype")) {
             scriptEntry.addObject("worldtype", new Element("NORMAL"));
         }
+
+        scriptEntry.defaultObject("environment", new Element("normal"));
     }
 
     @Override
@@ -56,9 +64,11 @@ public class CreateWorldCommand extends AbstractCommand {
         Element World_Name = scriptEntry.getElement("world_name");
         Element Generator = scriptEntry.getElement("generator");
         Element worldType = scriptEntry.getElement("worldtype");
+        Element environment = scriptEntry.getElement("environment");
 
         dB.report(scriptEntry, getName(), World_Name.debug() +
                 (Generator != null ? Generator.debug() : "") +
+                environment.debug() +
                 worldType.debug());
 
         World world;
@@ -67,17 +77,19 @@ public class CreateWorldCommand extends AbstractCommand {
             world = Bukkit.getServer().createWorld(WorldCreator
                     .name(World_Name.asString())
                     .generator(Generator.asString())
+                    .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
                     .type(WorldType.valueOf(worldType.asString().toUpperCase())));
         }
 
         else {
             world = Bukkit.getServer().createWorld(WorldCreator
                     .name(World_Name.asString())
+                    .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
                     .type(WorldType.valueOf(worldType.asString().toUpperCase())));
         }
 
         if (world == null) {
-            dB.echoDebug(scriptEntry, "World is null! :(");
+            dB.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
         }
 
     }

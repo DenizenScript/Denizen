@@ -757,7 +757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
@@ -770,18 +770,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
         // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
         // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
-        // mountain-like terrain)
+        // mountain-like terrain).
+        // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // @Tags
         // <server.list_worlds>
         // @Usage
-        // Use to create a normal world with name survival
+        // Use to create a normal world with name 'survival'
         // - createworld survival
         // @Usage
-        // Use to create a flat world with the name superflat
+        // Use to create a flat world with the name 'superflat'
         // - createworld superflat worldtype:FLAT
+        // @Usage
+        // Use to create an end world with the name 'space'
+        // - createworld space environment:THE_END
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)", 1);
 
 
         // <--[command]
