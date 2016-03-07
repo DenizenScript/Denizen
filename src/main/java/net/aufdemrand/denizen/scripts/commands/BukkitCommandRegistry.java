@@ -2052,7 +2052,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percentages>)
+        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -2063,7 +2063,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
         // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
         // control physics for an extended period of time.
-        // Specify <percentages> to give a chance of each material being placed (in any materail at all).
+        // Specify (<percent chance>|...) to give a chance of each material being placed (in any material at all).
         // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
         // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
         // Note that specify a list of locations will take more time in parsing than in the actual block modification.
@@ -2084,7 +2084,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)", 2);
 
 
         // <--[command]
