@@ -10,9 +10,13 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +28,8 @@ public class ItemPatterns implements Property {
             Material material = ((dItem) item).getItemStack().getType();
             return material == Material.BANNER
                     || material == Material.WALL_BANNER
-                    || material == Material.STANDING_BANNER;
+                    || material == Material.STANDING_BANNER
+                    || material == Material.SHIELD;
         }
         return false;
     }
@@ -47,10 +52,34 @@ public class ItemPatterns implements Property {
 
     private dList listPatterns() {
         dList list = new dList();
-        for (Pattern pattern : ((BannerMeta) item.getItemStack().getItemMeta()).getPatterns()) {
+        for (Pattern pattern : getPatterns()) {
             list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
         }
         return list;
+    }
+
+    private List<Pattern> getPatterns() {
+        ItemMeta itemMeta = item.getItemStack().getItemMeta();
+        if (itemMeta instanceof BlockStateMeta) {
+            return ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getPatterns();
+        }
+        else {
+            return ((BannerMeta) itemMeta).getPatterns();
+        }
+    }
+
+    private void setPatterns(List<Pattern> patterns) {
+        ItemStack itemStack = item.getItemStack();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta instanceof BlockStateMeta) {
+            Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
+            banner.setPatterns(patterns);
+            ((BlockStateMeta) itemMeta).setBlockState(banner);
+        }
+        else {
+            ((BannerMeta) itemMeta).setPatterns(patterns);
+        }
+        itemStack.setItemMeta(itemMeta);
     }
 
     @Override
@@ -123,9 +152,7 @@ public class ItemPatterns implements Property {
                     dB.echoError("Could not apply pattern to banner: " + string);
                 }
             }
-            BannerMeta bannerMeta = (BannerMeta) item.getItemStack().getItemMeta();
-            bannerMeta.setPatterns(patterns);
-            item.getItemStack().setItemMeta(bannerMeta);
+            setPatterns(patterns);
         }
     }
 }
