@@ -54,10 +54,13 @@ public class EntityScriptHelper implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        EntityDespawnScriptEvent.instance.entity = new dEntity(event.getEntity());
+        Entity entity = event.getEntity();
+        dEntity.rememberEntity(entity);
+        EntityDespawnScriptEvent.instance.entity = new dEntity(entity);
         EntityDespawnScriptEvent.instance.cause = new Element("DEATH");
         EntityDespawnScriptEvent.instance.cancelled = false;
         EntityDespawnScriptEvent.instance.fire();
+        dEntity.forgetEntity(entity);
         unlinkEntity(event.getEntity());
     }
 
@@ -94,10 +97,12 @@ public class EntityScriptHelper implements Listener {
         // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386
         for (Entity ent : event.getChunk().getEntities()) {
             if (!(ent instanceof LivingEntity) || ((LivingEntity) ent).getRemoveWhenFarAway()) {
+                dEntity.rememberEntity(ent);
                 EntityDespawnScriptEvent.instance.entity = new dEntity(ent);
                 EntityDespawnScriptEvent.instance.cause = new Element("CHUNK_UNLOAD");
                 EntityDespawnScriptEvent.instance.cancelled = false;
                 EntityDespawnScriptEvent.instance.fire();
+                dEntity.forgetEntity(ent);
                 unlinkEntity(ent);
             }
         }
