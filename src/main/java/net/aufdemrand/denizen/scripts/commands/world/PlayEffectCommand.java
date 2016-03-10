@@ -43,7 +43,7 @@ import java.util.List;
 //   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
 //   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
 //   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER, BARRIER,
-//   END_ROD, DRAGON_BREATH, DAMAGE_INDICATOR
+//   END_ROD, DRAGON_BREATH, DAMAGE_INDICATOR, SWEEP_ATTACK
 //
 // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
 // -->
@@ -92,7 +92,8 @@ public class PlayEffectCommand extends AbstractCommand {
         BARRIER(EnumParticle.BARRIER),
         END_ROD(EnumParticle.END_ROD),
         DRAGON_BREATH(EnumParticle.DRAGON_BREATH),
-        DAMAGE_INDICATOR(EnumParticle.DAMAGE_INDICATOR);
+        DAMAGE_INDICATOR(EnumParticle.DAMAGE_INDICATOR),
+        SWEEP_ATTACK(EnumParticle.SWEEP_ATTACK);
         public EnumParticle effect;
 
         ParticleEffect(EnumParticle eff) {
