@@ -247,8 +247,8 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                 }
                 ItemStack[] newArmor = player.getInventory().getArmorContents();
                 for (int i = 0; i < 4; i++) {
-                    ItemStack o = oldArmor[i].clone();
-                    ItemStack n = newArmor[i].clone();
+                    ItemStack o = oldArmor[i] == null ? null: oldArmor[i].clone();
+                    ItemStack n = newArmor[i] == null ? null: newArmor[i].clone();
                     if (o != null) {
                         o.setDurability((short) 0);
                         if (n != null) {

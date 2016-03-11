@@ -1602,7 +1602,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - inventory open d:l@123,123,123,world
         // @Usage
         // Use to open a virtual inventory with a title and some items.
-        // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball;i@clay_brick]
+        // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball|i@clay_brick]
         // @Usage
         // Use to open another player's inventory.
         // - inventory open d:<p@calico-kid.inventory>
