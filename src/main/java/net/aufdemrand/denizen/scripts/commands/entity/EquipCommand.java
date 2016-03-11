@@ -69,6 +69,11 @@ public class EquipCommand extends AbstractCommand {
                 equipment.put("horse_armor", dItem.valueOf(arg.getValue()));
             }
 
+            else if (arg.matchesArgumentType(dItem.class)
+                    && arg.matchesPrefix("offhand")) {
+                equipment.put("offhand", dItem.valueOf(arg.getValue()));
+            }
+
             // Default to item in hand if no prefix is used
             else if (arg.matchesArgumentType(dItem.class)) {
                 equipment.put("hand", dItem.valueOf(arg.getValue()));
@@ -137,6 +142,9 @@ public class EquipCommand extends AbstractCommand {
                     if (equipment.get("boots") != null) {
                         trait.set(4, equipment.get("boots").getItemStack());
                     }
+                    if (equipment.get("offhand") != null) {
+                        trait.set(5, equipment.get("offhand").getItemStack());
+                    }
                 }
 
             }
@@ -168,7 +176,7 @@ public class EquipCommand extends AbstractCommand {
                     else {
 
                         if (equipment.get("hand") != null) {
-                            livingEntity.getEquipment().setItemInHand(equipment.get("hand").getItemStack());
+                            livingEntity.getEquipment().setItemInMainHand(equipment.get("hand").getItemStack());
                         }
                         if (equipment.get("head") != null) {
                             livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
@@ -181,6 +189,9 @@ public class EquipCommand extends AbstractCommand {
                         }
                         if (equipment.get("boots") != null) {
                             livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
+                        }
+                        if (equipment.get("offhand") != null) {
+                            livingEntity.getEquipment().setItemInOffHand(equipment.get("offhand").getItemStack());
                         }
                     }
                 }
