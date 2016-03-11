@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.packets.intercept;
 
+import net.aufdemrand.denizen.events.player.PlayerSwapsItemsScriptEvent;
 import net.aufdemrand.denizen.events.player.ResourcePackStatusScriptEvent;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -76,6 +77,20 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
         }
         catch (Exception e) {
             dB.echoError(e);
+        }
+        super.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInBlockDig packet) {
+        if (packet.c() == PacketPlayInBlockDig.EnumPlayerDigType.SWAP_HELD_ITEMS) {
+            // Run async to allow cancellation
+            PlayerSwapsItemsScriptEvent event = PlayerSwapsItemsScriptEvent.instance;
+            event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
+            event.fire();
+            if (event.cancelled) {
+                return;
+            }
         }
         super.a(packet);
     }
