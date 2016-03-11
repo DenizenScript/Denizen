@@ -59,6 +59,7 @@ public class ItemBaseColor implements Property {
         if (itemMeta instanceof BlockStateMeta) {
             Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
             banner.setBaseColor(color);
+            banner.update();
             ((BlockStateMeta) itemMeta).setBlockState(banner);
         }
         else {

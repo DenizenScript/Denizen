@@ -16,8 +16,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Listener {
@@ -56,7 +56,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public dLocation location;
     public PlayerPickupItemEvent event;
 
-    private static final List<UUID> editedItems = new ArrayList<UUID>();
+    private static final Set<UUID> editedItems = new HashSet<UUID>();
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {

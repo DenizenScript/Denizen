@@ -74,6 +74,7 @@ public class ItemPatterns implements Property {
         if (itemMeta instanceof BlockStateMeta) {
             Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
             banner.setPatterns(patterns);
+            banner.update();
             ((BlockStateMeta) itemMeta).setBlockState(banner);
         }
         else {
