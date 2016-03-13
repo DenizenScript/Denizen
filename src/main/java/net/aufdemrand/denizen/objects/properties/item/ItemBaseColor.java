@@ -8,7 +8,11 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemBaseColor implements Property {
 
@@ -17,7 +21,8 @@ public class ItemBaseColor implements Property {
             Material material = ((dItem) item).getItemStack().getType();
             return material == Material.BANNER
                     || material == Material.WALL_BANNER
-                    || material == Material.STANDING_BANNER;
+                    || material == Material.STANDING_BANNER
+                    || material == Material.SHIELD;
         }
         return false;
     }
@@ -38,12 +43,29 @@ public class ItemBaseColor implements Property {
 
     dItem item;
 
-    private Element getBaseColor() {
-        DyeColor baseColor = ((BannerMeta) item.getItemStack().getItemMeta()).getBaseColor();
-        if (baseColor != null) {
-            return new Element(baseColor.name());
+    private DyeColor getBaseColor() {
+        ItemMeta itemMeta = item.getItemStack().getItemMeta();
+        if (itemMeta instanceof BlockStateMeta) {
+            return ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getBaseColor();
         }
-        return null;
+        else {
+            return ((BannerMeta) itemMeta).getBaseColor();
+        }
+    }
+
+    private void setBaseColor(DyeColor color) {
+        ItemStack itemStack = item.getItemStack();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta instanceof BlockStateMeta) {
+            Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
+            banner.setBaseColor(color);
+            banner.update();
+            ((BlockStateMeta) itemMeta).setBlockState(banner);
+        }
+        else {
+            ((BannerMeta) itemMeta).setBaseColor(color);
+        }
+        itemStack.setItemMeta(itemMeta);
     }
 
     @Override
@@ -63,11 +85,11 @@ public class ItemBaseColor implements Property {
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // -->
         if (attribute.startsWith("base_color")) {
-            Element baseColor = getBaseColor();
+            DyeColor baseColor = getBaseColor();
             if (baseColor != null) {
-                return getBaseColor().getAttribute(attribute.fulfill(1));
+                return new Element(baseColor.name()).getAttribute(attribute.fulfill(1));
             }
-            return new Element("BLACK").getAttribute(attribute.fulfill(1));
+            return null;
         }
 
         return null;
@@ -76,9 +98,9 @@ public class ItemBaseColor implements Property {
 
     @Override
     public String getPropertyString() {
-        Element baseColor = getBaseColor();
+        DyeColor baseColor = getBaseColor();
         if (baseColor != null) {
-            return getBaseColor().identify();
+            return baseColor.name();
         }
         return null;
     }
@@ -103,9 +125,7 @@ public class ItemBaseColor implements Property {
         // -->
 
         if (mechanism.matches("base_color")) {
-            BannerMeta bannerMeta = (BannerMeta) item.getItemStack().getItemMeta();
-            bannerMeta.setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
-            item.getItemStack().setItemMeta(bannerMeta);
+            setBaseColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }

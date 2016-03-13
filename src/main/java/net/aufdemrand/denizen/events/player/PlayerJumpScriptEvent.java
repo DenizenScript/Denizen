@@ -46,7 +46,10 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return runInCheck(scriptContainer, s, lower, event.getFrom());
+        if (!runInCheck(scriptContainer, s, lower, event.getFrom())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

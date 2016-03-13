@@ -66,7 +66,7 @@ public class ItemEnchantments implements Property {
         // @group properties
         // @description
         // Returns a list of enchantments on the item, with their levels listed too.
-        // In the format of ENCHANTMENT,LEVEL - EG: DAMAGE_ALL,3
+        // In the format of ENCHANTMENT,LEVEL - For example: DAMAGE_ALL,3
         // -->
         if (attribute.startsWith("enchantments.with_levels")) {
             if (enchantments.size() > 0) {

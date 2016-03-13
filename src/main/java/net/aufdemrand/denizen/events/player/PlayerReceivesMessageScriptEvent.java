@@ -23,10 +23,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     //
     // @Context
     // <context.message> returns an Element of the message.
+    // <context.raw_json> returns an Element of the raw JSON used for the message.
     // <context.system_message> returns true if the message is a system message (not player chat).
     //
     // @Determine
     // "MESSAGE:" + Element to change the message.
+    // "RAW_JSON:" + Element to change the JSON used for the message.
     //
     // -->
 
@@ -36,8 +38,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
 
     public static PlayerReceivesMessageScriptEvent instance;
     public Element message;
+    public Element rawJson;
     public Element system;
     public dPlayer player;
+
+    public boolean messageModified;
+    public boolean rawJsonModified;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -59,6 +65,12 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("message:")) {
             message = new Element(determination.substring("message:".length()));
+            messageModified = true;
+            return true;
+        }
+        if (lower.startsWith("raw_json:")) {
+            rawJson = new Element(determination.substring("raw_json:".length()));
+            rawJsonModified = true;
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -73,6 +85,9 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public dObject getContext(String name) {
         if (name.equals("message")) {
             return message;
+        }
+        if (name.equals("raw_json")) {
+            return rawJson;
         }
         if (name.equals("system_message")) {
             return system;

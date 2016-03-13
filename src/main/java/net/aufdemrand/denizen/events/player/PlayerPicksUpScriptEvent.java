@@ -11,9 +11,14 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -35,6 +40,9 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     // <context.entity> returns a dEntity of the item.
     // <context.location> returns a dLocation of the item's location.
     //
+    // @Determine
+    // "ITEM:" + dItem to changed the item being picked up.
+    //
     // -->
 
     public PlayerPicksUpScriptEvent() {
@@ -43,9 +51,12 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     public static PlayerPicksUpScriptEvent instance;
     public dItem item;
+    public boolean itemChanged;
     public dEntity entity;
     public dLocation location;
     public PlayerPickupItemEvent event;
+
+    private static final Set<UUID> editedItems = new HashSet<UUID>();
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -81,6 +92,12 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (lower.startsWith("item:")) {
+            item = dItem.valueOf(determination.substring("item:".length()));
+            itemChanged = true;
+            return true;
+        }
         return super.applyDetermination(container, determination);
     }
 
@@ -108,12 +125,26 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        location = new dLocation(event.getItem().getLocation());
-        item = new dItem(event.getItem().getItemStack());
-        entity = new dEntity(event.getItem());
+        Item itemEntity = event.getItem();
+        UUID itemUUID = itemEntity.getUniqueId();
+        if (editedItems.contains(itemUUID)) {
+            editedItems.remove(itemUUID);
+            return;
+        }
+        location = new dLocation(itemEntity.getLocation());
+        item = new dItem(itemEntity.getItemStack());
+        entity = new dEntity(itemEntity);
         cancelled = event.isCancelled();
+        itemChanged = false;
         this.event = event;
         fire();
-        event.setCancelled(cancelled);
+        if (itemChanged) {
+            itemEntity.setItemStack(item.getItemStack());
+            editedItems.add(itemUUID);
+            event.setCancelled(true);
+        }
+        else {
+            event.setCancelled(cancelled);
+        }
     }
 }

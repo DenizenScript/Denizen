@@ -824,7 +824,7 @@ public class dPlayer implements dObject, Adjustable {
                 // @attribute <p@player.money.currency_singular>
                 // @returns Element
                 // @description
-                // Returns the name of a single piece of currency - EG: Dollar
+                // Returns the name of a single piece of currency - For example: Dollar
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency_singular")) {
@@ -836,7 +836,7 @@ public class dPlayer implements dObject, Adjustable {
                 // @attribute <p@player.money.currency>
                 // @returns Element
                 // @description
-                // Returns the name of multiple pieces of currency - EG: Dollars
+                // Returns the name of multiple pieces of currency - For example: Dollars
                 // (Only if supported by the registered Economy system.)
                 // -->
                 if (attribute.startsWith("money.currency")) {
@@ -2555,14 +2555,13 @@ public class dPlayer implements dObject, Adjustable {
         // Shows the player a boss health bar with the specified text as a name.
         // Use with no input value to remove the bar.
         // Optionally, precede the text with a number indicating the health value
-        // based on an arbitrary scale of 0 to 200. EG:
+        // based on an arbitrary scale of 0 to 200. For example:
         // - adjust <player> show_boss_bar:Hello
         // - adjust <player> show_boss_bar:100|Hello
-        // NOTE: This will soon be replaced with a command!
+        // NOTE: This has been replaced by <@link command bossbar>!
         // @tags
         // None
         // -->
-        // TODO: Command!
         if (mechanism.matches("show_boss_bar")) {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);

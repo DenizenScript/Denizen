@@ -2,15 +2,19 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FireworkExplodeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -26,6 +30,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.entity> returns the firework that exploded.
+    // <context.item>  returns the firework item.
     // <context.location> returns the dLocation the firework exploded at.
     //
     // -->
@@ -35,9 +40,9 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     }
 
     public static FireworkBurstsScriptEvent instance;
+    public FireworkExplodeEvent event;
     public dEntity entity;
     public dLocation location;
-    public FireworkExplodeEvent event;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -80,6 +85,11 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("location")) {
             return location;
+        }
+        else if (name.equals("item")) {
+            ItemStack itemStack = new ItemStack(Material.FIREWORK);
+            itemStack.setItemMeta(event.getEntity().getFireworkMeta());
+            return new dItem(itemStack);
         }
         return super.getContext(name);
     }

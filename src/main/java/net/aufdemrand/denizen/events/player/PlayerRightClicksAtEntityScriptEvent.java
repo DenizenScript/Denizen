@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 // <--[event]
 // @Events
@@ -121,6 +122,9 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
 
     @EventHandler
     public void playerRightClicksAtEntity(PlayerInteractAtEntityEvent event) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
+            return;
+        }
         entity = new dEntity(event.getRightClicked());
         item = new dItem(event.getPlayer().getItemInHand());
         location = new dLocation(event.getClickedPosition().toLocation(event.getPlayer().getWorld()));

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -13,7 +14,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -23,40 +24,42 @@ import org.bukkit.inventory.Recipe;
 
 // <--[event]
 // @Events
-// item crafted
-// <item> crafted
-// <material> crafted
+// item recipe formed
+// <item> recipe formed
+// <material> recipe formed
 //
-// @Regex ^on [^\s]+ crafted$
+// @Regex ^on [^\s]+ recipe formed$
 //
 // @Cancellable true
 //
 // @Triggers when an item's recipe is correctly formed.
 // @Context
 // <context.inventory> returns the dInventory of the crafting inventory.
-// <context.item> returns the dItem to be crafted.
+// <context.item> returns the dItem to be formed in the result slot.
 // <context.recipe> returns a dList of dItems in the recipe.
 //
 // @Determine
-// dItem to change the item that is crafted.
+// dItem to change the item that is formed in the result slot.
 //
 // -->
 
-public class ItemCraftedScriptEvent extends BukkitScriptEvent implements Listener {
+public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Listener {
 
-    public ItemCraftedScriptEvent() {
+    public ItemRecipeFormedScriptEvent() {
         instance = this;
     }
 
-    public static ItemCraftedScriptEvent instance;
-    public PrepareItemCraftEvent event;
+    public static ItemRecipeFormedScriptEvent instance;
     public dItem result;
     public dList recipe;
     public CraftingInventory inventory;
+    public dPlayer player;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("crafted");
+        String lower = CoreUtilities.toLowerCase(s);
+        return (CoreUtilities.getXthArg(1, lower).equals("recipe") && CoreUtilities.getXthArg(2, lower).equals("formed"))
+                || CoreUtilities.getXthArg(1, lower).equals("crafted");
     }
 
     @Override
@@ -73,7 +76,7 @@ public class ItemCraftedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public String getName() {
-        return "ItemCrafted";
+        return "ItemRecipeFormed";
     }
 
     @Override
@@ -97,7 +100,7 @@ public class ItemCraftedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dPlayer.mirrorBukkitPlayer((Player) event.getView().getPlayer()), null);
+        return new BukkitScriptEntryData(player, null);
     }
 
     @Override
@@ -115,7 +118,11 @@ public class ItemCraftedScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @EventHandler
-    public void onItemCrafted(PrepareItemCraftEvent event) {
+    public void onRecipeFormed(PrepareItemCraftEvent event) {
+        HumanEntity humanEntity = event.getView().getPlayer();
+        if (dEntity.isNPC(humanEntity)) {
+            return;
+        }
         Recipe eRecipe = event.getRecipe();
         if (eRecipe == null || eRecipe.getResult() == null) {
             return;
@@ -131,7 +138,7 @@ public class ItemCraftedScriptEvent extends BukkitScriptEvent implements Listene
                 recipe.add(new dItem(Material.AIR).identify());
             }
         }
-        this.event = event;
+        player = dEntity.getPlayerFrom(humanEntity);
         fire();
         if (cancelled) {
             inventory.setResult(null);

@@ -45,16 +45,19 @@ public class DenizenWorldAccess implements IWorldAccess {
     @Override
     public void b(Entity entity) {
         try {
-            if (dEntity.isCitizensNPC(entity.getBukkitEntity())) {
+            org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+            if (dEntity.isCitizensNPC(bukkitEntity)) {
                 return;
             }
-            if (entity.getBukkitEntity() instanceof LivingEntity && !((LivingEntity) entity.getBukkitEntity()).getRemoveWhenFarAway()) {
+            if (bukkitEntity instanceof LivingEntity && !((LivingEntity) bukkitEntity).getRemoveWhenFarAway()) {
                 return;
             }
-            EntityDespawnScriptEvent.instance.entity = new dEntity(entity.getBukkitEntity());
+            dEntity.rememberEntity(bukkitEntity);
+            EntityDespawnScriptEvent.instance.entity = new dEntity(bukkitEntity);
             EntityDespawnScriptEvent.instance.cause = new Element("OTHER");
             EntityDespawnScriptEvent.instance.cancelled = false;
             EntityDespawnScriptEvent.instance.fire();
+            dEntity.forgetEntity(bukkitEntity);
         }
         catch (Exception e) {
             dB.echoError(e);

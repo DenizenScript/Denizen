@@ -1,17 +1,14 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dInventory;
+import net.aufdemrand.denizen.events.player.ItemRecipeFormedScriptEvent;
+import net.aufdemrand.denizen.events.player.PlayerCraftsItemScriptEvent;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Bukkit;
@@ -30,7 +27,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
@@ -200,11 +200,37 @@ public class ItemScriptHelper implements Listener {
             CraftingInventory inventory = (CraftingInventory) event.getInventory();
             Player player = (Player) event.getWhoClicked();
 
+            if (slotType == SlotType.RESULT && inventory.getResult() != null
+                    && inventory.getResult().getData().getItemType() != Material.AIR) {
+                PlayerCraftsItemScriptEvent scriptEvent = PlayerCraftsItemScriptEvent.instance;
+                scriptEvent.inventory = inventory;
+                scriptEvent.result = new dItem(inventory.getResult());
+                dList recipeList = new dList();
+                for (ItemStack item : inventory.getMatrix()) {
+                    if (item != null) {
+                        recipeList.add(new dItem(item.clone()).identify());
+                    }
+                    else {
+                        recipeList.add(new dItem(Material.AIR).identify());
+                    }
+                }
+                scriptEvent.recipe = recipeList;
+                scriptEvent.player = dPlayer.mirrorBukkitPlayer(player);
+                scriptEvent.resultChanged = false;
+                scriptEvent.fire();
+                if (scriptEvent.cancelled) {
+                    event.setCancelled(true);
+                    return;
+                }
+                else if (scriptEvent.resultChanged) {
+                    event.setCurrentItem(scriptEvent.result.getItemStack());
+                }
+            }
+
             // If the RESULT slot was shift-clicked, emulate
             // shift click behavior for it
             boolean clicked;
-            if (slotType.equals(InventoryType.SlotType.RESULT) &&
-                    event.isShiftClick()) {
+            if (slotType == SlotType.RESULT && event.isShiftClick()) {
                 clicked = emulateSpecialRecipeResultShiftClick(inventory, player);
             }
             // Otherwise check for special recipe matches
@@ -218,11 +244,17 @@ public class ItemScriptHelper implements Listener {
     }
 
     public void removeOneFromEachSlot(final CraftingInventory inventory, final Player player) {
+        // This cloning is a workaround for what seems to be a Spigot issue
+        // Basically, after taking the crafted item, it randomly sets the recipe items
+        // to twice their amount minus 2. I have no idea why.
+        final ItemStack[] matrix = inventory.getMatrix();
+        for (int i = 0; i < matrix.length; i++) {
+            matrix[i] = matrix[i].clone();
+        }
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
                     @Override
                     public void run() {
-                        ItemStack[] matrix = inventory.getMatrix();
                         for (int i = 0; i < matrix.length; i++) {
                             if (matrix[i] != null) {
                                 if (matrix[i].getAmount() == 0) {
@@ -236,7 +268,7 @@ public class ItemScriptHelper implements Listener {
                                 }
                             }
                         }
-                        inventory.setContents(matrix);
+                        inventory.setMatrix(matrix);
                         player.updateInventory();
                     }
                 }, 0);
@@ -278,6 +310,9 @@ public class ItemScriptHelper implements Listener {
 
         // Store the current matrix
         ItemStack[] matrix1 = inventory.getMatrix();
+        for (int i = 0; i < matrix1.length; i++) {
+            matrix1[i] = matrix1[i].clone();
+        }
 
         // Get the result of the special recipe that this matrix matches,
         // if any
@@ -293,6 +328,9 @@ public class ItemScriptHelper implements Listener {
                     public void run() {
                         // Store the current matrix
                         ItemStack[] matrix = inventory.getMatrix();
+                        for (int i = 0; i < matrix.length; i++) {
+                            matrix[i] = matrix[i].clone();
+                        }
 
                         // Get the result of the special recipe that this matrix matches,
                         // if any
@@ -300,12 +338,8 @@ public class ItemScriptHelper implements Listener {
 
                         // Proceed only if the result was not null
                         if (result != null) {
-                            Map<String, dObject> context = new HashMap<String, dObject>();
-                            context.put("inventory", new dInventory(inventory));
-                            context.put("item", result);
-
                             dList recipeList = new dList();
-                            for (ItemStack item : inventory.getMatrix()) {
+                            for (ItemStack item : matrix) {
                                 if (item != null) {
                                     recipeList.add(new dItem(item).identify());
                                 }
@@ -313,25 +347,20 @@ public class ItemScriptHelper implements Listener {
                                     recipeList.add(new dItem(Material.AIR).identify());
                                 }
                             }
-                            context.put("recipe", recipeList);
 
-                            List<String> determinations = OldEventManager.doEvents(Arrays.asList
-                                            ("item crafted",
-                                                    result.identifySimple() + " crafted",
-                                                    result.identifyMaterial() + " crafted"),
-                                    new BukkitScriptEntryData(dEntity.getPlayerFrom(player), null), context, true);
-
-                            for (String determination : determinations) {
-                                if (determination.toUpperCase().startsWith("CANCELLED")) {
-                                    return;
-                                }
-                                else if (dItem.matches(determination)) {
-                                    result = dItem.valueOf(determination);
-                                }
+                            ItemRecipeFormedScriptEvent event = ItemRecipeFormedScriptEvent.instance;
+                            event.result = result;
+                            event.recipe = recipeList;
+                            event.inventory = inventory;
+                            event.player = dPlayer.mirrorBukkitPlayer(player);
+                            event.fire();
+                            if (event.cancelled) {
+                                inventory.setResult(null);
                             }
-
-                            // If this was a valid match, set the crafting's result
-                            inventory.setResult(result.getItemStack());
+                            else {
+                                // If this was a valid match, set the crafting's result
+                                inventory.setResult(event.result.getItemStack());
+                            }
 
                             // Update the player's inventory
                             //
@@ -340,7 +369,7 @@ public class ItemScriptHelper implements Listener {
                             player.updateInventory();
                         }
                     }
-                }, 0);
+                }, 2);
 
         return returnme;
     }
@@ -413,6 +442,9 @@ public class ItemScriptHelper implements Listener {
 
         // Store the crafting matrix
         ItemStack[] matrix = inventory.getMatrix();
+        for (int i = 0; i < matrix.length; i++) {
+            matrix[i] = matrix[i].clone();
+        }
 
         // Get the result of the special recipe that this matrix matches,
         // if any
@@ -429,7 +461,7 @@ public class ItemScriptHelper implements Listener {
             // Set lowestAmount to the amount of the first item found,
             // then set it to that of the ingredient with the lowest amount
             // found that isn't zero
-            for (int n = 0; n < matrix.length - 1; n++) {
+            for (int n = 0; n < matrix.length; n++) {
                 if ((matrix[n].getAmount() > 0 &&
                         matrix[n].getAmount() < lowestAmount) || lowestAmount == 0) {
                     lowestAmount = matrix[n].getAmount();
@@ -437,7 +469,7 @@ public class ItemScriptHelper implements Listener {
             }
 
             // Deduct that amount from every ingredient in the matrix
-            for (int n = 0; n < matrix.length - 1; n++) {
+            for (int n = 0; n < matrix.length; n++) {
                 if (matrix[n].getAmount() > 0) {
                     matrix[n].setAmount(matrix[n].getAmount() - lowestAmount);
                     if (matrix[n].getAmount() <= 0) {
@@ -459,7 +491,7 @@ public class ItemScriptHelper implements Listener {
                 // Set the itemstack's amount
                 resultStack.setAmount(lowestAmount * resultStack.getAmount());
 
-                inventory.setContents(matrix);
+                inventory.setMatrix(matrix);
 
                 // Set the crafting's result
                 inventory.setResult(resultStack);

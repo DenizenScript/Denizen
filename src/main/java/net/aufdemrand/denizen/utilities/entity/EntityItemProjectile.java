@@ -59,7 +59,7 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         for (Object aList : list) {
             Entity entity1 = (Entity) aList;
 
-            if ((entity1.ad()) && ((entity1 != shooter) || (age >= 5))) {
+            if ((entity1.aT()) && ((entity1 != shooter) || (age >= 5))) {
                 float f1 = 0.3F;
                 AxisAlignedBB axisalignedbb1 = entity1.getBoundingBox().grow(f1, f1, f1);
                 MovingObjectPosition movingobjectposition1 = axisalignedbb1.a(vec3d, vec3d1);

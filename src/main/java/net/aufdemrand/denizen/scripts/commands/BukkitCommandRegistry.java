@@ -462,6 +462,36 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name BossBar
+        // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
+        // @Required 1
+        // @Stable stable
+        // @Short Shows players a boss bar.
+        // @Author Morphan1
+        // @Group server
+        // @Description
+        // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
+        // values and remove the bar.
+        //
+        // Requires an ID. Progress must be between 0 and 1.
+        //
+        // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+        // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
+        // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
+
+        // @Usage
+        // Shows a message to all online players.
+        // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
+
+        // @Usage
+        // Update the boss bar's color and progress.
+        // - bossbar MyMessageID color:blue progress:0.2
+        // -->
+        registerCoreMember(BossBarCommand.class,
+                "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
+
+
+        // <--[command]
         // @Name Burn
         // @Syntax burn [<entity>|...] (duration:<value>)
         // @Required 1
@@ -727,7 +757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
@@ -740,18 +770,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
         // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
         // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
-        // mountain-like terrain)
+        // mountain-like terrain).
+        // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // @Tags
         // <server.list_worlds>
         // @Usage
-        // Use to create a normal world with name survival
+        // Use to create a normal world with name 'survival'
         // - createworld survival
         // @Usage
-        // Use to create a flat world with the name superflat
+        // Use to create a flat world with the name 'superflat'
         // - createworld superflat worldtype:FLAT
+        // @Usage
+        // Use to create an end world with the name 'space'
+        // - createworld space environment:THE_END
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)", 1);
 
 
         // <--[command]
@@ -955,7 +989,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Equip
-        // @Syntax equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
+        // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
         // @Required 1
         // @Stable stable
         // @Short Equips items and armor on a list of entities.
@@ -983,7 +1017,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - equip e@pig saddle:i@saddle
         // -->
         registerCoreMember(EquipCommand.class,
-                "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
+                "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
 
 
         // <--[command]
@@ -1568,7 +1602,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - inventory open d:l@123,123,123,world
         // @Usage
         // Use to open a virtual inventory with a title and some items.
-        // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball;i@clay_brick]
+        // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball|i@clay_brick]
         // @Usage
         // Use to open another player's inventory.
         // - inventory open d:<p@calico-kid.inventory>
@@ -1785,8 +1819,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You might choose to use this to record some important things, for example, every time a player
         // uses a dangerous command you might log the player's name and their location, so you'll know
         // who to blame if you find something damaged.
-        // Remember that the file location is inside the server's primary folder. You might want to prefix
-        // file names with a folder name, EG: 'file:logs/security.log'
+        // Remember that the file location is inside the server's primary folder. You most likely want to prefix
+        // file names with a folder name, For example: 'file:logs/security.log'
         //
         // Warning: Remember that file operations are dangerous! A typo in the filename could ruin your server.
         // It's recommended you use this command minimally.
@@ -2022,7 +2056,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name ModifyBlock
-        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percentages>)
+        // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
         // @Required 2
         // @Stable stable
         // @Short Modifies blocks.
@@ -2033,7 +2067,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
         // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
         // control physics for an extended period of time.
-        // Specify <percentages> to give a chance of each material being placed (in any materail at all).
+        // Specify (<percent chance>|...) to give a chance of each material being placed (in any material at all).
         // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
         // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
         // Note that specify a list of locations will take more time in parsing than in the actual block modification.
@@ -2054,7 +2088,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ModifyBlockCommand.class,
-                "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>)", 2);
+                "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)", 2);
 
 
         // <--[command]

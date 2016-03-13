@@ -625,11 +625,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
             ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
             ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemCraftedScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
+            ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
             ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
@@ -648,6 +648,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDragsInInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDropsItemScriptEvent());
@@ -663,7 +664,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLevelsScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
@@ -679,6 +680,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerStatisticIncrementsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
@@ -777,6 +779,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityItem.class, dEntity.class);
             propertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
             propertyParser.registerProperty(EntityKnockback.class, dEntity.class);
+            propertyParser.registerProperty(EntityMarker.class, dEntity.class);
             propertyParser.registerProperty(EntityPainting.class, dEntity.class);
             propertyParser.registerProperty(EntityPotion.class, dEntity.class);
             propertyParser.registerProperty(EntityPowered.class, dEntity.class);

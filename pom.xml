@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.9-SNAPSHOT</craftbukkit.version>
+        <craftbukkit.version>1.9-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
         <citizens.version>2.0.17-SNAPSHOT</citizens.version>
         <build.number>Unknown</build.number>
@@ -71,24 +71,24 @@
             <version>${json.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>junit</groupId>-->
+            <!--<artifactId>junit</artifactId>-->
+            <!--<version>4.10</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>Vault</artifactId>
-            <version>1.5.4</version>
+            <version>1.5.6</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.jmock</groupId>
-            <artifactId>jmock-junit4</artifactId>
-            <version>2.5.1</version>
-            <scope>test</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.jmock</groupId>-->
+            <!--<artifactId>jmock-junit4</artifactId>-->
+            <!--<version>2.5.1</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.abstractmeta</groupId>
             <artifactId>compilation-toolbox</artifactId>
@@ -102,11 +102,11 @@
             <version>0.0.4.3</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>org.json</artifactId>
-            <version>chargebee-1.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.json</groupId>-->
+            <!--<artifactId>org.json</artifactId>-->
+            <!--<version>chargebee-1.0</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <ciManagement>
