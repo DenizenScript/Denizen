@@ -17,7 +17,8 @@ public class ItemPotion implements Property {
     public static boolean describes(dObject item) {
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == Material.POTION
-                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION);
+                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
+                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION);
     }
 
     public static ItemPotion getFrom(dObject _item) {
