@@ -169,7 +169,7 @@ public class ItemPotion implements Property {
         // @name potion
         // @input Element
         // @description
-        // Sets the potion's custom potion effects.
+        // Sets the potion's potion effect(s).
         // Input is a formed like: Effect,Level,Extended,Splash
         // EG, speed,1,true,false
         // Can also input a damage-value, EG '255'

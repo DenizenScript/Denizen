@@ -410,7 +410,7 @@ public class BukkitWorldScriptHelper implements Listener {
             return;
         }
 
-        if (event.getHand() != EquipmentSlot.HAND) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
 

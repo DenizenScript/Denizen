@@ -122,7 +122,7 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
 
     @EventHandler
     public void playerRightClicksAtEntity(PlayerInteractAtEntityEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
         entity = new dEntity(event.getRightClicked());
