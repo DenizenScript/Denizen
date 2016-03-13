@@ -53,9 +53,9 @@ public class ItemPotion implements Property {
                     .append(pot.getAmplifier()).append(",")
                     .append(pot.getDuration()).append(",")
                     .append(pot.isAmbient()).append(",")
-                    .append(pot.hasParticles()).append(",");
+                    .append(pot.hasParticles());
             if (pot.getColor() != null) {
-                sb.append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
+                sb.append(",").append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
             }
             effects.add(sb.toString());
         }
