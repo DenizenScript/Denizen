@@ -257,6 +257,7 @@ public class ItemPotion implements Property {
                         new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
                         new Element(d2[4]).asBoolean(), dColor.valueOf(d2[5].replace("&comma", ",")).getColor()), false);
             }
+            item.getItemStack().setItemMeta(meta);
         }
 
         if (mechanism.matches("potion")) {
