@@ -989,7 +989,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Equip
-        // @Syntax equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
+        // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
         // @Required 1
         // @Stable stable
         // @Short Equips items and armor on a list of entities.
@@ -1017,7 +1017,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - equip e@pig saddle:i@saddle
         // -->
         registerCoreMember(EquipCommand.class,
-                "EQUIP", "equip (<entity>|...) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
+                "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
 
 
         // <--[command]

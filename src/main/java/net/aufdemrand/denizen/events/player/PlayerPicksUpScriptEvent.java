@@ -135,6 +135,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         item = new dItem(itemEntity.getItemStack());
         entity = new dEntity(itemEntity);
         cancelled = event.isCancelled();
+        itemChanged = false;
         this.event = event;
         fire();
         if (itemChanged) {
