@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -51,7 +53,8 @@ public class ItemPotion implements Property {
                     .append(pot.getAmplifier()).append(",")
                     .append(pot.getDuration()).append(",")
                     .append(pot.isAmbient()).append(",")
-                    .append(pot.hasParticles());
+                    .append(pot.hasParticles()).append(",")
+                    .append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
             effects.add(sb.toString());
         }
         return effects.identify();
@@ -101,7 +104,7 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].is_extend>
+                // @attribute <i@item.potion_effect[<#>].is_extended>
                 // @returns Element
                 // @mechanism dItem.potion_effects
                 // @group properties
@@ -124,10 +127,23 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns whether the potion is ambient.
+                // Returns whether the potion effect is ambient.
                 // -->
                 if (attribute.startsWith("is_ambient")) {
                     return new Element(meta.getCustomEffects().get(potN).isAmbient())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <i@item.potion_effect[<#>].color>
+                // @returns dColor
+                // @mechanism dItem.potion_effects
+                // @group properties
+                // @description
+                // Returns the potion effect's color.
+                // -->
+                if (attribute.startsWith("color")) {
+                    return new dColor(meta.getCustomEffects().get(potN).getColor())
                             .getAttribute(attribute.fulfill(1));
                 }
 
@@ -137,7 +153,7 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns whether the potion has particles.
+                // Returns whether the potion effect has particles.
                 // -->
                 if (attribute.startsWith("has_particles")) {
                     return new Element(meta.getCustomEffects().get(potN).hasParticles())
@@ -163,7 +179,7 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns the amplifier level of the potion.
+                // Returns the amplifier level of the potion effect.
                 // -->
                 if (attribute.startsWith("amplifier")) {
                     return new Element(meta.getCustomEffects().get(potN).getAmplifier())
@@ -176,7 +192,7 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns the type of the potion.
+                // Returns the type of the potion effect.
                 // -->
                 if (attribute.startsWith("type")) {
                     return new Element(meta.getCustomEffects().get(potN).getType().getName())
@@ -216,15 +232,16 @@ public class ItemPotion implements Property {
         // @input dList
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended|Type,Amplifier,Duration,Ambient,Particles|...
-        // For example: SPEED,true,false|SPEED,2,200,false,true
+        // Input is a formed like: Effect,Upgraded,Extended|Type,Amplifier,Duration,Ambient,Particles,Color|...
+        // For example: SPEED,true,false|SPEED,2,200,false,true,red
         // @tags
-        // <i@item.potion_effect>
-        // <i@item.potion_effect.type>
-        // <i@item.potion_effect.duration>
-        // <i@item.potion_effect.amplifier>
-        // <i@item.potion_effect.is_ambient>
-        // <i@item.potion_effects.has_particles>
+        // <i@item.potion_effect[<#>]>
+        // <i@item.potion_effect[<#>].type>
+        // <i@item.potion_effect[<#>].duration>
+        // <i@item.potion_effect[<#>].amplifier>
+        // <i@item.potion_effect[<#>].is_ambient>
+        // <i@item.potion_effect[<#>].has_particles>
+        // <i@item.potion_effect[<#>].color>
         // -->
         if (mechanism.matches("potion_effects")) {
             dList data = mechanism.getValue().asType(dList.class);
@@ -238,7 +255,7 @@ public class ItemPotion implements Property {
                 String[] d2 = data.get(i).split(",");
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(d2[0].toUpperCase()),
                         new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
-                        new Element(d2[4]).asBoolean()), false);
+                        new Element(d2[4]).asBoolean(), dColor.valueOf(d2[5].replace("&comma", ",")).getColor()), false);
             }
         }
 
