@@ -258,7 +258,7 @@ public class ItemPotion implements Property {
                 String[] d2 = data.get(i).split(",");
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(d2[0].toUpperCase()),
                         new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
-                        new Element(d2[4]).asBoolean(), d2.length >= 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor(): null), false);
+                        new Element(d2[4]).asBoolean(), d2.length > 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor(): null), false);
             }
             item.getItemStack().setItemMeta(meta);
         }
