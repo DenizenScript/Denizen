@@ -53,8 +53,10 @@ public class ItemPotion implements Property {
                     .append(pot.getAmplifier()).append(",")
                     .append(pot.getDuration()).append(",")
                     .append(pot.isAmbient()).append(",")
-                    .append(pot.hasParticles()).append(",")
-                    .append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
+                    .append(pot.hasParticles()).append(",");
+            if (pot.getColor() != null) {
+                sb.append(new dColor(pot.getColor()).identify().replace(",", "&comma"));
+            }
             effects.add(sb.toString());
         }
         return effects.identify();
@@ -232,7 +234,7 @@ public class ItemPotion implements Property {
         // @input dList
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended|Type,Amplifier,Duration,Ambient,Particles,Color|...
+        // Input is a formed like: Effect,Upgraded,Extended|Type,Amplifier,Duration,Ambient,Particles(,Color)|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,red
         // @tags
         // <i@item.potion_effect[<#>]>
@@ -255,7 +257,7 @@ public class ItemPotion implements Property {
                 String[] d2 = data.get(i).split(",");
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(d2[0].toUpperCase()),
                         new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
-                        new Element(d2[4]).asBoolean(), dColor.valueOf(d2[5].replace("&comma", ",")).getColor()), false);
+                        new Element(d2[4]).asBoolean(), d2.length >= 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor(): null), false);
             }
             item.getItemStack().setItemMeta(meta);
         }
