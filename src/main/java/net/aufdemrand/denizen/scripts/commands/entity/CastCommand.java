@@ -30,12 +30,12 @@ public class CastCommand extends AbstractCommand {
                 scriptEntry.addObject("remove", new Element(true));
             }
 
-            if (!scriptEntry.hasObject("ambient")
+            else if (!scriptEntry.hasObject("ambient")
                     && arg.matches("no_ambient")) {
                 scriptEntry.addObject("ambient", new Element(false));
             }
 
-            if (!scriptEntry.hasObject("show_particles")
+            else if (!scriptEntry.hasObject("show_particles")
                     && arg.matches("hide_particles")) {
                 scriptEntry.addObject("show_particles", new Element(false));
             }
