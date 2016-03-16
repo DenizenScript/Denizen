@@ -23,7 +23,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player fishes (<entity>) (while <state>) (in <area>)
+    // player fishes (<entity>/<item>) (while <state>) (in <area>)
     //
     // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
@@ -60,8 +60,18 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
         String fish = CoreUtilities.getXthArg(2, lower);
 
-        if (entity != null && !fish.isEmpty() && !tryEntity(entity, fish)) {
-            return false;
+        if (!fish.isEmpty()) {
+            if (entity == null) {
+                return false;
+            }
+            if (!tryEntity(entity, fish)) {
+                if (item == null) {
+                    return false;
+                }
+                if (!tryItem(item, fish)) {
+                    return false;
+                }
+            }
         }
 
         List<String> data = CoreUtilities.split(lower, ' ');
