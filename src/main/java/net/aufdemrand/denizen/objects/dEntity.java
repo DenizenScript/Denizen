@@ -2296,6 +2296,19 @@ public class dEntity implements dObject, Adjustable {
             return new Duration(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <e@entity.gliding>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.gliding
+        // @group attributes
+        // @description
+        // Returns whether this entity is gliding.
+        // -->
+        if (attribute.startsWith("gliding")) {
+            return new Element(getLivingEntity().isGliding())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
@@ -2693,6 +2706,19 @@ public class dEntity implements dObject, Adjustable {
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
                 getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
             ((Item) getBukkitEntity()).setPickupDelay(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name gliding
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity is gliding.
+        // @tags
+        // <e@entity.gliding>
+        // -->
+        if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
+            getLivingEntity().setGliding(value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms
