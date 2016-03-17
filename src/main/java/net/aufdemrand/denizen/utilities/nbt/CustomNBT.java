@@ -1,12 +1,21 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R1.NBTBase;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagString;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class CustomNBT {
 
@@ -23,15 +32,18 @@ public class CustomNBT {
         if (item == null) {
             return false;
         }
-        NBTTagCompound tag;
         net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
         if (!cis.hasTag()) {
             return false;
         }
-        tag = cis.getTag();
-        // dB.echoDebug(tag.toString());
-        // if this item has the NBTData for 'owner', there is an engraving.
-        return tag.hasKey(key);
+        key = CoreUtilities.toLowerCase(key);
+        List<String> keys = listNBT(item, "");
+        for (String string : keys) {
+            if (CoreUtilities.toLowerCase(string).equals(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String getCustomNBT(ItemStack item, String key) {
@@ -44,9 +56,41 @@ public class CustomNBT {
             cis.setTag(new NBTTagCompound());
         }
         tag = cis.getTag();
-        // if this item has the NBTData for 'owner', return the value, which is the playername of the 'owner'.
-        if (tag.hasKey(key)) {
-            return tag.getString(key);
+        key = CoreUtilities.toLowerCase(key);
+        String finalKey = null;
+        List<String> keys = listNBT(item, "");
+        for (String string : keys) {
+            if (CoreUtilities.toLowerCase(string).equals(key)) {
+                finalKey = string;
+                break;
+            }
+        }
+        if (finalKey == null) {
+            return null;
+        }
+        Iterator<String> subkeys = CoreUtilities.split(finalKey, '.').iterator();
+        if (subkeys.hasNext()) {
+            while (true) {
+                String subkey = subkeys.next();
+                NBTBase base = tag.get(subkey);
+                if (!subkeys.hasNext()) {
+                    if (base instanceof NBTTagString) {
+                        return ((NBTTagString) base).a_();
+                    }
+                    else if (base instanceof NBTBase.NBTNumber) {
+                        return new Element(((NBTBase.NBTNumber) base).h()).asString();
+                    }
+                    else {
+                        return base.toString();
+                    }
+                }
+                else if (base instanceof NBTTagCompound) {
+                    tag = (NBTTagCompound) base;
+                }
+                else {
+                    return null;
+                }
+            }
         }
         return null;
 
@@ -62,9 +106,62 @@ public class CustomNBT {
             cis.setTag(new NBTTagCompound());
         }
         tag = cis.getTag();
-        // remove 'owner' NBTData
-        tag.remove(key);
+        key = CoreUtilities.toLowerCase(key);
+        String finalKey = null;
+        List<String> keys = listNBT(item, "");
+        for (String string : keys) {
+            if (CoreUtilities.toLowerCase(string).equals(key)) {
+                finalKey = string;
+                break;
+            }
+        }
+        if (finalKey == null) {
+            return null;
+        }
+        Iterator<String> subkeys = CoreUtilities.split(finalKey, '.').iterator();
+        if (subkeys.hasNext()) {
+            while (true) {
+                String subkey = subkeys.next();
+                if (!subkeys.hasNext()) {
+                    tag.remove(subkey);
+                }
+                else if (tag.get(subkey).getTypeId() == tag.getTypeId()) {
+                    tag = tag.getCompound(subkey);
+                    continue;
+                }
+                break;
+            }
+        }
         return CraftItemStack.asCraftMirror(cis);
+    }
+
+    public static List<String> listNBT(ItemStack item, String filter) {
+        if (item == null) {
+            return null;
+        }
+        net.minecraft.server.v1_9_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound tag;
+        if (!cis.hasTag()) {
+            cis.setTag(new NBTTagCompound());
+        }
+        tag = cis.getTag();
+        return recursiveSearch(tag, "", filter);
+    }
+
+    private static List<String> recursiveSearch(NBTTagCompound compound, String base, String filter) {
+        Set<String> keys = compound.c();
+        List<String> finalKeys = new ArrayList<String>();
+        filter = CoreUtilities.toLowerCase(filter);
+        for (String key : keys) {
+            String full = base + key;
+            if (CoreUtilities.toLowerCase(full).startsWith(filter)) {
+                finalKeys.add(full);
+            }
+            if (compound.get(key).getTypeId() == compound.getTypeId()) {
+                finalKeys.addAll(recursiveSearch(compound.getCompound(key), full + ".", filter));
+            }
+        }
+        return finalKeys;
     }
 
     public static ItemStack addCustomNBT(ItemStack item, String key, String value) {
