@@ -2116,6 +2116,33 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>)", 1);
 
 
+
+        // <--[command]
+        // @Name NBT
+        // @Syntax nbt [<item>] [<key>:<value>]
+        // @Required 2
+        // @Stable experimental
+        // @Short Sets the value of an item's NBT key.
+        // @Author Morphan1
+        // @Group item
+        // @Description
+        // Edits an NBT key on an item and the edited item to the 'new_item' entry tag.
+        // This can be useful for storing hidden information on items.
+        // @Tags
+        // <entry[saveName].new_item>
+        // @Usage
+        // Use to set a hidden value on an item and give it to  a player.
+        // - nbt i@snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
+        // - give <entry[SnowballOfDeath].new_item>
+        // @Usage
+        // Use to edit the NBT of a player's item in hand.
+        // - nbt <player.item_in_hand> "MyCustomNBT.Owner:<player>" "save:edited"
+        // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[edited].new_item>"
+        // -->
+        registerCoreMember(NBTCommand.class,
+                "NBT", "nbt [<item>] [<key>:<value>]", 2);
+
+
         // <--[command]
         // @Name Note
         // @Syntax note [<Notable dObject>/remove] [as:<name>]

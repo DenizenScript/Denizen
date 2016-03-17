@@ -8,6 +8,9 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class ItemNBT implements Property {
 
@@ -81,7 +84,15 @@ public class ItemNBT implements Property {
 
     @Override
     public String getPropertyString() {
-        // TODO: list Denizen command-created NBT if/when that is added?
+        ItemStack itemStack = item.getItemStack();
+        List<String> nbtKeys = CustomNBT.getRegisteredNBT(itemStack);
+        if (nbtKeys != null && !nbtKeys.isEmpty()) {
+            dList list = new dList();
+            for (String key : nbtKeys) {
+                list.add(key + "/" + CustomNBT.getCustomNBT(itemStack, key));
+            }
+            return list.identify();
+        }
         return null;
     }
 
@@ -92,6 +103,16 @@ public class ItemNBT implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // Do nothing
+
+        // Internal use only
+        if (mechanism.matches("nbt")) {
+            dList list = mechanism.getValue().asType(dList.class);
+            ItemStack itemStack = item.getItemStack();
+            for (String string : list) {
+                String[] split = string.split("/", 2);
+                itemStack = CustomNBT.addCustomNBT(itemStack, split[0], split[1]);
+            }
+            item.setItemStack(itemStack);
+        }
     }
 }
