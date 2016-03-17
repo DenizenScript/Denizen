@@ -106,6 +106,7 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         mainhand = new dItem(event.getMainHandItem());
         offhand = new dItem(event.getOffHandItem());
+        cancelled = event.isCancelled();
         this.event = event;
         fire();
         event.setCancelled(cancelled);
