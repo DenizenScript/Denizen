@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ItemNBT implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem;
+        return item instanceof dItem && ((dItem) item).getMaterial().getMaterial() != Material.AIR;
     }
 
     public static ItemNBT getFrom(dObject item) {
