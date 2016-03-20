@@ -108,9 +108,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("item")) {
             return true;
         }
+        if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
+            return true;
+        }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
-        ;
         if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
             return true;
         }
