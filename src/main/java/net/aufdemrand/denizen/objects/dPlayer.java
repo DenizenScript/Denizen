@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
@@ -1144,6 +1145,19 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // Same with health tags
+        if (attribute.startsWith("health.formatted")) {
+            return EntityHealth.getHealthFormatted(new dEntity(getPlayerEntity()), attribute);
+        }
+
+        if (attribute.startsWith("health.percentage")) {
+            double maxHealth = getPlayerEntity().getMaxHealth();
+            if (attribute.hasContext(2)) {
+                maxHealth = attribute.getIntContext(2);
+            }
+            return new Element((getPlayerEntity().getHealth() / maxHealth) * 100)
+                    .getAttribute(attribute.fulfill(2));
+        }
+
         if (attribute.startsWith("health.max")) {
             return new Element(getMaxHealth()).getAttribute(attribute.fulfill(2));
         }

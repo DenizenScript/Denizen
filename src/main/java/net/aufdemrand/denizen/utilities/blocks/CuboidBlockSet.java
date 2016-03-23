@@ -75,7 +75,6 @@ public class CuboidBlockSet implements BlockSet {
     public void setBlocksDelayed(final Location loc, final Runnable runme) {
         final IntHolder index = new IntHolder();
         final long goal = (long) (x_width * y_length * z_height);
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -90,7 +89,9 @@ public class CuboidBlockSet implements BlockSet {
                         return;
                     }
                 }
-                runme.run();
+                if (runme != null) {
+                    runme.run();
+                }
                 cancel();
 
             }

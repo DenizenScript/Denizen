@@ -54,6 +54,29 @@ public class EntityHealth implements Property {
         return "health_data";
     }
 
+    public static String getHealthFormatted(dEntity entity, Attribute attribute) {
+        double maxHealth = entity.getLivingEntity().getMaxHealth();
+        if (attribute.hasContext(2)) {
+            maxHealth = attribute.getIntContext(2);
+        }
+        if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10) {
+            return new Element("dying").getAttribute(attribute.fulfill(2));
+        }
+        else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40) {
+            return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
+        }
+        else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75) {
+            return new Element("injured").getAttribute(attribute.fulfill(2));
+        }
+        else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
+            return new Element("scraped").getAttribute(attribute.fulfill(2));
+        }
+
+        else {
+            return new Element("healthy").getAttribute(attribute.fulfill(2));
+        }
+    }
+
 
     ///////////
     // dObject Attributes
@@ -75,26 +98,7 @@ public class EntityHealth implements Property {
         // May be 'dying', 'seriously wounded', 'injured', 'scraped', or 'healthy'.
         // -->
         if (attribute.startsWith("health.formatted")) {
-            double maxHealth = entity.getLivingEntity().getMaxHealth();
-            if (attribute.hasContext(2)) {
-                maxHealth = attribute.getIntContext(2);
-            }
-            if ((float) entity.getLivingEntity().getHealth() / maxHealth < .10) {
-                return new Element("dying").getAttribute(attribute.fulfill(2));
-            }
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .40) {
-                return new Element("seriously wounded").getAttribute(attribute.fulfill(2));
-            }
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < .75) {
-                return new Element("injured").getAttribute(attribute.fulfill(2));
-            }
-            else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
-                return new Element("scraped").getAttribute(attribute.fulfill(2));
-            }
-
-            else {
-                return new Element("healthy").getAttribute(attribute.fulfill(2));
-            }
+            return getHealthFormatted(entity, attribute);
         }
 
         // <--[tag]
