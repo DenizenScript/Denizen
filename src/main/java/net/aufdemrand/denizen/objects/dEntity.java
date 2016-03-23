@@ -2048,13 +2048,14 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.list_effects>
         // @returns dList
         // @group attribute
-        // Returns the list of active potion effects on the entity, in the format
-        // li@TYPE,AMPLIFIER,DURATION|...
+        // @description
+        // Returns the list of active potion effects on the entity, in the format: li@TYPE,AMPLIFIER,DURATION|...
+        // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // -->
         if (attribute.startsWith("list_effects")) {
             dList effects = new dList();
             for (PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
-                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
+                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration());
             }
             return effects.getAttribute(attribute.fulfill(1));
         }
