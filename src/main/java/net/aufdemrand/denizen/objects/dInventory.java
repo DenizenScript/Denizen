@@ -502,6 +502,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Player) holder)) {
                     idType = "npc";
                     idHolder = (dNPC.fromEntity((Player) holder)).identify();
+                    return;
                 }
                 if (inventory.getType() == InventoryType.ENDER_CHEST) {
                     idType = "enderchest";
