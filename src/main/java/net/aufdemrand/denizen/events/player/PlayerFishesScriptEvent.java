@@ -60,7 +60,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
         String fish = CoreUtilities.getXthArg(2, lower);
 
-        if (!fish.isEmpty()) {
+        if (!fish.isEmpty() && !fish.equals("in")) {
             if (entity == null) {
                 return false;
             }
