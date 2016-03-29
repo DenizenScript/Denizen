@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -178,7 +179,7 @@ public class InventoryHolder implements Property {
             else if (value.matchesType(dPlayer.class)) {
                 setHolder(value.asType(dPlayer.class));
             }
-            else if (value.matchesType(dNPC.class)) {
+            else if (Depends.citizens != null && value.matchesType(dNPC.class)) {
                 setHolder(value.asType(dNPC.class));
             }
             else if (value.matchesType(dEntity.class)) {
