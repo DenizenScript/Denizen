@@ -20,6 +20,7 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -498,6 +499,10 @@ public class dInventory implements dObject, Notable, Adjustable {
                 return;
             }
             else if (holder instanceof Player) {
+                if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC((Player) holder)) {
+                    idType = "npc";
+                    idHolder = (dNPC.fromEntity((Player) holder)).identify();
+                }
                 if (inventory.getType() == InventoryType.ENDER_CHEST) {
                     idType = "enderchest";
                 }
