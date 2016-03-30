@@ -7,6 +7,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
@@ -15,6 +16,7 @@ import org.bukkit.craftbukkit.v1_9_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -846,6 +848,26 @@ public class dWorld implements dObject, Adjustable {
             }
             if (diff != null) {
                 getWorld().setDifficulty(diff);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dWorld
+        // @name destroy
+        // @input None
+        // @description
+        // Unloads the world from the server without saving chunks, then destroys all data that is part of the world.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("destroy")) {
+            File folder = new File(getWorld().getName());
+            Bukkit.getServer().unloadWorld(getWorld(), false);
+            try {
+                FileUtils.deleteDirectory(folder);
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
             }
         }
 
