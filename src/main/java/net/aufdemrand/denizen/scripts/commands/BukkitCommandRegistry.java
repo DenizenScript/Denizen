@@ -757,7 +757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world
@@ -772,6 +772,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
         // mountain-like terrain).
         // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
+        // Optionally, specify an existing world to copy files from.
         // @Tags
         // <server.list_worlds>
         // @Usage
@@ -785,7 +786,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - createworld space environment:THE_END
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)", 1);
 
 
         // <--[command]

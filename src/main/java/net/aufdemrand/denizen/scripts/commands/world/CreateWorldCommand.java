@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -7,10 +8,13 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+
+import java.io.File;
 
 public class CreateWorldCommand extends AbstractCommand {
 
@@ -38,6 +42,12 @@ public class CreateWorldCommand extends AbstractCommand {
                 scriptEntry.addObject("environment", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("copy_from")
+                    && arg.matchesPrefix("copy_from")
+                    && arg.matchesArgumentType(dWorld.class)) {
+                scriptEntry.addObject("copy_from", arg.asType(dWorld.class));
+            }
+
             else if (!scriptEntry.hasObject("world_name")) {
                 scriptEntry.addObject("world_name", arg.asElement());
             }
@@ -56,7 +66,7 @@ public class CreateWorldCommand extends AbstractCommand {
             scriptEntry.addObject("worldtype", new Element("NORMAL"));
         }
 
-        scriptEntry.defaultObject("environment", new Element("normal"));
+        scriptEntry.defaultObject("environment", new Element("NORMAL"));
     }
 
     @Override
@@ -65,11 +75,23 @@ public class CreateWorldCommand extends AbstractCommand {
         Element Generator = scriptEntry.getElement("generator");
         Element worldType = scriptEntry.getElement("worldtype");
         Element environment = scriptEntry.getElement("environment");
+        dWorld copy_from = scriptEntry.getdObject("copy_from");
 
         dB.report(scriptEntry, getName(), World_Name.debug() +
                 (Generator != null ? Generator.debug() : "") +
                 environment.debug() +
+                (copy_from != null ? copy_from.debug(): "") +
                 worldType.debug());
+
+        if (copy_from != null) {
+            try {
+                FileUtils.copyDirectory(new File(copy_from.getWorld().getName()), new File(World_Name.asString()));
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
+                return;
+            }
+        }
 
         World world;
 
