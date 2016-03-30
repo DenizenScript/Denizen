@@ -85,7 +85,16 @@ public class CreateWorldCommand extends AbstractCommand {
 
         if (copy_from != null) {
             try {
-                FileUtils.copyDirectory(new File(copy_from.getWorld().getName()), new File(World_Name.asString()));
+                File newFolder = new File(World_Name.asString());
+                FileUtils.copyDirectory(new File(copy_from.getWorld().getName()), newFolder);
+                File file = new File(World_Name.asString() + "/uid.dat");
+                if (file.exists()) {
+                    file.delete();
+                }
+                File file2 = new File(World_Name.asString() + "/session.lock");
+                if (file2.exists()) {
+                    file2.delete();
+                }
             }
             catch (Exception ex) {
                 dB.echoError(ex);
