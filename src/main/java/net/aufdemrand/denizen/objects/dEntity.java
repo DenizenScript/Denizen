@@ -2048,13 +2048,14 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.list_effects>
         // @returns dList
         // @group attribute
-        // Returns the list of active potion effects on the entity, in the format
-        // li@TYPE,AMPLIFIER,DURATION|...
+        // @description
+        // Returns the list of active potion effects on the entity, in the format: li@TYPE,AMPLIFIER,DURATION|...
+        // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
         // -->
         if (attribute.startsWith("list_effects")) {
             dList effects = new dList();
             for (PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
-                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration() + "t");
+                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration());
             }
             return effects.getAttribute(attribute.fulfill(1));
         }
@@ -2294,6 +2295,19 @@ public class dEntity implements dObject, Adjustable {
         if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
                 && getBukkitEntity() instanceof Item) {
             return new Duration(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.gliding>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.gliding
+        // @group attributes
+        // @description
+        // Returns whether this entity is gliding.
+        // -->
+        if (attribute.startsWith("gliding")) {
+            return new Element(getLivingEntity().isGliding())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -2693,6 +2707,19 @@ public class dEntity implements dObject, Adjustable {
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
                 getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
             ((Item) getBukkitEntity()).setPickupDelay(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name gliding
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity is gliding.
+        // @tags
+        // <e@entity.gliding>
+        // -->
+        if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
+            getLivingEntity().setGliding(value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms

@@ -795,16 +795,16 @@ public class dItem implements dObject, Notable, Adjustable {
         // @returns Element
         // @group conversion
         // @description
-        // Returns the item converted to a raw JSON object for network transmission.
+        // Returns the item converted to a raw JSON object with one layer of escaping for network transmission.
         // EG, via /tellraw.
-        // EXAMPLE USAGE: execute as_server "tellraw <player.name>
-        // {'text':'','extra':[{'text':'This is the item in your hand ','color':'white'},
-        // {'text':'Item','color':'white','hoverEvent':{'action':'show_item','value':'{<player.item_in_hand.json>}'}}]}"
+        // EXAMPLE USAGE: execute as_server 'tellraw <player.name>
+        // {"text":"","extra":[{"text":"This is the item in your hand ","color":"white"},
+        // {"text":"Item","color":"white","hoverEvent":{"action":"show_item","value":"{<player.item_in_hand.json>}"}}]}'
         // -->
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).B().getChatModifier().toString();
+                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).B().getChatModifier().toString().replace("\"", "\\\"");
                 return new Element(JSON.substring(176, JSON.length() - 185))
                         .getAttribute(attribute.fulfill(1));
             }

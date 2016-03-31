@@ -23,6 +23,7 @@ public class DenizenNetworkManager extends NetworkManager {
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
         this.packetListener = new DenizenPacketListener(this, entityPlayer);
+        oldManager.setPacketListener(packetListener);
         this.player = this.packetListener.player;
     }
 

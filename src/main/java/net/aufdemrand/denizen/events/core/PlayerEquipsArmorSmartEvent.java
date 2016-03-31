@@ -267,13 +267,12 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     }
 
     private boolean isArmor(ItemStack itemStack) {
-        int id = itemStack.getTypeId();
-        return id >= 298 && id <= 317;
+        return isArmor(itemStack.getType());
     }
 
     private boolean isArmor(Material material) {
         int id = material.getId();
-        return id >= 298 && id <= 317;
+        return id >= 298 && id <= 317 || material == Material.ELYTRA;
     }
 
     private boolean didPlayerClickOwnInventory(Player player, Inventory inventory) {
@@ -286,6 +285,9 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     }
 
     private int getArmorTypeNumber(ItemStack itemStack) {
+        if (itemStack.getType() == Material.ELYTRA) {
+            return 1;
+        }
         return (itemStack.getTypeId() - 298) % 4;
     }
 

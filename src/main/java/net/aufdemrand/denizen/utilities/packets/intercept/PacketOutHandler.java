@@ -12,6 +12,11 @@ import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.BaseComponentSerializer;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 
@@ -39,17 +44,35 @@ public class PacketOutHandler {
                 if (pos != 2) {
                     PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
                     IChatBaseComponent baseComponent = (IChatBaseComponent) chat_message.get(cPacket);
-                    event.message = new Element(baseComponent.toPlainText());
-                    event.rawJson = new Element(IChatBaseComponent.ChatSerializer.a(baseComponent));
+                    boolean bungee = false;
+                    if (baseComponent != null) {
+                        event.message = new Element(baseComponent.toPlainText());
+                        event.rawJson = new Element(IChatBaseComponent.ChatSerializer.a(baseComponent));
+                    }
+                    else if (cPacket.components != null) {
+                        event.message = new Element(BaseComponent.toPlainText(cPacket.components));
+                        event.rawJson = new Element(ComponentSerializer.toString(cPacket.components));
+                        bungee = true;
+                    }
                     event.system = new Element(pos == 1);
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.cancelled = false;
                     event.fire();
                     if (event.messageModified) {
-                        chat_message.set(cPacket, new ChatComponentText(event.message.asString()));
+                        if (!bungee) {
+                            chat_message.set(cPacket, new ChatComponentText(event.message.asString()));
+                        }
+                        else {
+                             cPacket.components = new BaseComponent[] { new TextComponent(event.message.asString()) };
+                        }
                     }
                     else if (event.rawJsonModified) {
-                        chat_message.set(cPacket, IChatBaseComponent.ChatSerializer.a(event.rawJson.asString()));
+                        if (!bungee) {
+                            chat_message.set(cPacket, IChatBaseComponent.ChatSerializer.a(event.rawJson.asString()));
+                        }
+                        else {
+                            cPacket.components = ComponentSerializer.parse(event.rawJson.asString());
+                        }
                     }
                     return event.cancelled;
                 }

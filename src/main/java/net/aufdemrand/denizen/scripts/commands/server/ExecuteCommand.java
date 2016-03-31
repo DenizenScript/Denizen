@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
+import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
@@ -11,7 +12,13 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_9_R1.MinecraftServer;
+import net.minecraft.server.v1_9_R1.OpList;
+import net.minecraft.server.v1_9_R1.OpListEntry;
+import net.minecraft.server.v1_9_R1.PlayerList;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -130,16 +137,25 @@ public class ExecuteCommand extends AbstractCommand {
                 break;
 
             case AS_OP:
-                boolean isOp = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().isOp();
+                if (CoreUtilities.toLowerCase(command).equals("stop")) {
+                    dB.echoError("Please use as_server to execute 'stop'.");
+                    return;
+                }
+                Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                boolean isOp = player.isOp();
                 if (!isOp) {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(true);
+                    int i = MinecraftServer.getServer().q();
+                    PlayerList playerList = MinecraftServer.getServer().getPlayerList();
+                    OpList opList = playerList.getOPs();
+                    GameProfile profile = ((CraftPlayer) player).getProfile();
+                    opList.add(new OpListEntry(profile, i, opList.b(profile)));
+                    player.recalculatePermissions();
                 }
                 try {
-                    PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
+                    PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(player, "/" + command);
                     Bukkit.getPluginManager().callEvent(pcpe);
                     if (!pcpe.isCancelled()) {
                         boolean silentBool = silent.asBoolean();
-                        Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
                         if (silentBool) {
                             silencedPlayers.add(player.getUniqueId());
                         }
@@ -155,7 +171,11 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 if (!isOp) {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setOp(false);
+                    PlayerList playerList = MinecraftServer.getServer().getPlayerList();
+                    OpList opList = playerList.getOPs();
+                    GameProfile profile = ((CraftPlayer) player).getProfile();
+                    opList.remove(profile);
+                    player.recalculatePermissions();
                 }
                 break;
 
