@@ -27,9 +27,9 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet(dCuboid cuboid, Location center) {
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
-        x_width = high.getX() - low.getX();
-        y_length = high.getY() - low.getY();
-        z_height = high.getZ() - low.getZ();
+        x_width = (high.getX() - low.getX()) + 1;
+        y_length = (high.getY() - low.getY()) + 1;
+        z_height = (high.getZ() - low.getZ()) + 1;
         center_x = center.getX() - low.getX();
         center_y = center.getY() - low.getY();
         center_z = center.getZ() - low.getZ();
@@ -62,7 +62,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public dCuboid getCuboid(Location loc) {
-        Location low = loc.clone().subtract(center_x, center_y, center_z);
+        Location low = loc.clone().subtract(center_x, center_y, center_z); // TODO: Does this subtract belong here?
         Location high = low.clone().add(x_width, y_length, z_height);
         return new dCuboid(low, high);
     }
