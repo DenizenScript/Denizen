@@ -203,7 +203,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
-        // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
+        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD
         //
         // All entities also have available Bukkit's entity effect list, which includes:
         // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
@@ -1410,6 +1410,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
+
+
+        // <--[command]
+        // @Name Glow
+        // @Syntax glow [<entity>|...] (<should glow>)
+        // @Required 1
+        // @Stable unstable
+        // @Short Makes the link player see the chosen entities as glowing.
+        // @Author mcmonkey
+        // @Group player
+        // @Description
+        // Makes the link player see the chosen entities as glowing.
+        // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
+        // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
+        // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
+        // TODO: Document Command Details
+        // @Tags
+        // TODO: Document Command Details
+        // @Usage
+        // Use to make the player's target glow.
+        // - glow <player.target>
+        // @Usage
+        // Use to make the player's target not glow.
+        // - glow <player.target> false
+        // -->
+        registerCoreMember(GlowCommand.class,
+                "GLOW", "glow [<entity>|...] (<should glow>)", 1);
+
 
         // <--[command]
         // @Name Group

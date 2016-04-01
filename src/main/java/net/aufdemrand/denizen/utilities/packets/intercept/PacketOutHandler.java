@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.utilities.packets.intercept;
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -12,6 +13,7 @@ import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -21,6 +23,7 @@ import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -135,6 +138,17 @@ public class PacketOutHandler {
                 int entityId = spawn_experience_entityId.getInt(seePacket);
                 return entityIsHiding(player, entityId);
             }
+            else if (packet instanceof PacketPlayOutEntityEffect) {
+                PacketPlayOutEntityEffect eePacket = (PacketPlayOutEntityEffect) packet;
+                int eid = effect_entity.getInt(eePacket);
+                HashSet<UUID> players = GlowCommand.glowViewers.get(eid);
+                // dB.log(eid + " players: " + (players == null ? "NULL" : players.size()));
+                // TODO: Check effect type against GLOWING (24)
+                if (players == null) {
+                    return false;
+                }
+                return !players.contains(player.getUniqueID());
+            }
             else if (packet instanceof PacketPlayOutPlayerInfo) {
                 PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
             }
@@ -244,6 +258,7 @@ public class PacketOutHandler {
     private static final Field spawn_painting_entityId;
     private static final Field spawn_experience_entityId;
     private static final Field custom_name, custom_serializer;
+    private static final Field effect_type, effect_entity;
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
@@ -278,5 +293,9 @@ public class PacketOutHandler {
         fields = PacketHelper.registerFields(PacketPlayOutCustomPayload.class);
         custom_name = fields.get("a");
         custom_serializer = fields.get("b");
+
+        fields = PacketHelper.registerFields(PacketPlayOutEntityEffect.class);
+        effect_entity = fields.get("a");
+        effect_type = fields.get("b");
     }
 }

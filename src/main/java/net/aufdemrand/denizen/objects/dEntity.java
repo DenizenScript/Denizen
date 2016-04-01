@@ -21,6 +21,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
@@ -2746,6 +2747,9 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getLivingEntity().setGlowing(value.asBoolean());
+            if (CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
+            }
         }
 
         // Iterate through this object's properties' mechanisms
