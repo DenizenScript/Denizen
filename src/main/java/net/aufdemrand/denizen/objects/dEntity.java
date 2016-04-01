@@ -2310,6 +2310,19 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <e@entity.glowing>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.glowing
+        // @group attributes
+        // @description
+        // Returns whether this entity is glowing.
+        // -->
+        if (attribute.startsWith("glowing")) {
+            return new Element(getLivingEntity().isGlowing())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
@@ -2720,6 +2733,19 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
             getLivingEntity().setGliding(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name glowing
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity is glowing.
+        // @tags
+        // <e@entity.glowing>
+        // -->
+        if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
+            getLivingEntity().setGlowing(value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms
