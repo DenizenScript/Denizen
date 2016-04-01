@@ -760,11 +760,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
         // @Required 1
         // @Stable unstable
-        // @Short Creates a new world
+        // @Short Creates a new world, or loads an existing world.
         // @Author aufdemrand, mcmonkey
         // @Group world
         // @Description
-        // This command creates a new minecraft world with the specified name.
+        // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
         // If a worldtype is not specified it will create a world with a worldtype of NORMAL.

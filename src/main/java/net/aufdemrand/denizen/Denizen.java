@@ -1215,8 +1215,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             return true;
         }
 
-        //if (Depends.citizens != null)
-        //    return citizens.onCommand(sender, cmd, cmdName, args);
         String modifier = args.length > 0 ? args[0] : "";
         if (!commandManager.hasCommand(cmd, modifier) && !modifier.isEmpty()) {
             return suggestClosestModifier(sender, cmd.getName(), modifier);
