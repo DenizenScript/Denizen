@@ -164,8 +164,6 @@ public class InteractScriptHelper {
         else if (interactableScripts.isEmpty()) {
             if (dB.shouldDebug(assignmentScript)) {
                 dB.log(ChatColor.YELLOW + "+> " + ChatColor.WHITE + "No scripts meet requirements!");
-            }
-            if (dB.shouldDebug(assignmentScript)) {
                 dB.log(DebugElement.Footer, "");
             }
             return null;
@@ -196,14 +194,8 @@ public class InteractScriptHelper {
                 if (interactScript.containsTriggerInStep(getCurrentStep(player, interactScript.getName()), trigger)) {
                     if (dB.shouldDebug(interactScript)) {
                         dB.log("...found trigger!");
-                    }
-                    if (dB.shouldDebug(interactScript)) {
                         dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                    }
-                    if (dB.shouldDebug(interactScript)) {
                         dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                    }
-                    if (dB.shouldDebug(interactScript)) {
                         dB.log(DebugElement.Footer, "");
                     }
                     return interactScript;
@@ -220,14 +212,8 @@ public class InteractScriptHelper {
             else {
                 if (dB.shouldDebug(interactScript)) {
                     dB.log("...script is good!");
-                }
-                if (dB.shouldDebug(interactScript)) {
                     dB.echoApproval("Highest scoring script is " + interactScript.getName() + ".");
-                }
-                if (dB.shouldDebug(interactScript)) {
                     dB.log("Current step for this script is: " + getCurrentStep(player, interactScript.getName()));
-                }
-                if (dB.shouldDebug(interactScript)) {
                     dB.log(DebugElement.Footer, "");
                 }
                 return interactScript;
