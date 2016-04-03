@@ -197,10 +197,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player clicks in inventory
-    // player (<click type>) clicks (<item>) (in <inventory type>) (with <item>)
-    // player (<click type>) clicks (<material>) (in <inventory type>) (with <item>)
-    // player (<click type>) clicks (<item>) (in <inventory type>) (with <material>)
-    // player (<click type>) clicks (<material>) (in <inventory type>) (with <material>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <material>)
     //
     // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
     //
