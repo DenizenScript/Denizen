@@ -870,11 +870,14 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 try {
                     DenizenCore.loadScripts();
 
-                    // Reload notables from notables.yml into memory
-                    notableManager.reloadNotables();
-
                     // Load the saves.yml into memory
                     reloadSaves();
+
+                    // Fire the 'on Pre Server Start' world event
+                    ws_helper.serverPreStartEvent();
+
+                    // Reload notables from notables.yml into memory
+                    notableManager.reloadNotables();
 
                     dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
