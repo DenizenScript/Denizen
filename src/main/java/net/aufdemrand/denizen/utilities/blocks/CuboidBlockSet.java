@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.jnbt.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
@@ -259,7 +260,8 @@ public class CuboidBlockSet implements BlockSet {
                         BlockVector pt = new BlockVector(x, y, z);
                         BlockData block = new BlockData(blocks[index], blockData[index]);
                         if (tileEntitiesMap.containsKey(pt)) {
-                            block.setNBTTag(new CompoundTag(tileEntitiesMap.get(pt)));
+                            CompoundTag otag = new CompoundTag(tileEntitiesMap.get(pt));
+                            block.setNBTTag(otag.toNMSTag());
                         }
                         cbs.blocks.add(block);
                     }
@@ -320,11 +322,11 @@ public class CuboidBlockSet implements BlockSet {
                         blocks[index] = (byte) bd.material.getId();
                         blockData[index] = (byte) bd.data;
 
-                        CompoundTag rawTag = bd.getNBTTag();
+                        CompoundTag rawTag = bd.getNBTTag() == null ? null : CompoundTag.fromNMSTag(bd.getNBTTag());
                         if (rawTag != null) {
                             HashMap<String, Tag> values = new HashMap<String, Tag>();
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
-                                values.put(entry.getKey(), entry.getValue()); // TODO: Why manual copy?
+                                values.put(entry.getKey(), entry.getValue());
                             }
                             values.put("id", new StringTag(null)); // block.getNbtId()
                             values.put("x", new IntTag(x));
