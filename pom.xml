@@ -16,7 +16,6 @@
         <craftbukkit.version>1.9.2-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
         <citizens.version>2.0.17-SNAPSHOT</citizens.version>
-        <build.number>Unknown</build.number>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 

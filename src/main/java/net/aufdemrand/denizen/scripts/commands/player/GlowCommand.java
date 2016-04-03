@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.StatusEffectHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -31,7 +32,7 @@ public class GlowCommand extends AbstractCommand {
         if (glowViewers.containsKey(e.getEntityId())) {
             glowViewers.remove(e.getEntityId());
             e.setGlowing(false);
-            if (CitizensAPI.getNPCRegistry().isNPC(e)) {
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(e)) {
                 CitizensAPI.getNPCRegistry().getNPC(e).data().setPersistent(NPC.GLOWING_METADATA, false);
             }
         }
@@ -86,7 +87,7 @@ public class GlowCommand extends AbstractCommand {
         }
 
         for (dEntity ent: entities) {
-            if (CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);
             }
             if (shouldGlow) {

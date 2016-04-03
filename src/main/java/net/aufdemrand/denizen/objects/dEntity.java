@@ -2747,7 +2747,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getLivingEntity().setGlowing(value.asBoolean());
-            if (CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
             }
         }
