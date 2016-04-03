@@ -11,8 +11,4 @@ public class StatusEffectHelper {
         PacketPlayOutEntityEffect packet = new PacketPlayOutEntityEffect(ent.getEntityId(), effect);
         return packet;
     }
-
-    public static void setGlowEffect(Player toSee, LivingEntity toGlow, boolean shouldGlow) {
-        PacketHelper.sendPacket(toSee, getStatusPacket(toGlow, MobEffects.GLOWING, (byte)1, shouldGlow ? 32760: 0));
-    }
 }

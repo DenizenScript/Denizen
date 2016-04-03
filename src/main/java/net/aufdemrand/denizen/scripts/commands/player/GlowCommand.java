@@ -79,9 +79,9 @@ public class GlowCommand extends AbstractCommand {
 
         boolean shouldGlow = glowing.asBoolean();
 
-        final Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+        final UUID puuid = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer().getUniqueId();
 
-        if (player == null) {
+        if (puuid == null) {
             dB.echoError(scriptEntry.getResidingQueue(), "Invalid/non-spawned player link!");
             return;
         }
@@ -96,12 +96,12 @@ public class GlowCommand extends AbstractCommand {
                     players = new HashSet<UUID>();
                     glowViewers.put(ent.getLivingEntity().getEntityId(), players);
                 }
-                players.add(player.getUniqueId());
+                players.add(puuid);
             }
             else {
                 HashSet<UUID> players = glowViewers.get(ent.getLivingEntity().getEntityId());
                 if (players != null) {
-                    players.remove(player.getUniqueId());
+                    players.remove(puuid);
                     shouldGlow = !players.isEmpty();
                     if (!shouldGlow) {
                         glowViewers.remove(ent.getLivingEntity().getEntityId());

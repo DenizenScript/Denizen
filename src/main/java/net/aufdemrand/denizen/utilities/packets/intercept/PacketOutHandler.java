@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -138,16 +139,22 @@ public class PacketOutHandler {
                 int entityId = spawn_experience_entityId.getInt(seePacket);
                 return entityIsHiding(player, entityId);
             }
-            else if (packet instanceof PacketPlayOutEntityEffect) {
-                PacketPlayOutEntityEffect eePacket = (PacketPlayOutEntityEffect) packet;
-                int eid = effect_entity.getInt(eePacket);
+            else if (packet instanceof PacketPlayOutEntityMetadata) {
+                PacketPlayOutEntityMetadata emPacket = (PacketPlayOutEntityMetadata) packet;
+                int eid = metadata_eid.getInt(emPacket);
                 HashSet<UUID> players = GlowCommand.glowViewers.get(eid);
-                // dB.log(eid + " players: " + (players == null ? "NULL" : players.size()));
                 // TODO: Check effect type against GLOWING (24)
                 if (players == null) {
                     return false;
                 }
-                return !players.contains(player.getUniqueID());
+                List<DataWatcher.Item<?>> items = (List<DataWatcher.Item<?>>) metadata_data.get(emPacket);
+                for (DataWatcher.Item<?> it : items) {
+                    if (it.a().a() == 0) {
+                        // TODO: Instead of cancelling, casually strip out the 0x40 "Glowing" metadata rather than cancelling entirely?
+                        return !players.contains(player.getUniqueID());
+                    }
+                }
+                return false;
             }
             else if (packet instanceof PacketPlayOutPlayerInfo) {
                 PlayerProfileEditor.updatePlayerProfiles((PacketPlayOutPlayerInfo) packet);
@@ -258,7 +265,7 @@ public class PacketOutHandler {
     private static final Field spawn_painting_entityId;
     private static final Field spawn_experience_entityId;
     private static final Field custom_name, custom_serializer;
-    private static final Field effect_type, effect_entity;
+    private static final Field metadata_eid, metadata_data;
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutChat.class);
@@ -294,8 +301,8 @@ public class PacketOutHandler {
         custom_name = fields.get("a");
         custom_serializer = fields.get("b");
 
-        fields = PacketHelper.registerFields(PacketPlayOutEntityEffect.class);
-        effect_entity = fields.get("a");
-        effect_type = fields.get("b");
+        fields = PacketHelper.registerFields(PacketPlayOutEntityMetadata.class);
+        metadata_eid = fields.get("a");
+        metadata_data = fields.get("b");
     }
 }
