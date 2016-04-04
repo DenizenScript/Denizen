@@ -19,6 +19,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     //
     // @Cancellable true
     //
+    // @Warning Using this will forcibly sync the chat thread.
+    //
     // @Triggers when a player receives any chat message from the server.
     //
     // @Context
@@ -45,6 +47,8 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     public boolean messageModified;
     public boolean rawJsonModified;
 
+    public boolean loaded;
+
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         return CoreUtilities.toLowerCase(s).startsWith("player receives message");
@@ -58,6 +62,16 @@ public class PlayerReceivesMessageScriptEvent extends BukkitScriptEvent {
     @Override
     public String getName() {
         return "PlayerReceivesMessage";
+    }
+
+    @Override
+    public void init() {
+        loaded = true;
+    }
+
+    @Override
+    public void destroy() {
+        loaded = false;
     }
 
     @Override

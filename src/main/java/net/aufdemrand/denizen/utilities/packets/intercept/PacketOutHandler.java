@@ -13,11 +13,8 @@ import net.aufdemrand.denizen.utilities.entity.EntityFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.BaseComponentSerializer;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
@@ -27,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 public class PacketOutHandler {
 
@@ -37,48 +36,54 @@ public class PacketOutHandler {
      * @param packet the client-bound packet
      * @return whether to cancel sending the packet
      */
-    public static boolean sendPacket(final EntityPlayer player, Packet packet) {
+    public static boolean sendPacket(final EntityPlayer player, final Packet packet) {
         try {
             if (packet instanceof PacketPlayOutChat) {
                 if (ExecuteCommand.silencedPlayers.contains(player.getUniqueID())) {
                     return true;
                 }
-                PacketPlayOutChat cPacket = (PacketPlayOutChat) packet;
-                int pos = chat_position.getInt(cPacket);
-                if (pos != 2) {
-                    PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
-                    IChatBaseComponent baseComponent = (IChatBaseComponent) chat_message.get(cPacket);
-                    boolean bungee = false;
-                    if (baseComponent != null) {
-                        event.message = new Element(baseComponent.toPlainText());
-                        event.rawJson = new Element(IChatBaseComponent.ChatSerializer.a(baseComponent));
-                    }
-                    else if (cPacket.components != null) {
-                        event.message = new Element(BaseComponent.toPlainText(cPacket.components));
-                        event.rawJson = new Element(ComponentSerializer.toString(cPacket.components));
-                        bungee = true;
-                    }
-                    event.system = new Element(pos == 1);
-                    event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
-                    event.cancelled = false;
-                    event.fire();
-                    if (event.messageModified) {
-                        if (!bungee) {
-                            chat_message.set(cPacket, new ChatComponentText(event.message.asString()));
+                final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
+                if (event.loaded) {
+                    FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
+                        @Override
+                        public Boolean call() throws Exception {
+                            PacketPlayOutChat cPacket = (PacketPlayOutChat) packet;
+                            int pos = chat_position.getInt(cPacket);
+                            if (pos != 2) {
+                                IChatBaseComponent baseComponent = (IChatBaseComponent) chat_message.get(cPacket);
+                                boolean bungee = false;
+                                if (baseComponent != null) {
+                                    event.message = new Element(baseComponent.toPlainText());
+                                    event.rawJson = new Element(IChatBaseComponent.ChatSerializer.a(baseComponent));
+                                } else if (cPacket.components != null) {
+                                    event.message = new Element(BaseComponent.toPlainText(cPacket.components));
+                                    event.rawJson = new Element(ComponentSerializer.toString(cPacket.components));
+                                    bungee = true;
+                                }
+                                event.system = new Element(pos == 1);
+                                event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
+                                event.cancelled = false;
+                                event.fire();
+                                if (event.messageModified) {
+                                    if (!bungee) {
+                                        chat_message.set(cPacket, new ChatComponentText(event.message.asString()));
+                                    } else {
+                                        cPacket.components = new BaseComponent[]{new TextComponent(event.message.asString())};
+                                    }
+                                } else if (event.rawJsonModified) {
+                                    if (!bungee) {
+                                        chat_message.set(cPacket, IChatBaseComponent.ChatSerializer.a(event.rawJson.asString()));
+                                    } else {
+                                        cPacket.components = ComponentSerializer.parse(event.rawJson.asString());
+                                    }
+                                }
+                                return event.cancelled;
+                            }
+                            return false;
                         }
-                        else {
-                             cPacket.components = new BaseComponent[] { new TextComponent(event.message.asString()) };
-                        }
-                    }
-                    else if (event.rawJsonModified) {
-                        if (!bungee) {
-                            chat_message.set(cPacket, IChatBaseComponent.ChatSerializer.a(event.rawJson.asString()));
-                        }
-                        else {
-                            cPacket.components = ComponentSerializer.parse(event.rawJson.asString());
-                        }
-                    }
-                    return event.cancelled;
+                    });
+                    Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+                    return futureTask.get();
                 }
             }
             else if (packet instanceof PacketPlayOutSetSlot) {
