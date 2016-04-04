@@ -43,9 +43,8 @@ public class CreateWorldCommand extends AbstractCommand {
             }
 
             else if (!scriptEntry.hasObject("copy_from")
-                    && arg.matchesPrefix("copy_from")
-                    && arg.matchesArgumentType(dWorld.class)) {
-                scriptEntry.addObject("copy_from", arg.asType(dWorld.class));
+                    && arg.matchesPrefix("copy_from")) {
+                scriptEntry.addObject("copy_from", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("world_name")) {
@@ -75,7 +74,7 @@ public class CreateWorldCommand extends AbstractCommand {
         Element Generator = scriptEntry.getElement("generator");
         Element worldType = scriptEntry.getElement("worldtype");
         Element environment = scriptEntry.getElement("environment");
-        dWorld copy_from = scriptEntry.getdObject("copy_from");
+        Element copy_from = scriptEntry.getElement("copy_from");
 
         dB.report(scriptEntry, getName(), World_Name.debug() +
                 (Generator != null ? Generator.debug() : "") +
@@ -86,7 +85,8 @@ public class CreateWorldCommand extends AbstractCommand {
         if (copy_from != null) {
             try {
                 File newFolder = new File(World_Name.asString());
-                FileUtils.copyDirectory(new File(copy_from.getWorld().getName()), newFolder);
+                // TODO: Folder validity verification?
+                FileUtils.copyDirectory(new File(copy_from.asString().replace("w@", "")), newFolder);
                 File file = new File(World_Name.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();
