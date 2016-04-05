@@ -871,7 +871,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name auto_save
-        // @input Element(Integer)
+        // @input Element(Boolean)
         // @description
         // Sets whether the world will automatically save edits.
         // @tags

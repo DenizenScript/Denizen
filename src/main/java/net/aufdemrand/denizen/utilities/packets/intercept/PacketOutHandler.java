@@ -82,7 +82,12 @@ public class PacketOutHandler {
                             return false;
                         }
                     });
-                    Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+                    if (Bukkit.isPrimaryThread()) {
+                        futureTask.run();
+                    }
+                    else {
+                        Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+                    }
                     return futureTask.get();
                 }
             }
