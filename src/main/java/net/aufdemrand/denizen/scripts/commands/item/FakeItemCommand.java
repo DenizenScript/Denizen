@@ -132,12 +132,22 @@ public class FakeItemCommand extends AbstractCommand {
     }
 
     static int translateSlot(CraftPlayer craftPlayer, int slot, boolean player_only) {
-        int total = player_only ? 41 : craftPlayer.getOpenInventory().countSlots();
-        if (total == 41) {
-            total += 4;
-            if (slot > 35) {
-                slot = 44 + 36 - slot;
+        if (slot < 0) {
+            return 0;
+        }
+        int total = player_only ? 46 : craftPlayer.getOpenInventory().countSlots();
+        if (total == 46) {
+            if (slot == 45) {
+                return slot;
             }
+            else if (slot > 35) {
+                slot = 8 - (slot - 36);
+                return slot;
+            }
+            total -= 1;
+        }
+        if (slot > total) {
+            return total;
         }
         return (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9))));
     }
