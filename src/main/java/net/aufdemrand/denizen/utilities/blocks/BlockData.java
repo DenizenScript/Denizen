@@ -47,12 +47,9 @@ public class BlockData {
             ctag.setInt("y", block.getY());
             ctag.setInt("z", block.getZ());
             // TODO: make this work!
-            TileEntity te = TileEntity.a(((CraftServer) Bukkit.getServer()).getServer(), ctag);
             BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
-            ((CraftWorld) block.getWorld()).getHandle().setTileEntity(blockPos, te);
-            ((CraftWorld) block.getWorld()).getHandle().a(te);
-            ((CraftWorld) block.getWorld()).getHandle().getChunkAtWorldCoords(blockPos).a(blockPos, te);
-            // dB.log("Built ctag: " + ctag.toString());
+            TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
+            te.a(ctag);
         }
     }
 
