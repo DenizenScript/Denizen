@@ -68,6 +68,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     && arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new Element("true"));
             }
+            else if (!scriptEntry.hasObject("noair")
+                    && arg.matches("noair")) {
+                scriptEntry.addObject("noair", new Element("true"));
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -89,6 +93,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         Element angle = scriptEntry.getElement("angle");
         Element type = scriptEntry.getElement("type");
         Element name = scriptEntry.getElement("name");
+        Element noair = scriptEntry.getElement("noair");
         Element delayed = scriptEntry.getElement("delayed");
         dLocation location = scriptEntry.getdObject("location");
         dCuboid cuboid = scriptEntry.getdObject("cuboid");
@@ -98,6 +103,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                 + (location != null ? location.debug() : "")
                 + (cuboid != null ? cuboid.debug() : "")
                 + (angle != null ? angle.debug() : "")
+                + (noair != null ? noair.debug(): "")
                 + (delayed != null ? delayed.debug() : ""));
 
         CuboidBlockSet set;
@@ -198,11 +204,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                             public void run() {
                                 scriptEntry.setFinished(true);
                             }
-                        });
+                        }, noair != null && noair.asBoolean());
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        schematics.get(name.asString().toUpperCase()).setBlocks(location);
+                        schematics.get(name.asString().toUpperCase()).setBlocks(location, noair != null && noair.asBoolean());
                     }
                 }
                 catch (Exception ex) {
