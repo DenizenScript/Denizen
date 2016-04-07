@@ -52,6 +52,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     && arg.matchesPrefix("name")) {
                 scriptEntry.addObject("name", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("filename")
+                    && arg.matchesPrefix("filename")) {
+                scriptEntry.addObject("filename", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("angle")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("angle", arg.asElement());
@@ -67,6 +71,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("delayed")
                     && arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new Element("true"));
+            }
+            else if (!scriptEntry.hasObject("noair")
+                    && arg.matches("noair")) {
+                scriptEntry.addObject("noair", new Element("true"));
             }
             else {
                 arg.reportUnhandled();
@@ -89,6 +97,8 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         Element angle = scriptEntry.getElement("angle");
         Element type = scriptEntry.getElement("type");
         Element name = scriptEntry.getElement("name");
+        Element filename = scriptEntry.getElement("filename");
+        Element noair = scriptEntry.getElement("noair");
         Element delayed = scriptEntry.getElement("delayed");
         dLocation location = scriptEntry.getdObject("location");
         dCuboid cuboid = scriptEntry.getdObject("cuboid");
@@ -96,8 +106,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
         dB.report(scriptEntry, getName(), type.debug()
                 + name.debug()
                 + (location != null ? location.debug() : "")
+                + (filename != null ? filename.debug() : "")
                 + (cuboid != null ? cuboid.debug() : "")
                 + (angle != null ? angle.debug() : "")
+                + (noair != null ? noair.debug(): "")
                 + (delayed != null ? delayed.debug() : ""));
 
         CuboidBlockSet set;
@@ -106,6 +118,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             dB.echoError("Tried to wait for a non-paste schematic command.");
             scriptEntry.setFinished(true);
         }
+        String fname = filename != null ? filename.asString(): name.asString();
         switch (ttype) {
             case CREATE:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
@@ -138,9 +151,9 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                 }
                 try {
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                    File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
+                    File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
                     if (!f.exists()) {
-                        dB.echoError("Schematic file " + name.asString() + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
+                        dB.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
                         return;
                     }
                     InputStream fs = new FileInputStream(f);
@@ -198,11 +211,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                             public void run() {
                                 scriptEntry.setFinished(true);
                             }
-                        });
+                        }, noair != null && noair.asBoolean());
                     }
                     else {
                         scriptEntry.setFinished(true);
-                        schematics.get(name.asString().toUpperCase()).setBlocks(location);
+                        schematics.get(name.asString().toUpperCase()).setBlocks(location, noair != null && noair.asBoolean());
                     }
                 }
                 catch (Exception ex) {
@@ -219,7 +232,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                 try {
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
-                    File f = new File(directory + "/plugins/Denizen/schematics/" + name.asString() + ".schematic");
+                    File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
                     // TODO: Make me waitable!
                     FileOutputStream fs = new FileOutputStream(f);
                     set.saveMCEditFormatToStream(fs);
@@ -227,7 +240,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     fs.close();
                 }
                 catch (Exception ex) {
-                    dB.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + name.asString() + ".");
+                    dB.echoError(scriptEntry.getResidingQueue(), "Error saving schematic file " + fname + ".");
                     dB.echoError(scriptEntry.getResidingQueue(), ex);
                     return;
                 }

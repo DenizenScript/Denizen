@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.utilities.jnbt.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
@@ -73,7 +74,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     @Override
-    public void setBlocksDelayed(final Location loc, final Runnable runme) {
+    public void setBlocksDelayed(final Location loc, final Runnable runme, final boolean noAir) {
         final IntHolder index = new IntHolder();
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
@@ -84,7 +85,9 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index.theInt % ((long) (z_height));
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
-                    blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    if (!noAir || blocks.get((int)index.theInt).material != Material.AIR) {
+                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    }
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
                         return;
@@ -100,12 +103,14 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     @Override
-    public void setBlocks(Location loc) {
+    public void setBlocks(Location loc, boolean noAir) {
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
+                    if (!noAir || blocks.get(index).material != Material.AIR) {
+                        blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
+                    }
                     index++;
                 }
             }

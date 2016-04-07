@@ -2666,11 +2666,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group core
         // @Description
-        // TODO: Document Command Details
+        // DEPRECATED.
         // @Tags
-        // TODO: Document Command Details
+        // DEPRECATED.
         // @Usage
-        // TODO: Document Command Details
+        // DO NOT USE.
         // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
@@ -2678,16 +2678,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
         // @Group World
         // @Required 2
         // @Stable unstable
         // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
         // @Author mcmonkey
-
+        //
         // @Description
-        // Todo
-
+        // TODO: Document Command Details
+        //
         // @Tags
         // <schematic[<name>].height>
         // <schematic[<name>].length>
@@ -2695,34 +2695,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <schematic[<name>].block[<location>]>
         // <schematic[<name>].origin>
         // <schematic[<name>].blocks>
-
+        //
         // @Usage
         // Use to create a new schematic from a cuboid and an origin location
         // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
-
+        //
         // @Usage
         // Use to load a schematic
         // - schematic load name:MySchematic
-
+        //
         // @Usage
         // Use to unload a schematic
         // - schematic unload name:MySchematic
-
-        // @Usage
-        // Use to rotate a loaded schematic
-        // - schematic rotate name:MySchematic angle:90
-
+        //
         // @Usage
         // Use to paste a loaded schematic
         // - schematic paste name:MySchematic <player.location> noair
-
+        //
         // @Usage
         // Use to save a created schematic
         // - schematic save name:MySchematic
-
+        //
         // -->
         registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)", 2);
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)", 2);
 
 
         // <--[command]
