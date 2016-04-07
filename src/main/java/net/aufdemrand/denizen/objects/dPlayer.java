@@ -2763,7 +2763,20 @@ public class dPlayer implements dObject, Adjustable {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            OpenBook.openBook(getPlayerEntity());
+            OpenBook.openBook(getPlayerEntity(), false);
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name open_offhand_book
+        // @input None
+        // @description
+        // Forces the player to open the written book in their offhand.
+        // The book can safely be removed from the player's offhand
+        // without the player closing the book.
+        // -->
+        if (mechanism.matches("open_offhand_book")) {
+            OpenBook.openBook(getPlayerEntity(), true);
         }
 
         // <--[mechanism]
