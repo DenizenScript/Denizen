@@ -56,13 +56,10 @@ public class NBTCommand extends AbstractCommand {
 
         ItemStack itemStack = item.getItemStack();
 
-        dB.log("testing");
         if (value.asString().equals("")) {
-            dB.log("removing");
             itemStack = CustomNBT.removeCustomNBT(itemStack, key.asString());
         }
         else {
-            dB.log("adding");
             itemStack = CustomNBT.addCustomNBT(itemStack, key.asString(), value.asString());
         }
 

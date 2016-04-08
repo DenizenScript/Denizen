@@ -367,7 +367,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setTitle(String title) {
-        if (!getIdType().equals("generic") || title == null) {
+        if (!(getIdType().equals("generic") || getIdType().equals("script")) || title == null) {
             return;
         }
         else if (inventory == null) {

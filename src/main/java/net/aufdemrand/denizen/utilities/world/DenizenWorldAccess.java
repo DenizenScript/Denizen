@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.world;
 
 import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
@@ -46,6 +47,9 @@ public class DenizenWorldAccess implements IWorldAccess {
     public void b(Entity entity) {
         try {
             org.bukkit.entity.Entity bukkitEntity = entity.getBukkitEntity();
+            if (bukkitEntity instanceof LivingEntity) {
+                GlowCommand.unGlow((LivingEntity) bukkitEntity);
+            }
             if (dEntity.isCitizensNPC(bukkitEntity)) {
                 return;
             }

@@ -7,10 +7,13 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R1.CraftChunk;
 import org.bukkit.entity.Entity;
@@ -257,6 +260,58 @@ public class dWorld implements dObject, Adjustable {
                 }
 
                 return new dList(players)
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.spawned_npcs>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a list of spawned NPCs in this world.
+        // -->
+        registerTag("spawned_npcs", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+
+                World thisWorld = ((dWorld) object).getWorld();
+
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    if (npc.isSpawned() && npc.getEntity().getLocation().getWorld().equals(thisWorld)) {
+                        npcs.add(dNPC.mirrorCitizensNPC(npc));
+                    }
+                }
+
+                return new dList(npcs)
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.npcs>
+        // @returns dList(dNPC)
+        // @description
+        // Returns a list of all NPCs in this world.
+        // -->
+        registerTag("npcs", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+
+                World thisWorld = ((dWorld) object).getWorld();
+
+                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                    Location location = npc.getStoredLocation();
+                    if (location != null) {
+                        World world = location.getWorld();
+                        if (world != null && world.equals(thisWorld)) {
+                            npcs.add(dNPC.mirrorCitizensNPC(npc));
+                        }
+                    }
+                }
+
+                return new dList(npcs)
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -816,7 +871,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name auto_save
-        // @input Element(Integer)
+        // @input Element(Boolean)
         // @description
         // Sets whether the world will automatically save edits.
         // @tags

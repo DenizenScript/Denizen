@@ -172,7 +172,7 @@ public class NPCTags implements Listener {
         npc.action("begin navigation", null);
 
         if (event.getNPC().getNavigator().getTargetType() == TargetType.ENTITY) {
-            LivingEntity entity = event.getNPC().getNavigator().getEntityTarget().getTarget();
+            LivingEntity entity = (LivingEntity) event.getNPC().getNavigator().getEntityTarget().getTarget();
 
             // If the NPC has an entity target, is aggressive towards it
             // and that entity is not dead, trigger "on attack" command

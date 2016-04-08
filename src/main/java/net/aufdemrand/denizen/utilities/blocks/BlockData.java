@@ -1,9 +1,18 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.TileEntity;
+import net.minecraft.server.v1_9_R1.TileEntityChest;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.block.CraftBlock;
 
 import java.util.List;
 
@@ -23,10 +32,25 @@ public class BlockData {
     public BlockData(Block block) {
         material = block.getType();
         data = block.getData();
+        TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
+                new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        if (te != null) {
+            ctag = new NBTTagCompound();
+            te.save(ctag);
+        }
     }
 
     public void setBlock(Block block) {
         block.setTypeIdAndData(material.getId(), (byte) data, false);
+        if (ctag != null) {
+            ctag.setInt("x", block.getX());
+            ctag.setInt("y", block.getY());
+            ctag.setInt("z", block.getZ());
+            // TODO: make this work!
+            BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
+            TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
+            te.a(ctag);
+        }
     }
 
     public String toCompressedFormat() {
@@ -45,11 +69,13 @@ public class BlockData {
         return data;
     }
 
-    public CompoundTag getNBTTag() {
-        return null;
+    NBTTagCompound ctag = null;
+
+    public NBTTagCompound getNBTTag() {
+        return ctag;
     }
 
-    public void setNBTTag(CompoundTag tag) {
-        return;
+    public void setNBTTag(NBTTagCompound tag) {
+        ctag = tag;
     }
 }

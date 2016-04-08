@@ -134,11 +134,12 @@ public class ItemSkullskin implements Property {
         // <--[mechanism]
         // @object dItem
         // @name skull_skin
-        // @input Element(|Element)
+        // @input Element(|Element(|Element))
         // @description
         // Sets the player skin on a skull_item.
+        // The first Element is a UUID.
         // Optionally, use the second Element for the skin texture cache.
-        // This will require the player's UUID, not their name.
+        // Optionally, use the third Element for a player name.
         // @tags
         // <i@item.skin>
         // <i@item.skin.full>
@@ -170,6 +171,7 @@ public class ItemSkullskin implements Property {
             }
             profile = fillGameProfile(profile);
             if (list.size() > 1) { // Ensure we didn't get overwritten
+                profile.getProperties().get("textures").clear();
                 profile.getProperties().put("textures", new com.mojang.authlib.properties.Property("value", list.get(1)));
             }
             NBTTagCompound tag = itemStack.hasTag() ? itemStack.getTag() : new NBTTagCompound();
@@ -193,8 +195,7 @@ public class ItemSkullskin implements Property {
                 if (gameProfile1 == null) {
                     gameProfile1 = gameProfile;
                 }
-                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null
-                        || gameProfile1.getName() == null) {
+                if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
                     if (dB.verbose) {
                         dB.log("Filling profile name/textures!");
                     }

@@ -75,7 +75,6 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // -->
     public void serverStartEvent() {
-        // Start the 'timeEvent'
         long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
         Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
@@ -92,6 +91,21 @@ public class BukkitWorldScriptHelper implements Listener {
         if (determination.toUpperCase().startsWith("CANCELLED")) {
             Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
         }
+    }
+
+    // <--[event]
+    // @Events
+    // server prestart
+    //
+    // @Regex ^on server prestart$
+    //
+    // @Triggers before the server finishes starting... fired after saves are loaded, but before notables are loaded.
+    //
+    // -->
+    public void serverPreStartEvent() {
+        // Fire the 'Server Start' event
+        String determination = doEvents(Arrays.asList("server prestart"),
+                null, null, null);
     }
 
     private final Map<String, Integer> current_time = new HashMap<String, Integer>();
@@ -197,10 +211,10 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player clicks in inventory
-    // player (<click type>) clicks (<item>) (in <inventory type>) (with <item>)
-    // player (<click type>) clicks (<material>) (in <inventory type>) (with <item>)
-    // player (<click type>) clicks (<item>) (in <inventory type>) (with <material>)
-    // player (<click type>) clicks (<material>) (in <inventory type>) (with <material>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <item>)
+    // player (<click type>) clicks (<item>) (in <inventory>) (with <material>)
+    // player (<click type>) clicks (<material>) (in <inventory>) (with <material>)
     //
     // @Regex ^on player( [^\s]+)? clicks [^\s]+( in [^\s]+)?( with [^\s]+)?$
     //

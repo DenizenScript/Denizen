@@ -203,7 +203,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
-        // START_USE_ITEM, STOP_USE_ITEM, EAT_FOOD
+        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD
         //
         // All entities also have available Bukkit's entity effect list, which includes:
         // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
@@ -422,6 +422,40 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(BanCommand.class,
                 "BAN", "ban ({add}/remove) [<player>|...] (reason:<text>) (duration:<duration>)", 1);
+
+
+        // <--[command]
+        // @Name BlockCrack
+        // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)
+        // @Required 2
+        // @Stable stable
+        // @Short Shows the player(s) a block cracking animation.
+        // @Author Morphan1
+        // @Group world
+        // @Description
+        // You must specify a progress number between 1 and 10, where 1 is the first stage and 10 is the last.
+        // To remove the animation, you must specify any number outside of that range. For example, 0.
+        // Optionally, you can stack multiple effects
+
+        // @Tags
+        // None
+
+        // @Usage
+        // Use to show a crack in a block to the currently attached player.
+        // - blockcrack l@12,43,20,world progress:4
+
+        // @Usage
+        // Use to stop showing a crack in a block to all online players.
+        // - blockcrack l@12,43,20,world progress:0 players:<server.list_online_players>
+
+        // @Usage
+        // Use to show all 10 layers of block cracking at the same time.
+        // - repeat 10:
+        //   - blockcrack l@12,43,20,world progress:<def[value]> stack
+
+        // -->
+        registerCoreMember(BlockCrack.class,
+                "BLOCKCRACK", "blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)", 2);
 
 
         // <--[command]
@@ -760,11 +794,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
         // @Required 1
         // @Stable unstable
-        // @Short Creates a new world
+        // @Short Creates a new world, or loads an existing world.
         // @Author aufdemrand, mcmonkey
         // @Group world
         // @Description
-        // This command creates a new minecraft world with the specified name.
+        // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
         // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
@@ -1410,6 +1444,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
+
+
+        // <--[command]
+        // @Name Glow
+        // @Syntax glow [<entity>|...] (<should glow>)
+        // @Required 1
+        // @Stable unstable
+        // @Short Makes the link player see the chosen entities as glowing.
+        // @Author mcmonkey
+        // @Group player
+        // @Description
+        // Makes the link player see the chosen entities as glowing.
+        // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
+        // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
+        // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
+        // TODO: Document Command Details
+        // @Tags
+        // TODO: Document Command Details
+        // @Usage
+        // Use to make the player's target glow.
+        // - glow <player.target>
+        // @Usage
+        // Use to make the player's target not glow.
+        // - glow <player.target> false
+        // -->
+        registerCoreMember(GlowCommand.class,
+                "GLOW", "glow [<entity>|...] (<should glow>)", 1);
+
 
         // <--[command]
         // @Name Group
@@ -2604,11 +2666,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author aufdemrand
         // @Group core
         // @Description
-        // TODO: Document Command Details
+        // DEPRECATED.
         // @Tags
-        // TODO: Document Command Details
+        // DEPRECATED.
         // @Usage
-        // TODO: Document Command Details
+        // DO NOT USE.
         // -->
         registerCoreMember(RuntaskCommand.class,
                 "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
@@ -2616,16 +2678,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Schematic
-        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)
+        // @Syntax schematic [create/load/unload/rotate/paste/save] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
         // @Group World
         // @Required 2
         // @Stable unstable
         // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
         // @Author mcmonkey
-
+        //
         // @Description
-        // Todo
-
+        // TODO: Document Command Details
+        //
         // @Tags
         // <schematic[<name>].height>
         // <schematic[<name>].length>
@@ -2633,34 +2695,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <schematic[<name>].block[<location>]>
         // <schematic[<name>].origin>
         // <schematic[<name>].blocks>
-
+        //
         // @Usage
         // Use to create a new schematic from a cuboid and an origin location
         // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
-
+        //
         // @Usage
         // Use to load a schematic
         // - schematic load name:MySchematic
-
+        //
         // @Usage
         // Use to unload a schematic
         // - schematic unload name:MySchematic
-
-        // @Usage
-        // Use to rotate a loaded schematic
-        // - schematic rotate name:MySchematic angle:90
-
+        //
         // @Usage
         // Use to paste a loaded schematic
         // - schematic paste name:MySchematic <player.location> noair
-
+        //
         // @Usage
         // Use to save a created schematic
         // - schematic save name:MySchematic
-
+        //
         // -->
         registerCoreMember(SchematicCommand.class,
-                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (angle:<#>) (<location>) (<cuboid>) (delayed)", 2);
+                "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)", 2);
 
 
         // <--[command]
@@ -3174,27 +3232,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Team
-        // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)
+        // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)
         // @Required 2
         // @Stable stable
         // @Short Controls scoreboard teams.
         // @Author Morphan1
         // @Group player
         // @Description
-        // The Team command allows you to add modify a team's prefix and suffix, as well as adding
-        // and removing players from teams.
+        // The Team command allows you to add modify a team's prefix and suffix, as well as adding to
+        // and removing entries from teams.
         // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
         // @Tags
         // None
         // @Usage
         // Use to add a player to a team.
-        // - team name:red add:<player>
+        // - team name:red add:<player.name>
+        // @Usage
+        // Use to add an NPC to a team.
+        // - team name:blue add:<npc.name>
         // @Usage
         // Use to change the prefix for a team.
         // - team name:red "prefix:[<red>Red Team<reset>]"
         // -->
         registerCoreMember(TeamCommand.class,
-                "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<player>|...) (remove:<player>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
+                "TEAM", "team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)", 2);
 
         // <--[command]
         // @Name Teleport

@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -38,14 +37,12 @@ public class TeamCommand extends AbstractCommand {
             }
 
             else if (arg.matchesPrefix("add")
-                    && !scriptEntry.hasObject("add")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && !scriptEntry.hasObject("add")) {
                 scriptEntry.addObject("add", arg.asType(dList.class));
             }
 
             else if (arg.matchesPrefix("remove")
-                    && !scriptEntry.hasObject("remove")
-                    && arg.matchesArgumentList(dPlayer.class)) {
+                    && !scriptEntry.hasObject("remove")) {
                 scriptEntry.addObject("remove", arg.asType(dList.class));
             }
 
@@ -119,19 +116,23 @@ public class TeamCommand extends AbstractCommand {
         }
 
         if (add != null) {
-            for (dPlayer player : add.filter(dPlayer.class)) {
-                OfflinePlayer offlinePlayer = player.getOfflinePlayer();
-                if (!team.hasPlayer(offlinePlayer)) {
-                    team.addPlayer(player.getOfflinePlayer());
+            for (String string : add) {
+                if (string.startsWith("p@")) {
+                    string = dPlayer.valueOf(string).getName();
+                }
+                if (!team.hasEntry(string)) {
+                    team.addEntry(string);
                 }
             }
         }
 
         if (remove != null) {
-            for (dPlayer player : remove.filter(dPlayer.class)) {
-                OfflinePlayer offlinePlayer = player.getOfflinePlayer();
-                if (team.hasPlayer(offlinePlayer)) {
-                    team.removePlayer(player.getOfflinePlayer());
+            for (String string : remove) {
+                if (string.startsWith("p@")) {
+                    string = dPlayer.valueOf(string).getName();
+                }
+                if (team.hasEntry(string)) {
+                    team.removeEntry(string);
                 }
             }
         }
@@ -144,7 +145,7 @@ public class TeamCommand extends AbstractCommand {
             team.setSuffix(suffix.asString());
         }
 
-        if (team.getPlayers().isEmpty()) {
+        if (team.getEntries().isEmpty()) {
             team.unregister();
         }
     }

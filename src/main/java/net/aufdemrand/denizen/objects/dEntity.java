@@ -21,6 +21,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
@@ -2310,6 +2311,19 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <e@entity.glowing>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.glowing
+        // @group attributes
+        // @description
+        // Returns whether this entity is glowing.
+        // -->
+        if (attribute.startsWith("glowing")) {
+            return new Element(getLivingEntity().isGlowing())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         /////////////////////
         //   TYPE ATTRIBUTES
         /////////////////
@@ -2720,6 +2734,22 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
             getLivingEntity().setGliding(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name glowing
+        // @input Element(Boolean)
+        // @description
+        // Sets whether this entity is glowing.
+        // @tags
+        // <e@entity.glowing>
+        // -->
+        if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
+            getLivingEntity().setGlowing(value.asBoolean());
+            if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
+            }
         }
 
         // Iterate through this object's properties' mechanisms

@@ -870,11 +870,14 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 try {
                     DenizenCore.loadScripts();
 
-                    // Reload notables from notables.yml into memory
-                    notableManager.reloadNotables();
-
                     // Load the saves.yml into memory
                     reloadSaves();
+
+                    // Fire the 'on Pre Server Start' world event
+                    ws_helper.serverPreStartEvent();
+
+                    // Reload notables from notables.yml into memory
+                    notableManager.reloadNotables();
 
                     dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
 
@@ -1215,8 +1218,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             return true;
         }
 
-        //if (Depends.citizens != null)
-        //    return citizens.onCommand(sender, cmd, cmdName, args);
         String modifier = args.length > 0 ? args[0] : "";
         if (!commandManager.hasCommand(cmd, modifier) && !modifier.isEmpty()) {
             return suggestClosestModifier(sender, cmd.getName(), modifier);

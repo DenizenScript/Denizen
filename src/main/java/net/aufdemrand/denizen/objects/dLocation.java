@@ -22,9 +22,12 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_9_R1.TileEntitySkull;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.*;
+import org.bukkit.block.Banner;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Sign;
+import org.bukkit.block.Skull;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.Entity;
@@ -32,12 +35,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.material.Button;
-import org.bukkit.material.Lever;
-import org.bukkit.material.MaterialData;
+import org.bukkit.material.*;
 import org.bukkit.util.BlockIterator;
 
 import java.util.*;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1991,11 +1993,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("attached_to")) {
             BlockFace face = BlockFace.SELF;
             MaterialData data = getBlock().getState().getData();
-            if (data instanceof Lever) {
-                face = ((Lever) data).getAttachedFace();
-            }
-            else if (data instanceof Button) {
-                face = ((Button) data).getAttachedFace();
+            if (data instanceof Attachable) {
+                face = ((Attachable) data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
                 return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));

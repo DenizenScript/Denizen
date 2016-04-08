@@ -105,6 +105,11 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     dB.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
                     return null;
                 }
+                // Must have valid worlds
+                if (pos_1.getWorld() == null || pos_2.getWorld() == null) {
+                    dB.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
+                    return null;
+                }
                 toReturn.addPair(pos_1, pos_2);
             }
 

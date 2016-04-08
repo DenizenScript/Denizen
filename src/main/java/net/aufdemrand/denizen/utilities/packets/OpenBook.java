@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.minecraft.server.v1_9_R1.EnumHand;
 import net.minecraft.server.v1_9_R1.PacketDataSerializer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutCustomPayload;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -35,8 +34,7 @@ public class OpenBook {
         return customPayloadPacket;
     }
 
-    public static void openBook(Player player) {
-        boolean offHand = player.getInventory().getItemInMainHand().getData().getItemType() != Material.WRITTEN_BOOK;
+    public static void openBook(Player player, boolean offHand) {
         PacketPlayOutCustomPayload customPayloadPacket = getOpenBookPacket(offHand);
         PacketHelper.sendPacket(player, customPayloadPacket);
     }

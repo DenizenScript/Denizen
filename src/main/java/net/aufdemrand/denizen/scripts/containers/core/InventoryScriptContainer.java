@@ -54,7 +54,7 @@ public class InventoryScriptContainer extends ScriptContainer {
     //   inventory: inventory type
     //
     //   # The title can be anything you wish. Use color tags to make colored titles.
-    //   # Note that titles only work for CHEST type inventories.
+    //   # Note that titles only work for some inventory types, including CHEST, DISPENSER, FURNACE, ENCHANTING, and HOPPER.
     //   title: custom title
     //
     //   # The size must be a multiple of 9. It is recommended not to go above 54, as it will not show
@@ -94,6 +94,8 @@ public class InventoryScriptContainer extends ScriptContainer {
     }
 
     public dInventory getInventoryFrom(dPlayer player, dNPC npc) {
+
+        // TODO: Clean all this code!
 
         dInventory inventory = null;
         BukkitTagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this));
@@ -187,6 +189,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 inventory.setContents(finalItems);
             }
             if (contains("PROCEDURAL ITEMS")) {
+                // TODO: Document this feature!
                 if (inventory == null) {
                     size = InventoryType.CHEST.getDefaultSize();
                     inventory = new dInventory(size, contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");

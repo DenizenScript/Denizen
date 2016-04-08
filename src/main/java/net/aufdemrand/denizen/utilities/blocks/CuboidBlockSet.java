@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.jnbt.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
@@ -27,9 +29,9 @@ public class CuboidBlockSet implements BlockSet {
     public CuboidBlockSet(dCuboid cuboid, Location center) {
         Location low = cuboid.pairs.get(0).low;
         Location high = cuboid.pairs.get(0).high;
-        x_width = high.getX() - low.getX();
-        y_length = high.getY() - low.getY();
-        z_height = high.getZ() - low.getZ();
+        x_width = (high.getX() - low.getX()) + 1;
+        y_length = (high.getY() - low.getY()) + 1;
+        z_height = (high.getZ() - low.getZ()) + 1;
         center_x = center.getX() - low.getX();
         center_y = center.getY() - low.getY();
         center_z = center.getZ() - low.getZ();
@@ -62,7 +64,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public dCuboid getCuboid(Location loc) {
-        Location low = loc.clone().subtract(center_x, center_y, center_z);
+        Location low = loc.clone().subtract(center_x, center_y, center_z); // TODO: Does this subtract belong here?
         Location high = low.clone().add(x_width, y_length, z_height);
         return new dCuboid(low, high);
     }
@@ -72,7 +74,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     @Override
-    public void setBlocksDelayed(final Location loc, final Runnable runme) {
+    public void setBlocksDelayed(final Location loc, final Runnable runme, final boolean noAir) {
         final IntHolder index = new IntHolder();
         final long goal = (long) (x_width * y_length * z_height);
         new BukkitRunnable() {
@@ -83,7 +85,9 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index.theInt % ((long) (z_height));
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
-                    blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    if (!noAir || blocks.get((int)index.theInt).material != Material.AIR) {
+                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                    }
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
                         return;
@@ -99,12 +103,14 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     @Override
-    public void setBlocks(Location loc) {
+    public void setBlocks(Location loc, boolean noAir) {
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
+                    if (!noAir || blocks.get(index).material != Material.AIR) {
+                        blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
+                    }
                     index++;
                 }
             }
@@ -259,7 +265,8 @@ public class CuboidBlockSet implements BlockSet {
                         BlockVector pt = new BlockVector(x, y, z);
                         BlockData block = new BlockData(blocks[index], blockData[index]);
                         if (tileEntitiesMap.containsKey(pt)) {
-                            block.setNBTTag(new CompoundTag(tileEntitiesMap.get(pt)));
+                            CompoundTag otag = new CompoundTag(tileEntitiesMap.get(pt));
+                            block.setNBTTag(otag.toNMSTag());
                         }
                         cbs.blocks.add(block);
                     }
@@ -320,11 +327,11 @@ public class CuboidBlockSet implements BlockSet {
                         blocks[index] = (byte) bd.material.getId();
                         blockData[index] = (byte) bd.data;
 
-                        CompoundTag rawTag = bd.getNBTTag();
+                        CompoundTag rawTag = bd.getNBTTag() == null ? null : CompoundTag.fromNMSTag(bd.getNBTTag());
                         if (rawTag != null) {
                             HashMap<String, Tag> values = new HashMap<String, Tag>();
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
-                                values.put(entry.getKey(), entry.getValue()); // TODO: Why manual copy?
+                                values.put(entry.getKey(), entry.getValue());
                             }
                             values.put("id", new StringTag(null)); // block.getNbtId()
                             values.put("x", new IntTag(x));

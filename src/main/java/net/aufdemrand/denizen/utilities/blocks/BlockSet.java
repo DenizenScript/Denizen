@@ -8,9 +8,9 @@ public interface BlockSet {
 
     public abstract List<BlockData> getBlocks();
 
-    public abstract void setBlocksDelayed(Location loc, Runnable runme);
+    public abstract void setBlocksDelayed(Location loc, Runnable runme, boolean noAir);
 
-    public abstract void setBlocks(Location loc);
+    public abstract void setBlocks(Location loc, boolean noAir);
 
     public abstract String toCompressedFormat();
 }
