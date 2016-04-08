@@ -101,11 +101,11 @@
             <version>0.0.4.3</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.json</groupId>-->
-            <!--<artifactId>org.json</artifactId>-->
-            <!--<version>chargebee-1.0</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>org.json</artifactId>
+            <version>chargebee-1.0</version>
+        </dependency>
     </dependencies>
 
     <ciManagement>
