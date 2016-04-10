@@ -58,7 +58,7 @@ public class CompassCommand extends AbstractCommand {
 
         // Debug the execution
 
-        dB.report(scriptEntry, getName(), location.debug() + reset.debug());
+        dB.report(scriptEntry, getName(), (location != null ? location.debug() : "") + reset.debug());
 
         if (reset.asBoolean()) {
             Location bed = player.getBedSpawnLocation();
