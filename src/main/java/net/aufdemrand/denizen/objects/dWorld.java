@@ -924,6 +924,7 @@ public class dWorld implements dObject, Adjustable {
             catch (Exception ex) {
                 dB.echoError(ex);
             }
+            return;
         }
 
         // <--[mechanism]
@@ -937,6 +938,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("force_unload")) {
             Bukkit.getServer().unloadWorld(getWorld(), false);
+            return;
         }
 
         // <--[mechanism]
@@ -1094,6 +1096,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("unload")) {
             Bukkit.getServer().unloadWorld(getWorld(), true);
+            return;
         }
 
         // <--[mechanism]
