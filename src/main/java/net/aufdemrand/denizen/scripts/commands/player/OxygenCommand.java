@@ -12,9 +12,9 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class OxygenCommand extends AbstractCommand {
 
-    public enum Type {MAXIMUM, REMAINING}
+    public enum Type { MAXIMUM, REMAINING }
 
-    public enum Mode {SET, ADD, REMOVE}
+    public enum Mode { SET, ADD, REMOVE }
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -65,7 +65,7 @@ public class OxygenCommand extends AbstractCommand {
 
         switch (Type.valueOf(type.asString().toUpperCase())) {
             case MAXIMUM:
-                switch (Mode.valueOf(type.asString().toUpperCase())) {
+                switch (Mode.valueOf(mode.asString().toUpperCase())) {
                     case SET:
                         player.setMaximumAir(amount.asInt());
                         break;
@@ -78,7 +78,7 @@ public class OxygenCommand extends AbstractCommand {
                 }
                 return;
             case REMAINING:
-                switch (Mode.valueOf(type.asString().toUpperCase())) {
+                switch (Mode.valueOf(mode.asString().toUpperCase())) {
                     case SET:
                         player.setRemainingAir(amount.asInt());
                         break;
