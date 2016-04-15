@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptBuilder;
@@ -16,6 +17,7 @@ import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,10 @@ public class ActionHandler {
 
 
     public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, dObject> context) {
+
+        if (context == null) {
+            context = new HashMap<String, dObject>();
+        }
 
         String determination = "none";
 
@@ -69,11 +75,10 @@ public class ActionHandler {
         // Add entries and context to the queue
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(assignment.getName())).addEntries(script);
 
-        if (context != null) {
-            OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
-            oecs.contexts = context;
-            queue.setContextSource(oecs);
-        }
+        OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
+        oecs.contexts = context;
+        oecs.contexts.put("event_header", new Element(actionName));
+        queue.setContextSource(oecs);
 
         // Start the queue!
         queue.start();
