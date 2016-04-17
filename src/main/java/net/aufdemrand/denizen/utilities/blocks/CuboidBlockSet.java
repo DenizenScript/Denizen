@@ -333,7 +333,7 @@ public class CuboidBlockSet implements BlockSet {
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
                                 values.put(entry.getKey(), entry.getValue());
                             }
-                            values.put("id", new StringTag(null)); // block.getNbtId()
+                            // TODO: ??? -> values.put("id", new StringTag(null)); // block.getNbtId()
                             values.put("x", new IntTag(x));
                             values.put("y", new IntTag(y));
                             values.put("z", new IntTag(z));
