@@ -2440,6 +2440,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.experience>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the experience value of this experience orb entity.
+        // -->
+        if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
+            return new Element(((ExperienceOrb) getBukkitEntity()).getExperience())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.describe>
         // @returns Element(Boolean)
         // @group properties
@@ -2747,6 +2759,19 @@ public class dEntity implements dObject, Adjustable {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
             }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name experience
+        // @input Element(Number)
+        // @description
+        // Sets the experience value of this experience orb entity.
+        // @tags
+        // <e@entity.experience>
+        // -->
+        if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
+            ((ExperienceOrb) getBukkitEntity()).setExperience(value.asInt());
         }
 
         // Iterate through this object's properties' mechanisms
