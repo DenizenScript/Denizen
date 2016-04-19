@@ -28,10 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.*;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -2095,7 +2092,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.empty>
+        // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2107,7 +2104,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.inside_vehicle>
+        // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2119,7 +2116,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.leashed>
+        // @attribute <e@entity.is_leashed>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2137,7 +2134,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.on_ground>
+        // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2149,7 +2146,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.persistent>
+        // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
         // @group attributes
         // @description
