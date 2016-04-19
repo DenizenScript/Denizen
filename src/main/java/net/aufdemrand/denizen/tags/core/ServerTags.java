@@ -444,7 +444,11 @@ public class ServerTags implements Listener {
         // Returns a list of all files in the specified directory. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
-            File[] files = DenizenAPI.getCurrentInstance().getDataFolder().listFiles();
+            File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
+            if (!folder.exists() || !folder.isDirectory()) {
+                return;
+            }
+            File[] files = folder.listFiles();
             if (files == null) {
                 return;
             }
