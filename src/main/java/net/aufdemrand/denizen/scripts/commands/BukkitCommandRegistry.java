@@ -2221,6 +2221,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to edit the NBT of a player's item in hand.
         // - nbt <player.item_in_hand> "MyCustomNBT.Owner:<player>" "save:edited"
         // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[edited].new_item>"
+        // @Usage
+        // Use to remove an NBT tag from a player's item in hand.
+        // - nbt <player.item_in_hand> "MyCustomNBT.Owner:!" "save:item"
+        // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[item].new_item>"
         // -->
         registerCoreMember(NBTCommand.class,
                 "NBT", "nbt [<item>] [<key>:<value>]", 2);
