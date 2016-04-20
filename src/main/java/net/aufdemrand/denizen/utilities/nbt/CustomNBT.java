@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_9_R1.EntityLiving;
@@ -209,7 +208,6 @@ public class CustomNBT {
             Iterator<String> subkeys = CoreUtilities.split(key.substring(existing.equals("") ? 0 : existing.length() + 1), '.').iterator();
             while (true) {
                 String subkey = subkeys.next();
-                dB.log(subkey);
                 if (!subkeys.hasNext()) {
                     tag.setString(subkey, value);
                     cis = registerNBT(cis, key);
