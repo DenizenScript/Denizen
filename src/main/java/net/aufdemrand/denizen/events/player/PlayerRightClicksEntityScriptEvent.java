@@ -35,8 +35,8 @@ import org.bukkit.inventory.EquipmentSlot;
 // @Context
 // <context.entity> returns the dEntity the player is clicking on.
 // <context.item> returns the dItem the player is clicking with.
-// <context.cuboids> NOTE: DEPRECATED IN FAVOUR OF <context.location.cuboids>
-// <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOUR OF <context.entity.location>
+// <context.cuboids> NOTE: DEPRECATED IN FAVOR OF <context.entity.location.cuboids>
+// <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
 //
 // -->
 

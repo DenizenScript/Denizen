@@ -1792,12 +1792,18 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the number of itemstacks that match an item if one is
         // specified, or the number of all itemstacks if one is not.
         // -->
-        if (attribute.startsWith("stacks") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-            return new Element(count // TODO: Handle no-script-entry cases
-                    (dItem.valueOf(attribute.getContext(1),
-                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("stacks")) {
+            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+                return new Element(count // TODO: Handle no-script-entry cases
+                        (dItem.valueOf(attribute.getContext(1),
+                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
+                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new Element(count(null, true))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

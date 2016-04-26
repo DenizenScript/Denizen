@@ -989,10 +989,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     }
                     pair = ((dCuboid) object).pairs.get(member - 1);
                 }
-                Location base = pair.high.clone().add(pair.low.clone());
-                base.setX(base.getX() / 2);
-                base.setY(base.getY() / 2);
-                base.setZ(base.getZ() / 2);
+                Location base = pair.high.clone().add(pair.low.clone()).add(1.0, 1.0, 1.0);
+                base.setX(base.getX() / 2.0);
+                base.setY(base.getY() / 2.0);
+                base.setZ(base.getZ() / 2.0);
                 return new dLocation(base).getAttribute(attribute.fulfill(1));
             }
         });

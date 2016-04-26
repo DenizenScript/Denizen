@@ -30,13 +30,13 @@ public class RotateCommand extends AbstractCommand implements Holdable {
             if (!scriptEntry.hasObject("cancel")
                     && (arg.matches("cancel") || arg.matches("stop"))) {
 
-                scriptEntry.addObject("cancel", "");
+                scriptEntry.addObject("cancel", new Element("true"));
             }
 
             else if (!scriptEntry.hasObject("infinite")
                     && arg.matches("infinite")) {
 
-                scriptEntry.addObject("infinite", "");
+                scriptEntry.addObject("infinite", new Element("true"));
             }
 
             else if (!scriptEntry.hasObject("duration")

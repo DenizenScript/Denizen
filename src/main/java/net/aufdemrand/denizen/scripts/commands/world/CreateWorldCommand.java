@@ -84,9 +84,17 @@ public class CreateWorldCommand extends AbstractCommand {
 
         if (copy_from != null) {
             try {
+                if (copy_from.asString().contains("..")) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
+                    return;
+                }
                 File newFolder = new File(World_Name.asString());
-                // TODO: Folder validity verification?
-                FileUtils.copyDirectory(new File(copy_from.asString().replace("w@", "")), newFolder);
+                File folder = new File(copy_from.asString().replace("w@", ""));
+                if (!folder.exists() || !folder.isDirectory()) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
+                    return;
+                }
+                FileUtils.copyDirectory(folder, newFolder);
                 File file = new File(World_Name.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();

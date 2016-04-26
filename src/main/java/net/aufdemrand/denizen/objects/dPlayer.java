@@ -966,7 +966,7 @@ public class dPlayer implements dObject, Adjustable {
                                 (bz - .50 <= ez && ez <= bz + 1.50) &&
                                 (by - 1 <= ey && ey <= by + 2.5)) {
                             // Entity is close enough, so return it
-                            return new dEntity(possibleTarget).getAttribute(attribute.fulfill(attribs));
+                            return new dEntity(possibleTarget).getDenizenObject().getAttribute(attribute.fulfill(attribs));
                         }
                     }
                 }

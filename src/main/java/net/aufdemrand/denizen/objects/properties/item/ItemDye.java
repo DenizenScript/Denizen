@@ -73,7 +73,7 @@ public class ItemDye implements Property {
 
         // <--[mechanism]
         // @object dItem
-        // @name dye_color
+        // @name dye
         // @input dColor
         // @description
         // Sets the leather armor item's dye color in the format RED,GREEN,BLUE

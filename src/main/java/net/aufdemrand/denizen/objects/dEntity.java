@@ -28,10 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftAnimals;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftCreature;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.*;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -721,9 +718,6 @@ public class dEntity implements dObject, Adjustable {
      */
 
     public dList getEquipment() {
-        if (isCitizensNPC() || isPlayer()) {
-            return getInventory().getEquipment(); // TODO: Is this part needed?
-        }
         ItemStack[] equipment = getLivingEntity().getEquipment().getArmorContents();
         dList equipmentList = new dList();
         for (ItemStack item : equipment) {
@@ -2098,7 +2092,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.empty>
+        // @attribute <e@entity.is_empty>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2110,7 +2104,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.inside_vehicle>
+        // @attribute <e@entity.is_inside_vehicle>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2122,7 +2116,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.leashed>
+        // @attribute <e@entity.is_leashed>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2140,7 +2134,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.on_ground>
+        // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2152,7 +2146,7 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.persistent>
+        // @attribute <e@entity.is_persistent>
         // @returns Element(Boolean)
         // @group attributes
         // @description
@@ -2439,6 +2433,18 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("colorable") || attribute.startsWith("is_colorable")) {
             return new Element(EntityColor.describes(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.experience>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the experience value of this experience orb entity.
+        // -->
+        if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
+            return new Element(((ExperienceOrb) getBukkitEntity()).getExperience())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2750,6 +2756,19 @@ public class dEntity implements dObject, Adjustable {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
             }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name experience
+        // @input Element(Number)
+        // @description
+        // Sets the experience value of this experience orb entity.
+        // @tags
+        // <e@entity.experience>
+        // -->
+        if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
+            ((ExperienceOrb) getBukkitEntity()).setExperience(value.asInt());
         }
 
         // Iterate through this object's properties' mechanisms

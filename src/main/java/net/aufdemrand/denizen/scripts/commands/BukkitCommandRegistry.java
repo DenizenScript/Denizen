@@ -1420,6 +1420,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name Gamerule
+        // @Syntax gamerule [<world>] [<rule>] [<value>]
+        // @Required 3
+        // @Stable unstable
+        // @Short Sets a gamerule on the world.
+        // @Author Jeebiss
+        // @Group item
+        // @Description
+        // Sets a gamerule on the world.
+        // TODO: Document Command Details
+        // @Tags
+        // TODO: Document Command Details
+        // @Usage
+        // TODO: Document Command Details
+        // -->
+        registerCoreMember(GameRuleCommand.class,
+                "GAMERULE", "gamerule [<world>] [<rule>] [<value>]", 3);
+
+
+        // <--[command]
         // @Name Give
         // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (to:<inventory>) (slot:<#>)
         // @Required 1
@@ -2618,7 +2638,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Rotate
-        // @Syntax rotate (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (frequency:<duration>)
+        // @Syntax rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)
         // @Required 1
         // @Stable stable
         // @Short Rotates a list of entities.
@@ -2633,7 +2653,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(RotateCommand.class,
-                "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<value>) (pitch:<value>) (duration:<duration>) (infinite/frequency:<duration>)", 0);
+                "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)", 0);
 
 
         // <--[command]
@@ -3381,6 +3401,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Viewer
         // @Syntax viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
         // @Required 1
+        // @Deprecated Unused.
         // @Stable unstable
         // @Short Creates a sign that auto-updates with information.
         // @Author Morphan1

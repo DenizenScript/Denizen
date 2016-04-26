@@ -108,7 +108,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favour of context.location.cuboids
+        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
             return cuboids;
         }
         return super.getContext(name);
