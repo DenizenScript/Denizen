@@ -272,7 +272,11 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
 
     private boolean isArmor(Material material) {
         int id = material.getId();
-        return id >= 298 && id <= 317 || material == Material.ELYTRA;
+        return id >= 298 && id <= 317
+                || material == Material.ELYTRA
+                || material == Material.PUMPKIN
+                || material == Material.JACK_O_LANTERN
+                || material == Material.SKULL_ITEM;
     }
 
     private boolean didPlayerClickOwnInventory(Player player, Inventory inventory) {
