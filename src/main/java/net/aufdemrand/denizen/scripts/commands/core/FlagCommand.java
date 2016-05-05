@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -256,8 +257,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Set flag duration
         if (flag.StillValid() && duration != null && duration.getSeconds() > 0) {
-            flag.setExpiration(System.currentTimeMillis()
-                    + Double.valueOf(duration.getSeconds() * 1000).longValue());
+            flag.setExpiration(DenizenCore.currentTimeMillis
+                    + Double.valueOf(duration.getSeconds() * 1000.0).longValue());
         }
 
         else if (flag.StillValid() && flag.expiration().getMillis() != 0L) {

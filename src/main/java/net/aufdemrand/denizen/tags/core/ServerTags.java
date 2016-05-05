@@ -336,6 +336,7 @@ public class ServerTags implements Listener {
         // @returns Element(Number)
         // @description
         // Returns the number of milliseconds since Jan 1, 1970.
+        // Note that this can change every time the tag is read!
         // -->
         if (attribute.startsWith("current_time_millis")) {
             event.setReplaced(new Element(System.currentTimeMillis())

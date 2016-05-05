@@ -1505,6 +1505,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the name of the entity script that spawned this entity, if any.
         // -->
         if (attribute.startsWith("script")) {
+            // TODO: Maybe return legit null?
             return new Element(entityScript == null ? "null" : entityScript)
                     .getAttribute(attribute.fulfill(1));
         }
