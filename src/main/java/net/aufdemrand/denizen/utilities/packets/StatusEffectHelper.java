@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities.packets;
 
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 

@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.entity.LivingEntity;
 
 public class DenizenWorldAccess implements IWorldAccess {

@@ -6,10 +6,10 @@ import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.NPCPushEvent;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
-import net.minecraft.server.v1_9_R1.EntityLiving;
+import net.minecraft.server.v1_9_R2.EntityLiving;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -199,7 +199,7 @@ public class PushableTrait extends Trait implements Listener {
             handle.yaw = returnLocation.getYaw();
             handle.pitch = returnLocation.getPitch();
             // !--- START NMS OBFUSCATED
-            handle.az = handle.yaw; // The head's yaw
+            // TODO: 1.9.4: handle.az = handle.yaw; // The head's yaw
             // !--- END NMS OBFUSCATED
             pushed = false;
             // Push Return action

@@ -1,12 +1,11 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R1.BlockPosition;
-import net.minecraft.server.v1_9_R1.ChatComponentText;
-import net.minecraft.server.v1_9_R1.IChatBaseComponent;
-import net.minecraft.server.v1_9_R1.PacketPlayOutUpdateSign;
+import net.minecraft.server.v1_9_R2.BlockPosition;
+import net.minecraft.server.v1_9_R2.ChatComponentText;
+import net.minecraft.server.v1_9_R2.IChatBaseComponent;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -14,6 +13,8 @@ import java.util.Map;
 
 public class SignUpdate {
 
+    // TODO: 1.9.4:
+    /*
     private static final Field sign_world, sign_location, sign_lines;
 
     static {
@@ -40,11 +41,11 @@ public class SignUpdate {
             dB.echoError(e);
         }
         return signUpdatePacket;
-    }
+    }*/
 
     public static void updateSign(Player player, Location location, String[] lines) {
-        PacketPlayOutUpdateSign signUpdatePacket = getSignUpdatePacket(location, lines);
-        PacketHelper.sendPacket(player, signUpdatePacket);
+        // TODO: 1.9.4: PacketPlayOutUpdateSign signUpdatePacket = getSignUpdatePacket(location, lines);
+        // TODO: 1.9.4: PacketHelper.sendPacket(player, signUpdatePacket);
     }
 
 }

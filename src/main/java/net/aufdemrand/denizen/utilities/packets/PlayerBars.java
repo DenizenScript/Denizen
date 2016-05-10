@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R1.PacketPlayOutExperience;
-import net.minecraft.server.v1_9_R1.PacketPlayOutUpdateHealth;
+import net.minecraft.server.v1_9_R2.PacketPlayOutExperience;
+import net.minecraft.server.v1_9_R2.PacketPlayOutUpdateHealth;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

@@ -366,9 +366,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void onEnable() {
         try {
-            net.minecraft.server.v1_9_R1.Block.getById(0);
+            net.minecraft.server.v1_9_R2.Block.getById(0);
         }
-        catch (NoClassDefFoundError e) {
+        catch (Throwable e) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("This Denizen version is not compatible with this CraftBukkit version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");
@@ -1600,7 +1600,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public Thread getMainThread() {
-        return net.minecraft.server.v1_9_R1.MinecraftServer.getServer().primaryThread;
+        return net.minecraft.server.v1_9_R2.MinecraftServer.getServer().primaryThread;
     }
 }
 

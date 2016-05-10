@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.utilities.entity.network;
 
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R1.EnumProtocolDirection;
-import net.minecraft.server.v1_9_R1.NetworkManager;
+import net.minecraft.server.v1_9_R2.EnumProtocolDirection;
+import net.minecraft.server.v1_9_R2.NetworkManager;
 
 import java.lang.reflect.Field;
 import java.net.SocketAddress;

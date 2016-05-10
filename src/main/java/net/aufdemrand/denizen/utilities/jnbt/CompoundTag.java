@@ -19,7 +19,7 @@
 
 package net.aufdemrand.denizen.utilities.jnbt;
 
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 
 import java.util.*;
 
