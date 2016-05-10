@@ -659,6 +659,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
             ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
+            ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
             ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
@@ -794,6 +795,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityColor.class, dEntity.class);
             propertyParser.registerProperty(EntityCritical.class, dEntity.class);
             propertyParser.registerProperty(EntityCustomName.class, dEntity.class);
+            propertyParser.registerProperty(EntityPotionEffects.class, dEntity.class);
             propertyParser.registerProperty(EntityElder.class, dEntity.class);
             propertyParser.registerProperty(EntityEquipment.class, dEntity.class);
             propertyParser.registerProperty(EntityFirework.class, dEntity.class);

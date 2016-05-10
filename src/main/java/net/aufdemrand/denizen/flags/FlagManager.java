@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -707,7 +708,7 @@ public class FlagManager {
         public boolean checkExpired() {
             rebuild();
             if (denizen.getSaves().contains(flagPath + "-expiration")) {
-                if (expiration > 1 && expiration < System.currentTimeMillis()) {
+                if (expiration > 1 && expiration < DenizenCore.currentTimeMillis) {
                     String OldOwner = flagOwner;
                     String OldName = flagName;
                     dObject OldValue = value.size() > 1
@@ -769,7 +770,7 @@ public class FlagManager {
         }
 
         public Duration expiration() {
-            return new Duration((double) (expiration - System.currentTimeMillis()) / 1000);
+            return new Duration((double) (expiration - DenizenCore.currentTimeMillis) / 1000);
         }
 
         /**
@@ -781,7 +782,7 @@ public class FlagManager {
         public String expirationTime() {
             rebuild();
 
-            long seconds = (expiration - System.currentTimeMillis()) / 1000;
+            long seconds = (expiration - DenizenCore.currentTimeMillis) / 1000;
 
             long days = seconds / 86400;
             long hours = (seconds - days * 86400) / 3600;

@@ -56,7 +56,7 @@ public class NBTCommand extends AbstractCommand {
 
         ItemStack itemStack = item.getItemStack();
 
-        if (value.asString().equals("")) {
+        if (value.asString().equals("!")) {
             itemStack = CustomNBT.removeCustomNBT(itemStack, key.asString());
         }
         else {

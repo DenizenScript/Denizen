@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class MobproxTrait extends Trait {
     public MobproxTrait() {
-        super("Mobprox");
+        super("mobprox");
     }
 
     int checkTimer = 0;

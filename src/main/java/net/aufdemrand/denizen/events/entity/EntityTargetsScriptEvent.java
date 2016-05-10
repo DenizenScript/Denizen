@@ -120,7 +120,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("reason")) {
             return reason;
@@ -129,7 +129,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return cuboids;
         }
         else if (name.equals("target") && target != null) {
-            return target;
+            return target.getDenizenObject();
         }
         return super.getContext(name);
     }

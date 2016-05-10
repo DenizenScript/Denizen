@@ -336,6 +336,7 @@ public class ServerTags implements Listener {
         // @returns Element(Number)
         // @description
         // Returns the number of milliseconds since Jan 1, 1970.
+        // Note that this can change every time the tag is read!
         // -->
         if (attribute.startsWith("current_time_millis")) {
             event.setReplaced(new Element(System.currentTimeMillis())
@@ -444,7 +445,11 @@ public class ServerTags implements Listener {
         // Returns a list of all files in the specified directory. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
-            File[] files = DenizenAPI.getCurrentInstance().getDataFolder().listFiles();
+            File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
+            if (!folder.exists() || !folder.isDirectory()) {
+                return;
+            }
+            File[] files = folder.listFiles();
             if (files == null) {
                 return;
             }
