@@ -32,7 +32,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // @Triggers when a hanging entity (painting, item_frame, or leash_hitch) is broken.
     //
     // @Context
-    // <context.cause> returns the cause of the entity breaking.
+    // <context.cause> returns the cause of the entity breaking. Causes: ENTITY, EXPLOSION, OBSTRUCTION, PHYSICS, and DEFAULT.
     // <context.entity> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
     // <context.cuboids> DEPRECATED.
