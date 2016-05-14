@@ -37,8 +37,6 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
     // <context.hanging> returns the dEntity of the hanging.
     // <context.cuboids> DEPRECATED.
     // <context.location> DEPRECATED.
-    // Causes list: <@link url http://bit.ly/1BeqxPX>
-    //
     // -->
 
     public HangingBreaksScriptEvent() {

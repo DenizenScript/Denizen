@@ -728,7 +728,7 @@ public class ServerTags implements Listener {
             String flag = attribute.getContext(1);
             dList players = new dList();
             for (Map.Entry<String, UUID> entry : dPlayer.getAllPlayers().entrySet()) {
-                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(entry.getValue(), flag).size() > 0) {
+                if (DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag(new dPlayer(entry.getValue()), flag).size() > 0) {
                     players.add(new dPlayer(entry.getValue()).identify());
                 }
             }
