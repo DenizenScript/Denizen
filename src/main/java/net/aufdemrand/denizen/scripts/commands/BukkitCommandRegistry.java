@@ -1471,7 +1471,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax glow [<entity>|...] (<should glow>)
         // @Required 1
         // @Stable unstable
-        // @Short Makes the link player see the chosen entities as glowing.
+        // @Short Makes the linked player see the chosen entities as glowing.
         // @Author mcmonkey
         // @Group player
         // @Description
