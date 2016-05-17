@@ -2282,19 +2282,43 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name Pause, Resume
+        // @Name Pause
         // @Syntax pause [waypoints/activity] (<duration>)
         // @Required 1
         // @Stable unstable
-        // @Short Pauses/resumes an NPC's waypoint navigation or goal activity temporarily or permanently.
+        // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
         // @Author aufdemrand
         // @Group npc
         // @Description
         // TODO: Document Command Details
         // @Tags
-        // <n@npc.navigator>
+        // <n@npc.navigator.is_navigating>
         // @Usage
-        // Use to pause an NPC's waypoint navigation permanently.
+        // Use to pause an NPC's waypoint navigation indefinitely.
+        // @Usage
+        // - pause waypoints
+        // Use to pause an NPC's goal activity temporarily.
+        // - pause activity 1m
+        // @Usage
+        // Use to pause an NPC's waypoint navigation and then resume it.
+        // - pause waypoints
+        // - resume waypoints
+        // -->
+
+        // <--[command]
+        // @Name Resume
+        // @Syntax resume [waypoints/activity] (<duration>)
+        // @Required 1
+        // @Stable unstable
+        // @Short Resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
+        // @Author aufdemrand
+        // @Group npc
+        // @Description
+        // TODO: Document Command Details
+        // @Tags
+        // <n@npc.navigator.is_navigating>
+        // @Usage
+        // Use to pause an NPC's waypoint navigation indefinitely.
         // @Usage
         // - pause waypoints
         // Use to pause an NPC's goal activity temporarily.

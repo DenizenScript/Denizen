@@ -1629,6 +1629,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
+            // TODO: Fix logic
             List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
             if (!contains.isEmpty()) {
                 for (dItem item : contains) {
