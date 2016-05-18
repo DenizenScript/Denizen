@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
@@ -35,10 +36,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
 
-    public static Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<String, ItemScriptContainer>(8, 0.9f, 1);
-    public static Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<String, ItemScriptContainer>();
-    public static Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<ItemScriptContainer, List<String>>();
-    public static Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<ItemScriptContainer, String>();
+    public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<String, ItemScriptContainer>(8, 0.9f, 1);
+    public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<String, ItemScriptContainer>();
+    public static final Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<ItemScriptContainer, List<String>>();
+    public static final Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<ItemScriptContainer, String>();
+    public static final Map<ItemScriptContainer, String> furnace_to_register = new HashMap<ItemScriptContainer, String>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -118,8 +120,20 @@ public class ItemScriptHelper implements Listener {
             }
         }
 
+        for (Map.Entry<ItemScriptContainer, String> entry : furnace_to_register.entrySet()) {
+
+            dItem furnace_item = dItem.valueOf(entry.getValue());
+            if (furnace_item == null) {
+                dB.echoError("Invalid item '" + entry.getValue() + "'");
+                continue;
+            }
+            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
+            Bukkit.getServer().addRecipe(recipe);
+        }
+
         recipes_to_register.clear();
         shapeless_to_register.clear();
+        furnace_to_register.clear();
     }
 
     public static boolean isBound(ItemStack item) {
