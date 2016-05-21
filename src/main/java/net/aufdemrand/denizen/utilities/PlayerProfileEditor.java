@@ -27,7 +27,7 @@ public class PlayerProfileEditor {
 
     private static final Map<UUID, GameProfile> fakeProfiles = new HashMap<UUID, GameProfile>();
     private static final Field playerGameProfile, gameProfileId, gameProfileName;
-    private static final Field playerInfo_action;// TODO: 1.9.4: ', playerInfo_data;
+    private static final Field playerInfo_action;// TODO: 1.9.4: , playerInfo_data;
     // TODO: 1.9.4:  private static final Field playerInfoData_latency, playerInfoData_gameMode,
     // TODO: 1.9.4:         playerInfoData_gameProfile, playerInfoData_displayName;
 
