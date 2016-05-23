@@ -282,7 +282,7 @@ public class FishingTrait extends Trait {
     private ItemStack catchRandomJunk() {
         fishHook.owner.a(StatisticList.A, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        // TODO: 1.9.4: playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.am).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
@@ -290,7 +290,7 @@ public class FishingTrait extends Trait {
     private ItemStack catchRandomTreasure() {
         fishHook.owner.a(StatisticList.B, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        // TODO: 1.9.4: playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.an).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
@@ -299,7 +299,7 @@ public class FishingTrait extends Trait {
         //float f3 = f - f2;
         fishHook.owner.a(StatisticList.z, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        // TODO: 1.9.4: playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.ao).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }

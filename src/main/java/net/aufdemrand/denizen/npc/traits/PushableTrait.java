@@ -199,7 +199,7 @@ public class PushableTrait extends Trait implements Listener {
             handle.yaw = returnLocation.getYaw();
             handle.pitch = returnLocation.getPitch();
             // !--- START NMS OBFUSCATED
-            // TODO: 1.9.4: handle.az = handle.yaw; // The head's yaw
+            handle.aA = handle.yaw; // The head's yaw
             // !--- END NMS OBFUSCATED
             pushed = false;
             // Push Return action

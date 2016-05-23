@@ -43,7 +43,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        // TODO: 1.9.4: ((EntityInsentient) nmsEntity).m(!hasAI);
+        ((EntityInsentient) nmsEntity).setAI(!hasAI);
     }
 
     public static boolean isAIDisabled(Entity entity) {
@@ -51,8 +51,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
         }
-        // TODO: 1.9.4: return ((EntityInsentient) nmsEntity).cR();
-        return false;
+        return ((EntityInsentient) nmsEntity).hasAI();
     }
 
     public static double getSpeed(Entity entity) {
