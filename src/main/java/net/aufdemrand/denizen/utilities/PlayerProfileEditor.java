@@ -33,8 +33,8 @@ public class PlayerProfileEditor {
     private static final Map<UUID, GameProfile> fakeProfiles = new HashMap<UUID, GameProfile>();
     private static final Field playerGameProfile, gameProfileId, gameProfileName;
     private static final Field playerInfo_action, playerInfo_data;
-    private static final Field playerInfoData_latency, playerInfoData_gameMode,
-           playerInfoData_gameProfile, playerInfoData_displayName;
+    /*private static final Field playerInfoData_latency, playerInfoData_gameMode,
+           playerInfoData_gameProfile, playerInfoData_displayName;*/
 
     static {
         Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutPlayerInfo.class);
@@ -54,7 +54,8 @@ public class PlayerProfileEditor {
             profileIdField.setAccessible(true);
             profileNameField = GameProfile.class.getDeclaredField("name");
             profileNameField.setAccessible(true);
-            pidLatency = PacketPlayOutPlayerInfo.PlayerInfoData.class.getDeclaredField("b");
+            // TODO: FIX THIS STUFF? IDK WHAT'S WRONG WITH IT
+            /*pidLatency = PacketPlayOutPlayerInfo.PlayerInfoData.class.getDeclaredField("b");
             pidLatency.setAccessible(true);
             pidGameMode = PacketPlayOutPlayerInfo.PlayerInfoData.class.getDeclaredField("c");
             pidGameMode.setAccessible(true);
@@ -62,6 +63,7 @@ public class PlayerProfileEditor {
             pidGameProfile.setAccessible(true);
             pidDisplayName = PacketPlayOutPlayerInfo.PlayerInfoData.class.getDeclaredField("e");
             pidDisplayName.setAccessible(true);
+            */
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -69,10 +71,10 @@ public class PlayerProfileEditor {
         playerGameProfile = profileField;
         gameProfileId = profileIdField;
         gameProfileName = profileNameField;
-        playerInfoData_latency = pidLatency;
+        /*playerInfoData_latency = pidLatency;
         playerInfoData_gameMode = pidGameMode;
         playerInfoData_gameProfile = pidGameProfile;
-        playerInfoData_displayName = pidDisplayName;
+        playerInfoData_displayName = pidDisplayName;*/
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
                 .registerEvents(new PlayerProfileEditorListener(), DenizenAPI.getCurrentInstance());
     }
@@ -83,13 +85,13 @@ public class PlayerProfileEditor {
             if (action != EnumPlayerInfoAction.ADD_PLAYER) {
                 return;
             }
-            List<PacketPlayOutPlayerInfo.PlayerInfoData> dataList = (List<PacketPlayOutPlayerInfo.PlayerInfoData>) playerInfo_data.get(packet);
+            /*List<PacketPlayOutPlayerInfo.PlayerInfoData> dataList = (List<PacketPlayOutPlayerInfo.PlayerInfoData>) playerInfo_data.get(packet);
             for (PacketPlayOutPlayerInfo.PlayerInfoData data : dataList) {
                 GameProfile gameProfile = data.a();
                 if (fakeProfiles.containsKey(gameProfile.getId())) {
                     playerInfoData_gameProfile.set(data, fakeProfiles.get(gameProfile.getId()));
                 }
-            }
+            }*/
         }
         catch (Exception e) {
             dB.echoError(e);
