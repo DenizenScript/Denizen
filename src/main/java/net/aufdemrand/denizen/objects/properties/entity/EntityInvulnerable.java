@@ -6,34 +6,34 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 
-public class EntitySilent implements Property {
+public class EntityInvulnerable implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity;
     }
 
-    public static EntitySilent getFrom(dObject entity) {
+    public static EntityInvulnerable getFrom(dObject entity) {
         if (!describes(entity)) {
             return null;
         }
+
         else {
-            return new EntitySilent((dEntity) entity);
+            return new EntityInvulnerable((dEntity) entity);
         }
     }
-
 
     ///////////////////
     // Instance Fields and Methods
     /////////////
 
-    private EntitySilent(dEntity ent) {
-        entity = ent;
+    private EntityInvulnerable(dEntity entity) {
+        dentity = entity;
     }
 
-    dEntity entity;
+    dEntity dentity;
 
     /////////
     // Property Methods
@@ -41,14 +41,18 @@ public class EntitySilent implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(isSilent(entity.getBukkitEntity()));
+        if (!dentity.getBukkitEntity().isInvulnerable()) {
+            return null;
+        }
+        else {
+            return "true";
+        }
     }
 
     @Override
     public String getPropertyId() {
-        return "silent";
+        return "invulnerable";
     }
-
 
     ///////////
     // dObject Attributes
@@ -62,17 +66,17 @@ public class EntitySilent implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.silent>
+        // @attribute <e@entity.invulnerable>
         // @returns Element(Boolean)
-        // @group attributes
+        // @mechanism dEntity.invulnerable
+        // @group properties
         // @description
-        // Returns whether the entity is silent. (Plays no sounds)
+        // Returns whether the entity is invulnerable (cannot be damaged).
         // -->
-        if (attribute.startsWith("silent")) {
-            return new Element(isSilent(entity.getBukkitEntity()))
+        if (attribute.startsWith("invulnerable")) {
+            return new Element(dentity.getBukkitEntity().isInvulnerable())
                     .getAttribute(attribute.fulfill(1));
         }
-
 
         return null;
     }
@@ -82,23 +86,16 @@ public class EntitySilent implements Property {
 
         // <--[mechanism]
         // @object dEntity
-        // @name silent
+        // @name invulnerable
         // @input Element(Boolean)
         // @description
-        // Sets whether this entity is silent. (Plays no sounds)
+        // Sets whether the entity is invulnerable (cannot be damaged).
         // @tags
-        // <e@entity.silent>
+        // <e@entity.invulnerable>
         // -->
-        if (mechanism.matches("silent") && mechanism.requireBoolean()) {
-            setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+
+        if (mechanism.matches("invulnerable") && mechanism.requireBoolean()) {
+            dentity.getBukkitEntity().setInvulnerable(mechanism.getValue().asBoolean());
         }
-    }
-
-    private static boolean isSilent(Entity entity) {
-        return ((CraftEntity) entity).getHandle().ad();
-    }
-
-    private static void setSilent(Entity entity, boolean silent) {
-        ((CraftEntity) entity).getHandle().c(silent);
     }
 }

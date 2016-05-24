@@ -70,7 +70,7 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify a material that can be smelted into your item.
     //   # Note: This can overwrite existing furnace recipes.
-    //   # Additional note: This does not support datavalues currently, only specific material types can be used as a recipe.
+    //   # Additional note: This does not support dynamic data currently, only specific material types can be used as a recipe.
     //   furnace_recipe: i@item
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
@@ -127,13 +127,8 @@ public class ItemScriptContainer extends ScriptContainer {
         }
 
         if (contains("FURNACE_RECIPE")) {
-            dItem furnace_item = dItem.valueOf(getString("FURNACE_RECIPE"));
-            if (furnace_item == null) {
-                dB.echoError("Invalid item '" + getString("FURNACE_RECIPE") + "'");
-                return;
-            }
-            FurnaceRecipe recipe = new FurnaceRecipe(getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
-            Bukkit.getServer().addRecipe(recipe);
+            // Process later so that any item script ingredients can be fulfilled
+            ItemScriptHelper.furnace_to_register.put(this, getString("FURNACE_RECIPE"));
         }
     }
 

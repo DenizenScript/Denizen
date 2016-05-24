@@ -25,7 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -1629,6 +1629,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
+            // TODO: Fix logic
             List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
             if (!contains.isEmpty()) {
                 for (dItem item : contains) {

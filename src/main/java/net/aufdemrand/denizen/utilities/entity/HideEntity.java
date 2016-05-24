@@ -1,13 +1,13 @@
 package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.objects.dEntity;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.EntityTracker;
-import net.minecraft.server.v1_9_R1.EntityTrackerEntry;
-import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_9_R1.WorldServer;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.EntityTracker;
+import net.minecraft.server.v1_9_R2.EntityTrackerEntry;
+import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_9_R2.WorldServer;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -35,7 +35,7 @@ public class HideEntity {
             if (!hidden.contains(entityUUID)) {
                 hidden.add(entityUUID);
                 EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_9_R1.Entity other = ((CraftEntity)entity).getHandle();
+                net.minecraft.server.v1_9_R2.Entity other = ((CraftEntity)entity).getHandle();
                 EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
                 if (entry != null) {
                     entry.clear(entityPlayer);
@@ -57,7 +57,7 @@ public class HideEntity {
             if (hidden.contains(entityUUID)) {
                 hidden.remove(entityUUID);
                 EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_9_R1.Entity other = ((CraftEntity)entity).getHandle();
+                net.minecraft.server.v1_9_R2.Entity other = ((CraftEntity)entity).getHandle();
                 if (dEntity.isPlayer(entity)) {
                     entityPlayer.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) other));
                 }

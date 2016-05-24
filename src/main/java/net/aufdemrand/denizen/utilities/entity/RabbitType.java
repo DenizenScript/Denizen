@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_9_R1.EntityRabbit;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftRabbit;
+import net.minecraft.server.v1_9_R2.EntityRabbit;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftRabbit;
 import org.bukkit.entity.Rabbit;
 
 public enum RabbitType {

@@ -156,7 +156,7 @@ public class InventoryContents implements Property {
             // @group properties
             // @mechanism dInventory.contents
             // @description
-            // Returns a list of all items in the inventory, without with the tag item.full used.
+            // Returns a list of all items in the inventory, with the tag item.full used.
             // -->
             if (attribute.startsWith("full")) {
                 return getContents(2).getAttribute(attribute.fulfill(1));

@@ -6,10 +6,10 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.util.PlayerAnimation;
-import net.minecraft.server.v1_9_R1.*;
+import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
@@ -282,7 +282,7 @@ public class FishingTrait extends Trait {
     private ItemStack catchRandomJunk() {
         fishHook.owner.a(StatisticList.A, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.am).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
@@ -290,7 +290,7 @@ public class FishingTrait extends Trait {
     private ItemStack catchRandomTreasure() {
         fishHook.owner.a(StatisticList.B, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.an).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
@@ -299,7 +299,7 @@ public class FishingTrait extends Trait {
         //float f3 = f - f2;
         fishHook.owner.a(StatisticList.z, 1);
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.db());
+        playerFishEvent2.a((float)EnchantmentManager.f(fishHook.owner) + fishHook.owner.dc());
         List<ItemStack> itemStacks = fishHook.getWorld().ak().a(LootTables.ao).a(CoreUtilities.getRandom(), playerFishEvent2.a());
         return itemStacks.get(CoreUtilities.getRandom().nextInt(itemStacks.size()));
     }
