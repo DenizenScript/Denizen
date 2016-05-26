@@ -1776,14 +1776,18 @@ public class dInventory implements dObject, Notable, Adjustable {
         // one is specified, or the combined quantity of all itemstacks
         // if one is not.
         // -->
-        if ((attribute.startsWith("quantity") || attribute.startsWith("qty"))
-                && attribute.hasContext(1)
-                && dItem.matches(attribute.getContext(1))) {
-            return new Element(count // TODO: Handle no-script-entry cases
-                    (dItem.valueOf(attribute.getContext(1),
-                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                            ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
+            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
+                return new Element(count // TODO: Handle no-script-entry cases
+                        (dItem.valueOf(attribute.getContext(1),
+                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
+                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return new Element(count(null, false))
+                        .getAttribute(attribute.fulfill(1));
+            }
         }
 
         // <--[tag]

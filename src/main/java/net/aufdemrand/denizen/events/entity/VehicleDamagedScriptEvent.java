@@ -29,7 +29,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     //
     // @Cancellable true
     //
-    // @Triggers when an entity enters a vehicle.
+    // @Triggers when a vehicle is damaged.
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
