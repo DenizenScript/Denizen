@@ -50,7 +50,11 @@ public class PlayerProfileEditor {
             profileIdField.setAccessible(true);
             profileNameField = GameProfile.class.getDeclaredField("name");
             profileNameField.setAccessible(true);
-            pidGameProfile = PacketPlayOutPlayerInfo.class.getDeclaredClasses()[0].getDeclaredField("d"); // PlayerInfoData.
+            for (Class clzz : PacketPlayOutPlayerInfo.class.getDeclaredClasses()) {
+                if (clzz.getName().toLowerCase().contains("infodata")) {
+                    pidGameProfile = clzz.getDeclaredField("d"); // PlayerInfoData.
+                }
+            }
             pidGameProfile.setAccessible(true);
         }
         catch (Exception e) {
