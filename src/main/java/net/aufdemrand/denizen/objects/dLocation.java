@@ -1283,7 +1283,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 Location l = getBlock().getLocation().clone().add(x, y, z);
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
