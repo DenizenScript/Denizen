@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
+import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -979,6 +980,21 @@ public class ServerTags implements Listener {
             dNPC npc = dNPC.valueOf(attribute.getContext(1));
             event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.current_bossbars>
+        // @returns dList
+        // @description
+        // Returns a list of all currently active boss bar IDs.
+        // -->
+        else if (attribute.startsWith("current_bossbars")) {
+            dList dl = new dList();
+            for (String str : BossBarCommand.bossBarMap.keySet())
+            {
+                dl.add(str);
+            }
+            event.setReplaced(dl.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
