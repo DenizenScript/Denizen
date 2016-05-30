@@ -67,6 +67,12 @@ public class BossBarCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesPrefix("players")
+                    && arg.matchesArgumentList(dPlayer.class)) {
+                scriptEntry.addObject("players", arg.asType(dList.class));
+            }
+
             else if (!scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
