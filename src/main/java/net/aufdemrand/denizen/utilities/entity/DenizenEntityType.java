@@ -34,7 +34,7 @@ public class DenizenEntityType {
     // @name Denizen Entity Types
     // @group Entities
     // @description
-    // Along with the default EntityTypes (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html),
+    // Along with the default EntityTypes <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>,
     // Denizen also adds in a few altered entities:
     // - FAKE_ARROW: For use when you want an arrow to stay spawned at a location for any reason.
     // - FAKE_PLAYER: Spawns a fake player (non-Citizens NPC).
