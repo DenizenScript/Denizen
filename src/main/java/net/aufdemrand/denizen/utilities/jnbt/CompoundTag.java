@@ -19,7 +19,7 @@
 
 package net.aufdemrand.denizen.utilities.jnbt;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 
 import java.util.*;
 
@@ -83,22 +83,22 @@ public final class CompoundTag extends Tag {
         for (String key: tag.c()) {
             NBTBase base = tag.get(key);
             if (base instanceof NBTTagInt) {
-                tags.put(key, new IntTag(((NBTTagInt) base).d()));
+                tags.put(key, new IntTag(((NBTTagInt) base).e()));
             }
             else if (base instanceof NBTTagByte) {
-                tags.put(key, new ByteTag(((NBTTagByte) base).f()));
+                tags.put(key, new ByteTag(((NBTTagByte) base).g()));
             }
             else if (base instanceof NBTTagFloat) {
-                tags.put(key, new FloatTag(((NBTTagFloat) base).h()));
+                tags.put(key, new FloatTag(((NBTTagFloat) base).i()));
             }
             else if (base instanceof NBTTagDouble) {
-                tags.put(key, new DoubleTag(((NBTTagDouble) base).g()));
+                tags.put(key, new DoubleTag(((NBTTagDouble) base).h()));
             }
             else if (base instanceof NBTTagByteArray) {
                 tags.put(key, new ByteArrayTag(((NBTTagByteArray) base).c()));
             }
             else if (base instanceof NBTTagIntArray) {
-                tags.put(key, new IntArrayTag(((NBTTagIntArray) base).c()));
+                tags.put(key, new IntArrayTag(((NBTTagIntArray) base).d()));
             }
             else if (base instanceof NBTTagCompound) {
                 tags.put(key, fromNMSTag(((NBTTagCompound) base)));
@@ -107,13 +107,13 @@ public final class CompoundTag extends Tag {
                 tags.put(key, new EndTag());
             }
             else if (base instanceof NBTTagLong) {
-                tags.put(key, new LongTag(((NBTTagLong) base).c()));
+                tags.put(key, new LongTag(((NBTTagLong) base).d()));
             }
             else if (base instanceof NBTTagShort) {
-                tags.put(key, new ShortTag(((NBTTagShort) base).e()));
+                tags.put(key, new ShortTag(((NBTTagShort) base).f()));
             }
             else if (base instanceof NBTTagString) {
-                tags.put(key, new StringTag(((NBTTagString) base).a_()));
+                tags.put(key, new StringTag(((NBTTagString) base).c_()));
             }
             else if (base instanceof NBTTagList) {
                 NBTTagList list = (NBTTagList) base;

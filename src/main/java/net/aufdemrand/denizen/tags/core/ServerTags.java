@@ -28,7 +28,7 @@ import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_9_R2.MinecraftServer;
+import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;

@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R2.PacketPlayOutSetSlot;
+import net.minecraft.server.v1_10_R1.PacketPlayOutSetSlot;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

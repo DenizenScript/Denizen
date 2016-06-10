@@ -1,15 +1,15 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R2.BlockPosition;
-import net.minecraft.server.v1_9_R2.NBTTagCompound;
-import net.minecraft.server.v1_9_R2.NBTTagList;
-import net.minecraft.server.v1_9_R2.PacketPlayOutTileEntityData;
-import net.minecraft.server.v1_9_R2.TileEntityBanner;
+import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.PacketPlayOutTileEntityData;
+import net.minecraft.server.v1_10_R1.TileEntityBanner;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
-import org.bukkit.craftbukkit.v1_9_R2.block.CraftBanner;
+import org.bukkit.craftbukkit.v1_10_R1.block.CraftBanner;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

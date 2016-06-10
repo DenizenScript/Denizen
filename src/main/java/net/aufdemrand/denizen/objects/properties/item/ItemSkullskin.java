@@ -11,11 +11,11 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R2.GameProfileSerializer;
-import net.minecraft.server.v1_9_R2.ItemStack;
-import net.minecraft.server.v1_9_R2.MinecraftServer;
-import net.minecraft.server.v1_9_R2.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_10_R1.GameProfileSerializer;
+import net.minecraft.server.v1_10_R1.ItemStack;
+import net.minecraft.server.v1_10_R1.MinecraftServer;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
