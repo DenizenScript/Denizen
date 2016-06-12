@@ -3,15 +3,15 @@ package net.aufdemrand.denizen.utilities.blocks;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Duration;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_9_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -234,7 +234,7 @@ public class BlockLight {
         final PlayerChunkMap map = ((CraftWorld) world).getHandle().getPlayerChunkMap();
         return new IWorldAccess() {
             @Override
-            public void a(net.minecraft.server.v1_9_R2.World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
+            public void a(net.minecraft.server.v1_10_R1.World world, BlockPosition blockPosition, IBlockData iBlockData, IBlockData iBlockData1, int i) {
 
             }
 

@@ -141,7 +141,7 @@ public class NotableManager {
                     obj.makeUnique(notable.replace("DOT", "."));
                 }
                 else {
-                    dB.echoError("Notable '" + section.getString(notable).replace("DOT", ".") + "' failed to load!");
+                    dB.echoError("Notable '" + notable.replace("DOT", ".") + "' failed to load!");
                 }
             }
 
@@ -161,16 +161,15 @@ public class NotableManager {
 
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
-            // If the object is serializable, save that info... fetching the objects back
-            // will require this information TODO: make this do something?..
-            //      if (notable.getValue().getSaveObject() instanceof ConfigurationSerializable)
-            //          DenizenAPI.getCurrentInstance().notableManager().getNotables()
-            //                  .set(getClassId(notable.getValue().getClass()) + "." + "_serializable", true);
-
-            notables.set(getClassId(getClass(notable.getValue())) + "." + CoreUtilities.toLowerCase(notable.getKey()).replace(".", "DOT"),
-                    notable.getValue().getSaveObject());
+            try {
+                notables.set(getClassId(getClass(notable.getValue())) + "." + CoreUtilities.toLowerCase(notable.getKey()).replace(".", "DOT"),
+                        notable.getValue().getSaveObject());
+            }
+            catch (Exception e) {
+                dB.echoError("Notable '" + notable.getKey() + "' failed to save!");
+                dB.echoError(e);
+            }
         }
-
     }
 
     private static <T extends Notable> Class<T> getClass(Notable notable) {

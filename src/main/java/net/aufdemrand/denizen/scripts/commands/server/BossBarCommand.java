@@ -67,6 +67,12 @@ public class BossBarCommand extends AbstractCommand {
                 scriptEntry.addObject("action", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesPrefix("players")
+                    && arg.matchesArgumentList(dPlayer.class)) {
+                scriptEntry.addObject("players", arg.asType(dList.class));
+            }
+
             else if (!scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
@@ -94,7 +100,7 @@ public class BossBarCommand extends AbstractCommand {
         scriptEntry.defaultObject("action", new Element("CREATE"));
     }
 
-    private static Map<String, BossBar> bossBarMap = new HashMap<String, BossBar>();
+    public final static Map<String, BossBar> bossBarMap = new HashMap<String, BossBar>();
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
@@ -166,12 +172,24 @@ public class BossBarCommand extends AbstractCommand {
                 if (style != null) {
                     bossBar1.setStyle(BarStyle.valueOf(style.asString().toUpperCase()));
                 }
+                if (players != null) {
+                    for (dPlayer player : players.filter(dPlayer.class)) {
+                        bossBar1.addPlayer(player.getPlayerEntity());
+                    }
+                }
                 break;
 
             case REMOVE:
                 if (!bossBarMap.containsKey(idString)) {
                     dB.echoError("BossBar '" + idString + "' does not exist!");
                     return;
+                }
+                if (players != null) {
+                    BossBar bar = bossBarMap.get(idString);
+                    for (dPlayer player : players.filter(dPlayer.class)) {
+                        bar.removePlayer(player.getPlayerEntity());
+                    }
+                    break;
                 }
                 bossBarMap.get(idString).hide();
                 bossBarMap.remove(idString);

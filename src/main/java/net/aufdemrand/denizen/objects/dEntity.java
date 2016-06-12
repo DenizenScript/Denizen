@@ -22,13 +22,13 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R2.entity.*;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.*;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -269,7 +269,7 @@ public class dEntity implements dObject, Adjustable {
             return rememberedEntities.get(id);
         }
         for (World world : Bukkit.getWorlds()) {
-            net.minecraft.server.v1_9_R2.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
+            net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftWorld) world).getHandle().getEntity(id);
 
             // Make sure the nmsEntity is valid, to prevent unpleasant errors
             if (nmsEntity != null) {

@@ -3,9 +3,9 @@ package net.aufdemrand.denizen.utilities.entity;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.utilities.entity.network.FakeNetworkManager;
 import net.aufdemrand.denizen.utilities.entity.network.FakePlayerConnection;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class EntityFakePlayer extends EntityPlayer {
@@ -13,11 +13,11 @@ public class EntityFakePlayer extends EntityPlayer {
     public EntityFakePlayer(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
         this.bukkitEntity = new CraftFakePlayer((CraftServer) Bukkit.getServer(), this);
-        playerinteractmanager.setGameMode(WorldSettings.EnumGamemode.SURVIVAL);
+        playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
         NetworkManager networkManager = new FakeNetworkManager(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection(minecraftserver, networkManager, this);
         networkManager.setPacketListener(playerConnection);
-        datawatcher.set(EntityHuman.bq, (byte) 127);
+        datawatcher.set(EntityHuman.br, (byte) 127);
         worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 

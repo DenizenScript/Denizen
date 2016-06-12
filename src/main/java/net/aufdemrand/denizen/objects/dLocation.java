@@ -21,7 +21,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_9_R2.TileEntitySkull;
+import net.minecraft.server.v1_10_R1.TileEntitySkull;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.Banner;
@@ -29,7 +29,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -1283,7 +1283,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             if (index > max) {
                                 break fullloop;
                             }
-                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x, y, z), radius)) {
+                            if (Utilities.checkLocation(loc, getBlock().getLocation().add(x + 0.5, y + 0.5, z + 0.5), radius)) {
                                 Location l = getBlock().getLocation().clone().add(x, y, z);
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {

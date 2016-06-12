@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_9_R2.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 
 import java.util.List;
 
@@ -59,10 +59,10 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         for (Object aList : list) {
             Entity entity1 = (Entity) aList;
 
-            if ((entity1.aT()) && ((entity1 != shooter) || (age >= 5))) {
+            if ((entity1.isInteractable()) && ((entity1 != shooter) || (age >= 5))) {
                 float f1 = 0.3F;
                 AxisAlignedBB axisalignedbb1 = entity1.getBoundingBox().grow(f1, f1, f1);
-                MovingObjectPosition movingobjectposition1 = axisalignedbb1.a(vec3d, vec3d1);
+                MovingObjectPosition movingobjectposition1 = axisalignedbb1.b(vec3d, vec3d1);
 
                 if (movingobjectposition1 != null) {
                     double d1 = vec3d.distanceSquared(movingobjectposition1.pos);

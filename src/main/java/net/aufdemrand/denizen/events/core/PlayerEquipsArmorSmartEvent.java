@@ -411,7 +411,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
                                 "player unequips " + getArmorType(item),
                                 "player unequips " + armor.identifySimple(),
                                 "player unequips " + armor.identifyMaterial()),
-                null, dEntity.getPlayerFrom(player), context).toUpperCase();
+                null, dEntity.getPlayerFrom(player), context, true).toUpperCase();
 
         if (determination.startsWith("CANCELLED")) {
             new BukkitRunnable() {

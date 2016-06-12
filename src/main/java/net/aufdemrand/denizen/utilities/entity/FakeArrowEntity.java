@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.utilities.entity;
 
-import net.minecraft.server.v1_9_R2.EntitySpectralArrow;
-import net.minecraft.server.v1_9_R2.ItemStack;
-import net.minecraft.server.v1_9_R2.Items;
+import net.minecraft.server.v1_10_R1.EntitySpectralArrow;
+import net.minecraft.server.v1_10_R1.ItemStack;
+import net.minecraft.server.v1_10_R1.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 
 public class FakeArrowEntity extends EntitySpectralArrow {
 

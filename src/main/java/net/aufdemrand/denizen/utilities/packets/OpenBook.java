@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities.packets;
 
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_9_R2.EnumHand;
-import net.minecraft.server.v1_9_R2.PacketDataSerializer;
-import net.minecraft.server.v1_9_R2.PacketPlayOutCustomPayload;
+import net.minecraft.server.v1_10_R1.EnumHand;
+import net.minecraft.server.v1_10_R1.PacketDataSerializer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutCustomPayload;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

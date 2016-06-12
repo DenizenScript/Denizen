@@ -2,12 +2,12 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.minecraft.server.v1_9_R2.EntityInsentient;
-import net.minecraft.server.v1_9_R2.GenericAttributes;
-import net.minecraft.server.v1_9_R2.NavigationAbstract;
-import net.minecraft.server.v1_9_R2.PathEntity;
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.GenericAttributes;
+import net.minecraft.server.v1_10_R1.NavigationAbstract;
+import net.minecraft.server.v1_10_R1.PathEntity;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -31,7 +31,7 @@ public class EntityMovement {
     }
 
     public static void stopWalking(Entity entity) {
-        net.minecraft.server.v1_9_R2.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
@@ -39,7 +39,7 @@ public class EntityMovement {
     }
 
     public static void toggleAI(Entity entity, boolean hasAI) {
-        net.minecraft.server.v1_9_R2.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
@@ -47,7 +47,7 @@ public class EntityMovement {
     }
 
     public static boolean isAIDisabled(Entity entity) {
-        net.minecraft.server.v1_9_R2.Entity nmsEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
         }
@@ -55,7 +55,7 @@ public class EntityMovement {
     }
 
     public static double getSpeed(Entity entity) {
-        net.minecraft.server.v1_9_R2.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return 0.0;
         }
@@ -64,7 +64,7 @@ public class EntityMovement {
     }
 
     public static void setSpeed(Entity entity, double speed) {
-        net.minecraft.server.v1_9_R2.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
         }
@@ -78,7 +78,7 @@ public class EntityMovement {
             return;
         }
 
-        final net.minecraft.server.v1_9_R2.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
+        final net.minecraft.server.v1_10_R1.Entity nmsEntityFollower = ((CraftEntity) follower).getHandle();
         if (!(nmsEntityFollower instanceof EntityInsentient)) {
             return;
         }
@@ -143,7 +143,7 @@ public class EntityMovement {
             return;
         }
 
-        net.minecraft.server.v1_9_R2.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
+        net.minecraft.server.v1_10_R1.Entity nmsEntityEntity = ((CraftEntity) entity).getHandle();
         if (!(nmsEntityEntity instanceof EntityInsentient)) {
             return;
         }

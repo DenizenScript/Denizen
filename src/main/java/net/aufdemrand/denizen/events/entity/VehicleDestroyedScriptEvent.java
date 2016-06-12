@@ -28,7 +28,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Cancellable true
     //
-    // @Triggers when an entity enters a vehicle.
+    // @Triggers when a vehicle is destroyed.
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.

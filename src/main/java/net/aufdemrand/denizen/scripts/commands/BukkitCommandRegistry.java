@@ -519,7 +519,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // @Usage
         // Update the boss bar's color and progress.
-        // - bossbar MyMessageID color:blue progress:0.2
+        // - bossbar update MyMessageID color:blue progress:0.2
+
+        // @Usage
+        // Add more players to the boss bar.
+        // - bossbar update MyMessageID players:<server.flag[new_players]>
+
+        // @Usage
+        // Remove a player from the boss bar.
+        // - bossbar remove MyMessageID players:<server.match_player[BlackCoyote]>
+
+        // @Usage
+        // Delete the boss bar.
+        // - bossbar remove MyMessageID
         // -->
         registerCoreMember(BossBarCommand.class,
                 "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);

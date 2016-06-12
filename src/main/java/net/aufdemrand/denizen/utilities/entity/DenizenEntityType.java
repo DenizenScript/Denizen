@@ -30,6 +30,20 @@ public class DenizenEntityType {
         }
     }
 
+    // <--[language]
+    // @name Denizen Entity Types
+    // @group Entities
+    // @description
+    // Along with the default EntityTypes <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html>,
+    // Denizen also adds in a few altered entities:
+    // - FAKE_ARROW: For use when you want an arrow to stay spawned at a location for any reason.
+    // - FAKE_PLAYER: Spawns a fake player (non-Citizens NPC).
+    //   Use with the mechanisms "name" and "skin" to alter the respective properties.
+    // - ITEM_PROJECTILE: Use this when you want to fire any item as if it were a normal projectile.
+    //   It will have the same physics (although sometimes not clientside) as arrows, and will fire the
+    //   projectile hit event.
+    // -->
+
     private DenizenEntityType(EntityType entityType) {
         this.bukkitEntityType = entityType;
         this.name = entityType.name();

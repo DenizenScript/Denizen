@@ -4,11 +4,11 @@ package net.aufdemrand.denizen.utilities.nbt;
 
 import com.google.common.io.Files;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
-import net.minecraft.server.v1_9_R2.*;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.*;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
