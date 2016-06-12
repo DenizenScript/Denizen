@@ -61,13 +61,12 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
     @Override
     public void a(PacketPlayInResourcePackStatus packet) {
         try {
-            final String hash = (String) resource_pack_hash.get(packet);
             final EnumResourcePackStatus status = (EnumResourcePackStatus) resource_pack_status.get(packet);
             Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
                     ResourcePackStatusScriptEvent event = ResourcePackStatusScriptEvent.instance;
-                    event.hash = new Element(hash);
+                    // TODO: get hash on server?... last sent hash? event.hash = new Element(hash);
                     event.status = new Element(status.name());
                     event.player = dPlayer.mirrorBukkitPlayer(player.getBukkitEntity());
                     event.fire();
