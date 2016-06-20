@@ -203,7 +203,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
-        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD
+        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
         //
         // All entities also have available Bukkit's entity effect list, which includes:
         // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
