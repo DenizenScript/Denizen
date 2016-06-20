@@ -512,7 +512,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
         // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
         // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
-
+        //
+        // @Tags
+        // <server.current_bossbars>
+        //
         // @Usage
         // Shows a message to all online players.
         // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
