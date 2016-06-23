@@ -233,6 +233,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                    f.getParentFile().mkdirs();
                     // TODO: Make me waitable!
                     FileOutputStream fs = new FileOutputStream(f);
                     set.saveMCEditFormatToStream(fs);
