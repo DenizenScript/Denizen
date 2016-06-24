@@ -203,7 +203,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Player animations require a Player-type entity or NPC. Available player animations include:
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
-        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD
+        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
         //
         // All entities also have available Bukkit's entity effect list, which includes:
         // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
@@ -512,7 +512,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
         // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
         // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
-
+        //
+        // @Tags
+        // <server.current_bossbars>
+        //
         // @Usage
         // Shows a message to all online players.
         // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
