@@ -53,7 +53,7 @@ public class dChunk implements dObject, Adjustable {
         String[] parts = string.split(",");
         if (parts.length == 3) {
             try {
-                return new dChunk((CraftChunk) dWorld.valueOf(parts[2], context).getWorld()
+                return new dChunk(dWorld.valueOf(parts[2], context).getWorld()
                         .getChunkAt(Integer.valueOf(parts[0]), Integer.valueOf(parts[1])));
             }
             catch (Exception e) {
@@ -83,19 +83,15 @@ public class dChunk implements dObject, Adjustable {
         }
     }
 
-    CraftChunk chunk = null;
+    Chunk chunk = null;
 
     /**
-     * dChunk can be constructed with a CraftChunk
+     * dChunk can be constructed with a Chunk
      *
      * @param chunk The chunk to use.
      */
-    public dChunk(CraftChunk chunk) {
-        this.chunk = chunk;
-    }
-
     public dChunk(Chunk chunk) {
-        this((CraftChunk) chunk);
+        this.chunk = chunk;
     }
 
     /**
@@ -104,7 +100,7 @@ public class dChunk implements dObject, Adjustable {
      * @param location The location of the chunk.
      */
     public dChunk(Location location) {
-        this((CraftChunk) location.getChunk());
+        this(location.getChunk());
     }
 
     public dLocation getCenter() {
@@ -362,8 +358,9 @@ public class dChunk implements dObject, Adjustable {
         registerTag("height_map", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                List<String> height_map = new ArrayList<String>(((dChunk) object).chunk.getHandle().heightMap.length);
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
+                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                List<String> height_map = new ArrayList<String>(heightMap.length);
+                for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
                 }
                 return new dList(height_map).getAttribute(attribute.fulfill(1));
@@ -380,10 +377,11 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int sum = 0;
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
+                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                for (int i : heightMap) {
                     sum += i;
                 }
-                return new Element(((double) sum) / ((dChunk) object).chunk.getHandle().heightMap.length).getAttribute(attribute.fulfill(1));
+                return new Element(((double) sum) / heightMap.length).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -400,8 +398,9 @@ public class dChunk implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
                         Integer.valueOf(attribute.getContext(1)) : 2;
-                int x = ((dChunk) object).chunk.getHandle().heightMap[0];
-                for (int i : ((dChunk) object).chunk.getHandle().heightMap) {
+                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                int x = heightMap[0];
+                for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {
                         return Element.FALSE.getAttribute(attribute.fulfill(1));
                     }
