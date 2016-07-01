@@ -58,7 +58,7 @@ public class SignCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify sign text!");
         }
 
-        // Default to SIGN_POST type
+        // Default to AUTOMATIC
         scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
     }
 
@@ -82,7 +82,7 @@ public class SignCommand extends AbstractCommand {
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
                 && sign.getType() != Material.SIGN_POST)) {
-            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST);
+            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST, false);
         }
         BlockState signState = sign.getState();
 
