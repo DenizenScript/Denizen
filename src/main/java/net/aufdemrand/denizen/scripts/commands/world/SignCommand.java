@@ -82,7 +82,7 @@ public class SignCommand extends AbstractCommand {
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
                 && sign.getType() != Material.SIGN_POST)) {
-            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST);
+            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST, false);
         }
         BlockState signState = sign.getState();
 
