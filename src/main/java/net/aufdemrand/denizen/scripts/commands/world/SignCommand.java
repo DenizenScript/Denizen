@@ -58,7 +58,7 @@ public class SignCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify sign text!");
         }
 
-        // Default to SIGN_POST type
+        // Default to AUTOMATIC
         scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
     }
 
