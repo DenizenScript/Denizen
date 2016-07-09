@@ -1,27 +1,20 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.bukkit.Bukkit;
+import org.json.simple.JSONAware;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -34,14 +27,11 @@ import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 
 public class HttpCommand extends AbstractCommand implements Holdable {
-    private final List<CloseableHttpResponse> responses = Lists.newCopyOnWriteArrayList();
+    private final List<Request> responses = Lists.newCopyOnWriteArrayList();
     @Override
     public void onDisable() {
-        for (CloseableHttpResponse response : responses) {
-            try {
-                response.close();
-            } catch (IOException e) {
-            }
+        for (Request response : responses) {
+            response.abort();
         }
         responses.clear();
     }
@@ -56,9 +46,12 @@ public class HttpCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("server", arg.asElement());
             }
             else if (!scriptEntry.hasObject("action")
-                    && arg.matches("get")) {
+                    && arg.matchesPrefix("get")) {
                 scriptEntry.addObject("action", new Element("GET"));
                 scriptEntry.addObject("server", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("json") && arg.matchesPrefix("json")) {
+                scriptEntry.addObject("json", arg.asElement());
             }
             else {
                 ((List<NameValuePair>) scriptEntry.getObject("args")).add(new BasicNameValuePair(arg.asElement().getPrefix(), arg.asElement().asString()));
@@ -77,6 +70,7 @@ public class HttpCommand extends AbstractCommand implements Holdable {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
         final Element action = scriptEntry.getElement("action");
         final Element server = scriptEntry.getElement("server");
+        final Element json = scriptEntry.getElement("json");
         final List<NameValuePair> args = (List<NameValuePair>) scriptEntry.getObject("args");
 
         dB.report(scriptEntry, getName(),
@@ -86,35 +80,31 @@ public class HttpCommand extends AbstractCommand implements Holdable {
         Bukkit.getScheduler().runTaskLaterAsynchronously(DenizenAPI.getCurrentInstance(), new Runnable() {
             @Override
             public void run() {
-                CloseableHttpClient client = HttpClients.createDefault();
-                HttpRequestBase req = action.asString().equals("POST") ? new HttpPost(server.asString())
-                        : new HttpGet(server.asString());
-                if (req instanceof HttpPost && !args.isEmpty()) {
+                Request req =  action.asString().equals("POST") ? Request.Post(server.asString())
+                        : Request.Get(server.asString());
+                if (json != null) {
                     try {
-                        ((HttpPost)req).setEntity(new UrlEncodedFormEntity(args));
-                    } catch (final Exception e) {
+                        Object jsonObj = new JSONParser().parse(json.asString());
+                        if (jsonObj instanceof JSONAware) {
+                            req.bodyString(((JSONAware) jsonObj).toJSONString(), ContentType.APPLICATION_JSON);
+                        }
+                    } catch (ParseException e) {
+                        reportExceptionLater(scriptEntry, e);
+                        return;
+                    }
+                } else if (!args.isEmpty()) {
+                    try {
+                        req.body(new UrlEncodedFormEntity(args));
+                    } catch (UnsupportedEncodingException e) {
                         reportExceptionLater(scriptEntry, e);
                         return;
                     }
                 }
                 try {
-                    CloseableHttpResponse response = client.execute(req);
-                    responses.add(response);
-                    try {
-                        HttpEntity ent = response.getEntity();
-                        InputStream stream = ent.getContent();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-                        try {
-                            scriptEntry.addObject("result", CharStreams.toString(reader));
-                        } finally {
-                            reader.close();
-                        }
-                        EntityUtils.consume(ent);
-                    } finally {
-                        response.close();
-                        responses.remove(response);
-                    }
-                } catch (final Exception e) {
+                    responses.add(req);
+                    scriptEntry.addObject("result", req.execute().returnContent().asString());
+                    responses.remove(req);
+                } catch (Exception e) {
                     reportExceptionLater(scriptEntry, e);
                     return;
                 }

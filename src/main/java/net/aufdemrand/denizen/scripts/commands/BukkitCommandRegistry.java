@@ -3297,7 +3297,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(SQLCommand.class,
                 "SQL", "sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>)/query:<query>/update:<update>]", 2);
 
-        registerCoreMember(HttpCommand.class, "http", "http [post:domain or get:domain] (args)", 1);
+        registerCoreMember(HttpCommand.class, "http", "http [post:domain or get:domain] (args or json:json string)", 1);
 
         // <--[command]
         // @Name Stand
