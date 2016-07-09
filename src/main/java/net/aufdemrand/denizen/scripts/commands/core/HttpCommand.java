@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,17 +92,8 @@ public class HttpCommand extends AbstractCommand implements Holdable {
                 if (req instanceof HttpPost && !args.isEmpty()) {
                     try {
                         ((HttpPost)req).setEntity(new UrlEncodedFormEntity(args));
-                    } catch (final UnsupportedEncodingException e) {
-                        Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            dB.echoError(scriptEntry.getResidingQueue(), "HTTP Exception: " + e.getMessage());
-                            scriptEntry.setFinished(true);
-                            if (dB.verbose) {
-                                dB.echoError(scriptEntry.getResidingQueue(), e);
-                            }
-                        }
-                    }, 1);
+                    } catch (final Exception e) {
+                        reportExceptionLater(scriptEntry, e);
                         return;
                     }
                 }
@@ -125,16 +115,7 @@ public class HttpCommand extends AbstractCommand implements Holdable {
                         responses.remove(response);
                     }
                 } catch (final Exception e) {
-                    Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            dB.echoError(scriptEntry.getResidingQueue(), "HTTP Exception: " + e.getMessage());
-                            scriptEntry.setFinished(true);
-                            if (dB.verbose) {
-                                dB.echoError(scriptEntry.getResidingQueue(), e);
-                            }
-                        }
-                    }, 1);
+                    reportExceptionLater(scriptEntry, e);
                     return;
                 }
                 Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -142,7 +123,20 @@ public class HttpCommand extends AbstractCommand implements Holdable {
                     public void run() {
                         scriptEntry.setFinished(true);
                         if (dB.verbose) {
-                            dB.echoDebug(scriptEntry, "Connecting errored!");
+                            dB.echoDebug(scriptEntry, "Got a result of " + scriptEntry.getObject("result"));
+                        }
+                    }
+                }, 1);
+            }
+
+            public void reportExceptionLater(final ScriptEntry scriptEntry, final Exception e) {
+                Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        dB.echoError(scriptEntry.getResidingQueue(), "HTTP Exception: " + e.getMessage());
+                        scriptEntry.setFinished(true);
+                        if (dB.verbose) {
+                            dB.echoError(scriptEntry.getResidingQueue(), e);
                         }
                     }
                 }, 1);
