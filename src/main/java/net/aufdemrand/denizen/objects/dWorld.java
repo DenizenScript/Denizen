@@ -908,6 +908,19 @@ public class dWorld implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dWorld
+        // @name save
+        // @input None
+        // @description
+        // Saves the world to file.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("save")) {
+            getWorld().save();
+        }
+
+        // <--[mechanism]
+        // @object dWorld
         // @name destroy
         // @input None
         // @description
