@@ -75,6 +75,11 @@ public class LogCommand extends AbstractCommand {
         String directory = URLDecoder.decode(System.getProperty("user.dir"));
         File file = new File(directory, fileName.asString());
 
+        if (file.getAbsolutePath().replace('\\', '/').contains("Denizen/scripts")) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Cannot log into the scripts folder!");
+            return;
+        }
+
         String output = TagManager.cleanOutputFully(message.asString());
 
         file.getParentFile().mkdirs();

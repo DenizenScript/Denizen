@@ -295,9 +295,12 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         }
                         File fileObj = new File(DenizenAPI.getCurrentInstance().
                                 getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        if (fileObj.getAbsolutePath().replace('\\', '/').contains("Denizen/scripts")) {
+                            dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit the scripts folder!");
+                            return;
+                        }
                         fileObj.getParentFile().mkdirs();
-                        FileWriter fw = new FileWriter(DenizenAPI.getCurrentInstance()
-                                .getDataFolder().getAbsolutePath() + "/" + filename.asString());
+                        FileWriter fw = new FileWriter(fileObj.getAbsoluteFile());
                         BufferedWriter writer = new BufferedWriter(fw);
                         writer.write(yamls.get(id).saveToString());
                         writer.close();
