@@ -1276,7 +1276,7 @@ public class dPlayer implements dObject, Adjustable {
             if (ban == null) {
                 return null;
             }
-            else if (ban.getExpiration().before(new Date())) {
+            else if (ban.getExpiration() != null && ban.getExpiration().before(new Date())) {
                 return null;
             }
             // <--[tag]
@@ -1284,8 +1284,9 @@ public class dPlayer implements dObject, Adjustable {
             // @returns Duration
             // @description
             // Returns the expiration of the player's ban, if they are banned.
+            // Potentially can be null.
             // -->
-            if (attribute.startsWith("expiration")) {
+            if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
                 return new Duration(ban.getExpiration().getTime() / 50)
                         .getAttribute(attribute.fulfill(1));
             }

@@ -99,8 +99,12 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public dItem getItemInHand() {
-        if (isLivingEntity()) {
-            return new dItem(getLivingEntity().getEquipment().getItemInHand().clone());
+        if (isLivingEntity() && getLivingEntity().getEquipment() != null) {
+            ItemStack its = getLivingEntity().getEquipment().getItemInHand();
+            if (its == null) {
+                return null;
+            }
+            return new dItem(its.clone());
         }
         return null;
     }

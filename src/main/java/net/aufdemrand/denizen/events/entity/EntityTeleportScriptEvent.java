@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTeleportEvent;
@@ -148,6 +149,9 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @EventHandler
     public void onEntityTeleports(EntityTeleportEvent event) {
+        if (event.getEntity() instanceof Player) {
+            return;
+        }
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         entity = new dEntity(event.getEntity());

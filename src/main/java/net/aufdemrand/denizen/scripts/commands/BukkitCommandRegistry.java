@@ -3071,7 +3071,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Sign
-        // @Syntax sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+        // @Syntax sign (type:{automatic}/sign_post/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
         // @Required 1
         // @Stable stable
         // @Short Modifies a sign.
@@ -3079,8 +3079,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         // @Description
         // TODO: Document Command Details
-        // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
-        // If there is not already a sign there, defaults to a sign_post.
         // @Tags
         // <l@location.block.sign_contents>
         // @Usage

@@ -580,7 +580,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // -->
         if (attribute.startsWith("base_color")) {
-            DyeColor color = ((Banner) getBlock()).getBaseColor();
+            DyeColor color = ((Banner) getBlock().getState()).getBaseColor();
             return new Element(color != null ? color.name() : "BLACK").getAttribute(attribute.fulfill(1));
         }
 
@@ -634,7 +634,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("patterns")) {
             dList list = new dList();
-            for (org.bukkit.block.banner.Pattern pattern : ((Banner) getBlock()).getPatterns()) {
+            for (org.bukkit.block.banner.Pattern pattern : ((Banner) getBlock().getState()).getPatterns()) {
                 list.add(pattern.getColor().name() + "/" + pattern.getPattern().name());
             }
             return list.getAttribute(attribute.fulfill(1));

@@ -105,6 +105,9 @@ Commands:
         # Whether the YAML command is allowed to save outside the minecraft folder.
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
+  Webget:
+        # Whether to allow scripts to read arbitrary data from the web, which can also enable tracking of your private server data.
+        Allow: false
     # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
     # Otherwise, a bad script or plugin could potentially damage things
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
@@ -126,4 +129,4 @@ Tags:
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 11
+  Version: 12

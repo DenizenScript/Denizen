@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldSmartEvent;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -105,9 +106,10 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
     // <context.cuboids> returns a list of cuboids entered/exited (when no cuboid is specified in the event name).
+    // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, LEAVE, TELEPORT
     //
     // @Determine
-    // "CANCELLED" to stop the player from moving.
+    // "CANCELLED" to stop the player from moving, if cause is WALK or TELEPORT.
     //
     //
     // -->
@@ -117,7 +119,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
             return;
         }
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), event.getFrom(), event.getTo());
-        playerMoveEvent(evt);
+        internalRun(evt, "teleport");
         if (evt.isCancelled()) {
             event.setCancelled(true);
         }
@@ -131,7 +133,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         double pos = 10000000d;
         PlayerMoveEvent pme = new PlayerMoveEvent(event.getPlayer(), event.getPlayer().getLocation(),
                 new Location(event.getPlayer().getWorld(), pos, pos, pos));
-        playerMoveEvent(pme);
+        internalRun(pme, "leave");
     }
 
     @EventHandler
@@ -142,7 +144,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         double pos = 10000000d;
         PlayerMoveEvent pme = new PlayerMoveEvent(event.getPlayer(),
                 new Location(event.getPlayer().getWorld(), pos, pos, pos), event.getPlayer().getLocation());
-        playerMoveEvent(pme);
+        internalRun(pme, "join");
     }
 
     public void onWorldChange(PlayerChangedWorldEvent event) {
@@ -153,11 +155,15 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         Location from = event.getPlayer().getLocation().clone();
         from.setWorld(event.getFrom());
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), from, to);
-        playerMoveEvent(evt);
+        internalRun(evt, "world_change");
     }
 
     @EventHandler
     public void playerMoveEvent(PlayerMoveEvent event) {
+        internalRun(event, "walk");
+    }
+
+    public void internalRun(PlayerMoveEvent event, String cause) {
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
@@ -191,12 +197,12 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 for (dCuboid cuboid : exits) {
                     cuboid_context.add(cuboid.identify());
                 }
-                if (Fire(event, cuboid_context, "player exits notable cuboid")) {
+                if (Fire(event, cuboid_context, "player exits notable cuboid", cause)) {
                     return;
                 }
             }
             for (dCuboid cuboid : exits) {
-                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple())) {
+                if (Fire(event, new dList(cuboid.identify()), "player exits " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }
@@ -208,12 +214,12 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
                 for (dCuboid cuboid : enters) {
                     cuboid_context.add(cuboid.identify());
                 }
-                if (Fire(event, cuboid_context, "player enters notable cuboid")) {
+                if (Fire(event, cuboid_context, "player enters notable cuboid", cause)) {
                     return;
                 }
             }
             for (dCuboid cuboid : enters) {
-                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple())) {
+                if (Fire(event, new dList(cuboid.identify()), "player enters " + cuboid.identifySimple(), cause)) {
                     return;
                 }
             }
@@ -225,12 +231,13 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     /**
      * Fires world events for the Cuboid Enter/Exit Smart Event.
      */
-    private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName) {
+    private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName, String cause) {
         List<String> events = new ArrayList<String>();
         Map<String, dObject> context = new HashMap<String, dObject>();
         context.put("from", new dLocation(event.getFrom()));
         context.put("to", new dLocation(event.getTo()));
         context.put("cuboids", cuboids);
+        context.put("cause", new Element(cause));
         events.add(EventName);
 
         String determination = BukkitWorldScriptHelper.doEvents(events,

@@ -213,6 +213,11 @@ public class Settings {
                 .getInt("Commands.While.Max loops", 10000);
     }
 
+    public static boolean allowWebget() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Webget.Allow", false);
+    }
+
     public static boolean allowDelete() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Delete.Allow file deletion", true);

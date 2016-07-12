@@ -263,7 +263,7 @@ import java.util.logging.Logger;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
-    public final static int configVersion = 11;
+    public final static int configVersion = 12;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -1602,6 +1602,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public Thread getMainThread() {
         return net.minecraft.server.v1_10_R1.MinecraftServer.getServer().primaryThread;
+    }
+
+    @Override
+    public boolean allowedToWebget() {
+        return Settings.allowWebget();
     }
 }
 

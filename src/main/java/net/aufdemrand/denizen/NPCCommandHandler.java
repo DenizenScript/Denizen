@@ -666,7 +666,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "health --set # (-r)",
             desc = "Sets the max health for an NPC.", modifiers = {"health", "he", "hp"},
-            min = 1, max = 3, permission = "denizen.npc.health")
+            min = 1, max = 3, permission = "denizen.npc.health", flags = "sra")
     @Requirements(selected = true, ownership = true)
     public void health(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(HealthTrait.class)) {
