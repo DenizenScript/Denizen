@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -295,11 +296,11 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         }
                         File fileObj = new File(DenizenAPI.getCurrentInstance().
                                 getDataFolder().getAbsolutePath() + "/" + filename.asString());
-                        if (fileObj.getAbsolutePath().replace('\\', '/').contains("Denizen/scripts")) {
-                            dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit the scripts folder!");
+                        fileObj.getParentFile().mkdirs();
+                        if (!Utilities.isSafeFile(fileObj)) {
+                            dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                             return;
                         }
-                        fileObj.getParentFile().mkdirs();
                         FileWriter fw = new FileWriter(fileObj.getAbsoluteFile());
                         BufferedWriter writer = new BufferedWriter(fw);
                         writer.write(yamls.get(id).saveToString());
