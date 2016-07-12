@@ -93,6 +93,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         if (dItem.matches(determination)) {
             result = dItem.valueOf(determination);
             resultChanged = true;
+            return true;
         }
 
         return super.applyDetermination(container, determination);
