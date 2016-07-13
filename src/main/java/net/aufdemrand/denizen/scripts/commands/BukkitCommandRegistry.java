@@ -2701,7 +2701,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Run
-        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
+        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.

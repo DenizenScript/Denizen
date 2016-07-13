@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -10,11 +11,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Difficulty;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -925,10 +922,15 @@ public class dWorld implements dObject, Adjustable {
         // @input None
         // @description
         // Unloads the world from the server without saving chunks, then destroys all data that is part of the world.
+        // Require config setting 'Commands.Delete.Allow file deletion'.
         // @tags
         // None
         // -->
         if (mechanism.matches("destroy")) {
+            if (!Settings.allowDelete()) {
+                dB.echoError("Unable to delete due to config.");
+                return;
+            }
             File folder = new File(getWorld().getName());
             Bukkit.getServer().unloadWorld(getWorld(), false);
             try {
