@@ -402,6 +402,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                                     dB.echoDebug(scriptEntry, "Remove ind: " + index);
                                 }
                                 list.remove(index);
+                                yaml.set(keyStr, list);
                             }
                             else {
                                 if (dB.verbose) {
