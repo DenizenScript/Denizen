@@ -37,7 +37,7 @@ public class BlockLight {
         Method pcm = null;
         Field dcf = null;
         try {
-            pcm = PlayerChunkMap.class.getDeclaredMethod("a", int.class, int.class, boolean.class);
+            pcm = PlayerChunkMap.class.getDeclaredMethod("c", int.class, int.class);
             pcm.setAccessible(true);
             dcf = pcm.getReturnType().getDeclaredField("dirtyCount");
             dcf.setAccessible(true);
@@ -210,7 +210,7 @@ public class BlockLight {
 
     private static Object getPlayerChunk(PlayerChunkMap map, int x, int z) {
         try {
-            return playerChunkMethod.invoke(map, x, z, false);
+            return playerChunkMethod.invoke(map, x, z);
         }
         catch (Exception e) {
             dB.echoError(e);
