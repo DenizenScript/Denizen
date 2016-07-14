@@ -208,16 +208,24 @@ public class RunCommand extends AbstractCommand implements Holdable {
             queue = InstantQueue.getQueue(id).addEntries(entries);
         }
         else {
-            queue = TimedQueue.getQueue(id).addEntries(entries);
 
             if (scriptEntry.hasObject("speed")) {
                 Duration speed = scriptEntry.getdObject("speed");
-                ((TimedQueue) queue).setSpeed(speed.getTicks());
+                queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(speed.getTicks());
             }
             else {
                 // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
                 if (script != null && script.getContainer().contains("SPEED")) {
-                    ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks());
+                    long ticks = Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks();
+                    if (ticks > 0) {
+                        queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(ticks);
+                    }
+                    else {
+                        queue = InstantQueue.getQueue(id).addEntries(entries);
+                    }
+                }
+                else {
+                    queue = TimedQueue.getQueue(id).addEntries(entries);
                 }
             }
 
