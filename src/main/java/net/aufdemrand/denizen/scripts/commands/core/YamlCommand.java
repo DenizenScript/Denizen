@@ -401,6 +401,7 @@ public class YamlCommand extends AbstractCommand implements Listener {
                                 yaml.set(keyStr, list);
                                 break;
                             }
+                            break;
                         }
                         case SPLIT: {
                             List<String> list = yaml.getStringList(keyStr);
