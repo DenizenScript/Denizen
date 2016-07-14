@@ -138,6 +138,11 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
 
+            else if (!scriptEntry.hasObject("speed") && arg.matchesPrefix("speed")
+                    && arg.matchesArgumentType(Duration.class)) {
+                scriptEntry.addObject("speed", arg.asType(Duration.class));
+            }
+
             else if (!scriptEntry.hasObject("path")) {
                 scriptEntry.addObject("path", arg.asElement());
             }
@@ -167,7 +172,8 @@ public class RunCommand extends AbstractCommand implements Holdable {
                         + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : "")
                         + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : "")
                         + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : "")
-                        + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug() : ""));
+                        + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug() : "")
+                        + (scriptEntry.hasObject("speed") ? scriptEntry.getdObject("speed").debug() : ""));
 
         // Get the script
         dScript script = scriptEntry.getdObject("script");
@@ -202,11 +208,25 @@ public class RunCommand extends AbstractCommand implements Holdable {
             queue = InstantQueue.getQueue(id).addEntries(entries);
         }
         else {
-            queue = TimedQueue.getQueue(id).addEntries(entries);
 
-            // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
-            if (script != null && script.getContainer().contains("SPEED")) {
-                ((TimedQueue) queue).setSpeed(Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks());
+            if (scriptEntry.hasObject("speed")) {
+                Duration speed = scriptEntry.getdObject("speed");
+                queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(speed.getTicks());
+            }
+            else {
+                // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
+                if (script != null && script.getContainer().contains("SPEED")) {
+                    long ticks = Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks();
+                    if (ticks > 0) {
+                        queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(ticks);
+                    }
+                    else {
+                        queue = InstantQueue.getQueue(id).addEntries(entries);
+                    }
+                }
+                else {
+                    queue = TimedQueue.getQueue(id).addEntries(entries);
+                }
             }
 
         }
