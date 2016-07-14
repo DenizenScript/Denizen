@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -344,9 +344,15 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     int index = -1;
                     if (key.asString().contains("[")) {
                         try {
+                            if (dB.verbose) {
+                                dB.echoDebug(scriptEntry, "Try index: " + key.asString().split("\\[")[1].replace("]", ""));
+                            }
                             index = Integer.valueOf(key.asString().split("\\[")[1].replace("]", "")) - 1;
                         }
                         catch (Exception e) {
+                            if (dB.verbose) {
+                                dB.echoError(scriptEntry.getResidingQueue(), e);
+                            }
                             index = -1;
                         }
                         key = Element.valueOf(key.asString().split("\\[")[0]);
@@ -386,12 +392,21 @@ public class YamlCommand extends AbstractCommand implements Listener {
                         case REMOVE: {
                             List<String> list = yaml.getStringList(keyStr);
                             if (list == null) {
+                                if (dB.verbose) {
+                                    dB.echoDebug(scriptEntry, "List null!");
+                                }
                                 break;
                             }
                             if (index > -1 && index < list.size()) {
+                                if (dB.verbose) {
+                                    dB.echoDebug(scriptEntry, "Remove ind: " + index);
+                                }
                                 list.remove(index);
                             }
                             else {
+                                if (dB.verbose) {
+                                    dB.echoDebug(scriptEntry, "Remvoe value: " + valueStr);
+                                }
                                 for (int i = 0; i < list.size(); i++) {
                                     if (list.get(i).equalsIgnoreCase(valueStr)) {
                                         list.remove(i);
