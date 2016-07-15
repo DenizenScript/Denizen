@@ -1699,19 +1699,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Heals the player or list of entities.
         // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Group entity
+        //
         // @Description
         // This command heals a player, list of players, entity or list of entities. If no amount is specified it will
         // heal the specified player(s)/entity(s) fully.
+        //
         // @Tags
         // <e@entity.health>
+        //
         // @Usage
-        // Use to fully heal a player
+        // Use to fully heal a player.
         // - heal
+        //
         // @Usage
-        // Use to heal a player 5 hearts
+        // Use to heal a player 5 hearts.
         // - heal 10
+        //
         // @Usage
-        // Use to heal a player by the name of Morphan1 fully
+        // Use to heal a player by the name of Morphan1 fully.
         // - heal p@Morphan1
         // -->
         registerCoreMember(HealCommand.class,
@@ -1726,6 +1731,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Changes the target's maximum health.
         // @Author mcmonkey
         // @Group entity
+        //
         // @Description
         // Use this command to modify an entity's maximum health. If the target is an NPC,
         // you can use the 'state' argument to enable, disable, or toggle the Health trait
@@ -1735,19 +1741,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // other living entity, such as a player or mob.
         // Additionally, you may input a list of entities, each one will calculate the effects
         // explained above.
+        //
         // @Tags
         // <e@entity.health>
         // <e@entity.health.max>
         // <n@npc.has_trait[health]>
+        //
         // @Usage
         // Use to set the NPC's maximum health to 50.
         // - health 50
+        //
         // @Usage
         // Use to disable tracking of health value on the NPC.
         // - health state:false
+        //
         // @Usage
         // Use to change a player's health limit to 50.
         // - health <player> 50
+        //
         // @Usage
         // Use to change a list of entities' health limits all to 50.
         // - health <player.location.find.living_entities.within[10]> 50
@@ -1764,6 +1775,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Hurts the player or a list of entities.
         // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Group entity
+        //
         // @Description
         // Does damage to a list of entities, or to any single entity.
         //
@@ -1780,14 +1792,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Optionally, specify a damage cause to fire a proper damage event with the given cause,
         // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
         // than using the raw damage input number. See <@link language damage cause> for damage causes.
+        //
         // @Tags
         // <e@entity.health>
+        //
         // @Usage
         // Use to hurt the player for 1 HP.
         // - hurt
+        //
         // @Usage
         // Use to hurt the NPC for 5 HP.
         // - hurt 5 <npc>
+        //
         // @Usage
         // Use to cause the player to hurt the NPC for all its health (if unarmored).
         // - hurt <npc.health> <npc> cause:CUSTOM source:<player>
@@ -1804,6 +1820,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Edits the inventory of a player, NPC, or chest.
         // @Author David Cernat, Morphan1
         // @Group item
+        //
         // @Description
         // Use this command to edit the state of inventories. By default, the destination inventory
         // is the current attached player's inventory. If you are copying, swapping, removing from
@@ -1813,28 +1830,35 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Using "open", "clear", or "update" only require a destination. "Update" also requires the
         // destination to be a valid player inventory.
         // Using "close" closes any inventory that the currently attached player has opened.
+        //
         // @Tags
         // <p@player.inventory>
         // <p@player.enderchest>
         // <n@npc.inventory>
         // <l@location.inventory>
+        //
         // @Usage
         // Use to open a chest inventory, at a location.
         // - inventory open d:l@123,123,123,world
+        //
         // @Usage
         // Use to open a virtual inventory with a title and some items.
         // - inventory open d:in@generic[size=27;title=BestInventory;contents=li@i@snow_ball|i@clay_brick]
+        //
         // @Usage
         // Use to open another player's inventory.
         // - inventory open d:<p@calico-kid.inventory>
+        //
         // @Usage
         // Use to remove all items from a chest, except any items in
         // the specified list.
         // - inventory keep d:in@location[holder=l@123,123,123,world] o:li@i@snow_ball|i@ItemScript
+        //
         // @Usage
         // Use to remove items specified in a chest from the current
         // player's inventory, regardless of the item count.
         // - inventory exclude origin:l@123,123,123,world
+        //
         // @Usage
         // Use to swap two players' inventories.
         // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
@@ -1852,10 +1876,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1871,15 +1898,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Makes an NPC or entity go invisible (Note: use '/npc playerlist' to make it work on NPCs!)
         // @Author aufdemrand, mcmonkey
         // @Group entity
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
+
 
         // <--[command]
         // @Name kick
@@ -1889,23 +1920,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Kicks a player from the server.
         // @Author Fortifier42
         // @Group player
+        //
         // @Description
         // Kick a player or a list of players from the server and optionally specify a reason.
         // If no reason is specified it defaults to "Kicked."
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to kick the player with the default reason.
         // - kick <player>
+        //
         // @Usage
         // Use to kick the player with a reason.
         // - kick <player> "reason:Because I can."
+        //
         // @Usage
         // Use to kick another player with a reason.
         // - kick p@mcmonkey4eva "reason:Because I can."
         // -->
         registerCoreMember(KickCommand.class,
                 "KICK", "kick [<player>|...] (reason:<text>)", 1);
+
 
         // <--[command]
         // @Name Leash
@@ -1915,17 +1952,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Sticks a leash on target entity, held by a fence post or another entity.
         // @Author Alain Blanquet, mcmonkey
         // @Group entity
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <e@entity.is_leashed>
         // <e@entity.get_leash_holder>
+        //
         // @Usage
         // Use to attach hold an entity in hand.
         // - leash <npc> holder:<player>
+        //
         // @Usage
         // Use to attach an entity to a fence post.
         // - leash <npc> holder:<player.location.cursor_on>
+        //
         // @Usage
         // Use to release an entity.
         // - leash cancel <npc>
@@ -1942,17 +1984,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Creates a light source at the location with a specified brightness.
         // @Author Morphan1
         // @Group world
+        //
         // @Description
         // This command can create and reset a light source at a specified location, regardless of the type
         // of block. It will be shown to all players near the location until it is reset.
         // The brightness must be between 0 and 15, inclusive.
         // Optionally, specify the amount of time the light should exist before being removed.
+        //
         // @Tags
         // <l@location.light>
         // <l@location.light.blocks>
+        //
         // @Usage
         // Use to create a bright light at a noted location.
         // - light l@MyFancyLightOfWool 15
+        //
         // @Usage
         // Use to reset the brightness of the location to its original state.
         // - light l@MyFancyLightOfWool reset
@@ -1970,7 +2016,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Listens for the player achieving various actions and runs a script when they are completed.
         // @Author aufdemrand, Jeebiss
         // @Group player
-
+        //
         // @Description
         // This will create a listener object that listens for when the player does specific actions,
         // and when the player has done the action enough times, this will run a specified script. Used
@@ -1990,29 +2036,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Travel - Used to detect when a player travels to an npc, to a specific location, into an area, or a specific distance.
         //
         // Detailed usage information can be found in the specific listener files.
-
+        //
         // @Tags
         // TODO: Document Command Details
-
+        //
         // @Usage
         // Use to listen for when the player kills 10 zombies.
         // - listen kill type:entity target:zombie quantity:10 script:ZombiesKilled
-
+        //
         // @Usage
         // Use to listen for when the player kills 3 zombies named "Boss"
         // - listen kill type:entity target:zombie quantity:3 mobnames:Boss script:ZombiesKilled
-
+        //
         // @Usage
         // Use to listen for when a player mines 1 iron ore.
         // - listen block type:break block:iron_ore quantity:1 script:IronMined
-
+        //
         // @Usage
         // Use to listen for when a player crafts 1 wooden sword.
         // - listen item type:craft item:wood_sword quantity:1 script:SwordCrafted
-
+        //
         // @Usage
         // Use to... (TODO: Itemdrop)
-
+        //
         // @Usage
         // Use to listen for when a player walks for 150 blocks.
         // - listen travel type:distance distance:150 script:DistanceTraveled
@@ -2029,6 +2075,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Logs some debugging info to a file.
         // @Author SpaceEmotion, mcmonkey
         // @Group core
+        //
         // @Description
         // This is a quick and simple way to store debugging information for admins to read.
         // You just input a file name and some text, and it will store that information in the file
@@ -2045,20 +2092,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Warning: Remember that file operations are dangerous! A typo in the filename could ruin your server.
         // It's recommended you use this command minimally.
+        //
         // @Tags
         // None.
+        //
         // @Usage
         // Use to log some information to a file.
         // - log "Security breach on level 3!" type:severe file:securitylog.txt
+        //
         // @Usage
         // Use to log a player's name and location when they did something dangerous.
         // - log "<player.name> used the '/EXPLODE' command at <player.location.simple>!" type:warning file:security.log
+        //
         // @Usage
         // Use to write information directly to a file.
         // - log "This won't have a date or type" type:none file:example.log
+        //
         // @Usage
         // Use to clear a log file and write some text at the start.
         // - log "// Log File Generated by my Denizen script, do not edit!" type:clear file:myfile.log
+        //
         // @Usage
         // Use to clear a log file entirely.
         // - log "" type:clear file:myfile.log
@@ -2075,16 +2128,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes the NPC or other entity to look at a target location.
         // @Author aufdemrand, mcmonkey
         // @Group entity
+        //
         // @Description
         // Makes the entity look towards the location, can be used on players. If a duration is set, the entity cannot
         // look away from the location until the duration has expired unless they are forces to look at a different
         // location.
+        //
         // @Tags
         // <l@location.yaw>
         // <l@location.pitch>
+        //
         // @Usage
         // Use to point an npc towards a spot.
         // - look <npc> <player.location>
+        //
         // @Usage
         // Use to force a player to stare at a spot for some time.
         // - look <player> <npc.location> duration:10s
@@ -2101,7 +2158,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Interacts with a NPCs 'lookclose' trait as provided by Citizens2.
         // @Author aufdemrand
         // @Group npc
-
+        //
         // @Description
         // Use this command with any NPC to alter the state and options of its 'lookclose'
         // trait. When a NPC's 'lookclose' trait is toggled to true, the NPC's head will
@@ -2109,15 +2166,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // and detection of players, while taking into account 'line-of-sight', however can
         // use more CPU cycles. You may also specify a range integer to specify the number
         // of blocks that will trigger the NPC's attention.
-
+        //
         // @Usage
         // Use to cause the NPC to begin looking at nearby players.
         // - lookclose true <npc>
-
+        //
         // @Usage
         // Use to cause the NPC to stop looking at nearby players.
         // - lookclose false <npc>
-
+        //
         // @Usage
         // Change up the range and make the NPC more realistic
         // - lookclose true range:10 realistic
@@ -2136,7 +2193,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Modifies a new or existing map by adding images or text.
         // @Author Morphan1
         // @Group item
-
+        //
         // @Description
         // This command modifies an existing map, or creates a new one. Using this will override existing
         // non-Denizen map renderers with Denizen's custom map renderer.
@@ -2146,19 +2203,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // The file path is relative to the '../plugins/Denizen/' folder.
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
         // Custom maps do not persist over restarts.
-
+        //
         // @Usage
         // Use to add an auto-resized background image to map 3
         // - map 3 image:my_map_images/my_background.png resize
-
+        //
         // @Usage
         // Use to add an image with the top-left corner at the center of a new map
         // - map new:w@world image:my_map_images/my_center_image.png x:64 y:64
-
+        //
         // @Usage
         // Use to add some text to map 0
         // - map 0 "text:Hello World!" x:35 y:60
-
+        //
         // @Usage
         // Reset map to have the center at the player's location
         // - map 3 reset:<player.location>
@@ -2174,7 +2231,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
         // @Author David Cernat
         // @Group world
-
+        //
         // @Description
         // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
         // must be a valid midi file with the extension '.mid'. It will continuously play the song as
@@ -2183,22 +2240,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
         // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions
-
+        //
         // @Tags
         // None
-
+        //
         // @Usage
         // Use to play a midi song file on the current player.
         // - midi file:Denizen
-
+        //
         // @Usage
         // Use to play a midi song file at a given location.
         // - midi file:Denizen <player.location>
-
+        //
         // @Usage
         // Use to play a midi song file at a given location to the specified player(s), and wait for it to finish.
         // - ~midi file:Denizen <server.list_online_players>
-
         // -->
         registerCoreMember(MidiCommand.class,
                 "MIDI", "midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)", 1);
@@ -2213,26 +2269,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author Fortifier42
         // @Group player
         // @Plugin Vault
+        //
         // @Description
         // Give money to, take money from, and set the balance of a player.
         // If no quantity is specified it defaults to '1'. You can specify a list of
         // players to give to or take from. If no player(s) are specified defaults to the attached player.
         // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
+        //
         // @Tags
         // <p@player.money>
-
+        //
         // @Usage
         // Use to give 1 money to the player.
         // - money give
-
+        //
         // @Usage
         // Use to take 10 money from a player.
         // - money take quantity:10 from:p@mcmonkey4eva
-
+        //
         // @Usage
         // Use to give all players on the server 100 money.
         // - money give quantity:100 to:<server.list_players>
-
+        //
         // @Usage
         // Use to set the money of all online players to 250.
         // - money set quantity:250 players:<server.list_online_players>
@@ -2251,22 +2309,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Mounts one entity onto another.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // Mounts an entity onto another as though in a vehicle. Can be used to force a player into a vehicle or to
         // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
         // spawned. Accepts a location, which the entities will be teleported to on mounting.
+        //
         // @Tags
         // <e@entity.vehicle>
         // <e@entity.inside_vehicle>
+        //
         // @Usage
         // Use to mount an NPC on top of a player.
         // - mount <npc>|<player>
+        //
         // @Usage
         // Use to spawn a mutant pile of mobs.
         // - mount cow|pig|sheep|chicken
+        //
         // @Usage
         // Use to place a diamond block above a player's head.
         // - mount falling_block,diamond_block|<player>
+        //
         // @Usage
         // Use to force an entity in a vehicle.
         // - mount <player>|boat
@@ -2283,6 +2347,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Modifies blocks.
         // @Author Jeebiss, aufdemrand, mcmonkey
         // @Group world
+        //
         // @Description
         // Changes blocks in the world based on the criteria given. Specifying no radius/height/depth will result
         // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
@@ -2294,17 +2359,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Note that specify a list of locations will take more time in parsing than in the actual block modification.
         // Optionally, specify a script to be ran after the delayed edits finish. (Doesn't fire if delayed is not set.)
         // This command is ~holdable.
+        //
         // @Tags
-        // <l@location.block.material>
+        // <l@location.block.material
+        //
         // @Usage
         // Use to change the block a player is looking at to stone.
         // - modifyblock <player.location.cursor_on> stone
+        //
         // @Usage
         // Use to modify an entire cuboid to half stone, half dirt.
         // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt
+        //
         // @Usage
         // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
         // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt li@25|25
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2320,22 +2390,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Shows some text to the player.
         // @Author aufdemrand
         // @Group player
+        //
         // @Description
         // Prints some text into the target's chat area. If no target is specified it will default to the attached player
         // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
         // format script.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to narrate text to the player.
         // - narrate "Hello World!"
+        //
         // @Usage
         // Use to narrate text to a list of players.
         // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
         // -->
         registerCoreMember(NarrateCommand.class,
                 "NARRATE", "narrate [<text>] (targets:<player>|...) (format:<name>)", 1);
-
 
 
         // <--[command]
@@ -2346,19 +2419,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Sets the value of an item's NBT key.
         // @Author Morphan1
         // @Group item
+        //
         // @Description
         // Edits an NBT key on an item and the edited item to the 'new_item' entry tag.
         // This can be useful for storing hidden information on items.
+        //
         // @Tags
         // <entry[saveName].new_item>
+        //
         // @Usage
         // Use to set a hidden value on an item and give it to  a player.
         // - nbt i@snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
         // - give <entry[SnowballOfDeath].new_item>
+        //
         // @Usage
         // Use to edit the NBT of a player's item in hand.
         // - nbt <player.item_in_hand> "MyCustomNBT.Owner:<player>" "save:edited"
         // - inventory set "slot:<player.item_in_hand.slot>" "o:<entry[edited].new_item>"
+        //
         // @Usage
         // Use to remove an NBT tag from a player's item in hand.
         // - nbt <player.item_in_hand> "MyCustomNBT.Owner:!" "save:item"
@@ -2376,20 +2454,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Adds or removes a notable object.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <server.list_notables[<type>]>
         // <cu@cuboid.notable_name>
         // <in@inventory.notable_name>
         // <i@item.notable_name>
         // <l@location.notable_name>
+        //
         // @Usage
         // Use to add a notable cuboid.
         // - note cu@1,2,3,world|4,5,6,world as:mycuboid
+        //
         // @Usage
         // Use to remove a notable cuboid.
         // - note remove as:mycuboid
+        //
         // @Usage
         // Use to note a location.
         // - note l@10,5,10,world as:mylocation
@@ -2406,14 +2489,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Gives or takes breath from the player.
         // @Author David Cernat
         // @Group player
+        //
         // @Description
-        // Used to add to, remove from or set the amount of oxygen of a player. Also allows for the changing of the
-        // player's maximum oxygen level.
+        // Used to add to, remove from or set the amount of current oxygen of a player. Also allows for the changing of the
+        // player's maximum oxygen level. Value is in ticks, so 30 equals to 1 bubble.
+        //
         // @Tags
         // <p@player.oxygen>
         // <p@player.oxygen.max>
+        //
         // @Usage
-        // TODO: Document Command Details
+        // Use to set the player's current oxygen level to 5 bubbles.
+        // - oxygen 150
+        //
+        // @Usage
+        // Use to add 1 bubble to the player's current oxygen level.
+        // - oxygen 30 mode:add
+        //
+        // @Usage
+        // Use to set the player's maximum oxygen level to 20 bubbles.
+        // - oxygen 600 type:maximum
         // -->
         registerCoreMember(OxygenCommand.class,
                 "OXYGEN", "oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)", 1);
@@ -2427,16 +2522,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
         // @Author aufdemrand
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.navigator.is_navigating>
+        //
         // @Usage
         // Use to pause an NPC's waypoint navigation indefinitely.
+        //
         // @Usage
         // - pause waypoints
         // Use to pause an NPC's goal activity temporarily.
         // - pause activity 1m
+        //
         // @Usage
         // Use to pause an NPC's waypoint navigation and then resume it.
         // - pause waypoints
@@ -2451,16 +2551,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
         // @Author aufdemrand
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.navigator.is_navigating>
+        //
         // @Usage
         // Use to pause an NPC's waypoint navigation indefinitely.
+        //
         // @Usage
         // - pause waypoints
         // Use to pause an NPC's goal activity temporarily.
         // - pause activity 1m
+        //
         // @Usage
         // Use to pause an NPC's waypoint navigation and then resume it.
         // - pause waypoints
