@@ -828,7 +828,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
+                // <--[command]
         // @Name CreateWorld
         // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
         // @Required 1
@@ -836,6 +836,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Creates a new world, or loads an existing world.
         // @Author aufdemrand, mcmonkey
         // @Group world
+        //
         // @Description
         // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
         // TODO: Document Command Details (generator)
@@ -846,14 +847,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // mountain-like terrain).
         // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // Optionally, specify an existing world to copy files from.
+        //
         // @Tags
         // <server.list_worlds>
+        //
         // @Usage
         // Use to create a normal world with name 'survival'
         // - createworld survival
+        //
         // @Usage
         // Use to create a flat world with the name 'superflat'
         // - createworld superflat worldtype:FLAT
+        //
         // @Usage
         // Use to create an end world with the name 'space'
         // - createworld space environment:THE_END
@@ -870,19 +875,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
         // @Author mcmonkey
         // @Group npc
-
+        //
         // @Description
         // This command will temporarily despawn either the linked NPC or
         // a list of other NPCs. Despawning means they are no longer visible
         // or interactable, but they still exist and can be respawned.
-
+        //
         // @Tags
         // <n@npc.is_spawned>
-
+        //
         // @Usage
         // Use to despawn the linked NPC.
         // - despawn
-
+        //
         // @Usage
         // Use to despawn several NPCs.
         // - despawn <npc>|<player.selected_npc>|n@32
@@ -901,7 +906,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
         // @Group npc
-
+        //
         // @Description
         // Re-enables any toggled triggers that have been disabled by disengage. Using
         // disengage inside scripts must have a NPC to reference, or one may be specified
@@ -942,22 +947,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Makes a non-touchable item spawn for players to view.
         // @Author aufdemrand, mcmonkey
         // @Group item
+        //
         // @Description
         // This command drops an item at the specified location which cannot be picked up by players.
         // It accepts a duration which determines how long the item will stay for until disappearing.
         // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
+        //
         // @Tags
         // TODO: Document Command Details
         // <entry[saveName].dropped> returns a dEntity of the spawned item.
+        //
         // @Usage
         // Use to display a stone block dropped at a players location
         // - displayitem i@stone <player.location>
+        //
         // @Usage
         // Use to display a diamond sword dropped at 12,64,-847 in world survival
         // - displayitem i@diamond_sword l@12,64,-847,survival
+        //
         // @Usage
         // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
         // - displayitem i@redstone l@-54,100,-87,creative duration:10s
+        //
         // @Usage
         // Use to save the dropped item to save entry 'item_dropped'
         // - displayitem i@redstone l@-54,100,-87,creative duration:10s save:item_dropped
@@ -974,7 +985,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Drops an item, entity, or experience orb on a location.
         // @Author aufdemrand
         // @Group world
-
+        //
         // @Description
         // To drop an item, just specify a valid item object. To drop
         // an entity, specify a generic entity object. Drop can also reward players
@@ -984,26 +995,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // prefix to drop multiple items/entities/xp.
         // For items, you can add 'speed:' to modify the launch velocity.
         // You can also add 'delay:' to set the pickup delay of the item.
-
+        //
         // @Tags
         // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
-
+        //
         // @Usage
         // Use to drop some loot around the player.
         // - drop i@gold_nugget <cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>.get_spawnable_blocks.random>
-
+        //
         // @Usage
         // Use to reward a player with 500 xp.
         // - drop xp quantity:500 <player.location>
-
+        //
         // @Usage
         // Use to drop a nasty surprise (exploding TNT).
         // - drop e@primed_tnt <player.location>
-
+        //
         // @Usage
         // Use to drop an item with a pickup delay at the player's location.
         // - drop i@diamond_sword <player.location> delay:20s
-
         // -->
         registerCoreMember(DropCommand.class,
                 "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
@@ -1053,7 +1063,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - engage 5s
         // - take quest_item
         // - flag player finished_quests:->:super_quest
-        //
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
@@ -1069,23 +1078,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Equips items and armor on a list of entities.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // This command equips an item or armor to an entity or list of entities to the specified slot(s).
         // Set the item to 'i@air' to unequip any slot.
+        //
         // @Tags
         // <e@entity.equipment>
+        //
         // @Usage
         // Use to equip a stone block on the player's head.
         // - equip <player> head:i@stone
+        //
         // @Usage
         // Use to equip a iron helmet on two players named Bob and Steve.
         // - equip p@bob|p@steve head:i@iron_helmet
+        //
         // @Usage
         // Use to unequip all armor off the player.
         // - equip <player> head:i@air chest:i@air legs:i@air boots:i@air
+        //
         // @Usage
         // Use to equip a saddle on a horse.
         // - equip e@horse saddle:i@saddle
+        //
         // @Usage
         // Use to equip a saddle on a pig.
         // - equip e@pig saddle:i@saddle
@@ -1102,6 +1118,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Manually fires a world event.
         // @Author mcmonkey
         // @Group core
+        //
         // @Description
         // This command will trigger a world event (an event within a 'world' type script) exactly the same
         // as if an actual serverside event had caused it.
@@ -1113,13 +1130,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
         //
         // NOTE: This command is outdated and bound to be updated.
+        //
         // @Tags
         // <server.has_event[<event_name>]>
         // <server.get_event_handlers[<event_name>]>
         // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
+        //
         // @Usage
         // Use to trigger a custom event
         // - event "player triggers custom event"
+        //
         // @Usage
         // Use to trigger multiple custom events with context
         // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
@@ -1136,14 +1156,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
         // @Author aufdemrand
         // @Group server
+        //
         // @Description
         // Allows the execution of server commands through a Denizen Script. Commands can be executed as the server,
         // as an npc, an op or as a player, as though it was typed by the respective source.
+        //
         // @Tags
         // <entry[saveName].output> returns the output to an as_server sender.
+        //
         // @Usage
         // Use to execute the save-all command as the server.
         // - execute as_server "save-all"
+        //
         // @Usage
         // Use to add the player to the op list as if an existing op had typed it.
         // - execute as_op "op <player.name>"
@@ -1160,21 +1184,27 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Gives or takes experience points to the player.
         // @Author aufdemrand
         // @Group player
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <p@player.xp>
         // <p@player.xp.to_next_level>
         // <p@player.xp.total>
         // <p@player.xp.level>
+        //
         // @Usage
-        // Use to set a player's experience to 0
+        // Use to set a player's experience to 0.
         // - experience 0
+        //
         // @Usage
-        // Use give give a player 1 level
+        // Use give give a player 1 level.
         // - experience give level 1
+        //
         // @Usage
-        // Use to take 1 level from a player
+        // Use to take 1 level from a player.
+        //
         // - experience take level 1
         // @Usage
         // Use to give a player with the name Morphan1 10 experience points.
@@ -1192,6 +1222,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes an explosion at the location.
         // @Author Alain Blanquet
         // @Group world
+        //
         // @Description
         // This command causes an explosion at the location specified (or the npc / player location) which does not
         // destroy blocks or set fire to blocks within the explosion. It accepts a 'fire' option which will set blocks
@@ -1200,24 +1231,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Default power: 1
         // Default location: npc.location, or if no NPC link, player.location.
         // It is highly recommended you specify a location to be safe.
+        //
         // @Tags
         // None
+        //
         // @Usage
-        // Use to create an explosion at a player's location
+        // Use to create an explosion at a player's location.
         // - explode <player.location>
-
+        //
         // @Usage
-        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5
+        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5.
         // - explode power:5 <player.location> fire breakblocks
-
+        //
         // @Usage
-        // Use to create an explosion with a power radius of 3 at a NPC's location
+        // Use to create an explosion with a power radius of 3 at a NPC's location.
         // - explode power:3 <npc.location>
-
+        //
         // @Usage
-        // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks
+        // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks.
         // - explode power:3 l@12,12,-1297,survival breakblocks
-
         // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
@@ -1232,10 +1264,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Marks a script as having failed.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1250,16 +1285,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Show a fake item in a player's inventory.
         // @Author Morphan1
         // @Group item
+        //
         // @Description
         // This command allows you to display an item in an inventory that is not really there.
         // To make it automatically disappear at a specific time, use the 'duration:' argument.
         // By default, it will use any inventory the player currently has open. To force it to use only the player's
         // inventory, use the 'player_only' argument.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to show a clientside-only pumpkin on the player's head.
         // - fakeitem i@pumpkin slot:40
+        //
         // @Usage
         // Use to show a fake book in the player's hand for 1 tick.
         // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
@@ -1276,20 +1315,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Feed the player or npc.
         // @Author aufdemrand, Jeebiss
         // @Group entity
+        //
         // @Description
         // Feeds the player or npc specified. By default targets the player attached to the script queue and feeds
         // a full amount. Accepts the 'amount:' argument, which is in half bar increments, for a total of 20 food
         // points. Also accepts the 'target:<entity>|...' argument to specify entity(s) which will be fed the amount.
         // NOTE: This command is outdated and bound to be updated.
+        //
         // @Tags
         // <p@player.food_level>
         // <p@player.food_level.formatted>
+        //
         // @Usage
         // Use to feed the player for 5 foodpoints or 2.5 bars.
         // - feed amount:5
+        //
         // @Usage
         // Use to feed an npc with id 5 for 10 foodpoints or 5 bars.
         // - feed amount:10 target:n@5
+        //
         // @Usage
         // Use to refill the food bar of all online players.
         // - feed target:<server.list_online_players>
@@ -1307,10 +1351,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Marks a script as having been completed successfully.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1326,6 +1373,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Launches a firework with specific coloring
         // @Author David Cernat
         // @Group world
+        //
         // @Description
         // This command launches a firework from the specified location. The power option, which defaults to 1
         // if left empty, specifies how high the firework will go before exploding. The type option
@@ -1333,18 +1381,23 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // firework will initially explode as. The fade option specifies what colour the firework will
         // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
         // flicker option means the firework will explode with a flicker effect.
+        //
         // @Tags
         // <e@entity.firework_item> returns the firework item which was used to launch the firework.
         // TODO: Document Command Details
+        //
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
         // - firework <player.location> star primary:yellow fade:white
+        //
         // @Usage
         // Use to make the firework launch double the height before exploding
         // - firework <player.location> power:2 star primary:yellow fade:white
+        //
         // @Usage
         // Use to launch a firework which leaves a trail
         // - firework <player.location> random trail
+        //
         // @Usage
         // Use to launch a firework which leaves a trail and explodes with a flicker effect at 10,43,-76 in world
         // - firework l@10,43,-76,world random trail flicker
@@ -1361,10 +1414,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes an NPC to begin fishing around a specified location.
         // @Author Jeebiss, Morphan1
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1380,35 +1436,45 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Sets or modifies a flag on the player, NPC, entity, or server.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // The flag command sets or modifies custom value storage database entries connected to
         // each player, each NPC, each entity, and the server.
         // TODO: Document Command Details
+        //
         // @Tags
         // <p@player.flag[<flag>]>
         // <n@npc.flag[<flag>]>
         // <server.flag[<flag>]>
+        //
         // @Usage
         // Use to create or set a flag on a player.
         // - flag player playstyle:agressive
+        //
         // @Usage
         // Use to flag an npc with a given tag value.
         // - flag npc location:<npc.location>
+        //
         // @Usage
         // Use to apply mathematical changes to a flag's value on a unique object.
         // - flag <context.damager> damage_dealt:+:<context.damage>
+        //
         // @Usage
         // Use to add an item to a server flag as a new value without removing existing values.
         // - flag server cool_people:->:p@TheBlackCoyote
+        //
         // @Usage
         // Use to add both multiple items as individual new values to a server flag.
         // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
+        //
         // @Usage
         // Use to remove an entry from a server flag.
         // - flag server cool_people:<-:p@morphan1
+        //
         // @Usage
         // Use to completely remove a flag.
         // - flag server cool_people:!
+        //
         // @Usage
         // Use to modify a specific index in a list flag.
         // - flag server myflag[3]:HelloWorld
@@ -1425,10 +1491,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Make an entity fly where its controller is looking or fly to waypoints.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -1444,11 +1513,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes a list of entities to follow a target.
         // @Author aufdemrand, Morphan1
         // @Group entity
+        //
         // @Description
         // TODO: Document Command Details
         // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
+        //
         // @Tags
         // <n@npc.navigator.target_entity> returns the entity the npc is following.
+        //
         // @Usage
         // To make an NPC follow the player in an interact script
         // - follow followers:<npc> target:<player>
@@ -1466,13 +1538,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Sets a gamerule on the world.
         // @Author Jeebiss
         // @Group item
+        //
         // @Description
-        // Sets a gamerule on the world.
-        // TODO: Document Command Details
+        // Sets a gamerule on the world. A list of valid gamerules can be found here: http://minecraft.gamepedia.com/Commands#gamerule
+        // Note: Be careful, gamerules are CASE SENSITIVE.
+        //
         // @Tags
-        // TODO: Document Command Details
+        // TODO: Add tags and then document them!
+        //
         // @Usage
-        // TODO: Document Command Details
+        // Use to disable fire spreading in world "Adventure".
+        // - gamerule w@Adventure doFireTick false
+        //
+        // @Usage
+        // Use to avoid mobs from destroying blocks (creepers, endermen...) and picking items up (zombies, skeletons...) in world "Adventure".
+        // - gamerule w@Adventure mobGriefing false
         // -->
         registerCoreMember(GameRuleCommand.class,
                 "GAMERULE", "gamerule [<world>] [<rule>] [<value>]", 3);
@@ -1486,17 +1566,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Gives the player an item, xp, or money.
         // @Author Jeebiss
         // @Group item
+        //
         // @Description
         // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
         // TODO: Document Command Details
+        //
         // @Tags
         // <p@player.money>
+        //
         // @Usage
         // Use to give money to the player.
         // - give money quantity:10
+        //
         // @Usage
         // Use to give XP to the player.
         // - give xp quantity:10
+        //
         // @Usage
         // Use to give an item to the player.
         // - give i@iron_sword quantity:1
@@ -1513,17 +1598,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Makes the linked player see the chosen entities as glowing.
         // @Author mcmonkey
         // @Group player
+        //
         // @Description
         // Makes the link player see the chosen entities as glowing.
         // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
         // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
         // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
         // TODO: Document Command Details
+        //
         // @Tags
-        // TODO: Document Command Details
+        // <e@entity.glowing>
+        //
         // @Usage
         // Use to make the player's target glow.
         // - glow <player.target>
+        //
         // @Usage
         // Use to make the player's target not glow.
         // - glow <player.target> false
@@ -1541,22 +1630,27 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
+        //
         // @Description
         // Controls a player's permission groups, which the ability to add, remove or set a player's groups.
         // The 'add' argument adds the player to the group and any parent groups, while the remove command does
         // the opposite, removing the player from the group and any inheriting groups. The set command removes all
         // existing groups and sets the player's group.
         // Note: This requires a permissions plugin.
+        //
         // @Tags
         // <p@player.in_group[<group>]>
         // <p@player.in_group[<group>].global>
         // <p@player.in_group[<group>].world>
+        //
         // @Usage
         // Use to add a player to the Admin group.
         // - group add Admin
+        //
         // @Usage
         // Use to remove a player from the Moderator group.
         // - group remove Moderator
+        //
         // @Usage
         // Use to set a player to the Member group in the Creative world.
         // - group set Member w@Creative
@@ -1573,17 +1667,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Makes players or NPCs wear a specific player's head.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // Equips a player's head onto the player(s) or npc(s) specified. If no player or npc is specified, it defaults
         // to the player attached to the script queue. It accepts a single entity or list of entities.
+        //
         // @Tags
         // <i@item.skin>
+        //
         // @Usage
         // Use to stick an awesome head on your head with the head command.
         // - head <player> skin:mcmonkey4eva
+        //
         // @Usage
         // Use to equip an npc with id 5 with your own head.
         // - head n@5 skin:<player.name>
+        //
         // @Usage
         // Use to equip all online players with Notch's head.
         // - head <server.list_online_players> skin:Notch
