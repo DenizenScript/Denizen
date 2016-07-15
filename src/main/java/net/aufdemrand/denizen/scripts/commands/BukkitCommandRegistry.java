@@ -2985,7 +2985,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Run
-        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
+        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
@@ -3461,6 +3461,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Interacts with a MySQL server.
         // @Author mcmonkey
         // @Group core
+        //
         // @Description
         // This command is used to interact with a MySQL server. It can update the database or query it for information.
         // The general usage order is connect -> update/query -> disconnect.
@@ -3472,29 +3473,37 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // SQL connections are not instant - they can take several seconds, or just never connect at all.
         // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
         // as this will delay the commands following the connect command until after the connection is established.
+        //
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query or update command, of the form li@escaped_text/escaped_text|escaped_text/escaped_text
         // <entry[saveName].affected_rows> returns how many rows were affected by an update command.
+        //
         // @Usage
         // Use to connect to an SQL server.
         // - ~sql id:name connect:localhost:3306/test username:space password:space
+        //
         // @Usage
         // Use to connect to an SQL server with a UTF8 text encoding
         // - ~sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
+        //
         // @Usage
         // Use to update an SQL server.
         // - sql id:name "update:CREATE table things(id int,column_name1 varchar(255),column_name2 varchar(255));"
+        //
         // @Usage
         // Use to update an SQL server.
         // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
+        //
         // @Usage
         // Use to query an SQL server.
         // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
         // - narrate <entry[saveName].result>
+        //
         // @Usage
         // Use to query an SQL server.
         // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;" save:saveName2
         // - narrate <entry[saveName2].result>
+        //
         // @Usage
         // Use to disconnect from an SQL server.
         // - sql disconnect id:name
@@ -3511,10 +3520,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
         // @Author Jeebiss
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3532,11 +3544,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Changes the specified statistic value for a player.
         // @Author Morphan1
         // @Group player
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <p@player.statistic[<statistic>]>
         // <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3552,16 +3567,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Strikes lightning down upon the location.
         // @Author aufdemrand
         // @Group world
+        //
         // @Description
         // Causes lightning to strike at the specified location, which can optionally have damage disabled.
         // The lightning will still cause fires to start, even without the 'no_damage' argument.
         // Lightning caused by this command will cause creepers to activate. Using the no_damage argument makes the
         // lightning do no damage to the player or any other entities, and means creepers struck will not activate.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to cause lightning to strike the player.
         // - strike <player.location>
+        //
         // @Usage
         // Use to strike the player with lightning causing no damage.
         // - strike no_damage <player.location>
@@ -3577,10 +3596,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Switches a lever.
         // @Author aufdemrand, Jeebiss, David Cernat
         // @Group world
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3595,11 +3617,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Takes an item from the player.
         // @Author Jeebiss
         // @Group item
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <p@player.item_in_hand>
         // <p@player.money>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3614,18 +3639,23 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Controls scoreboard teams.
         // @Author Morphan1
         // @Group player
+        //
         // @Description
         // The Team command allows you to add modify a team's prefix and suffix, as well as adding to
         // and removing entries from teams.
         // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to add a player to a team.
         // - team name:red add:<player.name>
+        //
         // @Usage
         // Use to add an NPC to a team.
         // - team name:blue add:<npc.name>
+        //
         // @Usage
         // Use to change the prefix for a team.
         // - team name:red "prefix:[<red>Red Team<reset>]"
@@ -3641,11 +3671,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Teleports the entity(s) to a new location.
         // @Author David Cernat, aufdemrand
         // @Group entity
+        //
         // @Description
         // Teleports the entity or entities to the new location. Entities can be teleported between worlds using this
         // command, assuming the location is valid.
+        //
         // @Tags
         // <e@entity.location>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3660,23 +3693,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Changes the current time in the minecraft world.
         // @Author David Cernat, mcmonkey
         // @Group world
+        //
         // @Description
         // Changes the current time in a world or the time that a player sees the world in.
         // TODO: Document Command Details
         // If no world is specified, defaults to the NPCs world. If no NPC is available,
         // defaults to the player's world. If no player is available, an error will be thrown.
+        //
         // @Tags
         // <w@world.time>
         // <w@world.time.period>
+        //
         // @Usage
         // Use to set the time in the NPC or Player's world.
         // - time 500t
+        //
         // @Usage
         // Use to make the player see a different time than everyone else.
         // - time player 500t
+        //
         // @Usage
         // Use to set the time in a specific world.
         // - time 500t w@myworld
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3691,15 +3730,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Displays a title to specified players.
         // @Author Morphan1
         // @Group player
+        //
         // @Description
         // Shows the players a large, noticeable wall of text in the center of the screen.
         // You may add timings for fading in, staying there, and fading out.
         // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to alert players of impending server restart.
         // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.list_online_players>
+        //
         // @Usage
         // Use to inform the player about the area they have just entered.
         // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
@@ -3715,11 +3758,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Adds or removes a trait from an NPC.
         // @Author Morphan1
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.has_trait[<trait>]>
         // <n@npc.list_traits>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3737,16 +3783,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Enables or disables a trigger.
         // @Author aufdemrand
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.has_trigger[<trigger>]>
+        //
         // @Usage
         // Use to enable the click trigger.
         // - trigger name:click state:true
+        //
         // @Usage
         // Use to enable the chat trigger with a 10-second cooldown and a radius of 5 blocks.
         // - trigger name:chat state:true cooldown:10s radius:5
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3762,18 +3813,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Creates a sign that auto-updates with information.
         // @Author Morphan1
         // @Group world
-
+        //
         // @Description
         // Creates a sign that auto-updates with information about a player, including their location, score, and
         // whether they're logged in or not.
-
+        //
         // @Tags
         // None
-
+        //
         // @Usage
         // Create a sign that shows the location of a player on a wall.
         // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
-
         // -->
         registerCoreMember(ViewerCommand.class,
                 "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
@@ -3786,10 +3836,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Sets whether an NPC is vulnerable.
         // @Author aufdemrand
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3806,11 +3859,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Delays a script for a specified amount of time.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // Pauses the script queue for the duration specified. If no duration is specified it defaults to 3 seconds.
         // Accepts the 'queue:<name>' argument which allows the delay of a different queue.
+        //
         // @Tags
         // <q@queue.speed>
+        //
         // @Usage
         // Use to delay the current queue for 1 minute.
         // - wait 1m
@@ -3826,13 +3882,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes an entity or list of entities to walk to another location.
         // @Author aufdemrand, Morphan1
         // @Group entity
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.navigator.is_navigating>
         // <n@npc.navigator.speed>
         // <n@npc.navigator.range>
         // <n@npc.navigator.target_location>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3847,10 +3906,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Changes the current weather in the minecraft world.
         // @Author David Cernat
         // @Group world
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3866,13 +3928,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author mcmonkey
         // @Group core
         // @Video /denizen/vids/Loops
-
+        //
         // @Description
         // TODO: Document Command Details
-
+        //
         // @Tags
         // <def[loop_index]> to get the number of loops so far.
-
+        //
         // @Usage
         // Use loop through a command several times.
         // - define value 1
@@ -3880,6 +3942,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //     - announce "Loop <def[loop_index]> value <def[value]>"
         //     - define value <def[value].add[1]>
         //   }
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3895,6 +3958,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Edits a YAML configuration file.
         // @Author aufdemrand, mcmonkey
         // @Group core
+        //
         // @Description
         // Edits a YAML configuration file.
         // This can be used for interacting with other plugins' configuration files.
@@ -3904,29 +3968,37 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // When loading a script, optionally add 'fix_formatting' to run the file through
         // Denizen's built in script preparser to correct common YAML errors,
         // such as tabs instead of spaces or comments inside braced blocks.
+        //
         // @Tags
         // <yaml[<idname>].contains[<path>]>
         // <yaml[<idname>].read[<path>]>
         // <yaml[<idname>].read[<path>].as_list>
         // <yaml[<idname>].list_keys[<path>]>
+        //
         // @Usage
         // Use to create a new YAML file.
         // - yaml create id:myfile
+        //
         // @Usage
         // Use to load a YAML file from disk.
         // - yaml load:myfile.yml id:myfile
+        //
         // @Usage
         // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:HelloWorld
+        //
         // @Usage
         // Use to save a YAML file to disk.
         // - yaml savefile:myfile.yml id:myfile
+        //
         // @Usage
         // Use to unload a YAML file from memory.
         // - yaml unload id:myfile
+        //
         // @Usage
         // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key:+:2
+        //
         // @Usage
         // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key[2]:hello
@@ -3942,16 +4014,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Changes the current script step.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <s@script.step[<player>]>
+        //
         // @Usage
         // Use to change the step to 2
         // - zap 2
+        //
         // @Usage
         // Use to change the step to 3 in a script called Interact_Example.
         // - zap 3 s@Interact_Example
+        //
         // @Usage
         // Use to change the step to 1 for player bob in a script called InteractScript.
         // - zap 1 s@InteractScript player:p@bob
