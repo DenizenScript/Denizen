@@ -828,7 +828,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-                // <--[command]
+        // <--[command]
         // @Name CreateWorld
         // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
         // @Required 1
