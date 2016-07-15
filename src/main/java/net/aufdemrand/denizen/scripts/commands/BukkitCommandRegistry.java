@@ -2585,11 +2585,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Plays a visible or audible effect at the location.
         // @Author David Cernat, mcmonkey
         // @Group world
+        //
         // @Description
         // TODO: Document Command Details
         // See <@link language Particle Effects> for a list of valid effect names.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2605,11 +2608,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Plays a sound at the location or to a list of players.
         // @Author Jeebiss
         // @Group world
+        //
         // @Description
         // TODO: Document Command Details
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
+        //
         // @Tags
         // None
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2626,24 +2632,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
+        //
         // @Description
         // Adds or removes a permission node from a player or group. Accepts a world for world-based permissions
         // plugins. By default changes the attached player's permissions. Accepts the 'group:<name>' argument to change
         // a group's permission nodes rather than a player's.
         // Note: This requires a permissions plugin.
+        //
         // @Tags
         // <p@player.has_permission[permission.node]>
         // <p@player.has_permission[permission.node].global>
         // <p@player.has_permission[permission.node].world>
+        //
         // @Usage
         // Use to give the player a permissions node.
         // - permission add bukkit.version
+        //
         // @Usage
         // Use to remove a permissions node from a player.
         // - permission remove bukkit.version
+        //
         // @Usage
         // Use to give the group 'Members' a permission node.
         // - permission add bukkit.version group:Members
+        //
         // @Usage
         // Use to remove a permissions node from the group 'Members' in the Creative world.
         // - permission remove bukkit.version group:Members w@Creative
@@ -2697,14 +2709,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Pushes entities through the air in a straight line.
         // @Author David Cernat, mcmonkey
         // @Group entity
+        //
         // @Description
         // Pushes entities through the air in a straight line at a certain speed and for a certain duration,
         // triggering a script when they hit an obstacle or stop flying. You can specify the script to be run
         // with the (script:<name>) argument, and optionally specify definitions to be available in this script
         // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
         // when they stop moving.
+        //
         // @Tags
         // <e@entity.velocity>
+        //
         // @Usage
         // Use to launch an arrow straight towards a target
         // - push arrow destination:<player.location>
@@ -2712,7 +2727,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to launch an entity into the air
         // - push cow
-        //
         // -->
         registerCoreMember(PushCommand.class,
                 "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
@@ -2726,13 +2740,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Edits the pushable trait for NPCs.
         // @Author Morphan1
         // @Group npc
+        //
         // @Description
         // Enables, disables, toggles, or edits the Pushable trait on the attached NPC.
+        //
         // @Tags
         // None
+        //
         // @Usage
         // Use to toggle the Pushable trait for a specified NPC.
         // - pushable npc:n@321
+        //
         // @Usage
         // Use to enable the Pushable trait and return after 2 seconds.
         // - pushable state:true delay:2s returnable:true
@@ -2749,25 +2767,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Modifies the current state of a script queue.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
-        // TODO: Document Command Details
+        // TODO: Document Command Detail
+        //
         // @Tags
         // <queue>
         // <queue.id>
         // <queue.size>
         // <queue.exists[queue_id]>
+        //
         // @Usage
         // Use to clear the current queue.
         // - queue clear
+        //
         // @Usage
         // Use to force-stop a given queue.
         // - queue <server.flag[OtherQueue]> clear
+        //
         // @Usage
         // Use to delay the current queue (use <@link command wait> instead!)
         // - queue delay:5t
+        //
         // @Usage
         // Use to pause the given queue.
         // - queue <server.flag[OtherQueue]> pause
+        //
         // @Usage
         // Use to resume the given queue.
         // - queue <server.flag[OtherQueue]> resume
@@ -2784,20 +2809,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Selects a random choice from the following script commands.
         // @Author aufdemrand, morphan1
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
-
+        //
         // @Tags
         // <entry[saveName].possibilities> returns an Element of the possibility count.
         // <entry[saveName].selected> returns an Element of the selected number.
-
+        //
         // @Usage
         // Use to choose randomly from the following commands
         // - random 3
         // - narrate "hi"
         // - narrate "hello"
         // - narrate "hey"
-
+        //
         // @Usage
         // Use to choose randomly from a braced set of commands
         // - random {
@@ -2805,7 +2831,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //   - narrate "hello"
         //   - narrate "hey"
         //   }
-
         // -->
         registerCoreMember(RandomCommand.class,
                 "RANDOM", "random [<#>/<commands>]", 1);
@@ -2819,11 +2844,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Despawns a list of entities, fully removing any NPCs.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // TODO: CUBOID OPTION
         // TODO: Document Command Details
+        //
         // @Tags
         // <e@entity.is_spawned>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2839,14 +2867,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Renames the linked NPC.
         // @Author aufdemrand
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <n@npc.name>
         // <n@npc.name.nickname>
+        //
         // @Usage
         // Use to rename the linked NPC.
         // - rename Bob
+        //
         // @Usage
         // Use to rename a different NPC.
         // - rename Bob npc:n@32
@@ -2866,7 +2898,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author morphan1, mcmonkey
         // @Group core
         // @Video /denizen/vids/Loops
-
+        //
         // @Description
         // Loops through a series of braced commands a specified number of times.
         // To get the number of loops so far, you can use <def[value]>.
@@ -2874,12 +2906,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To stop a repeat loop, do - repeat stop
         //
         // To jump immediately to the next number in the loop, do - repeat next
-
+        //
         // @Tags
         // <def[value]> to get the number of loops so far
-
+        //
         // @Usage
-        // Use loop through a command several times
+        // Use to loop through a command several times
         // - repeat 5 {
         //     - announce "Announce Number <def[value]>"
         //   }
@@ -2896,10 +2928,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Resets various parts of Denizen's saves.yml, including a script's fails, finishes, or cooldowns.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -2915,13 +2950,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Rotates a list of entities.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
-        // TODO: Document Command Details
+        // Induces incremental rotation on a list of entities over a period of time.
+        //
+        // The yaw and pitch arguments specify how much the entity will rotate each step. Default to 10 and 0 respectively.
+        //
+        // The frequency argument specifies how long it takes between each rotation step. Defaults to 1t.
+        //
+        // The duration argument specifies how long the whole rotation process will last. Defaults to 1s.
+        // Alternatively, use "infinite" if you want the entity to spin forever.
+        //
+        // You can use "cancel" to prematurely stop the ongoing rotation (useful when set to infinite)
+        //
         // @Tags
         // <e@entity.location.yaw>
         // <e@entity.location.pitch>
+        //
         // @Usage
-        // TODO: Document Command Details
+        // Use to rotate the player's yaw by 10 every tick for 3 seconds total
+        // - rotate <player> duration:3s
+        //
+        // @Usage
+        // Use to rotate the player's pitch by 20 every 5 ticks for a second total
+        // - rotate <player> yaw:0.0 pitch:20.0 frequency:5t
+        //
+        // @Usage
+        // Use to prematurely stop the player's rotation
+        // - rotate cancel <player>
         // -->
         registerCoreMember(RotateCommand.class,
                 "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)", 0);
@@ -2929,22 +2985,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Run
-        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)
+        // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)
         // @Required 1
         // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
         // @Video /denizen/vids/Run%20And%20Inject
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <entry[saveName].created_queue>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
         registerCoreMember(RunCommand.class,
-                "RUN", "run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (delay:<value>)", 1);
+                "RUN", "run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)", 1);
 
 
         // <--[command]
@@ -2956,10 +3015,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Runs a task script.
         // @Author aufdemrand
         // @Group core
+        //
         // @Description
         // DEPRECATED.
+        //
         // @Tags
         // DEPRECATED.
+        //
         // @Usage
         // DO NOT USE.
         // -->
@@ -3006,7 +3068,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to save a created schematic
         // - schematic save name:MySchematic
-        //
         // -->
         registerCoreMember(SchematicCommand.class,
                 "SCHEMATIC", "schematic [create/load/unload/rotate/paste/save] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)", 2);
@@ -3020,6 +3081,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Controls clientside-only sidebars.
         // @Author Morphan1
         // @Group player
+        //
         // @Description
         // This command was created as a simpler replacement for using the Scoreboard command to display
         // per-player sidebars. By using packets and dummies, it enables you to have non-flickering, fully
@@ -3088,6 +3150,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Add or removes viewers, objectives and scores from scoreboards.
         // @Author David Cernat
         // @Group server
+        //
         // @Description
         // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
         //
@@ -3121,6 +3184,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
         // - scoreboard add obj:cookies lines:mythan score:1000 viewers:p@mythan
@@ -3231,14 +3295,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Writes information to a book from a book-type script or a book item.
         // @Author Jeebiss, aufdemrand
         // @Group item
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // <i@item.book.author>
         // <i@item.book.title>
         // <i@item.book.page_count>
         // <i@item.book.get_page[<#>]>
         // <i@item.book.pages>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3254,6 +3321,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Shoots an entity through the air, useful for things like firing arrows.
         // @Author David Cernat, mcmonkey
         // @Group entity
+        //
         // @Description
         // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
@@ -3265,11 +3333,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <def[hit_entities]> for a list of any entities that were hit by fired projectiles.
         // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
         // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
+        //
         // @Tags
         // <entry[saveName].shot_entities> returns a dList of entities that were shot.
+        //
         // @Usage
         // Use to shoot an arrow from the NPC to perfectly hit the player.
         // - shoot arrow origin:<npc> destination:<player.location>
+        //
         // @Usage
         // Use to shoot an arrow out of the player with a given speed.
         // - shoot arrow origin:<player> speed:2
@@ -3286,10 +3357,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Makes the player see a block change that didn't actually happen.
         // @Author aufdemrand, Morphan1, mcmonkey
         // @Group player
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3299,16 +3373,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Sign
-        // @Syntax sign (type:{automatic}/sign_post/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+        // @Syntax sign (type:{sign_post}/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
         // @Required 1
         // @Stable stable
         // @Short Modifies a sign.
         // @Author David Cernat, mcmonkey
         // @Group world
+        //
         // @Description
         // TODO: Document Command Details
+        // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
+        // If there is not already a sign there, defaults to a sign_post.
+        //
         // @Tags
         // <l@location.block.sign_contents>
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3324,10 +3403,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
         // @Author Jeebiss, mcmonkey
         // @Group npc
+        //
         // @Description
         // TODO: Document Command Details
+        //
         // @Tags
         // TODO: Document Command Details
+        //
         // @Usage
         // TODO: Document Command Details
         // -->
@@ -3343,21 +3425,26 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Spawns a list of entities at a certain location.
         // @Author David Cernat
         // @Group entity
+        //
         // @Description
         // Spawn an entity or list of entities at the specified location. Accepts the 'target:<entity>' argument which
         // will cause all spawned entities to follow and attack the targetted entity.
         // If the persistent argument is present, the entity will not despawn when no players are within range, causing
         // the enity to remain until killed.
+        //
         // @Tags
         // <e@entity.is_spawned>
         // <server.entity_is_spawned[<entity>]>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
+        //
         // @Usage
         // Use to spawn a spider at the player's location.
         // - spawn spider <player.location>
+        //
         // @Usage
         // Use to spawn a spider at the player's location which will automatically target the player.
         // - spawn spider <player.location> target:<player>
+        //
         // @Usage
         // Use to spawn a swarm of creepers around the npc, which will not despawn until killed.
         // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
