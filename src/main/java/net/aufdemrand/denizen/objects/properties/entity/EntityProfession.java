@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.Zombie;
 
 public class EntityProfession implements Property {
 
@@ -17,8 +18,8 @@ public class EntityProfession implements Property {
         if (!(entity instanceof dEntity)) {
             return false;
         }
-        // Check if the entity is a Villager, the only EntityType that can be a Professional
-        return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER;
+        return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
+                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE;
     }
 
     public static EntityProfession getFrom(dObject entity) {
@@ -43,11 +44,19 @@ public class EntityProfession implements Property {
     dEntity professional;
 
     private Villager.Profession getProfession() {
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
+            return ((Zombie) professional.getBukkitEntity()).getVillagerProfession();
+        }
         return ((Villager) professional.getBukkitEntity()).getProfession();
     }
 
     public void setProfession(Villager.Profession profession) {
-        ((Villager) professional.getBukkitEntity()).setProfession(profession);
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
+            ((Zombie) professional.getBukkitEntity()).setVillagerProfession(profession);
+        }
+        else {
+            ((Villager) professional.getBukkitEntity()).setProfession(profession);
+        }
     }
 
 
@@ -57,6 +66,9 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE && !((Zombie) professional.getBukkitEntity()).isVillager()) {
+            return null;
+        }
         return CoreUtilities.toLowerCase(getProfession().name());
     }
 
@@ -84,8 +96,8 @@ public class EntityProfession implements Property {
         // @group properties
         // @description
         // If the entity can have professions, returns the entity's profession.
-        // Currently, only Villager-type entities can have professions.
-        // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
+        // Currently, only Villager-type and infected zombie entities can have professions.
+        // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST. (Or HUSK for zombies!)
         // -->
         if (attribute.startsWith("profession")) {
             return new Element(CoreUtilities.toLowerCase(getProfession().name()))
@@ -105,7 +117,7 @@ public class EntityProfession implements Property {
         // @description
         // Changes the entity's profession.
         // Currently, only Villager-type entities can have professions.
-        // Acceptable professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST.
+        // Acceptable professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST. (Or HUSK for zombies!)
         // @tags
         // <e@entity.profession>
         // -->

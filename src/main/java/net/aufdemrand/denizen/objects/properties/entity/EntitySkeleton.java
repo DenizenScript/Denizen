@@ -67,7 +67,7 @@ public class EntitySkeleton implements Property {
         // @group properties
         // @description
         // If the entity is a skeleton, returns what type of skeleton it is.
-        // Can return NORMAL or WITHER.
+        // Can return: NORMAL, WITHER, STRAY.
         // -->
         if (attribute.startsWith("skeleton_type")) {
             return new Element(((Skeleton) skeleton.getBukkitEntity())
@@ -86,7 +86,7 @@ public class EntitySkeleton implements Property {
         // @input Element
         // @description
         // Changes whether a skeleton is a normal or wither type skeleton.
-        // Valid input: NORMAL, WITHER.
+        // Valid input: NORMAL, WITHER, STRAY.
         // @tags
         // <e@entity.skeleton_type>
         // -->
