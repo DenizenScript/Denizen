@@ -31,6 +31,22 @@ import java.util.List;
  */
 public class Utilities {
 
+    public static boolean isSafeFile(File f) {
+        try {
+            String lown = CoreUtilities.toLowerCase(f.getCanonicalPath());
+            if (lown.contains("denizen/config.yml")) {
+                return false;
+            }
+            if (lown.contains("denizen/scripts/")) {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+            return false;
+        }
+    }
 
     /**
      * Gets a Location within a range that an entity can walk in.

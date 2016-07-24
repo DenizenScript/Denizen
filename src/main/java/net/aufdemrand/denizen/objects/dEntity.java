@@ -2492,6 +2492,34 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dEntity
+        // @name item_in_hand
+        // @input dItem
+        // @description
+        // Sets item in the entity's hand.
+        // The entity must be living.
+        // @tags
+        // <e@entity.item_in_hand>
+        // -->
+        if (mechanism.matches("item_in_hand")) {
+            getLivingEntity().getEquipment().setItemInMainHand(value.asType(dItem.class).getItemStack());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name item_in_offhand
+        // @input dItem
+        // @description
+        // Sets item in the entity's offhand.
+        // The entity must be living.
+        // @tags
+        // <e@entity.item_in_offhand>
+        // -->
+        if (mechanism.matches("item_in_offhand")) {
+            getLivingEntity().getEquipment().setItemInOffHand(value.asType(dItem.class).getItemStack());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
         // @name can_pickup_items
         // @input Element(Boolean)
         // @description

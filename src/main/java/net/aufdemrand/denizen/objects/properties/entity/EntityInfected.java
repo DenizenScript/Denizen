@@ -59,6 +59,8 @@ public class EntityInfected implements Property {
                 }
             }
 
+            // TODO: Should be bother allowing villager input at all?
+
             // If it's a Villager, we need to spawn a Zombie instead.
             // This is kind of messy, and can be improved upon.
             // TODO: Improve upon.

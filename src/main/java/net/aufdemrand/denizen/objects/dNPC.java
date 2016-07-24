@@ -27,12 +27,12 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
-import net.citizensnpcs.npc.entity.nonliving.FallingBlockController;
-import net.citizensnpcs.npc.entity.nonliving.ItemController;
-import net.citizensnpcs.npc.entity.nonliving.ItemFrameController;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
+import net.citizensnpcs.trait.waypoint.Waypoint;
+import net.citizensnpcs.trait.waypoint.WaypointProvider;
+import net.citizensnpcs.trait.waypoint.Waypoints;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 import net.minecraft.server.v1_10_R1.EntityLiving;
@@ -1248,18 +1248,22 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             switch (getEntity().getType()) {
                 case DROPPED_ITEM:
                     ((org.bukkit.entity.Item) getEntity()).getItemStack().setType(mat);
-                    ((ItemController.ItemNPC) getEntity()).setType(mat, data);
+                    //((ItemController.ItemNPC) getEntity()).setType(mat, data);
                     break;
                 case ITEM_FRAME:
                     ((ItemFrame) getEntity()).getItem().setType(mat);
-                    ((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
+                    //((ItemFrameController.ItemFrameNPC) getEntity()).setType(mat, data);
                     break;
                 case FALLING_BLOCK:
-                    ((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
+                    //((FallingBlockController.FallingBlockNPC) getEntity()).setType(mat, data);
                     break;
                 default:
                     dB.echoError("NPC is the not an item type!");
                     break;
+            }
+            if (getCitizen().isSpawned()) {
+                getCitizen().despawn();
+                getCitizen().spawn(getCitizen().getStoredLocation());
             }
         }
 
@@ -1411,12 +1415,32 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @name set_distance
         // @input Element
         // @description
-        // Sets the NPC's distance margin
+        // Sets the NPC's distance margin.
         // @tags
         // TODO
         // -->
         if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name add_waypoint
+        // @input dLocation
+        // @description
+        // Add a waypoint location to the NPC's path.
+        // @tags
+        // TODO
+        // -->
+        if (mechanism.matches("add_waypoint") && mechanism.requireObject(dLocation.class)) {
+            if (!getCitizen().hasTrait(Waypoints.class)) {
+                getCitizen().addTrait(Waypoints.class);
+            }
+            Waypoints wp = getCitizen().getTrait(Waypoints.class);
+            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
+                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints())
+                        .add(new Waypoint(value.asType(dLocation.class)));
+            }
         }
 
         // Iterate through this object's properties' mechanisms

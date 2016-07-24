@@ -325,7 +325,7 @@ public class ItemScriptHelper implements Listener {
         // Store the current matrix
         ItemStack[] matrix1 = inventory.getMatrix();
         for (int i = 0; i < matrix1.length; i++) {
-            matrix1[i] = matrix1[i].clone();
+            matrix1[i] = matrix1[i] == null ? new ItemStack(Material.AIR) : matrix1[i].clone();
         }
 
         // Get the result of the special recipe that this matrix matches,
@@ -343,7 +343,7 @@ public class ItemScriptHelper implements Listener {
                         // Store the current matrix
                         ItemStack[] matrix = inventory.getMatrix();
                         for (int i = 0; i < matrix.length; i++) {
-                            matrix[i] = matrix[i].clone();
+                            matrix[i] = matrix[i] == null ? new ItemStack(Material.AIR) : matrix[i].clone();
                         }
 
                         // Get the result of the special recipe that this matrix matches,

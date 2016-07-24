@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.DebugLog;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -74,6 +75,12 @@ public class LogCommand extends AbstractCommand {
 
         String directory = URLDecoder.decode(System.getProperty("user.dir"));
         File file = new File(directory, fileName.asString());
+
+        file.getParentFile().mkdirs();
+        if (!Utilities.isSafeFile(file)) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Cannot log into that file!");
+            return;
+        }
 
         String output = TagManager.cleanOutputFully(message.asString());
 
