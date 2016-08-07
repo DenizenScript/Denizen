@@ -145,6 +145,32 @@ public class EquipCommand extends AbstractCommand {
                     if (equipment.get("offhand") != null) {
                         trait.set(5, equipment.get("offhand").getItemStack());
                     }
+
+                    if (npc.isSpawned()) {
+                        LivingEntity livingEntity = npc.getLivingEntity();
+
+                        // TODO: Citizens API for this blob?
+
+                        if (livingEntity.getType() == EntityType.HORSE) {
+                            if (equipment.get("saddle") != null) {
+                                ((Horse) livingEntity).getInventory().setSaddle(equipment.get("saddle").getItemStack());
+                            }
+                            if (equipment.get("horse_armor") != null) {
+                                ((Horse) livingEntity).getInventory().setArmor(equipment.get("horse_armor").getItemStack());
+                            }
+                        }
+                        else if (livingEntity.getType() == EntityType.PIG) {
+                            if (equipment.get("saddle") != null) {
+                                dItem saddle = equipment.get("saddle");
+                                if (saddle.getItemStack().getType() == Material.SADDLE) {
+                                    ((Pig) livingEntity).setSaddle(true);
+                                }
+                                else {
+                                    ((Pig) livingEntity).setSaddle(false);
+                                }
+                            }
+                        }
+                    }
                 }
 
             }
