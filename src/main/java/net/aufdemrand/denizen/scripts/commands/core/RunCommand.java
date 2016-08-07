@@ -115,7 +115,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
             }
 
             else if (arg.matchesPrefix("d", "def", "define", "c", "context")) {
-                scriptEntry.addObject("definitions", arg.asType(dList.class));
+                scriptEntry.addObject("definitions", arg.asElement());
             }
 
             else if (arg.matches("instant", "instantly")) {
@@ -239,7 +239,8 @@ public class RunCommand extends AbstractCommand implements Holdable {
         // Set any definitions
         if (scriptEntry.hasObject("definitions")) {
             int x = 1;
-            dList definitions = (dList) scriptEntry.getObject("definitions");
+            Element raw_defintions = scriptEntry.getElement("definitions");
+            dList definitions = dList.valueOf(raw_defintions.asString());
             String[] definition_names = null;
             try {
                 definition_names = script.getContainer().getString("definitions").split("\\|");
@@ -254,6 +255,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
                 x++;
             }
+            queue.addDefinition("raw_context", raw_defintions.asString());
         }
 
 
