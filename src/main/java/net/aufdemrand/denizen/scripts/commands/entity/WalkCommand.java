@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import com.google.common.base.Function;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -16,6 +17,8 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
+import net.citizensnpcs.api.ai.Navigator;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +37,10 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("location")
+            if (!scriptEntry.hasObject("lookat")
+                    && arg.matchesPrefix("lookat")
                     && arg.matchesArgumentType(dLocation.class)) {
-                scriptEntry.addObject("location", arg.asType(dLocation.class));
+                scriptEntry.addObject("lookat", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("speed")
@@ -59,6 +63,11 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
                 scriptEntry.addObject("stop", new Element(true));
+            }
+
+            else if (!scriptEntry.hasObject("location")
+                    && arg.matchesArgumentType(dLocation.class)) {
+                scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
 
             else if (!scriptEntry.hasObject("entities")
@@ -105,6 +114,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         Element radius = scriptEntry.getElement("radius");
         Element stop = scriptEntry.getElement("stop");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        final dLocation lookat = scriptEntry.getdObject("lookat");
 
 
         // Debug the execution
@@ -113,6 +123,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 + (speed != null ? speed.debug() : "")
                 + (auto_range != null ? auto_range.debug() : "")
                 + (radius != null ? radius.debug() : "")
+                + (lookat != null ? lookat.debug() : "")
                 + stop.debug()
                 + (aH.debugObj("entities", entities)));
 
@@ -145,6 +156,15 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
 
                 npc.getNavigator().setTarget(loc);
+
+                if (lookat != null) {
+                    npc.getNavigator().getLocalParameters().lookAtFunction(new Function<Navigator, Location>() {
+                        @Override
+                        public Location apply(Navigator nav) {
+                            return lookat;
+                        }
+                    });
+                }
 
                 if (speed != null) {
                     npc.getNavigator().getLocalParameters().speedModifier(speed.asFloat());
