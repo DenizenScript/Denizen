@@ -217,7 +217,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 while (x < filledSlots.length && filledSlots[x]) {
                                     x++;
                                 }
-                                if (x == filledSlots.length - 1 && filledSlots[x]) {
+                                if (x >= filledSlots.length || filledSlots[x]) {
                                     break;
                                 }
                                 inventory.setSlots(x, item.getItemStack());
