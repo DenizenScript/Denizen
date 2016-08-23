@@ -33,7 +33,7 @@ Traits:
   Health:
     Enabled: false
     Respawn:
-      Enabled: true
+      Enabled: false
       Delay: 10s
     Animated death:
       Enabled: false
