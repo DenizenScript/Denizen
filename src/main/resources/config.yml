@@ -92,6 +92,11 @@ Commands:
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
+  Filecopy:
+        # Whether scripts are allowed to copy files across your server
+        # Note that this could be abused by overwriting existing files.
+        # Set to 'false' if you're worried about security.
+        Allow copying files: true
   Java:
         # Whether scripts are allowed to run arbitrary Java code.
         # This is extremely dangerous and should be kept off unless monitored carefully.
@@ -129,4 +134,4 @@ Tags:
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 12
+  Version: 13

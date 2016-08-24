@@ -218,6 +218,11 @@ public class Settings {
                 .getBoolean("Commands.Webget.Allow", false);
     }
 
+    public static boolean allowFilecopy() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Filecopy.Allow copying files", true);
+    }
+
     public static boolean allowDelete() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Delete.Allow file deletion", true);
