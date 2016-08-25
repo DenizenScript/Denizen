@@ -218,6 +218,30 @@ public class Settings {
                 .getBoolean("Commands.Webget.Allow", false);
     }
 
+    public static boolean allowStupids() {
+        return allowStupid1() && allowStupid2() && allowStupid3();
+    }
+
+    public static boolean allowStupid1() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.General.Allow stupid file abuse you moron dont enable this", false);
+    }
+
+    public static boolean allowStupid2() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.General.are you sure", false);
+    }
+
+    public static boolean allowStupid3() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.General.are you absolutely seriously sure dont enable this", false);
+    }
+
+    public static boolean allowStupidx() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.General.This one dont touch", false);
+    }
+
     public static boolean allowFilecopy() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Filecopy.Allow copying files", true);

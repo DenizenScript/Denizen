@@ -113,6 +113,14 @@ Commands:
   Webget:
         # Whether to allow scripts to read arbitrary data from the web, which can also enable tracking of your private server data.
         Allow: true
+  General:
+        # NEVER EVER ENABLE ANY OF THESE.
+        # THEY WILL BORK YOUR SERVER.
+        # ESPECIALLY NOT IF YOU'RE NOT A JAVA DEVELOPER!!!
+        Allow stupid file abuse you moron dont enable this: false
+        are you sure: false
+        are you absolutely seriously sure dont enable this: false
+        This one dont touch: false
     # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
     # Otherwise, a bad script or plugin could potentially damage things
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...

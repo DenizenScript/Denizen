@@ -887,6 +887,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
                     // Fire the 'on Server Start' world event
                     ws_helper.serverStartEvent();
+
+                    if (Settings.allowStupidx()) {
+                        dB.echoError("Don't screw with bad config values.");
+                        Bukkit.shutdown();
+                    }
                 }
                 catch (Exception e) {
                     dB.echoError(e);

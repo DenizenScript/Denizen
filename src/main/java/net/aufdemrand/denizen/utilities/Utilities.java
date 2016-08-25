@@ -32,6 +32,9 @@ import java.util.List;
 public class Utilities {
 
     public static boolean isSafeFile(File f) {
+        if (Settings.allowStupids()) {
+            return true;
+        }
         try {
             String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
             if (dB.verbose) {
