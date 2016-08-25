@@ -1609,11 +1609,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public boolean allowedToWebget() {
         return Settings.allowWebget();
     }
-
-    @Override
-    public boolean allowedToFilecopy() {
-        return Settings.allowFilecopy();
-    }
 }
 
 
