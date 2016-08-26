@@ -33,6 +33,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <entity> dies (in <area>)
     // <entity> death (in <area>)
     //
+    // @Cancellable true
+    //
     // @Regex ^on [^\s]+ (death|dies)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when an entity dies.
@@ -52,6 +54,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // "NO_XP" to specify that any XP orbs should be removed.
     // dList(dItem) to specify new items to be dropped.
     // Element(Number) to specify the new amount of XP to be dropped.
+    // Note that the event can be cancelled to hide a player death message.
     //
     // @Player when the entity that died is a player.
     //
@@ -256,6 +259,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         }
         if (message != null && subEvent != null) {
             subEvent.setDeathMessage(message.asString());
+        }
+        if (cancelled && subEvent != null) {
+            subEvent.setDeathMessage(null);
         }
 
         dEntity.forgetEntity(livingEntity);

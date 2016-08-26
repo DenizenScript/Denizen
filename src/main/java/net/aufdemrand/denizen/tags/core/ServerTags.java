@@ -434,8 +434,19 @@ public class ServerTags implements Listener {
         // Returns true if the specified file exists. The starting path is /plugins/Denizen.
         // -->
         if (attribute.startsWith("has_file") && attribute.hasContext(1)) {
-            event.setReplaced(new Element(new File(DenizenAPI.getCurrentInstance().getDataFolder(),
-                    attribute.getContext(1)).exists()).getAttribute(attribute.fulfill(1)));
+            File f = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
+            try {
+                if (!Settings.allowStrangeYAMLSaves() &&
+                        !f.getCanonicalPath().startsWith(DenizenAPI.getCurrentInstance().getDataFolder().getCanonicalPath())) {
+                    dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    return;
+                }
+            }
+            catch (Exception e) {
+                dB.echoError(e);
+                return;
+            }
+            event.setReplaced(new Element(f.exists()).getAttribute(attribute.fulfill(1)));
             return;
         }
 
@@ -448,6 +459,17 @@ public class ServerTags implements Listener {
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
             File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             if (!folder.exists() || !folder.isDirectory()) {
+                return;
+            }
+            try {
+                if (!Settings.allowStrangeYAMLSaves() &&
+                        !folder.getCanonicalPath().startsWith(DenizenAPI.getCurrentInstance().getDataFolder().getCanonicalPath())) {
+                    dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    return;
+                }
+            }
+            catch (Exception e) {
+                dB.echoError(e);
                 return;
             }
             File[] files = folder.listFiles();

@@ -95,7 +95,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("state")) { // NOTE: Deprecated
             return entity;

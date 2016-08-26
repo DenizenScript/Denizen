@@ -104,10 +104,10 @@ public class InventoryScriptContainer extends ScriptContainer {
             if (contains("INVENTORY")) {
                 if (InventoryType.valueOf(getString("INVENTORY").toUpperCase()) != null) {
                     inventory = new dInventory(InventoryType.valueOf(getString("INVENTORY").toUpperCase()));
-                    inventory.setIdentifiers("script", getName());
                     if (contains("TITLE")) {
                         inventory.setTitle(TagManager.tag(getString("TITLE"), context));
                     }
+                    inventory.setIdentifiers("script", getName());
                 }
                 else {
                     dB.echoError("Invalid inventory type specified. Assuming \"CHEST\"");
@@ -217,7 +217,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                                 while (x < filledSlots.length && filledSlots[x]) {
                                     x++;
                                 }
-                                if (x == filledSlots.length - 1 && filledSlots[x]) {
+                                if (x >= filledSlots.length || filledSlots[x]) {
                                     break;
                                 }
                                 inventory.setSlots(x, item.getItemStack());

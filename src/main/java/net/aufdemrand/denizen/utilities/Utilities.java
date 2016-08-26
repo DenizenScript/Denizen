@@ -6,7 +6,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
@@ -32,8 +32,14 @@ import java.util.List;
 public class Utilities {
 
     public static boolean isSafeFile(File f) {
+        if (Settings.allowStupids()) {
+            return true;
+        }
         try {
-            String lown = CoreUtilities.toLowerCase(f.getCanonicalPath());
+            String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
+            if (dB.verbose) {
+                dB.log("Checking file : " + lown);
+            }
             if (lown.contains("denizen/config.yml")) {
                 return false;
             }

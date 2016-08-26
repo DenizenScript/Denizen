@@ -33,7 +33,7 @@ Traits:
   Health:
     Enabled: false
     Respawn:
-      Enabled: true
+      Enabled: false
       Delay: 10s
     Animated death:
       Enabled: false
@@ -92,6 +92,11 @@ Commands:
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
+  Filecopy:
+        # Whether scripts are allowed to copy files across your server
+        # Note that this could be abused by overwriting existing files.
+        # Set to 'false' if you're worried about security.
+        Allow copying files: true
   Java:
         # Whether scripts are allowed to run arbitrary Java code.
         # This is extremely dangerous and should be kept off unless monitored carefully.
@@ -108,6 +113,14 @@ Commands:
   Webget:
         # Whether to allow scripts to read arbitrary data from the web, which can also enable tracking of your private server data.
         Allow: true
+  General:
+        # NEVER EVER ENABLE ANY OF THESE.
+        # THEY WILL BORK YOUR SERVER.
+        # ESPECIALLY NOT IF YOU'RE NOT A JAVA DEVELOPER!!!
+        Allow stupid file abuse you moron dont enable this: false
+        are you sure: false
+        are you absolutely seriously sure dont enable this: false
+        This one dont touch: false
     # GENERAL SECURITY NOTE: Always run your server on a user with access to nothing but the minecraft folder
     # Otherwise, a bad script or plugin could potentially damage things
     # ALSO: Always read scripts you download for anything suspicious looking, EG the log command, the file_delete mechanism, ...
@@ -129,4 +142,4 @@ Tags:
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 12
+  Version: 13

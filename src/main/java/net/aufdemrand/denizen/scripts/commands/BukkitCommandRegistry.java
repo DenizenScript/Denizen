@@ -1506,6 +1506,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name FileCopy
+        // @Syntax filecopy [origin:<origin>] [destination:<destination>] (overwrite)
+        // @Required 2
+        // @Stable stable
+        // @Short Copies a file from one location to another.
+        // @Author mcmonkey
+        // @Group core
+        //
+        // @Description
+        // TODO: Document Command Details
+        // The starting directory is server/plugins/Denizen.
+        //
+        // @Tags
+        // <entry[saveName].success> returns whether the copy succeeded (if not, either an error or occurred, or there is an existing file in the destination.)
+        //
+        // @Usage
+        // Use to copy a custom YAML data file to a backup folder, overwriting any old backup of it that exists.
+        // - filecopy o:data/custom.yml d:data/backup/ overwrite save:copy
+        // - narrate "Copy success<&co> <entry[copy].success>"
+        //
+        // -->
+        registerCoreMember(FileCopyCommand.class,
+                "filecopy", "filecopy [origin:<origin>] [destination:<destination>] (overwrite)", 2);
+
+
+        // <--[command]
         // @Name Follow
         // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
         // @Required 0
@@ -3876,7 +3902,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Walk
-        // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>)
+        // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)
         // @Required 1
         // @Stable stable
         // @Short Causes an entity or list of entities to walk to another location.
@@ -3896,7 +3922,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(WalkCommand.class,
-                "WALK, WALKTO", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>)", 1);
+                "WALK, WALKTO", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>) (lookat:<location>)", 1);
 
         // <--[command]
         // @Name Weather
