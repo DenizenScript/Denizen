@@ -26,7 +26,7 @@ public class DebugSubmit extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the paste server
-            URL url = new URL("http://mcmonkey.org/paste");
+            URL url = new URL("http://old.mcmonkey.org/paste");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);

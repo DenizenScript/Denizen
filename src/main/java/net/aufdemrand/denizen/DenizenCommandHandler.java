@@ -105,7 +105,7 @@ public class DenizenCommandHandler {
                         Messaging.sendError(sender, "Error while submitting.");
                     }
                     else {
-                        Messaging.send(sender, "Successfully submitted to http://mcmonkey.org" + submit.Result);
+                        Messaging.send(sender, "Successfully submitted to http://old.mcmonkey.org" + submit.Result);
                     }
                     this.cancel();
                 }
