@@ -12,7 +12,7 @@ Denizen: Helpful Citizens for Bukkit!
 **IRC** (Modern): http://webchat.esper.net/?channels=citizens,denizen-dev  
 (irc.esper.net in the channels #denizen-dev or #citizens)  
 **Forum** (NEW!): https://forum.mcmonkey.org/index.php  
-**command/tag/event/etc. search** (Modern): http://mcmonkey.org/denizen/logs/  
+**command/tag/event/etc. search** (Modern): http://old.mcmonkey.org/denizen/logs/  
 **Tutorial Videos** (Modern): http://mcmonkey.org/denizen/vids  
 **Denizen Handbook** (OLD): http://bit.ly/XaWBLN  
 **Beginner's Guide** (OLD): http://bit.ly/1bHkByR  
