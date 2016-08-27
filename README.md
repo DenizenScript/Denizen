@@ -6,6 +6,7 @@ Denizen: Helpful Citizens for Bukkit!
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen/  
 **Download (VERY Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen_Developmental/  
 **Download (BukkitDev)**: http://dev.bukkit.org/bukkit-plugins/denizen/  
+**Download (SpigotMC)**: https://www.spigotmc.org/resources/denizen.21039/  
 
 #### Need help using Denizen? Try one of these places:
 
@@ -13,7 +14,7 @@ Denizen: Helpful Citizens for Bukkit!
 (irc.esper.net in the channels #denizen-dev or #citizens)  
 **Forum** (NEW!): https://forum.mcmonkey.org/index.php  
 **command/tag/event/etc. search** (Modern): http://old.mcmonkey.org/denizen/logs/  
-**Tutorial Videos** (Modern): http://mcmonkey.org/denizen/vids  
+**Tutorial Videos** (Modern): http://old.mcmonkey.org/denizen/vids  
 **Denizen Handbook** (OLD): http://bit.ly/XaWBLN  
 **Beginner's Guide** (OLD): http://bit.ly/1bHkByR  
 **Wiki** (OLD): http://wiki.citizensnpcs.co/Denizen  
