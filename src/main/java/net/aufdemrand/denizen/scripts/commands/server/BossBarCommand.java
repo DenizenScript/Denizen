@@ -150,7 +150,7 @@ public class BossBarCommand extends AbstractCommand {
                     }
                     bossBar.addPlayer(player.getPlayerEntity());
                 }
-                bossBar.show();
+                bossBar.setVisible(true);
                 bossBarMap.put(idString, bossBar);
                 break;
 
@@ -191,7 +191,7 @@ public class BossBarCommand extends AbstractCommand {
                     }
                     break;
                 }
-                bossBarMap.get(idString).hide();
+                bossBarMap.get(idString).setVisible(false);
                 bossBarMap.remove(idString);
                 break;
         }
