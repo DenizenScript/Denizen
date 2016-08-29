@@ -26,7 +26,7 @@ public class ScriptVersionChecker {
             public void run() {
                 try {
                     final String ID = container.getString("ID");
-                    URL url = new URL("http://mcmonkey.org/denizen/repo/version/" + ID);
+                    URL url = new URL("http://old.mcmonkey.org/denizen/repo/version/" + ID);
                     HttpURLConnection uc = (HttpURLConnection) url.openConnection();
                     uc.setDoInput(true);
                     uc.setDoOutput(false);
