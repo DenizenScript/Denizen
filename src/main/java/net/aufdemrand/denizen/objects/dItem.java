@@ -848,7 +848,11 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("notable_name", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(NotableManager.getSavedId((dItem) object)).getAttribute(attribute.fulfill(1));
+                String notname = NotableManager.getSavedId((dItem) object);
+                if (notname == null) {
+                    return null;
+                }
+                return new Element(notname).getAttribute(attribute.fulfill(1));
             }
         });
 

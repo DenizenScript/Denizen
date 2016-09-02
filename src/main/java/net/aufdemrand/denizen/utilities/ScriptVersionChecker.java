@@ -26,7 +26,7 @@ public class ScriptVersionChecker {
             public void run() {
                 try {
                     final String ID = container.getString("ID");
-                    URL url = new URL("http://old.mcmonkey.org/denizen/repo/version/" + ID);
+                    URL url = new URL("http://one.denizenscript.com/denizen/repo/version/" + ID);
                     HttpURLConnection uc = (HttpURLConnection) url.openConnection();
                     uc.setDoInput(true);
                     uc.setDoOutput(false);
@@ -46,7 +46,7 @@ public class ScriptVersionChecker {
                             else {
                                 sender.sendMessage(ChatColor.AQUA + name + ChatColor.RED + " is NOT up to date!");
                                 sender.sendMessage(ChatColor.RED + "Your version: " + vers + ", repo version: " + Result);
-                                sender.sendMessage(ChatColor.RED + "Update at: http://mcmonkey.org/denizen/repo/entry/" + ID);
+                                sender.sendMessage(ChatColor.RED + "Update at: http://one.denizenscript.com/denizen/repo/entry/" + ID);
                             }
                         }
                     });
