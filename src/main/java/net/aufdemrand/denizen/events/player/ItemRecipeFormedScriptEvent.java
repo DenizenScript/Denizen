@@ -139,6 +139,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             }
         }
         player = dEntity.getPlayerFrom(humanEntity);
+        cancelled = false;
         fire();
         if (cancelled) {
             inventory.setResult(null);
