@@ -3989,7 +3989,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Edits a YAML configuration file.
         // This can be used for interacting with other plugins' configuration files.
         // It can also be used for storing your own script's data.
-        // It can even be used to edit Denizen's saves/config, or even Denizen scripts.
         // TODO: Document Command Details
         // When loading a script, optionally add 'fix_formatting' to run the file through
         // Denizen's built in script preparser to correct common YAML errors,
