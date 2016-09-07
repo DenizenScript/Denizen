@@ -35,7 +35,7 @@ public class EntityMovement {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().n();
+        ((EntityInsentient) nmsEntity).getNavigation().o();
     }
 
     public static void toggleAI(Entity entity, boolean hasAI) {
@@ -131,7 +131,7 @@ public class EntityMovement {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.n();
+                    followerNavigation.o();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             }
