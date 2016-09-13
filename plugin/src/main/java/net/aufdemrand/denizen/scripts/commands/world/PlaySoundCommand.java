@@ -100,7 +100,7 @@ public class PlaySoundCommand extends AbstractCommand {
                 if (custom.asBoolean()) {
                     for (dLocation location : locations) {
                         for (Player player : location.getWorld().getPlayers())
-                        // Note: Randomly defining 100 blocks as maximum hear distance.
+                        // Note: Randomly defining 100 blocks as maximum hearing distance.
                         {
                             if (player.getLocation().distanceSquared(location) < 100 * 100) {
                                 player.playSound(location, sound.asString(),

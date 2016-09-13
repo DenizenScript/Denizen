@@ -1132,6 +1132,17 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(2));
         }
 
+        // <--[tag]
+        // @attribute <p@player.exhaustion>
+        // @returns Element(Decimal)
+        // @description
+        // Returns how fast the food level drops (exhaustion).
+        // -->
+        if (attribute.startsWith("exhaustion")) {
+            return new Element(getPlayerEntity().getExhaustion())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         // Handle dEntity oxygen tags here to allow getting them when the player is offline
         if (attribute.startsWith("oxygen.max")) {
             return new Duration((long) getMaximumAir()).getAttribute(attribute.fulfill(2));
@@ -2520,6 +2531,19 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
             getPlayerEntity().setWalkSpeed(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name exhaustion
+        // @input Element(Decimal)
+        // @description
+        // Sets the exhaustion level of a player.
+        // @tags
+        // <p@player.exhaustion>
+        // -->
+        if (mechanism.matches("exhaustion") && mechanism.requireFloat()) {
+            getPlayerEntity().setExhaustion(value.asFloat());
         }
 
         // <--[mechanism]
