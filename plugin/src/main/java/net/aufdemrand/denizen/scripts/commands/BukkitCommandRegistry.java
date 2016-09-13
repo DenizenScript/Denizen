@@ -722,13 +722,29 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group player
         //
         // @Description
-        // TODO: Document Command Details
+        // Redirects the compass of the player, who is attached to the script queue.
+        //
+        // This is not the compass item, but the command is controlling the pointer the item should direct at.
+        // This means that all item compasses will point the same direction but differently for each player.
+        //
+        // The y-axis is not used but its fine to be included in the location argument.
+        //
+        // Reset argument will turn the direction to default (spawn or bed)
         //
         // @Tags
         // <p@player.compass.target>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to reset the compass direction to its default
+        // - compass reset
+        //
+        // @Usage
+        // Use to point with a compass to the player's current location
+        // - compass <player.location>
+        //
+        // @Usage
+        // Use to point with a compass to the world's spawn location
+        // - compass <w@world.spawn_location>
         // -->
         registerCoreMember(CompassCommand.class,
                 "COMPASS", "compass [<location>/reset]", 1);
@@ -2837,7 +2853,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // The random command picks one of the following script command
+        // and skips all the other script commands that are in range.
+        //
+        // Specifying a number as argument will get the next following
+        // scripts commands in the queue to be picked at random.
+        // Example "- random 3" will get the next 3 commands
+        // in the current queue and pick one of those 3 to run,
+        // the other 2 commands, that was in range, will be skipped.
+        //
+        // If braces are used for argument, then it is for every
+        // denizen command, in the brace, one of them will be picked
+        // and the rest, in the brace, will be skipped.
         //
         // @Tags
         // <entry[saveName].possibilities> returns an Element of the possibility count.
@@ -2852,11 +2879,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to choose randomly from a braced set of commands
-        // - random {
+        // - random:
         //   - narrate "hi"
         //   - narrate "hello"
         //   - narrate "hey"
-        //   }
+        //
+        // @Usage
+        // Use to perform multiple commands randomly
+        // - random:
+        //   - repeat 1:
+        //     - narrate "Hello"
+        //     - narrate "How are you?"
+        //   - repeat 1:
+        //     - narrate "Hey"
+        //     - narrate "It is a nice day."
         // -->
         registerCoreMember(RandomCommand.class,
                 "RANDOM", "random [<#>/<commands>]", 1);
@@ -3020,13 +3056,46 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // Runs a new script queue, either in the local script or in a different task script.
+        //
+        // You can set the queue speed using the speed argument
+        // this makes the queue run each script command with a delay.
+        // Specifying the "instantly" argument will run the queue instantly
+        // (speed at 0 ticks; queue running in total of 1 tick, just like an event script)
+        // If no speed or "instantly" argument are applied,
+        // it assumes the default script speed that are configured.
+        //
+        // Specifying context or definitions as argument
+        // allows the transfer oof definitions to the new queue.
+        // Definitions are not carried over if not specified.
+        // (See <a href="/cmds/Define">command/Define</a>)
+        //
+        // Specifying a player argument will run the queue with a player attached
+        // to that queue. The same can be done to attach an npc.
+        // Player and npc are not carried over to the new queue if not specified.
         //
         // @Tags
         // <entry[saveName].created_queue>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to run a new queue instant
+        // - run MyNewTask instantly
+        //
+        // @Usage
+        // Use to run a new queue instant
+        // - run MyNewTask instantly context:4|20|true
+        //
+        // @Usage
+        // Use to run a new queue with an attached player and npc with a definition
+        // - run MyNewTask context:friends player:p@bob npc:<player.selected_npc>
+        //
+        // @Usage
+        // Use to run a new queue instant with the same attached player
+        // - run MyNewTask instantly player:<player>
+        //
+        // @Usage
+        // Use to run a new queue from a local script
+        // - run locally MyNewTask
         // -->
         registerCoreMember(RunCommand.class,
                 "RUN", "run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)", 1);
@@ -3385,13 +3454,32 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group player
         //
         // @Description
-        // TODO: Document Command Details
+        // Shows a fake block for a player which is not affected on server-side.
+        // You can show a block for a player without anyone else can see it.
+        //
+        // If a player stands on a showfake block which is originally and air block,
+        // then the server will treat this as the player is flying/falling.
+        //
+        // If a player tries to interact with the block (usually by right-clicking or left-click),
+        // the server will then update the block for the player with the original block and the
+        // effect of showfake is lost.
+        //
+        // If no duration is specefied, then it assumes the default duration of 10 seconds.
         //
         // @Tags
         // TODO: Document Command Details
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to place a fake gold block at where the player is looking
+        // - showfake GOLD_BLOCK <player.location.cursor_on> players:<player> duration:1m
+        //
+        // @Usage
+        // Use to place a stone block right on player's face
+        // - showfake STONE <player.location.add[0,1,0]> players:<player> duration:5s
+        //
+        // @Usage
+        // Use to place fake lava (shows visual fire if standing in it)
+        // - showfake LAVA <player.location> players:<server.list_online_players> duration:5s
         // -->
         registerCoreMember(ShowFakeCommand.class,
                 "SHOWFAKE", "showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})", 2);
