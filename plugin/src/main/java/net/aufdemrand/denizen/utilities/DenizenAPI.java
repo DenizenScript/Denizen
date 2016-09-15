@@ -16,7 +16,7 @@ import java.util.Collection;
  */
 public class DenizenAPI {
 
-    public static Denizen denizen;
+    private static Denizen denizen;
 
     /**
      * Returns a dNPC object when given a valid NPC. DenizenNPCs have some methods
