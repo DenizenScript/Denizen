@@ -862,8 +862,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
 
-        // Enable custom inbound packet listener
-        DenizenPacketListener.enable();
+        if (Settings.packetInterception()) {
+            // Enable custom inbound packet listener
+            DenizenPacketListener.enable();
+        }
 
         // Run everything else on the first server tick
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {

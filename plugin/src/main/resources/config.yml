@@ -139,7 +139,14 @@ Tags:
     # How many player messages will be stored for each player (<player.chat_history>, etc.)
     Max messages: 10
 
+Packets:
+  # Whether to allow Denizen to intercept packets from and to player clients.
+  # This enables access to certain ScriptEvents, such as PlayerSteers and PlayerReceivesMessage.
+  # It also enables hiding item script IDs and most likely has no real reason to be disabled.
+  # Note that changing this setting requires a full server restart.
+  Interception: true
+
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 13
+  Version: 14
