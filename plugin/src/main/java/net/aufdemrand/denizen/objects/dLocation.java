@@ -1123,7 +1123,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.rotate_around_x[<#.#>]>
         // @returns dLocation
         // @description
-        // Returns the location rotated around the x axis by a specified angle.
+        // Returns the location rotated around the x axis by a specified angle in radians.
         // -->
         if (attribute.startsWith("rotate_around_x") && attribute.hasContext(1)) {
             double angle = attribute.getDoubleContext(1);
@@ -1141,7 +1141,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.rotate_around_y[<#.#>]>
         // @returns dLocation
         // @description
-        // Returns the location rotated around the y axis by a specified angle.
+        // Returns the location rotated around the y axis by a specified angle in radians.
         // -->
         if (attribute.startsWith("rotate_around_y") && attribute.hasContext(1)) {
             double angle = attribute.getDoubleContext(1);
@@ -1159,7 +1159,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.rotate_around_z[<#.#>]>
         // @returns dLocation
         // @description
-        // Returns the location rotated around the z axis by a specified angle.
+        // Returns the location rotated around the z axis by a specified angle in radians.
         // -->
         if (attribute.startsWith("rotate_around_z") && attribute.hasContext(1)) {
             double angle = attribute.getDoubleContext(1);

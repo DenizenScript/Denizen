@@ -100,6 +100,7 @@ public class DenizenPacketListener extends AbstractListenerPlayIn {
                             event.forward = new Element(packet.b());
                             event.jump = new Element(packet.c());
                             event.dismount = new Element(packet.d());
+                            event.cancelled = false;
                             event.fire();
                             return event.cancelled;
                         }

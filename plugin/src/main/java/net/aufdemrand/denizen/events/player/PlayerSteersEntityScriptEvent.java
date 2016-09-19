@@ -21,7 +21,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     //
     // @Cancellable true
     //
-    // @Triggers when a player attempts to steer an entity.
+    // @Triggers every tick that a player is controlling a vehicle.
     //
     // @Context
     // <context.entity> returns the dEntity being steered by the player.
