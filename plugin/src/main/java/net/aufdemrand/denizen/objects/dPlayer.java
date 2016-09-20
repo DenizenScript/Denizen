@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
@@ -1518,7 +1519,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current lines set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.lines")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1532,7 +1533,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current title set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.title")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1547,7 +1548,7 @@ public class dPlayer implements dObject, Adjustable {
         // in the same order as <@link tag p@player.sidebar.lines>.
         // -->
         if (attribute.startsWith("sidebar.scores")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1565,7 +1566,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current start score set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.start")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1579,7 +1580,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current score increment set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.increment")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }

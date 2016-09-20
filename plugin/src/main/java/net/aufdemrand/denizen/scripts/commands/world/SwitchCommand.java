@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -15,16 +16,10 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_10_R1.Block;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.EnumDirection;
-import net.minecraft.server.v1_10_R1.EnumHand;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -113,17 +108,16 @@ public class SwitchCommand extends AbstractCommand {
         String state = switchState.toString();
 
         // Try for a linked player
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        if (craftPlayer == null && Bukkit.getOnlinePlayers().size() > 0) {
+        if (player == null && Bukkit.getOnlinePlayers().size() > 0) {
             // If there's none, link any player
             if (Bukkit.getOnlinePlayers().size() > 0) {
-                craftPlayer = (CraftPlayer) Bukkit.getOnlinePlayers().toArray()[0];
+                player = (Player) Bukkit.getOnlinePlayers().toArray()[0];
             }
             else if (Depends.citizens != null) {
                 // If there are no players, link any Human NPC
                 for (NPC npc : CitizensAPI.getNPCRegistry()) {
                     if (npc.isSpawned() && npc.getEntity() instanceof Player) {
-                        craftPlayer = (CraftPlayer) npc.getEntity();
+                        player = (Player) npc.getEntity();
                         break;
                     }
                 }
@@ -147,19 +141,7 @@ public class SwitchCommand extends AbstractCommand {
                     block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
                 }
                 else {
-
-                    // TODO: Rewrite the below code to not use freakin' NMS!
-                    BlockPosition pos =
-                            new BlockPosition(interactLocation.getBlockX(),
-                                    interactLocation.getBlockY(),
-                                    interactLocation.getBlockZ());
-
-                    Block.getById(interactLocation.getBlock().getType().getId())
-                            .interact(((CraftWorld) interactLocation.getWorld()).getHandle(),
-                                    pos,
-                                    ((CraftWorld) interactLocation.getWorld()).getHandle().getType(pos),
-                                    craftPlayer != null ? craftPlayer.getHandle() : null,
-                                    EnumHand.MAIN_HAND, null, EnumDirection.NORTH, 0f, 0f, 0f);
+                    NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);
                 }
 
                 dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +

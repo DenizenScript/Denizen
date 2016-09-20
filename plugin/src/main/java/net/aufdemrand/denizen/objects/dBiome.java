@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.utilities.BiomeNMS;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -70,7 +71,7 @@ public class dBiome implements dObject, Adjustable {
     /////////////
 
     public dBiome(Biome biome) {
-        this.biome = new BiomeNMS(biome);
+        this.biome = NMSHandler.getInstance().getBiomeNMS(biome);
     }
 
 

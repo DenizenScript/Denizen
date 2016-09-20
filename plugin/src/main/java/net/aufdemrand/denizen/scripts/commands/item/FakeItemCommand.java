@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -14,10 +16,8 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.scheduling.OneTimeSchedulable;
-import net.minecraft.server.v1_10_R1.ItemStack;
-import net.minecraft.server.v1_10_R1.PacketPlayOutSetSlot;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -90,6 +90,9 @@ public class FakeItemCommand extends AbstractCommand {
                 + aH.debugList("players", players) + player_only.debug());
 
         int slot = elSlot.asInt() - 1;
+        final boolean playerOnly = player_only.asBoolean();
+
+        final PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
 
         for (dItem item : items) {
             if (item == null) {
@@ -97,10 +100,9 @@ public class FakeItemCommand extends AbstractCommand {
                 continue;
             }
 
-            net.minecraft.server.v1_10_R1.ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-
             for (dPlayer player : players) {
-                setSlot((CraftPlayer) player.getPlayerEntity(), slot, itemStack, player_only.asBoolean());
+                Player ent = player.getPlayerEntity();
+                packetHelper.setSlot(ent, translateSlot(ent, slot, playerOnly), item.getItemStack(), playerOnly);
             }
 
             final int slotSnapshot = slot;
@@ -111,10 +113,9 @@ public class FakeItemCommand extends AbstractCommand {
                     @Override
                     public void run() {
                         for (dPlayer player : players) {
-                            CraftPlayer craftPlayer = (CraftPlayer) player.getPlayerEntity();
-                            ItemStack original = CraftItemStack.asNMSCopy(craftPlayer.getOpenInventory()
-                                    .getItem(translateSlot(craftPlayer, slotSnapshot, player_only.asBoolean())));
-                            setSlot(craftPlayer, slotSnapshot, original, player_only.asBoolean());
+                            Player ent = player.getPlayerEntity();
+                            ItemStack original = ent.getOpenInventory().getItem(translateSlot(ent, slotSnapshot, playerOnly));
+                            packetHelper.setSlot(ent, slotSnapshot, original, playerOnly);
                         }
                     }
                 }, (float) duration.getSeconds()));
@@ -122,20 +123,11 @@ public class FakeItemCommand extends AbstractCommand {
         }
     }
 
-    static void setSlot(CraftPlayer craftPlayer, int slot, ItemStack itemStack, boolean player_only) {
-        PacketPlayOutSetSlot setSlotPacket = new PacketPlayOutSetSlot(
-                player_only ? 0 : craftPlayer.getHandle().activeContainer.windowId,
-                translateSlot(craftPlayer, slot, player_only),
-                itemStack
-        );
-        craftPlayer.getHandle().playerConnection.sendPacket(setSlotPacket);
-    }
-
-    static int translateSlot(CraftPlayer craftPlayer, int slot, boolean player_only) {
+    static int translateSlot(Player player, int slot, boolean player_only) {
         if (slot < 0) {
             return 0;
         }
-        int total = player_only ? 46 : craftPlayer.getOpenInventory().countSlots();
+        int total = player_only ? 46 : player.getOpenInventory().countSlots();
         if (total == 46) {
             if (slot == 45) {
                 return slot;

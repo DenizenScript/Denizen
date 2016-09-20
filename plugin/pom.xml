@@ -16,8 +16,8 @@
     <!-- Dependencies -->
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <version>${craftbukkit.version}</version>
             <type>jar</type>
             <scope>provided</scope>

@@ -1,20 +1,23 @@
 package net.aufdemrand.denizen.nms;
 
-import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
-import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
-import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
-import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
-import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
+import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
+import net.aufdemrand.denizen.nms.interfaces.*;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
-import org.bukkit.Server;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class NMSHandler {
 
     private static NMSHandler instance;
     private static NMSVersion version;
+    protected static JavaPlugin javaPlugin;
 
-    public static boolean checkServerVersion(Server server) {
-        String packageName = server.getClass().getPackage().getName();
+    public static boolean initialize(JavaPlugin plugin) {
+        javaPlugin = plugin;
+        String packageName = javaPlugin.getServer().getClass().getPackage().getName();
         try {
             // Check if we support this MC version
             version = NMSVersion.valueOf(packageName.substring(packageName.lastIndexOf('.') + 1));
@@ -50,11 +53,23 @@ public abstract class NMSHandler {
         return version;
     }
 
+    public abstract Sidebar createSidebar(Player player);
+
     public abstract PlayerProfile fillPlayerProfile(PlayerProfile playerProfile);
+
+    public abstract PlayerProfile getPlayerProfile(Player player);
+
+    public abstract ProfileEditor getProfileEditor();
+
+    public abstract BiomeNMS getBiomeNMS(Biome biome);
 
     public abstract Thread getMainThread();
 
+    public abstract double[] getRecentTps();
+
     public abstract BlockHelper getBlockHelper();
+
+    public abstract ChunkHelper getChunkHelper();
 
     public abstract EntityHelper getEntityHelper();
 
@@ -62,5 +77,9 @@ public abstract class NMSHandler {
 
     public abstract ItemHelper getItemHelper();
 
+    public abstract PacketHelper getPacketHelper();
+
     public abstract PlayerHelper getPlayerHelper();
+
+    public abstract WorldHelper getWorldHelper();
 }

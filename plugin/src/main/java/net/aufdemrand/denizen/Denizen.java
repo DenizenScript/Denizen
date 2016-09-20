@@ -366,7 +366,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      */
     @Override
     public void onEnable() {
-        if (!NMSHandler.checkServerVersion(getServer())) {
+        if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
             getLogger().warning("Denizen is not compatible with this CraftBukkit version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");

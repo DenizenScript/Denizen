@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.WorldHelper;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -8,7 +10,11 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
@@ -19,7 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,8 +32,6 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -256,41 +259,21 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     boolean preSetup(dLocation loc0) {
         // Freeze the first world in the list.
-        // TODO: make this do all worlds from the locations in the list
-        CraftWorld craftWorld = (CraftWorld) loc0.getWorld();
-        boolean was_static = craftWorld.getHandle().isClientSide;
+        WorldHelper worldHelper = NMSHandler.getInstance().getWorldHelper();
+        World world = loc0.getWorld();
+        boolean was_static = worldHelper.isStatic(world);
         if (no_physics) {
-            setWorldIsStatic(loc0.getWorld(), true);
+            worldHelper.setStatic(world, true);
         }
         return was_static;
     }
 
     void postComplete(Location loc, boolean was_static) {
         // Unfreeze the first world in the list.
-        // TODO: make this do all worlds from the locations in the list
         if (no_physics) {
-            setWorldIsStatic(loc.getWorld(), was_static);
+            NMSHandler.getInstance().getWorldHelper().setStatic(loc.getWorld(), was_static);
         }
         no_physics = false;
-    }
-
-    private static Field isStaticField = null;
-
-    void setWorldIsStatic(World world, boolean isStatic) {
-        try {
-            CraftWorld craftWorld = (CraftWorld) world;
-            if (isStaticField == null) {
-                isStaticField = craftWorld.getHandle().getClass().getField("isClientSide");
-                isStaticField.setAccessible(true);
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(isStaticField, isStaticField.getModifiers() & ~Modifier.FINAL);
-            }
-            isStaticField.set(craftWorld.getHandle(), isStatic);
-        }
-        catch (Exception e) {
-            dB.echoError(e);
-        }
     }
 
     void handleLocation(dLocation location, int index, List<dMaterial> materialList, boolean doPhysics,

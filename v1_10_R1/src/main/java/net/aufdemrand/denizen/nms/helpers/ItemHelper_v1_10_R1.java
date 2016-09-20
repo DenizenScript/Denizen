@@ -13,6 +13,12 @@ import org.bukkit.inventory.ItemStack;
 public class ItemHelper_v1_10_R1 implements ItemHelper {
 
     @Override
+    public String getJsonString(ItemStack itemStack) {
+        String json = CraftItemStack.asNMSCopy(itemStack).B().getChatModifier().toString().replace("\"", "\\\"");
+        return json.substring(176, json.length() - 185);
+    }
+
+    @Override
     public PlayerProfile getSkullSkin(ItemStack is) {
         net.minecraft.server.v1_10_R1.ItemStack itemStack = CraftItemStack.asNMSCopy(is);
         if (itemStack.hasTag()) {

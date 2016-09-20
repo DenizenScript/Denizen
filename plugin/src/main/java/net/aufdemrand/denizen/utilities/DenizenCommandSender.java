@@ -2,9 +2,9 @@ package net.aufdemrand.denizen.utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_10_R1.command.ColouredConsoleSender;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -16,7 +16,7 @@ import java.util.Set;
 /**
  * Used to send commands and record their output.
  */
-public class DenizenCommandSender extends ColouredConsoleSender {
+public class DenizenCommandSender implements ConsoleCommandSender {
 
     private ArrayList<String> output = new ArrayList<String>();
 

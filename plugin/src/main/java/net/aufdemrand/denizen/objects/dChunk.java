@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -13,7 +14,6 @@ import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -121,6 +121,10 @@ public class dChunk implements dObject, Adjustable {
 
     public ChunkSnapshot getSnapshot() {
         return chunk.getChunkSnapshot();
+    }
+
+    public int[] getHeightMap() {
+        return NMSHandler.getInstance().getChunkHelper().getHeightMap(chunk);
     }
 
     String prefix = "Chunk";
@@ -358,7 +362,7 @@ public class dChunk implements dObject, Adjustable {
         registerTag("height_map", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                int[] heightMap = ((dChunk) object).getHeightMap();
                 List<String> height_map = new ArrayList<String>(heightMap.length);
                 for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
@@ -377,7 +381,7 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int sum = 0;
-                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                int[] heightMap = ((dChunk) object).getHeightMap();
                 for (int i : heightMap) {
                     sum += i;
                 }
@@ -398,7 +402,7 @@ public class dChunk implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 int tolerance = attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1)) ?
                         Integer.valueOf(attribute.getContext(1)) : 2;
-                int[] heightMap = ((CraftChunk)((dChunk) object).chunk).getHandle().heightMap;
+                int[] heightMap = ((dChunk) object).getHeightMap();
                 int x = heightMap[0];
                 for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {

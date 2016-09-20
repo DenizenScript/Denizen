@@ -6,9 +6,8 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.minecraft.server.v1_10_R1.ItemStack;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemUnbreakable implements Property {
 
@@ -51,9 +50,8 @@ public class ItemUnbreakable implements Property {
     }
 
     public String getPropertyString() {
-        ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-        if (itemStack != null && itemStack.hasTag() &&
-                itemStack.getTag().getBoolean("Unbreakable")) {
+        ItemStack itemStack = item.getItemStack();
+        if (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable()) {
             return "true";
         }
         return null;
@@ -75,11 +73,11 @@ public class ItemUnbreakable implements Property {
         // <i@item.unbreakable>
         // -->
         if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
-            ItemStack itemStack = CraftItemStack.asNMSCopy(item.getItemStack());
-            NBTTagCompound tag = itemStack.hasTag() ? itemStack.getTag() : new NBTTagCompound();
-            tag.setInt("Unbreakable", mechanism.getValue().asBoolean() ? 1 : 0);
-            itemStack.setTag(tag);
-            item.setItemStack(CraftItemStack.asBukkitCopy(itemStack));
+            ItemStack itemStack = item.getItemStack().clone();
+            ItemMeta meta = itemStack.getItemMeta();
+            meta.spigot().setUnbreakable(mechanism.getValue().asBoolean());
+            itemStack.setItemMeta(meta);
+            item.setItemStack(itemStack);
         }
     }
 }

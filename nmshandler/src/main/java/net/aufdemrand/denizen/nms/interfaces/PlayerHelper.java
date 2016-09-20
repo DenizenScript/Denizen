@@ -9,5 +9,7 @@ public interface PlayerHelper {
 
     int getPing(Player player);
 
+    void setTemporaryOp(Player player, boolean op);
+
     void showEndCredits(Player player);
 }

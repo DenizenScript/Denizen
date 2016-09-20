@@ -25,7 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventory;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -53,13 +52,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
-            if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+            if (inv.getValue().equals(inventory)) {
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
             }
         }
         // Iterate through offline player enderchests
         for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
-            if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+            if (inv.getValue().equals(inventory)) {
                 return new dInventory(new ImprovedOfflinePlayer(inv.getKey()), true);
             }
         }
@@ -535,7 +534,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         else if (getIdType().equals("player")) {
             // Iterate through offline player inventories
             for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
-                if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+                if (inv.getValue().equals(inventory)) {
                     idHolder = new dPlayer(inv.getKey()).identify();
                     return;
                 }
@@ -544,7 +543,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         else if (getIdType().equals("enderchest")) {
             // Iterate through offline player enderchests
             for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
-                if (((CraftInventory) inv.getValue()).getInventory().equals(((CraftInventory) inventory).getInventory())) {
+                if (inv.getValue().equals(inventory)) {
                     idHolder = new dPlayer(inv.getKey()).identify();
                     return;
                 }

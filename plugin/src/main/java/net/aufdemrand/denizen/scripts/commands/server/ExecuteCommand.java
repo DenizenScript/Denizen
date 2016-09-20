@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
-import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -13,12 +14,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_10_R1.MinecraftServer;
-import net.minecraft.server.v1_10_R1.OpList;
-import net.minecraft.server.v1_10_R1.OpListEntry;
-import net.minecraft.server.v1_10_R1.PlayerList;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -142,14 +138,10 @@ public class ExecuteCommand extends AbstractCommand {
                     return;
                 }
                 Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
                 boolean isOp = player.isOp();
                 if (!isOp) {
-                    int i = MinecraftServer.getServer().q();
-                    PlayerList playerList = MinecraftServer.getServer().getPlayerList();
-                    OpList opList = playerList.getOPs();
-                    GameProfile profile = ((CraftPlayer) player).getProfile();
-                    opList.add(new OpListEntry(profile, i, opList.b(profile)));
-                    player.recalculatePermissions();
+                    playerHelper.setTemporaryOp(player, true);
                 }
                 try {
                     PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(player, "/" + command);
@@ -171,11 +163,7 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
                 if (!isOp) {
-                    PlayerList playerList = MinecraftServer.getServer().getPlayerList();
-                    OpList opList = playerList.getOPs();
-                    GameProfile profile = ((CraftPlayer) player).getProfile();
-                    opList.remove(profile);
-                    player.recalculatePermissions();
+                    playerHelper.setTemporaryOp(player, false);
                 }
                 break;
 

@@ -2,8 +2,9 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.minecraft.server.v1_10_R1.PlayerInteractManager;
@@ -96,16 +97,15 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         }
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
-        GameProfile gameProfile = new GameProfile(null, name);
+        PlayerProfile playerProfile = new PlayerProfile(name, null);
         if (skin == null && !name.matches(".*[^A-Za-z0-9_].*")) {
-            gameProfile = PlayerProfileEditor.fillGameProfile(gameProfile);
+            playerProfile = NMSHandler.getInstance().fillPlayerProfile(playerProfile);
         }
         if (skin != null) {
-            GameProfile skinProfile = new GameProfile(null, skin);
-            skinProfile = PlayerProfileEditor.fillGameProfile(skinProfile);
-            for (Property texture : skinProfile.getProperties().get("textures")) {
-                gameProfile.getProperties().put("textures", texture);
-            }
+            PlayerProfile skinProfile = new PlayerProfile(skin, null);
+            skinProfile = NMSHandler.getInstance().fillPlayerProfile(skinProfile);
+            playerProfile.setTexture(skinProfile.getTexture());
+            playerProfile.setTextureSignature(skinProfile.getTextureSignature());
         }
         UUID uuid = UUID.randomUUID();
         if (uuid.version() == 4) {
@@ -114,8 +114,12 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             msb |= 0x0000000000002000L;
             uuid = new UUID(msb, uuid.getLeastSignificantBits());
         }
-        PlayerProfileEditor.setProfileId(gameProfile, uuid);
+        playerProfile.setUniqueId(uuid);
 
+        GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
+        gameProfile.getProperties().put("textures",
+                new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+        
         final EntityFakePlayer fakePlayer = new EntityFakePlayer(worldServer.getMinecraftServer(), worldServer,
                 gameProfile, new PlayerInteractManager(worldServer));
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),

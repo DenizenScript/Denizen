@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -12,8 +13,6 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.PacketPlayOutBlockBreakAnimation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -94,6 +93,8 @@ public class BlockCrack extends AbstractCommand {
 
         boolean stackVal = stack.asBoolean();
 
+        PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
+
         for (dPlayer player : players) {
             if (!player.isOnline()) {
                 dB.echoError("Players must be online!");
@@ -110,18 +111,15 @@ public class BlockCrack extends AbstractCommand {
             IntHolder intHolder = uuidInt.get(uuid);
             if (!stackVal && intHolder.theInt > intHolder.base) {
                 for (int i = intHolder.base; i <= intHolder.theInt; i++) {
-                    PacketHelper.sendPacket(playerEnt, getPacket(i, loc, -1));
+                    packetHelper.showBlockCrack(playerEnt, i, loc, -1);
                 }
                 intHolder.theInt = intHolder.base;
             }
             else if (stackVal && intHolder.theInt - intHolder.base > 10) {
                 continue;
             }
-            PacketHelper.sendPacket(player.getPlayerEntity(), getPacket(stackVal ? intHolder.theInt++ : intHolder.theInt, loc, progress.asInt() - 1));
+            int id = stackVal ? intHolder.theInt++ : intHolder.theInt;
+            packetHelper.showBlockCrack(player.getPlayerEntity(), id, loc, progress.asInt() - 1);
         }
-    }
-
-    private static PacketPlayOutBlockBreakAnimation getPacket(int id, Location location, int progress) {
-        return new PacketPlayOutBlockBreakAnimation(id, new BlockPosition(location.getX(), location.getY(), location.getZ()), progress);
     }
 }

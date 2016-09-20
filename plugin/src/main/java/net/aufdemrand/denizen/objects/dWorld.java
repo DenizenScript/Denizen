@@ -12,7 +12,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.v1_10_R1.CraftChunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -343,7 +342,7 @@ public class dWorld implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 dList chunks = new dList();
                 for (Chunk ent : ((dWorld) object).getWorld().getLoadedChunks()) {
-                    chunks.add(new dChunk((CraftChunk) ent).identify());
+                    chunks.add(new dChunk(ent).identify());
                 }
 
                 return chunks.getAttribute(attribute.fulfill(1));
@@ -359,7 +358,7 @@ public class dWorld implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int random = CoreUtilities.getRandom().nextInt(((dWorld) object).getWorld().getLoadedChunks().length);
-                return new dChunk((CraftChunk) ((dWorld) object).getWorld().getLoadedChunks()[random])
+                return new dChunk(((dWorld) object).getWorld().getLoadedChunks()[random])
                         .getAttribute(attribute.fulfill(1));
             }
         });

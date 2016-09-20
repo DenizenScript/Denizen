@@ -2,14 +2,14 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.DenizenAliasHelpTopic;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizen.utilities.DenizenCommandHelpTopic;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.craftbukkit.v1_10_R1.command.VanillaCommandWrapper;
-import org.bukkit.craftbukkit.v1_10_R1.help.CommandAliasHelpTopic;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.help.HelpMap;
 import org.bukkit.help.HelpTopic;
@@ -61,7 +61,7 @@ public class CommandScriptHelper implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (!(knownCommands.get("help") instanceof VanillaCommandWrapper)) {
+                    if (!(knownCommands.get("help") instanceof VanillaCommand)) {
                         return;
                     }
                     knownCommands.put("help", knownCommands.get("bukkit:help"));
@@ -121,7 +121,7 @@ public class CommandScriptHelper implements Listener {
                 if (denizenCommands.containsKey(alias)) {
                     continue;
                 }
-                forceCommand(alias, command, new CommandAliasHelpTopic("/" + alias, name,
+                forceCommand(alias, command, new DenizenAliasHelpTopic("/" + alias, name,
                         DenizenAPI.getCurrentInstance().getServer().getHelpMap()));
             }
         }

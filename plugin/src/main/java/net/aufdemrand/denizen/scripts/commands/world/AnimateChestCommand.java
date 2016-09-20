@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -11,12 +13,8 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import net.minecraft.server.v1_10_R1.Block;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.PacketPlayOutBlockAction;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,27 +90,26 @@ public class AnimateChestCommand extends AbstractCommand {
                 + sound.debug()
                 + aH.debugObj("players", players.toString()));
 
-        BlockPosition blockPosition = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        Block block = ((CraftWorld) location.getWorld()).getHandle().getType(blockPosition).getBlock();
+        PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
 
         switch (ChestAction.valueOf(action.asString().toUpperCase())) {
             case OPEN:
                 for (dPlayer player : players) {
+                    Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().playSound(location, Sound.BLOCK_CHEST_OPEN, 1, 1);
+                        ent.playSound(location, Sound.BLOCK_CHEST_OPEN, 1, 1);
                     }
-                    ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction(blockPosition, block, 1, 1));
+                    packetHelper.showBlockAction(ent, location, 1, 1);
                 }
                 break;
 
             case CLOSE:
                 for (dPlayer player : players) {
+                    Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        player.getPlayerEntity().getWorld().playSound(location, Sound.BLOCK_CHEST_CLOSE, 1, 1);
+                        ent.playSound(location, Sound.BLOCK_CHEST_CLOSE, 1, 1);
                     }
-                    ((CraftPlayer) player.getPlayerEntity()).getHandle().playerConnection.sendPacket(
-                            new PacketPlayOutBlockAction(blockPosition, block, 1, 0));
+                    packetHelper.showBlockAction(ent, location, 1, 0);
                 }
                 break;
         }
