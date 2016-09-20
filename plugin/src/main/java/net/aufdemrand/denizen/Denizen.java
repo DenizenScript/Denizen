@@ -438,7 +438,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Register DenizenEntityTypes
             DenizenEntityType.registerEntityType("ITEM_PROJECTILE", CraftItemProjectile.class);
             DenizenEntityType.registerEntityType("FAKE_ARROW", CraftFakeArrow.class);
-            DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
+            if (Settings.packetInterception()) {
+                DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
+            }
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
