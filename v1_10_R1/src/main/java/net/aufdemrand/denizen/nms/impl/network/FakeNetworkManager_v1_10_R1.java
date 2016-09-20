@@ -1,13 +1,12 @@
-package net.aufdemrand.denizen.utilities.entity.network;
+package net.aufdemrand.denizen.nms.impl.network;
 
-import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_10_R1.EnumProtocolDirection;
 import net.minecraft.server.v1_10_R1.NetworkManager;
 
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 
-public class FakeNetworkManager extends NetworkManager {
+public class FakeNetworkManager_v1_10_R1 extends NetworkManager {
 
     private static final Field networkChannelField;
     private static final Field networkAddressField;
@@ -22,21 +21,21 @@ public class FakeNetworkManager extends NetworkManager {
             addr.setAccessible(true);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
         networkChannelField = chan;
         networkAddressField = addr;
     }
 
-    public FakeNetworkManager(EnumProtocolDirection enumprotocoldirection) {
+    public FakeNetworkManager_v1_10_R1(EnumProtocolDirection enumprotocoldirection) {
         super(enumprotocoldirection);
         try {
-            networkChannelField.set(this, new FakeChannel(null));
+            networkChannelField.set(this, new FakeChannel_v1_10_R1(null));
             networkAddressField.set(this, new SocketAddress() {
             });
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
     }
 }

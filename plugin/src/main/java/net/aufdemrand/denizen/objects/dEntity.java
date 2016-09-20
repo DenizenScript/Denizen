@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
@@ -10,7 +11,6 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
@@ -698,11 +698,11 @@ public class dEntity implements dObject, Adjustable {
         if (isCitizensNPC()) {
             return getDenizenNPC().getCitizen().getName();
         }
-        if (entity instanceof CraftFakePlayer) {
-            return ((CraftFakePlayer) entity).getFullName();
+        if (entity instanceof FakePlayer) {
+            return ((FakePlayer) entity).getFullName();
         }
         if (entity instanceof Player) {
-            return ((Player) entity).getName();
+            return entity.getName();
         }
         String customName = entity.getCustomName();
         if (customName != null) {

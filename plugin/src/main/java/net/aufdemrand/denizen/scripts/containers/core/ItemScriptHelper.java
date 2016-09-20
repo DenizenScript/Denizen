@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.events.player.ItemRecipeFormedScriptEvent;
 import net.aufdemrand.denizen.events.player.PlayerCraftsItemScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
@@ -145,7 +146,14 @@ public class ItemScriptHelper implements Listener {
     }
 
     public static ItemScriptContainer getItemScriptContainer(ItemStack item) {
-        if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasLore()) {
+        if (item == null) {
+            return null;
+        }
+        String nbt = NMSHandler.getInstance().getItemHelper().getNbtData(item, "Denizen Item Script");
+        if (nbt != null) {
+            return item_scripts_by_hash_id.get(nbt);
+        }
+        if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) {
             return null;
         }
         for (String itemLore : item.getItemMeta().getLore()) {

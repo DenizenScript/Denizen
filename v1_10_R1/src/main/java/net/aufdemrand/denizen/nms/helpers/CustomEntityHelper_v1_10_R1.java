@@ -1,63 +1,62 @@
-package net.aufdemrand.denizen.utilities.entity;
+package net.aufdemrand.denizen.nms.helpers;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.impl.CraftFakePlayer_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.EntityFakeArrow_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.EntityFakePlayer_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.EntityItemProjectile_v1_10_R1;
+import net.aufdemrand.denizen.nms.interfaces.CustomEntityHelper;
+import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
+import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
+import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Mechanism;
 import net.minecraft.server.v1_10_R1.PlayerInteractManager;
 import net.minecraft.server.v1_10_R1.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity {
+public class CustomEntityHelper_v1_10_R1 implements CustomEntityHelper {
 
-    private final CraftServer server;
-    private String fullName;
+    private final JavaPlugin plugin;
 
-    public CraftFakePlayer(CraftServer server, EntityFakePlayer entity) {
-        super(server, entity);
-        this.server = server;
-        setMetadata("NPC", new FixedMetadataValue(DenizenAPI.getCurrentInstance(), true));
+    public CustomEntityHelper_v1_10_R1(JavaPlugin plugin) {
+        this.plugin = plugin;
     }
 
-    @CreateEntity
-    public static Player createFakePlayer(Location location, ArrayList<Mechanism> mechanisms) {
-        String name = null;
-        String skin = null;
-        for (Mechanism mechanism : mechanisms) {
-            if (mechanism.matches("name")) {
-                name = mechanism.getValue().asString();
-            }
-            else if (mechanism.matches("skin")) {
-                skin = mechanism.getValue().asString();
-            }
-        }
+    @Override
+    public FakeArrow spawnFakeArrow(Location location) {
+        CraftWorld world = (CraftWorld) location.getWorld();
+        EntityFakeArrow_v1_10_R1 arrow = new EntityFakeArrow_v1_10_R1(world, location);
+        return arrow.getBukkitEntity();
+    }
+
+    @Override
+    public ItemProjectile spawnItemProjectile(Location location, ItemStack itemStack) {
+        CraftWorld world = (CraftWorld) location.getWorld();
+        EntityItemProjectile_v1_10_R1 entity = new EntityItemProjectile_v1_10_R1(world, location, itemStack);
+        return entity.getBukkitEntity();
+    }
+
+    @Override
+    public FakePlayer spawnFakePlayer(Location location, String name, String skin) throws IllegalArgumentException {
         String fullName = name;
         String prefix = null;
         String suffix = null;
         if (name == null) {
             return null;
-        }
-        else if (fullName.length() > 16) {
+        } else if (fullName.length() > 16) {
             prefix = fullName.substring(0, 16);
             if (fullName.length() > 30) {
                 int len = 30;
@@ -66,22 +65,17 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                     if (fullName.length() >= 32) {
                         len = 32;
                         name = fullName.substring(16, 32);
-                    }
-                    else if (fullName.length() == 31) {
+                    } else if (fullName.length() == 31) {
                         len = 31;
                         name = fullName.substring(16, 31);
                     }
-                }
-                else if (name.length() > 46) {
-                    dB.echoError("You must specify a name with no more than 46 characters for FAKE_PLAYER entities!");
-                    return null;
-                }
-                else {
+                } else if (name.length() > 46) {
+                    throw new IllegalArgumentException("You must specify a name with no more than 46 characters for FAKE_PLAYER entities!");
+                } else {
                     name = ChatColor.RESET + name;
                 }
                 suffix = fullName.substring(len);
-            }
-            else {
+            } else {
                 name = fullName.substring(16);
                 if (!name.matches(".*[^A-Za-z0-9_].*")) {
                     name = ChatColor.RESET + name;
@@ -93,7 +87,7 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             }
         }
         if (skin != null && skin.length() > 16) {
-            dB.echoError("You must specify a name with no more than 16 characters for FAKE_PLAYER entity skins!");
+            throw new IllegalArgumentException("You must specify a name with no more than 16 characters for FAKE_PLAYER entity skins!");
         }
         CraftWorld world = (CraftWorld) location.getWorld();
         WorldServer worldServer = world.getHandle();
@@ -119,12 +113,13 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
         gameProfile.getProperties().put("textures",
                 new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
-        
-        final EntityFakePlayer fakePlayer = new EntityFakePlayer(worldServer.getMinecraftServer(), worldServer,
-                gameProfile, new PlayerInteractManager(worldServer));
+
+        final EntityFakePlayer_v1_10_R1 fakePlayer = new EntityFakePlayer_v1_10_R1(worldServer.getMinecraftServer(), worldServer,
+                gameProfile, new PlayerInteractManager(worldServer), plugin);
+
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
-        CraftFakePlayer craftFakePlayer = fakePlayer.getBukkitEntity();
+        CraftFakePlayer_v1_10_R1 craftFakePlayer = fakePlayer.getBukkitEntity();
         craftFakePlayer.fullName = fullName;
         if (prefix != null) {
             Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -135,9 +130,8 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
                 byte[] bytes = teamName.getBytes("UTF-8");
                 md.update(bytes, 0, bytes.length);
                 hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
-            }
-            catch (Exception e) {
-                dB.echoError(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             if (hash != null) {
                 Team team = scoreboard.getTeam(hash);
@@ -152,34 +146,5 @@ public class CraftFakePlayer extends CraftPlayer implements DenizenCustomEntity 
             }
         }
         return craftFakePlayer;
-    }
-
-    @Override
-    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-        this.server.getEntityMetadata().setMetadata(this, metadataKey, newMetadataValue);
-    }
-
-    @Override
-    public List<MetadataValue> getMetadata(String metadataKey) {
-        return this.server.getEntityMetadata().getMetadata(this, metadataKey);
-    }
-
-    @Override
-    public boolean hasMetadata(String metadataKey) {
-        return this.server.getEntityMetadata().hasMetadata(this, metadataKey);
-    }
-
-    @Override
-    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-        this.server.getEntityMetadata().removeMetadata(this, metadataKey, owningPlugin);
-    }
-
-    @Override
-    public String getEntityTypeName() {
-        return "FAKE_PLAYER";
-    }
-
-    public String getFullName() {
-        return fullName;
     }
 }

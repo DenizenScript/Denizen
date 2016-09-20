@@ -48,12 +48,8 @@ import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.debugging.StatsRecord;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
-import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
-import net.aufdemrand.denizen.utilities.entity.CraftItemProjectile;
-import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
-import net.aufdemrand.denizen.utilities.packets.intercept.DenizenPacketListener;
+import net.aufdemrand.denizen.utilities.packets.DenizenPacketHandler;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -433,13 +429,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // If Citizens is enabled, let it handle '/npc' commands
             if (Depends.citizens != null) {
                 Depends.citizens.registerCommandClass(NPCCommandHandler.class);
-            }
-
-            // Register DenizenEntityTypes
-            DenizenEntityType.registerEntityType("ITEM_PROJECTILE", CraftItemProjectile.class);
-            DenizenEntityType.registerEntityType("FAKE_ARROW", CraftFakeArrow.class);
-            if (Settings.packetInterception()) {
-                DenizenEntityType.registerEntityType("FAKE_PLAYER", CraftFakePlayer.class);
             }
 
             // Track all player names for quick dPlayer matching
@@ -865,8 +854,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         if (Settings.packetInterception()) {
-            // Enable custom inbound packet listener
-            DenizenPacketListener.enable();
+            NMSHandler.getInstance().enablePacketInterception(new DenizenPacketHandler());
         }
 
         // Run everything else on the first server tick

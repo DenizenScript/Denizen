@@ -1,5 +1,10 @@
 package net.aufdemrand.denizen.utilities.entity;
 
+import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.enums.CustomEntityType;
+import net.aufdemrand.denizen.nms.interfaces.CustomEntity;
+import net.aufdemrand.denizen.nms.interfaces.CustomEntityHelper;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -10,7 +15,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +26,7 @@ public class DenizenEntityType {
     private final String name;
     private final String lowercaseName;
     private final double gravity;
-    private final Method createMethod;
+    private final CustomEntityType customEntityType;
 
     static {
         for (EntityType entityType : EntityType.values()) {
@@ -49,14 +53,14 @@ public class DenizenEntityType {
         this.name = entityType.name();
         this.lowercaseName = CoreUtilities.toLowerCase(name);
         this.gravity = Gravity.getGravity(entityType);
-        this.createMethod = null;
+        this.customEntityType = null;
     }
 
-    private DenizenEntityType(String name, Class<? extends DenizenCustomEntity> entityType) {
+    private DenizenEntityType(String name, Class<? extends CustomEntity> entityType) {
         this(name, entityType, 0.115);
     }
 
-    private DenizenEntityType(String name, Class<? extends DenizenCustomEntity> entityType, double gravity) {
+    private DenizenEntityType(String name, Class<? extends CustomEntity> entityType, double gravity) {
         EntityType bukkitEntityType = EntityType.UNKNOWN;
         if (entityType != null) {
             for (EntityType type : EntityType.values()) {
@@ -71,16 +75,7 @@ public class DenizenEntityType {
         this.name = name.toUpperCase();
         this.lowercaseName = CoreUtilities.toLowerCase(name);
         this.gravity = gravity;
-        Method finalMethod = null;
-        if (entityType != null) {
-            for (Method method : entityType.getDeclaredMethods()) {
-                if (method.isAnnotationPresent(DenizenCustomEntity.CreateEntity.class)) {
-                    finalMethod = method;
-                    break;
-                }
-            }
-        }
-        this.createMethod = finalMethod;
+        this.customEntityType = CustomEntityType.valueOf(name.toUpperCase());
     }
 
     public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms) {
@@ -99,7 +94,39 @@ public class DenizenEntityType {
                 return location.getWorld().spawnEntity(location, bukkitEntityType);
             }
             else {
-                return (Entity) createMethod.invoke(null, location, mechanisms);
+                CustomEntityHelper customEntityHelper = NMSHandler.getInstance().getCustomEntityHelper();
+                switch (customEntityType) {
+                    case FAKE_ARROW:
+                        customEntityHelper.spawnFakeArrow(location);
+                        break;
+                    case FAKE_PLAYER:
+                        if (Settings.packetInterception()) {
+                            String name = null;
+                            String skin = null;
+                            for (Mechanism mechanism : mechanisms) {
+                                if (mechanism.matches("name")) {
+                                    name = mechanism.getValue().asString();
+                                }
+                                else if (mechanism.matches("skin")) {
+                                    skin = mechanism.getValue().asString();
+                                }
+                                if (name != null && skin != null) {
+                                    break;
+                                }
+                            }
+                            customEntityHelper.spawnFakePlayer(location, name, skin);
+                        }
+                        break;
+                    case ITEM_PROJECTILE:
+                        ItemStack itemStack = new ItemStack(Material.STONE);
+                        for (Mechanism mechanism : mechanisms) {
+                            if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
+                                itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
+                            }
+                        }
+                        customEntityHelper.spawnItemProjectile(location, itemStack);
+                        break;
+                }
             }
         }
         catch (Exception e) {
@@ -124,7 +151,7 @@ public class DenizenEntityType {
         return bukkitEntityType;
     }
 
-    public static void registerEntityType(String name, Class<? extends DenizenCustomEntity> entityType) {
+    public static void registerEntityType(String name, Class<? extends CustomEntity> entityType) {
         registeredTypes.put(name.toUpperCase(), new DenizenEntityType(name, entityType));
     }
 
@@ -137,8 +164,8 @@ public class DenizenEntityType {
     }
 
     public static DenizenEntityType getByEntity(Entity entity) {
-        if (entity instanceof DenizenCustomEntity) {
-            return getByName(((DenizenCustomEntity) entity).getEntityTypeName());
+        if (entity instanceof CustomEntity) {
+            return getByName(((CustomEntity) entity).getEntityTypeName());
         }
         else {
             return getByName(entity.getType().name());
@@ -146,6 +173,6 @@ public class DenizenEntityType {
     }
 
     public boolean isCustom() {
-        return createMethod != null;
+        return customEntityType != null;
     }
 }

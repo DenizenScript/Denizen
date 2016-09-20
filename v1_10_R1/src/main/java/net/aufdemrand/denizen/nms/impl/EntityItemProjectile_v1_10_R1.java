@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.entity;
+package net.aufdemrand.denizen.nms.impl;
 
 import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
@@ -10,20 +10,20 @@ import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 
 import java.util.List;
 
-public class EntityItemProjectile extends EntityItem implements IProjectile {
+public class EntityItemProjectile_v1_10_R1 extends EntityItem implements IProjectile {
 
     public EntityLiving shooter;
     public String shooterName;
     private int age;
 
-    public EntityItemProjectile(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
+    public EntityItemProjectile_v1_10_R1(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(craftWorld.getHandle());
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         this.setSize(0.25F, 0.25F);
         this.setItemStack(CraftItemStack.asNMSCopy(itemStack));
         world.addEntity(this);
-        bukkitEntity = new CraftItemProjectile((CraftServer) Bukkit.getServer(), this);
+        bukkitEntity = new CraftItemProjectile_v1_10_R1((CraftServer) Bukkit.getServer(), this);
     }
 
     @Override
@@ -144,5 +144,10 @@ public class EntityItemProjectile extends EntityItem implements IProjectile {
         }
 
         return this.shooter;
+    }
+
+    @Override
+    public CraftItemProjectile_v1_10_R1 getBukkitEntity() {
+        return (CraftItemProjectile_v1_10_R1) bukkitEntity;
     }
 }

@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.minecraft.server.v1_10_R1.GameProfileSerializer;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagString;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,5 +49,24 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
         tag.set("SkullOwner", GameProfileSerializer.serialize(new NBTTagCompound(), gameProfile));
         nmsItemStack.setTag(tag);
         return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public ItemStack addNbtData(ItemStack itemStack, String key, String value) {
+        net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
+        tag.set(key, new NBTTagString(value));
+        nmsItemStack.setTag(tag);
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public String getNbtData(ItemStack itemStack, String key) {
+        net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        if (nmsItemStack.hasTag()) {
+            NBTTagCompound tag = nmsItemStack.getTag();
+            return tag.getString(key);
+        }
+        return null;
     }
 }

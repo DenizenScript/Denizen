@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -11,9 +13,7 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
-import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -171,11 +171,17 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Id of the first, invisible lore
             boolean hideLore = false;
+            boolean pureNbtId = false;
             if (contains("NO_ID")) {
                 hideLore = Boolean.valueOf(getString("NO_ID"));
             }
             if (!hideLore) {
-                lore.add(0, hash);
+                if (!Settings.packetInterception()) {
+                    lore.add(0, hash);
+                }
+                else {
+                    pureNbtId = true;
+                }
             }
 
             // Set Display Name
@@ -247,6 +253,9 @@ public class ItemScriptContainer extends ScriptContainer {
                 stack = book.writeBookTo(stack, player, npc);
             }
 
+            if (pureNbtId) {
+                stack.setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(stack.getItemStack(), "Denizen Item Script", hash));
+            }
         }
         catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");

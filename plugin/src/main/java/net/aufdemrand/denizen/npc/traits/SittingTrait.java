@@ -1,8 +1,9 @@
 package net.aufdemrand.denizen.npc.traits;
 
+import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.entity.CraftFakeArrow;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -81,7 +82,8 @@ public class SittingTrait extends Trait implements Listener {
     }
 
     private void sitInternal() {
-        CraftFakeArrow.createArrow(npc.getEntity().getLocation(), new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
+        DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
+                new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
         //PlayerAnimation.SIT.play((Player)npc.getEntity());
         //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;
@@ -183,7 +185,7 @@ public class SittingTrait extends Trait implements Listener {
     @EventHandler
     public void arrowDismount(final VehicleExitEvent event) {
         // TODO: Move elsewhere so not multi-firing?
-        if (event.getVehicle() instanceof CraftFakeArrow) {
+        if (event.getVehicle() instanceof FakeArrow) {
             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {

@@ -1,6 +1,5 @@
-package net.aufdemrand.denizen.utilities;
+package net.aufdemrand.denizen.nms.util;
 
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -18,7 +17,7 @@ public class DenizenAtomicIntegerFieldUpdater<T> extends AtomicIntegerFieldUpdat
             theUnsafe = (Unsafe) field.get(null);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
         unsafe = theUnsafe;
     }

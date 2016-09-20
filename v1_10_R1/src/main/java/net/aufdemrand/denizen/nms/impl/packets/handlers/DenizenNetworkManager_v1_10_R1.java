@@ -1,36 +1,48 @@
-package net.aufdemrand.denizen.utilities.packets.intercept;
+package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.nms.impl.EntityFakePlayer_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutSpawnEntity_v1_10_R1;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.minecraft.server.v1_10_R1.*;
+import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 
-public class DenizenNetworkManager extends NetworkManager {
+public class DenizenNetworkManager_v1_10_R1 extends NetworkManager {
 
     private final NetworkManager oldManager;
-    private final DenizenPacketListener packetListener;
+    private final DenizenPacketListener_v1_10_R1 packetListener;
     private final EntityPlayer player;
+    private final JavaPlugin plugin;
+    private final PacketHandler packetHandler;
 
-    public DenizenNetworkManager(EntityPlayer entityPlayer, NetworkManager oldManager) {
+    public DenizenNetworkManager_v1_10_R1(EntityPlayer entityPlayer, NetworkManager oldManager, JavaPlugin plugin, PacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
-        this.packetListener = new DenizenPacketListener(this, entityPlayer);
+        this.packetListener = new DenizenPacketListener_v1_10_R1(this, entityPlayer);
         oldManager.setPacketListener(packetListener);
         this.player = this.packetListener.player;
+        this.plugin = plugin;
+        this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player) {
+    public static void setNetworkManager(Player player, JavaPlugin plugin, PacketHandler packetHandler) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection playerConnection = entityPlayer.playerConnection;
-        setNetworkManager(playerConnection, new DenizenNetworkManager(entityPlayer, playerConnection.networkManager));
+        setNetworkManager(playerConnection, new DenizenNetworkManager_v1_10_R1(entityPlayer, playerConnection.networkManager, plugin, packetHandler));
     }
 
     public void channelActive(ChannelHandlerContext channelhandlercontext) throws Exception {
@@ -67,7 +79,48 @@ public class DenizenNetworkManager extends NetworkManager {
 
     public void sendPacket(Packet packet) {
         // If the packet sending isn't cancelled, allow normal sending
-        if (!PacketOutHandler.sendPacket(player, packet)) {
+        if (packet instanceof PacketPlayOutChat) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChat_v1_10_R1((PacketPlayOutChat) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        /*else if (packet instanceof PacketPlayOutSetSlot) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlot_v1_10_R1((PacketPlayOutSetSlot) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutWindowItems) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItems_v1_10_R1((PacketPlayOutWindowItems) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }*/
+        else if (packet instanceof PacketPlayOutNamedEntitySpawn
+                || packet instanceof PacketPlayOutSpawnEntity
+                || packet instanceof PacketPlayOutSpawnEntityLiving
+                || packet instanceof PacketPlayOutSpawnEntityPainting
+                || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
+            PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_10_R1(packet);
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), spawnEntity)) {
+                Entity entity = ((WorldServer) player.getWorld()).getEntity(spawnEntity.getEntityUuid());
+                if (entity instanceof EntityFakePlayer_v1_10_R1) {
+                    final EntityFakePlayer_v1_10_R1 fakePlayer = (EntityFakePlayer_v1_10_R1) entity;
+                    sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
+                        }
+                    }, 5);
+                }
+                oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutEntityMetadata) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_10_R1((PacketPlayOutEntityMetadata) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        else {
             oldManager.sendPacket(packet);
         }
     }
@@ -89,7 +142,7 @@ public class DenizenNetworkManager extends NetworkManager {
     }
 
     public boolean isLocal() {
-       return oldManager.isLocal();
+        return oldManager.isLocal();
     }
 
     public void a(SecretKey secretkey) {
@@ -149,7 +202,7 @@ public class DenizenNetworkManager extends NetworkManager {
             managerField.setAccessible(true);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
         protocolDirectionField = directionField;
         networkManagerField = managerField;
@@ -161,7 +214,7 @@ public class DenizenNetworkManager extends NetworkManager {
             direction = (EnumProtocolDirection) protocolDirectionField.get(networkManager);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
         return direction;
     }
@@ -171,7 +224,7 @@ public class DenizenNetworkManager extends NetworkManager {
             networkManagerField.set(playerConnection, networkManager);
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
     }
 }

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities.entity;
+package net.aufdemrand.denizen.nms.impl;
 
 import net.minecraft.server.v1_10_R1.EntitySpectralArrow;
 import net.minecraft.server.v1_10_R1.ItemStack;
@@ -8,13 +8,13 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 
-public class FakeArrowEntity extends EntitySpectralArrow {
+public class EntityFakeArrow_v1_10_R1 extends EntitySpectralArrow {
 
-    public FakeArrowEntity(CraftWorld craftWorld, Location location) {
+    public EntityFakeArrow_v1_10_R1(CraftWorld craftWorld, Location location) {
         super(craftWorld.getHandle());
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         world.addEntity(this);
-        bukkitEntity = new CraftFakeArrow((CraftServer) Bukkit.getServer(), this);
+        bukkitEntity = new CraftFakeArrow_v1_10_R1((CraftServer) Bukkit.getServer(), this);
     }
 
     @Override
@@ -25,5 +25,10 @@ public class FakeArrowEntity extends EntitySpectralArrow {
     @Override
     protected ItemStack j() {
         return new ItemStack(Items.ARROW);
+    }
+
+    @Override
+    public CraftFakeArrow_v1_10_R1 getBukkitEntity() {
+        return (CraftFakeArrow_v1_10_R1) bukkitEntity;
     }
 }

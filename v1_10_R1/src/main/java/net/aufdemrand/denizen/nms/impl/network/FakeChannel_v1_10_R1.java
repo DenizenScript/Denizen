@@ -1,14 +1,14 @@
-package net.aufdemrand.denizen.utilities.entity.network;
+package net.aufdemrand.denizen.nms.impl.network;
 
 import io.netty.channel.*;
 
 import java.net.SocketAddress;
 
-public class FakeChannel extends AbstractChannel {
+public class FakeChannel_v1_10_R1 extends AbstractChannel {
 
     private final ChannelConfig config = new DefaultChannelConfig(this);
 
-    protected FakeChannel(Channel parent) {
+    protected FakeChannel_v1_10_R1(Channel parent) {
         super(parent);
     }
 

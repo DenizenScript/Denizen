@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.interfaces.*;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -71,6 +72,8 @@ public abstract class NMSHandler {
 
     public abstract ChunkHelper getChunkHelper();
 
+    public abstract CustomEntityHelper getCustomEntityHelper();
+
     public abstract EntityHelper getEntityHelper();
 
     public abstract FishingHelper getFishingHelper();
@@ -82,4 +85,6 @@ public abstract class NMSHandler {
     public abstract PlayerHelper getPlayerHelper();
 
     public abstract WorldHelper getWorldHelper();
+
+    public abstract void enablePacketInterception(PacketHandler packetHandler);
 }

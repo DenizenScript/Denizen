@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.HideEntity;
@@ -1595,7 +1594,7 @@ public class dPlayer implements dObject, Adjustable {
         // @mechanism dPlayer.skin_blob
         // -->
         if (attribute.startsWith("skin_blob")) {
-            return new Element(PlayerProfileEditor.getPlayerSkinBlob(getPlayerEntity()))
+            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1694,7 +1693,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the displayed text in the nameplate of the player.
         // -->
         if (attribute.startsWith("nameplate")) {
-            return new Element(PlayerProfileEditor.getPlayerName(getPlayerEntity()))
+            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerName(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2934,7 +2933,7 @@ public class dPlayer implements dObject, Adjustable {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                PlayerProfileEditor.setPlayerName(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), value.asString());
             }
         }
 
@@ -2952,7 +2951,7 @@ public class dPlayer implements dObject, Adjustable {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), value.asString());
             }
         }
 
@@ -2964,7 +2963,7 @@ public class dPlayer implements dObject, Adjustable {
         // Changes the skin of the player to the specified blob.
         // -->
         if (mechanism.matches("skin_blob")) {
-            PlayerProfileEditor.setPlayerSkinBlob(getPlayerEntity(), value.asString());
+            NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), value.asString());
         }
 
         // <--[mechanism]

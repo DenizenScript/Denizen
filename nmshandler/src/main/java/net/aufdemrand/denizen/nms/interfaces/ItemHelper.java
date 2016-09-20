@@ -10,4 +10,8 @@ public interface ItemHelper {
     PlayerProfile getSkullSkin(ItemStack itemStack);
 
     ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile);
+
+    ItemStack addNbtData(ItemStack itemStack, String key, String value);
+
+    String getNbtData(ItemStack itemStack, String key);
 }

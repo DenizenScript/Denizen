@@ -1,45 +1,28 @@
-package net.aufdemrand.denizen.utilities.entity;
+package net.aufdemrand.denizen.nms.impl;
 
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizencore.objects.Mechanism;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.ArrayList;
-
-public class CraftItemProjectile extends CraftItem implements DenizenCustomEntity, ItemProjectile {
+public class CraftItemProjectile_v1_10_R1 extends CraftItem implements ItemProjectile {
 
     private boolean doesBounce;
 
-    public CraftItemProjectile(CraftServer server, EntityItemProjectile entity) {
+    public CraftItemProjectile_v1_10_R1(CraftServer server, EntityItemProjectile_v1_10_R1 entity) {
         super(server, entity);
     }
 
-    @CreateEntity
+    /*
     public static ItemProjectile createItemProjectile(Location location, ArrayList<Mechanism> mechanisms) {
-        CraftWorld world = (CraftWorld) location.getWorld();
-        ItemStack itemStack = new ItemStack(Material.STONE);
-        for (Mechanism mechanism : mechanisms) {
-            if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-                itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
-                break;
-            }
-        }
-        EntityItemProjectile entity = new EntityItemProjectile(world, location, itemStack);
-        return (ItemProjectile) entity.getBukkitEntity();
-    }
+    }*/
 
     @Override
-    public EntityItemProjectile getHandle() {
-        return (EntityItemProjectile) super.getHandle();
+    public EntityItemProjectile_v1_10_R1 getHandle() {
+        return (EntityItemProjectile_v1_10_R1) super.getHandle();
     }
 
     @Override

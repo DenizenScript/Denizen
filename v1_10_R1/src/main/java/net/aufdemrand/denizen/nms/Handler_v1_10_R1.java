@@ -10,7 +10,9 @@ import net.aufdemrand.denizen.nms.helpers.*;
 import net.aufdemrand.denizen.nms.impl.BiomeNMS_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.Sidebar_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenPacketListener_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.*;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
@@ -23,6 +25,7 @@ public class Handler_v1_10_R1 extends NMSHandler {
 
     private final BlockHelper blockHelper = new BlockHelper_v1_10_R1();
     private final ChunkHelper chunkHelper = new ChunkHelper_v1_10_R1();
+    private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_10_R1(javaPlugin);
     private final EntityHelper entityHelper = new EntityHelper_v1_10_R1();
     private final FishingHelper fishingHelper = new FishingHelper_v1_10_R1();
     private final ItemHelper itemHelper = new ItemHelper_v1_10_R1();
@@ -53,6 +56,11 @@ public class Handler_v1_10_R1 extends NMSHandler {
     }
 
     @Override
+    public CustomEntityHelper getCustomEntityHelper() {
+        return customEntityHelper;
+    }
+
+    @Override
     public EntityHelper getEntityHelper() {
         return entityHelper;
     }
@@ -80,6 +88,11 @@ public class Handler_v1_10_R1 extends NMSHandler {
     @Override
     public WorldHelper getWorldHelper() {
         return worldHelper;
+    }
+
+    @Override
+    public void enablePacketInterception(PacketHandler packetHandler) {
+        DenizenPacketListener_v1_10_R1.enable(javaPlugin, packetHandler);
     }
 
     @Override
