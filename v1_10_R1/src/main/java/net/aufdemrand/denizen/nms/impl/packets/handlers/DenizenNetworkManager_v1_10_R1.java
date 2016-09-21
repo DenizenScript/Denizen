@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.nms.impl.packets.handlers;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.aufdemrand.denizen.nms.impl.EntityFakePlayer_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutSpawnEntity_v1_10_R1;

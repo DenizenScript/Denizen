@@ -88,7 +88,7 @@ public class WorldHelper_v1_10_R1 implements WorldHelper {
             return;
         }
         WorldServer worldServer = ((CraftWorld) world).getHandle();
-        List<IWorldAccess> list = ReflectionHelper.getFieldValue(worldServer.getClass(), "u", worldServer);
+        List<IWorldAccess> list = ReflectionHelper.getFieldValue(World.class, "u", worldServer);
         if (list != null) {
             list.remove(worldAccessMap.get(world));
         }
