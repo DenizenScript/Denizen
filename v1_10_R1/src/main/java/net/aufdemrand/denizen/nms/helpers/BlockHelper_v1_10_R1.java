@@ -4,14 +4,18 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.nms.impl.blocks.BlockData_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.minecraft.server.v1_10_R1.TileEntity;
 import net.minecraft.server.v1_10_R1.TileEntitySkull;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_10_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_10_R1.block.CraftSkull;
 
 import java.util.UUID;
@@ -41,6 +45,25 @@ public class BlockHelper_v1_10_R1 implements BlockHelper {
         tileEntity.setSkullType(SkullType.PLAYER.ordinal());
         tileEntity.setGameProfile(gameProfile);
         skull.getBlock().getState().update();
+    }
+
+    @Override
+    public CompoundTag getNbtData(Block block) {
+        TileEntity tileEntity = ((CraftBlockState) block.getState()).getTileEntity();
+        if (tileEntity == null) {
+            return null;
+        }
+        return CompoundTag_v1_10_R1.fromNMSTag(tileEntity.c());
+    }
+
+    @Override
+    public void setNbtData(Block block, CompoundTag compoundTag) {
+        TileEntity tileEntity = ((CraftBlockState) block.getState()).getTileEntity();
+        if (tileEntity == null) {
+            return;
+        }
+        tileEntity.a(((CompoundTag_v1_10_R1) compoundTag).toNMSTag());
+        tileEntity.update();
     }
 
     @Override

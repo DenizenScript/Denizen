@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
@@ -22,6 +23,8 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
@@ -228,7 +231,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
+        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer().);
     }
 
     public dEntity getDenizenEntity() {
@@ -2900,7 +2903,7 @@ public class dPlayer implements dObject, Adjustable {
                         dB.echoError("Could not apply base color to banner: " + split[1]);
                         return;
                     }
-                    BannerUpdate.updateBanner(getPlayerEntity(), location, base, patterns);
+                    NMSHandler.getInstance().getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
                 }
                 else {
                     dB.echoError("Must specify a valid location and a base color!");
@@ -2916,7 +2919,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sends the player text in the action bar.
         // -->
         if (mechanism.matches("action_bar")) {
-            ActionBar.sendActionBarMessage(getPlayerEntity(), value.asString());
+            getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(value.asString()));
         }
 
         // <--[mechanism]
