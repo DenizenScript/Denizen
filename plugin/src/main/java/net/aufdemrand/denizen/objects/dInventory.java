@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptHelper;
@@ -8,7 +10,6 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
@@ -28,7 +29,12 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.HorseInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
@@ -51,15 +57,15 @@ public class dInventory implements dObject, Notable, Adjustable {
             return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
         }
         // Iterate through offline player inventories
-        for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+        for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new dInventory(new ImprovedOfflinePlayer(inv.getKey()));
+                return new dInventory(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()));
             }
         }
         // Iterate through offline player enderchests
-        for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
+        for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
             if (inv.getValue().equals(inventory)) {
-                return new dInventory(new ImprovedOfflinePlayer(inv.getKey()), true);
+                return new dInventory(NMSHandler.getInstance().getPlayerHelper().getOfflineData(inv.getKey()), true);
             }
         }
 
@@ -533,7 +539,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else if (getIdType().equals("player")) {
             // Iterate through offline player inventories
-            for (Map.Entry<UUID, PlayerInventory> inv : InventoryScriptHelper.offlineInventories.entrySet()) {
+            for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
                 if (inv.getValue().equals(inventory)) {
                     idHolder = new dPlayer(inv.getKey()).identify();
                     return;
@@ -542,7 +548,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else if (getIdType().equals("enderchest")) {
             // Iterate through offline player enderchests
-            for (Map.Entry<UUID, Inventory> inv : InventoryScriptHelper.offlineEnderChests.entrySet()) {
+            for (Map.Entry<UUID, Inventory> inv : ImprovedOfflinePlayer.offlineEnderChests.entrySet()) {
                 if (inv.getValue().equals(inventory)) {
                     idHolder = new dPlayer(inv.getKey()).identify();
                     return;

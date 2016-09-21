@@ -1,16 +1,19 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
+import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_10_R1.*;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CustomNBT {
@@ -28,10 +31,6 @@ public class CustomNBT {
         if (item == null) {
             return false;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        if (!cis.hasTag()) {
-            return false;
-        }
         key = CoreUtilities.toLowerCase(key);
         List<String> keys = listNBT(item, "");
         for (String string : keys) {
@@ -46,12 +45,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag;
-        if (!cis.hasTag()) {
-            cis.setTag(new NBTTagCompound());
-        }
-        tag = cis.getTag();
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
         key = CoreUtilities.toLowerCase(key);
         String finalKey = null;
         List<String> keys = listNBT(item, "");
@@ -68,17 +62,17 @@ public class CustomNBT {
         if (subkeys.hasNext()) {
             while (true) {
                 String subkey = subkeys.next();
-                NBTBase base = tag.get(subkey);
+                Tag base = compoundTag.getValue().get(subkey);
                 if (!subkeys.hasNext()) {
-                    if (base instanceof NBTTagString) {
-                        return ((NBTTagString) base).c_();
+                    if (base instanceof StringTag) {
+                        return ((StringTag) base).getValue();
                     }
                     else {
                         return base.toString();
                     }
                 }
-                else if (base instanceof NBTTagCompound) {
-                    tag = (NBTTagCompound) base;
+                else if (base instanceof CompoundTag) {
+                    compoundTag = (CompoundTag) base;
                 }
                 else {
                     return null;
@@ -93,12 +87,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag;
-        if (!cis.hasTag()) {
-            cis.setTag(new NBTTagCompound());
-        }
-        tag = cis.getTag();
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
         key = CoreUtilities.toLowerCase(key);
         String finalKey = null;
         List<String> keys = listNBT(item, "");
@@ -116,34 +105,30 @@ public class CustomNBT {
             while (true) {
                 String subkey = subkeys.next();
                 if (!subkeys.hasNext()) {
-                    tag.remove(subkey);
-                    cis = unregisterNBT(cis, key);
+                    compoundTag = compoundTag.createBuilder().remove(subkey).build();
+                    item = unregisterNBT(NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag), key);
                 }
-                else if (tag.get(subkey).getTypeId() == tag.getTypeId()) {
-                    tag = tag.getCompound(subkey);
+                else if (compoundTag.getValue().get(subkey) instanceof CompoundTag) {
+                    compoundTag = (CompoundTag) compoundTag.getValue().get(subkey);
                     continue;
                 }
                 break;
             }
         }
-        return CraftItemStack.asCraftMirror(cis);
+        return item;
     }
 
     public static List<String> listNBT(ItemStack item, String filter) {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag;
-        if (!cis.hasTag()) {
-            cis.setTag(new NBTTagCompound());
-        }
-        tag = cis.getTag();
-        return recursiveSearch(tag, "", filter);
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
+        return recursiveSearch(compoundTag, "", filter);
     }
 
-    private static List<String> recursiveSearch(NBTTagCompound compound, String base, String filter) {
-        Set<String> keys = compound.c();
+    private static List<String> recursiveSearch(CompoundTag compound, String base, String filter) {
+        Map<String, Tag> value = compound.getValue();
+        Set<String> keys = compound.getValue().keySet();
         List<String> finalKeys = new ArrayList<String>();
         filter = CoreUtilities.toLowerCase(filter);
         for (String key : keys) {
@@ -151,8 +136,8 @@ public class CustomNBT {
             if (CoreUtilities.toLowerCase(full).startsWith(filter)) {
                 finalKeys.add(full);
             }
-            if (compound.get(key).getTypeId() == compound.getTypeId()) {
-                finalKeys.addAll(recursiveSearch(compound.getCompound(key), full + ".", filter));
+            if (value.get(key) instanceof CompoundTag) {
+                finalKeys.addAll(recursiveSearch((CompoundTag) value.get(key), full + ".", filter));
             }
         }
         return finalKeys;
@@ -162,13 +147,7 @@ public class CustomNBT {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag;
-        // Do stuff with tag
-        if (!cis.hasTag()) {
-            cis.setTag(new NBTTagCompound());
-        }
-        tag = cis.getTag();
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
         List<String> existingKeys = listNBT(item, "");
         String existing = "";
         String lowerKey = CoreUtilities.toLowerCase(key);
@@ -187,9 +166,9 @@ public class CustomNBT {
         String finalKey = null;
         if (!existing.equals("")) {
             for (String subkey : CoreUtilities.split(existing, '.')) {
-                NBTBase base = tag.get(subkey);
-                if (base instanceof NBTTagCompound) {
-                    tag = (NBTTagCompound) base;
+                Tag base = compoundTag.getValue().get(subkey);
+                if (base instanceof CompoundTag) {
+                    compoundTag = (CompoundTag) base;
                 }
                 else {
                     finalKey = subkey;
@@ -201,157 +180,117 @@ public class CustomNBT {
             while (true) {
                 String subkey = subkeys.next();
                 if (!subkeys.hasNext()) {
-                    tag.setString(subkey, value);
-                    cis = registerNBT(cis, key);
+                    compoundTag = compoundTag.createBuilder().putString(subkey, value).build();
+                    item = registerNBT(item, key);
                     break;
                 }
                 else {
-                    tag.set(subkey, new NBTTagCompound());
-                    tag = tag.getCompound(subkey);
+                    compoundTag = compoundTag.createBuilder().put(subkey, NMSHandler.getInstance().createCompoundTag(new HashMap<String, Tag>())).build();
+                    compoundTag = (CompoundTag) compoundTag.getValue().get(subkey);
                 }
             }
         }
         else {
-            tag.setString(finalKey, value);
+            compoundTag = compoundTag.createBuilder().putString(finalKey, value).build();
         }
-        return CraftItemStack.asCraftMirror(cis);
+        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
     }
 
-    private static net.minecraft.server.v1_10_R1.ItemStack registerNBT(net.minecraft.server.v1_10_R1.ItemStack item, String key) {
+    private static ItemStack registerNBT(ItemStack item, String key) {
         if (item == null) {
             return null;
         }
-        NBTTagCompound tag;
-        if (!item.hasTag()) {
-            item.setTag(new NBTTagCompound());
-        }
-        tag = item.getTag();
-        NBTTagList list = new NBTTagList();
-        if (tag.hasKeyOfType("Denizen-Registered-Keys", list.getTypeId())) {
-            list = tag.getList("Denizen-Registered-Keys", new NBTTagString().getTypeId());
-        }
-        list.add(new NBTTagString(key));
-        tag.set("Denizen-Registered-Keys", list);
-        return item;
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
+        List<Tag> list = compoundTag.getList("Denizen-Registered-Keys");
+        list.add(new StringTag(key));
+        compoundTag = compoundTag.createBuilder().put("Denizen-Registered-Keys", new ListTag(StringTag.class, list)).build();
+        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
     }
 
-    private static net.minecraft.server.v1_10_R1.ItemStack unregisterNBT(net.minecraft.server.v1_10_R1.ItemStack item, String key) {
+    private static ItemStack unregisterNBT(ItemStack item, String key) {
         if (item == null) {
             return null;
         }
-        NBTTagCompound tag;
-        if (!item.hasTag()) {
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
+        ListTag list = compoundTag.getListTag("Denizen-Registered-Keys");
+        if (list.getValue().isEmpty()) {
             return item;
         }
-        tag = item.getTag();
-        NBTTagList list = new NBTTagList();
-        if (tag.hasKeyOfType("Denizen-Registered-Keys", list.getTypeId())) {
-            list = tag.getList("Denizen-Registered-Keys", new NBTTagString().getTypeId());
-        }
-        else {
-            return item;
-        }
+        List<Tag> value = list.getValue();
         String lowerKey = CoreUtilities.toLowerCase(key);
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.getValue().size(); i++) {
             if (CoreUtilities.toLowerCase(list.getString(i)).equals(lowerKey)) {
-                list.remove(i);
+                value.remove(i);
                 break;
             }
         }
-        tag.set("Denizen-Registered-Keys", list);
-        return item;
+        list.setValue(value);
+        compoundTag = compoundTag.createBuilder().put("Denizen-Registered-Keys", list).build();
+        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
     }
 
     public static List<String> getRegisteredNBT(ItemStack item) {
         if (item == null) {
             return null;
         }
-        net.minecraft.server.v1_10_R1.ItemStack cis = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag;
-        if (!cis.hasTag()) {
-            return null;
-        }
-        tag = cis.getTag();
-        NBTTagList list = new NBTTagList();
-        if (tag.hasKeyOfType("Denizen-Registered-Keys", list.getTypeId())) {
-            list = tag.getList("Denizen-Registered-Keys", new NBTTagString().getTypeId());
-        }
-        else {
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
+        ListTag list = compoundTag.getListTag("Denizen-Registered-Keys");
+        if (list.getValue().isEmpty()) {
             return null;
         }
         List<String> ret = new ArrayList<String>();
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.getValue().size(); i++) {
             ret.add(list.getString(i));
         }
         return ret;
     }
 
-    public static LivingEntity addCustomNBT(LivingEntity entity, String key, String value) {
+    public static Entity addCustomNBT(Entity entity, String key, String value) {
         if (entity == null) {
             return null;
         }
-        Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
-
-        // Writes the entity's NBT data to tag
-        nmsEntity.c(tag);
+        CompoundTag compoundTag = NMSHandler.getInstance().getEntityHelper().getNbtData(entity);
 
         // Add custom NBT
-        tag.setString(key, value);
+        compoundTag = compoundTag.createBuilder().putString(key, value).build();
 
         // Write tag back
-        ((EntityLiving) nmsEntity).a(tag);
+        NMSHandler.getInstance().getEntityHelper().setNbtData(entity, compoundTag);
         return entity;
     }
 
-    public static LivingEntity removeCustomNBT(LivingEntity entity, String key) {
+    public static Entity removeCustomNBT(Entity entity, String key) {
         if (entity == null) {
             return null;
         }
-        Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
-
-        // Writes the entity's NBT data to tag
-        nmsEntity.c(tag);
+        CompoundTag compoundTag = NMSHandler.getInstance().getEntityHelper().getNbtData(entity);
 
         // Remove custom NBT
-        tag.remove(key);
+        compoundTag = compoundTag.createBuilder().remove(key).build();
 
         // Write tag back
-        ((EntityLiving) nmsEntity).a(tag);
+        NMSHandler.getInstance().getEntityHelper().setNbtData(entity, compoundTag);
         return entity;
     }
 
-    public static boolean hasCustomNBT(LivingEntity entity, String key) {
+    public static boolean hasCustomNBT(Entity entity, String key) {
         if (entity == null) {
             return false;
         }
-        Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
-
-        // Writes the entity's NBT data to tag
-        nmsEntity.c(tag);
+        CompoundTag compoundTag = NMSHandler.getInstance().getEntityHelper().getNbtData(entity);
 
         // Check for key
-        return tag.hasKey(key);
+        return compoundTag.getValue().containsKey(key);
     }
 
-    public static String getCustomNBT(LivingEntity entity, String key) {
+    public static String getCustomNBT(Entity entity, String key) {
         if (entity == null) {
             return null;
         }
-        Entity bukkitEntity = entity;
-        net.minecraft.server.v1_10_R1.Entity nmsEntity = ((CraftEntity) bukkitEntity).getHandle();
-        NBTTagCompound tag = new NBTTagCompound();
-
-        // Writes the entity's NBT data to tag
-        nmsEntity.c(tag);
+        CompoundTag compoundTag = NMSHandler.getInstance().getEntityHelper().getNbtData(entity);
 
         // Return contents of the tag
-        return tag.getString(key);
+        return compoundTag.getString(key);
     }
 }
 

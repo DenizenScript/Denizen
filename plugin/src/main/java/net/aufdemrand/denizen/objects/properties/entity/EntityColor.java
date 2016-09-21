@@ -70,7 +70,7 @@ public class EntityColor implements Property {
         }
 
         else if (type == EntityType.RABBIT) {
-            return RabbitType.getRabbitType((Rabbit) colored.getBukkitEntity()).name();
+            return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
 
         else // Should never happen
@@ -211,10 +211,13 @@ public class EntityColor implements Property {
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
 
-            else if (type == EntityType.RABBIT
-                    && mechanism.getValue().matchesEnum(RabbitType.values())) {
-                RabbitType.setRabbitType((Rabbit) colored.getBukkitEntity(),
-                        RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (type == EntityType.RABBIT) {
+                if (mechanism.getValue().matchesEnum(RabbitType.values())) {
+                    ((Rabbit) colored.getBukkitEntity()).setRabbitType(RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()).getType());
+                }
+                else if (mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
+                    ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+                }
             }
 
         }

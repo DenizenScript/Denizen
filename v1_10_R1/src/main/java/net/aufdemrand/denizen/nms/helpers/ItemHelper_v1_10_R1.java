@@ -72,4 +72,11 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
         }
         return new CompoundTag_v1_10_R1(new HashMap<String, Tag>());
     }
+
+    @Override
+    public ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag) {
+        net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
+        nmsItemStack.setTag(((CompoundTag_v1_10_R1) compoundTag).toNMSTag());
+        return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
 }

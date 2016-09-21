@@ -115,6 +115,10 @@ public abstract class CompoundTag extends Tag {
         }
     }
 
+    public boolean getBoolean(String key) {
+        return getByte(key) != 0;
+    }
+
     /**
      * Get a double named with the given key.
      * <p/>

@@ -1,7 +1,11 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public interface PlayerHelper {
 
@@ -12,4 +16,8 @@ public interface PlayerHelper {
     void setTemporaryOp(Player player, boolean op);
 
     void showEndCredits(Player player);
+
+    ImprovedOfflinePlayer getOfflineData(UUID uuid);
+
+    ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
 }

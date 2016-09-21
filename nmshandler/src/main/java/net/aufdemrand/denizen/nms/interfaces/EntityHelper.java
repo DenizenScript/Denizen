@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Animals;
@@ -21,6 +22,10 @@ public interface EntityHelper {
     void setBreeding(Animals entity, boolean breeding);
 
     void setTarget(Creature entity, LivingEntity target);
+
+    CompoundTag getNbtData(Entity entity);
+
+    void setNbtData(Entity entity, CompoundTag compoundTag);
 
     void stopFollowing(Entity follower);
 

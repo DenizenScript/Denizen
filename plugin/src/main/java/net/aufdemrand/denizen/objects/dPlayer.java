@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
@@ -12,7 +13,6 @@ import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -228,7 +228,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return new ImprovedOfflinePlayer(getOfflinePlayer());
+        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
     }
 
     public dEntity getDenizenEntity() {

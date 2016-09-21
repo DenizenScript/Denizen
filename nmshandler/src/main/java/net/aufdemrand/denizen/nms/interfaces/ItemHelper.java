@@ -16,4 +16,6 @@ public interface ItemHelper {
     ItemStack addNbtData(ItemStack itemStack, String key, Tag value);
 
     CompoundTag getNbtData(ItemStack itemStack);
+
+    ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
 }

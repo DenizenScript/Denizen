@@ -1,8 +1,10 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.Utilities;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -70,6 +72,18 @@ public class EntityHelper_v1_10_R1 implements EntityHelper {
         EntityLiving nmsTarget = target != null ? ((CraftLivingEntity) target).getHandle() : null;
         ((CraftCreature) entity).getHandle().setGoalTarget(nmsTarget, EntityTargetEvent.TargetReason.CUSTOM, true);
         entity.setTarget(target);
+    }
+
+    @Override
+    public CompoundTag getNbtData(Entity entity) {
+        NBTTagCompound compound = new NBTTagCompound();
+        ((CraftEntity) entity).getHandle().c(compound);
+        return CompoundTag_v1_10_R1.fromNMSTag(compound);
+    }
+
+    @Override
+    public void setNbtData(Entity entity, CompoundTag compoundTag) {
+        ((CraftEntity) entity).getHandle().f(((CompoundTag_v1_10_R1) compoundTag).toNMSTag());
     }
 
     /*

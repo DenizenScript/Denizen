@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import com.mojang.authlib.GameProfile;
+import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
+import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.minecraft.server.v1_10_R1.MinecraftServer;
 import net.minecraft.server.v1_10_R1.OpList;
@@ -8,10 +10,13 @@ import net.minecraft.server.v1_10_R1.OpListEntry;
 import net.minecraft.server.v1_10_R1.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class PlayerHelper_v1_10_R1 implements PlayerHelper {
 
@@ -46,5 +51,15 @@ public class PlayerHelper_v1_10_R1 implements PlayerHelper {
         ((CraftPlayer) player).getHandle().viewingCredits = true;
         ((CraftPlayer) player).getHandle().playerConnection
                 .sendPacket(new PacketPlayOutGameStateChange(4, 0.0F));
+    }
+
+    @Override
+    public ImprovedOfflinePlayer getOfflineData(UUID uuid) {
+        return new ImprovedOfflinePlayer_v1_10_R1(uuid);
+    }
+
+    @Override
+    public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
+        return new ImprovedOfflinePlayer_v1_10_R1(offlinePlayer.getUniqueId());
     }
 }

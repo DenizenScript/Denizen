@@ -13,8 +13,9 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_10_R1.LoggerOutputStream;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -114,6 +115,29 @@ public class LogInterceptor extends PrintStream {
                 }
             }
             super.log(marker, fqcn, level, data, t);
+        }
+    }
+
+    private static class LoggerOutputStream extends ByteArrayOutputStream {
+        private final String separator = System.getProperty("line.separator");
+        private final Logger logger;
+        private final Level level;
+
+        public LoggerOutputStream(Logger logger, Level level) {
+            this.logger = logger;
+            this.level = level;
+        }
+
+        public void flush() throws IOException {
+            synchronized(this) {
+                super.flush();
+                String record = this.toString();
+                super.reset();
+                if(record.length() > 0 && !record.equals(this.separator)) {
+                    this.logger.log(this.level, record);
+                }
+
+            }
         }
     }
 }

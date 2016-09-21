@@ -86,6 +86,10 @@ public class CompoundTagBuilder {
         return put(key, new ByteTag(value));
     }
 
+    public CompoundTagBuilder putBoolean(String key, boolean value) {
+        return putByte(key, (byte) (value ? 1 : 0));
+    }
+
     /**
      * Put the given key and value into the compound tag as a
      * {@code DoubleTag}.
@@ -180,6 +184,11 @@ public class CompoundTagBuilder {
         for (Map.Entry<String, ? extends Tag> entry : value.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
+        return this;
+    }
+
+    public CompoundTagBuilder remove(String key) {
+        entries.remove(key);
         return this;
     }
 
