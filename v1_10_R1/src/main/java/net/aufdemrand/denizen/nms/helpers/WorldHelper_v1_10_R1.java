@@ -87,8 +87,8 @@ public class WorldHelper_v1_10_R1 implements WorldHelper {
         if (!worldAccessMap.containsKey(world)) {
             return;
         }
-        WorldServer worldServer = ((CraftWorld) world).getHandle();
-        List<IWorldAccess> list = ReflectionHelper.getFieldValue(World.class, "u", worldServer);
+        net.minecraft.server.v1_10_R1.World nmsWorld = ((CraftWorld) world).getHandle();
+        List<IWorldAccess> list = ReflectionHelper.getFieldValue(net.minecraft.server.v1_10_R1.World.class, "u", nmsWorld);
         if (list != null) {
             list.remove(worldAccessMap.get(world));
         }
