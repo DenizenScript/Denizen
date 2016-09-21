@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import org.bukkit.Location;
 
 import java.util.List;

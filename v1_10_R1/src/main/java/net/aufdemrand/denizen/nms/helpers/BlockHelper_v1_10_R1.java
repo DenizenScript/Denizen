@@ -3,10 +3,13 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.impl.blocks.BlockData_v1_10_R1;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.minecraft.server.v1_10_R1.TileEntitySkull;
 import org.bukkit.SkullType;
+import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_10_R1.block.CraftSkull;
 
@@ -37,5 +40,20 @@ public class BlockHelper_v1_10_R1 implements BlockHelper {
         tileEntity.setSkullType(SkullType.PLAYER.ordinal());
         tileEntity.setGameProfile(gameProfile);
         skull.getBlock().getState().update();
+    }
+
+    @Override
+    public BlockData getBlockData(short id, byte data) {
+        return new BlockData_v1_10_R1(id, data);
+    }
+
+    @Override
+    public BlockData getBlockData(Block block) {
+        return new BlockData_v1_10_R1(block);
+    }
+
+    @Override
+    public BlockData getBlockData(String compressedString) {
+        return BlockData_v1_10_R1.fromCompressedString(compressedString);
     }
 }

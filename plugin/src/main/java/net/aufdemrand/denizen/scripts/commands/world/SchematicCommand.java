@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.utilities.blocks.BlockData;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -350,7 +350,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
             if (attribute.hasContext(1) && dLocation.matches(attribute.getContext(1))) {
                 dLocation location = dLocation.valueOf(attribute.getContext(1));
                 BlockData block = set.blockAt(location.getX(), location.getY(), location.getZ());
-                event.setReplaced(dMaterial.getMaterialFrom(block.material, block.data)
+                event.setReplaced(dMaterial.getMaterialFrom(block.getMaterial(), block.getData())
                         .getAttribute(attribute.fulfill(1)));
                 return;
             }
