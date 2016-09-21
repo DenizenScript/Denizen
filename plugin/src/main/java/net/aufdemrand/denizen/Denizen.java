@@ -364,7 +364,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void onEnable() {
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
-            getLogger().warning("Denizen is not compatible with this CraftBukkit version! Deactivating Denizen!");
+            getLogger().warning("Denizen is not compatible with this Spigot version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");
             getServer().getPluginManager().disablePlugin(this);
             startedSuccessful = false;

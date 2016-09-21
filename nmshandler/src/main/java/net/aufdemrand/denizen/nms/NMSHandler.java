@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.nms;
 
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
+import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.interfaces.*;
@@ -8,6 +9,7 @@ import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -63,6 +65,8 @@ public abstract class NMSHandler {
     }
 
     public abstract Sidebar createSidebar(Player player);
+
+    public abstract BlockLight createBlockLight(Location location, int lightLevel, long ticks);
 
     public abstract PlayerProfile fillPlayerProfile(PlayerProfile playerProfile);
 
