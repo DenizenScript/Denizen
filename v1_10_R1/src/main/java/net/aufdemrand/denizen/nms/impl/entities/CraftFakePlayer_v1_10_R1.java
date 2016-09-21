@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.nms.impl;
+package net.aufdemrand.denizen.nms.impl.entities;
 
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;

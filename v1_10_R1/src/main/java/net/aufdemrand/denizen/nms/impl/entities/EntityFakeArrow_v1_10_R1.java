@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.nms.impl;
+package net.aufdemrand.denizen.nms.impl.entities;
 
 import net.minecraft.server.v1_10_R1.EntitySpectralArrow;
 import net.minecraft.server.v1_10_R1.ItemStack;

@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.nms.impl;
+package net.aufdemrand.denizen.nms.impl.entities;
 
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.impl.network.FakeNetworkManager_v1_10_R1;
