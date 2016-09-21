@@ -12,7 +12,6 @@ import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.utilities.packets.*;
 import net.aufdemrand.denizencore.objects.*;
@@ -2551,10 +2550,10 @@ public class dPlayer implements dObject, Adjustable {
         // @name show_entity
         // @input dEntity
         // @description
-        // Shows the player an entity.
+        // Shows the player a previously hidden entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            HideEntity.showEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2570,11 +2569,11 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     if (split.length > 1 && new Element(split[1]).isBoolean()) {
-                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
                                 new Element(split[1]).asBoolean());
                     }
                     else {
-                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
                     }
                 }
                 else {

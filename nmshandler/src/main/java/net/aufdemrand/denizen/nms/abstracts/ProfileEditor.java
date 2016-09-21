@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.nms.abstracts;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +16,8 @@ public abstract class ProfileEditor {
 
     protected static final Map<UUID, PlayerProfile> fakeProfiles = new HashMap<UUID, PlayerProfile>();
 
-    protected final JavaPlugin plugin;
-
-    public ProfileEditor(JavaPlugin plugin) {
-        this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(new PlayerProfileEditorListener(), plugin);
+    public ProfileEditor() {
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerProfileEditorListener(), NMSHandler.getJavaPlugin());
     }
 
     public void setPlayerName(Player player, String name) {

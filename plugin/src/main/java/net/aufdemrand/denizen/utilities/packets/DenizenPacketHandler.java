@@ -3,14 +3,18 @@ package net.aufdemrand.denizen.utilities.packets;
 import net.aufdemrand.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import net.aufdemrand.denizen.events.player.PlayerSteersEntityScriptEvent;
 import net.aufdemrand.denizen.events.player.ResourcePackStatusScriptEvent;
-import net.aufdemrand.denizen.nms.interfaces.packets.*;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketInSteerVehicle;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutChat;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.HideEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -107,20 +111,9 @@ public class DenizenPacketHandler implements PacketHandler {
     }
 
     @Override
-    public boolean sendPacket(Player player, PacketOutSpawnEntity spawnEntity) {
-        UUID uuid = spawnEntity.getEntityUuid();
-        return entityIsHiding(player, uuid);
-    }
-
-    @Override
     public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
         HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
         // TODO: Check effect type against GLOWING (24)
         return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
-    }
-
-    private static boolean entityIsHiding(Player player, UUID entityUuid) {
-        UUID playerUuid = player.getUniqueId();
-        return HideEntity.hiddenEntities.containsKey(playerUuid) && HideEntity.hiddenEntities.get(playerUuid).contains(entityUuid);
     }
 }

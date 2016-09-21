@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.nms.impl.entities;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ public class CraftFakePlayer_v1_10_R1 extends CraftPlayer implements FakePlayer 
     private final CraftServer server;
     public String fullName;
 
-    public CraftFakePlayer_v1_10_R1(CraftServer server, EntityFakePlayer_v1_10_R1 entity, JavaPlugin plugin) {
+    public CraftFakePlayer_v1_10_R1(CraftServer server, EntityFakePlayer_v1_10_R1 entity) {
         super(server, entity);
         this.server = server;
-        setMetadata("NPC", new FixedMetadataValue(plugin, true));
+        setMetadata("NPC", new FixedMetadataValue(NMSHandler.getJavaPlugin(), true));
     }
 
     @Override

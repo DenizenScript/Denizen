@@ -30,7 +30,7 @@ public class Handler_v1_10_R1 extends NMSHandler {
 
     private final BlockHelper blockHelper = new BlockHelper_v1_10_R1();
     private final ChunkHelper chunkHelper = new ChunkHelper_v1_10_R1();
-    private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_10_R1(javaPlugin);
+    private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_10_R1();
     private final EntityHelper entityHelper = new EntityHelper_v1_10_R1();
     private final FishingHelper fishingHelper = new FishingHelper_v1_10_R1();
     private final ItemHelper itemHelper = new ItemHelper_v1_10_R1();
@@ -38,7 +38,7 @@ public class Handler_v1_10_R1 extends NMSHandler {
     private final PlayerHelper playerHelper = new PlayerHelper_v1_10_R1();
     private final WorldHelper worldHelper = new WorldHelper_v1_10_R1();
 
-    private final ProfileEditor profileEditor = new ProfileEditor_v1_10_R1(javaPlugin);
+    private final ProfileEditor profileEditor = new ProfileEditor_v1_10_R1();
 
     @Override
     public Thread getMainThread() {
@@ -97,7 +97,7 @@ public class Handler_v1_10_R1 extends NMSHandler {
 
     @Override
     public void enablePacketInterception(PacketHandler packetHandler) {
-        DenizenPacketListener_v1_10_R1.enable(javaPlugin, packetHandler);
+        DenizenPacketListener_v1_10_R1.enable(packetHandler);
     }
 
     @Override

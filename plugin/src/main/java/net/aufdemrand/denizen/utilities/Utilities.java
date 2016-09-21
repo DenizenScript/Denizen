@@ -1,14 +1,15 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -91,9 +92,10 @@ public class Utilities {
     // TODO: Javadocs, comments
     //
     public static boolean isWalkable(Location location) {
-        return !SafeBlock.blockIsSafe(location.clone().subtract(0, 1, 0).getBlock().getType())
-                && SafeBlock.blockIsSafe(location.getBlock().getType())
-                && SafeBlock.blockIsSafe(location.clone().add(0, 1, 0).getBlock().getType());
+        BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
+        return !blockHelper.isSafeBlock(location.clone().subtract(0, 1, 0).getBlock().getType())
+                && blockHelper.isSafeBlock(location.getBlock().getType())
+                && blockHelper.isSafeBlock(location.clone().add(0, 1, 0).getBlock().getType());
     }
 
 

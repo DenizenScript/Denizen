@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 
@@ -15,4 +16,6 @@ public interface BlockHelper {
     BlockData getBlockData(Block block);
 
     BlockData getBlockData(String compressedString);
+
+    boolean isSafeBlock(Material material);
 }

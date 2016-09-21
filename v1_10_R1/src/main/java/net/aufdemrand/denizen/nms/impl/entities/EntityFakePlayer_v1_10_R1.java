@@ -11,9 +11,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class EntityFakePlayer_v1_10_R1 extends EntityPlayer {
 
-    public EntityFakePlayer_v1_10_R1(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager, JavaPlugin plugin) {
+    public EntityFakePlayer_v1_10_R1(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile, PlayerInteractManager playerinteractmanager) {
         super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
-        this.bukkitEntity = new CraftFakePlayer_v1_10_R1((CraftServer) Bukkit.getServer(), this, plugin);
+        this.bukkitEntity = new CraftFakePlayer_v1_10_R1((CraftServer) Bukkit.getServer(), this);
         playerinteractmanager.setGameMode(EnumGamemode.SURVIVAL);
         NetworkManager networkManager = new FakeNetworkManager_v1_10_R1(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection_v1_10_R1(minecraftserver, networkManager, this);

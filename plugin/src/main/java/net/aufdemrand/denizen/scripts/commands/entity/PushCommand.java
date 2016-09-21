@@ -1,17 +1,22 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
 import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
@@ -257,8 +262,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
                     // Check if the entity has collided with something
                     // using the most basic possible calculation
-                    if (!SafeBlock.blockIsSafe(lastEntity.getLocation().add(v3).getBlock().getType())
-                            || !SafeBlock.blockIsSafe(lastEntity.getLocation().add(newVel).getBlock().getType())) {
+                    BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
+                    if (!blockHelper.isSafeBlock(lastEntity.getLocation().add(v3).getBlock().getType())
+                            || !blockHelper.isSafeBlock(lastEntity.getLocation().add(newVel).getBlock().getType())) {
                         runs = maxTicks;
                     }
 

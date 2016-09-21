@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -71,7 +71,7 @@ public class EntitySpeed implements Property {
 
     public Element getSpeed() {
         if (entity.isLivingEntity()) {
-            return new Element(EntityMovement.getSpeed(entity.getBukkitEntity()));
+            return new Element(NMSHandler.getInstance().getEntityHelper().getSpeed(entity.getBukkitEntity()));
         }
         else {
             EntityType entityType = entity.getBukkitEntityType();
@@ -134,7 +134,7 @@ public class EntitySpeed implements Property {
         if (mechanism.matches("speed") && mechanism.requireDouble()) {
             double value = mechanism.getValue().asDouble();
             if (entity.isLivingEntity()) {
-                EntityMovement.setSpeed(entity.getBukkitEntity(), value);
+                NMSHandler.getInstance().getEntityHelper().setSpeed(entity.getBukkitEntity(), value);
             }
             else {
                 EntityType entityType = entity.getBukkitEntityType();

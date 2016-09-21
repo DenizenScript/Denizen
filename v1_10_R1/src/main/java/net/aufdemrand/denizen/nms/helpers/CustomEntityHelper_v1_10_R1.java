@@ -19,7 +19,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -28,12 +27,6 @@ import java.security.MessageDigest;
 import java.util.UUID;
 
 public class CustomEntityHelper_v1_10_R1 implements CustomEntityHelper {
-
-    private final JavaPlugin plugin;
-
-    public CustomEntityHelper_v1_10_R1(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public FakeArrow spawnFakeArrow(Location location) {
@@ -115,7 +108,7 @@ public class CustomEntityHelper_v1_10_R1 implements CustomEntityHelper {
                 new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
 
         final EntityFakePlayer_v1_10_R1 fakePlayer = new EntityFakePlayer_v1_10_R1(worldServer.getMinecraftServer(), worldServer,
-                gameProfile, new PlayerInteractManager(worldServer), plugin);
+                gameProfile, new PlayerInteractManager(worldServer));
 
         fakePlayer.setPositionRotation(location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());

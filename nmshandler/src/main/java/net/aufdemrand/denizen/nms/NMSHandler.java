@@ -18,7 +18,7 @@ public abstract class NMSHandler {
 
     private static NMSHandler instance;
     private static NMSVersion version;
-    protected static JavaPlugin javaPlugin;
+    private static JavaPlugin javaPlugin;
 
     public static boolean initialize(JavaPlugin plugin) {
         javaPlugin = plugin;
@@ -56,6 +56,10 @@ public abstract class NMSHandler {
 
     public static NMSVersion getVersion() {
         return version;
+    }
+
+    public static JavaPlugin getJavaPlugin() {
+        return javaPlugin;
     }
 
     public abstract Sidebar createSidebar(Player player);

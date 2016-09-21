@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -42,7 +42,7 @@ public class EntityAI implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(!EntityMovement.isAIDisabled(entity.getBukkitEntity()));
+        return String.valueOf(!NMSHandler.getInstance().getEntityHelper().isAIDisabled(entity.getBukkitEntity()));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class EntityAI implements Property {
         // AI to roam and look around.
         // -->
         if (attribute.startsWith("has_ai")) {
-            return new Element(!EntityMovement.isAIDisabled(entity.getBukkitEntity()))
+            return new Element(!NMSHandler.getInstance().getEntityHelper().isAIDisabled(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -93,7 +93,7 @@ public class EntityAI implements Property {
         // <e@entity.has_ai>
         // -->
         if ((mechanism.matches("has_ai") || mechanism.matches("toggle_ai")) && mechanism.requireBoolean()) {
-            EntityMovement.toggleAI(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getInstance().getEntityHelper().toggleAI(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

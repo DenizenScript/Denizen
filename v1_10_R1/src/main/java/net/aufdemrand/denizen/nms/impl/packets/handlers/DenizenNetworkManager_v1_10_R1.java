@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.impl.packets.handlers;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_10_R1;
@@ -14,35 +15,33 @@ import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoActio
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
+import java.util.UUID;
 
 public class DenizenNetworkManager_v1_10_R1 extends NetworkManager {
 
     private final NetworkManager oldManager;
     private final DenizenPacketListener_v1_10_R1 packetListener;
     private final EntityPlayer player;
-    private final JavaPlugin plugin;
     private final PacketHandler packetHandler;
 
-    public DenizenNetworkManager_v1_10_R1(EntityPlayer entityPlayer, NetworkManager oldManager, JavaPlugin plugin, PacketHandler packetHandler) {
+    public DenizenNetworkManager_v1_10_R1(EntityPlayer entityPlayer, NetworkManager oldManager, PacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
         this.oldManager = oldManager;
         this.channel = oldManager.channel;
         this.packetListener = new DenizenPacketListener_v1_10_R1(this, entityPlayer);
         oldManager.setPacketListener(packetListener);
         this.player = this.packetListener.player;
-        this.plugin = plugin;
         this.packetHandler = packetHandler;
     }
 
-    public static void setNetworkManager(Player player, JavaPlugin plugin, PacketHandler packetHandler) {
+    public static void setNetworkManager(Player player, PacketHandler packetHandler) {
         EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
         PlayerConnection playerConnection = entityPlayer.playerConnection;
-        setNetworkManager(playerConnection, new DenizenNetworkManager_v1_10_R1(entityPlayer, playerConnection.networkManager, plugin, packetHandler));
+        setNetworkManager(playerConnection, new DenizenNetworkManager_v1_10_R1(entityPlayer, playerConnection.networkManager, packetHandler));
     }
 
     public void channelActive(ChannelHandlerContext channelhandlercontext) throws Exception {
@@ -84,28 +83,19 @@ public class DenizenNetworkManager_v1_10_R1 extends NetworkManager {
                 oldManager.sendPacket(packet);
             }
         }
-        /*else if (packet instanceof PacketPlayOutSetSlot) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlot_v1_10_R1((PacketPlayOutSetSlot) packet))) {
-                oldManager.sendPacket(packet);
-            }
-        }
-        else if (packet instanceof PacketPlayOutWindowItems) {
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItems_v1_10_R1((PacketPlayOutWindowItems) packet))) {
-                oldManager.sendPacket(packet);
-            }
-        }*/
         else if (packet instanceof PacketPlayOutNamedEntitySpawn
                 || packet instanceof PacketPlayOutSpawnEntity
                 || packet instanceof PacketPlayOutSpawnEntityLiving
                 || packet instanceof PacketPlayOutSpawnEntityPainting
                 || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
             PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_10_R1(packet);
-            if (!packetHandler.sendPacket(player.getBukkitEntity(), spawnEntity)) {
-                Entity entity = ((WorldServer) player.getWorld()).getEntity(spawnEntity.getEntityUuid());
+            UUID uuid = spawnEntity.getEntityUuid();
+            if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), uuid)) {
+                Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);
                 if (entity instanceof EntityFakePlayer_v1_10_R1) {
                     final EntityFakePlayer_v1_10_R1 fakePlayer = (EntityFakePlayer_v1_10_R1) entity;
                     sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                    Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
+                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
                         @Override
                         public void run() {
                             sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));

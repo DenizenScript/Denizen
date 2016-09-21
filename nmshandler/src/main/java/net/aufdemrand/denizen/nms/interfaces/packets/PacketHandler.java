@@ -10,7 +10,5 @@ public interface PacketHandler {
 
     boolean sendPacket(Player player, PacketOutChat chat);
 
-    boolean sendPacket(Player player, PacketOutSpawnEntity spawnEntity);
-
     boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata);
 }

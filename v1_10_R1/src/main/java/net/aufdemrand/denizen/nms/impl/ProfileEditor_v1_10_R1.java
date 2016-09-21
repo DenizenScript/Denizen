@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.impl;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.helpers.PacketHelper_v1_10_R1;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
@@ -15,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class ProfileEditor_v1_10_R1 extends ProfileEditor {
-
-    public ProfileEditor_v1_10_R1(JavaPlugin plugin) {
-        super(plugin);
-    }
 
     @Override
     protected void updatePlayer(Player player, final boolean isSkinChanging) {
@@ -63,7 +59,7 @@ public class ProfileEditor_v1_10_R1 extends ProfileEditor {
                     }
                 }
             }
-        }.runTaskLater(plugin, 5);
+        }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
     }
 
     public static void updatePlayerProfiles(PacketPlayOutPlayerInfo packet) {

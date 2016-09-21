@@ -2,13 +2,13 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 
 import com.google.common.base.Function;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -176,11 +176,11 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
             }
             else if (shouldStop) {
-                EntityMovement.stopWalking(entity.getBukkitEntity());
+                NMSHandler.getInstance().getEntityHelper().stopWalking(entity.getBukkitEntity());
             }
             else {
                 waitForEntities.add(entity);
-                EntityMovement.walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2,
+                NMSHandler.getInstance().getEntityHelper().walkTo(entity.getBukkitEntity(), loc, speed != null ? speed.asDouble() : 0.2,
                         new Runnable() {
                             @Override
                             public void run() {
