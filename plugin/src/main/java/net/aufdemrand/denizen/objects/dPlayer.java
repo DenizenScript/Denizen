@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
-import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
@@ -36,6 +35,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
@@ -231,7 +231,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer().);
+        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
     }
 
     public dEntity getDenizenEntity() {
@@ -2635,11 +2635,11 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
-                        PlayerBars.showExperience(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
                                 new Element(split[0]).asFloat(), new Element(split[1]).asInt());
                     }
                     else {
-                        PlayerBars.showExperience(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
                                 new Element(split[0]).asFloat(), getPlayerEntity().getLevel());
                     }
                 }
@@ -2648,7 +2648,7 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             else {
-                PlayerBars.resetExperience(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetExperience(getPlayerEntity());
             }
         }
 
@@ -2674,16 +2674,16 @@ public class dPlayer implements dObject, Adjustable {
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
                         if (split.length > 2 && new Element(split[2]).isFloat()) {
-                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                     new Element(split[1]).asInt(), new Element(split[2]).asFloat());
                         }
                         else {
-                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                     new Element(split[1]).asInt(), getPlayerEntity().getSaturation());
                         }
                     }
                     else {
-                        PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                        NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
                 }
@@ -2692,7 +2692,7 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             else {
-                PlayerBars.resetHealth(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetHealth(getPlayerEntity());
             }
         }
 
@@ -2713,11 +2713,19 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
-                    if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
+                    String slot = split[1].toUpperCase();
+                    if (split.length > 1 && (new Element(slot).matchesEnum(EquipmentSlot.values())
+                            || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
                         if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
-                            EntityEquipment.showEquipment(getPlayerEntity(),
+                            if (slot.equals("MAIN_HAND")) {
+                                slot = "HAND";
+                            }
+                            else if (slot.equals("BOOTS")) {
+                                slot = "FEET";
+                            }
+                            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
                                     new Element(split[0]).asType(dEntity.class).getLivingEntity(),
-                                    EntityEquipment.EquipmentSlots.valueOf(new Element(split[1]).asString().toUpperCase()),
+                                    EquipmentSlot.valueOf(slot),
                                     new Element(split[2]).asType(dItem.class).getItemStack());
                         }
                         else if (split.length > 2) {
@@ -2728,7 +2736,7 @@ public class dPlayer implements dObject, Adjustable {
                         dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
-                        EntityEquipment.resetEquipment(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
                                 new Element(split[0]).asType(dEntity.class).getLivingEntity());
                     }
                 }
@@ -2772,7 +2780,7 @@ public class dPlayer implements dObject, Adjustable {
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
-            PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2785,7 +2793,7 @@ public class dPlayer implements dObject, Adjustable {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            OpenBook.openBook(getPlayerEntity(), false);
+            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
         }
 
         // <--[mechanism]
@@ -2798,7 +2806,7 @@ public class dPlayer implements dObject, Adjustable {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            OpenBook.openBook(getPlayerEntity(), true);
+            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 
         // <--[mechanism]
@@ -2810,7 +2818,9 @@ public class dPlayer implements dObject, Adjustable {
         // sign, see <@link command Sign>.
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
-            SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
+            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), value.asType(dLocation.class))) {
+                dB.echoError("Can't edit non-sign materials!");
+            }
         }
 
         // <--[mechanism]
@@ -2831,14 +2841,14 @@ public class dPlayer implements dObject, Adjustable {
                     if (split.length > 1) {
                         footer = split[1];
                     }
-                    DisplayHeaderFooter.showHeaderFooter(getPlayerEntity(), header, footer);
+                    NMSHandler.getInstance().getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
                     dB.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
-                DisplayHeaderFooter.clearHeaderFooter(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetTabListHeaderFooter(getPlayerEntity());
             }
         }
 
@@ -2854,7 +2864,7 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
                     dList lines = dList.valueOf(split[1]);
-                    SignUpdate.updateSign(getPlayerEntity(), dLocation.valueOf(split[0]), lines.toArray(4));
+                    getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
                 }
                 else {
                     dB.echoError("Must specify a valid location and at least one sign line!");

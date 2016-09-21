@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketInSteerVehicle;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutChat;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
