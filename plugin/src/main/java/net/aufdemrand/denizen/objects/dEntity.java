@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
@@ -12,7 +13,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -1733,7 +1733,7 @@ public class dEntity implements dObject, Adjustable {
         // Each coordinate is in the range of 0 to 128.
         // -->
         if (attribute.startsWith("map_trace")) {
-            Rotation.MapTraceResult mtr = Rotation.mapTrace(getLivingEntity(), 200);
+            EntityHelper.MapTraceResult mtr = NMSHandler.getInstance().getEntityHelper().mapTrace(getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
                 double y = 0;

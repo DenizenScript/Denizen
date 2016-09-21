@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
@@ -10,7 +11,6 @@ import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
@@ -811,7 +811,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = Rotation.getImpactNormal(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getInstance().getEntityHelper().getImpactNormal(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new dLocation(location).getAttribute(attribute.fulfill(1));
             }
@@ -836,7 +836,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = Rotation.rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getInstance().getEntityHelper().rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new dLocation(location).getAttribute(attribute.fulfill(1));
             }
@@ -910,7 +910,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("line_of_sight") && attribute.hasContext(1)) {
             dLocation location = dLocation.valueOf(attribute.getContext(1));
             if (location != null) {
-                return new Element(Rotation.rayTrace(getWorld(), toVector(), location.toVector()) == null)
+                return new Element(NMSHandler.getInstance().getEntityHelper().canTrace(getWorld(), toVector(), location.toVector()))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -944,6 +944,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 // not the other way around
                 dLocation target = dLocation.valueOf(attribute.getContext(1));
                 attribute = attribute.fulfill(1);
+                EntityHelper entityHelper = NMSHandler.getInstance().getEntityHelper();
                 // <--[tag]
                 // @attribute <l@location.direction[<location>].yaw>
                 // @returns Element(Decimal)
@@ -951,13 +952,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 // Returns the yaw direction between two locations.
                 // -->
                 if (attribute.startsWith("yaw")) {
-                    return new Element(Rotation.normalizeYaw(Rotation.getYaw
+                    return new Element(entityHelper.normalizeYaw(entityHelper.getYaw
                             (target.toVector().subtract(this.toVector())
                                     .normalize())))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
-                    return new Element(Rotation.getCardinal(Rotation.getYaw
+                    return new Element(entityHelper.getCardinal(entityHelper.getYaw
                             (target.toVector().subtract(this.toVector())
                                     .normalize())))
                             .getAttribute(attribute);
@@ -965,7 +966,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             // Get a cardinal direction from this location's yaw
             else {
-                return new Element(Rotation.getCardinal(getYaw()))
+                return new Element(NMSHandler.getInstance().getEntityHelper().getCardinal(getYaw()))
                         .getAttribute(attribute.fulfill(1));
             }
         }
@@ -980,7 +981,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("face")
                 && attribute.hasContext(1)) {
             Location two = dLocation.valueOf(attribute.getContext(1));
-            return new dLocation(Rotation.faceLocation(this, two))
+            return new dLocation(NMSHandler.getInstance().getEntityHelper().faceLocation(this, two))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1016,12 +1017,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
 
                 if (dLocation.matches(attribute.getContext(1))) {
-                    return new Element(Rotation.isFacingLocation
+                    return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
                             (this, dLocation.valueOf(attribute.getContext(1)), degrees))
                             .getAttribute(attribute.fulfill(attributePos));
                 }
                 else if (dEntity.matches(attribute.getContext(1))) {
-                    return new Element(Rotation.isFacingLocation
+                    return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
                             (this, dEntity.valueOf(attribute.getContext(1))
                                     .getBukkitEntity().getLocation(), degrees))
                             .getAttribute(attribute.fulfill(attributePos));
@@ -1074,7 +1075,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the yaw as 'North', 'South', 'East', or 'West'.
         // -->
         if (attribute.startsWith("yaw.simple")) {
-            float yaw = Rotation.normalizeYaw(getYaw());
+            float yaw = NMSHandler.getInstance().getEntityHelper().normalizeYaw(getYaw());
             if (yaw < 45) {
                 return new Element("South")
                         .getAttribute(attribute.fulfill(2));
@@ -1115,7 +1116,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the normalized yaw of the object at the location.
         // -->
         if (attribute.startsWith("yaw")) {
-            return new Element(Rotation.normalizeYaw(getYaw()))
+            return new Element(NMSHandler.getInstance().getEntityHelper().normalizeYaw(getYaw()))
                     .getAttribute(attribute.fulfill(1));
         }
 

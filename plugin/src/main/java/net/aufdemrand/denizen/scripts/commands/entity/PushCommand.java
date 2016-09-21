@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -204,7 +203,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             entityList.add(entity.toString());
 
             if (!no_rotate) {
-                Rotation.faceLocation(entity.getBukkitEntity(), destination);
+                NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
             }
 
             // If the current entity is a projectile, set its shooter
