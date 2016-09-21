@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import org.bukkit.inventory.ItemStack;
 
 public interface ItemHelper {
@@ -11,7 +13,7 @@ public interface ItemHelper {
 
     ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile);
 
-    ItemStack addNbtData(ItemStack itemStack, String key, String value);
+    ItemStack addNbtData(ItemStack itemStack, String key, Tag value);
 
-    String getNbtData(ItemStack itemStack, String key);
+    CompoundTag getNbtData(ItemStack itemStack);
 }

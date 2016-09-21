@@ -3,13 +3,17 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.minecraft.server.v1_10_R1.GameProfileSerializer;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagString;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
 
 public class ItemHelper_v1_10_R1 implements ItemHelper {
 
@@ -52,21 +56,20 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
     }
 
     @Override
-    public ItemStack addNbtData(ItemStack itemStack, String key, String value) {
+    public ItemStack addNbtData(ItemStack itemStack, String key, Tag value) {
         net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
-        tag.set(key, new NBTTagString(value));
-        nmsItemStack.setTag(tag);
+        CompoundTag compound = CompoundTag_v1_10_R1.fromNMSTag(tag).createBuilder().put(key, value).build();
+        nmsItemStack.setTag(((CompoundTag_v1_10_R1) compound).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
     }
 
     @Override
-    public String getNbtData(ItemStack itemStack, String key) {
+    public CompoundTag getNbtData(ItemStack itemStack) {
         net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         if (nmsItemStack.hasTag()) {
-            NBTTagCompound tag = nmsItemStack.getTag();
-            return tag.getString(key);
+            return CompoundTag_v1_10_R1.fromNMSTag(nmsItemStack.getTag());
         }
-        return null;
+        return new CompoundTag_v1_10_R1(new HashMap<String, Tag>());
     }
 }

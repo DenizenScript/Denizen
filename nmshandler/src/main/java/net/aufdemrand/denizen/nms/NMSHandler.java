@@ -6,9 +6,13 @@ import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.interfaces.*;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public abstract class NMSHandler {
 
@@ -87,4 +91,6 @@ public abstract class NMSHandler {
     public abstract WorldHelper getWorldHelper();
 
     public abstract void enablePacketInterception(PacketHandler packetHandler);
+
+    public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 }

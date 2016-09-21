@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -254,7 +255,7 @@ public class ItemScriptContainer extends ScriptContainer {
             }
 
             if (pureNbtId) {
-                stack.setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(stack.getItemStack(), "Denizen Item Script", hash));
+                stack.setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(stack.getItemStack(), "Denizen Item Script", new StringTag(hash)));
             }
         }
         catch (Exception e) {

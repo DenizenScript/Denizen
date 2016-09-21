@@ -10,16 +10,21 @@ import net.aufdemrand.denizen.nms.helpers.*;
 import net.aufdemrand.denizen.nms.impl.BiomeNMS_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.Sidebar_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenPacketListener_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.*;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 public class Handler_v1_10_R1 extends NMSHandler {
 
@@ -93,6 +98,11 @@ public class Handler_v1_10_R1 extends NMSHandler {
     @Override
     public void enablePacketInterception(PacketHandler packetHandler) {
         DenizenPacketListener_v1_10_R1.enable(javaPlugin, packetHandler);
+    }
+
+    @Override
+    public CompoundTag createCompoundTag(Map<String, Tag> value) {
+        return new CompoundTag_v1_10_R1(value);
     }
 
     @Override
