@@ -103,7 +103,17 @@ public class ItemNBT implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // Internal use only
+        // <--[mechanism]
+        // @object dItem
+        // @name nbt
+        // @input dList
+        // @description
+        // Sets the Denizen NBT for this item in the format li@key/value|key/value...
+        // @tags
+        // <i@item.has_nbt[<key>]>
+        // <i@item.nbt_keys>
+        // <i@item.nbt[<key>]>
+        // -->
         if (mechanism.matches("nbt")) {
             dList list = mechanism.getValue().asType(dList.class);
             ItemStack itemStack = item.getItemStack();
