@@ -1,8 +1,12 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Fetchable;
+import net.aufdemrand.denizencore.objects.TagRunnable;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -933,7 +937,7 @@ public class dMaterial implements dObject {
         registerTag("is_solid", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(!SafeBlock.blockIsSafe(((dMaterial) object).material))
+                return new Element(!NMSHandler.getInstance().getBlockHelper().isSafeBlock(((dMaterial) object).material))
                         .getAttribute(attribute.fulfill(1));
             }
         });

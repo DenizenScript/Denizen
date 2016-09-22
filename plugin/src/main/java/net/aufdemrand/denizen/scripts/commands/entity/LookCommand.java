@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -72,7 +72,7 @@ public class LookCommand extends AbstractCommand {
 
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {
-                Rotation.faceLocation(entity.getBukkitEntity(), loc);
+                NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
             }
         }
         if (duration != null && duration.getTicks() > 2) {
@@ -87,7 +87,7 @@ public class LookCommand extends AbstractCommand {
                     }
                     for (dEntity entity : entities) {
                         if (entity.isSpawned()) {
-                            Rotation.faceLocation(entity.getBukkitEntity(), loc);
+                            NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), loc);
                         }
                     }
                 }

@@ -1,13 +1,12 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.entity.Entity;
 
 public class EntitySilent implements Property {
 
@@ -18,8 +17,7 @@ public class EntitySilent implements Property {
     public static EntitySilent getFrom(dObject entity) {
         if (!describes(entity)) {
             return null;
-        }
-        else {
+        } else {
             return new EntitySilent((dEntity) entity);
         }
     }
@@ -41,7 +39,7 @@ public class EntitySilent implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(isSilent(entity.getBukkitEntity()));
+        return NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()) ? "true" : null;
     }
 
     @Override
@@ -69,7 +67,7 @@ public class EntitySilent implements Property {
         // Returns whether the entity is silent. (Plays no sounds)
         // -->
         if (attribute.startsWith("silent")) {
-            return new Element(isSilent(entity.getBukkitEntity()))
+            return new Element(NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -90,15 +88,7 @@ public class EntitySilent implements Property {
         // <e@entity.silent>
         // -->
         if (mechanism.matches("silent") && mechanism.requireBoolean()) {
-            setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
+            NMSHandler.getInstance().getEntityHelper().setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
-    }
-
-    private static boolean isSilent(Entity entity) {
-        return ((CraftEntity) entity).getHandle().isSilent();
-    }
-
-    private static void setSilent(Entity entity, boolean silent) {
-        ((CraftEntity) entity).getHandle().setSilent(silent);
     }
 }

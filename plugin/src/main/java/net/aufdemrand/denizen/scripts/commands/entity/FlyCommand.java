@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -8,7 +9,6 @@ import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -237,9 +237,9 @@ public class FlyCommand extends AbstractCommand {
 
                     // To avoid excessive turbulence, only have the entity rotate
                     // when it really needs to
-                    if (!Rotation.isFacingLocation(entity, location, rotationThreshold)) {
+                    if (!NMSHandler.getInstance().getEntityHelper().isFacingLocation(entity, location, rotationThreshold)) {
 
-                        Rotation.faceLocation(entity, location);
+                        NMSHandler.getInstance().getEntityHelper().faceLocation(entity, location);
                     }
 
                     Vector v1 = entity.getLocation().toVector();

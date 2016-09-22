@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
@@ -18,7 +19,6 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -804,8 +804,7 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("json", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                String JSON = CraftItemStack.asNMSCopy(((dItem) object).item).B().getChatModifier().toString().replace("\"", "\\\"");
-                return new Element(JSON.substring(176, JSON.length() - 185))
+                return new Element(NMSHandler.getInstance().getItemHelper().getJsonString(((dItem) object).item))
                         .getAttribute(attribute.fulfill(1));
             }
         });

@@ -1,10 +1,11 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
+import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.Utilities;
-import net.aufdemrand.denizen.utilities.blocks.BlockData;
-import net.aufdemrand.denizen.utilities.blocks.SafeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.*;
@@ -25,7 +26,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -595,6 +600,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         dList list = new dList();
         int index = 0;
 
+        BlockHelper blockHelper = NMSHandler.getInstance().getBlockHelper();
         for (LocationPair pair : pairs) {
 
             dLocation loc_1 = pair.low;
@@ -608,8 +614,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         loc = new dLocation(loc_1.clone()
                                 .add(x, y, z));
 
-                        if (SafeBlock.blockIsSafe(loc.getBlock().getType())
-                                && SafeBlock.blockIsSafe(loc.clone().add(0, 1, 0).getBlock().getType())
+                        if (blockHelper.isSafeBlock(loc.getBlock().getType())
+                                && blockHelper.isSafeBlock(loc.clone().add(0, 1, 0).getBlock().getType())
                                 && loc.clone().add(0, -1, 0).getBlock().getType().isSolid()
                                 && matchesMaterialList(loc.clone().add(0, -1, 0), mats)) {
                             // Get the center of the block, so the entity won't suffocate

@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.packets.ActionBar;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -77,7 +77,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline()) {
-                ActionBar.sendActionBarMessage(player.getPlayerEntity(), text.asString());
+                NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
             }
             else {
                 dB.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");

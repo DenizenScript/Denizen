@@ -6,7 +6,7 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.8-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,6 +18,8 @@
 
     <modules>
         <module>nmshandler</module>
+        <module>v1_8_R3</module>
+        <module>v1_9_R2</module>
         <module>v1_10_R1</module>
         <module>plugin</module>
     </modules>
@@ -26,11 +28,7 @@
     <repositories>
         <repository>
             <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
-        </repository>
-        <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
+            <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
         </repository>
         <repository>
             <id>everything</id>

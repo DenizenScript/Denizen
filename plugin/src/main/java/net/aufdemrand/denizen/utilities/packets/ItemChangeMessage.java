@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.utilities.packets;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.minecraft.server.v1_10_R1.PacketPlayOutSetSlot;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,48 +13,27 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class ItemChangeMessage implements Listener {
 
-    private static final Field slot_inventoryId, slot_slotId, slot_item;
-
     static {
-        Map<String, Field> fields = PacketHelper.registerFields(PacketPlayOutSetSlot.class);
-        slot_inventoryId = fields.get("a");
-        slot_slotId = fields.get("b");
-        slot_item = fields.get("c");
         DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(new ItemChangeMessage(),
                 DenizenAPI.getCurrentInstance());
     }
 
     private static final Map<UUID, Integer> slotChanged = new HashMap<UUID, Integer>();
 
-    public static PacketPlayOutSetSlot getSlotPacket(UUID player, int nmsSlot, ItemStack item) {
-        PacketPlayOutSetSlot slotPacket = new PacketPlayOutSetSlot();
-        try {
-            slot_inventoryId.set(slotPacket, 0);
-            slotChanged.put(player, nmsSlot);
-            slot_slotId.set(slotPacket, nmsSlot);
-            slot_item.set(slotPacket, CraftItemStack.asNMSCopy(item));
-        }
-        catch (Exception e) {
-            dB.echoError(e);
-        }
-        return slotPacket;
-    }
-
     public static void sendMessage(Player player, String message) {
-        ItemStack item = player.getItemInHand();
+        ItemStack item = NMSHandler.getInstance().getEntityHelper().getItemInHand(player);
         // If the player is holding air, force a light gray stained glass pane,
         // which is probably the least intrusive
         if (item == null || item.getType() == Material.AIR) {
-            item = new ItemStack(Material.STAINED_GLASS_PANE);
-            item.getData().setData((byte) 8);
+            item = new MaterialData(Material.STAINED_GLASS_PANE, DyeColor.GRAY.getDyeData()).toItemStack();
         }
         else {
             item = item.clone();
@@ -63,9 +41,9 @@ public class ItemChangeMessage implements Listener {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(message);
         item.setItemMeta(meta);
-        PacketPlayOutSetSlot slotPacket = getSlotPacket(player.getUniqueId(),
-                player.getInventory().getHeldItemSlot() + 36, item);
-        PacketHelper.sendPacket(player, slotPacket);
+        int slot = player.getInventory().getHeldItemSlot() + 36;
+        NMSHandler.getInstance().getPacketHelper().setSlot(player, slot, item, true);
+        slotChanged.put(player.getUniqueId(), slot);
     }
 
     public static void resetItem(Player player) {
@@ -74,8 +52,9 @@ public class ItemChangeMessage implements Listener {
         }
         UUID uuid = player.getUniqueId();
         if (slotChanged.containsKey(uuid)) {
-            PacketPlayOutSetSlot slotPacket = getSlotPacket(uuid, slotChanged.get(uuid), player.getItemInHand());
-            PacketHelper.sendPacket(player, slotPacket);
+            int slot = slotChanged.get(uuid);
+            ItemStack itemStack = NMSHandler.getInstance().getEntityHelper().getItemInHand(player);
+            NMSHandler.getInstance().getPacketHelper().setSlot(player, slot, itemStack, true);
             slotChanged.remove(uuid);
         }
     }

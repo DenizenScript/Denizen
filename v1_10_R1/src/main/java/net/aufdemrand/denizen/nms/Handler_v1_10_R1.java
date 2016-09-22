@@ -3,28 +3,50 @@ package net.aufdemrand.denizen.nms;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import net.aufdemrand.denizen.nms.helpers.BlockHelper_v1_10_R1;
-import net.aufdemrand.denizen.nms.helpers.EntityHelper_v1_10_R1;
-import net.aufdemrand.denizen.nms.helpers.FishingHelper_v1_10_R1;
-import net.aufdemrand.denizen.nms.helpers.ItemHelper_v1_10_R1;
-import net.aufdemrand.denizen.nms.helpers.PlayerHelper_v1_10_R1;
-import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
-import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
-import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
-import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
-import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
+import net.aufdemrand.denizen.nms.abstracts.BlockLight;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
+import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
+import net.aufdemrand.denizen.nms.helpers.*;
+import net.aufdemrand.denizen.nms.impl.BiomeNMS_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.Sidebar_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.blocks.BlockLight_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenPacketListener_v1_10_R1;
+import net.aufdemrand.denizen.nms.interfaces.*;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Biome;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+
+import java.util.Map;
 
 public class Handler_v1_10_R1 extends NMSHandler {
 
     private final BlockHelper blockHelper = new BlockHelper_v1_10_R1();
+    private final BossBarHelper bossBarHelper = new BossBarHelper_v1_10_R1();
+    private final ChunkHelper chunkHelper = new ChunkHelper_v1_10_R1();
+    private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_10_R1();
     private final EntityHelper entityHelper = new EntityHelper_v1_10_R1();
     private final FishingHelper fishingHelper = new FishingHelper_v1_10_R1();
     private final ItemHelper itemHelper = new ItemHelper_v1_10_R1();
+    private final PacketHelper packetHelper = new PacketHelper_v1_10_R1();
+    private final ParticleHelper particleHelper = new ParticleHelper_v1_10_R1();
     private final PlayerHelper playerHelper = new PlayerHelper_v1_10_R1();
+    private final WorldHelper worldHelper = new WorldHelper_v1_10_R1();
+
+    private final ProfileEditor profileEditor = new ProfileEditor_v1_10_R1();
 
     @Override
     public Thread getMainThread() {
@@ -32,8 +54,28 @@ public class Handler_v1_10_R1 extends NMSHandler {
     }
 
     @Override
+    public double[] getRecentTps() {
+        return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
+    }
+
+    @Override
     public BlockHelper getBlockHelper() {
         return blockHelper;
+    }
+
+    @Override
+    public BossBarHelper getBossBarHelper() {
+        return null;
+    }
+
+    @Override
+    public ChunkHelper getChunkHelper() {
+        return chunkHelper;
+    }
+
+    @Override
+    public CustomEntityHelper getCustomEntityHelper() {
+        return customEntityHelper;
     }
 
     @Override
@@ -52,8 +94,43 @@ public class Handler_v1_10_R1 extends NMSHandler {
     }
 
     @Override
+    public PacketHelper getPacketHelper() {
+        return packetHelper;
+    }
+
+    @Override
+    public ParticleHelper getParticleHelper() {
+        return particleHelper;
+    }
+
+    @Override
     public PlayerHelper getPlayerHelper() {
         return playerHelper;
+    }
+
+    @Override
+    public WorldHelper getWorldHelper() {
+        return worldHelper;
+    }
+
+    @Override
+    public void enablePacketInterception(PacketHandler packetHandler) {
+        DenizenPacketListener_v1_10_R1.enable(packetHandler);
+    }
+
+    @Override
+    public CompoundTag createCompoundTag(Map<String, Tag> value) {
+        return new CompoundTag_v1_10_R1(value);
+    }
+
+    @Override
+    public Sidebar createSidebar(Player player) {
+        return new Sidebar_v1_10_R1(player);
+    }
+
+    @Override
+    public BlockLight createBlockLight(Location location, int lightLevel, long ticks) {
+        return BlockLight_v1_10_R1.createLight(location, lightLevel, ticks);
     }
 
     @Override
@@ -77,7 +154,7 @@ public class Handler_v1_10_R1 extends NMSHandler {
                 if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
                     gameProfile1 = minecraftServer.ay().fillProfileProperties(gameProfile1, true);
                 }
-                Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
+                Property property = Iterables.getFirst(gameProfile1.getProperties().get("textures"), null);
                 return new PlayerProfile(gameProfile1.getName(), gameProfile1.getId(),
                         property != null ? property.getValue() : null,
                         property != null ? property.getSignature() : null);
@@ -87,5 +164,34 @@ public class Handler_v1_10_R1 extends NMSHandler {
             // Nothing for now
         }
         return null;
+    }
+
+    @Override
+    public PlayerProfile getPlayerProfile(Player player) {
+        GameProfile gameProfile = ((CraftPlayer) player).getProfile();
+        Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);
+        return new PlayerProfile(gameProfile.getName(), gameProfile.getId(),
+                property != null ? property.getValue() : null,
+                property != null ? property.getSignature() : null);
+    }
+
+    @Override
+    public ProfileEditor getProfileEditor() {
+        return profileEditor;
+    }
+
+    @Override
+    public BiomeNMS getBiomeNMS(Biome biome) {
+        return new BiomeNMS_v1_10_R1(biome);
+    }
+
+    @Override
+    public void showSimpleBossBar(Player player, String title, double progress) {
+        bossBarHelper.showBossBar(player, true, title, progress, BarColor.PURPLE, BarStyle.SOLID);
+    }
+
+    @Override
+    public void removeSimpleBossBar(Player player) {
+        bossBarHelper.removeBossBars(player);
     }
 }

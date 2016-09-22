@@ -2,6 +2,9 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
+import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
@@ -10,9 +13,7 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.CraftFakePlayer;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -698,11 +699,11 @@ public class dEntity implements dObject, Adjustable {
         if (isCitizensNPC()) {
             return getDenizenNPC().getCitizen().getName();
         }
-        if (entity instanceof CraftFakePlayer) {
-            return ((CraftFakePlayer) entity).getFullName();
+        if (entity instanceof FakePlayer) {
+            return ((FakePlayer) entity).getFullName();
         }
         if (entity instanceof Player) {
-            return ((Player) entity).getName();
+            return entity.getName();
         }
         String customName = entity.getCustomName();
         if (customName != null) {
@@ -1702,7 +1703,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("item_in_hand") ||
                 attribute.startsWith("iteminhand")) {
-            return new dItem(getLivingEntity().getEquipment().getItemInMainHand())
+            return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1715,7 +1716,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (attribute.startsWith("item_in_offhand") ||
                 attribute.startsWith("iteminoffhand")) {
-            return new dItem(getLivingEntity().getEquipment().getItemInOffHand())
+            return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1733,7 +1734,7 @@ public class dEntity implements dObject, Adjustable {
         // Each coordinate is in the range of 0 to 128.
         // -->
         if (attribute.startsWith("map_trace")) {
-            Rotation.MapTraceResult mtr = Rotation.mapTrace(getLivingEntity(), 200);
+            EntityHelper.MapTraceResult mtr = NMSHandler.getInstance().getEntityHelper().mapTrace(getLivingEntity(), 200);
             if (mtr != null) {
                 double x = 0;
                 double y = 0;
@@ -2277,7 +2278,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns whether this entity is gliding.
         // -->
-        if (attribute.startsWith("gliding")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("gliding")) {
             return new Element(getLivingEntity().isGliding())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2290,7 +2291,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns whether this entity is glowing.
         // -->
-        if (attribute.startsWith("glowing")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("glowing")) {
             return new Element(getLivingEntity().isGlowing())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2489,7 +2490,7 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            getLivingEntity().getEquipment().setItemInMainHand(value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2503,7 +2504,7 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            getLivingEntity().getEquipment().setItemInOffHand(value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2724,7 +2725,7 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.gliding>
         // -->
-        if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("gliding") && mechanism.requireBoolean()) {
             getLivingEntity().setGliding(value.asBoolean());
         }
 
@@ -2737,7 +2738,7 @@ public class dEntity implements dObject, Adjustable {
         // @tags
         // <e@entity.glowing>
         // -->
-        if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getLivingEntity().setGlowing(value.asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());

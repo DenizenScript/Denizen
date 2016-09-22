@@ -1,6 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
+import net.aufdemrand.denizen.nms.interfaces.Effect;
+import net.aufdemrand.denizen.nms.interfaces.Particle;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -12,12 +16,10 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_10_R1.EnumParticle;
-import net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles;
-import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,79 +32,36 @@ import java.util.List;
 // @description
 // All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
 //
-// Sounds:
-// - BLAZE_SHOOT, BOW_FIRE, CLICK1, CLICK2, DOOR_TOGGLE, EXTINGUISH, GHAST_SHOOT, GHAST_SHRIEK,
-//   RECORD_PLAY, STEP_SOUND, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_DESTROY_DOOR
-//
-// Visual effects:
+// Effects:
 // - iconcrack_[id],[data] (item break effect - examples: iconcrack_7, iconcrack_17,3)
 // - blockcrack_[id] (block break effect)
 // - blockdust_[id] (block break effect)
-// - ENDER_SIGNAL, MOBSPAWNER_FLAMES, POTION_BREAK, SMOKE,
-// - HUGE_EXPLOSION, LARGE_EXPLODE, FIREWORKS_SPARK, BUBBLE, SUSPEND, DEPTH_SUSPEND, TOWN_AURA,
-//   CRIT, MAGIC_CRIT, MOB_SPELL, MOB_SPELL_AMBIENT, SPELL, INSTANT_SPELL, WITCH_MAGIC, NOTE, STEP_SOUND,
-//   PORTAL, ENCHANTMENT_TABLE, EXPLODE, FLAME, LAVA, FOOTSTEP, SPLASH, LARGE_SMOKE, CLOUD, RED_DUST,
-//   SNOWBALL_POOF, DRIP_WATER, DRIP_LAVA, SNOW_SHOVEL, SLIME, HEART, ANGRY_VILLAGER, HAPPY_VILLAGER, BARRIER,
-//   END_ROD, DRAGON_BREATH, DAMAGE_INDICATOR, SWEEP_ATTACK
+// - ANVIL_BREAK, ANVIL_LAND, ANVIL_USE, BARRIER, BAT_TAKEOFF, BLAZE_SHOOT, BOW_FIRE, BREWING_STAND_BREW,
+//   CHORUS_FLOWER_DEATH, CHORUS_FLOWER_GROW, CLICK1, CLICK2, CLOUD, COLOURED_DUST, CRIT, CRIT_MAGIC, DAMAGE_INDICATOR,
+//   DOOR_CLOSE, DOOR_TOGGLE, DRAGON_BREATH, DRIP_LAVA, DRIP_WATER, ENCHANTMENT_TABLE, END_GATEWAY_SPAWN, END_ROD,
+//   ENDER_SIGNAL, ENDERDRAGON_GROWL, ENDERDRAGON_SHOOT, ENDEREYE_LAUNCH, EXPLOSION, EXPLOSION_HUGE, EXPLOSION_LARGE,
+//   EXPLOSION_NORMAL, EXTINGUISH, FALLING_DUST, FENCE_GATE_CLOSE, FENCE_GATE_TOGGLE, FIREWORK_SHOOT, FIREWORKS_SPARK,
+//   FLAME, FLYING_GLYPH, FOOTSTEP, GHAST_SHOOT, GHAST_SHRIEK, HAPPY_VILLAGER, HEART, INSTANT_SPELL, IRON_DOOR_CLOSE,
+//   IRON_DOOR_TOGGLE, IRON_TRAPDOOR_CLOSE, IRON_TRAPDOOR_TOGGLE, ITEM_BREAK, ITEM_TAKE, LARGE_SMOKE, LAVA, LAVA_POP,
+//   LAVADRIP, MAGIC_CRIT, MOB_APPEARANCE, MOBSPAWNER_FLAMES, NOTE, PARTICLE_SMOKE, PORTAL, PORTAL_TRAVEL, POTION_BREAK,
+//   POTION_SWIRL, POTION_SWIRL_TRANSPARENT, RECORD_PLAY, REDSTONE, SLIME, SMALL_SMOKE, SMOKE, SMOKE_LARGE,
+//   SMOKE_NORMAL, SNOW_SHOVEL, SNOWBALL, SNOWBALL_BREAK, SPELL, SPELL_INSTANT, SPELL_MOB, SPELL_MOB_AMBIENT,
+//   SPELL_WITCH, SPLASH, STEP_SOUND, SUSPENDED, SUSPENDED_DEPTH, SWEEP_ATTACK, TILE_BREAK, TILE_DUST, TOWN_AURA,
+//   TRAPDOOR_CLOSE, TRAPDOOR_TOGGLE, VILLAGER_ANGRY, VILLAGER_HAPPY, VILLAGER_PLANT_GROW, VILLAGER_THUNDERCLOUD,
+//   VOID_FOG, WATER_BUBBLE, WATER_DROP, WATER_SPLASH, WATER_WAKE, WATERDRIP, WITCH_MAGIC, WITHER_BREAK_BLOCK,
+//   WITHER_SHOOT, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_CONVERTED_VILLAGER, ZOMBIE_DESTROY_DOOR,
+//   ZOMBIE_INFECT
+// TODO: split the above list between sounds, visual effects, and particles?
 //
 // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
 // -->
 
 public class PlayEffectCommand extends AbstractCommand {
 
-    public static enum ParticleEffect {
-        ENDER_SIGNAL(EnumParticle.HEART), // TODO
-        MOBSPAWNER_FLAMES(EnumParticle.FLAME), // TODO
-        POTION_BREAK(EnumParticle.HEART), // TODO
-        SMOKE(EnumParticle.SMOKE_NORMAL),
-        HUGE_EXPLOSION(EnumParticle.EXPLOSION_HUGE),
-        LARGE_EXPLODE(EnumParticle.EXPLOSION_LARGE),
-        FIREWORKS_SPARK(EnumParticle.FIREWORKS_SPARK),
-        BUBBLE(EnumParticle.WATER_BUBBLE),
-        SUSPEND(EnumParticle.SUSPENDED),
-        DEPTH_SUSPEND(EnumParticle.SUSPENDED_DEPTH),
-        TOWN_AURA(EnumParticle.TOWN_AURA),
-        CRIT(EnumParticle.CRIT),
-        MAGIC_CRIT(EnumParticle.CRIT_MAGIC),
-        MOB_SPELL(EnumParticle.SPELL_MOB),
-        MOB_SPELL_AMBIENT(EnumParticle.SPELL_MOB_AMBIENT),
-        SPELL(EnumParticle.SPELL),
-        INSTANT_SPELL(EnumParticle.SPELL_INSTANT),
-        WITCH_MAGIC(EnumParticle.SPELL_WITCH),
-        NOTE(EnumParticle.NOTE),
-        STEP_SOUND(EnumParticle.HEART), // TODO
-        PORTAL(EnumParticle.PORTAL),
-        ENCHANTMENT_TABLE(EnumParticle.ENCHANTMENT_TABLE),
-        EXPLODE(EnumParticle.EXPLOSION_NORMAL),
-        FLAME(EnumParticle.FLAME),
-        LAVA(EnumParticle.LAVA),
-        FOOTSTEP(EnumParticle.FOOTSTEP),
-        SPLASH(EnumParticle.WATER_SPLASH),
-        LARGE_SMOKE(EnumParticle.SMOKE_LARGE),
-        CLOUD(EnumParticle.CLOUD),
-        RED_DUST(EnumParticle.REDSTONE),
-        SNOWBALL_POOF(EnumParticle.SNOWBALL),
-        DRIP_WATER(EnumParticle.DRIP_WATER),
-        DRIP_LAVA(EnumParticle.DRIP_LAVA),
-        SNOW_SHOVEL(EnumParticle.SNOW_SHOVEL),
-        SLIME(EnumParticle.SLIME),
-        HEART(EnumParticle.HEART),
-        ANGRY_VILLAGER(EnumParticle.VILLAGER_ANGRY),
-        HAPPY_VILLAGER(EnumParticle.VILLAGER_HAPPY),
-        BARRIER(EnumParticle.BARRIER),
-        END_ROD(EnumParticle.END_ROD),
-        DRAGON_BREATH(EnumParticle.DRAGON_BREATH),
-        DAMAGE_INDICATOR(EnumParticle.DAMAGE_INDICATOR),
-        SWEEP_ATTACK(EnumParticle.SWEEP_ATTACK);
-        public EnumParticle effect;
-
-        ParticleEffect(EnumParticle eff) {
-            effect = eff;
-        }
-    }
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        ParticleHelper particleHelper = NMSHandler.getInstance().getParticleHelper();
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -117,18 +76,20 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
 
-                if (arg.matchesEnum(ParticleEffect.values())) {
-                    scriptEntry.addObject("particleeffect",
-                            ParticleEffect.valueOf(arg.getValue().toUpperCase()));
+                if (particleHelper.hasParticle(arg.getValue())) {
+                    scriptEntry.addObject("particleeffect", particleHelper.getEffect(arg.getValue()));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
-                    ParticleEffect effect = null;
-                    // Make sure the new effect is not an invisible effect
-                    while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) { // TODO: Don't use regex for this?
-                        effect = ParticleEffect.values()[CoreUtilities.getRandom().nextInt(ParticleEffect.values().length)];
+                    if (CoreUtilities.getRandom().nextDouble() < 0.5) {
+                        // Make sure the new effect is not an invisible effect
+                        List<Particle> visible = particleHelper.getVisibleParticles();
+                        scriptEntry.addObject("particleeffect", visible.get(CoreUtilities.getRandom().nextInt(visible.size())));
                     }
-                    scriptEntry.addObject("particleeffect", effect);
+                    else {
+                        List<Effect> visual = particleHelper.getVisualEffects();
+                        scriptEntry.addObject("effect", visual.get(CoreUtilities.getRandom().nextInt(visual.size())));
+                    }
                 }
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[id],[data] for item break effects (ex: iconcrack_1)
@@ -167,8 +128,8 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                     scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
                 }
-                else if (arg.matchesEnum(Effect.values())) {
-                    scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
+                else if (particleHelper.hasEffect(arg.getValue())) {
+                    scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
                 }
             }
 
@@ -249,7 +210,7 @@ public class PlayEffectCommand extends AbstractCommand {
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
-        ParticleEffect particleEffect = (ParticleEffect) scriptEntry.getObject("particleeffect");
+        Particle particleEffect = (Particle) scriptEntry.getObject("particleeffect");
         Element iconcrack = scriptEntry.getElement("iconcrack");
         Element iconcrack_data = scriptEntry.getElement("iconcrack_data");
         Element iconcrack_type = scriptEntry.getElement("iconcrack_type");
@@ -259,8 +220,8 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
-                particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
+        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
+                particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
                         iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
                 aH.debugObj("locations", locations.toString()) +
                 (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
@@ -279,12 +240,12 @@ public class PlayEffectCommand extends AbstractCommand {
                     if (targets != null) {
                         for (dPlayer player : targets) {
                             if (player.isValid() && player.isOnline()) {
-                                player.getPlayerEntity().playEffect(location, effect, data.asInt());
+                                effect.playFor(player.getPlayerEntity(), location, data.asInt());
                             }
                         }
                     }
                     else {
-                        location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+                        effect.play(location, data.asInt(), radius.asInt());
                     }
                 }
             }
@@ -310,10 +271,8 @@ public class PlayEffectCommand extends AbstractCommand {
                         }
                     }
                 }
-                PacketPlayOutWorldParticles o = new PacketPlayOutWorldParticles(particleEffect.effect, true, (float) location.getX(),
-                        (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt());
                 for (Player player : players) {
-                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
+                    particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat());
                 }
             }
 
@@ -338,24 +297,27 @@ public class PlayEffectCommand extends AbstractCommand {
                         }
                     }
                 }
-                PacketPlayOutWorldParticles o;
+                // TODO: better this all
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-                    o = new PacketPlayOutWorldParticles(EnumParticle.ITEM_CRACK, true, (float) location.getX(),
-                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
-                            iconcrack.asInt(), iconcrack_data.asInt());
+                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
+                    for (Player player : players) {
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
+                    }
                 }
                 else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
-                    o = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_CRACK, true, (float) location.getX(),
-                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
-                            iconcrack.asInt());
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
+                    for (Player player : players) {
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
+                    }
                 }
                 else { // blockdust
-                    o = new PacketPlayOutWorldParticles(EnumParticle.BLOCK_DUST, true, (float) location.getX(),
-                            (float) location.getY(), (float) location.getZ(), osX, osY, osZ, data.asFloat(), qty.asInt(),
-                            iconcrack.asInt());
-                }
-                for (Player player : players) {
-                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(o);
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
+                    for (Player player : players) {
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
+                    }
                 }
             }
         }

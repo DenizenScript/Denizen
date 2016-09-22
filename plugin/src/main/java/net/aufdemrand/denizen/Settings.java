@@ -425,4 +425,9 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Timeout", 10);
     }
+
+    public static boolean packetInterception() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Packets.Interception", true);
+    }
 }

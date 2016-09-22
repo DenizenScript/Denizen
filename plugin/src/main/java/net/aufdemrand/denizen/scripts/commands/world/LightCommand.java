@@ -1,7 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.utilities.blocks.BlockLight;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -74,7 +75,7 @@ public class LightCommand extends AbstractCommand {
             if (brightness < 0 || brightness > 15) {
                 throw new CommandExecutionException("Light brightness must be between 0 and 15, inclusive!");
             }
-            BlockLight.createLight(location, brightness, duration);
+            NMSHandler.getInstance().createBlockLight(location, brightness, duration.getTicks());
         }
         else {
             BlockLight.removeLight(location);

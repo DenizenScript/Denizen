@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -12,7 +13,6 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -112,7 +112,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         }
 
         if (Settings.chatMustLookAtNPC()) {
-            if (!Rotation.isFacingEntity(player, npc.getEntity(), 45)) {
+            if (!NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45)) {
                 if (HyperDebug) {
                     dB.log("Not facing");
                 }
@@ -170,7 +170,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 + "(" + npc.getTriggerTrait().getRadius(name) + ")")
                 + aH.debugObj("Trigger text", message)
                 + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + aH.debugObj("Facing", String.valueOf(Rotation.isFacingEntity(player, npc.getEntity(), 45))));
+                + aH.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
 
         // Change the text if it's in the determination
         if (trigger.hasDetermination()) {

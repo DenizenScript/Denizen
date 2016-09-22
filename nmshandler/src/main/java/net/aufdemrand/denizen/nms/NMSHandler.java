@@ -1,20 +1,31 @@
 package net.aufdemrand.denizen.nms;
 
-import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
-import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
-import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
-import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
-import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
+import net.aufdemrand.denizen.nms.abstracts.BlockLight;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
+import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
+import net.aufdemrand.denizen.nms.interfaces.*;
+import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
-import org.bukkit.Server;
+import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import org.bukkit.Location;
+import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public abstract class NMSHandler {
 
     private static NMSHandler instance;
     private static NMSVersion version;
+    private static JavaPlugin javaPlugin;
 
-    public static boolean checkServerVersion(Server server) {
-        String packageName = server.getClass().getPackage().getName();
+    public static boolean initialize(JavaPlugin plugin) {
+        javaPlugin = plugin;
+        String packageName = javaPlugin.getServer().getClass().getPackage().getName();
         try {
             // Check if we support this MC version
             version = NMSVersion.valueOf(packageName.substring(packageName.lastIndexOf('.') + 1));
@@ -50,11 +61,33 @@ public abstract class NMSHandler {
         return version;
     }
 
+    public static JavaPlugin getJavaPlugin() {
+        return javaPlugin;
+    }
+
+    public abstract Sidebar createSidebar(Player player);
+
+    public abstract BlockLight createBlockLight(Location location, int lightLevel, long ticks);
+
     public abstract PlayerProfile fillPlayerProfile(PlayerProfile playerProfile);
+
+    public abstract PlayerProfile getPlayerProfile(Player player);
+
+    public abstract ProfileEditor getProfileEditor();
+
+    public abstract BiomeNMS getBiomeNMS(Biome biome);
 
     public abstract Thread getMainThread();
 
+    public abstract double[] getRecentTps();
+
     public abstract BlockHelper getBlockHelper();
+
+    public abstract BossBarHelper getBossBarHelper();
+
+    public abstract ChunkHelper getChunkHelper();
+
+    public abstract CustomEntityHelper getCustomEntityHelper();
 
     public abstract EntityHelper getEntityHelper();
 
@@ -62,5 +95,19 @@ public abstract class NMSHandler {
 
     public abstract ItemHelper getItemHelper();
 
+    public abstract PacketHelper getPacketHelper();
+
+    public abstract ParticleHelper getParticleHelper();
+
     public abstract PlayerHelper getPlayerHelper();
+
+    public abstract WorldHelper getWorldHelper();
+
+    public abstract void enablePacketInterception(PacketHandler packetHandler);
+
+    public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
+
+    public abstract void showSimpleBossBar(Player player, String title, double progress);
+
+    public abstract void removeSimpleBossBar(Player player);
 }

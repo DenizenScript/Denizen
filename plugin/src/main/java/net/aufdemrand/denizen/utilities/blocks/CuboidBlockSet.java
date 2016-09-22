@@ -1,11 +1,12 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
+import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.jnbt.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -38,7 +39,7 @@ public class CuboidBlockSet implements BlockSet {
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    blocks.add(new BlockData(low.clone().add(x, y, z).getBlock()));
+                    blocks.add(NMSHandler.getInstance().getBlockHelper().getBlockData(low.clone().add(x, y, z).getBlock()));
                 }
             }
         }
@@ -85,7 +86,7 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index.theInt % ((long) (z_height));
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
-                    if (!noAir || blocks.get((int)index.theInt).material != Material.AIR) {
+                    if (!noAir || blocks.get((int)index.theInt).getMaterial() != Material.AIR) {
                         blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
                     }
                     index.theInt++;
@@ -108,7 +109,7 @@ public class CuboidBlockSet implements BlockSet {
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
-                    if (!noAir || blocks.get(index).material != Material.AIR) {
+                    if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
                         blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
                     }
                     index++;
@@ -163,7 +164,7 @@ public class CuboidBlockSet implements BlockSet {
         split.remove(0);
         for (String read : split) {
             if (read.length() > 0) {
-                cbs.blocks.add(BlockData.fromCompressedString(read));
+                cbs.blocks.add(NMSHandler.getInstance().getBlockHelper().getBlockData(read));
             }
         }
         return cbs;
@@ -263,10 +264,10 @@ public class CuboidBlockSet implements BlockSet {
                     for (int z = 0; z < length; z++) {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
-                        BlockData block = new BlockData(blocks[index], blockData[index]);
+                        BlockData block = NMSHandler.getInstance().getBlockHelper().getBlockData(blocks[index], blockData[index]);
                         if (tileEntitiesMap.containsKey(pt)) {
-                            CompoundTag otag = new CompoundTag(tileEntitiesMap.get(pt));
-                            block.setNBTTag(otag.toNMSTag());
+                            CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
+                            block.setCompoundTag(otag);
                         }
                         cbs.blocks.add(block);
                     }
@@ -316,18 +317,18 @@ public class CuboidBlockSet implements BlockSet {
                         int index = (int) (y * (x_width) * (z_height) + z * (x_width) + x);
                         BlockData bd = this.blocks.get(indexer);//blockAt(x, y, z);
                         indexer++;
-                        if (bd.material.getId() > 255) {
+                        if (bd.getMaterial().getId() > 255) {
                             if (addBlocks == null) {
                                 addBlocks = new byte[(blocks.length >> 1) + 1];
                             }
                             addBlocks[index >> 1] = (byte) (((index & 1) == 0) ?
-                                    addBlocks[index >> 1] & 0xF0 | (bd.material.getId() >> 8) & 0xF
-                                    : addBlocks[index >> 1] & 0xF | ((bd.material.getId() >> 8) & 0xF) << 4);
+                                    addBlocks[index >> 1] & 0xF0 | (bd.getMaterial().getId() >> 8) & 0xF
+                                    : addBlocks[index >> 1] & 0xF | ((bd.getMaterial().getId() >> 8) & 0xF) << 4);
                         }
-                        blocks[index] = (byte) bd.material.getId();
-                        blockData[index] = (byte) bd.data;
+                        blocks[index] = (byte) bd.getMaterial().getId();
+                        blockData[index] = bd.getData();
 
-                        CompoundTag rawTag = bd.getNBTTag() == null ? null : CompoundTag.fromNMSTag(bd.getNBTTag());
+                        CompoundTag rawTag = bd.getCompoundTag();
                         if (rawTag != null) {
                             HashMap<String, Tag> values = new HashMap<String, Tag>();
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
@@ -337,7 +338,7 @@ public class CuboidBlockSet implements BlockSet {
                             values.put("x", new IntTag(x));
                             values.put("y", new IntTag(y));
                             values.put("z", new IntTag(z));
-                            CompoundTag tileEntityTag = new CompoundTag(values);
+                            CompoundTag tileEntityTag = NMSHandler.getInstance().createCompoundTag(values);
                             tileEntities.add(tileEntityTag);
                         }
                     }
@@ -350,7 +351,7 @@ public class CuboidBlockSet implements BlockSet {
             if (addBlocks != null) {
                 schematic.put("AddBlocks", new ByteArrayTag(addBlocks));
             }
-            CompoundTag schematicTag = new CompoundTag(schematic);
+            CompoundTag schematicTag = NMSHandler.getInstance().createCompoundTag(schematic);
             NBTOutputStream stream = new NBTOutputStream(new GZIPOutputStream(os));
             stream.writeNamedTag("Schematic", schematicTag);
             os.flush();

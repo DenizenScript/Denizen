@@ -2,19 +2,17 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
-import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.PlayerProfileEditor;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.entity.HideEntity;
-import net.aufdemrand.denizen.utilities.nbt.ImprovedOfflinePlayer;
-import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -26,14 +24,13 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
@@ -229,7 +226,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public ImprovedOfflinePlayer getNBTEditor() {
-        return new ImprovedOfflinePlayer(getOfflinePlayer());
+        return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
     }
 
     public dEntity getDenizenEntity() {
@@ -1518,7 +1515,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current lines set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.lines")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1532,7 +1529,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current title set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.title")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1547,7 +1544,7 @@ public class dPlayer implements dObject, Adjustable {
         // in the same order as <@link tag p@player.sidebar.lines>.
         // -->
         if (attribute.startsWith("sidebar.scores")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1565,7 +1562,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current start score set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.start")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1579,7 +1576,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current score increment set on the player's Sidebar via the Sidebar command.
         // -->
         if (attribute.startsWith("sidebar.increment")) {
-            SidebarCommand.Sidebar sidebar = SidebarCommand.getSidebar(this);
+            Sidebar sidebar = SidebarCommand.getSidebar(this);
             if (sidebar == null) {
                 return null;
             }
@@ -1594,7 +1591,7 @@ public class dPlayer implements dObject, Adjustable {
         // @mechanism dPlayer.skin_blob
         // -->
         if (attribute.startsWith("skin_blob")) {
-            return new Element(PlayerProfileEditor.getPlayerSkinBlob(getPlayerEntity()))
+            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerSkinBlob(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1693,7 +1690,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the displayed text in the nameplate of the player.
         // -->
         if (attribute.startsWith("nameplate")) {
-            return new Element(PlayerProfileEditor.getPlayerName(getPlayerEntity()))
+            return new Element(NMSHandler.getInstance().getProfileEditor().getPlayerName(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2551,10 +2548,10 @@ public class dPlayer implements dObject, Adjustable {
         // @name show_entity
         // @input dEntity
         // @description
-        // Shows the player an entity.
+        // Shows the player a previously hidden entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            HideEntity.showEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2570,11 +2567,11 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     if (split.length > 1 && new Element(split[1]).isBoolean()) {
-                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
                                 new Element(split[1]).asBoolean());
                     }
                     else {
-                        HideEntity.hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
                     }
                 }
                 else {
@@ -2602,16 +2599,14 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    BossBarManager.showBossBar(getPlayerEntity(), true, split[1], new Element(split[0]).asDouble()/200,
-                            BarColor.PURPLE, BarStyle.SOLID);
+                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
                 }
                 else {
-                    BossBarManager.showBossBar(getPlayerEntity(), true, split[0], 1.0,
-                            BarColor.PURPLE, BarStyle.SOLID);
+                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
                 }
             }
             else {
-                BossBarManager.removeBossBars(getPlayerEntity());
+                NMSHandler.getInstance().removeSimpleBossBar(getPlayerEntity());
             }
         }
 
@@ -2633,11 +2628,11 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
-                        PlayerBars.showExperience(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
                                 new Element(split[0]).asFloat(), new Element(split[1]).asInt());
                     }
                     else {
-                        PlayerBars.showExperience(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
                                 new Element(split[0]).asFloat(), getPlayerEntity().getLevel());
                     }
                 }
@@ -2646,7 +2641,7 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             else {
-                PlayerBars.resetExperience(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetExperience(getPlayerEntity());
             }
         }
 
@@ -2672,16 +2667,16 @@ public class dPlayer implements dObject, Adjustable {
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
                         if (split.length > 2 && new Element(split[2]).isFloat()) {
-                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                     new Element(split[1]).asInt(), new Element(split[2]).asFloat());
                         }
                         else {
-                            PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                            NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                     new Element(split[1]).asInt(), getPlayerEntity().getSaturation());
                         }
                     }
                     else {
-                        PlayerBars.showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
+                        NMSHandler.getInstance().getPacketHelper().showHealth(getPlayerEntity(), new Element(split[0]).asFloat(),
                                 getPlayerEntity().getFoodLevel(), getPlayerEntity().getSaturation());
                     }
                 }
@@ -2690,7 +2685,7 @@ public class dPlayer implements dObject, Adjustable {
                 }
             }
             else {
-                PlayerBars.resetHealth(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetHealth(getPlayerEntity());
             }
         }
 
@@ -2711,11 +2706,19 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
-                    if (split.length > 1 && new Element(split[1]).matchesEnum(EntityEquipment.EquipmentSlots.values())) {
+                    String slot = split[1].toUpperCase();
+                    if (split.length > 1 && (new Element(slot).matchesEnum(EquipmentSlot.values())
+                            || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
                         if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
-                            EntityEquipment.showEquipment(getPlayerEntity(),
+                            if (slot.equals("MAIN_HAND")) {
+                                slot = "HAND";
+                            }
+                            else if (slot.equals("BOOTS")) {
+                                slot = "FEET";
+                            }
+                            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
                                     new Element(split[0]).asType(dEntity.class).getLivingEntity(),
-                                    EntityEquipment.EquipmentSlots.valueOf(new Element(split[1]).asString().toUpperCase()),
+                                    EquipmentSlot.valueOf(slot),
                                     new Element(split[2]).asType(dItem.class).getItemStack());
                         }
                         else if (split.length > 2) {
@@ -2726,7 +2729,7 @@ public class dPlayer implements dObject, Adjustable {
                         dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
-                        EntityEquipment.resetEquipment(getPlayerEntity(),
+                        NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
                                 new Element(split[0]).asType(dEntity.class).getLivingEntity());
                     }
                 }
@@ -2770,7 +2773,7 @@ public class dPlayer implements dObject, Adjustable {
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
-            PlayerSpectateEntity.setSpectating(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2783,7 +2786,7 @@ public class dPlayer implements dObject, Adjustable {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_book")) {
-            OpenBook.openBook(getPlayerEntity(), false);
+            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.HAND);
         }
 
         // <--[mechanism]
@@ -2796,7 +2799,7 @@ public class dPlayer implements dObject, Adjustable {
         // without the player closing the book.
         // -->
         if (mechanism.matches("open_offhand_book")) {
-            OpenBook.openBook(getPlayerEntity(), true);
+            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 
         // <--[mechanism]
@@ -2808,7 +2811,9 @@ public class dPlayer implements dObject, Adjustable {
         // sign, see <@link command Sign>.
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
-            SignEditor.editSign(getPlayerEntity(), value.asType(dLocation.class));
+            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), value.asType(dLocation.class))) {
+                dB.echoError("Can't edit non-sign materials!");
+            }
         }
 
         // <--[mechanism]
@@ -2829,14 +2834,14 @@ public class dPlayer implements dObject, Adjustable {
                     if (split.length > 1) {
                         footer = split[1];
                     }
-                    DisplayHeaderFooter.showHeaderFooter(getPlayerEntity(), header, footer);
+                    NMSHandler.getInstance().getPacketHelper().showTabListHeaderFooter(getPlayerEntity(), header, footer);
                 }
                 else {
                     dB.echoError("Must specify a header and footer to show!");
                 }
             }
             else {
-                DisplayHeaderFooter.clearHeaderFooter(getPlayerEntity());
+                NMSHandler.getInstance().getPacketHelper().resetTabListHeaderFooter(getPlayerEntity());
             }
         }
 
@@ -2852,7 +2857,7 @@ public class dPlayer implements dObject, Adjustable {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
                     dList lines = dList.valueOf(split[1]);
-                    SignUpdate.updateSign(getPlayerEntity(), dLocation.valueOf(split[0]), lines.toArray(4));
+                    getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
                 }
                 else {
                     dB.echoError("Must specify a valid location and at least one sign line!");
@@ -2901,7 +2906,7 @@ public class dPlayer implements dObject, Adjustable {
                         dB.echoError("Could not apply base color to banner: " + split[1]);
                         return;
                     }
-                    BannerUpdate.updateBanner(getPlayerEntity(), location, base, patterns);
+                    NMSHandler.getInstance().getPacketHelper().showBannerUpdate(getPlayerEntity(), location, base, patterns);
                 }
                 else {
                     dB.echoError("Must specify a valid location and a base color!");
@@ -2917,7 +2922,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sends the player text in the action bar.
         // -->
         if (mechanism.matches("action_bar")) {
-            ActionBar.sendActionBarMessage(getPlayerEntity(), value.asString());
+            NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(getPlayerEntity(), value.asString());
         }
 
         // <--[mechanism]
@@ -2933,7 +2938,7 @@ public class dPlayer implements dObject, Adjustable {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                PlayerProfileEditor.setPlayerName(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), value.asString());
             }
         }
 
@@ -2951,7 +2956,7 @@ public class dPlayer implements dObject, Adjustable {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                PlayerProfileEditor.setPlayerSkin(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), value.asString());
             }
         }
 
@@ -2963,7 +2968,7 @@ public class dPlayer implements dObject, Adjustable {
         // Changes the skin of the player to the specified blob.
         // -->
         if (mechanism.matches("skin_blob")) {
-            PlayerProfileEditor.setPlayerSkinBlob(getPlayerEntity(), value.asString());
+            NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), value.asString());
         }
 
         // <--[mechanism]

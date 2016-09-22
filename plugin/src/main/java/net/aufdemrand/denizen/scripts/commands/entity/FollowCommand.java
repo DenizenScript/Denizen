@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.EntityMovement;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -125,10 +125,10 @@ public class FollowCommand extends AbstractCommand {
             }
             else {
                 if (stop.asBoolean()) {
-                    EntityMovement.stopFollowing(entity.getBukkitEntity());
+                    NMSHandler.getInstance().getEntityHelper().stopFollowing(entity.getBukkitEntity());
                 }
                 else {
-                    EntityMovement.follow(target.getBukkitEntity(), entity.getBukkitEntity(),
+                    NMSHandler.getInstance().getEntityHelper().follow(target.getBukkitEntity(), entity.getBukkitEntity(),
                             speed != null ? speed.asDouble() : 0.3, lead != null ? lead.asDouble() : 5,
                             maxRange != null ? maxRange.asDouble() : 8, allowWander.asBoolean());
                 }

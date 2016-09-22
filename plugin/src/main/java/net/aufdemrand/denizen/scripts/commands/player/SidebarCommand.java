@@ -1,11 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.packets.PacketHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -15,13 +16,16 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class SidebarCommand extends AbstractCommand {
 
@@ -292,6 +296,7 @@ public class SidebarCommand extends AbstractCommand {
                     }
                     else {
                         sidebar.remove();
+                        sidebars.remove(player.getPlayerEntity().getUniqueId());
                     }
                 }
                 break;
@@ -377,11 +382,11 @@ public class SidebarCommand extends AbstractCommand {
             return null;
         }
         Player player = denizenPlayer.getPlayerEntity();
-        Sidebar sidebar = sidebars.get(player.getUniqueId());
-        if (sidebar == null) {
-            sidebar = new Sidebar(player);
+        UUID uuid = player.getUniqueId();
+        if (!sidebars.containsKey(uuid)) {
+            sidebars.put(uuid, NMSHandler.getInstance().createSidebar(player));
         }
-        return sidebar;
+        return sidebars.get(player.getUniqueId());
     }
 
     public static Sidebar getSidebar(dPlayer denizenPlayer) {
@@ -389,112 +394,6 @@ public class SidebarCommand extends AbstractCommand {
             return null;
         }
         return sidebars.get(denizenPlayer.getPlayerEntity().getUniqueId());
-    }
-
-    private static final Scoreboard dummyScoreboard = new Scoreboard();
-    private static final IScoreboardCriteria dummyCriteria = new ScoreboardBaseCriteria("dummy");
-
-    public static class Sidebar {
-        private final Player player;
-        private String title;
-        private String[] lines;
-        private int[] scores;
-        private int start;
-        private int increment;
-        private ScoreboardObjective obj1;
-        private ScoreboardObjective obj2;
-
-        public Sidebar(Player player) {
-            this.player = player;
-            this.obj1 = new ScoreboardObjective(dummyScoreboard, "dummy_1", dummyCriteria);
-            this.obj2 = new ScoreboardObjective(dummyScoreboard, "dummy_2", dummyCriteria);
-            setTitle("");
-            this.lines = new String[15];
-            this.scores = new int[15];
-            this.start = Integer.MIN_VALUE;
-            this.increment = -1;
-            sidebars.put(player.getUniqueId(), this);
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public List<String> getLines() {
-            return new ArrayList<String>(Arrays.asList(lines));
-        }
-
-        public int[] getScores() {
-            return scores;
-        }
-
-        public int getStart() {
-            return start;
-        }
-
-        public int getIncrement() {
-            return increment;
-        }
-
-        public void setTitle(String title) {
-            if (title.length() > 32) {
-                title = title.substring(0, 32);
-            }
-            if (this.title == null || !this.title.equals(title)) {
-                this.title = title;
-                this.obj1.setDisplayName(title);
-                this.obj2.setDisplayName(title);
-            }
-        }
-
-        public void setStart(int start) {
-            this.start = start;
-        }
-
-        public void setIncrement(int increment) {
-            this.increment = increment;
-        }
-
-        public void setLines(List<String> lines) {
-            lines.removeAll(Collections.singleton((String) null));
-            this.lines = new String[15];
-            this.scores = new int[15];
-            int score = this.start;
-            if (score == Integer.MIN_VALUE) {
-                score = lines.size();
-            }
-            for (int i = 0; i < lines.size() && i < this.lines.length; i++, score += this.increment) {
-                String line = lines.get(i);
-                if (line.length() > 40) {
-                    line = line.substring(0, 40);
-                }
-                this.lines[i] = line;
-                this.scores[i] = score;
-            }
-        }
-
-        public void sendUpdate() {
-            PacketHelper.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj1, 0));
-            for (int i = 0; i < this.lines.length; i++) {
-                String line = this.lines[i];
-                if (line == null) {
-                    break;
-                }
-                ScoreboardScore score = new ScoreboardScore(dummyScoreboard, this.obj1, line);
-                score.setScore(this.scores[i]);
-                PacketHelper.sendPacket(player, new PacketPlayOutScoreboardScore(score));
-            }
-            PacketHelper.sendPacket(player, new PacketPlayOutScoreboardDisplayObjective(1, this.obj1));
-            PacketHelper.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
-            ScoreboardObjective temp = this.obj2;
-            this.obj2 = this.obj1;
-            this.obj1 = temp;
-        }
-
-        public void remove() {
-            PacketHelper.sendPacket(player, new PacketPlayOutScoreboardObjective(this.obj2, 1));
-            sidebars.remove(player.getUniqueId());
-        }
     }
 
     public static class SidebarEvents implements Listener {

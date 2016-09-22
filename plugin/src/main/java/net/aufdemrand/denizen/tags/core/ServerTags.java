@@ -3,8 +3,13 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.dPlugin;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
@@ -28,7 +33,6 @@ import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.minecraft.server.v1_10_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -1027,7 +1031,7 @@ public class ServerTags implements Listener {
         // -->
         else if (attribute.startsWith("recent_tps")) {
             dList list = new dList();
-            for (double tps : MinecraftServer.getServer().recentTps) {
+            for (double tps : NMSHandler.getInstance().getRecentTps()) {
                 list.add(new Element(tps).identify());
             }
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));

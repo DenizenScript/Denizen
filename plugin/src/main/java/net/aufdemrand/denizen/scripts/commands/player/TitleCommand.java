@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.packets.DisplayTitle;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -83,7 +83,7 @@ public class TitleCommand extends AbstractCommand {
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline()) {
-                DisplayTitle.showTitle(player.getPlayerEntity(),
+                NMSHandler.getInstance().getPacketHelper().showTitle(player.getPlayerEntity(),
                         title != null ? title.asString() : "",
                         subtitle != null ? subtitle.asString() : "",
                         fade_in.getTicksAsInt(),

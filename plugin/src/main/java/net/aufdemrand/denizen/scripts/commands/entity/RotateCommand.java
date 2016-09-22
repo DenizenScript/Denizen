@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizen.utilities.entity.Rotation;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -150,8 +150,8 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                 else if (infinite || ticks < maxTicks) {
                     for (dEntity entity : entities) {
                         if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {
-                            Rotation.rotate(entity.getBukkitEntity(),
-                                    Rotation.normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
+                            NMSHandler.getInstance().getEntityHelper().rotate(entity.getBukkitEntity(),
+                                    NMSHandler.getInstance().getEntityHelper().normalizeYaw(entity.getLocation().getYaw() + yaw.asFloat()),
                                     entity.getLocation().getPitch() + pitch.asFloat());
                         }
                         else {

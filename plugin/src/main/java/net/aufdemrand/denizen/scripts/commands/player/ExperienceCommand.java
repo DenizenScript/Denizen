@@ -177,7 +177,8 @@ public class ExperienceCommand extends AbstractCommand {
                     ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().setLevel(quantity);
                 }
                 else if (!silent) {
-                    setTotalExperience(player, quantity);
+                    player.setExp(quantity);
+                    //setTotalExperience(player, quantity);
                 }
                 else {
                     setSilentTotalExperience(player, quantity);
@@ -186,10 +187,11 @@ public class ExperienceCommand extends AbstractCommand {
 
             case GIVE:
                 if (level) {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().setLevel(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getLevel() + quantity);
+                    player.setLevel(player.getLevel() + quantity);
                 }
                 else if (!silent) {
-                    giveExperience(player, quantity);
+                    //giveExperience(player, quantity);
+                    player.giveExp(quantity);
                 }
                 else {
                     giveSilentExperience(player, quantity);
@@ -202,7 +204,8 @@ public class ExperienceCommand extends AbstractCommand {
                     ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().setLevel(value <= 0 ? 0 : value);
                 }
                 else if (!silent) {
-                    giveExperience(player, -quantity);
+                    player.setExp(player.getExp() - quantity);
+                    //giveExperience(player, -quantity);
                 }
                 else {
                     giveSilentExperience(player, -quantity);

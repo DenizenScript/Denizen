@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.scripts.commands.core.*;
 import net.aufdemrand.denizen.scripts.commands.entity.*;
 import net.aufdemrand.denizen.scripts.commands.item.*;
@@ -547,8 +549,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Delete the boss bar.
         // - bossbar remove MyMessageID
         // -->
-        registerCoreMember(BossBarCommand.class,
-                "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+            registerCoreMember(BossBarCommand.class,
+                    "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
+        }
 
 
         // <--[command]
@@ -1659,8 +1663,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to make the player's target not glow.
         // - glow <player.target> false
         // -->
-        registerCoreMember(GlowCommand.class,
-                "GLOW", "glow [<entity>|...] (<should glow>)", 1);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+            registerCoreMember(GlowCommand.class,
+                    "GLOW", "glow [<entity>|...] (<should glow>)", 1);
+        }
 
 
         // <--[command]
