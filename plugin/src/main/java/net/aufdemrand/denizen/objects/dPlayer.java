@@ -9,11 +9,10 @@ import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
-import net.aufdemrand.denizen.utilities.BossBarManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizen.utilities.packets.*;
+import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
@@ -22,13 +21,9 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -2604,16 +2599,14 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    BossBarManager.showBossBar(getPlayerEntity(), true, split[1], new Element(split[0]).asDouble()/200,
-                            BarColor.PURPLE, BarStyle.SOLID);
+                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
                 }
                 else {
-                    BossBarManager.showBossBar(getPlayerEntity(), true, split[0], 1.0,
-                            BarColor.PURPLE, BarStyle.SOLID);
+                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
                 }
             }
             else {
-                BossBarManager.removeBossBars(getPlayerEntity());
+                NMSHandler.getInstance().removeSimpleBossBar(getPlayerEntity());
             }
         }
 
@@ -2929,7 +2922,7 @@ public class dPlayer implements dObject, Adjustable {
         // Sends the player text in the action bar.
         // -->
         if (mechanism.matches("action_bar")) {
-            getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(value.asString()));
+            NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(getPlayerEntity(), value.asString());
         }
 
         // <--[mechanism]

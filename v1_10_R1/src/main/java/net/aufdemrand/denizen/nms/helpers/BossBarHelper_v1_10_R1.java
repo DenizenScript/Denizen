@@ -1,5 +1,6 @@
-package net.aufdemrand.denizen.utilities;
+package net.aufdemrand.denizen.nms.helpers;
 
+import net.aufdemrand.denizen.nms.interfaces.BossBarHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -14,11 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class BossBarManager {
+public class BossBarHelper_v1_10_R1 implements BossBarHelper {
 
     private static final Map<UUID, List<BossBar>> displaying = new HashMap<UUID, List<BossBar>>();
 
-    public static void showBossBar(Player player, boolean removeOld, String title, double progress, BarColor color, BarStyle style, BarFlag... flags) {
+    @Override
+    public void showBossBar(Player player, boolean removeOld, String title, double progress, BarColor color, BarStyle style, BarFlag... flags) {
         UUID uuid = player.getUniqueId();
         if (!displaying.containsKey(uuid)) {
             displaying.put(uuid, new ArrayList<BossBar>());
@@ -35,11 +37,12 @@ public class BossBarManager {
         BossBar bossBar = Bukkit.createBossBar(title, color, style, flags);
         bossBar.setProgress(progress);
         bossBar.addPlayer(player);
-        bossBar.show();
+        bossBar.setVisible(true);
         playerBars.add(bossBar);
     }
 
-    public static void removeBossBars(Player player) {
+    @Override
+    public void removeBossBars(Player player) {
         UUID uuid = player.getUniqueId();
         if (displaying.containsKey(uuid) && !displaying.get(uuid).isEmpty()) {
             Iterator<BossBar> iterator = displaying.get(uuid).iterator();

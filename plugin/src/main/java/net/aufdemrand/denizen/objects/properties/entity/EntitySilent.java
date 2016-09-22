@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -38,7 +39,7 @@ public class EntitySilent implements Property {
 
     @Override
     public String getPropertyString() {
-        return entity.getBukkitEntity().isSilent() ? "true" : null;
+        return NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()) ? "true" : null;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class EntitySilent implements Property {
         // Returns whether the entity is silent. (Plays no sounds)
         // -->
         if (attribute.startsWith("silent")) {
-            return new Element(entity.getBukkitEntity().isSilent())
+            return new Element(NMSHandler.getInstance().getEntityHelper().isSilent(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -87,7 +88,7 @@ public class EntitySilent implements Property {
         // <e@entity.silent>
         // -->
         if (mechanism.matches("silent") && mechanism.requireBoolean()) {
-            entity.getBukkitEntity().setSilent(mechanism.getValue().asBoolean());
+            NMSHandler.getInstance().getEntityHelper().setSilent(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

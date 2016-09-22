@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities.world;
 
 import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.WorldAccess;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
@@ -15,7 +17,7 @@ public class DenizenWorldAccess implements WorldAccess {
     @Override
     public void despawn(Entity entity) {
         try {
-            if (entity instanceof LivingEntity) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && entity instanceof LivingEntity) {
                 GlowCommand.unGlow((LivingEntity) entity);
             }
             if (dEntity.isCitizensNPC(entity)) {

@@ -22,6 +22,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -87,6 +88,36 @@ public class EntityHelper_v1_10_R1 implements EntityHelper {
     @Override
     public void setNbtData(Entity entity, CompoundTag compoundTag) {
         ((CraftEntity) entity).getHandle().f(((CompoundTag_v1_10_R1) compoundTag).toNMSTag());
+    }
+
+    @Override
+    public void setSilent(Entity entity, boolean silent) {
+        entity.setSilent(silent);
+    }
+
+    @Override
+    public boolean isSilent(Entity entity) {
+        return entity.isSilent();
+    }
+
+    @Override
+    public ItemStack getItemInHand(LivingEntity entity) {
+        return entity.getEquipment().getItemInMainHand();
+    }
+
+    @Override
+    public void setItemInHand(LivingEntity entity, ItemStack itemStack) {
+        entity.getEquipment().setItemInMainHand(itemStack);
+    }
+
+    @Override
+    public ItemStack getItemInOffHand(LivingEntity entity) {
+        return entity.getEquipment().getItemInOffHand();
+    }
+
+    @Override
+    public void setItemInOffHand(LivingEntity entity, ItemStack itemStack) {
+        entity.getEquipment().setItemInOffHand(itemStack);
     }
 
     /*

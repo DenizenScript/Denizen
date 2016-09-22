@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
@@ -622,7 +623,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityExplosionPrimesScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityFoodLevelChangeScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityFormsBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityGlideScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                ScriptEvent.registerScriptEvent(new EntityGlideScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
@@ -647,7 +650,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
             ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
             ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
-            ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
             ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
             ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
@@ -695,7 +700,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerStatisticIncrementsScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerSteersEntityScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
@@ -776,11 +783,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(EntityAI.class, dEntity.class);
             propertyParser.registerProperty(EntityAnger.class, dEntity.class);
             propertyParser.registerProperty(EntityAngry.class, dEntity.class);
-            propertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                propertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
+                propertyParser.registerProperty(EntityBoatType.class, dEntity.class);
+            }
             propertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
             propertyParser.registerProperty(EntityArms.class, dEntity.class);
             propertyParser.registerProperty(EntityBasePlate.class, dEntity.class);
-            propertyParser.registerProperty(EntityBoatType.class, dEntity.class);
             propertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
             propertyParser.registerProperty(EntityColor.class, dEntity.class);
             propertyParser.registerProperty(EntityCritical.class, dEntity.class);

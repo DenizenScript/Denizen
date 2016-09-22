@@ -8,6 +8,8 @@ import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -95,6 +97,11 @@ public class PacketHelper_v1_9_R2 implements PacketHelper {
         if (subtitle != null) {
             sendPacket(player, new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, new ChatComponentText(subtitle)));
         }
+    }
+
+    @Override
+    public void sendActionBarMessage(Player player, String message) {
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
     }
 
     @Override

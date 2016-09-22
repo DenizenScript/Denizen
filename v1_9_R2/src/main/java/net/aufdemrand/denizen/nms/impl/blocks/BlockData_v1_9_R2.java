@@ -4,14 +4,12 @@ import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_9_R2;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTagBuilder;
-import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.minecraft.server.v1_9_R2.BlockPosition;
+import net.minecraft.server.v1_9_R2.NBTTagCompound;
 import net.minecraft.server.v1_9_R2.TileEntity;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
-
-import java.util.HashMap;
 
 public class BlockData_v1_9_R2 implements BlockData {
 
@@ -32,8 +30,9 @@ public class BlockData_v1_9_R2 implements BlockData {
         TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
                 new BlockPosition(block.getX(), block.getY(), block.getZ()));
         if (te != null) {
-            ctag = new CompoundTag_v1_9_R2(new HashMap<String, Tag>());
-            te.save(ctag.toNMSTag());
+            NBTTagCompound compound = new NBTTagCompound();
+            te.save(compound);
+            ctag = (CompoundTag_v1_9_R2) CompoundTag_v1_9_R2.fromNMSTag(compound);
         }
     }
 

@@ -9,6 +9,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
@@ -28,6 +29,18 @@ public interface EntityHelper {
     CompoundTag getNbtData(Entity entity);
 
     void setNbtData(Entity entity, CompoundTag compoundTag);
+
+    void setSilent(Entity entity, boolean silent);
+
+    boolean isSilent(Entity entity);
+
+    ItemStack getItemInHand(LivingEntity entity);
+
+    void setItemInHand(LivingEntity entity, ItemStack itemStack);
+
+    ItemStack getItemInOffHand(LivingEntity entity);
+
+    void setItemInOffHand(LivingEntity entity, ItemStack itemStack);
 
     void stopFollowing(Entity follower);
 

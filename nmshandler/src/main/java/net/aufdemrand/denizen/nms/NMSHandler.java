@@ -82,6 +82,8 @@ public abstract class NMSHandler {
 
     public abstract BlockHelper getBlockHelper();
 
+    public abstract BossBarHelper getBossBarHelper();
+
     public abstract ChunkHelper getChunkHelper();
 
     public abstract CustomEntityHelper getCustomEntityHelper();
@@ -101,4 +103,8 @@ public abstract class NMSHandler {
     public abstract void enablePacketInterception(PacketHandler packetHandler);
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
+
+    public abstract void showSimpleBossBar(Player player, String title, double progress);
+
+    public abstract void removeSimpleBossBar(Player player);
 }

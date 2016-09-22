@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -13,8 +14,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +77,7 @@ public class ActionBarCommand extends AbstractCommand {
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline()) {
-                player.getPlayerEntity().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(text.asString()));
+                NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(player.getPlayerEntity(), text.asString());
             }
             else {
                 dB.echoError(scriptEntry.getResidingQueue(), "Tried to send action bar message to non-existent or offline player!");

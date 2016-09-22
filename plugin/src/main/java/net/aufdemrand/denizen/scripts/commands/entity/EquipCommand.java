@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -202,7 +203,7 @@ public class EquipCommand extends AbstractCommand {
                     else {
 
                         if (equipment.get("hand") != null) {
-                            livingEntity.getEquipment().setItemInMainHand(equipment.get("hand").getItemStack());
+                            NMSHandler.getInstance().getEntityHelper().setItemInHand(livingEntity, equipment.get("hand").getItemStack());
                         }
                         if (equipment.get("head") != null) {
                             livingEntity.getEquipment().setHelmet(equipment.get("head").getItemStack());
@@ -217,7 +218,7 @@ public class EquipCommand extends AbstractCommand {
                             livingEntity.getEquipment().setBoots(equipment.get("boots").getItemStack());
                         }
                         if (equipment.get("offhand") != null) {
-                            livingEntity.getEquipment().setItemInOffHand(equipment.get("offhand").getItemStack());
+                            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(livingEntity, equipment.get("offhand").getItemStack());
                         }
                     }
                 }
