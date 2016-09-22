@@ -1,6 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
+import net.aufdemrand.denizen.nms.interfaces.Effect;
+import net.aufdemrand.denizen.nms.interfaces.Particle;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -12,9 +16,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -56,18 +58,10 @@ import java.util.List;
 
 public class PlayEffectCommand extends AbstractCommand {
 
-    private static final List<Effect> visualEffects = new ArrayList<Effect>();
-
-    static {
-        for (Effect effect : Effect.values()) {
-            if (effect.getType() == Effect.Type.VISUAL) {
-                visualEffects.add(effect);
-            }
-        }
-    }
-
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+
+        ParticleHelper particleHelper = NMSHandler.getInstance().getParticleHelper();
 
         // Iterate through arguments
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
@@ -82,23 +76,19 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
 
-                if (arg.matchesEnum(Particle.values())) {
-                    scriptEntry.addObject("particleeffect",
-                            Particle.valueOf(arg.getValue().toUpperCase()));
+                if (particleHelper.hasParticle(arg.getValue())) {
+                    scriptEntry.addObject("particleeffect", particleHelper.getEffect(arg.getValue()));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
                     if (CoreUtilities.getRandom().nextDouble() < 0.5) {
-                        Particle effect = null;
                         // Make sure the new effect is not an invisible effect
-                        while (effect == null || effect.toString().matches("^(BUBBLE|SUSPEND|DEPTH_SUSPEND)$")) { // TODO: Don't use regex for this?
-                            effect = Particle.values()[CoreUtilities.getRandom().nextInt(Particle.values().length)];
-                        }
-                        scriptEntry.addObject("particleeffect", effect);
+                        List<Particle> visible = particleHelper.getVisibleParticles();
+                        scriptEntry.addObject("particleeffect", visible.get(CoreUtilities.getRandom().nextInt(visible.size())));
                     }
                     else {
-                        Effect effect = visualEffects.get(CoreUtilities.getRandom().nextInt(visualEffects.size()));
-                        scriptEntry.addObject("effect", effect);
+                        List<Effect> visual = particleHelper.getVisualEffects();
+                        scriptEntry.addObject("effect", visual.get(CoreUtilities.getRandom().nextInt(visual.size())));
                     }
                 }
                 else if (arg.startsWith("iconcrack_")) {
@@ -138,8 +128,8 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                     scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
                 }
-                else if (arg.matchesEnum(Effect.values())) {
-                    scriptEntry.addObject("effect", Effect.valueOf(arg.getValue().toUpperCase()));
+                else if (particleHelper.hasEffect(arg.getValue())) {
+                    scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
                 }
             }
 
@@ -230,8 +220,8 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.name()) :
-                particleEffect != null ? aH.debugObj("special effect", particleEffect.name()) :
+        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
+                particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
                         iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
                 aH.debugObj("locations", locations.toString()) +
                 (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
@@ -250,12 +240,12 @@ public class PlayEffectCommand extends AbstractCommand {
                     if (targets != null) {
                         for (dPlayer player : targets) {
                             if (player.isValid() && player.isOnline()) {
-                                player.getPlayerEntity().playEffect(location, effect, data.asInt());
+                                effect.playFor(player.getPlayerEntity(), location, data.asInt());
                             }
                         }
                     }
                     else {
-                        location.getWorld().playEffect(location, effect, data.asInt(), radius.asInt());
+                        effect.play(location, data.asInt(), radius.asInt());
                     }
                 }
             }
@@ -282,7 +272,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 for (Player player : players) {
-                    player.spawnParticle(particleEffect, location, qty.asInt(), osX, osY, osZ, data.asFloat());
+                    particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat());
                 }
             }
 
@@ -310,20 +300,23 @@ public class PlayEffectCommand extends AbstractCommand {
                 // TODO: better this all
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
                     ItemStack itemStack = new ItemStack(iconcrack.asInt(), iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
-                        player.spawnParticle(Particle.ITEM_CRACK, location, qty.asInt(), osX, osY, osZ, data.asFloat(), itemStack);
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
                     }
                 }
                 else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
-                    MaterialData materialData = new MaterialData(iconcrack.asInt());
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
                     for (Player player : players) {
-                        player.spawnParticle(Particle.BLOCK_CRACK, location, qty.asInt(), osX, osY, osZ, data.asFloat(), materialData);
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }
                 }
                 else { // blockdust
-                    MaterialData materialData = new MaterialData(iconcrack.asInt());
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
                     for (Player player : players) {
-                        player.spawnParticle(Particle.BLOCK_DUST, location, qty.asInt(), osX, osY, osZ, data.asFloat(), materialData);
+                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }
                 }
             }

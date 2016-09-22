@@ -2644,11 +2644,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // TODO: Document Command Details
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-            // TODO: Make compatible with v1_8_R3!
-            registerCoreMember(PlayEffectCommand.class,
-                    "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
-        }
+        registerCoreMember(PlayEffectCommand.class,
+                "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
 
 
         // <--[command]

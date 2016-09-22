@@ -5,6 +5,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.helpers.*;
@@ -39,6 +40,7 @@ public class Handler_v1_8_R3 extends NMSHandler {
     private final FishingHelper fishingHelper = new FishingHelper_v1_8_R3();
     private final ItemHelper itemHelper = new ItemHelper_v1_8_R3();
     private final PacketHelper packetHelper = new PacketHelper_v1_8_R3();
+    private final ParticleHelper particleHelper = new ParticleHelper_v1_8_R3();
     private final PlayerHelper playerHelper = new PlayerHelper_v1_8_R3();
     private final WorldHelper worldHelper = new WorldHelper_v1_8_R3();
 
@@ -92,6 +94,11 @@ public class Handler_v1_8_R3 extends NMSHandler {
     @Override
     public PacketHelper getPacketHelper() {
         return packetHelper;
+    }
+
+    @Override
+    public ParticleHelper getParticleHelper() {
+        return particleHelper;
     }
 
     @Override

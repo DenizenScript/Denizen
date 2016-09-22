@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms;
 
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
+import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.interfaces.*;
@@ -95,6 +96,8 @@ public abstract class NMSHandler {
     public abstract ItemHelper getItemHelper();
 
     public abstract PacketHelper getPacketHelper();
+
+    public abstract ParticleHelper getParticleHelper();
 
     public abstract PlayerHelper getPlayerHelper();
 
