@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -29,7 +31,7 @@ public class ItemPatterns implements Property {
             return material == Material.BANNER
                     || material == Material.WALL_BANNER
                     || material == Material.STANDING_BANNER
-                    || material == Material.SHIELD;
+                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.SHIELD);
         }
         return false;
     }
