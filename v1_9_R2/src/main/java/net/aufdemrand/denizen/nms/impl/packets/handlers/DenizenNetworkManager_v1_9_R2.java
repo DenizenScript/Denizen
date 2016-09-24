@@ -88,7 +88,7 @@ public class DenizenNetworkManager_v1_9_R2 extends NetworkManager {
                 || packet instanceof PacketPlayOutSpawnEntityLiving
                 || packet instanceof PacketPlayOutSpawnEntityPainting
                 || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
-            PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_9_R2(packet);
+            PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_9_R2(player, packet);
             UUID uuid = spawnEntity.getEntityUuid();
             if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), uuid)) {
                 Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);

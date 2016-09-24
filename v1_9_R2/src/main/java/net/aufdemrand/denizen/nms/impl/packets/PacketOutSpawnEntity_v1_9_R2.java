@@ -2,7 +2,12 @@ package net.aufdemrand.denizen.nms.impl.packets;
 
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.minecraft.server.v1_9_R2.EntityPlayer;
+import net.minecraft.server.v1_9_R2.EntityTracker;
+import net.minecraft.server.v1_9_R2.EntityTrackerEntry;
 import net.minecraft.server.v1_9_R2.Packet;
+import net.minecraft.server.v1_9_R2.PacketPlayOutSpawnEntityExperienceOrb;
+import net.minecraft.server.v1_9_R2.WorldServer;
 
 import java.util.UUID;
 
@@ -12,11 +17,18 @@ public class PacketOutSpawnEntity_v1_9_R2 implements PacketOutSpawnEntity {
     private int entityId;
     private UUID entityUuid;
 
-    public PacketOutSpawnEntity_v1_9_R2(Packet internal) {
+    public PacketOutSpawnEntity_v1_9_R2(EntityPlayer player, Packet internal) {
         this.internal = internal;
         Integer integer = ReflectionHelper.getFieldValue(internal.getClass(), "a", internal);
         entityId = integer != null ? integer : -1;
-        entityUuid = ReflectionHelper.getFieldValue(internal.getClass(), "b", internal);
+        if (!(internal instanceof PacketPlayOutSpawnEntityExperienceOrb)) {
+            entityUuid = ReflectionHelper.getFieldValue(internal.getClass(), "b", internal);
+        }
+        else {
+            EntityTracker tracker = ((WorldServer) player.world).tracker;
+            EntityTrackerEntry entry = tracker.trackedEntities.get(entityId);
+            entityUuid = entry != null ? entry.b().getUniqueID() : null;
+        }
     }
 
     @Override
