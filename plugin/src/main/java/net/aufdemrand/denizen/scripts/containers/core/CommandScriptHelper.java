@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.defaults.VanillaCommand;
+import org.bukkit.command.defaults.HelpCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.help.HelpMap;
 import org.bukkit.help.HelpTopic;
@@ -61,7 +61,7 @@ public class CommandScriptHelper implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (!(knownCommands.get("help") instanceof VanillaCommand)) {
+                    if (knownCommands.get("help") instanceof HelpCommand) {
                         return;
                     }
                     knownCommands.put("help", knownCommands.get("bukkit:help"));

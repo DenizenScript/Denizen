@@ -2,8 +2,6 @@ package net.aufdemrand.denizen.utilities.nbt;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
-import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Entity;
@@ -11,10 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class CustomNBT {
 
@@ -27,222 +22,103 @@ public class CustomNBT {
      * custom NBT.
      */
 
-    public static boolean hasCustomNBT(ItemStack item, String key) {
-        if (item == null) {
-            return false;
-        }
-        key = CoreUtilities.toLowerCase(key);
-        List<String> keys = listNBT(item, "");
-        for (String string : keys) {
-            if (CoreUtilities.toLowerCase(string).equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static String getCustomNBT(ItemStack item, String key) {
-        if (item == null) {
+    public static ItemStack addCustomNBT(ItemStack itemStack, String key, String value) {
+        if (itemStack == null) {
             return null;
         }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        key = CoreUtilities.toLowerCase(key);
-        String finalKey = null;
-        List<String> keys = listNBT(item, "");
-        for (String string : keys) {
-            if (CoreUtilities.toLowerCase(string).equals(key)) {
-                finalKey = string;
-                break;
-            }
-        }
-        if (finalKey == null) {
-            return null;
-        }
-        Iterator<String> subkeys = CoreUtilities.split(finalKey, '.').iterator();
-        if (subkeys.hasNext()) {
-            while (true) {
-                String subkey = subkeys.next();
-                Tag base = compoundTag.getValue().get(subkey);
-                if (!subkeys.hasNext()) {
-                    if (base instanceof StringTag) {
-                        return ((StringTag) base).getValue();
-                    }
-                    else {
-                        return base.toString();
-                    }
-                }
-                else if (base instanceof CompoundTag) {
-                    compoundTag = (CompoundTag) base;
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-        return null;
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
 
-    }
-
-    public static ItemStack removeCustomNBT(ItemStack item, String key) {
-        if (item == null) {
-            return null;
-        }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        key = CoreUtilities.toLowerCase(key);
-        String finalKey = null;
-        List<String> keys = listNBT(item, "");
-        for (String string : keys) {
-            if (CoreUtilities.toLowerCase(string).equals(key)) {
-                finalKey = string;
-                break;
-            }
-        }
-        if (finalKey == null) {
-            return null;
-        }
-        Iterator<String> subkeys = CoreUtilities.split(finalKey, '.').iterator();
-        if (subkeys.hasNext()) {
-            while (true) {
-                String subkey = subkeys.next();
-                if (!subkeys.hasNext()) {
-                    compoundTag = compoundTag.createBuilder().remove(subkey).build();
-                    item = unregisterNBT(NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag), key);
-                }
-                else if (compoundTag.getValue().get(subkey) instanceof CompoundTag) {
-                    compoundTag = (CompoundTag) compoundTag.getValue().get(subkey);
-                    continue;
-                }
-                break;
-            }
-        }
-        return item;
-    }
-
-    public static List<String> listNBT(ItemStack item, String filter) {
-        if (item == null) {
-            return null;
-        }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        return recursiveSearch(compoundTag, "", filter);
-    }
-
-    private static List<String> recursiveSearch(CompoundTag compound, String base, String filter) {
-        Map<String, Tag> value = compound.getValue();
-        Set<String> keys = compound.getValue().keySet();
-        List<String> finalKeys = new ArrayList<String>();
-        filter = CoreUtilities.toLowerCase(filter);
-        for (String key : keys) {
-            String full = base + key;
-            if (CoreUtilities.toLowerCase(full).startsWith(filter)) {
-                finalKeys.add(full);
-            }
-            if (value.get(key) instanceof CompoundTag) {
-                finalKeys.addAll(recursiveSearch((CompoundTag) value.get(key), full + ".", filter));
-            }
-        }
-        return finalKeys;
-    }
-
-    public static ItemStack addCustomNBT(ItemStack item, String key, String value) {
-        if (item == null) {
-            return null;
-        }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        List<String> existingKeys = listNBT(item, "");
-        String existing = "";
-        String lowerKey = CoreUtilities.toLowerCase(key);
-        for (String existingKey : existingKeys) {
-            String exKeyLower = CoreUtilities.toLowerCase(existingKey);
-            if (lowerKey.equals(exKeyLower)) {
-                existing = existingKey;
-                break;
-            }
-            if (lowerKey.startsWith(CoreUtilities.toLowerCase(existingKey))
-                    && existingKey.length() > existing.length()
-                    && lowerKey.substring(existingKey.length(), existingKey.length()+1).equals(".")) {
-                existing = existingKey;
-            }
-        }
-        String finalKey = null;
-        if (!existing.equals("")) {
-            for (String subkey : CoreUtilities.split(existing, '.')) {
-                Tag base = compoundTag.getValue().get(subkey);
-                if (base instanceof CompoundTag) {
-                    compoundTag = (CompoundTag) base;
-                }
-                else {
-                    finalKey = subkey;
-                }
-            }
-        }
-        if (finalKey == null) {
-            Iterator<String> subkeys = CoreUtilities.split(key.substring(existing.equals("") ? 0 : existing.length() + 1), '.').iterator();
-            while (true) {
-                String subkey = subkeys.next();
-                if (!subkeys.hasNext()) {
-                    compoundTag = compoundTag.createBuilder().putString(subkey, value).build();
-                    item = registerNBT(item, key);
-                    break;
-                }
-                else {
-                    compoundTag = compoundTag.createBuilder().put(subkey, NMSHandler.getInstance().createCompoundTag(new HashMap<String, Tag>())).build();
-                    compoundTag = (CompoundTag) compoundTag.getValue().get(subkey);
-                }
-            }
+        CompoundTag denizenTag;
+        if (compoundTag.getValue().containsKey("Denizen NBT")) {
+            denizenTag = (CompoundTag) compoundTag.getValue().get("Denizen NBT");
         }
         else {
-            compoundTag = compoundTag.createBuilder().putString(finalKey, value).build();
+            denizenTag = NMSHandler.getInstance().createCompoundTag(new HashMap<String, Tag>());
         }
-        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
+
+        // Add custom NBT
+        denizenTag = denizenTag.createBuilder().putString(CoreUtilities.toLowerCase(key), value).build();
+
+        compoundTag = compoundTag.createBuilder().put("Denizen NBT", denizenTag).build();
+
+        // Write tag back
+        return NMSHandler.getInstance().getItemHelper().setNbtData(itemStack, compoundTag);
     }
 
-    private static ItemStack registerNBT(ItemStack item, String key) {
-        if (item == null) {
+    public static ItemStack removeCustomNBT(ItemStack itemStack, String key) {
+        if (itemStack == null) {
             return null;
         }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        List<Tag> list = compoundTag.getList("Denizen-Registered-Keys");
-        list.add(new StringTag(key));
-        compoundTag = compoundTag.createBuilder().put("Denizen-Registered-Keys", new ListTag(StringTag.class, list)).build();
-        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
+
+        CompoundTag denizenTag;
+        if (compoundTag.getValue().containsKey("Denizen NBT")) {
+            denizenTag = (CompoundTag) compoundTag.getValue().get("Denizen NBT");
+        }
+        else {
+            return itemStack;
+        }
+
+        // Remove custom NBT
+        denizenTag = denizenTag.createBuilder().remove(CoreUtilities.toLowerCase(key)).build();
+
+        compoundTag = compoundTag.createBuilder().put("Denizen NBT", denizenTag).build();
+
+        // Write tag back
+        return NMSHandler.getInstance().getItemHelper().setNbtData(itemStack, compoundTag);
     }
 
-    private static ItemStack unregisterNBT(ItemStack item, String key) {
-        if (item == null) {
-            return null;
+    public static boolean hasCustomNBT(ItemStack itemStack, String key) {
+        if (itemStack == null) {
+            return false;
         }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        ListTag list = compoundTag.getListTag("Denizen-Registered-Keys");
-        if (list.getValue().isEmpty()) {
-            return item;
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
+
+        CompoundTag denizenTag;
+        if (compoundTag.getValue().containsKey("Denizen NBT")) {
+            denizenTag = (CompoundTag) compoundTag.getValue().get("Denizen NBT");
         }
-        List<Tag> value = list.getValue();
-        String lowerKey = CoreUtilities.toLowerCase(key);
-        for (int i = 0; i < list.getValue().size(); i++) {
-            if (CoreUtilities.toLowerCase(list.getString(i)).equals(lowerKey)) {
-                value.remove(i);
-                break;
-            }
+        else {
+            return false;
         }
-        list.setValue(value);
-        compoundTag = compoundTag.createBuilder().put("Denizen-Registered-Keys", list).build();
-        return NMSHandler.getInstance().getItemHelper().setNbtData(item, compoundTag);
+
+        return denizenTag.getValue().containsKey(CoreUtilities.toLowerCase(key));
     }
 
-    public static List<String> getRegisteredNBT(ItemStack item) {
-        if (item == null) {
+    public static String getCustomNBT(ItemStack itemStack, String key) {
+        if (itemStack == null || key == null) {
             return null;
         }
-        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(item);
-        ListTag list = compoundTag.getListTag("Denizen-Registered-Keys");
-        if (list.getValue().isEmpty()) {
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
+
+        CompoundTag denizenTag;
+        if (compoundTag.getValue().containsKey("Denizen NBT")) {
+            denizenTag = (CompoundTag) compoundTag.getValue().get("Denizen NBT");
+        }
+        else {
             return null;
         }
-        List<String> ret = new ArrayList<String>();
-        for (int i = 0; i < list.getValue().size(); i++) {
-            ret.add(list.getString(i));
+
+        return denizenTag.getString(CoreUtilities.toLowerCase(key));
+    }
+
+    public static List<String> listNBT(ItemStack itemStack) {
+        List<String> nbt = new ArrayList<String>();
+        if (itemStack == null) {
+            return nbt;
         }
-        return ret;
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
+
+        CompoundTag denizenTag;
+        if (compoundTag.getValue().containsKey("Denizen NBT")) {
+            denizenTag = (CompoundTag) compoundTag.getValue().get("Denizen NBT");
+        }
+        else {
+            return nbt;
+        }
+        nbt.addAll(denizenTag.getValue().keySet());
+
+        return nbt;
     }
 
     public static Entity addCustomNBT(Entity entity, String key, String value) {

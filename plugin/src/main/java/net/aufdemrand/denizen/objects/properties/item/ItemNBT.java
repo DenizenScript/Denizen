@@ -54,16 +54,14 @@ public class ItemNBT implements Property {
         }
 
         // <--[tag]
-        // @attribute <i@item.nbt_keys[<filter>]>
+        // @attribute <i@item.nbt_keys>
         // @returns dList
         // @group properties
         // @description
-        // Returns all of this item's NBT keys as a dList. Optionally, specify
-        // a filter for the start of the keys.
+        // Returns all of this item's NBT keys as a dList.
         // -->
         if (attribute.startsWith("nbt_keys")) {
-            String filter = attribute.hasContext(1) ? attribute.getContext(1) : "";
-            return new dList(CustomNBT.listNBT(item.getItemStack(), filter))
+            return new dList(CustomNBT.listNBT(item.getItemStack()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -86,7 +84,7 @@ public class ItemNBT implements Property {
     @Override
     public String getPropertyString() {
         ItemStack itemStack = item.getItemStack();
-        List<String> nbtKeys = CustomNBT.getRegisteredNBT(itemStack);
+        List<String> nbtKeys = CustomNBT.listNBT(itemStack);
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
             dList list = new dList();
             for (String key : nbtKeys) {
@@ -105,7 +103,17 @@ public class ItemNBT implements Property {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // Internal use only
+        // <--[mechanism]
+        // @object dItem
+        // @name nbt
+        // @input dList
+        // @description
+        // Sets the Denizen NBT for this item in the format li@key/value|key/value...
+        // @tags
+        // <i@item.has_nbt[<key>]>
+        // <i@item.nbt_keys>
+        // <i@item.nbt[<key>]>
+        // -->
         if (mechanism.matches("nbt")) {
             dList list = mechanism.getValue().asType(dList.class);
             ItemStack itemStack = item.getItemStack();

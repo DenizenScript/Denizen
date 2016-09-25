@@ -67,7 +67,7 @@ public class ItemHelper_v1_9_R2 implements ItemHelper {
     @Override
     public CompoundTag getNbtData(ItemStack itemStack) {
         net.minecraft.server.v1_9_R2.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
-        if (nmsItemStack.hasTag()) {
+        if (nmsItemStack != null && nmsItemStack.hasTag()) {
             return CompoundTag_v1_9_R2.fromNMSTag(nmsItemStack.getTag());
         }
         return new CompoundTag_v1_9_R2(new HashMap<String, Tag>());

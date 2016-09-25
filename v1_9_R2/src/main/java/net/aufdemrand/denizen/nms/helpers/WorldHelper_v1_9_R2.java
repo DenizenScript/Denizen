@@ -24,7 +24,7 @@ public class WorldHelper_v1_9_R2 implements WorldHelper {
     @Override
     public void setStatic(World world, boolean isStatic) {
         WorldServer worldServer = ((CraftWorld) world).getHandle();
-        ReflectionHelper.setFieldValue(worldServer.getClass(), "isClientSide", worldServer, isStatic);
+        ReflectionHelper.setFieldValue(net.minecraft.server.v1_9_R2.World.class, "isClientSide", worldServer, isStatic);
     }
 
     @Override
