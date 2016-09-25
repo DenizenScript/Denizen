@@ -155,6 +155,15 @@ public class Handler_v1_8_R3 extends NMSHandler {
                 if (gameProfile1 == null) {
                     gameProfile1 = gameProfile;
                 }
+                if (playerProfile.hasTexture()) {
+                    gameProfile1.getProperties().get("textures").clear();
+                    if (playerProfile.getTextureSignature() != null) {
+                        gameProfile1.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                    }
+                    else {
+                        gameProfile1.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+                    }
+                }
                 if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
                     gameProfile1 = minecraftServer.aD().fillProfileProperties(gameProfile1, true);
                 }
