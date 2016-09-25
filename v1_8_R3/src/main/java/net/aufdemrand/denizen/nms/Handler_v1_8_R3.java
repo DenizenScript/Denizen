@@ -21,6 +21,7 @@ import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -136,8 +137,13 @@ public class Handler_v1_8_R3 extends NMSHandler {
         try {
             if (playerProfile != null) {
                 GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
-                gameProfile.getProperties().put("textures",
-                        new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                gameProfile.getProperties().get("textures").clear();
+                if (playerProfile.getTextureSignature() != null) {
+                    gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                }
+                else {
+                    gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+                }
                 MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
                 GameProfile gameProfile1 = null;
                 if (gameProfile.getId() != null) {
@@ -159,7 +165,9 @@ public class Handler_v1_8_R3 extends NMSHandler {
             }
         }
         catch (Exception e) {
-            // Nothing for now
+            if (dB.verbose) {
+                dB.echoError(e);
+            }
         }
         return null;
     }

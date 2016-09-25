@@ -45,8 +45,13 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
     public ItemStack setSkullSkin(ItemStack itemStack, PlayerProfile playerProfile) {
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
         if (playerProfile.hasTexture()) {
-            gameProfile.getProperties().put("textures",
-                    new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+            gameProfile.getProperties().get("textures").clear();
+            if (playerProfile.getTextureSignature() != null) {
+                gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+            }
+            else {
+                gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+            }
         }
         net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         NBTTagCompound tag = nmsItemStack.hasTag() ? nmsItemStack.getTag() : new NBTTagCompound();
