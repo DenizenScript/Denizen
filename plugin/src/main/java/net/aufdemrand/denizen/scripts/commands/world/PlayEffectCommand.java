@@ -77,7 +77,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     !scriptEntry.hasObject("iconcrack")) {
 
                 if (particleHelper.hasParticle(arg.getValue())) {
-                    scriptEntry.addObject("particleeffect", particleHelper.getEffect(arg.getValue()));
+                    scriptEntry.addObject("particleeffect", particleHelper.getParticle(arg.getValue()));
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
