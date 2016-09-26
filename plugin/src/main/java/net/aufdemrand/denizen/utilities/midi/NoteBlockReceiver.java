@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.utilities.midi;
 
 import com.google.common.collect.Maps;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.SoundHelper;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
@@ -94,9 +96,10 @@ public class NoteBlockReceiver implements Receiver {
         float pitch = (float) ToneUtil.midiToPitch(message);
         float volume = VOLUME_RANGE * (message.getData2() / 127.0f);
 
-        Sound instrument = Sound.BLOCK_NOTE_HAT;
+        SoundHelper soundHelper = NMSHandler.getInstance().getSoundHelper();
+        Sound instrument = soundHelper.getDefaultMidiInstrument();
         if (patch != null) {
-            instrument = MidiUtil.patchToInstrument(patch);
+            instrument = soundHelper.getMidiInstrumentFromPatch(patch);
         }
 
         if (location != null) {
