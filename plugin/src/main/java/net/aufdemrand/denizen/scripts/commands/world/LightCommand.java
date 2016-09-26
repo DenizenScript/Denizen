@@ -75,7 +75,7 @@ public class LightCommand extends AbstractCommand {
             if (brightness < 0 || brightness > 15) {
                 throw new CommandExecutionException("Light brightness must be between 0 and 15, inclusive!");
             }
-            NMSHandler.getInstance().createBlockLight(location, brightness, duration.getTicks());
+            NMSHandler.getInstance().createBlockLight(location, brightness, duration == null ? 0 : duration.getTicks());
         }
         else {
             BlockLight.removeLight(location);
