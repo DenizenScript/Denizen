@@ -35,7 +35,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
     }
 
 
-    private enum Type {CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE}
+    private enum Type {CREATE, LOAD, UNLOAD, ROTATE, PASTE, SAVE, FLIP_X, FLIP_Y, FLIP_Z}
 
     public static Map<String, CuboidBlockSet> schematics;
 
@@ -194,6 +194,27 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     ang -= 90;
                     schematics.get(name.asString().toUpperCase()).rotateOne();
                 }
+                break;
+            case FLIP_X:
+                if (!schematics.containsKey(name.asString().toUpperCase())) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    return;
+                }
+                schematics.get(name.asString().toUpperCase()).flipX();
+                break;
+            case FLIP_Y:
+                if (!schematics.containsKey(name.asString().toUpperCase())) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    return;
+                }
+                schematics.get(name.asString().toUpperCase()).flipY();
+                break;
+            case FLIP_Z:
+                if (!schematics.containsKey(name.asString().toUpperCase())) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Schematic file " + name.asString() + " is not loaded.");
+                    return;
+                }
+                schematics.get(name.asString().toUpperCase()).flipZ();
                 break;
             case PASTE:
                 if (!schematics.containsKey(name.asString().toUpperCase())) {

@@ -118,13 +118,50 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
-    public CuboidBlockSet rotateOne() {
+    public void rotateOne() {
         // TODO: IMPLEMENT ME!
-        return new CuboidBlockSet();
+    }
+
+    public void flipX() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = (int)x_width - 1; x >= 0; x--) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = 0; z < z_height; z++) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
+        }
+        blocks = bd;
+    }
+
+    public void flipY() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = 0; x < x_width; x++) {
+            for (int y = (int)y_length - 1; y >= 0; y--) {
+                for (int z = 0; z < z_height; z++) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
+        }
+        blocks = bd;
+    }
+
+    public void flipZ() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = 0; x < x_width; x++) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = (int)z_height - 1; z >= 0; z--) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
+        }
+        blocks = bd;
     }
 
     public BlockData blockAt(double X, double Y, double Z) {
-        // TODO: Calculate instead of this wreck
         return blocks.get((int)(Z + Y * z_height + X * z_height * y_length));
         // This calculation should produce the same result as the below nonsense:
         /*
