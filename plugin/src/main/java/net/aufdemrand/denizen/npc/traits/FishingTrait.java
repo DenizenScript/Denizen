@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.FishHook;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -177,7 +178,7 @@ public class FishingTrait extends Trait {
         v = v + (CoreUtilities.getRandom().nextDouble() - .8) / 2;
         victor = victor.multiply(v / 20.0);
 
-        fishHook = from.getWorld().spawn(from, FishHook.class);
+        fishHook = NMSHandler.getInstance().getFishingHelper().spawnHook(from, (Player) npc.getEntity());
         fishHook.setShooter((ProjectileSource) npc.getEntity());
         fishHook.setVelocity(victor);
 
@@ -212,17 +213,17 @@ public class FishingTrait extends Trait {
             catch (Exception e) {
             }
             Location location = fishHook.getLocation();
-            fish = location.getWorld().spawn(location, Item.class);
-            fish.setItemStack(NMSHandler.getInstance().getFishingHelper().getResult(fishHook, catchType));
-
-            Location npcLocation = npc.getEntity().getLocation();
-            double d5 = npcLocation.getX() - location.getX();
-            double d6 = npcLocation.getY() - location.getY();
-            double d7 = npcLocation.getZ() - location.getZ();
-            double d8 = Math.sqrt(d5 * d5 + d6 * d6 + d7 * d7);
-            double d9 = 0.1D;
-
-            fish.setVelocity(new Vector(d5 * d9, d6 * d9 + Math.sqrt(d8) * 0.08D, d7 * d9));
+            ItemStack result = NMSHandler.getInstance().getFishingHelper().getResult(fishHook, catchType);
+            if (result != null) {
+                fish = location.getWorld().dropItem(location, result);
+                Location npcLocation = npc.getEntity().getLocation();
+                double d5 = npcLocation.getX() - location.getX();
+                double d6 = npcLocation.getY() - location.getY();
+                double d7 = npcLocation.getZ() - location.getZ();
+                double d8 = Math.sqrt(d5 * d5 + d6 * d6 + d7 * d7);
+                double d9 = 0.1D;
+                fish.setVelocity(new Vector(d5 * d9, d6 * d9 + Math.sqrt(d8) * 0.08D, d7 * d9));
+            }
             DenizenAPI.getDenizenNPC(npc).action("catch fish", null);
         }
 
