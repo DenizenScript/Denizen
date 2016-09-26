@@ -12,6 +12,4 @@ public interface BlockSet {
     public abstract void setBlocksDelayed(Location loc, Runnable runme, boolean noAir);
 
     public abstract void setBlocks(Location loc, boolean noAir);
-
-    public abstract String toCompressedFormat();
 }
