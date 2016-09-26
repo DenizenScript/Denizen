@@ -184,7 +184,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable {
                     dB.echoError(scriptEntry.getResidingQueue(), "Missing angle argument!");
                     return;
                 }
-                dB.echoError(scriptEntry.getResidingQueue(), "Schematic rotation is TODO!");
                 // TODO: Make me waitable!
                 int ang = angle.asInt();
                 if (ang < 0) {

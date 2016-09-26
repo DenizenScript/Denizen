@@ -119,7 +119,18 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void rotateOne() {
-        // TODO: IMPLEMENT ME!
+        List<BlockData> bd = new ArrayList<BlockData>();
+        double cx = center_x;
+        center_x = center_z;
+        center_z = cx;
+        for (int x = 0; x < z_height; x++) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = (int)x_width - 1; z >= 0; z--) {
+                    bd.add(blockAt(z, y, x));
+                }
+            }
+        }
+        blocks = bd;
     }
 
     public void flipX() {
