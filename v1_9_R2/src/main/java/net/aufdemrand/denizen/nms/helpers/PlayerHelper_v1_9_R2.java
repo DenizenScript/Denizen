@@ -11,11 +11,19 @@ import net.minecraft.server.v1_9_R2.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerHelper_v1_9_R2 implements PlayerHelper {
@@ -61,5 +69,46 @@ public class PlayerHelper_v1_9_R2 implements PlayerHelper {
     @Override
     public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
         return new ImprovedOfflinePlayer_v1_9_R2(offlinePlayer.getUniqueId());
+    }
+
+    /*
+        Boss Bars
+     */
+
+    private static final Map<UUID, List<BossBar>> bossBars = new HashMap<UUID, List<BossBar>>();
+
+    @Override
+    public void showSimpleBossBar(Player player, String title, double progress) {
+        UUID uuid = player.getUniqueId();
+        if (!bossBars.containsKey(uuid)) {
+            bossBars.put(uuid, new ArrayList<BossBar>());
+        }
+        List<BossBar> playerBars = bossBars.get(uuid);
+        if (!playerBars.isEmpty()) {
+            Iterator<BossBar> iterator = playerBars.iterator();
+            while (iterator.hasNext()) {
+                BossBar bossBar = iterator.next();
+                bossBar.removePlayer(player);
+                iterator.remove();
+            }
+        }
+        BossBar bossBar = Bukkit.createBossBar(title, BarColor.PURPLE, BarStyle.SOLID);
+        bossBar.setProgress(progress);
+        bossBar.addPlayer(player);
+        bossBar.setVisible(true);
+        playerBars.add(bossBar);
+    }
+
+    @Override
+    public void removeSimpleBossBar(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (bossBars.containsKey(uuid) && !bossBars.get(uuid).isEmpty()) {
+            Iterator<BossBar> iterator = bossBars.get(uuid).iterator();
+            while (iterator.hasNext()) {
+                BossBar bossBar = iterator.next();
+                bossBar.removePlayer(player);
+                iterator.remove();
+            }
+        }
     }
 }

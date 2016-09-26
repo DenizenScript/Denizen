@@ -2600,14 +2600,14 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
+                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
                 }
                 else {
-                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
+                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
                 }
             }
             else {
-                NMSHandler.getInstance().removeSimpleBossBar(getPlayerEntity());
+                NMSHandler.getInstance().getPlayerHelper().removeSimpleBossBar(getPlayerEntity());
             }
         }
 

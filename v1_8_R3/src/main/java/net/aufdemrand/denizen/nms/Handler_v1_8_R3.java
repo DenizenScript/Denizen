@@ -64,11 +64,6 @@ public class Handler_v1_8_R3 extends NMSHandler {
     }
 
     @Override
-    public BossBarHelper getBossBarHelper() {
-        return null;
-    }
-
-    @Override
     public ChunkHelper getChunkHelper() {
         return chunkHelper;
     }
@@ -204,15 +199,5 @@ public class Handler_v1_8_R3 extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_8_R3(biome);
-    }
-
-    @Override
-    public void showSimpleBossBar(Player player, String title, double progress) {
-        BossBar_v1_8_R3.showBossBar(player, title, (int) (progress * 300));
-    }
-
-    @Override
-    public void removeSimpleBossBar(Player player) {
-        BossBar_v1_8_R3.removeBossBar(player);
     }
 }

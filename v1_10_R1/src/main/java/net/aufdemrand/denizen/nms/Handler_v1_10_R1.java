@@ -27,16 +27,21 @@ import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Handler_v1_10_R1 extends NMSHandler {
 
     private final BlockHelper blockHelper = new BlockHelper_v1_10_R1();
-    private final BossBarHelper bossBarHelper = new BossBarHelper_v1_10_R1();
     private final ChunkHelper chunkHelper = new ChunkHelper_v1_10_R1();
     private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_10_R1();
     private final EntityHelper entityHelper = new EntityHelper_v1_10_R1();
@@ -63,11 +68,6 @@ public class Handler_v1_10_R1 extends NMSHandler {
     @Override
     public BlockHelper getBlockHelper() {
         return blockHelper;
-    }
-
-    @Override
-    public BossBarHelper getBossBarHelper() {
-        return null;
     }
 
     @Override
@@ -206,15 +206,5 @@ public class Handler_v1_10_R1 extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_10_R1(biome);
-    }
-
-    @Override
-    public void showSimpleBossBar(Player player, String title, double progress) {
-        bossBarHelper.showBossBar(player, true, title, progress, BarColor.PURPLE, BarStyle.SOLID);
-    }
-
-    @Override
-    public void removeSimpleBossBar(Player player) {
-        bossBarHelper.removeBossBars(player);
     }
 }
