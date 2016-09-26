@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 public class DenizenPacketHandler implements PacketHandler {
 
@@ -76,7 +77,7 @@ public class DenizenPacketHandler implements PacketHandler {
         }
         final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
-            Future<Boolean> future = Bukkit.getScheduler().callSyncMethod(DenizenAPI.getCurrentInstance(), new Callable<Boolean>() {
+            FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     int pos = chat.getPosition();
@@ -98,8 +99,14 @@ public class DenizenPacketHandler implements PacketHandler {
                     return false;
                 }
             });
+            if (Bukkit.isPrimaryThread()) {
+                futureTask.run();
+            }
+            else {
+                Bukkit.getScheduler().runTask(DenizenAPI.getCurrentInstance(), futureTask);
+            }
             try {
-                return future.get();
+                return futureTask.get();
             }
             catch (Exception e) {
                 dB.echoError(e);

@@ -2,10 +2,13 @@ package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
 import net.minecraft.server.v1_10_R1.*;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftFish;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.FishHook;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -52,6 +55,14 @@ public class FishingHelper_v1_10_R1 implements FishingHelper {
         else {
             return null;
         }
+    }
+
+    @Override
+    public FishHook spawnHook(Location location, Player player) {
+        WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        EntityFishingHook hook = new EntityFishingHook(nmsWorld, ((CraftPlayer) player).getHandle());
+        nmsWorld.addEntity(hook);
+        return (FishHook) hook.getBukkitEntity();
     }
 
     private ItemStack catchRandomJunk(EntityFishingHook fishHook) {

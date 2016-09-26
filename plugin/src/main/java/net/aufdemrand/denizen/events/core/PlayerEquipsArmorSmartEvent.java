@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dMaterial;
@@ -273,7 +275,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     private boolean isArmor(Material material) {
         int id = material.getId();
         return id >= 298 && id <= 317
-                || material == Material.ELYTRA
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.ELYTRA)
                 || material == Material.PUMPKIN
                 || material == Material.JACK_O_LANTERN
                 || material == Material.SKULL_ITEM;
@@ -289,7 +291,7 @@ public class PlayerEquipsArmorSmartEvent implements OldSmartEvent, Listener {
     }
 
     private int getArmorTypeNumber(ItemStack itemStack) {
-        if (itemStack.getType() == Material.ELYTRA) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && itemStack.getType() == Material.ELYTRA) {
             return 1;
         }
         return (itemStack.getTypeId() - 298) % 4;

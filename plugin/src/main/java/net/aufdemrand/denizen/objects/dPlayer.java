@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
@@ -2798,7 +2799,7 @@ public class dPlayer implements dObject, Adjustable {
         // The book can safely be removed from the player's offhand
         // without the player closing the book.
         // -->
-        if (mechanism.matches("open_offhand_book")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("open_offhand_book")) {
             NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 

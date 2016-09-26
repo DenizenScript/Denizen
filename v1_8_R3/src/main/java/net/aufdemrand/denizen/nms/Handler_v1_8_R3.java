@@ -40,6 +40,7 @@ public class Handler_v1_8_R3 extends NMSHandler {
     private final EntityHelper entityHelper = new EntityHelper_v1_8_R3();
     private final FishingHelper fishingHelper = new FishingHelper_v1_8_R3();
     private final ItemHelper itemHelper = new ItemHelper_v1_8_R3();
+    private final SoundHelper soundHelper = new SoundHelper_v1_8_R3();
     private final PacketHelper packetHelper = new PacketHelper_v1_8_R3();
     private final ParticleHelper particleHelper = new ParticleHelper_v1_8_R3();
     private final PlayerHelper playerHelper = new PlayerHelper_v1_8_R3();
@@ -90,6 +91,11 @@ public class Handler_v1_8_R3 extends NMSHandler {
     @Override
     public ItemHelper getItemHelper() {
         return itemHelper;
+    }
+
+    @Override
+    public SoundHelper getSoundHelper() {
+        return soundHelper;
     }
 
     @Override

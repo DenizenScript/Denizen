@@ -95,6 +95,8 @@ public abstract class NMSHandler {
 
     public abstract ItemHelper getItemHelper();
 
+    public abstract SoundHelper getSoundHelper();
+
     public abstract PacketHelper getPacketHelper();
 
     public abstract ParticleHelper getParticleHelper();

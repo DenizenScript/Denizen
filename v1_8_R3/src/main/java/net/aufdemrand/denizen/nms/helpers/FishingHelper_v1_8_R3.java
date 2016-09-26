@@ -2,10 +2,13 @@ package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
 import net.minecraft.server.v1_8_R3.*;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFish;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.FishHook;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +21,7 @@ public class FishingHelper_v1_8_R3 implements FishingHelper {
             new PossibleFishingResult(new ItemStack(Items.BONE), 10),
             new PossibleFishingResult(new ItemStack(Items.POTION), 10),
             new PossibleFishingResult(new ItemStack(Items.STRING), 5),
-            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2)).a(0.9F),
+            new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 2).a(0.9F),
             new PossibleFishingResult(new ItemStack(Items.BOWL), 10),
             new PossibleFishingResult(new ItemStack(Items.STICK), 5),
             new PossibleFishingResult(new ItemStack(Items.DYE, 10, 0), 1),
@@ -28,9 +31,9 @@ public class FishingHelper_v1_8_R3 implements FishingHelper {
             new PossibleFishingResult(new ItemStack(Blocks.WATERLILY), 1),
             new PossibleFishingResult(new ItemStack(Items.NAME_TAG), 1),
             new PossibleFishingResult(new ItemStack(Items.SADDLE), 1),
-            (new PossibleFishingResult(new ItemStack(Items.BOW), 1)).a(0.25F).a(),
-            (new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1)).a(0.25F).a(),
-            (new PossibleFishingResult(new ItemStack(Items.BOOK), 1)).a());
+            new PossibleFishingResult(new ItemStack(Items.BOW), 1).a(0.25F).a(),
+            new PossibleFishingResult(new ItemStack(Items.FISHING_ROD), 1).a(0.25F).a(),
+            new PossibleFishingResult(new ItemStack(Items.BOOK), 1).a());
     private static final List fishResults = Arrays.asList(
             new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.COD.a()), 60),
             new PossibleFishingResult(new ItemStack(Items.FISH, 1, ItemFish.EnumFish.SALMON.a()), 25),
@@ -78,6 +81,14 @@ public class FishingHelper_v1_8_R3 implements FishingHelper {
         else {
             return null;
         }
+    }
+
+    @Override
+    public FishHook spawnHook(Location location, Player player) {
+        WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        EntityFishingHook hook = new EntityFishingHook(nmsWorld, ((CraftPlayer) player).getHandle());
+        nmsWorld.addEntity(hook);
+        return (FishHook) hook.getBukkitEntity();
     }
 
     private ItemStack catchRandomJunk(EntityFishingHook fishHook) {
