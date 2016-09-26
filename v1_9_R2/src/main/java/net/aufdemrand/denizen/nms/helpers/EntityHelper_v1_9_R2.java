@@ -592,4 +592,9 @@ public class EntityHelper_v1_9_R2 implements EntityHelper {
             return null;
         }
     }
+
+    @Override
+    public void move(Entity entity, Vector vector) {
+        ((CraftEntity) entity).getHandle().move(vector.getX(), vector.getY(), vector.getZ());
+    }
 }

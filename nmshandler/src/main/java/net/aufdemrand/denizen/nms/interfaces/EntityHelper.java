@@ -192,4 +192,6 @@ public interface EntityHelper {
      * @return The name of the cardinal direction as a String.
      */
     String getCardinal(float yaw);
+
+    void move(Entity entity, Vector vector);
 }
