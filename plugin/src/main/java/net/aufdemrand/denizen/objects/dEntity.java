@@ -2677,6 +2677,17 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dEntity
+        // @name move
+        // @input dLocation
+        // @description
+        // Forces an entity to move in the direction of the velocity specified.
+        // -->
+        if (mechanism.matches("move") && mechanism.requireObject(dLocation.class)) {
+            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), value.asType(dLocation.class).toVector());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
         // @name interact_with
         // @input dLocation
         // @description
