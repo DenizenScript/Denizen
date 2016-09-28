@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -17,8 +19,9 @@ public class ItemPotion implements Property {
     public static boolean describes(dObject item) {
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == Material.POTION
-                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
-                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && (((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
+                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION)));
     }
 
     public static ItemPotion getFrom(dObject _item) {
