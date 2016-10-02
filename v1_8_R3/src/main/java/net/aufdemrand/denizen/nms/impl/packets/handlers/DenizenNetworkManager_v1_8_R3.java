@@ -92,15 +92,17 @@ public class DenizenNetworkManager_v1_8_R3 extends NetworkManager {
             UUID uuid = spawnEntity.getEntityUuid();
             if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), uuid)) {
                 Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);
-                if (entity instanceof EntityFakePlayer_v1_8_R3) {
-                    final EntityFakePlayer_v1_8_R3 fakePlayer = (EntityFakePlayer_v1_8_R3) entity;
-                    handle(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
-                        @Override
-                        public void run() {
-                            handle(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
-                        }
-                    }, 5);
+                if (entity != null) {
+                    if (entity instanceof EntityFakePlayer_v1_8_R3) {
+                        final EntityFakePlayer_v1_8_R3 fakePlayer = (EntityFakePlayer_v1_8_R3) entity;
+                        handle(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+                        Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
+                            @Override
+                            public void run() {
+                                handle(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
+                            }
+                        }, 5);
+                    }
                 }
                 oldManager.handle(packet);
             }
