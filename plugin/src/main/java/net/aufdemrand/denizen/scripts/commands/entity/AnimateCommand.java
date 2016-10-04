@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.abstracts.AnimationHelper;
+import net.aufdemrand.denizen.nms.interfaces.EntityAnimation;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -19,6 +22,8 @@ public class AnimateCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        AnimationHelper animationHelper = NMSHandler.getInstance().getAnimationHelper();
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("entities")
@@ -28,13 +33,17 @@ public class AnimateCommand extends AbstractCommand {
             }
 
             if (!scriptEntry.hasObject("animation") &&
-                    !scriptEntry.hasObject("effect")) {
+                    !scriptEntry.hasObject("effect") &&
+                    !scriptEntry.hasObject("nms_animation")) {
 
                 if (arg.matchesEnum(PlayerAnimation.values())) {
                     scriptEntry.addObject("animation", PlayerAnimation.valueOf(arg.getValue().toUpperCase()));
                 }
                 else if (arg.matchesEnum(EntityEffect.values())) {
                     scriptEntry.addObject("effect", EntityEffect.valueOf(arg.getValue().toUpperCase()));
+                }
+                else if (animationHelper.hasEntityAnimation(arg.getValue())) {
+                    scriptEntry.addObject("nms_animation", arg.getValue());
                 }
             }
         }
@@ -45,7 +54,7 @@ public class AnimateCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
 
-        if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation")) {
+        if (!scriptEntry.hasObject("effect") && !scriptEntry.hasObject("animation") && !scriptEntry.hasObject("nms_animation")) {
             throw new InvalidArgumentsException("Must specify a valid animation!");
         }
     }
@@ -60,11 +69,14 @@ public class AnimateCommand extends AbstractCommand {
                 (PlayerAnimation) scriptEntry.getObject("animation") : null;
         EntityEffect effect = scriptEntry.hasObject("effect") ?
                 (EntityEffect) scriptEntry.getObject("effect") : null;
+        String nmsAnimation = scriptEntry.hasObject("nms_animation") ?
+                (String) scriptEntry.getObject("nms_animation") : null;
 
         // Report to dB
         dB.report(scriptEntry, getName(), (animation != null ?
-                aH.debugObj("animation", animation.name()) :
-                aH.debugObj("effect", effect.name())) +
+                aH.debugObj("animation", animation.name()) : effect != null ?
+                aH.debugObj("effect", effect.name()) :
+                aH.debugObj("animation", nmsAnimation)) +
                 aH.debugObj("entities", entities.toString()));
 
         // Go through all the entities and animate them
@@ -78,10 +90,13 @@ public class AnimateCommand extends AbstractCommand {
 
                         animation.play(player);
                     }
-                    else {
+                    else if (effect != null) {
                         entity.getBukkitEntity().playEffect(effect);
                     }
-
+                    else {
+                        EntityAnimation entityAnimation = NMSHandler.getInstance().getAnimationHelper().getEntityAnimation(nmsAnimation);
+                        entityAnimation.play(entity.getBukkitEntity());
+                    }
                 }
                 catch (Exception e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Error playing that animation!");
