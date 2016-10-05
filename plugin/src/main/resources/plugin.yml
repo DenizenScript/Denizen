@@ -1,5 +1,5 @@
 name: Denizen
-authors: ['aufdemrand', 'mcmonkey']
+authors: ['aufdemrand', 'mcmonkey', 'Morphan1']
 version: ${project.version} (build ${BUILD_NUMBER})
 main: net.aufdemrand.denizen.Denizen
 softdepend: [Citizens, Vault]

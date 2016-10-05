@@ -270,7 +270,7 @@ public class DenizenCommandHandler {
     public void version(CommandContext args, CommandSender sender) throws CommandException {
         Messaging.sendInfo(sender, "<2>DENIZEN<7>: scriptable Minecraft!"); // TODO: "It's Scriptable!"?
         Messaging.send(sender, "");
-        Messaging.send(sender, "<7>by: <f>aufdemrand and mcmonkey, with help from many skilled contributors!");
+        Messaging.send(sender, "<7>by: <f>mcmonkey and Morphan1, originally by aufdemrand, and with help from many skilled contributors!");
         Messaging.send(sender, "<7>version: <f>" + Denizen.versionTag + "<7>, core version: <f>" + DenizenCore.VERSION);
     }
 
