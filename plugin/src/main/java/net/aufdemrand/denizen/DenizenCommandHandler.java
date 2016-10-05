@@ -301,7 +301,6 @@ public class DenizenCommandHandler {
     public void save(CommandContext args, CommandSender sender) throws CommandException {
 
         DenizenAPI.getCurrentInstance().saveSaves();
-        DenizenAPI.getCurrentInstance().notableManager().saveNotables();
 
         Messaging.send(sender, "Denizen/saves.yml saved to disk from memory.");
     }
