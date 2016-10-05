@@ -4,19 +4,19 @@ import org.bukkit.util.Vector;
 
 public class BoundingBox {
 
-    private Vector position;
-    private Vector size;
+    private Vector low;
+    private Vector high;
 
     public BoundingBox(Vector location, Vector size) {
-        this.position = location;
-        this.size = size;
+        this.low = location;
+        this.high = size;
     }
 
-    public Vector getPosition() {
-        return position;
+    public Vector getLow() {
+        return low;
     }
 
-    public Vector getSize() {
-        return size;
+    public Vector getHigh() {
+        return high;
     }
 }

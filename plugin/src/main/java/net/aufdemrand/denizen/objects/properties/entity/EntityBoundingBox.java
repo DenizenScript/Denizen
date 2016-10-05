@@ -54,8 +54,8 @@ public class EntityBoundingBox implements Property {
     private dList getBoundingBox() {
         BoundingBox boundingBox = NMSHandler.getInstance().getEntityHelper().getBoundingBox(entity.getBukkitEntity());
         dList list = new dList();
-        list.add(new dLocation(boundingBox.getPosition()).identify());
-        list.add(new dLocation(boundingBox.getSize()).identify());
+        list.add(new dLocation(boundingBox.getLow()).identify());
+        list.add(new dLocation(boundingBox.getHigh()).identify());
         return list;
     }
 
@@ -88,7 +88,7 @@ public class EntityBoundingBox implements Property {
         // @mechanism dEntity.bounding_box
         // @group properties
         // @description
-        // Returns the collision bounding box of the entity in the format "<position>|<size>".
+        // Returns the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // -->
         if (attribute.startsWith("bounding_box")) {
             return getBoundingBox().getAttribute(attribute.fulfill(1));
@@ -106,7 +106,7 @@ public class EntityBoundingBox implements Property {
         // @name bounding_box
         // @input dList(dLocation)
         // @description
-        // Changes the collision bounding box of the entity in the format "<position>|<size>".
+        // Changes the collision bounding box of the entity in the format "<low>|<high>", essentially a cuboid with decimals.
         // @tags
         // <e@entity.bounding_box>
         // -->
@@ -119,7 +119,7 @@ public class EntityBoundingBox implements Property {
                 modifiedBoxes.add(entity.getUUID());
             }
             else {
-                dB.echoError("Must specify exactly 2 dLocations in the format \"<position>|<size>\"!");
+                dB.echoError("Must specify exactly 2 dLocations in the format '<low>|<high>'!");
             }
         }
     }
