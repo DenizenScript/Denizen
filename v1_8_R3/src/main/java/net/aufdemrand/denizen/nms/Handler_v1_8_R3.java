@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.abstracts.AnimationHelper;
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
@@ -10,7 +11,6 @@ import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.helpers.*;
 import net.aufdemrand.denizen.nms.impl.BiomeNMS_v1_8_R3;
-import net.aufdemrand.denizen.nms.impl.BossBar_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.Sidebar_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.blocks.BlockLight_v1_8_R3;
@@ -34,6 +34,7 @@ import java.util.Map;
 
 public class Handler_v1_8_R3 extends NMSHandler {
 
+    private final AnimationHelper animationHelper = new AnimationHelper_v1_8_R3();
     private final BlockHelper blockHelper = new BlockHelper_v1_8_R3();
     private final ChunkHelper chunkHelper = new ChunkHelper_v1_8_R3();
     private final CustomEntityHelper customEntityHelper = new CustomEntityHelper_v1_8_R3();
@@ -56,6 +57,11 @@ public class Handler_v1_8_R3 extends NMSHandler {
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
+    }
+
+    @Override
+    public AnimationHelper getAnimationHelper() {
+        return animationHelper;
     }
 
     @Override

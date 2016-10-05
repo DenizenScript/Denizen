@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.properties.entity.EntityBoundingBox;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.world.DenizenWorldAccess;
 import net.aufdemrand.denizencore.objects.Element;
@@ -151,5 +152,6 @@ public class EntityScriptHelper implements Listener {
         }
         entities.remove(ent.getUniqueId());
         FlagManager.clearEntityFlags(new dEntity(ent));
+        EntityBoundingBox.remove(ent.getUniqueId());
     }
 }

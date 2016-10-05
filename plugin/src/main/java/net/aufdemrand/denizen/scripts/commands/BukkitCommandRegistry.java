@@ -211,7 +211,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // All entities also have available Bukkit's entity effect list, which includes:
         // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
-        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM
+        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM,
+        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM
         //
         // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
         //

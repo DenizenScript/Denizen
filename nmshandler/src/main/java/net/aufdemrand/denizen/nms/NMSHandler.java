@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms;
 
+import net.aufdemrand.denizen.nms.abstracts.AnimationHelper;
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
@@ -80,6 +81,8 @@ public abstract class NMSHandler {
     public abstract Thread getMainThread();
 
     public abstract double[] getRecentTps();
+
+    public abstract AnimationHelper getAnimationHelper();
 
     public abstract BlockHelper getBlockHelper();
 

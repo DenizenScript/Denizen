@@ -35,6 +35,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -266,6 +267,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // negative values
         super(location.getWorld(), location.getX(), location.getY(), location.getZ(),
                 location.getYaw(), location.getPitch());
+    }
+
+    public dLocation(Vector vector) {
+        super(null, vector.getX(), vector.getY(), vector.getZ());
     }
 
     public dLocation(World world, double x, double y) {
@@ -2019,7 +2024,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to an location!");
+        dB.echoError("Cannot apply properties to a location!");
     }
 
     @Override
