@@ -299,21 +299,21 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 // TODO: better this all
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), iconcrack_data.asInt());
+                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), iconcrack_data != null ? iconcrack_data.asInt() : 0);
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
                     }
                 }
                 else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
-                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }
                 }
                 else { // blockdust
-                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) iconcrack_data.asInt());
+                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
