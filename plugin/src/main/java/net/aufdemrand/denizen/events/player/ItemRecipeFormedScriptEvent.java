@@ -92,7 +92,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
-            inventory.setResult(dItem.valueOf(determination).getItemStack());
+            result = dItem.valueOf(determination);
         }
 
         return super.applyDetermination(container, determination);
@@ -143,6 +143,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         fire();
         if (cancelled) {
             inventory.setResult(null);
+        }
+        else {
+            inventory.setResult(result.getItemStack());
         }
     }
 }
