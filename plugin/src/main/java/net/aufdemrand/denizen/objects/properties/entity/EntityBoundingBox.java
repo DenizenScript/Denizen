@@ -20,7 +20,7 @@ import java.util.UUID;
 public class EntityBoundingBox implements Property {
 
     public static boolean describes(dObject object) {
-        return object instanceof dEntity && !(((dEntity) object).isCitizensNPC());
+        return object instanceof dEntity;
     }
 
     public static EntityBoundingBox getFrom(dObject object) {
@@ -65,6 +65,9 @@ public class EntityBoundingBox implements Property {
 
     @Override
     public String getPropertyString() {
+        if (entity.isCitizensNPC()) {
+            return null;
+        }
         if (modifiedBoxes.contains(entity.getUUID())) {
             return getBoundingBox().identify();
         }
@@ -112,6 +115,10 @@ public class EntityBoundingBox implements Property {
         // -->
 
         if (mechanism.matches("bounding_box")) {
+            if (entity.isCitizensNPC()) {
+                // TODO: Allow editing NPC boxes properly?
+                return;
+            }
             List<dLocation> locations = value.asType(dList.class).filter(dLocation.class);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
