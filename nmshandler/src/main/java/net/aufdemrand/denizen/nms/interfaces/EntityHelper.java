@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -192,4 +193,10 @@ public interface EntityHelper {
      * @return The name of the cardinal direction as a String.
      */
     String getCardinal(float yaw);
+
+    void move(Entity entity, Vector vector);
+
+    BoundingBox getBoundingBox(Entity entity);
+
+    void setBoundingBox(Entity entity, BoundingBox boundingBox);
 }

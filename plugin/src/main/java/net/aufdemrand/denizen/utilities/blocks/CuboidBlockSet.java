@@ -65,7 +65,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public dCuboid getCuboid(Location loc) {
-        Location low = loc.clone().subtract(center_x, center_y, center_z); // TODO: Does this subtract belong here?
+        Location low = loc.clone().subtract(center_x, center_y, center_z);
         Location high = low.clone().add(x_width, y_length, z_height);
         return new dCuboid(low, high);
     }
@@ -87,7 +87,7 @@ public class CuboidBlockSet implements BlockSet {
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
                     if (!noAir || blocks.get((int)index.theInt).getMaterial() != Material.AIR) {
-                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x, y, z).getBlock());
+                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock());
                     }
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
@@ -110,7 +110,7 @@ public class CuboidBlockSet implements BlockSet {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
                     if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
-                        blocks.get(index).setBlock(loc.clone().add(x, y, z).getBlock());
+                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock());
                     }
                     index++;
                 }
@@ -118,25 +118,64 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
-    public CuboidBlockSet rotateOne() {
-        // TODO: IMPLEMENT ME!
-        return new CuboidBlockSet();
+    public void rotateOne() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        double cx = center_x;
+        center_x = center_z;
+        center_z = cx;
+        for (int x = 0; x < z_height; x++) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = (int)x_width - 1; z >= 0; z--) {
+                    bd.add(blockAt(z, y, x));
+                }
+            }
+        }
+        blocks = bd;
     }
 
-    @Override
-    public String toCompressedFormat() {
-        StringBuilder sb = new StringBuilder(blocks.size() * 20);
-        sb.append("cuboid:");
-        sb.append(x_width).append(':').append(y_length).append(':').append(z_height).append(':');
-        sb.append(center_x).append(':').append(center_y).append(':').append(center_z).append('\n');
-        for (BlockData block : blocks) {
-            sb.append(block.toCompressedFormat()).append('\n');
+    public void flipX() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = (int)x_width - 1; x >= 0; x--) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = 0; z < z_height; z++) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
         }
-        return sb.toString();
+        blocks = bd;
+    }
+
+    public void flipY() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = 0; x < x_width; x++) {
+            for (int y = (int)y_length - 1; y >= 0; y--) {
+                for (int z = 0; z < z_height; z++) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
+        }
+        blocks = bd;
+    }
+
+    public void flipZ() {
+        List<BlockData> bd = new ArrayList<BlockData>();
+        center_x = x_width - center_x;
+        for (int x = 0; x < x_width; x++) {
+            for (int y = 0; y < y_length; y++) {
+                for (int z = (int)z_height - 1; z >= 0; z--) {
+                    bd.add(blockAt(x, y, z));
+                }
+            }
+        }
+        blocks = bd;
     }
 
     public BlockData blockAt(double X, double Y, double Z) {
-        // TODO: Calculate instead of this wreck
+        return blocks.get((int)(Z + Y * z_height + X * z_height * y_length));
+        // This calculation should produce the same result as the below nonsense:
+        /*
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
@@ -149,25 +188,7 @@ public class CuboidBlockSet implements BlockSet {
             }
         }
         return null;
-    }
-
-    public static CuboidBlockSet fromCompressedString(String str) {
-        CuboidBlockSet cbs = new CuboidBlockSet();
-        List<String> split = CoreUtilities.split(str, '\n');
-        List<String> details = CoreUtilities.split(split.get(0), ':');
-        cbs.x_width = Double.parseDouble(details.get(1));
-        cbs.y_length = Double.parseDouble(details.get(2));
-        cbs.z_height = Double.parseDouble(details.get(3));
-        cbs.center_x = Double.parseDouble(details.get(4));
-        cbs.center_y = Double.parseDouble(details.get(5));
-        cbs.center_z = Double.parseDouble(details.get(6));
-        split.remove(0);
-        for (String read : split) {
-            if (read.length() > 0) {
-                cbs.blocks.add(NMSHandler.getInstance().getBlockHelper().getBlockData(read));
-            }
-        }
-        return cbs;
+        */
     }
 
     public static CuboidBlockSet fromMCEditStream(InputStream is) {
@@ -188,9 +209,9 @@ public class CuboidBlockSet implements BlockSet {
             int originY = 0;
             int originZ = 0;
             try {
-                originX = getChildTag(schematic, "WEOriginX", IntTag.class).getValue();
-                originY = getChildTag(schematic, "WEOriginY", IntTag.class).getValue();
-                originZ = getChildTag(schematic, "WEOriginZ", IntTag.class).getValue();
+                originX = getChildTag(schematic, "DenizenOriginX", IntTag.class).getValue();
+                originY = getChildTag(schematic, "DenizenOriginY", IntTag.class).getValue();
+                originZ = getChildTag(schematic, "DenizenOriginZ", IntTag.class).getValue();
             }
             catch (Exception e) {
                 // Default origin, why not
@@ -300,6 +321,9 @@ public class CuboidBlockSet implements BlockSet {
             schematic.put("Length", new ShortTag((short) (z_height)));
             schematic.put("Height", new ShortTag((short) (y_length)));
             schematic.put("Materials", new StringTag("Alpha"));
+            schematic.put("DenizenOriginX", new IntTag((int) center_x));
+            schematic.put("DenizenOriginY", new IntTag((int) center_y));
+            schematic.put("DenizenOriginZ", new IntTag((int) center_z));
             schematic.put("WEOriginX", new IntTag((int) center_x));
             schematic.put("WEOriginY", new IntTag((int) center_y));
             schematic.put("WEOriginZ", new IntTag((int) center_z));

@@ -54,6 +54,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // "NO_XP" to specify that any XP orbs should be removed.
     // dList(dItem) to specify new items to be dropped.
     // Element(Number) to specify the new amount of XP to be dropped.
+    // "KEEP_INV" to specify (if a player death) that the inventory should be kept.
+    // "KEEP_LEVEL" to specify (if a player death) that the XP level should be kept.
     // Note that the event can be cancelled to hide a player death message.
     //
     // @Player when the entity that died is a player.
@@ -75,6 +77,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public dList drops;
     public Integer xp;
     public boolean changed_drops;
+    public boolean keep_inv;
+    public boolean keep_level;
     public EntityDeathEvent event;
 
     @Override
@@ -135,6 +139,12 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         }
         else if (lower.equals("no_xp")) {
             xp = 0;
+        }
+        else if (lower.equals("keep_inv")) {
+            keep_inv = true;
+        }
+        else if (lower.equals("keep_level")) {
+            keep_level = true;
         }
         // Change xp value only
         else if (aH.matchesInteger(determination)) {
@@ -227,6 +237,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             if (player != null) {
                 inventory = player.getInventory();
             }
+            keep_inv = subEvent.getKeepInventory();
+            keep_level = subEvent.getKeepLevel();
         }
         cause = null;
         if (event.getEntity().getLastDamageCause() != null) {
@@ -256,6 +268,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                     event.getDrops().add(item.getItemStack());
                 }
             }
+        }
+        if (event instanceof PlayerDeathEvent) {
+            ((PlayerDeathEvent) event).setKeepInventory(keep_inv);
+            ((PlayerDeathEvent) event).setKeepLevel(keep_level);
         }
         if (message != null && subEvent != null) {
             subEvent.setDeathMessage(message.asString());

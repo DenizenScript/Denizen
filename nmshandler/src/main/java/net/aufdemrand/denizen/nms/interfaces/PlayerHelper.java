@@ -20,4 +20,8 @@ public interface PlayerHelper {
     ImprovedOfflinePlayer getOfflineData(UUID uuid);
 
     ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
+
+    void showSimpleBossBar(Player player, String title, double progress);
+
+    void removeSimpleBossBar(Player player);
 }

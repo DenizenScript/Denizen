@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -19,7 +21,7 @@ public class EntityProfession implements Property {
             return false;
         }
         return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
-                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE;
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE);
     }
 
     public static EntityProfession getFrom(dObject entity) {

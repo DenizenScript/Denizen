@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms;
 
+import net.aufdemrand.denizen.nms.abstracts.AnimationHelper;
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
@@ -81,9 +82,9 @@ public abstract class NMSHandler {
 
     public abstract double[] getRecentTps();
 
-    public abstract BlockHelper getBlockHelper();
+    public abstract AnimationHelper getAnimationHelper();
 
-    public abstract BossBarHelper getBossBarHelper();
+    public abstract BlockHelper getBlockHelper();
 
     public abstract ChunkHelper getChunkHelper();
 
@@ -94,6 +95,8 @@ public abstract class NMSHandler {
     public abstract FishingHelper getFishingHelper();
 
     public abstract ItemHelper getItemHelper();
+
+    public abstract SoundHelper getSoundHelper();
 
     public abstract PacketHelper getPacketHelper();
 
@@ -106,8 +109,4 @@ public abstract class NMSHandler {
     public abstract void enablePacketInterception(PacketHandler packetHandler);
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
-
-    public abstract void showSimpleBossBar(Player player, String title, double progress);
-
-    public abstract void removeSimpleBossBar(Player player);
 }

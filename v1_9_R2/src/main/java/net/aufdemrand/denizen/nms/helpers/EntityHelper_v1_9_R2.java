@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.helpers;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_9_R2;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
+import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.Utilities;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.minecraft.server.v1_9_R2.*;
@@ -591,5 +592,26 @@ public class EntityHelper_v1_9_R2 implements EntityHelper {
         else {
             return null;
         }
+    }
+
+    @Override
+    public void move(Entity entity, Vector vector) {
+        ((CraftEntity) entity).getHandle().move(vector.getX(), vector.getY(), vector.getZ());
+    }
+
+    @Override
+    public BoundingBox getBoundingBox(Entity entity) {
+        AxisAlignedBB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
+        Vector position = new Vector(boundingBox.a, boundingBox.b, boundingBox.c);
+        Vector size = new Vector(boundingBox.d, boundingBox.e, boundingBox.f);
+        return new BoundingBox(position, size);
+    }
+
+    @Override
+    public void setBoundingBox(Entity entity, BoundingBox boundingBox) {
+        Vector low = boundingBox.getLow();
+        Vector high = boundingBox.getHigh();
+        ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(),
+                high.getX(), high.getY(), high.getZ()));
     }
 }

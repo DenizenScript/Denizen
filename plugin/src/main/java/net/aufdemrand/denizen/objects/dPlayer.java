@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
@@ -2599,14 +2600,14 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
+                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
                 }
                 else {
-                    NMSHandler.getInstance().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
+                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
                 }
             }
             else {
-                NMSHandler.getInstance().removeSimpleBossBar(getPlayerEntity());
+                NMSHandler.getInstance().getPlayerHelper().removeSimpleBossBar(getPlayerEntity());
             }
         }
 
@@ -2798,7 +2799,7 @@ public class dPlayer implements dObject, Adjustable {
         // The book can safely be removed from the player's offhand
         // without the player closing the book.
         // -->
-        if (mechanism.matches("open_offhand_book")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("open_offhand_book")) {
             NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 

@@ -7,11 +7,9 @@ import java.util.List;
 
 public interface BlockSet {
 
-    public abstract List<BlockData> getBlocks();
+    List<BlockData> getBlocks();
 
-    public abstract void setBlocksDelayed(Location loc, Runnable runme, boolean noAir);
+    void setBlocksDelayed(Location loc, Runnable runme, boolean noAir);
 
-    public abstract void setBlocks(Location loc, boolean noAir);
-
-    public abstract String toCompressedFormat();
+    void setBlocks(Location loc, boolean noAir);
 }

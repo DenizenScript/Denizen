@@ -91,16 +91,26 @@ public class DenizenNetworkManager_v1_10_R1 extends NetworkManager {
             PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_10_R1(player, packet);
             UUID uuid = spawnEntity.getEntityUuid();
             if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), uuid)) {
-                Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);
-                if (entity instanceof EntityFakePlayer_v1_10_R1) {
-                    final EntityFakePlayer_v1_10_R1 fakePlayer = (EntityFakePlayer_v1_10_R1) entity;
-                    sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
-                        @Override
-                        public void run() {
-                            sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
-                        }
-                    }, 5);
+                final Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);
+                if (entity != null) {
+                    if (entity instanceof EntityFakePlayer_v1_10_R1) {
+                        final EntityFakePlayer_v1_10_R1 fakePlayer = (EntityFakePlayer_v1_10_R1) entity;
+                        sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+                        Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
+                            @Override
+                            public void run() {
+                                sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
+                            }
+                        }, 5);
+                    }
+                    if (entity.isPassenger()) {
+                        Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
+                            @Override
+                            public void run() {
+                                sendPacket(new PacketPlayOutMount(entity.getVehicle()));
+                            }
+                        }, 1);
+                    }
                 }
                 oldManager.sendPacket(packet);
             }

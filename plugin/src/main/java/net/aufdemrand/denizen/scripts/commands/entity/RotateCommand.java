@@ -98,7 +98,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
+        final List<dEntity> entities = new ArrayList<dEntity>((List<dEntity>) scriptEntry.getObject("entities"));
         final Duration duration = (Duration) scriptEntry.getObject("duration");
         final Duration frequency = (Duration) scriptEntry.getObject("frequency");
         final Element yaw = (Element) scriptEntry.getObject("yaw");

@@ -17,12 +17,15 @@ public class Sidebar_v1_10_R1 extends Sidebar {
         super(player);
         this.obj1 = new ScoreboardObjective(dummyScoreboard, "dummy_1", dummyCriteria);
         this.obj2 = new ScoreboardObjective(dummyScoreboard, "dummy_2", dummyCriteria);
+        setDisplayName(title);
     }
 
     @Override
     protected void setDisplayName(String title) {
-        this.obj1.setDisplayName(title);
-        this.obj2.setDisplayName(title);
+        if (this.obj1 != null) {
+            this.obj1.setDisplayName(title);
+            this.obj2.setDisplayName(title);
+        }
     }
 
     @Override

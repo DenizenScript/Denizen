@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.helpers;
 
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
+import net.aufdemrand.denizen.nms.impl.BossBar_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_8_R3;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
@@ -61,5 +62,15 @@ public class PlayerHelper_v1_8_R3 implements PlayerHelper {
     @Override
     public ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer) {
         return new ImprovedOfflinePlayer_v1_8_R3(offlinePlayer.getUniqueId());
+    }
+
+    @Override
+    public void showSimpleBossBar(Player player, String title, double progress) {
+        BossBar_v1_8_R3.showBossBar(player, title, (int) (progress * 300));
+    }
+
+    @Override
+    public void removeSimpleBossBar(Player player) {
+        BossBar_v1_8_R3.removeBossBar(player);
     }
 }
