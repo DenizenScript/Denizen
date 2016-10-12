@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.events.core.CommandSmartEvent;
 import net.aufdemrand.denizen.events.core.CuboidEnterExitSmartEvent;
 import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
-import net.aufdemrand.denizen.events.core.PlayerEquipsArmorSmartEvent;
 import net.aufdemrand.denizen.events.entity.*;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
@@ -589,7 +588,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
             OldEventManager.registerSmartEvent(new FlagSmartEvent());
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
-            OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
             eventManager().registerCoreMembers();
 
             ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
@@ -674,6 +672,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerEditsBookScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerEmptiesBucketScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
