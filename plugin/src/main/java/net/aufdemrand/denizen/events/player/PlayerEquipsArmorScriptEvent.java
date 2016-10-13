@@ -39,8 +39,6 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player (un)?equips [^\s]+$
     //
-    // @Cancellable false
-    //
     // @Triggers when a player (un)equips armor.
     //
     // @Context
