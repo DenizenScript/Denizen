@@ -29,10 +29,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -43,7 +39,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     //
     // @Regex ^on player (un)?equips [^\s]+$
     //
-    // @Cancellable true
+    // @Cancellable false
     //
     // @Triggers when a player (un)equips armor.
     //
@@ -134,74 +130,48 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
             @Override
             public void run() {
                 EntityEquipment newEquipment = player.getEquipment();
-                List<ItemStack> toReturn = new ArrayList<ItemStack>();
-                if (handleEvent(player, "helmet", oldHelmet, newEquipment.getHelmet(), reason)) {
-                    toReturn.add(newEquipment.getHelmet());
-                    newEquipment.setHelmet(oldHelmet);
-                }
-                if (handleEvent(player, "chestplate", oldChestplate, newEquipment.getChestplate(), reason)) {
-                    toReturn.add(newEquipment.getChestplate());
-                    newEquipment.setChestplate(oldChestplate);
-                }
-                if (handleEvent(player, "leggings", oldLeggings, newEquipment.getLeggings(), reason)) {
-                    toReturn.add(newEquipment.getLeggings());
-                    newEquipment.setLeggings(oldLeggings);
-                }
-                if (handleEvent(player, "boots", oldBoots, newEquipment.getBoots(), reason)) {
-                    toReturn.add(newEquipment.getBoots());
-                    newEquipment.setBoots(oldBoots);
-                }
-                if (!toReturn.isEmpty()) {
-                    HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(toReturn.toArray(new ItemStack[toReturn.size()]));
-                    if (!leftovers.isEmpty()) {
-                        for (ItemStack itemStack : leftovers.values()) {
-                            player.getWorld().dropItem(player.getLocation(), itemStack);
-                        }
-                    }
-                }
+                handleEvent(player, "helmet", oldHelmet, newEquipment.getHelmet(), reason);
+                handleEvent(player, "chestplate", oldChestplate, newEquipment.getChestplate(), reason);
+                handleEvent(player, "leggings", oldLeggings, newEquipment.getLeggings(), reason);
+                handleEvent(player, "boots", oldBoots, newEquipment.getBoots(), reason);
             }
         }, 1);
     }
 
-    private boolean handleEvent(Player player, String type, ItemStack oldItem, ItemStack newItem, String reason) {
-        if (isSameItem(oldItem, newItem)) {
-            // Neither
-            return false;
-        }
-        else if (isAir(oldItem)) {
-            // Equips
-            return fireEquipsEvent(player, type, newItem, reason);
-        }
-        else if (isAir(newItem)) {
-            // Unequips
-            return fireUnequipsEvent(player, type, oldItem, reason);
-        }
-        else {
-            // Both
-            return fireUnequipsEvent(player, type, oldItem, reason) || fireEquipsEvent(player, type, newItem, reason);
+    private void handleEvent(Player player, String type, ItemStack oldItem, ItemStack newItem, String reason) {
+        if (!isSameItem(oldItem, newItem)) {
+            if (isAir(oldItem)) {
+                // Equips
+                fireEquipsEvent(player, type, newItem, reason);
+            }
+            else if (isAir(newItem)) {
+                // Unequips
+                fireUnequipsEvent(player, type, oldItem, reason);
+            }
+            else {
+                // Both
+                fireUnequipsEvent(player, type, oldItem, reason);
+                fireEquipsEvent(player, type, newItem, reason);
+            }
         }
     }
 
-    private boolean fireEquipsEvent(Player bukkitPlayer, String type, ItemStack newItem, String reasonString) {
+    private void fireEquipsEvent(Player bukkitPlayer, String type, ItemStack newItem, String reasonString) {
         equipType = new Element("equips");
         armorType = new Element(type);
         reason = new Element(reasonString);
         armor = new dItem(newItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
-        cancelled = false;
         fire();
-        return cancelled;
     }
 
-    private boolean fireUnequipsEvent(Player bukkitPlayer, String type, ItemStack oldItem, String reasonString) {
+    private void fireUnequipsEvent(Player bukkitPlayer, String type, ItemStack oldItem, String reasonString) {
         equipType = new Element("unequips");
         armorType = new Element(type);
         reason = new Element(reasonString);
         armor = new dItem(oldItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
-        cancelled = false;
         fire();
-        return cancelled;
     }
 
     private boolean isSameItem(ItemStack oldItem, ItemStack newItem) {
