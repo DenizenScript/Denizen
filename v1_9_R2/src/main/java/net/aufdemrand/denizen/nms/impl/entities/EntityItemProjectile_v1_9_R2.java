@@ -18,12 +18,12 @@ public class EntityItemProjectile_v1_9_R2 extends EntityItem implements IProject
 
     public EntityItemProjectile_v1_9_R2(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(craftWorld.getHandle());
+        bukkitEntity = new CraftItemProjectile_v1_9_R2((CraftServer) Bukkit.getServer(), this);
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         this.setSize(0.25F, 0.25F);
         this.setItemStack(CraftItemStack.asNMSCopy(itemStack));
         world.addEntity(this);
-        bukkitEntity = new CraftItemProjectile_v1_9_R2((CraftServer) Bukkit.getServer(), this);
     }
 
     @Override

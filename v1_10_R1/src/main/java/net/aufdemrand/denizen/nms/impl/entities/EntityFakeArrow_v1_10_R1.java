@@ -12,9 +12,9 @@ public class EntityFakeArrow_v1_10_R1 extends EntitySpectralArrow {
 
     public EntityFakeArrow_v1_10_R1(CraftWorld craftWorld, Location location) {
         super(craftWorld.getHandle());
+        bukkitEntity = new CraftFakeArrow_v1_10_R1((CraftServer) Bukkit.getServer(), this);
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         world.addEntity(this);
-        bukkitEntity = new CraftFakeArrow_v1_10_R1((CraftServer) Bukkit.getServer(), this);
     }
 
     @Override
