@@ -375,6 +375,7 @@ public class ItemScriptHelper implements Listener {
                             event.recipe = recipeList;
                             event.inventory = inventory;
                             event.player = dPlayer.mirrorBukkitPlayer(player);
+                            event.cancelled = false;
                             event.fire();
                             if (event.cancelled) {
                                 inventory.setResult(null);

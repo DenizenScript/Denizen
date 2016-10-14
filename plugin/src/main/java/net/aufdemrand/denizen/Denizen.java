@@ -14,6 +14,9 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
+import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
+import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
@@ -48,6 +51,7 @@ import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.debugging.StatsRecord;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizen.utilities.packets.DenizenPacketHandler;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -430,6 +434,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (Depends.citizens != null) {
                 Depends.citizens.registerCommandClass(NPCCommandHandler.class);
             }
+
+            DenizenEntityType.registerEntityType("ITEM_PROJECTILE", ItemProjectile.class);
+            DenizenEntityType.registerEntityType("FAKE_ARROW", FakeArrow.class);
+            DenizenEntityType.registerEntityType("FAKE_PLAYER", FakePlayer.class);
 
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
