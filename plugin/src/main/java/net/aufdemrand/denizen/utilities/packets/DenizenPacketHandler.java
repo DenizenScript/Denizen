@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.events.player.ResourcePackStatusScriptEvent;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.*;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
-import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -173,9 +172,7 @@ public class DenizenPacketHandler implements PacketHandler {
             if (hash != null) {
                 meta.setLore(lore);
                 itemStack.setItemMeta(meta);
-                CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
-                compoundTag = compoundTag.createBuilder().put("Denizen Item Script", new StringTag(hash)).build();
-                return NMSHandler.getInstance().getItemHelper().setNbtData(itemStack, compoundTag);
+                return NMSHandler.getInstance().getItemHelper().addNbtData(itemStack, "Denizen Item Script", new StringTag(hash));
             }
         }
         return itemStack;
