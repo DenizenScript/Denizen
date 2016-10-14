@@ -7,9 +7,13 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutSetSlot_v1_10_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutSpawnEntity_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutTradeList_v1_10_R1;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_10_R1.*;
 import net.minecraft.server.v1_10_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import org.bukkit.Bukkit;
@@ -117,6 +121,27 @@ public class DenizenNetworkManager_v1_10_R1 extends NetworkManager {
         }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_10_R1((PacketPlayOutEntityMetadata) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutSetSlot) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlot_v1_10_R1((PacketPlayOutSetSlot) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutWindowItems) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItems_v1_10_R1((PacketPlayOutWindowItems) packet))) {
+                oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutCustomPayload) {
+            String name = ReflectionHelper.getFieldValue(PacketPlayOutCustomPayload.class, "a", packet);
+            if (name != null && name.equals("MC|TrList")) {
+                if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_10_R1((PacketPlayOutCustomPayload) packet))) {
+                    oldManager.sendPacket(packet);
+                }
+            }
+            else {
                 oldManager.sendPacket(packet);
             }
         }

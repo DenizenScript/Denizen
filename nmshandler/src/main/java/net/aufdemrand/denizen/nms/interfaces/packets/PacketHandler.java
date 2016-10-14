@@ -11,4 +11,10 @@ public interface PacketHandler {
     boolean sendPacket(Player player, PacketOutChat chat);
 
     boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata);
+
+    boolean sendPacket(Player player, PacketOutSetSlot setSlot);
+
+    boolean sendPacket(Player player, PacketOutWindowItems windowItems);
+
+    boolean sendPacket(Player player, PacketOutTradeList tradeList);
 }
