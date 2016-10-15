@@ -2,17 +2,12 @@ package net.aufdemrand.denizen.nms.impl.packets;
 
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutTradeList;
-import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
 import net.minecraft.server.v1_9_R2.PacketDataSerializer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutCustomPayload;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PacketOutTradeList_v1_9_R2 implements PacketOutTradeList {
 
@@ -21,9 +16,10 @@ public class PacketOutTradeList_v1_9_R2 implements PacketOutTradeList {
     private List<TradeOffer> tradeOffers;
 
     public PacketOutTradeList_v1_9_R2(PacketPlayOutCustomPayload internal) {
-        this.internal = internal;
+        /*this.internal = internal;
         try {
-            PacketDataSerializer serializer = (PacketDataSerializer) SERIALIZER.get(internal);
+            PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
+            internal.b(serializer);
             container = serializer.readInt();
             tradeOffers = new ArrayList<TradeOffer>();
             byte tradeCount = serializer.readByte();
@@ -40,7 +36,7 @@ public class PacketOutTradeList_v1_9_R2 implements PacketOutTradeList {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -53,7 +49,7 @@ public class PacketOutTradeList_v1_9_R2 implements PacketOutTradeList {
         try {
             PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
             serializer.writeInt(container);
-            serializer.writeByte(tradeOffers.size());
+            serializer.writeByte((byte)(tradeOffers.size() & 255));
             for (TradeOffer tradeOffer : tradeOffers) {
                 serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getFirstCost()));
                 serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getProduct()));
@@ -66,17 +62,10 @@ public class PacketOutTradeList_v1_9_R2 implements PacketOutTradeList {
                 serializer.writeInt(tradeOffer.getCurrentUses());
                 serializer.writeInt(tradeOffer.getMaxUses());
             }
-            SERIALIZER.set(internal, serializer);
+            internal.a(serializer);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static final Field SERIALIZER;
-
-    static {
-        Map<String, Field> fields = ReflectionHelper.getFields(PacketPlayOutCustomPayload.class);
-        SERIALIZER = fields.get("b");
     }
 }
