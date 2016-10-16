@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -13,7 +14,6 @@ import net.aufdemrand.denizen.nms.impl.packets.PacketOutTradeList_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_8_R3;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
-import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_8_R3.*;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import org.bukkit.Bukkit;
@@ -127,13 +127,21 @@ public class DenizenNetworkManager_v1_8_R3 extends NetworkManager {
             }
         }
         else if (packet instanceof PacketPlayOutCustomPayload) {
-            String name = ReflectionHelper.getFieldValue(PacketPlayOutCustomPayload.class, "a", packet);
-            if (name != null && name.equals("MC|TrList")) {
-                if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_8_R3((PacketPlayOutCustomPayload) packet))) {
+            PacketPlayOutCustomPayload payload = (PacketPlayOutCustomPayload) packet;
+            PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
+            try {
+                payload.b(serializer);
+                String name = serializer.c(20);
+                if (name != null && name.equals("MC|TrList")) {
+                    if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_8_R3(payload, serializer))) {
+                        oldManager.handle(packet);
+                    }
+                }
+                else {
                     oldManager.handle(packet);
                 }
             }
-            else {
+            catch (Exception e) {
                 oldManager.handle(packet);
             }
         }

@@ -146,9 +146,6 @@ public class DenizenPacketHandler implements PacketHandler {
     @Override
     public boolean sendPacket(Player player, PacketOutTradeList tradeList) {
         List<TradeOffer> tradeOffers = tradeList.getTradeOffers();
-        if (tradeOffers == null) {
-            return false;
-        }
         for (TradeOffer tradeOffer : tradeOffers) {
             tradeOffer.setFirstCost(removeItemScriptLore(tradeOffer.getFirstCost()));
             tradeOffer.setSecondCost(removeItemScriptLore(tradeOffer.getSecondCost()));

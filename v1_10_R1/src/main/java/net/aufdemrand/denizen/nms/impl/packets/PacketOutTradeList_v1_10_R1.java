@@ -6,7 +6,9 @@ import net.aufdemrand.denizen.nms.util.TradeOffer;
 import net.minecraft.server.v1_10_R1.PacketDataSerializer;
 import net.minecraft.server.v1_10_R1.PacketPlayOutCustomPayload;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PacketOutTradeList_v1_10_R1 implements PacketOutTradeList {
@@ -15,14 +17,10 @@ public class PacketOutTradeList_v1_10_R1 implements PacketOutTradeList {
     private int container;
     private List<TradeOffer> tradeOffers;
 
-    public PacketOutTradeList_v1_10_R1(PacketPlayOutCustomPayload internal) {
+    public PacketOutTradeList_v1_10_R1(PacketPlayOutCustomPayload internal, PacketDataSerializer serializer) {
         this.internal = internal;
-        /*try {
-            PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
-            internal.b(serializer);
+        try {
             container = serializer.readInt();
-            int bytes = serializer.readableBytes();
-            serializer = new PacketDataSerializer(serializer.readBytes(bytes));
             tradeOffers = new ArrayList<TradeOffer>();
             byte tradeCount = serializer.readByte();
             for (byte i = 0; i < tradeCount; i++) {
@@ -38,7 +36,7 @@ public class PacketOutTradeList_v1_10_R1 implements PacketOutTradeList {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     @Override
@@ -50,6 +48,7 @@ public class PacketOutTradeList_v1_10_R1 implements PacketOutTradeList {
     public void setTradeOffers(List<TradeOffer> tradeOffers) {
         try {
             PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
+            serializer.a("MC|TrList");
             serializer.writeInt(container);
             serializer.writeByte((byte)(tradeOffers.size() & 255));
             for (TradeOffer tradeOffer : tradeOffers) {
