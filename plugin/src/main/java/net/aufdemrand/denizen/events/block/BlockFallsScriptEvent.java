@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.block;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -27,6 +28,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     //
     // @Context
     // <context.location> returns the location of the block.
+    // <context.entity> returns the entity of the block that fell.
     //
     // -->
 
@@ -37,8 +39,9 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     public static BlockFallsScriptEvent instance;
 
     public dLocation location;
-    private dMaterial material;
+    public dMaterial material;
     public EntityChangeBlockEvent event;
+    public dEntity entity;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -83,11 +86,15 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         if (name.equals("location")) {
             return location;
         }
+        else if (name.equals("entity")) {
+            return entity;
+        }
         return super.getContext(name);
     }
 
     @EventHandler
     public void onBlockFalls(EntityChangeBlockEvent event) {
+        entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         cancelled = event.isCancelled();
