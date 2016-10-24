@@ -2697,7 +2697,7 @@ public class dPlayer implements dObject, Adjustable {
         // @description
         // Shows the player fake equipment on the specified living entity, which has
         // no real non-visual effects, in the form Entity|Slot|Item, where the slot
-        // can be one of the following: HAND, BOOTS, LEGS, CHEST, HEAD
+        // can be one of the following: HAND, OFF_HAND, BOOTS, LEGS, CHEST, HEAD
         // Optionally, exclude the slot and item to stop showing the fake equipment,
         // if any, on the specified entity.
         // - adjust <player> fake_equipment:e@123|chest|i@diamond_chestplate
@@ -2727,7 +2727,7 @@ public class dPlayer implements dObject, Adjustable {
                         }
                     }
                     else if (split.length > 1) {
-                        dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, BOOTS, LEGS, CHEST, or HEAD!");
+                        dB.echoError("'" + split[1] + "' is not a valid slot; must be HAND, OFF_HAND, BOOTS, LEGS, CHEST, or HEAD!");
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
