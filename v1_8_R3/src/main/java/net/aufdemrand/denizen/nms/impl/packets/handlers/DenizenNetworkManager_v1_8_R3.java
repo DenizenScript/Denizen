@@ -128,9 +128,14 @@ public class DenizenNetworkManager_v1_8_R3 extends NetworkManager {
         }
         else if (packet instanceof PacketPlayOutCustomPayload) {
             PacketPlayOutCustomPayload payload = (PacketPlayOutCustomPayload) packet;
-            PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
+            PacketDataSerializer original = new PacketDataSerializer(Unpooled.buffer());
             try {
-                payload.b(serializer);
+                payload.b(original);
+                // Copy the data without removing it from the original
+                PacketDataSerializer serializer = new PacketDataSerializer(original.getBytes(original.readerIndex(),
+                        new byte[original.readableBytes()]));
+                // Write the original back to avoid odd errors
+                payload.a(original);
                 String name = serializer.c(20);
                 if (name != null && name.equals("MC|TrList")) {
                     if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_8_R3(payload, serializer))) {
