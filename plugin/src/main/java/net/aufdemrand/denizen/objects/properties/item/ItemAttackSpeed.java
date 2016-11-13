@@ -46,10 +46,10 @@ public class ItemAttackSpeed implements Property {
                 .getAttributeModifiers(item.getItemStack());
         if (modifiers.containsKey(EntityAttribute.GENERIC_ATTACK_SPEED)) {
             for (EntityAttributeModifier modifier : modifiers.get(EntityAttribute.GENERIC_ATTACK_SPEED)) {
-                list.add(modifier.getUniqueId().toString());
-                list.add(modifier.getName());
-                list.add(modifier.getOperation().name());
-                list.add(new Element(modifier.getAmount()).identify());
+                list.add(modifier.getUniqueId().toString() + "/"
+                        + modifier.getName() + "/"
+                        + modifier.getOperation().name() + "/"
+                        + new Element(modifier.getAmount()).identify());
             }
         }
         return list.isEmpty() ? null : list.identify();
