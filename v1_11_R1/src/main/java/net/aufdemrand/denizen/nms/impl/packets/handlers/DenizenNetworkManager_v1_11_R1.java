@@ -107,14 +107,6 @@ public class DenizenNetworkManager_v1_11_R1 extends NetworkManager {
                             }
                         }, 5);
                     }
-                    if (entity.isPassenger()) {
-                        Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
-                            @Override
-                            public void run() {
-                                sendPacket(new PacketPlayOutMount(entity.getVehicle()));
-                            }
-                        }, 1);
-                    }
                 }
                 oldManager.sendPacket(packet);
             }
