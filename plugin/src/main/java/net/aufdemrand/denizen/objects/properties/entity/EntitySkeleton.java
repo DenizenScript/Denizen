@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -12,7 +14,7 @@ import org.bukkit.entity.Skeleton;
 public class EntitySkeleton implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.SKELETON;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Skeleton;
     }
 
     public static EntitySkeleton getFrom(dObject entity) {
@@ -92,8 +94,31 @@ public class EntitySkeleton implements Property {
         // -->
 
         if (mechanism.matches("skeleton") && mechanism.requireEnum(false, Skeleton.SkeletonType.values())) {
-            ((Skeleton) skeleton.getBukkitEntity()).setSkeletonType(
-                    Skeleton.SkeletonType.valueOf(mechanism.getValue().asString().toUpperCase()));
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                // TODO: improve this
+                Skeleton.SkeletonType skeletonType = Skeleton.SkeletonType.valueOf(mechanism.getValue().asString().toUpperCase());
+                Skeleton current = (Skeleton) skeleton.getBukkitEntity();
+                Skeleton newSkeleton = null;
+                switch (skeletonType) {
+                    case NORMAL:
+                        newSkeleton = (Skeleton) current.getLocation().getWorld().spawnEntity(current.getLocation(), EntityType.SKELETON);
+                        break;
+                    case WITHER:
+                        newSkeleton = (Skeleton) current.getLocation().getWorld().spawnEntity(current.getLocation(), EntityType.WITHER_SKELETON);
+                        break;
+                    case STRAY:
+                        newSkeleton = (Skeleton) current.getLocation().getWorld().spawnEntity(current.getLocation(), EntityType.STRAY);
+                        break;
+                }
+                newSkeleton.setHealth(current.getHealth());
+                newSkeleton.getEquipment().setArmorContents(current.getEquipment().getArmorContents());
+                current.remove();
+                skeleton.setEntity(newSkeleton);
+            }
+            else {
+                ((Skeleton) skeleton.getBukkitEntity()).setSkeletonType(
+                        Skeleton.SkeletonType.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
         }
     }
 }

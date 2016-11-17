@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -7,10 +9,11 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.trait.ZombieModifier;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
 
 public class EntityInfected implements Property {
 
@@ -45,7 +48,9 @@ public class EntityInfected implements Property {
 
     public boolean isInfected() {
         return infected.getBukkitEntity() instanceof Zombie
-                && ((Zombie) infected.getBukkitEntity()).isVillager();
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
+                ? infected.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER
+                : ((Zombie) infected.getBukkitEntity()).isVillager());
     }
 
     public void setInfected(boolean bool) {
@@ -53,10 +58,22 @@ public class EntityInfected implements Property {
         if (bool) {
             if (infected.isCitizensNPC()) {
                 NPC infected_npc = infected.getDenizenNPC().getCitizen();
-                infected_npc.setBukkitEntityType(EntityType.ZOMBIE);
-                if (!infected_npc.getTrait(ZombieModifier.class).toggleVillager()) {
-                    infected_npc.getTrait(ZombieModifier.class).toggleVillager();
-                }
+                infected_npc.setBukkitEntityType(EntityType.ZOMBIE_VILLAGER);
+            }
+
+            // TODO: Improve upon.
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                LivingEntity entity = infected.getLivingEntity();
+                // Make a new entity
+                ZombieVillager infect = (ZombieVillager) entity.getLocation().getWorld().spawnEntity(infected.getLocation(), EntityType.ZOMBIE_VILLAGER);
+                // Set health
+                infect.setHealth(entity.getHealth());
+                // Set equipment
+                infect.getEquipment().setArmorContents(entity.getEquipment().getArmorContents());
+                // Remove the Villager
+                entity.remove();
+                // Set the dEntity to the new entity
+                infected.setEntity(infect);
             }
 
             // TODO: Should be bother allowing villager input at all?

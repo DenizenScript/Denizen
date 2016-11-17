@@ -17,12 +17,8 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftCreature;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -616,5 +612,22 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
         Vector high = boundingBox.getHigh();
         ((CraftEntity) entity).getHandle().a(new AxisAlignedBB(low.getX(), low.getY(), low.getZ(),
                 high.getX(), high.getY(), high.getZ()));
+    }
+
+    @Override
+    public boolean isChestedHorse(Entity horse) {
+        return horse instanceof Horse;
+    }
+
+    @Override
+    public boolean isCarryingChest(Entity horse) {
+        return horse instanceof Horse && ((Horse) horse).isCarryingChest();
+    }
+
+    @Override
+    public void setCarryingChest(Entity horse, boolean carrying) {
+        if (horse instanceof Horse) {
+            ((Horse) horse).setCarryingChest(carrying);
+        }
     }
 }
