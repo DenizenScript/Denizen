@@ -57,10 +57,10 @@ public class NBTCommand extends AbstractCommand {
         ItemStack itemStack = item.getItemStack();
 
         if (value.asString().equals("!")) {
-            itemStack = CustomNBT.removeCustomNBT(itemStack, key.asString());
+            itemStack = CustomNBT.removeCustomNBT(itemStack, key.asString(), CustomNBT.KEY_DENIZEN);
         }
         else {
-            itemStack = CustomNBT.addCustomNBT(itemStack, key.asString(), value.asString());
+            itemStack = CustomNBT.addCustomNBT(itemStack, key.asString(), value.asString(), CustomNBT.KEY_DENIZEN);
         }
 
         scriptEntry.addObject("new_item", new dItem(itemStack));
