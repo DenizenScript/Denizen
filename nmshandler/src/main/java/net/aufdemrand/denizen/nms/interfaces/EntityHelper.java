@@ -199,4 +199,10 @@ public interface EntityHelper {
     BoundingBox getBoundingBox(Entity entity);
 
     void setBoundingBox(Entity entity, BoundingBox boundingBox);
+
+    boolean isChestedHorse(Entity horse);
+
+    boolean isCarryingChest(Entity horse);
+
+    void setCarryingChest(Entity horse, boolean carrying);
 }

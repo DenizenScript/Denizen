@@ -150,7 +150,7 @@ public class ItemScriptHelper implements Listener {
             return null;
         }
         String nbt = NMSHandler.getInstance().getItemHelper().getNbtData(item).getString("Denizen Item Script");
-        if (nbt != null) {
+        if (nbt != null && !nbt.equals("")) {
             return item_scripts_by_hash_id.get(nbt);
         }
         if (!item.hasItemMeta() || !item.getItemMeta().hasLore()) {
@@ -375,6 +375,7 @@ public class ItemScriptHelper implements Listener {
                             event.recipe = recipeList;
                             event.inventory = inventory;
                             event.player = dPlayer.mirrorBukkitPlayer(player);
+                            event.cancelled = false;
                             event.fire();
                             if (event.cancelled) {
                                 inventory.setResult(null);

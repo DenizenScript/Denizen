@@ -24,8 +24,6 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     //
     // @Regex ^on player world( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    // @Cancellable false
-    //
     // @Triggers when a player moves to a different world.
     //
     // @Context

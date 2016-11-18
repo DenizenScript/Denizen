@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.HorseJumpEvent;
@@ -120,15 +121,17 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     @EventHandler
     public void onHorseJumps(HorseJumpEvent event) {
-        entity = new dEntity(event.getEntity());
-        color = new Element(event.getEntity().getColor().name());
-        variant = new Element(event.getEntity().getVariant().name());
-        power = event.getPower();
-        cancelled = event.isCancelled();
-        this.event = event;
-        fire();
-        event.setCancelled(cancelled);
-        event.setPower(power);
+        if (event.getEntity() instanceof Horse) {
+            entity = new dEntity(event.getEntity());
+            color = new Element(((Horse) event.getEntity()).getColor().name());
+            variant = new Element(event.getEntity().getVariant().name());
+            power = event.getPower();
+            cancelled = event.isCancelled();
+            this.event = event;
+            fire();
+            event.setCancelled(cancelled);
+            event.setPower(power);
+        }
     }
 
 }

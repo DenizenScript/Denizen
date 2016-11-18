@@ -97,8 +97,7 @@ public class DenizenEntityType {
                 CustomEntityHelper customEntityHelper = NMSHandler.getInstance().getCustomEntityHelper();
                 switch (customEntityType) {
                     case FAKE_ARROW:
-                        customEntityHelper.spawnFakeArrow(location);
-                        break;
+                        return customEntityHelper.spawnFakeArrow(location);
                     case FAKE_PLAYER:
                         if (Settings.packetInterception()) {
                             String name = null;
@@ -114,7 +113,7 @@ public class DenizenEntityType {
                                     break;
                                 }
                             }
-                            customEntityHelper.spawnFakePlayer(location, name, skin);
+                            return customEntityHelper.spawnFakePlayer(location, name, skin);
                         }
                         break;
                     case ITEM_PROJECTILE:
@@ -124,8 +123,7 @@ public class DenizenEntityType {
                                 itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
                             }
                         }
-                        customEntityHelper.spawnItemProjectile(location, itemStack);
-                        break;
+                        return customEntityHelper.spawnItemProjectile(location, itemStack);
                 }
             }
         }

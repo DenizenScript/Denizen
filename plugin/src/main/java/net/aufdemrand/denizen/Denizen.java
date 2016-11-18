@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.events.core.CommandSmartEvent;
 import net.aufdemrand.denizen.events.core.CuboidEnterExitSmartEvent;
 import net.aufdemrand.denizen.events.core.FlagSmartEvent;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
-import net.aufdemrand.denizen.events.core.PlayerEquipsArmorSmartEvent;
 import net.aufdemrand.denizen.events.entity.*;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
@@ -15,6 +14,9 @@ import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
+import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
+import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
 import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
@@ -49,6 +51,7 @@ import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.debugging.StatsRecord;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizen.utilities.packets.DenizenPacketHandler;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -432,6 +435,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 Depends.citizens.registerCommandClass(NPCCommandHandler.class);
             }
 
+            DenizenEntityType.registerEntityType("ITEM_PROJECTILE", ItemProjectile.class);
+            DenizenEntityType.registerEntityType("FAKE_ARROW", FakeArrow.class);
+            DenizenEntityType.registerEntityType("FAKE_PLAYER", FakePlayer.class);
+
             // Track all player names for quick dPlayer matching
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 dPlayer.notePlayer(player);
@@ -589,7 +596,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             OldEventManager.registerSmartEvent(new CuboidEnterExitSmartEvent());
             OldEventManager.registerSmartEvent(new FlagSmartEvent());
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
-            OldEventManager.registerSmartEvent(new PlayerEquipsArmorSmartEvent());
             eventManager().registerCoreMembers();
 
             ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
@@ -674,6 +680,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerEditsBookScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerEmptiesBucketScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
+            ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
@@ -831,6 +838,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // register core dItem properties
             propertyParser.registerProperty(ItemApple.class, dItem.class);
+            propertyParser.registerProperty(ItemAttackSpeed.class, dItem.class);
             propertyParser.registerProperty(ItemBaseColor.class, dItem.class);
             propertyParser.registerProperty(ItemBook.class, dItem.class);
             propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
@@ -842,6 +850,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemLore.class, dItem.class);
             propertyParser.registerProperty(ItemMap.class, dItem.class);
             propertyParser.registerProperty(ItemNBT.class, dItem.class);
+            propertyParser.registerProperty(ItemAttributeNBT.class, dItem.class);
             propertyParser.registerProperty(ItemPatterns.class, dItem.class);
             propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {

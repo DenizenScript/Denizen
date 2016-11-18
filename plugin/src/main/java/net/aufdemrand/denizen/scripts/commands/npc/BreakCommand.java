@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -17,7 +16,6 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.citizensnpcs.api.ai.tree.BehaviorStatus;
 import net.citizensnpcs.api.npc.BlockBreaker;
-import net.citizensnpcs.npc.ai.CitizensBlockBreaker;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -105,8 +103,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
             }
         });
 
-        final CitizensBlockBreaker breaker = new CitizensBlockBreaker(npc.getLivingEntity(),
-                location.getBlock(), config);
+        BlockBreaker breaker = npc.getCitizen().getBlockBreaker(location.getBlock(), config);
         if (breaker.shouldExecute()) {
             TaskRunnable run = new TaskRunnable(breaker);
             run.taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(DenizenAPI.getCurrentInstance(), run, 0, 1);

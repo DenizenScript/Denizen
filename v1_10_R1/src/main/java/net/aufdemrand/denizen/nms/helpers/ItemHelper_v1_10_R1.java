@@ -3,17 +3,22 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.enums.EntityAttribute;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_10_R1;
 import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
+import net.aufdemrand.denizen.nms.util.EntityAttributeModifier;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
-import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.minecraft.server.v1_10_R1.GameProfileSerializer;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class ItemHelper_v1_10_R1 implements ItemHelper {
 
@@ -83,5 +88,53 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
         net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);
         nmsItemStack.setTag(((CompoundTag_v1_10_R1) compoundTag).toNMSTag());
         return CraftItemStack.asBukkitCopy(nmsItemStack);
+    }
+
+    @Override
+    public Map<EntityAttribute, List<EntityAttributeModifier>> getAttributeModifiers(ItemStack itemStack) {
+        Map<EntityAttribute, List<EntityAttributeModifier>> modifiers = new HashMap<EntityAttribute, List<EntityAttributeModifier>>();
+        List<Tag> modifierList = getNbtData(itemStack).getList("AttributeModifiers");
+        for (Tag tag : modifierList) {
+            if (!(tag instanceof CompoundTag)) {
+                continue;
+            }
+            CompoundTag modifier = (CompoundTag) tag;
+            EntityAttribute attribute = EntityAttribute.getByName(modifier.getString("AttributeName"));
+            if (attribute == null) {
+                continue;
+            }
+            if (!modifiers.containsKey(attribute)) {
+                modifiers.put(attribute, new ArrayList<EntityAttributeModifier>());
+            }
+            UUID uuid = new UUID(modifier.getLong("UUIDMost"), modifier.getLong("UUIDLeast"));
+            String name = modifier.getString("Name");
+            EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.values()[modifier.getInt("Operation")];
+            if (operation == null) {
+                continue;
+            }
+            double amount = modifier.getDouble("Amount");
+            modifiers.get(attribute).add(new EntityAttributeModifier(uuid, name, operation, amount));
+        }
+        return modifiers;
+    }
+
+    @Override
+    public ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers) {
+        List<Tag> modifierList = new ArrayList<Tag>(getNbtData(itemStack).getList("AttributeModifiers"));
+        for (Map.Entry<EntityAttribute, List<EntityAttributeModifier>> entry : modifiers.entrySet()) {
+            EntityAttribute attribute = entry.getKey();
+            for (EntityAttributeModifier modifier : entry.getValue()) {
+                Map<String, Tag> compound = new HashMap<String, Tag>();
+                compound.put("AttributeName", new StringTag(attribute.getName()));
+                UUID uuid = modifier.getUniqueId();
+                compound.put("UUIDMost", new LongTag(uuid.getMostSignificantBits()));
+                compound.put("UUIDLeast", new LongTag(uuid.getLeastSignificantBits()));
+                compound.put("Name", new StringTag(modifier.getName()));
+                compound.put("Operation", new IntTag(modifier.getOperation().ordinal()));
+                compound.put("Amount", new DoubleTag(modifier.getAmount()));
+                modifierList.add(new CompoundTag_v1_10_R1(compound));
+            }
+        }
+        return addNbtData(itemStack, "AttributeModifiers", new ListTag(CompoundTag.class, modifierList));
     }
 }

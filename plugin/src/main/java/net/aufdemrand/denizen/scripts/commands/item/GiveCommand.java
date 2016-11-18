@@ -155,8 +155,9 @@ public class GiveCommand extends AbstractCommand {
                     if (set_quantity) {
                         is.setAmount(qty.asInt());
                     }
+                    // TODO: Should engrave be kept?
                     if (engrave.asBoolean()) {
-                        is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
+                        is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), CustomNBT.KEY_DENIZEN);
                     }
 
                     List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt() - 1, limited, is);

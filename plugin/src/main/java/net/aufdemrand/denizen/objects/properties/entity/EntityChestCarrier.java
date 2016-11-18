@@ -1,19 +1,18 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 
 public class EntityChestCarrier implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntityType() == EntityType.HORSE;
+                && NMSHandler.getInstance().getEntityHelper().isChestedHorse(((dEntity) entity).getBukkitEntity());
     }
 
     public static EntityChestCarrier getFrom(dObject entity) {
@@ -42,7 +41,7 @@ public class EntityChestCarrier implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Horse) entity.getBukkitEntity()).isCarryingChest() ? "true" : "false";
+        return NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()) ? "true" : "false";
     }
 
     @Override
@@ -70,7 +69,7 @@ public class EntityChestCarrier implements Property {
         // If the entity is a horse, returns whether it is carrying a chest.
         // -->
         if (attribute.startsWith("carries_chest")) {
-            return new Element(((Horse) entity.getBukkitEntity()).isCarryingChest())
+            return new Element(NMSHandler.getInstance().getEntityHelper().isCarryingChest(entity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -91,7 +90,7 @@ public class EntityChestCarrier implements Property {
         // -->
 
         if (mechanism.matches("carries_chest") && mechanism.requireBoolean()) {
-            ((Horse) entity.getBukkitEntity()).setCarryingChest(mechanism.getValue().asBoolean());
+            NMSHandler.getInstance().getEntityHelper().setCarryingChest(entity.getBukkitEntity(), mechanism.getValue().asBoolean());
         }
     }
 }

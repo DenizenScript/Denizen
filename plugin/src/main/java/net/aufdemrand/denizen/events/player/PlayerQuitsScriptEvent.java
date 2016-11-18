@@ -23,8 +23,6 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (quit|quits)$
     //
-    // @Cancellable false
-    //
     // @Triggers when a player quit the server.
     //
     // @Context

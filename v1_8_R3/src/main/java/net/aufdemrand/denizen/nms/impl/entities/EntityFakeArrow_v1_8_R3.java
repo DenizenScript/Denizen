@@ -10,9 +10,9 @@ public class EntityFakeArrow_v1_8_R3 extends EntityArrow {
 
     public EntityFakeArrow_v1_8_R3(CraftWorld craftWorld, Location location) {
         super(craftWorld.getHandle());
+        bukkitEntity = new CraftFakeArrow_v1_8_R3((CraftServer) Bukkit.getServer(), this);
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         world.addEntity(this);
-        bukkitEntity = new CraftFakeArrow_v1_8_R3((CraftServer) Bukkit.getServer(), this);
     }
 
     @Override

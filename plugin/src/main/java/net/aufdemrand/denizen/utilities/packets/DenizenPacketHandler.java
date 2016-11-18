@@ -3,22 +3,26 @@ package net.aufdemrand.denizen.utilities.packets;
 import net.aufdemrand.denizen.events.player.PlayerReceivesMessageScriptEvent;
 import net.aufdemrand.denizen.events.player.PlayerSteersEntityScriptEvent;
 import net.aufdemrand.denizen.events.player.ResourcePackStatusScriptEvent;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketInResourcePackStatus;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketInSteerVehicle;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutChat;
-import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutEntityMetadata;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.packets.*;
+import net.aufdemrand.denizen.nms.util.TradeOffer;
+import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;
 import net.aufdemrand.denizen.scripts.commands.server.ExecuteCommand;
+import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -121,5 +125,56 @@ public class DenizenPacketHandler implements PacketHandler {
         HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
         // TODO: Check effect type against GLOWING (24)
         return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
+    }
+
+    @Override
+    public boolean sendPacket(Player player, PacketOutSetSlot setSlot) {
+        setSlot.setItemStack(removeItemScriptLore(setSlot.getItemStack()));
+        return false;
+    }
+
+    @Override
+    public boolean sendPacket(Player player, PacketOutWindowItems windowItems) {
+        ItemStack[] contents = windowItems.getContents();
+        for (int i = 0; i < contents.length; i++) {
+            contents[i] = removeItemScriptLore(contents[i]);
+        }
+        windowItems.setContents(contents);
+        return false;
+    }
+
+    @Override
+    public boolean sendPacket(Player player, PacketOutTradeList tradeList) {
+        List<TradeOffer> tradeOffers = tradeList.getTradeOffers();
+        for (TradeOffer tradeOffer : tradeOffers) {
+            tradeOffer.setFirstCost(removeItemScriptLore(tradeOffer.getFirstCost()));
+            tradeOffer.setSecondCost(removeItemScriptLore(tradeOffer.getSecondCost()));
+            tradeOffer.setProduct(removeItemScriptLore(tradeOffer.getProduct()));
+        }
+        tradeList.setTradeOffers(tradeOffers);
+        return false;
+    }
+
+    private static ItemStack removeItemScriptLore(ItemStack itemStack) {
+        if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
+            ItemMeta meta = itemStack.getItemMeta();
+            List<String> lore = meta.getLore();
+            Iterator<String> iter = lore.iterator();
+            String hash = null;
+            while (iter.hasNext()) {
+                String line = iter.next();
+                if (line.startsWith(ItemScriptHelper.ItemScriptHashID)) {
+                    hash = line;
+                    iter.remove();
+                    break;
+                }
+            }
+            if (hash != null) {
+                meta.setLore(lore);
+                itemStack.setItemMeta(meta);
+                return NMSHandler.getInstance().getItemHelper().addNbtData(itemStack, "Denizen Item Script", new StringTag(hash));
+            }
+        }
+        return itemStack;
     }
 }

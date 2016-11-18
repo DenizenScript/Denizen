@@ -26,8 +26,6 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    // @Cancellable false
-    //
     // @Triggers when a player levels up.
     //
     // @Context

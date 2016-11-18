@@ -24,8 +24,6 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Regex ^on player (logs in( for the first time)?|( first)? login)$
     //
-    // @Cancellable false
-    //
     // @Triggers when a player logs in to the server.
     //
     // @Context

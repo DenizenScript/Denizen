@@ -1,9 +1,14 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.enums.EntityAttribute;
+import net.aufdemrand.denizen.nms.util.EntityAttributeModifier;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ItemHelper {
 
@@ -18,4 +23,8 @@ public interface ItemHelper {
     CompoundTag getNbtData(ItemStack itemStack);
 
     ItemStack setNbtData(ItemStack itemStack, CompoundTag compoundTag);
+
+    Map<EntityAttribute, List<EntityAttributeModifier>> getAttributeModifiers(ItemStack itemStack);
+
+    ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers);
 }

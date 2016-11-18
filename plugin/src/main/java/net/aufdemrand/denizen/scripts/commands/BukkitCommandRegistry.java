@@ -69,6 +69,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
         // format script.
         //
+        // @Tags
+        // None
+        //
         // @Usage
         // Use to send a message to the player's action bar.
         // - actionbar "Hey there <player.name>!"
@@ -1691,6 +1694,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.in_group[<group>]>
         // <p@player.in_group[<group>].global>
         // <p@player.in_group[<group>].world>
+        // <p@player.groups>
         //
         // @Usage
         // Use to add a player to the Admin group.
@@ -2410,7 +2414,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This command is ~holdable.
         //
         // @Tags
-        // <l@location.block.material
+        // <l@location.block.material>
         //
         // @Usage
         // Use to change the block a player is looking at to stone.
@@ -2659,14 +2663,35 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
+        // Plays a sound to a player or nearby players at a location.
+        // The sound is played through the player's client just like
+        // any other sounds in Minecraft. Sounds are respecfully played
+        // with their sound types.
+        // For example; zombie sounds are under the type: Mobs/Animals
+        //
+        // Specifying a player or list of players will only play
+        // the sound for them for each of their current location.
+        // Sounds are played at fixed locations and will not
+        // follow a player while playing.
+        // If a location is specified, it will play the sound for
+        // all players if they are nearby that location specified.
+        //
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
+        //
+        // For a list of all sounds, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to play a sound for a player
+        // - playsound <player> sound:ENTITY_EXPERIENCE_ORB_PICKUP pitch:1
+        // @Usage
+        // Use to play a sound at a location for all nearby
+        // - playsound <player.location> sound:ENTITY_PLAYER_LEVELUP
+        // @Usage
+        // Use to notify all players with a sound
+        // - playsound <server.list_online_players> sound:ENTITY_PLAYER_LEVELUP volume:0.5 pitch:0.8
         // -->
         registerCoreMember(PlaySoundCommand.class,
                 "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)", 2);
@@ -3474,7 +3499,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If no duration is specefied, then it assumes the default duration of 10 seconds.
         //
         // @Tags
-        // TODO: Document Command Details
+        // <l@location.block.material>
         //
         // @Usage
         // Use to place a fake gold block at where the player is looking
@@ -3801,7 +3826,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.location>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to teleport a player to the location its cursor is pointing on
+        // - teleport <player> <player.location.cursor_on>
+        //
+        // @Usage
+        // Use to teleport a player high above
+        // - teleport <player> <player.location.add[0,200,0]>
+        //
+        // @Usage
+        // Use to teleport to a random online player
+        // - teleport <player> <server.list_online_players.random.location>
+        //
+        // @Usage
+        // Use to teleport all players to your location
+        // - teleport <server.list_online_players> <player.location>
         // -->
         registerCoreMember(TeleportCommand.class,
                 "TELEPORT", "teleport (<entity>|...) [<location>]", 1);

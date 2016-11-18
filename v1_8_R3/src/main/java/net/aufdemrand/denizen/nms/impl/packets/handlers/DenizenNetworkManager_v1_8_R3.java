@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -7,7 +8,10 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_8_R3;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutSetSlot_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutSpawnEntity_v1_8_R3;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutTradeList_v1_8_R3;
+import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_8_R3;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.minecraft.server.v1_8_R3.*;
@@ -109,6 +113,40 @@ public class DenizenNetworkManager_v1_8_R3 extends NetworkManager {
         }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_8_R3((PacketPlayOutEntityMetadata) packet))) {
+                oldManager.handle(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutSetSlot) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlot_v1_8_R3((PacketPlayOutSetSlot) packet))) {
+                oldManager.handle(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutWindowItems) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItems_v1_8_R3((PacketPlayOutWindowItems) packet))) {
+                oldManager.handle(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutCustomPayload) {
+            PacketPlayOutCustomPayload payload = (PacketPlayOutCustomPayload) packet;
+            PacketDataSerializer original = new PacketDataSerializer(Unpooled.buffer());
+            try {
+                payload.b(original);
+                // Copy the data without removing it from the original
+                PacketDataSerializer serializer = new PacketDataSerializer(original.getBytes(original.readerIndex(),
+                        new byte[original.readableBytes()]));
+                // Write the original back to avoid odd errors
+                payload.a(original);
+                String name = serializer.c(20);
+                if (name != null && name.equals("MC|TrList")) {
+                    if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_8_R3(payload, serializer))) {
+                        oldManager.handle(packet);
+                    }
+                }
+                else {
+                    oldManager.handle(packet);
+                }
+            }
+            catch (Exception e) {
                 oldManager.handle(packet);
             }
         }
