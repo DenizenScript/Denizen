@@ -49,7 +49,7 @@ public class ItemNBT implements Property {
         // Returns whether this item has the specified NBT key.
         // -->
         if (attribute.startsWith("has_nbt")) {
-            return new Element(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1)))
+            return new Element(CustomNBT.hasCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -61,7 +61,7 @@ public class ItemNBT implements Property {
         // Returns all of this item's NBT keys as a dList.
         // -->
         if (attribute.startsWith("nbt_keys")) {
-            return new dList(CustomNBT.listNBT(item.getItemStack()))
+            return new dList(CustomNBT.listNBT(item.getItemStack(), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -73,7 +73,7 @@ public class ItemNBT implements Property {
         // Returns the value of this item's NBT key as a string Element as best it can.
         // -->
         if (attribute.startsWith("nbt")) {
-            return new Element(CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1)))
+            return new Element(CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -84,11 +84,11 @@ public class ItemNBT implements Property {
     @Override
     public String getPropertyString() {
         ItemStack itemStack = item.getItemStack();
-        List<String> nbtKeys = CustomNBT.listNBT(itemStack);
+        List<String> nbtKeys = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
             dList list = new dList();
             for (String key : nbtKeys) {
-                list.add(key + "/" + CustomNBT.getCustomNBT(itemStack, key));
+                list.add(key + "/" + CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN));
             }
             return list.identify();
         }
@@ -119,7 +119,7 @@ public class ItemNBT implements Property {
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
                 String[] split = string.split("/", 2);
-                itemStack = CustomNBT.addCustomNBT(itemStack, split[0], split[1]);
+                itemStack = CustomNBT.addCustomNBT(itemStack, split[0], split[1], CustomNBT.KEY_DENIZEN);
             }
             item.setItemStack(itemStack);
         }
