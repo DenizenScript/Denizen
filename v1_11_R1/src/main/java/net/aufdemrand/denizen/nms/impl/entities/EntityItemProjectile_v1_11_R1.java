@@ -28,7 +28,7 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
 
     @Override
     public void A_() {
-        this.U();
+        super.U();
         BlockPosition blockposition = new BlockPosition(locX, locY, locZ);
         IBlockData iblockdata = world.getType(blockposition);
         Block block = iblockdata.getBlock();
@@ -78,13 +78,21 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
         }
         if ((movingobjectposition != null) && (movingobjectposition.entity != null) && ((movingobjectposition.entity instanceof EntityHuman))) {
             EntityHuman entityhuman = (EntityHuman) movingobjectposition.entity;
-            if ((entityhuman.abilities.isInvulnerable) || (((shooter instanceof EntityHuman)) && (!((EntityHuman) shooter).a(entityhuman)))) {
+            if(shooter instanceof EntityHuman && !((EntityHuman) shooter).a(entityhuman)) {
                 movingobjectposition = null;
             }
         }
         if (movingobjectposition != null) {
-            if (movingobjectposition.entity != null && movingobjectposition.entity instanceof EntityLiving) {
-                movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0F);
+            CraftEventFactory.callProjectileHitEvent(this);
+            DamageSource damageSource;
+            if(this.shooter == null) {
+                damageSource = DamageSource.projectile(this, this);
+            }
+            else {
+                damageSource = DamageSource.projectile(this, this.shooter);
+            }
+            if (movingobjectposition.entity != null) {
+                movingobjectposition.entity.damageEntity(damageSource, 0F);
                 this.die();
             }
             else if (movingobjectposition.a() != null) {
@@ -96,7 +104,6 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
                     locX -= motX / f3 * 0.0500000007450581D;
                     locY -= motY / f3 * 0.0500000007450581D;
                     locZ -= motZ / f3 * 0.0500000007450581D;
-                    CraftEventFactory.callProjectileHitEvent(this);
                     this.die();
                 }
             }
