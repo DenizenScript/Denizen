@@ -298,6 +298,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             }
         }
 
+        final dLocation start = new dLocation(lastEntity.getLocation());
+        final Vector start_vel = lastEntity.getVelocity();
+
         // A task used to trigger a script if the entity is no longer
         // being shot, when the script argument is used
         BukkitRunnable task = new BukkitRunnable() {
@@ -329,6 +332,13 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     this.cancel();
 
                     if (script != null) {
+                        if (lastLocation == null) {
+                            lastLocation = start;
+                        }
+                        if (lastVelocity == null) {
+                            lastVelocity = start_vel;
+                        }
+
                         // Build a queue out of the targeted script
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
                         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
