@@ -2437,7 +2437,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns the phase an EnderDragon is currently in.
         // Valid phases: CIRCLING, STRAFING, FLY_TO_PORTAL, LAND_ON_PORTAL, LEAVE_PORTAL,
         // BREATH_ATTACK, SEARCH_FOR_BREATH_ATTACK_TARGET, ROAR_BEFORE_ATTACK,
-        // CHARGE_PLAYER, DYING, HOVER;
+        // CHARGE_PLAYER, DYING, HOVER.
         // -->
         if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
             return new Element(((EnderDragon) getLivingEntity()).getPhase().name())
