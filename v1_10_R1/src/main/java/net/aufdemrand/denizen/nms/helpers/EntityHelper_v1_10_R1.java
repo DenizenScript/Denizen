@@ -393,11 +393,11 @@ public class EntityHelper_v1_10_R1 implements EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aO = yaw;
-                if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aM = yaw;
-                }
                 livingHandle.aP = yaw;
+                if (!(handle instanceof EntityHuman)) {
+                    livingHandle.aO = yaw;
+                }
+                livingHandle.aQ = yaw;
             }
             handle.pitch = pitch;
         }
