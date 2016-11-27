@@ -1645,6 +1645,16 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("ip") ||
                 attribute.startsWith("host_name")) {
             attribute = attribute.fulfill(1);
+            // <--[tag]
+            // @attribute <p@player.ip.address_only>
+            // @returns Element
+            // @description
+            // Returns the player's IP address.
+            // -->
+            if (attribute.startsWith("address_only")) {
+                return new Element(getPlayerEntity().getAddress().toString())
+                        .getAttribute(attribute.fulfill(1));
+            }
             String host = getPlayerEntity().getAddress().getHostName();
             // <--[tag]
             // @attribute <p@player.ip.address>
@@ -1656,7 +1666,6 @@ public class dPlayer implements dObject, Adjustable {
                 return new Element(getPlayerEntity().getAddress().toString())
                         .getAttribute(attribute.fulfill(1));
             }
-
             return new Element(host)
                     .getAttribute(attribute);
         }
