@@ -271,7 +271,8 @@ public class ItemScriptHelper implements Listener {
         // to twice their amount minus 2. I have no idea why.
         final ItemStack[] matrix = inventory.getMatrix();
         for (int i = 0; i < matrix.length; i++) {
-            matrix[i] = matrix[i].clone();
+            ItemStack is = matrix[i];
+            matrix[i] = is == null ? new ItemStack(Material.AIR) : is.clone();
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                 new Runnable() {
