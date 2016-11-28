@@ -14,7 +14,8 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
 
     public Entity shooter;
     public String shooterName;
-    private int age;
+    public Entity c;
+    private int aw;
 
     public EntityItemProjectile_v1_11_R1(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(craftWorld.getHandle());
@@ -28,97 +29,119 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
 
     @Override
     public void A_() {
+        this.M = this.locX;
+        this.N = this.locY;
+        this.O = this.locZ;
         super.U();
-        BlockPosition blockposition = new BlockPosition(locX, locY, locZ);
-        IBlockData iblockdata = world.getType(blockposition);
-        Block block = iblockdata.getBlock();
 
-        if (block.getBlockData().getMaterial() != Material.AIR) {
-            AxisAlignedBB axisalignedbb = iblockdata.c(world, blockposition);
-            if ((axisalignedbb != Block.k) && (axisalignedbb.b(new Vec3D(locX, locY, locZ)))) {
-                CraftEventFactory.callProjectileHitEvent(this);
-                this.die();
-            }
-        }
-        age += 1;
-        Vec3D vec3d = new Vec3D(locX, locY, locZ);
-        Vec3D vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
-        MovingObjectPosition movingobjectposition = world.rayTrace(vec3d, vec3d1, false, true, false);
-
-        vec3d = new Vec3D(locX, locY, locZ);
-        vec3d1 = new Vec3D(locX + motX, locY + motY, locZ + motZ);
+        Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
+        Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
+        MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
+        vec3d = new Vec3D(this.locX, this.locY, this.locZ);
+        vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
         if (movingobjectposition != null) {
             vec3d1 = new Vec3D(movingobjectposition.pos.x, movingobjectposition.pos.y, movingobjectposition.pos.z);
         }
 
         Entity entity = null;
-        List list = world.getEntities(this, getBoundingBox().a(motX, motY, motZ).grow(1.0D, 1.0D, 1.0D));
+        List list = this.world.getEntities(this, this.getBoundingBox().b(this.motX, this.motY, this.motZ).g(1.0D));
         double d0 = 0.0D;
+        boolean flag = false;
 
         for (Object aList : list) {
-            Entity entity1 = (Entity) aList;
+            Entity f1 = (Entity) aList;
 
-            if ((entity1.isInteractable()) && ((entity1 != shooter) || (age >= 5))) {
-                float f1 = 0.3F;
-                AxisAlignedBB axisalignedbb1 = entity1.getBoundingBox().grow(f1, f1, f1);
-                MovingObjectPosition movingobjectposition1 = axisalignedbb1.b(vec3d, vec3d1);
-
-                if (movingobjectposition1 != null) {
-                    double d1 = vec3d.distanceSquared(movingobjectposition1.pos);
-
-                    if ((d1 < d0) || (d0 == 0.0D)) {
-                        entity = entity1;
-                        d0 = d1;
+            if (f1.isInteractable()) {
+                if (f1 == this.c) {
+                    flag = true;
+                }
+                else if (this.shooter != null && this.ticksLived < 2 && this.c == null) {
+                    this.c = f1;
+                    flag = true;
+                }
+                else {
+                    flag = false;
+                    AxisAlignedBB f2 = f1.getBoundingBox().g(0.30000001192092896D);
+                    MovingObjectPosition j = f2.b(vec3d, vec3d1);
+                    if (j != null) {
+                        double d1 = vec3d.distanceSquared(j.pos);
+                        if (d1 < d0 || d0 == 0.0D) {
+                            entity = f1;
+                            d0 = d1;
+                        }
                     }
                 }
             }
         }
+
+        if (this.c != null) {
+            if (flag) {
+                this.aw = 2;
+            }
+            else if (this.aw-- <= 0) {
+                this.c = null;
+            }
+        }
+
         if (entity != null) {
             movingobjectposition = new MovingObjectPosition(entity);
         }
-        if ((movingobjectposition != null) && (movingobjectposition.entity != null) && ((movingobjectposition.entity instanceof EntityHuman))) {
-            EntityHuman entityhuman = (EntityHuman) movingobjectposition.entity;
-            if(shooter instanceof EntityHuman && !((EntityHuman) shooter).a(entityhuman)) {
-                movingobjectposition = null;
-            }
-        }
+
         if (movingobjectposition != null) {
-            CraftEventFactory.callProjectileHitEvent(this);
-            DamageSource damageSource;
-            if(this.shooter == null) {
-                damageSource = DamageSource.projectile(this, this);
+            if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(movingobjectposition.a()).getBlock() == Blocks.PORTAL) {
+                this.e(movingobjectposition.a());
             }
             else {
-                damageSource = DamageSource.projectile(this, this.shooter);
-            }
-            if (movingobjectposition.entity != null) {
-                movingobjectposition.entity.damageEntity(damageSource, 0F);
-                this.die();
-            }
-            else if (movingobjectposition.a() != null) {
-                if (block.getBlockData().getMaterial() != Material.AIR) {
-                    motX = ((float) (movingobjectposition.pos.x - locX));
-                    motY = ((float) (movingobjectposition.pos.y - locY));
-                    motZ = ((float) (movingobjectposition.pos.z - locZ));
-                    float f3 = MathHelper.sqrt(motX * motX + motY * motY + motZ * motZ);
-                    locX -= motX / f3 * 0.0500000007450581D;
-                    locY -= motY / f3 * 0.0500000007450581D;
-                    locZ -= motZ / f3 * 0.0500000007450581D;
-                    this.die();
+                this.a(movingobjectposition);
+                if(this.dead) {
+                    CraftEventFactory.callProjectileHitEvent(this, movingobjectposition);
                 }
             }
         }
 
-        locX += motX;
-        locY += motY;
-        locZ += motZ;
-        float f3 = 0.99F;
-        float f1 = 0.05F;
-        motX *= f3;
-        motY *= f3;
-        motZ *= f3;
-        motY -= f1;
-        setPosition(locX, locY, locZ);
+        this.locX += this.motX;
+        this.locY += this.motY;
+        this.locZ += this.motZ;
+        float var15 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
+        this.pitch = (float)(MathHelper.c(this.motY, (double)var15) * 57.2957763671875D);
+        this.yaw = (float)(MathHelper.c(this.motX, this.motZ) * 57.2957763671875D);
+
+        while (this.pitch - this.lastPitch < -180.0F) {
+            this.lastPitch -= 360.0F;
+        }
+
+        while(this.pitch - this.lastPitch >= 180.0F) {
+            this.lastPitch += 360.0F;
+        }
+
+        while(this.yaw - this.lastYaw < -180.0F) {
+            this.lastYaw -= 360.0F;
+        }
+
+        while(this.yaw - this.lastYaw >= 180.0F) {
+            this.lastYaw += 360.0F;
+        }
+
+        this.pitch = this.lastPitch + (this.pitch - this.lastPitch) * 0.2F;
+        this.yaw = this.lastYaw + (this.yaw - this.lastYaw) * 0.2F;
+        float var16 = 0.99F;
+        float var17 = 0.03F;
+        if(this.isInWater()) {
+            for(int var18 = 0; var18 < 4; ++var18) {
+                this.world.addParticle(EnumParticle.WATER_BUBBLE, this.locX - this.motX * 0.25D, this.locY - this.motY * 0.25D, this.locZ - this.motZ * 0.25D, this.motX, this.motY, this.motZ);
+            }
+
+            var16 = 0.8F;
+        }
+
+        this.motX *= (double)var16;
+        this.motY *= (double)var16;
+        this.motZ *= (double)var16;
+        if(!this.isNoGravity()) {
+            this.motY -= (double)var17;
+        }
+
+        this.setPosition(this.locX, this.locY, this.locZ);
         checkBlockCollisions();
     }
 
@@ -142,6 +165,13 @@ public class EntityItemProjectile_v1_11_R1 extends EntityItem implements IProjec
 
         lastYaw = yaw = (float) (Math.atan2(d0, d2) * 180.0D / 3.1415927410125732D);
         lastPitch = pitch = (float) (Math.atan2(d1, f3) * 180.0D / 3.1415927410125732D);
+    }
+
+    protected void a(MovingObjectPosition var1) {
+        if (var1.entity != null) {
+            var1.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0);
+        }
+        this.die();
     }
 
     public Entity getShooter() {
