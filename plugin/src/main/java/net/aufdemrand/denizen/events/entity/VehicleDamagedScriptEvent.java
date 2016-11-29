@@ -118,10 +118,10 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     @Override
     public dObject getContext(String name) {
         if (name.equals("vehicle")) {
-            return vehicle;
+            return vehicle.getDenizenObject();
         }
         else if (name.equals("entity") && entity != null) {
-            return entity;
+            return entity.getDenizenObject();
         }
         return super.getContext(name);
     }
