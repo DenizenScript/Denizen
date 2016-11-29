@@ -35,7 +35,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <context.origin> returns the dLocation the entity teleported from.
     // <context.destination> returns the dLocation the entity teleported to.
     // <context.cause> returns an Element of the teleport cause. Can be:
-    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
+    // COMMAND, END_PORTAL, ENDER_PEARL, NETHER_PORTAL, PLUGIN, END_GATEWAY, CHORUS_FRUIT, SPECTATE, UNKNOWN, or ENTITY_TELEPORT
     //
     // @Determine
     // "ORIGIN:" + dLocation to change the location the entity teleported from.
