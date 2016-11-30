@@ -2439,7 +2439,7 @@ public class dEntity implements dObject, Adjustable {
         // BREATH_ATTACK, SEARCH_FOR_BREATH_ATTACK_TARGET, ROAR_BEFORE_ATTACK,
         // CHARGE_PLAYER, DYING, HOVER.
         // -->
-        if (attribute.startsWith("experience") && getBukkitEntity() instanceof ExperienceOrb) {
+        if (attribute.startsWith("dragon_phase") && getBukkitEntity() instanceof EnderDragon) {
             return new Element(((EnderDragon) getLivingEntity()).getPhase().name())
                     .getAttribute(attribute.fulfill(1));
         }
