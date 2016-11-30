@@ -167,7 +167,9 @@ public class HealthTrait extends Trait implements Listener {
                     npc.despawn(DespawnReason.DEATH);
                     if (respawn) {
                         Location res = getRespawnLocation();
-                        res.setY(res.getWorld().getHighestBlockYAt(res.getBlockX(), res.getBlockZ()));
+                        if (res.getY() < 1) {
+                            res.setY(res.getWorld().getHighestBlockYAt(res.getBlockX(), res.getBlockZ()));
+                        }
                         if (npc.isSpawned()) {
                             npc.getEntity().teleport(res);
                         }
