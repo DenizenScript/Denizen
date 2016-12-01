@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.events.OldEventManager;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRemoveEvent;
 import net.citizensnpcs.api.event.NPCSpawnEvent;
@@ -88,7 +89,6 @@ public class dNPCRegistry implements Listener {
         if (!denizenNPCs.containsKey(npc.getId())) {
             _registerNPC(new dNPC(npc));
         }
-        // dB.log("Constructing NPC " + getDenizen(npc).toString());
     }
 
     /**
@@ -99,22 +99,11 @@ public class dNPCRegistry implements Listener {
      * @return a dNPC
      */
     public static dNPC getDenizen(NPC npc) {
-        if (npc == null) {
-            return null;
-        }
-        if (!denizenNPCs.containsKey(npc.getId())) {
-            _registerNPC(npc);
-        }
-        return denizenNPCs.get(npc.getId());
+        return new dNPC(npc);
     }
 
     public static dNPC getDenizen(int id) {
-        if (denizenNPCs.containsKey(id)) {
-            return denizenNPCs.get(id);
-        }
-        else {
-            return null;
-        }
+        return new dNPC(CitizensAPI.getNPCRegistry().getById(id));
     }
 
     /**
@@ -187,7 +176,7 @@ public class dNPCRegistry implements Listener {
                         ("npc spawns"),
                 new BukkitScriptEntryData(null, dNPC.mirrorCitizensNPC(event.getNPC())), null);
         // On Spawn action
-        getDenizen(event.getNPC()).action("spawn", null);
+        new dNPC(event.getNPC()).action("spawn", null);
     }
 
 
