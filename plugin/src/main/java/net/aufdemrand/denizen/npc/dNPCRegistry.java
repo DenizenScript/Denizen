@@ -177,6 +177,10 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void onSpawn(NPCSpawnEvent event) {
+        if (event.getNPC() == null) {
+            dB.echoError("Null NPC spawned!");
+            return;
+        }
         _registerNPC(event.getNPC());
         // Do world script event 'On NPC spawns'
         OldEventManager.doEvents(Arrays.asList
