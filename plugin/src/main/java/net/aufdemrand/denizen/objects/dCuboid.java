@@ -333,7 +333,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int z_distance = pair.z_distance;
             int x_distance = pair.x_distance;
 
-            for (int y = loc_1.getBlockY(); y <= loc_1.getBlockY() + y_distance; y++) {
+            for (int y = loc_1.getBlockY(); y < loc_1.getBlockY() + y_distance; y++) {
                 list.add(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         y,
@@ -359,7 +359,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 }
             }
 
-            for (int x = loc_1.getBlockX(); x <= loc_1.getBlockX() + x_distance; x++) {
+            for (int x = loc_1.getBlockX(); x < loc_1.getBlockX() + x_distance; x++) {
                 list.add(new dLocation(loc_1.getWorld(),
                         x,
                         loc_1.getBlockY(),
@@ -385,7 +385,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 }
             }
 
-            for (int z = loc_1.getBlockZ(); z <= loc_1.getBlockZ() + z_distance; z++) {
+            for (int z = loc_1.getBlockZ(); z < loc_1.getBlockZ() + z_distance; z++) {
                 list.add(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         loc_1.getBlockY(),
