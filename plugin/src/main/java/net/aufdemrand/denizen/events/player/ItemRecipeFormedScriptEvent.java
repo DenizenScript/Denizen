@@ -50,6 +50,8 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     public static ItemRecipeFormedScriptEvent instance;
+
+    public boolean resultChanged;
     public dItem result;
     public dList recipe;
     public CraftingInventory inventory;
@@ -67,11 +69,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         String lower = CoreUtilities.toLowerCase(s);
         String eItem = CoreUtilities.getXthArg(0, lower);
 
-        if (!tryItem(result, eItem)) {
-            return false;
-        }
-
-        return true;
+        return tryItem(result, eItem);
     }
 
     @Override
@@ -93,6 +91,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
             result = dItem.valueOf(determination);
+            resultChanged = true;
         }
 
         return super.applyDetermination(container, determination);
@@ -139,12 +138,13 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             }
         }
         player = dEntity.getPlayerFrom(humanEntity);
+        resultChanged = false;
         cancelled = false;
         fire();
         if (cancelled) {
             inventory.setResult(null);
         }
-        else {
+        else if (resultChanged) {
             inventory.setResult(result.getItemStack());
         }
     }
