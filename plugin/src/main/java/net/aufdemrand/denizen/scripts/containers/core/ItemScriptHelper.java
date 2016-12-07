@@ -381,7 +381,7 @@ public class ItemScriptHelper implements Listener {
                             if (event.cancelled) {
                                 inventory.setResult(null);
                             }
-                            else {
+                            else if (event.resultChanged) {
                                 // If this was a valid match, set the crafting's result
                                 inventory.setResult(event.result.getItemStack());
                             }
