@@ -382,15 +382,12 @@ public class ItemScriptHelper implements Listener {
                             if (event.cancelled) {
                                 inventory.setResult(null);
                             }
-                            else if (event.resultChanged) {
+                            else {
                                 // If this was a valid match, set the crafting's result
                                 inventory.setResult(event.result.getItemStack());
                             }
 
                             // Update the player's inventory
-                            //
-                            // TODO: Replace with non-deprecated method once one
-                            // is added to Bukkit
                             player.updateInventory();
                         }
                     }
