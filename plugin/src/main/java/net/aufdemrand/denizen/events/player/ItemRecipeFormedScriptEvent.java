@@ -69,7 +69,11 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         String lower = CoreUtilities.toLowerCase(s);
         String eItem = CoreUtilities.getXthArg(0, lower);
 
-        return tryItem(result, eItem);
+        if (!tryItem(result, eItem)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
