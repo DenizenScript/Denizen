@@ -2430,6 +2430,21 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.dragon_phase>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the phase an EnderDragon is currently in.
+        // Valid phases: CIRCLING, STRAFING, FLY_TO_PORTAL, LAND_ON_PORTAL, LEAVE_PORTAL,
+        // BREATH_ATTACK, SEARCH_FOR_BREATH_ATTACK_TARGET, ROAR_BEFORE_ATTACK,
+        // CHARGE_PLAYER, DYING, HOVER.
+        // -->
+        if (attribute.startsWith("dragon_phase") && getBukkitEntity() instanceof EnderDragon) {
+            return new Element(((EnderDragon) getLivingEntity()).getPhase().name())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.describe>
         // @returns Element(Boolean)
         // @group properties
@@ -2757,6 +2772,20 @@ public class dEntity implements dObject, Adjustable {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
             }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name dragon_phase
+        // @input Element
+        // @description
+        // Sets an EnderDragon's combat phase.
+        // @tags
+        // <e@entity.dragon_phase>
+        // -->
+        if (mechanism.matches("dragon_phase")) {
+            EnderDragon ed = (EnderDragon) getLivingEntity();
+            ed.setPhase(EnderDragon.Phase.valueOf(value.asString().toUpperCase()));
         }
 
         // <--[mechanism]

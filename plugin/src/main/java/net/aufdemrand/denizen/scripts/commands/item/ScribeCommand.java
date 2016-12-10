@@ -23,67 +23,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class ScribeCommand extends AbstractCommand implements Listener {
 
-    // <--[example]
-    // @Title Book scripts and the scribe command example
-    // @Description
-    // Use the following example to learn the basics on book scripts, tags,
-    // and the scribe command.
-
-    // @Code
-    // # +-----------------------------------
-    // # | Book Meta Tester
-    // # |
-    // # | Use /gettestbook, then /testbook to check if you are holding the book.
-    //
-    // Book Meta Tester:
-    //   type: world
-    //
-    //   events:
-    //     on gettestbook command:
-    //     # Use the scribe command to create a book, and drop it on the ground.
-    //     - scribe drop 'script:Example book script' location:<player.location>
-    //     - narrate 'Hey look, a book on the ground! Pick it up and use /testbook.'
-    //     # Let bukkit know we handled the 'gettestbook' command.
-    //     - determine fulfilled
-    //
-    //     on testbook command:
-    //     - define item player.item_in_hand
-    //     - if '<pr:example book script checker>' {
-    //         - narrate 'This is the book!'
-    //         - narrate "This is the title<&co> <%item%.book.title>"
-    //         - narrate "It has <%item%.book.page_count> pages."
-    //         - narrate "It was written by <%item%.book.author>!"
-    //       } else narrate 'The item in your hand is not the test book.'
-    //
-    //     - determine fulfilled
-    //
-    //
-    // Example book script:
-    //   type: book
-    //
-    //   title: This is an example title.
-    //   author: aufdemrand
-    //   text:
-    //   - page 1 is pretty short.
-    //   - The next page is kind of short, but longer than page 1.
-    //   - The final page is <N>split<N>Across<N>Several lines.
-    //
-    //
-    // # We'll use this in the if statement to test if the book has the title
-    // # we are looking for.
-    // # Want to use something like this in interact script requirements?
-    // # Just add an entry like so: - valueof '<pr:Example book script checker>'
-    //
-    // Example book script checker:
-    //   type: procedure
-    //
-    //   script:
-    //   - if <player.item_in_hand.book.title> == 'This is an example title.'
-    //     determine true
-    //     else determine false
-
-    // -->
-
 
     private enum BookAction {GIVE, DROP, EQUIP, NONE}
 

@@ -755,6 +755,20 @@ public class dWorld implements dObject, Adjustable {
             }
         });
 
+        // <--[tag]
+        // @attribute <w@world.environment>
+        // @returns Element
+        // @description
+        // Returns the environment of the world: NORMAL, NETHER, or THE_END.
+        // -->
+        registerTag("environment", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dWorld) object).getWorld().getEnvironment().name())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
         /////////////////////
         //   DEBUG TAGS
         /////////////////

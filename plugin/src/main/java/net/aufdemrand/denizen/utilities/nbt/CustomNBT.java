@@ -101,7 +101,7 @@ public class CustomNBT {
         if (compoundTag.getValue().containsKey(KEY_ATTRIBUTES)) {
             List<Tag> temp = (List<Tag>) compoundTag.getValue().get(KEY_ATTRIBUTES).getValue();
             for (Tag tag : temp) {
-                attribs.add((CompoundTag) temp);
+                attribs.add((CompoundTag) tag);
             }
         }
 

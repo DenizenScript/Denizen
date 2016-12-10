@@ -101,63 +101,6 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         return newEvents;
     }
 
-    // <--[example]
-    // @Title On Command Event tutorial
-    // @Description
-    // Denizen contains the ability to run script entries in the form
-    // of a Bukkit /command, overriding existing commands. Here's an example script that shows basic usage.
-    // If you want to add a new command, see <@link language command script containers>.
-    //
-    // @Code
-    // # +--------------------
-    // # | On Command Event tutorial
-    // # |
-    // # | Denizen contains the ability to run script entries in the form
-    // # | of a Bukkit /command. Here's an example script that shows basic usage.
-    //
-    // On Command Event Tutorial:
-    //   type: world
-    //
-    // # +-- EVENTS: Node --+
-    // # To 'hook' into the on command event, just create a 'on <command_name> command'
-    // # node as a child of the events node in any world script. Change out <command_name>
-    // # with the desired name of the command. This can only be one word.
-    //
-    //   events:
-    //
-    //     # The following example will trigger on the use of '/testcommand'
-    //     on testcommand command:
-    //
-    //     # Why not state the obvious? Just to be sure!
-    //     - narrate 'You just used the /testcommand command!'
-    //
-    //     # You can utilize any arguments that come along with the command, too!
-    //     # <context.args> returns a list of the arguments, run through the Denizen argument
-    //     # interpreter. Using quotes will allow the use of multiple word arguments,
-    //     # just like Denizen!
-    //     # Just need what was typed after the command? Use <context.raw_args> for a String
-    //     # Element containing the uninterpreted arguments.
-    //     - define arg_size <context.args.size>
-    //     - narrate "'%arg_size%' arguments were used."
-    //     - if %arg_size% > 0 {
-    //       - narrate "'<context.args.get[1]>' was the first argument."
-    //       - narrate "Here's a list of all the arguments<&co> <context.args.as_cslist>"
-    //       }
-    //
-    //     # Commands won't be checked for <replaceable tags> So if you type /testcommand <player.name>
-    //     # It won't be read as /testcommand mcmonkey
-    //     # If you want tags to be parsed (read and translated), you can instead use '<parse:<context.args>>'
-    //     - narrate "With tag parsing, you input <parse:<context.raw_args>>"
-    //     - if %arg_size% > 0 {
-    //       - narrate "'<parse:<context.args.get[1]>>' was the first argument."
-    //       }
-    //
-    //     # When a command isn't found, Bukkit reports an error. To let Bukkit know
-    //     # that the command was handled, use the 'determine fulfilled' command/arg.
-    //     - determine fulfilled
-    //
-    // -->
-
     // <--[event]
     // @Events
     // command

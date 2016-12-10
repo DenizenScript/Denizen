@@ -166,11 +166,15 @@ public class HealthTrait extends Trait implements Listener {
                 if (npc.getEntity().getLocation().getY() < -1000) {
                     npc.despawn(DespawnReason.DEATH);
                     if (respawn) {
+                        Location res = getRespawnLocation();
+                        if (res.getY() < 1) {
+                            res.setY(res.getWorld().getHighestBlockYAt(res.getBlockX(), res.getBlockZ()));
+                        }
                         if (npc.isSpawned()) {
-                            npc.getEntity().teleport(getRespawnLocation());
+                            npc.getEntity().teleport(res);
                         }
                         else {
-                            npc.spawn(getRespawnLocation());
+                            npc.spawn(res);
                         }
                     }
                 }
@@ -387,24 +391,4 @@ public class HealthTrait extends Trait implements Listener {
         }
 
     }
-
-//  TODO: Figure something out here. Minecraft 'death effect' is too buggy to use anymore.
-//
-//    public void playDeathAnimation(LivingEntity entity) {
-//        entity.playEffect(EntityEffect.DEATH);
-//        dMaterial mat = new dMaterial(Material.WOOL, 14);
-//
-//        for (dPlayer player : Utilities.getClosestPlayers(entity.getLocation(), 10)) {
-//            for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 3, 65))
-//                new FakeBlock(player, new dLocation(block.getLocation()),
-//                        mat, Duration.valueOf("10-20s"));
-//        }
-//
-//        ParticleEffect.CRIT.play(entity.getEyeLocation(), .2f, .2f, .2f, 0, 3500);
-//
-//        for (Block block : CoreUtilities.getRandomSolidBlocks(entity.getLocation(), 2, 5)) {
-//            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.BONE)).setPickupDelay(Integer.MAX_VALUE);
-//            entity.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.REDSTONE, 1, (short) 14)).setPickupDelay(Integer.MAX_VALUE);
-//        }
-//    }
 }

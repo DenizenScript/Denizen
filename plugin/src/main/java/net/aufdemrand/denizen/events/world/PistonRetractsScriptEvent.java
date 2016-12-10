@@ -116,12 +116,12 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         sticky = new Element(event.isSticky() ? "true" : "false");
-        relative = new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation());
+        relative = new dLocation(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation());
         blocks = new dList();
         for (Block block : event.getBlocks()) {
             blocks.add(new dLocation(block.getLocation()).identify());
         }
-        retract_location = new dLocation(event.getBlock().getRelative(event.getDirection(), 2).getLocation());
+        retract_location = new dLocation(event.getBlock().getRelative(event.getDirection().getOppositeFace(), 2).getLocation());
         cancelled = event.isCancelled();
         this.event = event;
         fire();
