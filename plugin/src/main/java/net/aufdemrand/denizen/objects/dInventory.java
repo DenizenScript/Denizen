@@ -628,7 +628,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) ? inventory.getStorageContents() : inventory.getContents();
         }
         else {
-            return new ItemStack[];
+            return new ItemStack[0];
         }
     }
 
