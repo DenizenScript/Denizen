@@ -62,6 +62,7 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
                 "\0";
         if (!inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))
+                && !inv.equals(CoreUtilities.toLowerCase(inventory.getIdType()))
                 && !inv.equals(nname)) {
             return false;
         }
