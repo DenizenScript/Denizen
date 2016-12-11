@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
@@ -619,6 +620,15 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else {
             return new ItemStack[0];
+        }
+    }
+
+    public ItemStack[] getStorageContents() {
+        if (inventory != null) {
+            return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) ? inventory.getStorageContents() : inventory.getContents();
+        }
+        else {
+            return new ItemStack[];
         }
     }
 
@@ -1265,7 +1275,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(inventory.getSize());
             }
-            dummyInv.setContents(getContents());
+            dummyInv.setContents(getStorageContents());
 
             // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
@@ -1330,7 +1340,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("is_empty")) {
             boolean empty = true;
-            for (ItemStack item : getContents()) {
+            for (ItemStack item : getStorageContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     empty = false;
                     break;
@@ -1348,7 +1358,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("is_full")) {
             boolean full = true;
 
-            for (ItemStack item : getContents()) {
+            for (ItemStack item : getStorageContents()) {
                 if ((item == null) ||
                         (item.getType() == Material.AIR) ||
                         (item.getAmount() < item.getMaxStackSize())) {
