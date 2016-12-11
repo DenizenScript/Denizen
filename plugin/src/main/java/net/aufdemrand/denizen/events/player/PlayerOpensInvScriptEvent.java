@@ -21,7 +21,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
     // <--[event]
     // @Events
     // player opens inventory
-    // player opens <inventory type>
+    // player opens <inventory>
     //
     // @Regex ^on player opens [^\s]+$
     //
