@@ -1271,8 +1271,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             int attribs = 1;
             int qty = 1;
 
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
-            if (inventory.getType() == InventoryType.CHEST) {
+            InventoryType type = inventory.getType();
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, inventory.getTitle()));
+            if (type == InventoryType.CHEST) {
                 dummyInv.setSize(inventory.getSize());
             }
             dummyInv.setContents(getStorageContents());
