@@ -1293,7 +1293,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             item.setAmount(qty);
 
-            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
+            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, item.getItemStack());
             return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
         }
 
