@@ -38,10 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1276,7 +1273,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (type == InventoryType.CHEST) {
                 dummyInv.setSize(inventory.getSize());
             }
-            dummyInv.setContents(getStorageContents());
+            ItemStack[] contents = getStorageContents();
+            if (contents.length != dummyInv.getSize()) {
+                contents = Arrays.copyOf(contents, dummyInv.getSize());
+            }
+            dummyInv.setContents(contents);
 
             // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
