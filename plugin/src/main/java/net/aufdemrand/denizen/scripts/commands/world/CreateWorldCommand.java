@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -47,6 +46,12 @@ public class CreateWorldCommand extends AbstractCommand {
                 scriptEntry.addObject("copy_from", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("seed")
+                    && arg.matchesPrefix("seed", "s")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                scriptEntry.addObject("seed", arg.asElement());
+            }
+
             else if (!scriptEntry.hasObject("world_name")) {
                 scriptEntry.addObject("world_name", arg.asElement());
             }
@@ -70,17 +75,20 @@ public class CreateWorldCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        Element World_Name = scriptEntry.getElement("world_name");
-        Element Generator = scriptEntry.getElement("generator");
+
+        Element worldName = scriptEntry.getElement("world_name");
+        Element generator = scriptEntry.getElement("generator");
         Element worldType = scriptEntry.getElement("worldtype");
         Element environment = scriptEntry.getElement("environment");
         Element copy_from = scriptEntry.getElement("copy_from");
+        Element seed = scriptEntry.getElement("seed");
 
-        dB.report(scriptEntry, getName(), World_Name.debug() +
-                (Generator != null ? Generator.debug() : "") +
+        dB.report(scriptEntry, getName(), worldName.debug() +
+                (generator != null ? generator.debug() : "") +
                 environment.debug() +
                 (copy_from != null ? copy_from.debug(): "") +
-                worldType.debug());
+                worldType.debug() +
+                (seed != null ? seed.debug() : ""));
 
         if (copy_from != null) {
             try {
@@ -88,18 +96,18 @@ public class CreateWorldCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world name!");
                     return;
                 }
-                File newFolder = new File(World_Name.asString());
+                File newFolder = new File(worldName.asString());
                 File folder = new File(copy_from.asString().replace("w@", ""));
                 if (!folder.exists() || !folder.isDirectory()) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
                     return;
                 }
                 FileUtils.copyDirectory(folder, newFolder);
-                File file = new File(World_Name.asString() + "/uid.dat");
+                File file = new File(worldName.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();
                 }
-                File file2 = new File(World_Name.asString() + "/session.lock");
+                File file2 = new File(worldName.asString() + "/session.lock");
                 if (file2.exists()) {
                     file2.delete();
                 }
@@ -112,20 +120,19 @@ public class CreateWorldCommand extends AbstractCommand {
 
         World world;
 
-        if (Generator != null) {
-            world = Bukkit.getServer().createWorld(WorldCreator
-                    .name(World_Name.asString())
-                    .generator(Generator.asString())
-                    .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
-                    .type(WorldType.valueOf(worldType.asString().toUpperCase())));
+        WorldCreator worldCreator = WorldCreator.name(worldName.asString())
+                .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
+                .type(WorldType.valueOf(worldType.asString().toUpperCase()));
+
+        if (generator != null) {
+            worldCreator.generator(generator.asString());
         }
 
-        else {
-            world = Bukkit.getServer().createWorld(WorldCreator
-                    .name(World_Name.asString())
-                    .environment(World.Environment.valueOf(environment.asString().toUpperCase()))
-                    .type(WorldType.valueOf(worldType.asString().toUpperCase())));
+        if (seed != null) {
+            worldCreator.seed(seed.asLong());
         }
+
+        world = Bukkit.getServer().createWorld(worldCreator);
 
         if (world == null) {
             dB.echoDebug(scriptEntry, "World is null, something went wrong in creation!");
