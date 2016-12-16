@@ -52,10 +52,10 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
         if (playerProfile.hasTexture()) {
             gameProfile.getProperties().get("textures").clear();
             if (playerProfile.getTextureSignature() != null) {
-                gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
             }
             else {
-                gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+                gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
             }
         }
         net.minecraft.server.v1_10_R1.ItemStack nmsItemStack = CraftItemStack.asNMSCopy(itemStack);

@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutChat_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutEntityMetadata_v1_8_R3;
@@ -110,6 +111,11 @@ public class DenizenNetworkManager_v1_8_R3 extends NetworkManager {
                 }
                 oldManager.handle(packet);
             }
+        }
+        else if (packet instanceof PacketPlayOutPlayerInfo) {
+            PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
+            ProfileEditor_v1_8_R3.updatePlayerProfiles(playerInfo);
+            oldManager.handle(playerInfo);
         }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_8_R3((PacketPlayOutEntityMetadata) packet))) {
