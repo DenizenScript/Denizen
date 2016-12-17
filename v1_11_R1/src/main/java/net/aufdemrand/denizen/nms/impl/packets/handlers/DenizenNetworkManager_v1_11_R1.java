@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
-import java.util.UUID;
 
 public class DenizenNetworkManager_v1_11_R1 extends NetworkManager {
 
@@ -94,20 +93,20 @@ public class DenizenNetworkManager_v1_11_R1 extends NetworkManager {
                 || packet instanceof PacketPlayOutSpawnEntityPainting
                 || packet instanceof PacketPlayOutSpawnEntityExperienceOrb) {
             PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_11_R1(player, packet);
-            UUID uuid = spawnEntity.getEntityUuid();
-            if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), uuid)) {
-                final Entity entity = ((WorldServer) player.getWorld()).getEntity(uuid);
-                if (entity != null) {
-                    if (entity instanceof EntityFakePlayer_v1_11_R1) {
-                        final EntityFakePlayer_v1_11_R1 fakePlayer = (EntityFakePlayer_v1_11_R1) entity;
-                        sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                        Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
-                            @Override
-                            public void run() {
-                                sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
-                            }
-                        }, 5);
-                    }
+            final Entity entity = player.getWorld().getEntity(spawnEntity.getEntityId());
+            if (entity == null) {
+                oldManager.sendPacket(packet);
+            }
+            else if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity())) {
+                if (entity instanceof EntityFakePlayer_v1_11_R1) {
+                    final EntityFakePlayer_v1_11_R1 fakePlayer = (EntityFakePlayer_v1_11_R1) entity;
+                    sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
+                        @Override
+                        public void run() {
+                            sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
+                        }
+                    }, 5);
                 }
                 oldManager.sendPacket(packet);
             }
