@@ -105,11 +105,21 @@ public class InvisibleCommand extends AbstractCommand {
                     }
                     break;
                 case TOGGLE:
-                    if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-                        target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+                    if (target.getBukkitEntity() instanceof ArmorStand) {
+                        if (((ArmorStand) target.getBukkitEntity()).isVisible()) {
+                            ((ArmorStand) target.getBukkitEntity()).setVisible(true);
+                        }
+                        else {
+                            ((ArmorStand) target.getBukkitEntity()).setVisible(false);
+                        }
                     }
                     else {
-                        new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
+                        if (target.getLivingEntity().hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+                            target.getLivingEntity().removePotionEffect(PotionEffectType.INVISIBILITY);
+                        }
+                        else {
+                            new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1).apply(target.getLivingEntity());
+                        }
                     }
                     break;
             }
