@@ -85,7 +85,7 @@ public class InteractScriptHelper {
                 }
             }
             else {
-                dB.echoError("Script '" + name + "' has an invalid priority! Assuming '0'.");
+                //dB.echoError("Script '" + name + "' has an invalid priority! Assuming '0'.");
                 name = entry;
                 entry = "0 " + entry;
                 priority = 0;

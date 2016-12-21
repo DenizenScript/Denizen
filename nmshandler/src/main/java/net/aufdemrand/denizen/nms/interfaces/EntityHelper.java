@@ -64,7 +64,7 @@ public interface EntityHelper {
 
     void unhideEntity(Player player, Entity entity);
 
-    boolean isHidden(Player player, UUID entity);
+    boolean isHidden(Player player, Entity entity);
 
     /**
      * Rotates an entity.

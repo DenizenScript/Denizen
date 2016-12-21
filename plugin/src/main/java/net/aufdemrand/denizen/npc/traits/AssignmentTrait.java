@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.command.exception.CommandException;
@@ -161,7 +162,13 @@ public class AssignmentTrait extends Trait {
         if (assignmentScript.contains("INTERACT SCRIPTS")) {
             entriesPresent = true;
             for (String scriptEntry : assignmentScript.getStringList("INTERACT SCRIPTS")) {
-                paginator.addLine("<a>" + scriptEntry.split(" ")[0] + "<b> " + scriptEntry.split(" ", 2)[1]);
+                String[] split = scriptEntry.split(" ", 2);
+                if (split.length == 2 && aH.matchesInteger(split[0])) {
+                    paginator.addLine("<a>" + split[0] + "<b> " + split[1]);
+                }
+                else {
+                    paginator.addLine("<b>" + scriptEntry);
+                }
             }
         }
         if (!entriesPresent) {

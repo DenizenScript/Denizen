@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.InventoryScriptContainer;
@@ -37,10 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -616,6 +614,15 @@ public class dInventory implements dObject, Notable, Adjustable {
     public ItemStack[] getContents() {
         if (inventory != null) {
             return inventory.getContents();
+        }
+        else {
+            return new ItemStack[0];
+        }
+    }
+
+    public ItemStack[] getStorageContents() {
+        if (inventory != null) {
+            return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) ? inventory.getStorageContents() : inventory.getContents();
         }
         else {
             return new ItemStack[0];
@@ -1261,11 +1268,16 @@ public class dInventory implements dObject, Notable, Adjustable {
             int attribs = 1;
             int qty = 1;
 
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
-            if (inventory.getType() == InventoryType.CHEST) {
-                dummyInv.setSize(inventory.getSize());
+            InventoryType type = inventory.getType();
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, inventory.getTitle()));
+            ItemStack[] contents = getStorageContents();
+            if (dummyInv.getInventoryType() == InventoryType.CHEST) {
+                dummyInv.setSize(contents.length);
             }
-            dummyInv.setContents(getContents());
+            if (contents.length != dummyInv.getSize()) {
+                contents = Arrays.copyOf(contents, dummyInv.getSize());
+            }
+            dummyInv.setContents(contents);
 
             // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
@@ -1281,7 +1293,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
             item.setAmount(qty);
 
-            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, false, item.getItemStack());
+            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, item.getItemStack());
             return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
         }
 
@@ -1330,7 +1342,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("is_empty")) {
             boolean empty = true;
-            for (ItemStack item : getContents()) {
+            for (ItemStack item : getStorageContents()) {
                 if (item != null && item.getType() != Material.AIR) {
                     empty = false;
                     break;
@@ -1348,7 +1360,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("is_full")) {
             boolean full = true;
 
-            for (ItemStack item : getContents()) {
+            for (ItemStack item : getStorageContents()) {
                 if ((item == null) ||
                         (item.getType() == Material.AIR) ||
                         (item.getAmount() < item.getMaxStackSize())) {
