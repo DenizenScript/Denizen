@@ -1178,7 +1178,20 @@ public class ServerTags implements Listener {
         // None
         // -->
         if (mechanism.matches("restart")) {
-            Bukkit.getServer().restart();
+            Bukkit.getServer().spigot().restart();
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name shutdown
+        // @input None
+        // @description
+        // Shuts down the Minecraft server.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("shutdown")) {
+            Bukkit.getServer().shutdown();
         }
 
         if (!mechanism.fulfilled()) {
