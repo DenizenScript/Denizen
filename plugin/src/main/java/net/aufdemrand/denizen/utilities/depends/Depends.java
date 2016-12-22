@@ -5,6 +5,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 
@@ -41,7 +42,8 @@ public class Depends {
     }
 
     private boolean setupEconomy() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
+        if (plugin == null || !plugin.isEnabled()) {
             return false;
         }
         try {
@@ -57,7 +59,8 @@ public class Depends {
     }
 
     private boolean setupChat() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
+        if (plugin == null || !plugin.isEnabled()) {
             return false;
         }
         try {
@@ -70,7 +73,8 @@ public class Depends {
     }
 
     private boolean setupPermissions() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
+        if (plugin == null || !plugin.isEnabled()) {
             return false;
         }
         try {
@@ -83,7 +87,8 @@ public class Depends {
     }
 
     private boolean setupCitizens() {
-        if (Bukkit.getServer().getPluginManager().getPlugin("Citizens") == null) {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Citizens");
+        if (plugin == null || !plugin.isEnabled()) {
             return false;
         }
         try {
