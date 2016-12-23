@@ -1167,20 +1167,6 @@ public class ServerTags implements Listener {
             System.gc();
         }
 
-        // <--[mechanism]
-        // @object server
-        // @name restart
-        // @input None
-        // @description
-        // Will try to restart your server.
-        // If your server is not configured to restart, it will stop it.
-        // @tags
-        // None
-        // -->
-        if (mechanism.matches("restart")) {
-            Bukkit.getServer().restart();
-        }
-
         if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
         }
