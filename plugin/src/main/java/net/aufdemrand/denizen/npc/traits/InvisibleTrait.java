@@ -4,6 +4,7 @@ import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.trait.Toggleable;
 import net.citizensnpcs.util.NMS;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Listener;
@@ -44,6 +45,9 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
             if (((LivingEntity) npc.getEntity()).hasPotionEffect(PotionEffectType.INVISIBILITY)) {
                 ((LivingEntity) npc.getEntity()).removePotionEffect(PotionEffectType.INVISIBILITY);
             }
+            if (npc.getEntity().getType() == EntityType.ARMOR_STAND) {
+                ((ArmorStand) npc.getEntity()).setVisible(true);
+            }
         }
     }
 
@@ -54,6 +58,9 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
             if (npc.getEntity().getType() == EntityType.PLAYER) {
                 npc.data().setPersistent("removefromplayerlist", false);
                 NMS.addOrRemoveFromPlayerList(npc.getEntity(), false);
+            }
+            else if (npc.getEntity().getType() == EntityType.ARMOR_STAND) {
+                ((ArmorStand) npc.getEntity()).setVisible(false);
             }
             invis.apply((LivingEntity) npc.getEntity());
         }

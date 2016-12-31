@@ -98,14 +98,8 @@ public class BiomeNMS_v1_11_R1 extends BiomeNMS {
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
         List<EntityType> entityTypes = new ArrayList<EntityType>();
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
-            entityTypes.add(EntityType.fromId(ENTITY_CLASS_ID_MAP.get(meta.b)));
+            entityTypes.add(EntityType.valueOf(EntityTypes.getName(meta.b).a())); // TODO: verifyme!
         }
         return entityTypes;
-    }
-
-    private static final Map<Class<? extends Entity>, Integer> ENTITY_CLASS_ID_MAP;
-
-    static {
-        ENTITY_CLASS_ID_MAP = ReflectionHelper.getFieldValue(EntityTypes.class, "f", null);
     }
 }

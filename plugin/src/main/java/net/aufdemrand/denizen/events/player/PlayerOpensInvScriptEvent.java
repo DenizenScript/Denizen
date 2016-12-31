@@ -21,7 +21,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
     // <--[event]
     // @Events
     // player opens inventory
-    // player opens <inventory type>
+    // player opens <inventory>
     //
     // @Regex ^on player opens [^\s]+$
     //
@@ -56,6 +56,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
                 "\0";
         if (!inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))
+                && !inv.equals(CoreUtilities.toLowerCase(inventory.getIdHolder()))
                 && !inv.equals(nname)) {
             return false;
         }

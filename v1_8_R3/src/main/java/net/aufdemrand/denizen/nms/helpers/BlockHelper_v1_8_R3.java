@@ -40,7 +40,7 @@ public class BlockHelper_v1_8_R3 implements BlockHelper {
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
         if (playerProfile.hasTexture()) {
             gameProfile.getProperties().put("textures",
-                    new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                    new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         }
         TileEntitySkull tileEntity = ((CraftSkull) skull).getTileEntity();
         tileEntity.setSkullType(SkullType.PLAYER.ordinal());

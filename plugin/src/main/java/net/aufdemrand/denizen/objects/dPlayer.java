@@ -304,6 +304,15 @@ public class dPlayer implements dObject, Adjustable {
         }
     }
 
+    public int getFoodLevel() {
+        if (isOnline()) {
+            return getPlayerEntity().getFoodLevel();
+        }
+        else {
+            return getNBTEditor().getFoodLevel();
+        }
+    }
+
     public dLocation getEyeLocation() {
         if (isOnline()) {
             return new dLocation(getPlayerEntity().getEyeLocation());
@@ -508,6 +517,15 @@ public class dPlayer implements dObject, Adjustable {
         }
         else {
             getNBTEditor().setMaxHealth(maxHealth);
+        }
+    }
+
+    public void setFoodLevel(int foodLevel) {
+        if (isOnline()) {
+            getPlayerEntity().setFoodLevel(foodLevel);
+        }
+        else {
+            getNBTEditor().setFoodLevel(foodLevel);
         }
     }
 
@@ -1817,19 +1835,19 @@ public class dPlayer implements dObject, Adjustable {
             if (attribute.hasContext(2)) {
                 maxHunger = attribute.getIntContext(2);
             }
-            if (getPlayerEntity().getFoodLevel() / maxHunger < .10) {
+            int foodLevel = getFoodLevel();
+            if (foodLevel / maxHunger < .10) {
                 return new Element("starving").getAttribute(attribute.fulfill(2));
             }
-            else if (getPlayerEntity().getFoodLevel() / maxHunger < .40) {
+            else if (foodLevel / maxHunger < .40) {
                 return new Element("famished").getAttribute(attribute.fulfill(2));
             }
-            else if (getPlayerEntity().getFoodLevel() / maxHunger < .75) {
+            else if (foodLevel / maxHunger < .75) {
                 return new Element("parched").getAttribute(attribute.fulfill(2));
             }
-            else if (getPlayerEntity().getFoodLevel() / maxHunger < 1) {
+            else if (foodLevel / maxHunger < 1) {
                 return new Element("hungry").getAttribute(attribute.fulfill(2));
             }
-
             else {
                 return new Element("healthy").getAttribute(attribute.fulfill(2));
             }
@@ -1853,7 +1871,7 @@ public class dPlayer implements dObject, Adjustable {
         // Returns the current food level of the player.
         // -->
         if (attribute.startsWith("food_level")) {
-            return new Element(getPlayerEntity().getFoodLevel())
+            return new Element(getFoodLevel())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1943,6 +1961,17 @@ public class dPlayer implements dObject, Adjustable {
         if (attribute.startsWith("is_sprinting")) {
             return new Element(getPlayerEntity().isSprinting())
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.has_achievement[<achievement>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the player has the specified achievement.
+        // -->
+        if (attribute.startsWith("has_achievement")) {
+            Achievement ach = Achievement.valueOf(attribute.getContext(1).toUpperCase());
+            return new Element(getPlayerEntity().hasAchievement(ach)).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2308,7 +2337,7 @@ public class dPlayer implements dObject, Adjustable {
         // <p@player.food_level>
         // -->
         if (mechanism.matches("food_level") && mechanism.requireInteger()) {
-            getPlayerEntity().setFoodLevel(value.asInt());
+            setFoodLevel(value.asInt());
         }
 
         // <--[mechanism]

@@ -302,7 +302,12 @@ public class EntityHelper_v1_11_R1 implements EntityHelper {
     public static Map<UUID, Set<UUID>> hiddenEntities = new HashMap<UUID, Set<UUID>>();
 
     @Override
-    public void hideEntity(Player player, Entity entity, boolean keepInTabList) {
+    public void hideEntity(Player player, Entity entity, boolean keepInTabList) { // TODO: remove or reimplement tablist option somehow?
+        // Use Bukkit API for Player entities
+        if (entity instanceof Player) {
+            player.hidePlayer((Player) entity);
+            return;
+        }
         CraftPlayer craftPlayer = (CraftPlayer)player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
@@ -320,15 +325,17 @@ public class EntityHelper_v1_11_R1 implements EntityHelper {
                 if (entry != null) {
                     entry.clear(entityPlayer);
                 }
-                if (entity instanceof Player && !entity.hasMetadata("NPC") && !keepInTabList) {
-                    entityPlayer.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, (EntityPlayer) other));
-                }
             }
         }
     }
 
     @Override
     public void unhideEntity(Player player, Entity entity) {
+        // Use Bukkit API for Player entities
+        if (entity instanceof Player) {
+            player.showPlayer((Player) entity);
+            return;
+        }
         CraftPlayer craftPlayer = (CraftPlayer)player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
@@ -339,11 +346,8 @@ public class EntityHelper_v1_11_R1 implements EntityHelper {
                 hidden.remove(entityUUID);
                 EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
                 net.minecraft.server.v1_11_R1.Entity other = ((CraftEntity)entity).getHandle();
-                if (entity instanceof Player && !entity.hasMetadata("NPC")) {
-                    entityPlayer.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, (EntityPlayer) other));
-                }
                 EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
-                if(entry != null && !entry.trackedPlayers.contains(entityPlayer)) {
+                if (entry != null && !entry.trackedPlayers.contains(entityPlayer)) {
                     entry.updatePlayer(entityPlayer);
                 }
             }
@@ -351,9 +355,12 @@ public class EntityHelper_v1_11_R1 implements EntityHelper {
     }
 
     @Override
-    public boolean isHidden(Player player, UUID entity) {
+    public boolean isHidden(Player player, Entity entity) {
+        if (entity instanceof Player) {
+            return !player.canSee((Player) entity);
+        }
         UUID uuid = player.getUniqueId();
-        return hiddenEntities.containsKey(uuid) && hiddenEntities.get(uuid).contains(entity);
+        return hiddenEntities.containsKey(uuid) && hiddenEntities.get(uuid).contains(entity.getUniqueId());
     }
 
     @Override

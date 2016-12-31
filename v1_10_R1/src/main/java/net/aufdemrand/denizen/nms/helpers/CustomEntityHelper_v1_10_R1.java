@@ -105,7 +105,7 @@ public class CustomEntityHelper_v1_10_R1 implements CustomEntityHelper {
 
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
         gameProfile.getProperties().put("textures",
-                new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
 
         final EntityFakePlayer_v1_10_R1 fakePlayer = new EntityFakePlayer_v1_10_R1(worldServer.getMinecraftServer(), worldServer,
                 gameProfile, new PlayerInteractManager(worldServer));

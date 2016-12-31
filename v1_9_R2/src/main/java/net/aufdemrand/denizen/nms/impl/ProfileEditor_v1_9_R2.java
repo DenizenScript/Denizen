@@ -86,7 +86,7 @@ public class ProfileEditor_v1_9_R2 extends ProfileEditor {
     private static GameProfile getGameProfile(PlayerProfile playerProfile) {
         GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
         gameProfile.getProperties().put("textures",
-                new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         return gameProfile;
     }
 

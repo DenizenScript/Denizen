@@ -854,7 +854,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)
+        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)
         // @Required 1
         // @Stable unstable
         // @Short Creates a new world, or loads an existing world.
@@ -888,7 +888,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - createworld space environment:THE_END
         // -->
         registerCoreMember(CreateWorldCommand.class,
-                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>)", 1);
+                "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)", 1);
 
 
         // <--[command]

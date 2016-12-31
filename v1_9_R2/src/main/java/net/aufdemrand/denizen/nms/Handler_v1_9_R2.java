@@ -146,10 +146,10 @@ public class Handler_v1_9_R2 extends NMSHandler {
                 GameProfile gameProfile = new GameProfile(playerProfile.getUniqueId(), playerProfile.getName());
                 gameProfile.getProperties().get("textures").clear();
                 if (playerProfile.getTextureSignature() != null) {
-                    gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                    gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
                 }
                 else {
-                    gameProfile.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+                    gameProfile.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
                 }
                 MinecraftServer minecraftServer = ((CraftServer) Bukkit.getServer()).getServer();
                 GameProfile gameProfile1 = null;
@@ -165,10 +165,10 @@ public class Handler_v1_9_R2 extends NMSHandler {
                 if (playerProfile.hasTexture()) {
                     gameProfile1.getProperties().get("textures").clear();
                     if (playerProfile.getTextureSignature() != null) {
-                        gameProfile1.getProperties().put("textures", new Property("value", playerProfile.getTexture(), playerProfile.getTextureSignature()));
+                        gameProfile1.getProperties().put("textures", new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
                     }
                     else {
-                        gameProfile1.getProperties().put("textures", new Property("value", playerProfile.getTexture()));
+                        gameProfile1.getProperties().put("textures", new Property("textures", playerProfile.getTexture()));
                     }
                 }
                 if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
