@@ -72,9 +72,6 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Triggers when the server starts
     //
-    // @Determine
-    // "CANCELLED" to save all plugins and cancel server startup.
-    //
     // -->
     public void serverStartEvent() {
         long ticks = Settings.worldScriptTimeEventFrequency().getTicks();
@@ -87,12 +84,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 }, ticks, ticks);
 
         // Fire the 'Server Start' event
-        String determination = doEvents(Arrays.asList("server start"),
-                null, null, null);
-
-        if (determination.toUpperCase().startsWith("CANCELLED")) {
-            Bukkit.getServer().shutdown(); // TODO: WHY IS THIS AN OPTION?!
-        }
+        doEvents(Arrays.asList("server start"), null, null, null);
     }
 
     // <--[event]

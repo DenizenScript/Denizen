@@ -92,6 +92,18 @@ Commands:
         # This is mostly to clean up saves, but could potentially be abused.
         # Set to 'false' if you're worried about security.
         Allow file deletion: true
+  Restart:
+        # Whether scripts are allowed to stop or restart your server.
+        # This is usually only done intentionally, and quite identifiable if done on accident,
+        # Though you may wish to disable this if your server is stopping and you don't know why,
+        # or are just concerned about security in general.
+        # Generally only restart should be on. Exception examples include a server manager system, which would restart
+        # a server that stops more 'properly' than the restart command might.
+        #
+        # Note that it is still possible at this time to 'execute' a stop or restart instruction, which can be
+        # blocked by blocking the commands themselves with the command event, like so: 'on stop|restart command'
+        Allow server stop: false
+        Allow server restart: true
   Filecopy:
         # Whether scripts are allowed to copy files across your server
         # Note that this could be abused by overwriting existing files.

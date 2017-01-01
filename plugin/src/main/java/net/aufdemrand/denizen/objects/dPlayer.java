@@ -1964,6 +1964,17 @@ public class dPlayer implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <p@player.has_achievement[<achievement>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the player has the specified achievement.
+        // -->
+        if (attribute.startsWith("has_achievement")) {
+            Achievement ach = Achievement.valueOf(attribute.getContext(1).toUpperCase());
+            return new Element(getPlayerEntity().hasAchievement(ach)).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <p@player.statistic[<statistic>]>
         // @returns Element(Number)
         // @description

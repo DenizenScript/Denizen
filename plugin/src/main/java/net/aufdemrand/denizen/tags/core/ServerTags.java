@@ -33,10 +33,7 @@ import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -1172,13 +1169,19 @@ public class ServerTags implements Listener {
         // @name restart
         // @input None
         // @description
-        // Will try to restart your server.
-        // If your server is not configured to restart, it will stop it.
+        // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire), then starts it again.
+        // Requires setting "Commands.Restart.Allow server restart"!
+        // Note that if your server is not configured to restart, this mechanism will simply stop the server without starting it again!
         // @tags
         // None
         // -->
         if (mechanism.matches("restart")) {
-            Bukkit.getServer().spigot().restart();
+            if (!Settings.allowServerRestart()) {
+                dB.echoError("Server restart disabled by administrator. Consider using 'shutdown'.");
+                return;
+            }
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server restarted by a Denizen script, see config to prevent this!");
+            Bukkit.spigot().restart();
         }
 
         // <--[mechanism]
@@ -1186,12 +1189,19 @@ public class ServerTags implements Listener {
         // @name shutdown
         // @input None
         // @description
-        // Shuts down the Minecraft server.
+        // Immediately stops the server entirely (Plugins will still finalize, and the shutdown event will fire).
+        // The server will remain shutdown until externally started again.
+        // Requires setting "Commands.Restart.Allow server stop"!
         // @tags
         // None
         // -->
         if (mechanism.matches("shutdown")) {
-            Bukkit.getServer().shutdown();
+            if (!Settings.allowServerStop()) {
+                dB.echoError("Server stop disabled by administrator. Consider using 'restart'.");
+                return;
+            }
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");
+            Bukkit.shutdown();
         }
 
         if (!mechanism.fulfilled()) {

@@ -252,6 +252,16 @@ public class Settings {
                 .getBoolean("Commands.Delete.Allow file deletion", true);
     }
 
+    public static boolean allowServerStop() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Restart.Allow server stop", false);
+    }
+
+    public static boolean allowServerRestart() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Commands.Restart.Allow server restart", true);
+    }
+
     public static boolean allowRunningJava() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Java.Allow running java", false);
