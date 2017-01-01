@@ -2594,12 +2594,16 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
-                    if (split.length > 1 && new Element(split[1]).isBoolean()) {
-                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(),
+                    dEntity entity = value.asType(dEntity.class);
+                    if (!entity.isSpawned()) {
+                        dB.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
+                    }
+                    else if (split.length > 1 && new Element(split[1]).isBoolean()) {
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(),
                                 new Element(split[1]).asBoolean());
                     }
                     else {
-                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity(), false);
+                        NMSHandler.getInstance().getEntityHelper().hideEntity(getPlayerEntity(), entity.getBukkitEntity(), false);
                     }
                 }
                 else {
