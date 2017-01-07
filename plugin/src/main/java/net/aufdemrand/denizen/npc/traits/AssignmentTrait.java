@@ -275,7 +275,7 @@ public class AssignmentTrait extends Trait {
         DenizenAPI.getDenizenNPC(npc).action("hit on " + event.getEntityType().name(), player);
 
         if (event.getEntity() instanceof LivingEntity) {
-            if (((LivingEntity) event.getEntity()).getHealth() - event.getDamage() <= 0) {
+            if (((LivingEntity) event.getEntity()).getHealth() - event.getFinalDamage() <= 0) {
                 DenizenAPI.getDenizenNPC(npc).action("kill", player);
                 DenizenAPI.getDenizenNPC(npc).action("kill of " + event.getEntityType().name(), player);
             }
