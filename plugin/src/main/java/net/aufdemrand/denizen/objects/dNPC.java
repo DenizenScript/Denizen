@@ -802,7 +802,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // -->
         if (attribute.startsWith("skin_blob")) {
             if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA)) {
-                return new Element(getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString()).getAttribute(attribute.fulfill(1));
+                String tex = getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA).toString();
+                String sign = "";
+                if (getCitizen().data().has(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA)) {
+                    sign = ";" + getCitizen().data().get(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA).toString();
+                }
+                return new Element(tex + sign).getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -1194,9 +1199,12 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         if (mechanism.matches("skin_blob")) {
             if (!mechanism.hasValue()) {
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
+                getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
             }
             else {
-                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, mechanism.getValue().asString());
+                String[] dat = mechanism.getValue().asString().split(";");
+                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, dat[0]);
+                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, dat.length > 0 ? dat[1] : null);
             }
             if (getCitizen().isSpawned()) {
                 getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
