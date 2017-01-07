@@ -727,19 +727,26 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.skull_name>
+        // @returns Element
+        // @mechanism dLocation.skull_skin
+        // @description
+        // Returns the name of the skin the skull item is displaying.
+        // -->
+        if (attribute.startsWith("skull_name")) {
+            BlockState blockState = getBlock().getState();
+            if (blockState instanceof Skull) {
+                PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                return new Element(profile.getName()).getAttribute(attribute);
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.skull_skin>
         // @returns Element
         // @mechanism dLocation.skull_skin
         // @description
         // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
-        // -->
-        // <--[tag]
-        // @attribute <l@location.skull_skin.full>
-        // @returns Element|Element
-        // @mechanism dLocation.skull_skin
-        // @description
-        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
-        // along with the permanently cached texture property.
         // -->
         if (attribute.startsWith("skull_skin")) {
             BlockState blockState = getBlock().getState();
@@ -749,6 +756,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 UUID uuid = profile.getUniqueId();
                 String texture = profile.getTexture();
                 attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <l@location.skull_skin.full>
+                // @returns Element|Element
+                // @mechanism dLocation.skull_skin
+                // @description
+                // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
+                // along with the permanently cached texture property.
+                // -->
                 if (attribute.startsWith("full")) {
                     return new Element((uuid != null ? uuid : name != null ? name : null)
                             + (texture != null ? "|" + texture : ""))
