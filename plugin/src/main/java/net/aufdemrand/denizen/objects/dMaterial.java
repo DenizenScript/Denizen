@@ -67,7 +67,6 @@ public class dMaterial implements dObject {
         POTTED_DAISY, POTTED_OAK_SAPLING, POTTED_SPRUCE_SAPLING, POTTED_BIRCH_SAPLING, POTTED_JUNGLE_SAPLING,
         POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM, POTTED_CACTUS, POTTED_SHRUB, POTTED_FERN, POTTED_ACACIA_SAPLING,
         POTTED_DARKOAK_SAPLING, SKELETON_SKULL, WITHERSKELETON_SKULL, ZOMBIE_SKULL, HUMAN_SKULL, CREEPER_SKULL,
-        SKELETON_SKULL_BLOCK, WITHERSKELETON_SKULL_BLOCK, ZOMBIE_SKULL_BLOCK, HUMAN_SKULL_BLOCK, CREEPER_SKULL_BLOCK,
         RED_SAND, MOSSY_COBBLE_WALL, CHISELED_QUARTZ_BLOCK, PILLAR_QUARTZ_BLOCK, PILLAR_QUARTZ_BLOCK_EAST,
         PILLAR_QUARTZ_BLOCK_NORTH, OAK_LOG_EAST, OAK_LOG_NORTH, OAK_LOG_BALL, SPRUCE_LOG_EAST, SPRUCE_LOG_NORTH,
         SPRUCE_LOG_BALL, BIRCH_LOG_EAST, BIRCH_LOG_NORTH, BIRCH_LOG_BALL, JUNGLE_LOG_EAST, JUNGLE_LOG_NORTH,
@@ -367,13 +366,6 @@ public class dMaterial implements dObject {
     public final static dMaterial ZOMBIE_SKULL = new dMaterial(Material.SKULL_ITEM, 2).forceIdentifyAs("ZOMBIE_SKULL");
     public final static dMaterial HUMAN_SKULL = new dMaterial(Material.SKULL_ITEM, 3).forceIdentifyAs("HUMAN_SKULL");
     public final static dMaterial CREEPER_SKULL = new dMaterial(Material.SKULL_ITEM, 4).forceIdentifyAs("CREEPER_SKULL");
-
-    // Skull Blocks
-    public final static dMaterial SKELETON_SKULL_BLOCK = new dMaterial(Material.SKULL, 0).forceIdentifyAs("SKELETON_SKULL_BLOCK");
-    public final static dMaterial WITHERSKELETON_SKULL_BLOCK = new dMaterial(Material.SKULL, 1).forceIdentifyAs("WITHERSKELETON_SKULL_BLOCK");
-    public final static dMaterial ZOMBIE_SKULL_BLOCK = new dMaterial(Material.SKULL, 2).forceIdentifyAs("ZOMBIE_SKULL_BLOCK");
-    public final static dMaterial HUMAN_SKULL_BLOCK = new dMaterial(Material.SKULL, 3).forceIdentifyAs("HUMAN_SKULL_BLOCK");
-    public final static dMaterial CREEPER_SKULL_BLOCK = new dMaterial(Material.SKULL, 4).forceIdentifyAs("CREEPER_SKULL_BLOCK");
 
     // Monster Eggs
     // TODO: I will add rest of eggs (I needed this one quick for a project)
