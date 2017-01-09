@@ -737,7 +737,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
-                return new Element(profile.getName()).getAttribute(attribute);
+                String n = profile.getName();
+                if (n == null) {
+                    n = ((Skull) blockState).getOwningPlayer().getName();
+                }
+                return new Element(n).getAttribute(attribute);
             }
         }
 
