@@ -739,11 +739,25 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.skull_type>
+        // @returns Element
+        // @description
+        // Returns the type of the skull.
+        // -->
+        if (attribute.startsWith("skull_type")) {
+            BlockState blockState = getBlock().getState();
+            if (blockState instanceof Skull) {
+                String t = ((Skull) blockState).getSkullType().name();
+                return new Element(t).getAttribute(attribute);
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.skull_name>
         // @returns Element
         // @mechanism dLocation.skull_skin
         // @description
-        // Returns the name of the skin the skull item is displaying.
+        // Returns the name of the skin the skull is displaying.
         // -->
         if (attribute.startsWith("skull_name")) {
             BlockState blockState = getBlock().getState();
@@ -762,7 +776,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @mechanism dLocation.skull_skin
         // @description
-        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
+        // Returns the skin the skull is displaying - just the name or UUID as text, not a player object.
         // -->
         if (attribute.startsWith("skull_skin")) {
             BlockState blockState = getBlock().getState();
