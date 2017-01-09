@@ -1988,6 +1988,7 @@ public class dEntity implements dObject, Adjustable {
         // @attribute <e@entity.shooter>
         // @returns dEntity
         // @group attributes
+        // @Mechanism dEntity.shooter
         // @description
         // Returns the entity's shooter, if any.
         // -->
@@ -2502,7 +2503,7 @@ public class dEntity implements dObject, Adjustable {
         // @name item_in_hand
         // @input dItem
         // @description
-        // Sets item in the entity's hand.
+        // Sets the item in the entity's hand.
         // The entity must be living.
         // @tags
         // <e@entity.item_in_hand>
@@ -2516,13 +2517,27 @@ public class dEntity implements dObject, Adjustable {
         // @name item_in_offhand
         // @input dItem
         // @description
-        // Sets item in the entity's offhand.
+        // Sets the item in the entity's offhand.
         // The entity must be living.
         // @tags
         // <e@entity.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
             NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name shooter
+        // @input dEntity
+        // @description
+        // Sets the entity's shooter.
+        // The entity must be a projectile.
+        // @tags
+        // <e@entity.shooter>
+        // -->
+        if (mechanism.matches("shooter")) {
+            setShooter(value.asType(dEntity.class));
         }
 
         // <--[mechanism]
