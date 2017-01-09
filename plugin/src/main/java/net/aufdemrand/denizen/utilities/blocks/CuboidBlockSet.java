@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.scripts.commands.world.SchematicCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -81,6 +82,7 @@ public class CuboidBlockSet implements BlockSet {
         new BukkitRunnable() {
             @Override
             public void run() {
+                SchematicCommand.noPhys = true;
                 long start = System.currentTimeMillis();
                 while (index.theInt < goal) {
                     long z = index.theInt % ((long) (z_height));
@@ -91,9 +93,11 @@ public class CuboidBlockSet implements BlockSet {
                     }
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
+                        SchematicCommand.noPhys = false;
                         return;
                     }
                 }
+                SchematicCommand.noPhys = false;
                 if (runme != null) {
                     runme.run();
                 }
@@ -105,6 +109,7 @@ public class CuboidBlockSet implements BlockSet {
 
     @Override
     public void setBlocks(Location loc, boolean noAir) {
+        SchematicCommand.noPhys = true;
         int index = 0;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
@@ -116,6 +121,7 @@ public class CuboidBlockSet implements BlockSet {
                 }
             }
         }
+        SchematicCommand.noPhys = false;
     }
 
     public void rotateOne() {

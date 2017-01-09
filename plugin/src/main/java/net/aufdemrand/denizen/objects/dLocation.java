@@ -32,17 +32,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -727,19 +724,59 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.drops>
+        // @returns dList(dItem)
+        // @description
+        // Returns what items the block at the location would drop if broken naturally.
+        // -->
+        if (attribute.startsWith("drops")) {
+            Collection<ItemStack> its = getBlock().getDrops();
+            dList list = new dList();
+            for (ItemStack it: its) {
+                list.add(new dItem(it).identify());
+            }
+            return list.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.skull_type>
+        // @returns Element
+        // @description
+        // Returns the type of the skull.
+        // -->
+        if (attribute.startsWith("skull_type")) {
+            BlockState blockState = getBlock().getState();
+            if (blockState instanceof Skull) {
+                String t = ((Skull) blockState).getSkullType().name();
+                return new Element(t).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.skull_name>
+        // @returns Element
+        // @mechanism dLocation.skull_skin
+        // @description
+        // Returns the name of the skin the skull is displaying.
+        // -->
+        if (attribute.startsWith("skull_name")) {
+            BlockState blockState = getBlock().getState();
+            if (blockState instanceof Skull) {
+                PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                String n = profile.getName();
+                if (n == null) {
+                    n = ((Skull) blockState).getOwningPlayer().getName();
+                }
+                return new Element(n).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.skull_skin>
         // @returns Element
         // @mechanism dLocation.skull_skin
         // @description
-        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object.
-        // -->
-        // <--[tag]
-        // @attribute <l@location.skull_skin.full>
-        // @returns Element|Element
-        // @mechanism dLocation.skull_skin
-        // @description
-        // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
-        // along with the permanently cached texture property.
+        // Returns the skin the skull is displaying - just the name or UUID as text, not a player object.
         // -->
         if (attribute.startsWith("skull_skin")) {
             BlockState blockState = getBlock().getState();
@@ -749,6 +786,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 UUID uuid = profile.getUniqueId();
                 String texture = profile.getTexture();
                 attribute = attribute.fulfill(1);
+                // <--[tag]
+                // @attribute <l@location.skull_skin.full>
+                // @returns Element|Element
+                // @mechanism dLocation.skull_skin
+                // @description
+                // Returns the skin the skull item is displaying - just the name or UUID as text, not a player object,
+                // along with the permanently cached texture property.
+                // -->
                 if (attribute.startsWith("full")) {
                     return new Element((uuid != null ? uuid : name != null ? name : null)
                             + (texture != null ? "|" + texture : ""))

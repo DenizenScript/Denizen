@@ -47,6 +47,9 @@ public class Utilities {
             if (lown.contains("denizen/scripts/")) {
                 return false;
             }
+            if (lown.endsWith(".jar") || lown.endsWith(".java")) {
+                return false;
+            }
             return true;
         }
         catch (Exception ex) {

@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -17,6 +18,10 @@ import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPhysicsEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,12 +31,23 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchematicCommand extends AbstractCommand implements Holdable {
+public class SchematicCommand extends AbstractCommand implements Holdable, Listener {
 
     @Override
     public void onEnable() {
         TagManager.registerTagEvents(this);
         schematics = new HashMap<String, CuboidBlockSet>();
+        noPhys = false;
+        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
+
+    public static boolean noPhys = false;
+
+    @EventHandler
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        if (noPhys) {
+            event.setCancelled(true);
+        }
     }
 
 

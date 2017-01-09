@@ -40,13 +40,15 @@ public abstract class ProfileEditor {
 
     public void setPlayerSkinBlob(Player player, String blob) {
         PlayerProfile profile = getFakeProfile(player);
-        profile.setTexture(blob);
-        profile.setTextureSignature(null);
+        String[] split = blob.split(";");
+        profile.setTexture(split[0]);
+        profile.setTextureSignature(split.length > 0 ? split[1] : null);
         updatePlayer(player, true);
     }
 
     public String getPlayerSkinBlob(Player player) {
-        return getFakeProfile(player).getTexture();
+        PlayerProfile prof = getFakeProfile(player);
+        return prof.getTexture() + ";" + prof.getTextureSignature();
     }
 
     protected abstract void updatePlayer(Player player, boolean isSkinChanging);
