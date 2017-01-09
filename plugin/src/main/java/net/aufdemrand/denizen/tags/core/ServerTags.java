@@ -1041,7 +1041,7 @@ public class ServerTags implements Listener {
         // Returns the port that the server is running on.
         // -->
         else if (attribute.startsWith("port")) {
-            event.setReplaced(new Element(Bukkit.getServer().getPort()).getAttribute(attribute.fulfill(1)));
+            event.setReplaced(new Element(NMSHandler.getInstance().getPort()).getAttribute(attribute.fulfill(1)));
         }
 
         // TODO: Add everything else from Bukkit.getServer().*

@@ -50,6 +50,11 @@ public class Handler_v1_9_R2 extends NMSHandler {
     private final ProfileEditor profileEditor = new ProfileEditor_v1_9_R2();
 
     @Override
+    public int getPort() {
+        return ((CraftServer) Bukkit.getServer()).getServer().P();
+    }
+
+    @Override
     public Thread getMainThread() {
         return ((CraftServer) Bukkit.getServer()).getServer().primaryThread;
     }
