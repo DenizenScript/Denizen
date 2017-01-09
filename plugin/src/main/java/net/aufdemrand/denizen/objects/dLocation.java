@@ -767,7 +767,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (n == null) {
                     n = ((Skull) blockState).getOwningPlayer().getName();
                 }
-                return new Element(n).getAttribute(attribute);
+                return new Element(n).getAttribute(attribute.fulfill(1));
             }
         }
 
