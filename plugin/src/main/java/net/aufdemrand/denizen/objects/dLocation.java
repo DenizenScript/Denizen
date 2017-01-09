@@ -32,17 +32,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -724,6 +721,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else {
                 return null;
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.drops>
+        // @returns dList(dItem)
+        // @description
+        // Returns what items the block at the location would drop if broken naturally.
+        // -->
+        if (attribute.startsWith("drops")) {
+            Collection<ItemStack> its = getBlock().getDrops();
+            dList list = new dList();
+            for (ItemStack it: its) {
+                list.add(new dItem(it).identify());
+            }
+            return list.getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
