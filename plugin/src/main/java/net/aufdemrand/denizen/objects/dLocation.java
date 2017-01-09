@@ -748,7 +748,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 String t = ((Skull) blockState).getSkullType().name();
-                return new Element(t).getAttribute(attribute);
+                return new Element(t).getAttribute(attribute.fulfill(1));
             }
         }
 
