@@ -2927,7 +2927,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //     - narrate "It is a nice day."
         // -->
         registerCoreMember(RandomCommand.class,
-                "RANDOM", "random [<#>/<commands>]", 1);
+                "RANDOM", "random [<#>/<commands>]", 0);
 
 
         // <--[command]
