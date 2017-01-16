@@ -55,7 +55,7 @@ public class CustomNBT {
             CompoundTag ct = attribs.get(i);
             AttributeReturn atr = new AttributeReturn();
             atr.attr = (String) ct.getValue().get("AttributeName").getValue();
-            atr.slot = (String) ct.getValue().get("Slot").getValue();
+            atr.slot = ct.getValue().get("Slot") == null ? "mainhand" : (String) ct.getValue().get("Slot").getValue();
             atr.op = (Integer) ct.getValue().get("Operation").getValue();
             Tag t = ct.getValue().get("Amount");
             if (t instanceof IntTag) {
