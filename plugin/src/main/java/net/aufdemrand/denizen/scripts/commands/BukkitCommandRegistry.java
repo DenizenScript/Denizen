@@ -1333,7 +1333,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Feed
-        // @Syntax feed (amount:<#>) (target:<entity>|...)
+        // @Syntax feed (amount:<#>) (target:<entity>)
         // @Required 0
         // @Stable unstable
         // @Short Feed the player or npc.
@@ -1343,7 +1343,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Feeds the player or npc specified. By default targets the player attached to the script queue and feeds
         // a full amount. Accepts the 'amount:' argument, which is in half bar increments, for a total of 20 food
-        // points. Also accepts the 'target:<entity>|...' argument to specify entity(s) which will be fed the amount.
+        // points. Also accepts the 'target:<entity>' argument to specify the entity which will be fed the amount.
         // NOTE: This command is outdated and bound to be updated.
         //
         // @Tags
@@ -1363,7 +1363,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - feed target:<server.list_online_players>
         // -->
         registerCoreMember(FeedCommand.class,
-                "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
+                "FEED", "feed (amt:<#>) (target:<entity>)", 0);
 
 
         // <--[command]
