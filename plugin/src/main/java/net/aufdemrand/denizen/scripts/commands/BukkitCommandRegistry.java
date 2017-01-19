@@ -1357,10 +1357,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to feed an npc with id 5 for 10 foodpoints or 5 bars.
         // - feed amount:10 target:n@5
-        //
-        // @Usage
-        // Use to refill the food bar of all online players.
-        // - feed target:<server.list_online_players>
         // -->
         registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>)", 0);
