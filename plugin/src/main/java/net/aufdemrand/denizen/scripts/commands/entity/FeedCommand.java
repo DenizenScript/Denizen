@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.npc.traits.HungerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -29,7 +30,7 @@ public class FeedCommand extends AbstractCommand {
                 scriptEntry.addObject("targetplayer", arg.asType(dPlayer.class));
             }
 
-            else if (arg.matchesArgumentType(dNPC.class)
+            else if (Depends.citizens != null && arg.matchesArgumentType(dNPC.class)
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")) {
                 scriptEntry.addObject("targetnpc", arg.asType(dNPC.class));
