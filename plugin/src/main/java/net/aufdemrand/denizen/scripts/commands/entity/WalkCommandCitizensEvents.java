@@ -56,6 +56,11 @@ public class WalkCommandCitizensEvents implements Listener {
             // Get all NPCs associated with the entry. They must all
             // finish navigation before the entry can be let go
             List<dNPC> tally = (List<dNPC>) entry.getObject("tally");
+
+            if (tally == null) {
+                continue;
+            }
+
             for (int x = 0; x < tally.size(); x++) {
                 if (!tally.get(x).isSpawned()) {
                     tally.remove(x--);

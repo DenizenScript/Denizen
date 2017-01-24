@@ -210,6 +210,9 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         for (int i = 0; i < held.size(); i++) {
             ScriptEntry entry = held.get(i);
             List<dEntity> waitForEntities = (List<dEntity>) entry.getObject("entities");
+            if (waitForEntities == null) {
+                continue;
+            }
             waitForEntities.remove(entity);
             if (waitForEntities.isEmpty()) {
                 if (!entry.hasObject("tally") || ((List<dNPC>) entry.getObject("tally")).isEmpty()) {
