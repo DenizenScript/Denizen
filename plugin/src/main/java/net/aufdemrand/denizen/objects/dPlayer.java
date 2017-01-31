@@ -3037,7 +3037,7 @@ public class dPlayer implements dObject, Adjustable {
         // <p@player.is_op>
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
-            getPlayerEntity().setOp(mechanism.getValue().asBoolean());
+            getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
