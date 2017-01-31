@@ -46,6 +46,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // <context.inventory> returns the dInventory of the entity if it was a player.
     // <context.cause> returns an Element of the cause of the death. See <@link language damage cause> for a list of possible damage causes.
     // <context.drops> returns a dList of all pending item drops.
+    // <context.xp> returns an Element of the amount of experience to be dropped.
     //
     // @Determine
     // Element to change the death message.
@@ -200,6 +201,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         }
         else if (name.equals("drops") && drops != null) {
             return drops;
+        }
+        else if (name.equals("xp") && xp != null) {
+            return new Element(xp);
         }
         return super.getContext(name);
     }
