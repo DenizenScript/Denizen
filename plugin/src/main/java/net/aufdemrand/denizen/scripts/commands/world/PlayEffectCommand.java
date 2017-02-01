@@ -302,7 +302,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 // TODO: better this all
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), iconcrack_data != null ? iconcrack_data.asInt() : 0);
+                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short)(iconcrack_data != null ? iconcrack_data.asInt() : 0));
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
