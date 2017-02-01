@@ -108,24 +108,30 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 else if (arg.startsWith("blockcrack_")) {
                     String shrunk = arg.getValue().substring("blockcrack_".length());
-                    Element typeId = new Element(shrunk);
+                    String[] split = shrunk.split(",");
+                    Element typeId = new Element(split[0]);
                     if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
                         scriptEntry.addObject("iconcrack", typeId);
                     }
                     else {
                         dB.echoError("Invalid blockcrack_[id]. Must be a valid Material ID, besides 0.");
                     }
+                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
+                    scriptEntry.addObject("iconcrack_data", dataId);
                     scriptEntry.addObject("iconcrack_type", new Element("blockcrack"));
                 }
                 else if (arg.startsWith("blockdust_")) {
                     String shrunk = arg.getValue().substring("blockdust_".length());
-                    Element typeId = new Element(shrunk);
+                    String[] split = shrunk.split(",");
+                    Element typeId = new Element(split[0]);
                     if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
                         scriptEntry.addObject("iconcrack", typeId);
                     }
                     else {
                         dB.echoError("Invalid blockdust_[id]. Must be a valid Material ID, besides 0.");
                     }
+                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
+                    scriptEntry.addObject("iconcrack_data", dataId);
                     scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
                 }
                 else if (particleHelper.hasEffect(arg.getValue())) {
@@ -278,9 +284,6 @@ public class PlayEffectCommand extends AbstractCommand {
 
             // Play an iconcrack (item break) effect
             else {
-                float osX = (float) offset.getX();
-                float osY = (float) offset.getY();
-                float osZ = (float) offset.getZ();
                 List<Player> players = new ArrayList<Player>();
                 if (targets == null) {
                     float rad = radius.asFloat();
