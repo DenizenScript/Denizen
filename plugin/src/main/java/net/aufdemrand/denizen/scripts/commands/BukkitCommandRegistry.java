@@ -1333,7 +1333,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Feed
-        // @Syntax feed (amount:<#>) (target:<entity>|...)
+        // @Syntax feed (amount:<#>) (target:<entity>)
         // @Required 0
         // @Stable unstable
         // @Short Feed the player or npc.
@@ -1343,7 +1343,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Feeds the player or npc specified. By default targets the player attached to the script queue and feeds
         // a full amount. Accepts the 'amount:' argument, which is in half bar increments, for a total of 20 food
-        // points. Also accepts the 'target:<entity>|...' argument to specify entity(s) which will be fed the amount.
+        // points. Also accepts the 'target:<entity>' argument to specify the entity which will be fed the amount.
         // NOTE: This command is outdated and bound to be updated.
         //
         // @Tags
@@ -1357,13 +1357,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to feed an npc with id 5 for 10 foodpoints or 5 bars.
         // - feed amount:10 target:n@5
-        //
-        // @Usage
-        // Use to refill the food bar of all online players.
-        // - feed target:<server.list_online_players>
         // -->
         registerCoreMember(FeedCommand.class,
-                "FEED", "feed (amt:<#>) (target:<entity>|...)", 0);
+                "FEED", "feed (amt:<#>) (target:<entity>)", 0);
 
 
         // <--[command]
@@ -1464,6 +1460,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // The flag command sets or modifies custom value storage database entries connected to
         // each player, each NPC, each entity, and the server.
+        // All the flag values are stored default in "plugins/denizen/saves.yml" file.
+        // For an alternative way of storing values, use either yaml (See <@link command yaml>)
+        // or sql (See <@link command sql>)
         // TODO: Document Command Details
         //
         // @Tags
@@ -1619,6 +1618,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
+        // If the player's inventory if full, the item will be dropped at the inventory location.
+        // Specifying a slot will give the player the item to that slot.
+        // If an item is already in that slot, the item will not be given
+        // unless they are exactly the same items, then it will stack.
+        // If an economy is registered, specifying money instead of a item will give money to the player's economy.
         // TODO: Document Command Details
         //
         // @Tags
@@ -1634,7 +1638,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to give an item to the player.
-        // - give i@iron_sword quantity:1
+        // - give i@iron_sword
+        //
+        // @Usage
+        // Use to give an item and place it in a specific slot if possible.
+        // - give WATCH slot:5
         // -->
         registerCoreMember(GiveCommand.class,
                 "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
@@ -2429,7 +2437,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt li@25|25
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to clear the area around the player and drop their respective items.
+        // - modifyblock <player.location> air radius:5 naturally delayed
+        //
+        // @Usage
+        // Use to modify the ground beneath the player's feet.
+        // - modifyblock cu@<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]> WOOL,14
         // -->
         registerCoreMember(ModifyBlockCommand.class,
                 "MODIFYBLOCK", "modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)", 2);
@@ -2647,7 +2660,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to create a fake explosion.
+        // - playeffect <player.location> effect:EXPLOSION_HUGE visibility:500 quantity:10 offset:2.0
+        //
+        // @Usage
+        // Use to play a cloud effect.
+        // - playeffect <player.location.add[0,5,0]> effect:CLOUD quantity:20 data:1 offset:0.0
+        //
+        // @Usage
+        // Use to play some effects at spawn.
+        // - playeffect <w@world.spawn_location> effect:FIREWORKS_SPARK visibility:100 quantity:375 data:0 offset:50.0
         // -->
         registerCoreMember(PlayEffectCommand.class,
                 "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
@@ -2927,7 +2949,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //     - narrate "It is a nice day."
         // -->
         registerCoreMember(RandomCommand.class,
-                "RANDOM", "random [<#>/<commands>]", 1);
+                "RANDOM", "random [<#>/<commands>]", 0);
 
 
         // <--[command]
@@ -3100,7 +3122,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Specifying context or definitions as argument
         // allows the transfer oof definitions to the new queue.
         // Definitions are not carried over if not specified.
-        // (See <a href="/cmds/Define">command/Define</a>)
+        // (See <@link command define>)
         //
         // Specifying a player argument will run the queue with a player attached
         // to that queue. The same can be done to attach an npc.
@@ -3765,14 +3787,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group item
         //
         // @Description
-        // TODO: Document Command Details
+        // Takes items from a player or inventory.
+        // If the player or inventory does not have the item being taken, nothing happens.
+        // Specifying a slot will take the items from that specific slot.
+        // If an economy is registered, specifying money instead of a item will take money from the player's economy.
+        // If no quantity is specified, it is assmued one.
         //
         // @Tags
         // <p@player.item_in_hand>
         // <p@player.money>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to take money from the player
+        // - take money quantity:10
+        // @Usage
+        // Use to take an arrow from the player's enderchest
+        // - take arrow from:<player.enderchest>
+        // @Usage
+        // Use to take the current holding item from the player's hand
+        // - take iteminhand
+        // @Usage
+        // Use to take 5 emeralds from the player's inventory
+        // - take emerald quantity:5
         // -->
         registerCoreMember(TakeCommand.class,
                 "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);

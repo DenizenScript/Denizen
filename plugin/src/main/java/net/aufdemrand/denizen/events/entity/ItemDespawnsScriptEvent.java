@@ -26,7 +26,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when an item entity spawns.
+    // @Triggers when an item entity despawns.
     //
     // @Context
     // <context.item> returns the dItem of the entity.

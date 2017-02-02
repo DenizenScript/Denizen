@@ -11,6 +11,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class BiomeNMS_v1_11_R1 extends BiomeNMS {
@@ -98,7 +99,13 @@ public class BiomeNMS_v1_11_R1 extends BiomeNMS {
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
         List<EntityType> entityTypes = new ArrayList<EntityType>();
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
-            entityTypes.add(EntityType.valueOf(EntityTypes.getName(meta.b).a())); // TODO: verifyme!
+            // TODO: verifyme!
+            String n = EntityTypes.getName(meta.b).a();
+            EntityType et = EntityType.fromName(n);
+            if (et == null) {
+                et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
+            }
+            entityTypes.add(et);
         }
         return entityTypes;
     }

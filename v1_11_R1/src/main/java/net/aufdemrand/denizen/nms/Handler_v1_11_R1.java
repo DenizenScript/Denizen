@@ -189,6 +189,11 @@ public class Handler_v1_11_R1 extends NMSHandler {
     }
 
     @Override
+    public int getPort() {
+        return ((CraftServer) Bukkit.getServer()).getServer().P();
+    }
+
+    @Override
     public PlayerProfile getPlayerProfile(Player player) {
         GameProfile gameProfile = ((CraftPlayer) player).getProfile();
         Property property = Iterables.getFirst(gameProfile.getProperties().get("textures"), null);

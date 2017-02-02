@@ -109,4 +109,6 @@ public abstract class NMSHandler {
     public abstract void enablePacketInterception(PacketHandler packetHandler);
 
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
+
+    public abstract int getPort();
 }

@@ -60,6 +60,11 @@ public class Handler_v1_8_R3 extends NMSHandler {
     }
 
     @Override
+    public int getPort() {
+        return ((CraftServer) Bukkit.getServer()).getServer().R();
+    }
+
+    @Override
     public AnimationHelper getAnimationHelper() {
         return animationHelper;
     }

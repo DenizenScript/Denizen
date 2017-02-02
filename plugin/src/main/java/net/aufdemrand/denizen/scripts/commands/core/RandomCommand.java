@@ -19,10 +19,15 @@ public class RandomCommand extends BracedCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        List<BracedData> bdat = getBracedCommands(scriptEntry);
+
+        if (bdat != null && bdat.size() > 0) {
+            scriptEntry.addObject("braces", bdat);
+        }
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (arg.matches("{")) {
-                scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
                 break;
             }
 
