@@ -67,6 +67,18 @@ public class InventoryScriptContainer extends ScriptContainer {
     //     my item: i@item
     //     other item: i@item
     //
+    //   # Procedural items can be used to specify a list of dItems for the empty slots to be filled with.
+    //   # Each item in the list represents the next available empty slot.
+    //   # When the inventory has no more empty slots, it will discard any remaining items in the list.
+    //   # A slot is considered empty when it has no value specified in the slots section.
+    //   # If the slot is filled with air, it will no longer count as being empty.
+    //   procedural items:
+    //     - define list li@
+    //     - foreach <server.list_online_players>:
+    //       - define item i@human_skull[skull_skin=<def[value].name>]
+    //       - define list <def[list].include[<def[item]>]>
+    //     - determine <def[list]>
+    //
     //   # You can specify the items in the slots of the inventory. For empty spaces, simply put
     //   # an empty "slot". Note the quotes around the entire lines.
     //   slots:

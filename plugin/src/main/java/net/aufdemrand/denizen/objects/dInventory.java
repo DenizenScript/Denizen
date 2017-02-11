@@ -1250,8 +1250,21 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the number of empty slots in an inventory.
         // -->
         if (attribute.startsWith("empty_slots")) {
-            int full = new dInventory(inventory).count(null, true);
-            return new Element(inventory.getSize() - full).getAttribute(attribute.fulfill(1));
+            dInventory dummyInv;
+            if (inventory.getType() == InventoryType.PLAYER) {
+                dummyInv = new dInventory(Bukkit.createInventory(null, InventoryType.CHEST));
+                ItemStack[] contents = getStorageContents();
+                dummyInv.setSize(contents.length);
+                if (contents.length != dummyInv.getSize()) {
+                    contents = Arrays.copyOf(contents, dummyInv.getSize());
+                }
+                dummyInv.setContents(contents);
+            }
+            else {
+                dummyInv = new dInventory(inventory);
+            }
+            int full = dummyInv.count(null, true);
+            return new Element(dummyInv.getSize() - full).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
