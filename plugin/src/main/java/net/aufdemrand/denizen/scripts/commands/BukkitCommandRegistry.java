@@ -4144,6 +4144,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(WhileCommand.class,
                 "WHILE", "while [stop/next/<comparison tag>] [<commands>]", 1);
 
+        // <--[command]
+        // @Name WorldBorder
+        // @Syntax worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>)
+        // @Required 2
+        // @Stable stable
+        // @Short Modifies a world border.
+        // @Author BlackCoyote
+        // @Group world
+        //
+        // @Description
+        // Modifies the world border of a specified world.
+        // Optionally, you can specify a duration with the size to change
+        // the size over the course of the duration.
+        //
+        // @Tags
+        // None
+        //
+        // @Usage
+        // Use to set the size of a world border.
+        // - worldborder <player.location.world> size:4
+        //
+        // @Usage
+        // Use to update a world border's center, and then the size over the course of 10 seconds.
+        // - worldborder <def[world]> center:<def[world].spawn_location> size:100 duration:10s
+        // -->
+        registerCoreMember(WorldBorderCommand.class,
+                "WORLDBORDER", "worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>)", 2);
+
 
         // <--[command]
         // @Name Yaml
