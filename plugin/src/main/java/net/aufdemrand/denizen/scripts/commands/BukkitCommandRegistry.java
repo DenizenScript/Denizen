@@ -4146,7 +4146,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name WorldBorder
-        // @Syntax worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>)
+        // @Syntax worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
         // @Required 2
         // @Stable stable
         // @Short Modifies a world border.

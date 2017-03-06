@@ -66,6 +66,11 @@ public class WorldBorderCommand extends AbstractCommand {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
 
+            else if (!scriptEntry.hasObject("reset")
+                    && arg.matches("reset")) {
+                scriptEntry.addObject("reset", new Element("true"));
+            }
+
             else {
                 arg.reportUnhandled();
             }
@@ -79,13 +84,15 @@ public class WorldBorderCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("center") && !scriptEntry.hasObject("size")
                 && !scriptEntry.hasObject("damage") && !scriptEntry.hasObject("damagebuffer")
-                && !scriptEntry.hasObject("warningdistance") && !scriptEntry.hasObject("warningtime")) {
+                && !scriptEntry.hasObject("warningdistance") && !scriptEntry.hasObject("warningtime")
+                && !scriptEntry.hasObject("reset")) {
             throw new InvalidArgumentsException("Must specify at least one option!");
         }
 
         // fill in default arguments if necessary
 
         scriptEntry.defaultObject("duration", new Duration(0));
+        scriptEntry.defaultObject("reset", new Element("false"));
     }
 
     @Override
@@ -99,6 +106,7 @@ public class WorldBorderCommand extends AbstractCommand {
         Duration duration = scriptEntry.getdObject("duration");
         Element warningdistance = scriptEntry.getElement("warningdistance");
         Duration warningtime = scriptEntry.getdObject("warningtime");
+        Element reset = scriptEntry.getdObject("reset");
 
         dB.report(scriptEntry, getName(), world.debug()
                 + (center != null ? center.debug() : "")
@@ -107,9 +115,14 @@ public class WorldBorderCommand extends AbstractCommand {
                 + (damagebuffer != null ? damagebuffer.debug() : "")
                 + (warningdistance != null ? warningdistance.debug() : "")
                 + (warningtime != null ? warningtime.debug() : "")
-                + duration.debug());
+                + duration.debug()+ reset.debug());
 
         WorldBorder worldborder = world.getWorld().getWorldBorder();
+
+        if (reset.asBoolean()) {
+            worldborder.reset();
+            return;
+        }
 
         if (center != null) {
             worldborder.setCenter(center);
