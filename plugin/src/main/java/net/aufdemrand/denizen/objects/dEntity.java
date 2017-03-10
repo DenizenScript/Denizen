@@ -2296,7 +2296,7 @@ public class dEntity implements dObject, Adjustable {
         // Returns whether this entity is glowing.
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("glowing")) {
-            return new Element(getLivingEntity().isGlowing())
+            return new Element(getBukkitEntity().isGlowing())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -2783,7 +2783,7 @@ public class dEntity implements dObject, Adjustable {
         // <e@entity.glowing>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("glowing") && mechanism.requireBoolean()) {
-            getLivingEntity().setGlowing(value.asBoolean());
+            getBukkitEntity().setGlowing(value.asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
             }
