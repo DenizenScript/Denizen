@@ -12,6 +12,8 @@ Debug:
   # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
   # Please do not disable this unless it is throwing errors (Please report any errors you receive as well).
   Stats: true
+  # Whether to force the help command to be the default bukkit help.
+  Override help: true
 
 Scripts:
   World:
