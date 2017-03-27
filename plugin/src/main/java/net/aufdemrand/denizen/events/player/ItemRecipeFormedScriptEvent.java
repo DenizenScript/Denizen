@@ -96,9 +96,12 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         if (dItem.matches(determination)) {
             result = dItem.valueOf(determination);
             resultChanged = true;
+            return true;
         }
 
-        return super.applyDetermination(container, determination);
+        else {
+            return super.applyDetermination(container, determination);
+        }
     }
 
     @Override
