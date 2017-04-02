@@ -88,8 +88,11 @@ public class ListPingScriptEvent extends ScriptEvent implements Listener {
             else {
                 motd = new Element(values[0]);
             }
+            return true;
         }
-        return true;
+        else {
+            return super.applyDetermination(container, determination);
+        }
     }
 
     @Override

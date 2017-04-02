@@ -34,6 +34,11 @@ public class Settings {
                 .getBoolean("Debug.Show", true);
     }
 
+    public static boolean overrideHelp() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Debug.Override help", true);
+    }
+
     public static int consoleWidth() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Debug.Console width", 60);

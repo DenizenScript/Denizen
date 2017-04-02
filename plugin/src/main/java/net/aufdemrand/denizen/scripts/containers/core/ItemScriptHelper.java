@@ -465,7 +465,7 @@ public class ItemScriptHelper implements Listener {
         // Store the crafting matrix
         ItemStack[] matrix = inventory.getMatrix();
         for (int i = 0; i < matrix.length; i++) {
-            matrix[i] = matrix[i].clone();
+            matrix[i] = matrix[i] == null ? new ItemStack(Material.AIR) : matrix[i].clone();
         }
 
         // Get the result of the special recipe that this matrix matches,

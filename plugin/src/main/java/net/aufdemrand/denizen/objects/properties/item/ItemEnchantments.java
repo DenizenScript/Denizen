@@ -178,6 +178,32 @@ public class ItemEnchantments implements Property {
 
         // <--[mechanism]
         // @object dItem
+        // @name remove_enchantments
+        // @input None
+        // @description
+        // Removes all the item's enchantments.
+        // @tags
+        // <i@item.enchantments>
+        // <i@item.enchantments.levels>
+        // <i@item.enchantments.with_levels>
+        // -->
+        if (mechanism.matches("remove_enchantments")) {
+            if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
+                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemStack().getItemMeta();
+                for (Enchantment ench : meta.getStoredEnchants().keySet()) {
+                    meta.removeStoredEnchant(ench);
+                }
+                item.getItemStack().setItemMeta(meta);
+            }
+            else {
+                for (Enchantment ench : item.getItemStack().getEnchantments().keySet()) {
+                    item.getItemStack().removeEnchantment(ench);
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object dItem
         // @name enchantments
         // @input dList
         // @description

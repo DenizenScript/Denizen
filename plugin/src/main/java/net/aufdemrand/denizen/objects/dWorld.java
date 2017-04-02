@@ -801,6 +801,94 @@ public class dWorld implements dObject, Adjustable {
             }
         });
 
+        /////////////////////
+        //   WORLD BORDER ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <w@world.border_size>
+        // @returns Element
+        // @description
+        // returns the size of the world border in this world.
+        // -->
+        registerTag("border_size", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dWorld) object).getWorld().getWorldBorder().getSize())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.border_center>
+        // @returns dLocation
+        // @description
+        // returns the center of the world border in this world.
+        // -->
+        registerTag("border_center", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new dLocation(((dWorld) object).getWorld().getWorldBorder().getCenter())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.border_damage>
+        // @returns Element
+        // @description
+        // returns the size of the world border in this world.
+        // -->
+        registerTag("border_damage", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dWorld) object).getWorld().getWorldBorder().getDamageAmount())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.border_damage_buffer>
+        // @returns Element
+        // @description
+        // returns the damage buffer of the world border in this world.
+        // -->
+        registerTag("border_damage_buffer", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element (((dWorld) object).getWorld().getWorldBorder().getDamageBuffer())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.border_warning_distance>
+        // @returns Element
+        // @description
+        // returns the warning distance of the world border in this world.
+        // -->
+        registerTag("border_warning_distance", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dWorld) object).getWorld().getWorldBorder().getWarningDistance())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <w@world.border_warning_time>
+        // @returns Duration
+        // @description
+        // returns warning time of the world border in this world as a duration.
+        // -->
+        registerTag("border_warning_time", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Duration(((dWorld) object).getWorld().getWorldBorder().getWarningTime())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
     }
 
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();

@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenAliasHelpTopic;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
@@ -57,17 +58,18 @@ public class CommandScriptHelper implements Listener {
             // so let's force the server to use Bukkit's version if it's running
             // Mojang's version.
             // TODO: figure out a different workaround?
-            // TODO: config option for this?
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (knownCommands.get("help") instanceof HelpCommand) {
-                        return;
+            if (Settings.overrideHelp()) {
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (knownCommands.get("help") instanceof HelpCommand) {
+                            return;
+                        }
+                        knownCommands.put("help", knownCommands.get("bukkit:help"));
+                        helpTopics.put("/help", helpTopics.get("/bukkit:help"));
                     }
-                    knownCommands.put("help", knownCommands.get("bukkit:help"));
-                    helpTopics.put("/help", helpTopics.get("/bukkit:help"));
-                }
-            }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+                }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+            }
         }
         catch (Exception e) {
             dB.echoError("Error getting the server's command information! Are you running a non-CraftBukkit server?");

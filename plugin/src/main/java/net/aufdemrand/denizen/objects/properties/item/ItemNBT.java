@@ -72,7 +72,7 @@ public class ItemNBT implements Property {
         // @description
         // Returns the value of this item's NBT key as a string Element as best it can.
         // -->
-        if (attribute.startsWith("nbt")) {
+        if (attribute.matches("nbt")) {
             return new Element(CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
                     .getAttribute(attribute.fulfill(1));
         }
