@@ -103,7 +103,9 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             new_text = dList.valueOf(determination);
             return true;
         }
-        return super.applyDetermination(container, determination);
+        else {
+            return super.applyDetermination(container, determination);
+        }
     }
 
     @Override

@@ -1088,9 +1088,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                     continue;
                 }
 
-                if (invAuthor.equalsIgnoreCase(author) && invTitle.equalsIgnoreCase(title)) {
-                    // Make sure we don't remove more books than we
-                    // need to
+                if (equalOrNull(invAuthor, author) && equalOrNull(invTitle, title)) {
+                    // Make sure we don't remove more books than we need to
+                    // TODO: WTF is this logic???
                     if (quantity - invStack.getAmount() < 0) {
                         invStack.setAmount((quantity - invStack.getAmount()) * -1);
                     }
@@ -1104,6 +1104,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         return this;
+    }
+
+    private static boolean equalOrNull(String a, String b) {
+        return b == null || a == null || a.equalsIgnoreCase(b);
     }
 
     /**
