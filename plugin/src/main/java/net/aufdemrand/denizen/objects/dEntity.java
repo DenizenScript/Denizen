@@ -2431,6 +2431,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.fuse_ticks>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the number of ticks until the explosion of the entity.
+        // -->
+        if (attribute.startsWith("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed) {
+            return new Element(((TNTPrimed) getBukkitEntity()).getFuseTicks())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.dragon_phase>
         // @returns Element(Number)
         // @group properties
@@ -2814,6 +2826,19 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
             ((ExperienceOrb) getBukkitEntity()).setExperience(value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fuse_ticks
+        // @input Element(Number)
+        // @description
+        // Sets the number of ticks until the TNT blows up after being primed.
+        // @tags
+        // <e@entity.fuse_ticks>
+        // -->
+        if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
+            ((TNTPrimed) getBukkitEntity()).setFuseTicks(value.asInt());
         }
 
         // Iterate through this object's properties' mechanisms
