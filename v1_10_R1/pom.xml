@@ -21,7 +21,7 @@
         <dependency>
             <groupId>net.aufdemrand</groupId>
             <artifactId>denizencore</artifactId>
-            <version>1.05</version>
+            <version>1.15</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
