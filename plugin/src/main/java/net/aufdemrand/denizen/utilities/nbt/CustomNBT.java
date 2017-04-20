@@ -113,10 +113,8 @@ public class CustomNBT {
         tmap.put("Operation", new IntTag(op));
         tmap.put("Amount", new DoubleTag(amt));
 
-        long tid = attribs.size();
-
-        tmap.put("UUIDMost", new LongTag(tid));
-        tmap.put("UUIDLeast", new LongTag(tid));
+        tmap.put("UUIDMost", new LongTag(88512 + attribs.size()));
+        tmap.put("UUIDLeast", new LongTag(1250025L + attribs.size()));
 
         CompoundTag ct = NMSHandler.getInstance().createCompoundTag(tmap);
         attribs.add(ct);
