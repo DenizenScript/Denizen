@@ -94,7 +94,7 @@ public class Conversion {
         else if (arg.matchesArgumentList(dItem.class)) {
             List<dItem> list = dList.valueOf(string).filter(dItem.class, scriptEntry);
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
-            dInventory inventory = new dInventory(Math.max(dInventory.maxSlots, (items.length / 9) * 9));
+            dInventory inventory = new dInventory(Math.max(dInventory.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);
             return new AbstractMap.SimpleEntry<Integer, dInventory>(items.length, inventory);
         }
