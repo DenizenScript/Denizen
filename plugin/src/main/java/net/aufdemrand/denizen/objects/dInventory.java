@@ -1563,6 +1563,45 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.contains.scriptname[<material>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified scriptname.
+        // -->
+        if (attribute.startsWith("contains.scriptname") && attribute.hasContext(2) &&
+                dMaterial.matches(attribute.getContext(2))) {
+            String scrName = attribute.getContext(2);
+            int qty = 1;
+            int attribs = 2;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains.scriptname[<material>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
+
+            int found_items = 0;
+
+            for (ItemStack item : getContents()) {
+                if (item != null && scrName.equals(new dItem(item).getScriptName())) {
+                    found_items += item.getAmount();
+                    if (found_items >= qty) {
+                        break;
+                    }
+                }
+            }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.contains.material[<material>]>
         // @returns Element(Boolean)
         // @description
