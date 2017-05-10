@@ -1563,7 +1563,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.contains.scriptname[<material>]>
+        // @attribute <in@inventory.contains.scriptname[<scriptname>]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the inventory contains an item with the specified scriptname.
@@ -1575,7 +1575,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             int attribs = 2;
 
             // <--[tag]
-            // @attribute <in@inventory.contains.scriptname[<material>].quantity[<#>]>
+            // @attribute <in@inventory.contains.scriptname[<scriptname>].quantity[<#>]>
             // @returns Element(Boolean)
             // @description
             // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
