@@ -1568,8 +1568,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // @description
         // Returns whether the inventory contains an item with the specified scriptname.
         // -->
-        if (attribute.startsWith("contains.scriptname") && attribute.hasContext(2) &&
-                dMaterial.matches(attribute.getContext(2))) {
+        if (attribute.startsWith("contains.scriptname") && attribute.hasContext(2)) {
             String scrName = attribute.getContext(2);
             int qty = 1;
             int attribs = 2;
