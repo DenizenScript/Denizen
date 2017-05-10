@@ -1589,7 +1589,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             int found_items = 0;
 
             for (ItemStack item : getContents()) {
-                if (item != null && scrName.equals(new dItem(item).getScriptName())) {
+                if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
                     found_items += item.getAmount();
                     if (found_items >= qty) {
                         break;
