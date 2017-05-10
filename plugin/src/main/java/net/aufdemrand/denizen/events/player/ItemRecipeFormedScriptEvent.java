@@ -137,7 +137,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         result = new dItem(eRecipe.getResult());
         recipe = new dList();
         for (ItemStack itemStack : inventory.getMatrix()) {
-            if (itemStack != null) {
+            if (itemStack != null && itemStack.getType() != Material.AIR) {
                 recipe.add(new dItem(itemStack).identify());
             }
             else {
