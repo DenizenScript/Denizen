@@ -2749,7 +2749,7 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
-                    String slot = split[1].toUpperCase();
+                    String slot = split.length > 1 ? split[1].toUpperCase() : null;
                     if (split.length > 1 && (new Element(slot).matchesEnum(EquipmentSlot.values())
                             || slot.equals("MAIN_HAND") || slot.equals("BOOTS"))) {
                         if (split.length > 2 && new Element(split[2]).matchesType(dItem.class)) {
