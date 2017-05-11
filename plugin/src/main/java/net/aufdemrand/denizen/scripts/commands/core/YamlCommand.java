@@ -252,6 +252,10 @@ public class YamlCommand extends AbstractCommand implements Listener {
                     dB.echoError("File cannot be found!");
                     return;
                 }
+                if (!Utilities.isSafeFile(file)) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Cannot load that file!");
+                    return;
+                }
                 try {
                     FileInputStream fis = new FileInputStream(file);
                     String str = ScriptHelper.convertStreamToString(fis);

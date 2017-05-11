@@ -78,6 +78,13 @@ public class FileCopyCommand extends AbstractCommand {
             scriptEntry.addObject("success", new Element("false"));
             return;
         }
+
+        if (!Utilities.isSafeFile(o)) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files from there!");
+            scriptEntry.addObject("success", new Element("false"));
+            return;
+        }
+
         if (!Utilities.isSafeFile(d)) {
             dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files to there!");
             scriptEntry.addObject("success", new Element("false"));
@@ -93,7 +100,12 @@ public class FileCopyCommand extends AbstractCommand {
             if (dexists && !disdir) {
                 d.delete();
             }
-            FileUtils.copyFile(o, d);
+            if (o.isDirectory()) {
+                FileUtils.copyDirectory(o, d);
+            }
+            else {
+                FileUtils.copyFile(o, d);
+            }
             scriptEntry.addObject("success", new Element("true"));
         }
         catch (Exception e) {

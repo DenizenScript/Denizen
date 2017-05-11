@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -447,6 +448,10 @@ public class ServerTags implements Listener {
                 dB.echoError(e);
                 return;
             }
+            if (!Utilities.isSafeFile(f)) {
+                dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                return;
+            }
             event.setReplaced(new Element(f.exists()).getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -471,6 +476,10 @@ public class ServerTags implements Listener {
             }
             catch (Exception e) {
                 dB.echoError(e);
+                return;
+            }
+            if (!Utilities.isSafeFile(folder)) {
+                dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                 return;
             }
             File[] files = folder.listFiles();
