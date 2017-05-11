@@ -14,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 
+import java.util.List;
+
 public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -57,8 +59,16 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
+        List<String> split = CoreUtilities.split(lower, ' ');
+        if (split.size() > 5) {
+            return false;
+        }
+        if (split.size() > 3 && split.get(3).equals("by")) {
+            return false;
+        }
+        String tid = CoreUtilities.getXthArg(0, lower);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("damaged") || cmd.equals("damages");
+        return (cmd.equals("damaged") && !tid.equals("entity")) || cmd.equals("damages");
     }
 
     @Override
