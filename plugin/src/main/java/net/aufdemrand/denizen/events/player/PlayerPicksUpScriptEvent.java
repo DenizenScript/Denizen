@@ -61,6 +61,9 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
+        if (CoreUtilities.xthArgEquals(4, lower, "from")) {
+            return false;
+        }
         return lower.startsWith("player picks up") || lower.startsWith("player takes");
     }
 
