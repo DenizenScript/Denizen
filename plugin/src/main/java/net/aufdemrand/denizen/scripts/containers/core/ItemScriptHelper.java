@@ -520,8 +520,6 @@ public class ItemScriptHelper implements Listener {
                 inventory.setResult(resultStack);
 
                 // Update the player's inventory
-                //
-                // TODO: Replace with non-deprecated method once one is added to Bukkit
                 player.updateInventory();
             }
             return true;
