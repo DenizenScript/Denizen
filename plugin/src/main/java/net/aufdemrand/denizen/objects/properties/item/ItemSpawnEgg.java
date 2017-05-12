@@ -7,6 +7,8 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 public class ItemSpawnEgg implements Property {
 
@@ -49,7 +51,7 @@ public class ItemSpawnEgg implements Property {
         // Also works for mob spawners.
         // -->
         if (attribute.startsWith("spawn_egg_entity")) {
-            return new Element(item.getItemStack().getDurability())
+            return new Element(((SpawnEggMeta) item.getItemStack().getItemMeta()).getSpawnedType().getTypeId())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -59,7 +61,7 @@ public class ItemSpawnEgg implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(item.getItemStack().getDurability());
+        return String.valueOf(((SpawnEggMeta) item.getItemStack().getItemMeta()).getSpawnedType().getTypeId());
     }
 
     @Override
@@ -82,7 +84,9 @@ public class ItemSpawnEgg implements Property {
         // -->
 
         if (mechanism.matches("spawn_egg")) {
-            item.getItemStack().setDurability((short) (mechanism.getValue().asInt()));
+            SpawnEggMeta sem = (SpawnEggMeta) item.getItemStack().getItemMeta();
+            sem.setSpawnedType(EntityType.fromId(mechanism.getValue().asInt()));
+            item.getItemStack().setItemMeta(sem);
         }
     }
 }
