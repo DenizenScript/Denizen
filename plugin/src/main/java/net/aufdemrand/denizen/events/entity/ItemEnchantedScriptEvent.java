@@ -161,6 +161,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         event.setCancelled(cancelled);
         event.setExpLevelCost(cost);
         if (itemEdited) {
+            event.getEnchantsToAdd().clear();
             event.getItem().setItemMeta(item.getItemStack().getItemMeta());
         }
     }
