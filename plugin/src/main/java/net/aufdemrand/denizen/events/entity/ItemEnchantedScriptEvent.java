@@ -44,6 +44,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     // @Determine
     // Element(Number) to set the experience level cost of the enchantment.
     // "RESULT:" + dItem to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
+    // "ENCHANTS:" + dItem to change the resultant enchantments based on a dItem.
     // -->
 
     public ItemEnchantedScriptEvent() {
@@ -59,6 +60,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public int cost;
     public EnchantItemEvent event;
     public boolean itemEdited;
+    public dItem enchantsRes;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -112,6 +114,12 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
             return true;
         }
 
+        else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
+            String ditem = determination.substring("enchants:".length());
+            enchantsRes = dItem.valueOf(ditem);
+            return true;
+        }
+
         else {
             return super.applyDetermination(container, determination);
         }
@@ -157,12 +165,16 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         cancelled = event.isCancelled();
         itemEdited = false;
         this.event = event;
+        enchantsRes = null;
         fire();
         event.setCancelled(cancelled);
         event.setExpLevelCost(cost);
         if (itemEdited) {
-            event.getEnchantsToAdd().clear();
             event.getItem().setItemMeta(item.getItemStack().getItemMeta());
+        }
+        if (enchantsRes != null) {
+            event.getEnchantsToAdd().clear();
+            event.getEnchantsToAdd().putAll(enchantsRes.getItemStack().getItemMeta().getEnchants());
         }
     }
 }
