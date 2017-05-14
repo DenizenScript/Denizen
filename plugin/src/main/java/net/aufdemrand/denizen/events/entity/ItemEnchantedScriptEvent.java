@@ -20,7 +20,8 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 
 public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: Find more appropriate package than 'entity' for this
+    // TODO: Find more appropriate package than 'entity' for this. Probably 'player'.
+
     // <--[event]
     // @Events
     // item enchanted (in <area>)
@@ -42,6 +43,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Determine
     // Element(Number) to set the experience level cost of the enchantment.
+    // "RESULT:" + dItem to change the item result (only affects metadata (like enchantments), not material/quantity/etc!).
     // -->
 
     public ItemEnchantedScriptEvent() {
@@ -56,6 +58,7 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public Element button;
     public int cost;
     public EnchantItemEvent event;
+    public boolean itemEdited;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
@@ -99,9 +102,19 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             cost = aH.getIntegerFrom(determination);
+            return true;
         }
 
-        return super.applyDetermination(container, determination);
+        else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
+            String ditem = determination.substring("result:".length());
+            item = dItem.valueOf(ditem);
+            itemEdited = true;
+            return true;
+        }
+
+        else {
+            return super.applyDetermination(container, determination);
+        }
     }
 
     @Override
@@ -142,9 +155,13 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         button = new Element(event.whichButton());
         cost = event.getExpLevelCost();
         cancelled = event.isCancelled();
+        itemEdited = false;
         this.event = event;
         fire();
         event.setCancelled(cancelled);
         event.setExpLevelCost(cost);
+        if (itemEdited) {
+            event.getItem().setItemMeta(item.getItemStack().getItemMeta());
+        }
     }
 }
