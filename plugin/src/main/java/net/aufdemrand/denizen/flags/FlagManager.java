@@ -484,9 +484,9 @@ public class FlagManager {
          */
         public int split(Object obj) {
             checkExpired();
-            String[] split = ((String) obj).replace("li@", "").split("\\|"); // the pipe character | needs to be escaped
+            dList split = dList.valueOf(obj.toString());
 
-            if (split.length > 0) {
+            if (split.size() > 0) {
                 for (String val : split) {
                     if (val.length() > 0) {
                         value.values.add(val);
