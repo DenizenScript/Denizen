@@ -2569,7 +2569,7 @@ public class dEntity implements dObject, Adjustable {
         // <--[mechanism]
         // @object dEntity
         // @name fall_distance
-        // @input Element(Float)
+        // @input Element(Decimal)
         // @description
         // Sets the fall distance.
         // @tags
