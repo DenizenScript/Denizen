@@ -34,7 +34,6 @@ import org.bukkit.inventory.AnvilInventory;
 // @Context
 // <context.inventory> returns the dInventory of the anvil inventory.
 // <context.item> returns the dItem to be crafted.
-// <context.recipe> returns a dList of dItems in the recipe.
 // <context.repair_cost> returns an Element(Number) of the repair cost.
 // <context.new_name> returns an Element of the new name.
 //
@@ -95,14 +94,16 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             repairCost = new Element(determination);
+            return true;
         }
-        if (dItem.matches(determination)) {
+        else if (dItem.matches(determination)) {
             result = dItem.valueOf(determination);
             resultChanged = true;
             return true;
         }
-
-        return super.applyDetermination(container, determination);
+        else {
+            return super.applyDetermination(container, determination);
+        }
     }
 
     @Override
