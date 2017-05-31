@@ -112,6 +112,5 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
         this.event = event;
         fire();
         event.setCancelled(cancelled);
-        event.setItem(item.getItemStack());
     }
 }
