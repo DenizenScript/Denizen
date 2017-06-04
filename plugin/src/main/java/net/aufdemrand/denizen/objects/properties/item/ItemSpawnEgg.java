@@ -14,8 +14,7 @@ public class ItemSpawnEgg implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.MONSTER_EGG
-                || ((dItem) item).getItemStack().getType() == Material.MOB_SPAWNER);
+                && ((dItem) item).getItemStack().getType() == Material.MONSTER_EGG;
     }
 
     public static ItemSpawnEgg getFrom(dObject _item) {
