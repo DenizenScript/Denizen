@@ -81,7 +81,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
-        final dNPC npc = (dNPC) scriptEntry.getObject("entity");
+        final dNPC npc = (dNPC) scriptEntry.getObject("npc");
         Element radius = scriptEntry.getElement("radius");
 
         final HashMap<String, dObject> context = new HashMap<String, dObject>();
