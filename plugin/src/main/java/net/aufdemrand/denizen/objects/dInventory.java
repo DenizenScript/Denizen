@@ -1272,18 +1272,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.can_fit[<item>]>
+        // @attribute <in@inventory.can_fit[<item>|...]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the inventory can fit an item.
         // -->
         if (attribute.startsWith("can_fit") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1));
-            if (item == null) {
+            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class);
+            if (items == null || items.isEmpty()) {
                 return null;
             }
             int attribs = 1;
-            int qty = 1;
 
             InventoryType type = inventory.getType();
             dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, inventory.getTitle()));
@@ -1305,13 +1304,19 @@ public class dInventory implements dObject, Notable, Adjustable {
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
-                qty = attribute.getIntContext(2);
+                int qty = attribute.getIntContext(2);
                 attribs = 2;
+                items.get(0).setAmount(qty);
             }
-            item.setAmount(qty);
 
-            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, item.getItemStack());
-            return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
+            // NOTE: Could just also convert items to an array and pass it all in at once...
+            for (dItem itm : items) {
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
+                if (!leftovers.isEmpty()) {
+                    return new Element(false).getAttribute(attribute.fulfill(attribs));
+                }
+            }
+            return new Element(true).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
