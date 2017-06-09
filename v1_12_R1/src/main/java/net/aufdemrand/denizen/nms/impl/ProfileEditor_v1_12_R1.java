@@ -67,10 +67,10 @@ public class ProfileEditor_v1_12_R1 extends ProfileEditor {
         if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
             return;
         }
-        List<PacketPlayOutPlayerInfo.PlayerInfoData> dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
+        List<?> dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
         if (dataList != null) {
             try {
-                for (PacketPlayOutPlayerInfo.PlayerInfoData data : dataList) {
+                for (Object data : dataList) {
                     GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
                     if (fakeProfiles.containsKey(gameProfile.getId())) {
                         playerInfoData_gameProfile.set(data, getGameProfile(fakeProfiles.get(gameProfile.getId())));
