@@ -13,7 +13,7 @@ public class AnimationHelper_v1_12_R1 extends AnimationHelper {
             @Override
             public void play(Entity entity) {
                 if (entity.getType() == EntityType.SKELETON) {
-                    ((CraftSkeleton) entity).getHandle().a(true);
+                    ((CraftSkeleton) entity).getHandle().p(true);
                 }
             }
         });
@@ -21,7 +21,7 @@ public class AnimationHelper_v1_12_R1 extends AnimationHelper {
             @Override
             public void play(Entity entity) {
                 if (entity.getType() == EntityType.SKELETON) {
-                    ((CraftSkeleton) entity).getHandle().a(false);
+                    ((CraftSkeleton) entity).getHandle().p(false);
                 }
             }
         });

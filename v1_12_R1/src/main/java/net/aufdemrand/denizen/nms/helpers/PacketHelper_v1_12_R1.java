@@ -77,7 +77,8 @@ public class PacketHelper_v1_12_R1 implements PacketHelper {
 
     @Override
     public void showTabListHeaderFooter(Player player, String header, String footer) {
-        PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter(new ChatComponentText(header));
+        PacketPlayOutPlayerListHeaderFooter packet = new PacketPlayOutPlayerListHeaderFooter();
+        ReflectionHelper.setFieldValue(packet.getClass(), "a", packet, new ChatComponentText(header));
         ReflectionHelper.setFieldValue(packet.getClass(), "b", packet, new ChatComponentText(footer));
         sendPacket(player, packet);
     }

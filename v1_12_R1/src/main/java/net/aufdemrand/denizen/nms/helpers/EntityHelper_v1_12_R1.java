@@ -60,7 +60,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     @Override
     public void setBreeding(Animals entity, boolean breeding) {
         if (breeding) {
-            ((CraftAnimals) entity).getHandle().c((EntityHuman) null);
+            ((CraftAnimals) entity).getHandle().a((EntityHuman) null);
         }
         else {
             ((CraftAnimals) entity).getHandle().resetLove();
@@ -148,7 +148,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).setAI(!hasAI);
+        ((EntityInsentient) nmsEntity).setNoAI(!hasAI);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return true;
         }
-        return ((EntityInsentient) nmsEntity).hasAI();
+        return ((EntityInsentient) nmsEntity).isNoAI();
     }
 
     @Override
@@ -275,7 +275,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (entityNavigation.n() || path.b()) {
+                    if (entityNavigation.o() || path.b()) {
                         if (callback != null) {
                             callback.run();
                         }
