@@ -18,7 +18,7 @@ public class EntityFakeArrow_v1_12_R1 extends EntitySpectralArrow {
     }
 
     @Override
-    public void A_() {
+    public void B_() {
         // Do nothing
     }
 

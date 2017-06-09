@@ -28,11 +28,11 @@ public class EntityItemProjectile_v1_12_R1 extends EntityItem implements IProjec
     }
 
     @Override
-    public void A_() {
+    public void B_() {
         this.M = this.locX;
         this.N = this.locY;
         this.O = this.locZ;
-        super.U();
+        super.Y();
 
         Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
         Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);

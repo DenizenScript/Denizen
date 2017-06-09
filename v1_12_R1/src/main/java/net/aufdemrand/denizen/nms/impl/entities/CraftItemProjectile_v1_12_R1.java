@@ -59,15 +59,4 @@ public class CraftItemProjectile_v1_12_R1 extends CraftItem implements ItemProje
     public void setBounce(boolean doesBounce) {
         this.doesBounce = doesBounce;
     }
-
-
-    @Override
-    public void _INVALID_setShooter(LivingEntity livingEntity) {
-        // Do nothing
-    }
-
-    @Override
-    public LivingEntity _INVALID_getShooter() {
-        return null;
-    }
 }
