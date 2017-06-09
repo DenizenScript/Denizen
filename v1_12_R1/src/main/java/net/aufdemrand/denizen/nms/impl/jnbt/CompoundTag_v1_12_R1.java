@@ -106,12 +106,12 @@ public class CompoundTag_v1_12_R1 extends CompoundTag {
             else if (base instanceof NBTTagList) {
                 NBTTagList list = (NBTTagList) base;
                 if (list.size() > 0) {
-                    NBTBase nbase = list.h(0);
+                    NBTBase nbase = list.i(0);
                     NBTTagCompound comp = new NBTTagCompound();
                     comp.set("test", nbase);
                     ListTagBuilder ltb = new ListTagBuilder(fromNMSTag(comp).getValue().get("test").getClass());
                     for (int i = 0 ; i < list.size(); i++) {
-                        NBTBase nbase2 = list.h(i);
+                        NBTBase nbase2 = list.i(i);
                         NBTTagCompound comp2 = new NBTTagCompound();
                         comp2.set("test", nbase2);
                         ltb.add(fromNMSTag(comp2).getValue().get("test"));
