@@ -79,6 +79,7 @@ import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -268,7 +269,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
-    public static final LogInterceptor logInterceptor = new LogInterceptor();
+    public static LogInterceptor logInterceptor;
 
 
     private CommandManager commandManager;
@@ -373,6 +374,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             getServer().getPluginManager().disablePlugin(this);
             startedSuccessful = false;
             return;
+        }
+
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) {
+            logInterceptor = new LogInterceptor();
         }
 
         try {
@@ -1559,7 +1564,37 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public String cleanseLogString(String input) {
-        return LogInterceptor.cleanse(input);
+        return cleanseLog(input);
+    }
+
+    public static String cleanseLog(String input) {
+        String esc = String.valueOf((char) 0x1b);
+        String repc = String.valueOf(ChatColor.COLOR_CHAR);
+        if (input.contains(esc)) {
+            input = StringUtils.replace(input, esc + "[0;30;22m", repc + "0");
+            input = StringUtils.replace(input, esc + "[0;34;22m", repc + "1");
+            input = StringUtils.replace(input, esc + "[0;32;22m", repc + "2");
+            input = StringUtils.replace(input, esc + "[0;36;22m", repc + "3");
+            input = StringUtils.replace(input, esc + "[0;31;22m", repc + "4");
+            input = StringUtils.replace(input, esc + "[0;35;22m", repc + "5");
+            input = StringUtils.replace(input, esc + "[0;33;22m", repc + "6");
+            input = StringUtils.replace(input, esc + "[0;37;22m", repc + "7");
+            input = StringUtils.replace(input, esc + "[0;30;1m", repc + "8");
+            input = StringUtils.replace(input, esc + "[0;34;1m", repc + "9");
+            input = StringUtils.replace(input, esc + "[0;32;1m", repc + "a");
+            input = StringUtils.replace(input, esc + "[0;36;1m", repc + "b");
+            input = StringUtils.replace(input, esc + "[0;31;1m", repc + "c");
+            input = StringUtils.replace(input, esc + "[0;35;1m", repc + "d");
+            input = StringUtils.replace(input, esc + "[0;33;1m", repc + "e");
+            input = StringUtils.replace(input, esc + "[0;37;1m", repc + "f");
+            input = StringUtils.replace(input, esc + "[5m", repc + "k");
+            input = StringUtils.replace(input, esc + "[21m", repc + "l");
+            input = StringUtils.replace(input, esc + "[9m", repc + "m");
+            input = StringUtils.replace(input, esc + "[4m", repc + "n");
+            input = StringUtils.replace(input, esc + "[3m", repc + "o");
+            input = StringUtils.replace(input, esc + "[m", repc + "r");
+        }
+        return input;
     }
 
     @Override

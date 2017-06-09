@@ -1,6 +1,9 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -32,36 +35,6 @@ public class LogInterceptor extends PrintStream {
     public LogInterceptor() {
         super(new LoggerOutputStream(new LoggerOutputIntercept((AbstractLogger) LogManager.getRootLogger()),
                 Level.INFO), true);
-    }
-
-    public static String cleanse(String input) {
-        String esc = String.valueOf((char) 0x1b);
-        String repc = String.valueOf(ChatColor.COLOR_CHAR);
-        if (input.contains(esc)) {
-            input = StringUtils.replace(input, esc + "[0;30;22m", repc + "0");
-            input = StringUtils.replace(input, esc + "[0;34;22m", repc + "1");
-            input = StringUtils.replace(input, esc + "[0;32;22m", repc + "2");
-            input = StringUtils.replace(input, esc + "[0;36;22m", repc + "3");
-            input = StringUtils.replace(input, esc + "[0;31;22m", repc + "4");
-            input = StringUtils.replace(input, esc + "[0;35;22m", repc + "5");
-            input = StringUtils.replace(input, esc + "[0;33;22m", repc + "6");
-            input = StringUtils.replace(input, esc + "[0;37;22m", repc + "7");
-            input = StringUtils.replace(input, esc + "[0;30;1m", repc + "8");
-            input = StringUtils.replace(input, esc + "[0;34;1m", repc + "9");
-            input = StringUtils.replace(input, esc + "[0;32;1m", repc + "a");
-            input = StringUtils.replace(input, esc + "[0;36;1m", repc + "b");
-            input = StringUtils.replace(input, esc + "[0;31;1m", repc + "c");
-            input = StringUtils.replace(input, esc + "[0;35;1m", repc + "d");
-            input = StringUtils.replace(input, esc + "[0;33;1m", repc + "e");
-            input = StringUtils.replace(input, esc + "[0;37;1m", repc + "f");
-            input = StringUtils.replace(input, esc + "[5m", repc + "k");
-            input = StringUtils.replace(input, esc + "[21m", repc + "l");
-            input = StringUtils.replace(input, esc + "[9m", repc + "m");
-            input = StringUtils.replace(input, esc + "[4m", repc + "n");
-            input = StringUtils.replace(input, esc + "[3m", repc + "o");
-            input = StringUtils.replace(input, esc + "[m", repc + "r");
-        }
-        return input;
     }
 
     public void redirectOutput() {
@@ -105,7 +78,7 @@ public class LogInterceptor extends PrintStream {
         @Override
         public void log(Marker marker, String fqcn, Level level, Message data, Throwable t) {
             HashMap<String, dObject> context = new HashMap<String, dObject>();
-            context.put("message", new Element(cleanse(data.getFormattedMessage())));
+            context.put("message", new Element(Denizen.cleanseLog(data.getFormattedMessage())));
             context.put("level", new Element(level.name()));
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("console output"),
                     new BukkitScriptEntryData(null, null), context);
