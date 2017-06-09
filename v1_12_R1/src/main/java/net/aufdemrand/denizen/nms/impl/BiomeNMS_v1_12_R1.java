@@ -2,7 +2,12 @@ package net.aufdemrand.denizen.nms.impl;
 
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.minecraft.server.v1_12_R1.*;
+import net.minecraft.server.v1_12_R1.BiomeBase;
+import net.minecraft.server.v1_12_R1.BlockPosition;
+import net.minecraft.server.v1_12_R1.Chunk;
+import net.minecraft.server.v1_12_R1.EntityTypes;
+import net.minecraft.server.v1_12_R1.EnumCreatureType;
+import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -12,7 +17,6 @@ import org.bukkit.entity.EntityType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class BiomeNMS_v1_12_R1 extends BiomeNMS {
 
@@ -55,12 +59,12 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "D", biomeBase, humidity);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "C", biomeBase, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "C", biomeBase, temperature);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "B", biomeBase, temperature);
     }
 
     @Override
@@ -80,7 +84,7 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
 
     @Override
     protected boolean getDoesRain() {
-        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "G", biomeBase);
+        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "F", biomeBase);
         if (rains != null) {
             return rains;
         }
@@ -89,7 +93,7 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
 
     @Override
     protected boolean getDoesSnow() {
-        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "F", biomeBase);
+        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "E", biomeBase);
         if (rains != null) {
             return rains;
         }

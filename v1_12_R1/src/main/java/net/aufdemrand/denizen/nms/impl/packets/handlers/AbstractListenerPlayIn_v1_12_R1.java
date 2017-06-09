@@ -212,6 +212,21 @@ public class AbstractListenerPlayIn_v1_12_R1 extends PlayerConnection {
     }
 
     @Override
+    public void a(PacketPlayInAdvancements packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInAutoRecipe packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
+    public void a(PacketPlayInRecipeDisplayed packet) {
+        oldListener.a(packet);
+    }
+
+    @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
         oldListener.a(iChatBaseComponent);
     }

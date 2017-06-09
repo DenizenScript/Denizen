@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_12_R1.ChatComponentText;
+import net.minecraft.server.v1_12_R1.ChatMessageType;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent;
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 
@@ -18,7 +19,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
     private String message;
     private String rawJson;
     private boolean bungee;
-    private int position;
+    private ChatMessageType position;
 
     public PacketOutChat_v1_12_R1(PacketPlayOutChat internal) {
         this.internal = internal;
@@ -33,7 +34,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
                 rawJson = ComponentSerializer.toString(internal.components);
                 bungee = true;
             }
-            position = POSITION.getInt(internal);
+            position = (ChatMessageType)POSITION.get(internal);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -42,7 +43,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
 
     @Override
     public int getPosition() {
-        return position;
+        return position.ordinal();
     }
 
     @Override
