@@ -318,9 +318,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
                 // Otherwise, if the entity is no longer traveling through
                 // the air, stop the task
-                else if (lastVelocity != null) {
-                    if (lastVelocity.distance
-                            (lastEntity.getBukkitEntity().getVelocity()) < 0.05) {
+                else if (lastLocation != null && lastVelocity != null) {
+                    if (lastLocation.distanceSquared(lastEntity.getBukkitEntity().getLocation()) < 1
+                            && lastVelocity.distanceSquared(lastEntity.getBukkitEntity().getVelocity()) < 0.1) {
                         flying = false;
                     }
                 }
@@ -385,7 +385,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     scriptEntry.setFinished(true);
                 }
                 else {
-                    // Record it's position in case the entity dies
+                    // Record its position in case the entity dies
                     lastLocation = lastEntity.getLocation();
                     lastVelocity = lastEntity.getVelocity();
                 }

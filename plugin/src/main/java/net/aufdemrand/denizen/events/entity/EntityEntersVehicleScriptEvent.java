@@ -49,7 +49,10 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return CoreUtilities.getXthArg(1, CoreUtilities.toLowerCase(s)).equals("enters");
+        String lower = CoreUtilities.toLowerCase(s);
+        return CoreUtilities.getXthArg(1, lower).equals("enters")
+                // TODO: Ideally, match valid entity types
+                && !CoreUtilities.getXthArg(2, lower).equals("biome");
     }
 
     @Override

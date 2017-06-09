@@ -1272,18 +1272,17 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <in@inventory.can_fit[<item>]>
+        // @attribute <in@inventory.can_fit[<item>|...]>
         // @returns Element(Boolean)
         // @description
         // Returns whether the inventory can fit an item.
         // -->
-        if (attribute.startsWith("can_fit") && attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1));
-            if (item == null) {
+        if (attribute.startsWith("can_fit") && attribute.hasContext(1)) {
+            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class);
+            if (items == null || items.isEmpty()) {
                 return null;
             }
             int attribs = 1;
-            int qty = 1;
 
             InventoryType type = inventory.getType();
             dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, inventory.getTitle()));
@@ -1305,13 +1304,19 @@ public class dInventory implements dObject, Notable, Adjustable {
             if ((attribute.getAttribute(2).startsWith("quantity") || attribute.getAttribute(2).startsWith("qty")) &&
                     attribute.hasContext(2) &&
                     aH.matchesInteger(attribute.getContext(2))) {
-                qty = attribute.getIntContext(2);
+                int qty = attribute.getIntContext(2);
                 attribs = 2;
+                items.get(0).setAmount(qty);
             }
-            item.setAmount(qty);
 
-            List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, item.getItemStack());
-            return new Element(leftovers.isEmpty()).getAttribute(attribute.fulfill(attribs));
+            // NOTE: Could just also convert items to an array and pass it all in at once...
+            for (dItem itm : items) {
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, itm.getItemStack());
+                if (!leftovers.isEmpty()) {
+                    return new Element(false).getAttribute(attribute.fulfill(attribs));
+                }
+            }
+            return new Element(true).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1555,6 +1560,44 @@ public class dInventory implements dObject, Notable, Adjustable {
                                 break;
                             }
                         }
+                    }
+                }
+            }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.contains.scriptname[<scriptname>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified scriptname.
+        // -->
+        if (attribute.startsWith("contains.scriptname") && attribute.hasContext(2)) {
+            String scrName = attribute.getContext(2);
+            int qty = 1;
+            int attribs = 2;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains.scriptname[<scriptname>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item with the specified scriptname.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
+
+            int found_items = 0;
+
+            for (ItemStack item : getContents()) {
+                if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
+                    found_items += item.getAmount();
+                    if (found_items >= qty) {
+                        break;
                     }
                 }
             }

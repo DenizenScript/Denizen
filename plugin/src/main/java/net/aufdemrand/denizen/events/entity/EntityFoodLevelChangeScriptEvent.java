@@ -52,7 +52,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
-        return (CoreUtilities.toLowerCase(s).endsWith("changes food level"));
+        return (CoreUtilities.toLowerCase(s).contains("changes food level"));
     }
 
     @Override
@@ -104,7 +104,7 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("food")) {
             return new Element(food);

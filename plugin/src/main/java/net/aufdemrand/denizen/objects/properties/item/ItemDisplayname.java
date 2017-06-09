@@ -106,7 +106,7 @@ public class ItemDisplayname implements Property {
 
         if (mechanism.matches("display_name")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
-            meta.setDisplayName(EscapeTags.unEscape(mechanism.getValue().asString()));
+            meta.setDisplayName(mechanism.hasValue() ? EscapeTags.unEscape(mechanism.getValue().asString()) : null);
             item.getItemStack().setItemMeta(meta);
         }
     }

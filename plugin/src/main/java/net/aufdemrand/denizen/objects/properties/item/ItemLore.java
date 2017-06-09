@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizencore.objects.Element;
@@ -135,7 +136,9 @@ public class ItemLore implements Property {
             ItemMeta meta = item.getItemStack().getItemMeta();
             dList lore = mechanism.getValue().asType(dList.class);
             if (item.isItemscript()) {
-                lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));
+                if (!Settings.packetInterception()) {
+                    lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));
+                }
             }
             for (int i = 0; i < lore.size(); i++) {
                 lore.set(i, EscapeTags.unEscape(lore.get(i)));

@@ -153,7 +153,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("damage")) {
             return damage;
@@ -165,10 +165,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
             return cause;
         }
         else if (name.equals("damager") && damager != null) {
-            return damager;
+            return damager.getDenizenObject();
         }
         else if (name.equals("projectile") && projectile != null) {
-            return projectile;
+            return projectile.getDenizenObject();
         }
         else if (name.startsWith("damage_")) {
             for (EntityDamageEvent.DamageModifier dm : EntityDamageEvent.DamageModifier.values()) {

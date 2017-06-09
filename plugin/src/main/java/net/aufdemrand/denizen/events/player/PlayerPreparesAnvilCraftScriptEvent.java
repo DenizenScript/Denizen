@@ -7,67 +7,66 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.AnvilInventory;
 
 // <--[event]
 // @Events
-// item recipe formed
-// <item> recipe formed
-// <material> recipe formed
+// player prepares anvil craft item
+// player prepares anvil craft <item>
 //
-// @Regex ^on [^\s]+ recipe formed$
+// @Regex ^on player prepares anvil craft [^\s]+$
 //
-// @Cancellable true
+// @Triggers when a player prepares an anvil to craft an item.
 //
-// @Triggers when an item's recipe is correctly formed.
+// @Warning The player doing the crafting is estimated and may be inaccurate.
+//
 // @Context
-// <context.inventory> returns the dInventory of the crafting inventory.
-// <context.item> returns the dItem to be formed in the result slot.
-// <context.recipe> returns a dList of dItems in the recipe.
+// <context.inventory> returns the dInventory of the anvil inventory.
+// <context.item> returns the dItem to be crafted.
+// <context.repair_cost> returns an Element(Number) of the repair cost.
+// <context.new_name> returns an Element of the new name.
 //
 // @Determine
-// dItem to change the item that is formed in the result slot.
+// Element(Number) to set the repair cost.
+// dItem to change the item that is crafted.
 //
 // -->
 
-public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Listener {
+public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent implements Listener {
 
-    public ItemRecipeFormedScriptEvent() {
+    public PlayerPreparesAnvilCraftScriptEvent() {
         instance = this;
     }
 
-    public static ItemRecipeFormedScriptEvent instance;
-
+    public static PlayerPreparesAnvilCraftScriptEvent instance;
     public boolean resultChanged;
     public dItem result;
-    public dList recipe;
-    public CraftingInventory inventory;
+    public AnvilInventory inventory;
     public dPlayer player;
+    public Element repairCost;
+    public Element newName;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return (CoreUtilities.getXthArg(1, lower).equals("recipe") && CoreUtilities.getXthArg(2, lower).equals("formed"))
-                || CoreUtilities.getXthArg(1, lower).equals("crafted");
+        return lower.startsWith("player prepares anvil craft");
     }
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String eItem = CoreUtilities.getXthArg(0, lower);
+        String eItem = CoreUtilities.getXthArg(4, lower);
 
         if (!tryItem(result, eItem)) {
             return false;
@@ -78,7 +77,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public String getName() {
-        return "ItemRecipeFormed";
+        return "PlayerPreparesAnvilCraft";
     }
 
     @Override
@@ -88,17 +87,20 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public void destroy() {
-        PrepareItemCraftEvent.getHandlerList().unregister(this);
+        PrepareAnvilEvent.getHandlerList().unregister(this);
     }
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (dItem.matches(determination)) {
+        if (aH.matchesInteger(determination)) {
+            repairCost = new Element(determination);
+            return true;
+        }
+        else if (dItem.matches(determination)) {
             result = dItem.valueOf(determination);
             resultChanged = true;
             return true;
         }
-
         else {
             return super.applyDetermination(container, determination);
         }
@@ -114,45 +116,38 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         if (name.equals("item")) {
             return result;
         }
+        else if (name.equals("repair_cost")) {
+            return repairCost;
+        }
+        else if (name.equals("new_name")) {
+            return newName;
+        }
         else if (name.equals("inventory")) {
             return new dInventory(inventory);
-        }
-        else if (name.equals("recipe")) {
-            return recipe;
         }
         return super.getContext(name);
     }
 
     @EventHandler
-    public void onRecipeFormed(PrepareItemCraftEvent event) {
-        HumanEntity humanEntity = event.getView().getPlayer();
+    public void onCraftItem(PrepareAnvilEvent event) {
+        if (event.getInventory().getViewers().size() == 0) {
+            return;
+        }
+        HumanEntity humanEntity = event.getInventory().getViewers().get(0);
         if (dEntity.isNPC(humanEntity)) {
             return;
         }
-        Recipe eRecipe = event.getRecipe();
-        if (eRecipe == null || eRecipe.getResult() == null) {
-            return;
-        }
         inventory = event.getInventory();
-        result = new dItem(eRecipe.getResult());
-        recipe = new dList();
-        for (ItemStack itemStack : inventory.getMatrix()) {
-            if (itemStack != null && itemStack.getType() != Material.AIR) {
-                recipe.add(new dItem(itemStack).identify());
-            }
-            else {
-                recipe.add(new dItem(Material.AIR).identify());
-            }
-        }
-        player = dEntity.getPlayerFrom(humanEntity);
-        resultChanged = false;
-        cancelled = false;
+        repairCost = new Element(inventory.getRepairCost());
+        newName = new Element(inventory.getRenameText());
+        result = new dItem(event.getResult());
+        this.player = dEntity.getPlayerFrom(humanEntity);
+        this.resultChanged = false;
+        this.cancelled = false;
         fire();
-        if (cancelled) {
-            inventory.setResult(null);
-        }
-        else if (resultChanged) {
-            inventory.setResult(result.getItemStack());
+        inventory.setRepairCost(repairCost.asInt());
+        if (resultChanged) {
+            event.setResult(result.getItemStack());
         }
     }
 }

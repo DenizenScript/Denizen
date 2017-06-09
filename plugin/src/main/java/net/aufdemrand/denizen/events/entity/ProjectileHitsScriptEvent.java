@@ -148,6 +148,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
         }
 
+        /*
         Block block = null;
         try {
             BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
@@ -164,6 +165,9 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             // As this error happens on no fault of the user, display no error message... just cancel the event.
             return;
         }
+        */
+
+        Block block = event.getHitBlock();
 
         if (block == null) {
             return;
