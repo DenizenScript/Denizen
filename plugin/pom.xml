@@ -60,6 +60,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizen-v1_12_R1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens</artifactId>
             <version>${citizens.version}</version>
