@@ -4,7 +4,7 @@
     <parent>
         <artifactId>denizen-parent</artifactId>
         <groupId>net.aufdemrand</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -56,6 +56,12 @@
         <dependency>
             <groupId>net.aufdemrand</groupId>
             <artifactId>denizen-v1_11_R1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizen-v1_12_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

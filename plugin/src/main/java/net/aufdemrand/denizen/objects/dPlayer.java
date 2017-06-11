@@ -3053,7 +3053,12 @@ public class dPlayer implements dObject, Adjustable {
         // <p@player.ban_info.created>
         // -->
         if (mechanism.matches("is_banned") && mechanism.requireBoolean()) {
-            getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) {
+                getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
+            }
+            else {
+                // TODO
+            }
         }
 
         // <--[mechanism]

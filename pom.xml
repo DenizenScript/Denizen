@@ -6,13 +6,13 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.11-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
-        <citizens.version>2.0.21-SNAPSHOT</citizens.version>
+        <citizens.version>2.0.22-SNAPSHOT</citizens.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
     </properties>
 
@@ -22,6 +22,7 @@
         <module>v1_9_R2</module>
         <module>v1_10_R1</module>
         <module>v1_11_R1</module>
+        <module>v1_12_R1</module>
         <module>plugin</module>
     </modules>
 

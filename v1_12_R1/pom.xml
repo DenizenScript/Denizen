@@ -8,13 +8,26 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>denizen-nmshandler</artifactId>
+    <artifactId>denizen-v1_12_R1</artifactId>
 
     <dependencies>
         <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizen-nmshandler</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizencore</artifactId>
+            <version>1.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>${craftbukkit.version}</version>
+            <version>1.12-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -24,24 +37,17 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
-            <artifactId>denizencore</artifactId>
-            <version>1.15</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.12-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
