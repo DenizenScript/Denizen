@@ -72,7 +72,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static boolean isCitizensNPC(Entity entity) {
-        return entity != null && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity);
+        return entity != null && Depends.citizens != null && CitizensAPI.hasImplementation() && CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 
     public static dNPC getNPCFrom(Entity entity) {
