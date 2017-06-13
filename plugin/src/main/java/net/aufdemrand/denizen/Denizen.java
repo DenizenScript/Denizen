@@ -376,7 +376,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             return;
         }
 
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) { // TODO: 1.12 update
             logInterceptor = new LogInterceptor();
         }
 
@@ -962,7 +962,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
 
         // Disable the log interceptor... otherwise bad things on /reload
-        logInterceptor.standardOutput();
+        if (logInterceptor != null) {
+            logInterceptor.standardOutput();
+        }
 
         // Save notables
         notableManager.saveNotables();
