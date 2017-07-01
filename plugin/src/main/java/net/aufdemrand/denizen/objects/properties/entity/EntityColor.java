@@ -24,7 +24,8 @@ public class EntityColor implements Property {
                 type == EntityType.HORSE ||
                 type == EntityType.WOLF ||
                 type == EntityType.OCELOT ||
-                type == EntityType.RABBIT;
+                type == EntityType.RABBIT ||
+                type == EntityType.PARROT;
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -71,6 +72,10 @@ public class EntityColor implements Property {
 
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
+        }
+
+        else if (type == EntityType.PARROT) {
+            return ((Parrot) colored.getBukkitEntity()).getVariant().name();
         }
 
         else // Should never happen
@@ -143,10 +148,11 @@ public class EntityColor implements Property {
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, and Parrot type entities can have a color.
         // For horses, the output is COLOR|STYLE|VARIANT, see <@link language horse types>.
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
+        // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // -->
         if (attribute.startsWith("color")) {
             return new Element(CoreUtilities.toLowerCase(getColor()))
@@ -165,10 +171,11 @@ public class EntityColor implements Property {
         // @input Element
         // @description
         // Changes the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, Sheep, and Rabbit type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, and Parrot type entities can have a color.
         // For horses, the input is COLOR|STYLE|VARIANT, see <@link language horse types>
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
+        // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
         // @tags
         // <e@entity.color>
         // <e@entity.is_colorable>
@@ -220,7 +227,12 @@ public class EntityColor implements Property {
                 }
             }
 
+            else if (type == EntityType.PARROT
+                    && mechanism.getValue().matchesEnum(Parrot.Variant.values())) {
+                ((Parrot) colored.getBukkitEntity())
+                        .setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+
         }
     }
 }
-
