@@ -1,6 +1,9 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.ParrotHelper;
 import net.aufdemrand.denizen.utilities.entity.RabbitType;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -25,7 +28,7 @@ public class EntityColor implements Property {
                 type == EntityType.WOLF ||
                 type == EntityType.OCELOT ||
                 type == EntityType.RABBIT ||
-                type == EntityType.PARROT;
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT);
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -74,8 +77,8 @@ public class EntityColor implements Property {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
 
-        else if (type == EntityType.PARROT) {
-            return ((Parrot) colored.getBukkitEntity()).getVariant().name();
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
+            return ParrotHelper.parrotColor(colored);
         }
 
         else // Should never happen
@@ -227,10 +230,8 @@ public class EntityColor implements Property {
                 }
             }
 
-            else if (type == EntityType.PARROT
-                    && mechanism.getValue().matchesEnum(Parrot.Variant.values())) {
-                ((Parrot) colored.getBukkitEntity())
-                        .setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
+                ParrotHelper.setParrotColor(colored, mechanism);
             }
 
         }
