@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.AbstractLoggerWrapper;
 import org.bukkit.ChatColor;
 
 import java.io.ByteArrayOutputStream;
@@ -28,6 +27,11 @@ import java.util.List;
  * Intercepts system.out operations for the sake of blocking messages at request.
  * Disabled by default in config.yml
  */
+
+public class LogInterceptor {
+    // TODO: Re-enable functionality. Cross-version somehow.
+}
+/*
 public class LogInterceptor extends PrintStream {
     boolean redirected = false;
     public PrintStream standardOut;
@@ -114,3 +118,4 @@ public class LogInterceptor extends PrintStream {
         }
     }
 }
+*/

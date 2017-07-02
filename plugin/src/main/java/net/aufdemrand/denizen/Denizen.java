@@ -962,9 +962,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
 
         // Disable the log interceptor... otherwise bad things on /reload
-        if (logInterceptor != null) {
+        /*if (logInterceptor != null) {
             logInterceptor.standardOutput();
-        }
+        }*/
 
         // Save notables
         notableManager.saveNotables();
