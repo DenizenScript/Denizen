@@ -1878,9 +1878,9 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns the quantity of dItems with the given scriptname.
         // -->
         if (attribute.startsWith("script_quantity") || attribute.startsWith("script_qty")) {
+            int qty = 0;
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
             	String scrName = attribute.getContext(1);
-                int qty = 0;
 
                 for (ItemStack item : getContents()) {
                     if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
@@ -1888,7 +1888,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     }
                 }
             }
-            return new Element( qty )
+			return new Element( qty )
                     .getAttribute(attribute.fulfill(1));
         }
 
