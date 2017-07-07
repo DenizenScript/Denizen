@@ -1887,12 +1887,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                         qty += item.getAmount();
                     }
                 }
-                return new Element(count( qty, false )).getAttribute(attribute.fulfill(1));
             }
-            else {
-                return new Element(count(null, false))
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return new Element( qty )
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
