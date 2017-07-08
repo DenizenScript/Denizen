@@ -201,9 +201,10 @@ public class TakeCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "Must specify a scriptname!");
                     return;
                 }
+                String itemname = scriptname.asString();
                 for (ItemStack it : inventory.getContents()) {
                     if (found_script_items < qty.asInt() && it != null && it.hasItemMeta() &&
-                            scriptname.asString().equalsIgnoreCase(new dItem(it).getScriptName())) {
+                            itemname.equalsIgnoreCase(new dItem(it).getScriptName())) {
                         int amt = it.getAmount();
                         if (found_script_items + it.getAmount() <= qty.asInt()) {
                             inventory.getInventory().removeItem(it);
