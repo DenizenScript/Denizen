@@ -1870,26 +1870,25 @@ public class dInventory implements dObject, Notable, Adjustable {
                         .getAttribute(attribute.fulfill(1));
             }
         }
-
         // <--[tag]
-        // @attribute <in@inventory.script_quantity[<scriptname>]>
-        // @returns Element(Number)
+        // @attribute <in@inventory.scriptname[<scriptname>].qty>
+        // @returns Element(Boolean)
         // @description
-        // Returns the quantity of dItems with the given scriptname.
+        // Returns the quantity of dItems with the given scriptname in a dInventory.
         // -->
-        if (attribute.startsWith("script_quantity") || attribute.startsWith("script_qty")) {
+        if (attribute.startsWith("scriptname") && attribute.hasContext(1)) {
             int qty = 0;
-            if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
-            	String scrName = attribute.getContext(1);
-
+            if (attribute.getAttribute(2).startsWith("qty") || attribute.getAttribute(2).startsWith("quantity")) {
+                String scrName = attribute.getContext(1);
+                
                 for (ItemStack item : getContents()) {
                     if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
                         qty += item.getAmount();
                     }
                 }
+                return new Element( qty ).getAttribute(attribute.fulfill(2));
             }
-			return new Element( qty )
-                    .getAttribute(attribute.fulfill(1));
+            return null;
         }
 
         // <--[tag]
