@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TakeCommand extends AbstractCommand {
 
-    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER}
+    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, SCRIPTNAME, BYDISPLAY, SLOT, BYCOVER}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -40,6 +40,13 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
+            }
+
+            else if (!scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("scriptname")
+                    && !scriptEntry.hasObject("type")) {
+                scriptEntry.addObject("type", Type.SCRIPTNAME);
+                scriptEntry.addObject("scriptname", arg.asElement());
             }
 
             else if (!scriptEntry.hasObject("items")
@@ -112,6 +119,7 @@ public class TakeCommand extends AbstractCommand {
 
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
+        Element scriptname = scriptEntry.getElement("scriptname");
         Element displayname = scriptEntry.getElement("displayname");
         Element slot = scriptEntry.getElement("slot");
         dList titleAuthor = scriptEntry.getdObject("cover");
@@ -128,6 +136,7 @@ public class TakeCommand extends AbstractCommand {
                 aH.debugObj("Type", type.name())
                         + qty.debug()
                         + (inventory != null ? inventory.debug() : "")
+                        + (scriptname != null ? scriptname.debug() : "")
                         + (displayname != null ? displayname.debug() : "")
                         + aH.debugObj("Items", items)
                         + (slot != null ? slot.debug() : "")
@@ -182,6 +191,29 @@ public class TakeCommand extends AbstractCommand {
                         dB.echoDebug(scriptEntry, "Inventory does not contain at least "
                                 + qty.asInt() + " of " + item.getFullString() +
                                 "... Taking as much as possible...");
+                    }
+                }
+                break;
+
+            case SCRIPTNAME:
+                int found_script_items = 0;
+                if (scriptname == null) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a scriptname!");
+                    return;
+                }
+                String itemname = scriptname.asString();
+                for (ItemStack it : inventory.getContents()) {
+                    if (found_script_items < qty.asInt() && it != null && it.hasItemMeta() &&
+                            itemname.equalsIgnoreCase(new dItem(it).getScriptName())) {
+                        int amt = it.getAmount();
+                        if (found_script_items + it.getAmount() <= qty.asInt()) {
+                            inventory.getInventory().removeItem(it);
+                        }
+                        else {
+                            it.setAmount(it.getAmount() - (qty.asInt() - found_script_items));
+                            break;
+                        }
+                        found_script_items += amt;
                     }
                 }
                 break;

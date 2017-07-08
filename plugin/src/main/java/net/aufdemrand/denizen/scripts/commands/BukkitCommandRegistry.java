@@ -3779,7 +3779,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (quantity:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (quantity:{1}) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -3809,9 +3809,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to take 5 emeralds from the player's inventory
         // - take emerald quantity:5
+        // @Usage
+        // Use to take an MyFancyDiamond from the player's inventory
+        // - take scriptname:MyFancyDiamond
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Team
