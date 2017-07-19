@@ -89,6 +89,8 @@ public class DenizenPacketHandler implements PacketHandler {
                         event.message = new Element(chat.getMessage());
                         event.rawJson = new Element(chat.getRawJson());
                         event.system = new Element(pos == 1);
+                        event.messageModified = false;
+                        event.rawJsonModified = false;
                         event.player = dPlayer.mirrorBukkitPlayer(player);
                         event.cancelled = false;
                         event.fire();
