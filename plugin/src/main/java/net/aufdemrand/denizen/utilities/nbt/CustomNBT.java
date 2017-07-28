@@ -15,7 +15,7 @@ public class CustomNBT {
 
     public static final String KEY_DENIZEN = "Denizen NBT";
 
-    private static final String KEY_ATTRIBUTES = "AttributeModifiers";
+    public static final String KEY_ATTRIBUTES = "AttributeModifiers";
 
     public static MapOfEnchantments getEnchantments(ItemStack item) {
         return new MapOfEnchantments(item);
@@ -142,6 +142,18 @@ public class CustomNBT {
         denizenTag = denizenTag.createBuilder().putString(CoreUtilities.toLowerCase(key), value).build();
 
         compoundTag = compoundTag.createBuilder().put(basekey, denizenTag).build();
+
+        // Write tag back
+        return NMSHandler.getInstance().getItemHelper().setNbtData(itemStack, compoundTag);
+    }
+
+    public static ItemStack clearAttributes(ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+        CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
+
+        compoundTag = compoundTag.createBuilder().remove(KEY_ATTRIBUTES).build();
 
         // Write tag back
         return NMSHandler.getInstance().getItemHelper().setNbtData(itemStack, compoundTag);

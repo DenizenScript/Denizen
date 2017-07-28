@@ -72,7 +72,7 @@ public class dEntity implements dObject, Adjustable {
     }
 
     public static boolean isCitizensNPC(Entity entity) {
-        return entity != null && Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(entity);
+        return entity != null && Depends.citizens != null && CitizensAPI.hasImplementation() && CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 
     public static dNPC getNPCFrom(Entity entity) {
@@ -1971,6 +1971,21 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.passengers>
+        // @returns dList(dEntity)
+        // @group attributes
+        // @description
+        // Returns a list of the entity's passengers, if any.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && (attribute.startsWith("passengers") || attribute.startsWith("get_passengers"))) {
+            ArrayList<dEntity> passengers = new ArrayList<dEntity>();
+            for (Entity ent : entity.getPassengers()) {
+                passengers.add(new dEntity(ent));
+            }
+            return new dList(passengers).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.passenger>
         // @returns dEntity
         // @group attributes
@@ -2633,6 +2648,25 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
             NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name passengers
+        // @input dList(dEntity)
+        // @description
+        // Sets the passengers of this entity.
+        // @tags
+        // <e@entity.passengers>
+        // <e@entity.empty>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
+            entity.eject();
+            for (dEntity ent : value.asType(dList.class).filter(dEntity.class)) {
+                if (ent.isSpawned()) {
+                    entity.addPassenger(ent.getBukkitEntity());
+                }
+            }
         }
 
         // <--[mechanism]

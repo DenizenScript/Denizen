@@ -1,7 +1,7 @@
 Denizen: Helpful Citizens for Bukkit!
 -------------------------------------
 
-**Version 1.0.1**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, and 1.11.2!
+**Version 1.0.2**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, and 1.12!
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen/  
 **Download (VERY Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen_Developmental/  
