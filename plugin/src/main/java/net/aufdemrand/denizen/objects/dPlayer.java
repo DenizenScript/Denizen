@@ -2120,6 +2120,32 @@ public class dPlayer implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        // <--[tag]
+        // @attribute <p@player.left_shoulder>
+        // @returns dEntity
+        // @description
+        // Returns the entity on the player's left shoulder.
+        // NOTE: The returned entity will not be spawned within the world,
+        // so most operations are invalid unless the entity is first spawned in.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("left_shoulder")) {
+            return new dEntity(getPlayerEntity().getShoulderEntityLeft())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.right_shoulder>
+        // @returns dEntity
+        // @description
+        // Returns the entity on the player's right shoulder.
+        // NOTE: The returned entity will not be spawned within the world,
+        // so most operations are invalid unless the entity is first spawned in.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("right_shoulder")) {
+            return new dEntity(getPlayerEntity().getShoulderEntityRight())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
         if (Depends.chat != null) {
 
             // <--[tag]
@@ -2580,6 +2606,52 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("exhaustion") && mechanism.requireFloat()) {
             getPlayerEntity().setExhaustion(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name left_shoulder
+        // @input dEntity
+        // @description
+        // Sets the player's left shoulder entity.
+        // Provide no input to remove the shoulder entity.
+        // NOTE: This mechanism will remove the current shoulder entity from the world.
+        // Also note the client will currently only render parrot entities.
+        // @tags
+        // <p@player.left_shoulder>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && mechanism.matches("left_shoulder")) {
+            if (!value.asString().isEmpty()) {
+                if (mechanism.requireObject(dEntity.class)) {
+                    getPlayerEntity().setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
+                }
+            }
+            else {
+                getPlayerEntity().setShoulderEntityLeft(null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name right_shoulder
+        // @input dEntity
+        // @description
+        // Sets the player's right shoulder entity.
+        // Provide no input to remove the shoulder entity.
+        // NOTE: This mechanism will remove the current shoulder entity from the world.
+        // Also note the client will currently only render parrot entities.
+        // @tags
+        // <p@player.right_shoulder>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && mechanism.matches("right_shoulder")) {
+            if (!value.asString().isEmpty()) {
+                if (mechanism.requireObject(dEntity.class)) {
+                    getPlayerEntity().setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
+                }
+            }
+            else {
+                getPlayerEntity().setShoulderEntityRight(null);
+            }
         }
 
         // <--[mechanism]
