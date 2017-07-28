@@ -91,6 +91,25 @@ public class CustomNBT {
         return attrs;
     }
 
+    public static long uuidChoice(ItemStack its) {
+        String mat = CoreUtilities.toLowerCase(its.getType().name());
+        if (mat.contains("boots")) {
+            return 1000;
+        }
+        else if (mat.contains("legging")) {
+            return 100000;
+        }
+        else if (mat.contains("helmet")) {
+            return 10000000;
+        }
+        else if (mat.contains("chestp")) {
+            return 1000000000;
+        }
+        else {
+            return 1;
+        }
+    }
+
     public static ItemStack addAttribute(ItemStack itemStack, String attr, String slot, int op, double amt) {
         if (itemStack == null) {
             return null;
@@ -113,8 +132,10 @@ public class CustomNBT {
         tmap.put("Operation", new IntTag(op));
         tmap.put("Amount", new DoubleTag(amt));
 
-        tmap.put("UUIDMost", new LongTag(88512 + attribs.size()));
-        tmap.put("UUIDLeast", new LongTag(1250025L + attribs.size()));
+        long uuidhelp = uuidChoice(itemStack);
+
+        tmap.put("UUIDMost", new LongTag(uuidhelp + 88512 + attribs.size()));
+        tmap.put("UUIDLeast", new LongTag(uuidhelp * 2 + 1250025L + attribs.size()));
 
         CompoundTag ct = NMSHandler.getInstance().createCompoundTag(tmap);
         attribs.add(ct);
