@@ -99,6 +99,7 @@ public class ItemAttributeNBT implements Property {
         if (mechanism.matches("nbt_attributes")) {
             dList list = mechanism.getValue().asType(dList.class);
             ItemStack itemStack = item.getItemStack();
+            itemStack = CustomNBT.clearAttributes(itemStack);
             for (String string : list) {
                 String[] split = string.split("/");
                 String attribute = EscapeTags.unEscape(split[0]);

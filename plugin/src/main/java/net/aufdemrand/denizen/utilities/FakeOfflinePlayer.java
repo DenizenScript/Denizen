@@ -38,9 +38,9 @@ public class FakeOfflinePlayer implements OfflinePlayer {
     }
 
     // TODO: 1.12 update removed this
-    @Override
+   /* @Override
     public void setBanned(boolean b) {
-    }
+    }*/
 
     @Override
     public boolean isWhitelisted() {

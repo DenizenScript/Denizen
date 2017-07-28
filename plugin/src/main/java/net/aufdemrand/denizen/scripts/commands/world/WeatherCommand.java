@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
 
 
@@ -54,7 +55,7 @@ public class WeatherCommand extends AbstractCommand {
         scriptEntry.defaultObject("world",
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) : null,
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null,
-                dWorld.valueOf("world"));
+                Bukkit.getWorlds().get(0));
     }
 
     @Override

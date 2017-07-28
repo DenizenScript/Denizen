@@ -1134,12 +1134,12 @@ public class ServerTags implements Listener {
                 dB.echoError("Console redirection disabled by administrator.");
                 return;
             }
-            if (mechanism.getValue().asBoolean()) {
+            /*if (mechanism.getValue().asBoolean()) {
                 Denizen.logInterceptor.redirectOutput();
             }
             else {
                 Denizen.logInterceptor.standardOutput();
-            }
+            }*/
         }
 
         // <--[mechanism]

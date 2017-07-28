@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
@@ -53,6 +54,11 @@ public class DenizenCommandSender implements ConsoleCommandSender {
     @Override
     public String getName() {
         return Bukkit.getConsoleSender().getName();
+    }
+
+    @Override
+    public Spigot spigot() {
+        return null; // TODO: ??
     }
 
     @Override
