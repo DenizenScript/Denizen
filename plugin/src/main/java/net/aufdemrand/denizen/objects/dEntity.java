@@ -1978,14 +1978,11 @@ public class dEntity implements dObject, Adjustable {
         // Returns a list of the entity's passengers, if any.
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && (attribute.startsWith("passengers") || attribute.startsWith("get_passengers"))) {
-            if (!entity.isEmpty()) {
-                ArrayList<dEntity> passengers = new ArrayList<dEntity>();
-                for (Entity ent : entity.getPassengers()) {
-                        passengers.add(new dEntity(ent));
-                }
-                return new dList(passengers)
-                        .getAttribute(attribute.fulfill(1));
+            ArrayList<dEntity> passengers = new ArrayList<dEntity>();
+            for (Entity ent : entity.getPassengers()) {
+                passengers.add(new dEntity(ent));
             }
+            return new dList(passengers).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
