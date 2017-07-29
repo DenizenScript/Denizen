@@ -1097,6 +1097,20 @@ public class dPlayer implements dObject, Adjustable {
         /////////////////
 
         // <--[tag]
+        // @attribute <p@player.item_cooldown[<material>]>
+        // @returns Duration
+        // @description
+        // Returns the cooldown duration remaining on player's material.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && attribute.startsWith("item_cooldown")) {
+            dMaterial mat = new Element(attribute.getContext(1)).asType(dMaterial.class);
+            if (mat != null) {
+                return new Duration((long) getPlayerEntity().getCooldown(mat.getMaterial()))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <p@player.first_played>
         // @returns Duration
         // @description

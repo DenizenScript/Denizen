@@ -1972,6 +1972,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
 
+        // <--[command]
+        // @Name ItemCooldown
+        // @Syntax itemcooldown [<material>|...] (duration:<duration>)
+        // @Required 1
+        // @Stable stable
+        // @Short Places a cooldown on a material in a player's inventory.
+        // @Author Mergu
+        // @Group player
+        //
+        // @Description
+        // Places a cooldown on a material in a player's inventory.
+        //
+        // @Tags
+        // <p@player.item_cooldown[<material>]>
+        //
+        // @Usage
+        // Places a 1 second cooldown on using an ender pearl.
+        // - itemcooldown ender_pearl
+        //
+        // @Usage
+        // Places a 10 minute cooldown on using golden apples.
+        // - itemcooldown golden_apple d:10m
+        //
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+            registerCoreMember(ItemCooldownCommand.class,
+                    "ITEMCOOLDOWN", "itemcooldown [<material>|...] (duration:<duration>)", 1);
+        }
 
         // <--[command]
         // @Name kick
