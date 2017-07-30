@@ -448,10 +448,6 @@ public class ServerTags implements Listener {
                 dB.echoError(e);
                 return;
             }
-            if (!Utilities.isSafeFile(f)) {
-                dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
-                return;
-            }
             event.setReplaced(new Element(f.exists()).getAttribute(attribute.fulfill(1)));
             return;
         }
@@ -476,10 +472,6 @@ public class ServerTags implements Listener {
             }
             catch (Exception e) {
                 dB.echoError(e);
-                return;
-            }
-            if (!Utilities.isSafeFile(folder)) {
-                dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                 return;
             }
             File[] files = folder.listFiles();
