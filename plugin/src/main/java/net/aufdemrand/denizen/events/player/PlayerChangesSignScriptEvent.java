@@ -99,13 +99,11 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
+        if (determination.length() > 0 && !determination.equalsIgnoreCase("cancelled")) {
             new_text = dList.valueOf(determination);
             return true;
         }
-        else {
-            return super.applyDetermination(container, determination);
-        }
+        return super.applyDetermination(container, determination);
     }
 
     @Override
