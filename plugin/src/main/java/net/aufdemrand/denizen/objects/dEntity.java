@@ -2663,7 +2663,7 @@ public class dEntity implements dObject, Adjustable {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
             entity.eject();
             for (dEntity ent : value.asType(dList.class).filter(dEntity.class)) {
-                if (ent.isSpawned()) {
+                if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
             }
