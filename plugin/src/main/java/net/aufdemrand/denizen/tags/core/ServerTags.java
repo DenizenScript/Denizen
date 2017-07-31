@@ -598,6 +598,88 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.group_prefix[<group>]>
+        // @returns Element
+        // @description
+        // Returns an Element of a group's chat prefix.
+        // -->
+        if (attribute.startsWith("group_prefix")) {
+
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return;
+            }
+
+            String group = attribute.getContext(1);
+
+            if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
+                dB.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                return;
+            }
+
+            // <--[tag]
+            // @attribute <server.group_prefix[<group>].world[<world>]>
+            // @returns Element
+            // @description
+            // Returns an Element of a group's chat prefix for the specified dWorld.
+            // -->
+            if (attribute.getAttribute(2).startsWith("world")) {
+                dWorld world = dWorld.valueOf(attribute.getContext(2));
+                if (world != null) {
+                    event.setReplaced(new Element(Depends.chat.getGroupPrefix(world.getWorld(), group))
+                            .getAttribute(attribute.fulfill(2)));
+                }
+                return;
+            }
+
+            // Prefix in default world
+            event.setReplaced(new Element(Depends.chat.getGroupPrefix(Bukkit.getWorlds().get(0), group))
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.group_suffix[<group>]>
+        // @returns Element
+        // @description
+        // Returns an Element of a group's chat suffix.
+        // -->
+        if (attribute.startsWith("group_suffix")) {
+
+            if (Depends.permissions == null) {
+                dB.echoError("No permission system loaded! Have you installed Vault and a compatible permissions plugin?");
+                return;
+            }
+
+            String group = attribute.getContext(1);
+
+            if (!Arrays.asList(Depends.permissions.getGroups()).contains(group)) {
+                dB.echoError("Invalid group! '" + (group != null ? group : "") + "' could not be found.");
+                return;
+            }
+
+            // <--[tag]
+            // @attribute <server.group_suffix[<group>].world[<world>]>
+            // @returns Element
+            // @description
+            // Returns an Element of a group's chat suffix for the specified dWorld.
+            // -->
+            if (attribute.getAttribute(2).startsWith("world")) {
+                dWorld world = dWorld.valueOf(attribute.getContext(2));
+                if (world != null) {
+                    event.setReplaced(new Element(Depends.chat.getGroupSuffix(world.getWorld(), group))
+                            .getAttribute(attribute.fulfill(2)));
+                }
+                return;
+            }
+
+            // Suffix in default world
+            event.setReplaced(new Element(Depends.chat.getGroupSuffix(Bukkit.getWorlds().get(0), group))
+                    .getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
         // @attribute <server.list_permission_groups>
         // @returns dList
         // @description
