@@ -22,7 +22,7 @@ public class EntityAge implements Property {
         }
         // Check if entity is Ageable, or a Zombie
         return (((dEntity) entity).getBukkitEntity() instanceof Ageable)
-                || ((dEntity) entity).getBukkitEntity().getType() == EntityType.ZOMBIE;
+                || (((dEntity) entity).getBukkitEntity() instanceof Zombie);
     }
 
     public static EntityAge getFrom(dObject entity) {
@@ -47,7 +47,7 @@ public class EntityAge implements Property {
     dEntity ageable;
 
     public boolean isBaby() {
-        if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE) {
+        if (ageable.getBukkitEntity() instanceof Zombie) {
             return ((Zombie) ageable.getBukkitEntity()).isBaby();
         }
         else {
@@ -65,7 +65,7 @@ public class EntityAge implements Property {
             ageable_npc.getTrait(Age.class).setAge(bool ? -24000 : 0);
         }
         else {
-            if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE) {
+            if (ageable.getBukkitEntity() instanceof Zombie) {
                 ((Zombie) ageable.getBukkitEntity()).setBaby(bool);
             }
 
@@ -85,7 +85,7 @@ public class EntityAge implements Property {
             ageable_npc.getTrait(Age.class).setAge(val);
         }
         else {
-            if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE) {
+            if (ageable.getBukkitEntity() instanceof Zombie) {
                 ((Zombie) ageable.getBukkitEntity()).setBaby(val >= 0);
             }
             else {
@@ -95,7 +95,7 @@ public class EntityAge implements Property {
     }
 
     public int getAge() {
-        if (ageable.getBukkitEntity().getType() == EntityType.ZOMBIE) {
+        if (ageable.getBukkitEntity() instanceof Zombie) {
             return ((Zombie) ageable.getBukkitEntity()).isBaby() ? -24000 : 0;
         }
         else {
@@ -104,13 +104,13 @@ public class EntityAge implements Property {
     }
 
     public void setLock(boolean bool) {
-        if (ageable.getBukkitEntity().getType() != EntityType.ZOMBIE) {
+        if (!(ageable.getBukkitEntity() instanceof Zombie)) {
             ((Ageable) ageable.getBukkitEntity()).setAgeLock(bool);
         }
     }
 
     public boolean getLock() {
-        return ageable.getBukkitEntity().getType() == EntityType.ZOMBIE || ((Ageable) ageable.getBukkitEntity()).getAgeLock();
+        return (ageable.getBukkitEntity() instanceof Zombie) || ((Ageable) ageable.getBukkitEntity()).getAgeLock();
     }
 
 
