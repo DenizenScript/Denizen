@@ -37,7 +37,7 @@ public class SoundHelper_v1_12_R1 implements SoundHelper {
 
     @Override
     public Sound getDefaultMidiInstrument() {
-        return Sound.BLOCK_NOTE_HAT;
+        return Sound.BLOCK_NOTE_HARP;
     }
 
     @Override
