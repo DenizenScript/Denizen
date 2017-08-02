@@ -24,13 +24,15 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Cancellable true
     //
-    // @Triggers when a player kicked the server.
+    // @Triggers when a player is kicked from the server.
     //
     // @Context
-    // <context.message> returns an Element of the kicked message.
+    // <context.message> returns an Element of the kick message sent to all players.
+    // <context.reason> returns an Element of the kick reason.
     //
     // @Determine
-    // Element to change the kicked message.
+    // "MESSAGE:" + Element to change the kick message.
+    // "REASON:" + Element to change the kick reason.
     //
     // -->
 
@@ -39,7 +41,8 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     public static PlayerKickedScriptEvent instance;
-    public String message;
+    public Element message;
+    public Element reason;
     public PlayerKickEvent event;
 
     @Override
@@ -69,8 +72,13 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (!CoreUtilities.toLowerCase(determination).equals("none")) {
-            message = determination;
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (lower.startsWith("message:")) {
+            message = new Element(lower.substring(8));
+            return true;
+        }
+        else if (lower.startsWith("reason:")) {
+            reason = new Element(lower.substring(7));
             return true;
         }
         return super.applyDetermination(container, determination);
@@ -84,7 +92,10 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public dObject getContext(String name) {
         if (name.equals("message")) {
-            return new Element(message);
+            return message;
+        }
+        else if (name.equals("reason")) {
+            return reason;
         }
         return super.getContext(name);
     }
@@ -94,12 +105,14 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        message = event.getLeaveMessage();
+        message = new Element(event.getLeaveMessage());
+        reason = new Element(event.getReason());
         this.event = event;
         cancelled = event.isCancelled();
         fire();
+        event.setLeaveMessage(message.asString());
+        event.setReason(reason.asString());
         event.setCancelled(cancelled);
-        event.setLeaveMessage(message);
 
     }
 }

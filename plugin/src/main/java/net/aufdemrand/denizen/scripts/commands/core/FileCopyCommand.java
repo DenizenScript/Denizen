@@ -79,11 +79,7 @@ public class FileCopyCommand extends AbstractCommand {
             return;
         }
 
-        if (!Utilities.isSafeFile(o)) {
-            dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files from there!");
-            scriptEntry.addObject("success", new Element("false"));
-            return;
-        }
+        // TODO: Origin is within safe directory path?
 
         if (!Utilities.isSafeFile(d)) {
             dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files to there!");
