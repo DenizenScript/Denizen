@@ -19,7 +19,7 @@ import java.util.List;
 
 public class TakeCommand extends AbstractCommand {
 
-    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER}
+    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -54,6 +54,13 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matchesPrefix("bycover")) {
                 scriptEntry.addObject("type", Type.BYCOVER);
                 scriptEntry.addObject("cover", arg.asType(dList.class));
+            }
+
+            else if (!scriptEntry.hasObject("type")
+                    && !scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("script", "scriptname")) {
+                scriptEntry.addObject("type", Type.SCRIPTNAME);
+                scriptEntry.addObject("scriptitem", arg.asType(dItem.class));
             }
 
             else if (!scriptEntry.hasObject("slot")
@@ -113,6 +120,7 @@ public class TakeCommand extends AbstractCommand {
         dInventory inventory = (dInventory) scriptEntry.getObject("inventory");
         Element qty = scriptEntry.getElement("qty");
         Element displayname = scriptEntry.getElement("displayname");
+        dItem scriptitem = scriptEntry.getdObject("scriptitem");
         Element slot = scriptEntry.getElement("slot");
         dList titleAuthor = scriptEntry.getdObject("cover");
         Type type = (Type) scriptEntry.getObject("type");
@@ -129,6 +137,7 @@ public class TakeCommand extends AbstractCommand {
                         + qty.debug()
                         + (inventory != null ? inventory.debug() : "")
                         + (displayname != null ? displayname.debug() : "")
+                        + (scriptitem != null ? scriptitem.debug() : "")
                         + aH.debugObj("Items", items)
                         + (slot != null ? slot.debug() : "")
                         + (titleAuthor != null ? titleAuthor.debug() : ""));
@@ -204,6 +213,30 @@ public class TakeCommand extends AbstractCommand {
                             break;
                         }
                         found_items += amt;
+                    }
+                }
+                break;
+
+            case SCRIPTNAME:
+                if (scriptitem == null || scriptitem.getScriptName() == null) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
+                    return;
+                }
+
+                int script_items = 0;
+                for (ItemStack it : inventory.getContents()) {
+                    if (script_items < qty.asInt()
+                            && it != null
+                            && scriptitem.getScriptName().equalsIgnoreCase(new dItem(it).getScriptName())) {
+                        int amt = it.getAmount();
+                        if (script_items + amt <= qty.asInt()) {
+                            inventory.getInventory().removeItem(it);
+                            script_items += amt;
+                        }
+                        else {
+                            it.setAmount(amt - (qty.asInt() - script_items));
+                            break;
+                        }
                     }
                 }
                 break;
