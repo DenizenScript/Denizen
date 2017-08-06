@@ -3045,6 +3045,31 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name stop_sound
+        // @input Element
+        // @description
+        // Stops all sounds of the specified type for the player.
+        // Valid types are AMBIENT, BLOCKS, HOSTILE, MASTER, MUSIC,
+        // NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
+        // If no sound type is specified, all types will be stopped.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
+                && mechanism.matches("stop_sound")) {
+            if (!mechanism.hasValue()) {
+                getPlayerEntity().stopSound("");
+            }
+            else {
+                try {
+                    getPlayerEntity().stopSound("", SoundCategory.valueOf(value.asString().toUpperCase()));
+                }
+                catch (Exception e) {
+                    dB.echoError("Invalid SoundCategory. Must specify a valid name.");
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name action_bar
         // @input Element
         // @description
