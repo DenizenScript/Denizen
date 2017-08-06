@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.events.core;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -12,9 +14,12 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -106,7 +111,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     // <context.from> returns the block location moved from.
     // <context.to> returns the block location moved to.
     // <context.cuboids> returns a list of cuboids entered/exited (when no cuboid is specified in the event name).
-    // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, LEAVE, TELEPORT
+    // <context.cause> returns the cause of the event. Can be: WALK, WORLD_CHANGE, JOIN, LEAVE, TELEPORT, VEHICLE
     //
     // @Determine
     // "CANCELLED" to stop the player from moving, if cause is WALK or TELEPORT.
@@ -156,6 +161,23 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
         from.setWorld(event.getFrom());
         PlayerMoveEvent evt = new PlayerMoveEvent(event.getPlayer(), from, to);
         internalRun(evt, "world_change");
+    }
+
+    @EventHandler
+    public void vehicleMoveEvent(VehicleMoveEvent event) {
+        List<Entity> passengers = new ArrayList<Entity>();
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+            passengers.addAll(event.getVehicle().getPassengers());
+        }
+        else {
+            passengers.add(event.getVehicle().getPassenger());
+        }
+        for (Entity entity : passengers) {
+            if (dEntity.isPlayer(entity)) {
+                PlayerMoveEvent evt = new PlayerMoveEvent((Player) entity, event.getFrom(), event.getTo());
+                internalRun(evt, "vehicle");
+            }
+        }
     }
 
     @EventHandler
