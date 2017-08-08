@@ -54,8 +54,8 @@ public class EntityBoundingBox implements Property {
     private dList getBoundingBox() {
         BoundingBox boundingBox = NMSHandler.getInstance().getEntityHelper().getBoundingBox(entity.getBukkitEntity());
         dList list = new dList();
-        list.add(new dLocation(boundingBox.getLow()).identify());
-        list.add(new dLocation(boundingBox.getHigh()).identify());
+        list.add(new dLocation(boundingBox.getLow().toLocation(entity.getWorld())).identify());
+        list.add(new dLocation(boundingBox.getHigh().toLocation(entity.getWorld())).identify());
         return list;
     }
 
