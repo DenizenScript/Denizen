@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.helpers.PacketHelper_v1_8_R3;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
@@ -96,7 +97,7 @@ public class ProfileEditor_v1_8_R3 extends ProfileEditor {
         Field pidGameProfile = null;
         try {
             for (Class clzz : PacketPlayOutPlayerInfo.class.getDeclaredClasses()) {
-                if (clzz.getName().toLowerCase().contains("infodata")) {
+                if (CoreUtilities.toLowerCase(clzz.getName()).contains("infodata")) {
                     pidGameProfile = clzz.getDeclaredField("d"); // PlayerInfoData.
                     pidGameProfile.setAccessible(true);
                     break;

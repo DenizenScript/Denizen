@@ -35,6 +35,7 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -207,6 +208,20 @@ public class ServerTags implements Listener {
                 allMats.add(mat.name());
             }
             event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_enchantments>
+        // @returns dList
+        // @description
+        // Returns a list of all enchantments known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_enchantments")) {
+            dList enchants = new dList();
+            for (Enchantment e : Enchantment.values()) {
+                enchants.add(e.getName());
+            }
+            event.setReplaced(enchants.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
