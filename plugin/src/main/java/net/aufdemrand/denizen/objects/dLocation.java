@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -1835,6 +1836,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                             .getAttribute(attribute.fulfill(1));
                 }
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.is_within_border>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the location is within the world border.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && attribute.startsWith("is_within_border")) {
+            return new Element(getWorld().getWorldBorder().isInside(this))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
