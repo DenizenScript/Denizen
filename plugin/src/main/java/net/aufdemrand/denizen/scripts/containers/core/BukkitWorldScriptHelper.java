@@ -392,11 +392,13 @@ public class BukkitWorldScriptHelper implements Listener {
     // <--[event]
     // @Events
     // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (in <area>)
-    // player (<click type>) clicks block (with <item>)
+    // player (<click type>) clicks (<material>) (with <item>) (using hand/off_hand) (in <area>)
+    // player (<click type>) clicks block (with <item>) (using hand/off_hand)
     // player stands on <pressure plate>
     //
     // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
+    // @Warning This event may fire twice in minecraft versions above 1.8.8 unless a hand is specified.
     //
     // @Triggers when a player clicks on a block or stands on a pressure plate.
     // @Context
@@ -404,6 +406,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.location> returns the dLocation the player is clicking on.
     // <context.cuboids> DEPRECATED.
     // <context.click_type> returns an Element of the click type.
+    // <context.hand> returns an Element of the used hand.
     // <context.relative> returns a dLocation of the air block in front of the clicked block.
     //
     // @Determine
@@ -418,14 +421,20 @@ public class BukkitWorldScriptHelper implements Listener {
             return;
         }
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
+        // Replaced with (using hand/off_hand) to detect previously unhandled interactions with the offhand
+        // if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && event.getHand() == EquipmentSlot.OFF_HAND) {
+        //    return;
+        // }
 
         Map<String, dObject> context = new HashMap<String, dObject>();
         Action action = event.getAction();
         dItem item = null;
         dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
+        Element hand = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && event.getHand() != null) {
+            hand = new Element(event.getHand().name());
+        }
+
 
         List<String> events = new ArrayList<String>();
 
@@ -453,6 +462,13 @@ public class BukkitWorldScriptHelper implements Listener {
             events.add(interaction);
         }
 
+        if (hand != null) {
+            context.put("hand", hand);
+            for (String interaction : interactions) {
+                events.add(interaction + " using " + hand.identify());
+            }
+        }
+
         if (event.hasItem()) {
             item = new dItem(event.getItem());
             context.put("item", item);
@@ -461,6 +477,11 @@ public class BukkitWorldScriptHelper implements Listener {
                 events.add(interaction + " with item");
                 events.add(interaction + " with " + item.identifySimple());
                 events.add(interaction + " with " + item.identifyMaterial());
+                if (hand != null) {
+                    events.add(interaction + " with item using " + hand.identify());
+                    events.add(interaction + " with " + item.identifySimple() + " using " + hand.identify());
+                    events.add(interaction + " with " + item.identifyMaterial() + " using " + hand.identify());
+                }
             }
         }
 
@@ -472,6 +493,10 @@ public class BukkitWorldScriptHelper implements Listener {
             for (String interaction : interactions) {
                 events.add(interaction + " block");
                 events.add(interaction + " " + blockMaterial.identifySimple());
+                if (hand != null) {
+                    events.add(interaction + " block using " + hand.identify());
+                    events.add(interaction + " " + blockMaterial.identifySimple() + " using " + hand.identify());
+                }
             }
 
             if (event.hasItem()) {
@@ -485,6 +510,17 @@ public class BukkitWorldScriptHelper implements Listener {
                             " with " + item.identifySimple());
                     events.add(interaction + " " + blockMaterial.identifySimple() +
                             " with " + item.identifyMaterial());
+                    if (hand != null) {
+                        events.add(interaction + " block with item using " + hand.identify());
+                        events.add(interaction + " block with " + item.identifySimple() + " using " + hand.identify());
+                        events.add(interaction + " block with " + item.identifyMaterial() + " using " + hand.identify());
+                        events.add(interaction + " " + blockMaterial.identifySimple() +
+                                " with item using " + hand.identify());
+                        events.add(interaction + " " + blockMaterial.identifySimple() +
+                                " with " + item.identifySimple() + " using " + hand.identify());
+                        events.add(interaction + " " + blockMaterial.identifySimple() +
+                                " with " + item.identifyMaterial() + " using " + hand.identify());
+                    }
                 }
             }
 
