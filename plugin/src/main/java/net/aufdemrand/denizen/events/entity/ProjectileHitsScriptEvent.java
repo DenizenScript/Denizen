@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
@@ -148,26 +150,26 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
         }
 
-        /*
         Block block = null;
-        try {
-            BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
-                    projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
-            while (bi.hasNext()) {
-                block = bi.next();
-                if (block.getTypeId() != 0) {
-                    break;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+            block = event.getHitBlock();
+        }
+        else {
+            try {
+                BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
+                        projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
+                while (bi.hasNext()) {
+                    block = bi.next();
+                    if (block.getTypeId() != 0) {
+                        break;
+                    }
                 }
+            } catch (IllegalStateException ex) {
+                // This happens because it can. Also not explainable whatsoever.
+                // As this error happens on no fault of the user, display no error message... just cancel the event.
+                return;
             }
         }
-        catch (IllegalStateException ex) {
-            // This happens because it can. Also not explainable whatsoever.
-            // As this error happens on no fault of the user, display no error message... just cancel the event.
-            return;
-        }
-        */
-
-        Block block = event.getHitBlock();
 
         if (block == null) {
             return;
