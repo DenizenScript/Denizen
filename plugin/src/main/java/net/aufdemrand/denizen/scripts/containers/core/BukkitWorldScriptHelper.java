@@ -414,6 +414,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
     //
     // -->
+    /**
     @EventHandler
     public void playerInteract(PlayerInteractEvent event) {
 
@@ -556,7 +557,7 @@ public class BukkitWorldScriptHelper implements Listener {
             event.setCancelled(true);
         }
     }
-
+    */
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {
