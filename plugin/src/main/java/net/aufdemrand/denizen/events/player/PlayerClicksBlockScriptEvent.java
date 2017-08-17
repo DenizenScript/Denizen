@@ -51,7 +51,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     PlayerClicksBlockScriptEvent instance;
     PlayerInteractEvent event;
-    dEntity entity;
     dItem item;
     dLocation location;
     Element click_type;
@@ -146,7 +145,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (location != null ? !runInCheck(scriptContainer, s, lower, location)
+                : !runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
             return false;
         }
 
@@ -184,7 +184,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return item;
         }
         else if (name.equals("location")) {
-            return location != null ? location : new Element("null");
+            return location;
         }
         else if (name.equals("click_type")) {
             return click_type;
@@ -193,7 +193,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return hand;
         }
         else if (name.equals("relative")) {
-            return relative != null ? relative : new Element("null");
+            return relative;
         }
         return super.getContext(name);
     }
