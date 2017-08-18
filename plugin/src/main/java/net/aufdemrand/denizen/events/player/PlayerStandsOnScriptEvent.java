@@ -18,9 +18,10 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player stands on (<material>)
+    // player stands on material (in <area>)
+    // player stands on (<material>) (in <area>)
     //
-    // @Regex ^on player stands on?$
+    // @Regex ^on player stands on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player stands on a pressure plate, tripwire, or redstone ore.
     // @Context
