@@ -47,7 +47,7 @@ public class BlockData_v1_12_R1 implements BlockData {
             // TODO: make this work!
             BlockPosition blockPos = new BlockPosition(block.getX(), block.getY(), block.getZ());
             TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(blockPos);
-            te.a(ctag.toNMSTag());
+            te.load(ctag.toNMSTag());
         }
     }
 
