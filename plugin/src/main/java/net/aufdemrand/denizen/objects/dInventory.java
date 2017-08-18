@@ -905,22 +905,11 @@ public class dInventory implements dObject, Notable, Adjustable {
         for (ItemStack invStack : inventory) {
             // If ItemStacks are empty here, they are null
             if (invStack != null) {
-                // If item is null, include all items in the
-                // inventory
-
+                // If item is null, include all items in the inventory
                 if (item == null || invStack.isSimilar(item)) {
-
-                    // If stacks is true, only count the number
-                    // of stacks
-                    //
+                    // If stacks is true, only count the number of stacks
                     // Otherwise, count the quantities of stacks
-
-                    if (stacks) {
-                        qty++;
-                    }
-                    else {
-                        qty = qty + invStack.getAmount();
-                    }
+                    qty += (stacks ? 1 : invStack.getAmount());
                 }
             }
         }
@@ -1754,6 +1743,32 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <in@inventory.find.scriptname[<item>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the location of the first slot that contains the item
+        // with the specified script name.
+        // Returns -1 if there's no match.
+        // -->
+        if (attribute.startsWith("find.scriptname")
+                && attribute.hasContext(2)
+                && dItem.matches(attribute.getContext(2))) {
+            String scrname = dItem.valueOf(attribute.getContext(2)).getScriptName();
+            if (scrname == null) {
+                return null;
+            }
+            int slot = -1;
+            for (int i = 0; i < inventory.getSize(); i++) {
+                if (inventory.getItem(i) != null
+                        && scrname.equalsIgnoreCase(new dItem(inventory.getItem(i)).getScriptName())) {
+                    slot = i + 1;
+                    break;
+                }
+            }
+            return new Element(slot).getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
         // @attribute <in@inventory.find_imperfect[<item>]>
         // @returns Element(Number)
         // @description
@@ -1773,7 +1788,8 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (inventory.getItem(i) != null) {
                     dItem compare_to = new dItem(inventory.getItem(i).clone());
                     compare_to.setAmount(1);
-                    if (item.identify().equalsIgnoreCase(compare_to.identify())) {
+                    if (item.identify().equalsIgnoreCase(compare_to.identify())
+                            || item.getScriptName().equalsIgnoreCase(compare_to.getScriptName())) {
                         slot = i + 1;
                         break;
                     }
