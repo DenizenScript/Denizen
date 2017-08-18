@@ -2,32 +2,25 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -388,139 +381,6 @@ public class BukkitWorldScriptHelper implements Listener {
             }
         }, 1);
     }
-
-    // <--[event]
-    // @Events
-    // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (in <area>)
-    // player (<click type>) clicks block (with <item>)
-    // player stands on <pressure plate>
-    //
-    // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?))|(stands on [^\s]+))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
-    //
-    // @Triggers when a player clicks on a block or stands on a pressure plate.
-    // @Context
-    // <context.item> returns the dItem the player is clicking with.
-    // <context.location> returns the dLocation the player is clicking on.
-    // <context.cuboids> DEPRECATED.
-    // <context.click_type> returns an Element of the click type.
-    // <context.relative> returns a dLocation of the air block in front of the clicked block.
-    //
-    // @Determine
-    // "CANCELLED" to stop the click from happening.
-    // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
-    //
-    // -->
-    @EventHandler
-    public void playerInteract(PlayerInteractEvent event) {
-
-        if (dEntity.isNPC(event.getPlayer())) {
-            return;
-        }
-
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && event.getHand() == EquipmentSlot.OFF_HAND) {
-            return;
-        }
-
-        Map<String, dObject> context = new HashMap<String, dObject>();
-        Action action = event.getAction();
-        dItem item = null;
-        dPlayer player = dEntity.getPlayerFrom(event.getPlayer());
-
-        List<String> events = new ArrayList<String>();
-
-        if (event.getBlockFace() != null && event.getClickedBlock() != null) {
-            context.put("relative", new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()));
-        }
-
-        String[] interactions;
-
-        if (action == Action.LEFT_CLICK_AIR || action == Action.LEFT_CLICK_BLOCK) {
-            interactions = new String[]{"player left clicks", "player clicks"};
-        }
-        else if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            interactions = new String[]{"player right clicks", "player clicks"};
-        }
-        // The only other action is PHYSICAL, which is triggered when a player
-        // stands on a pressure plate
-        else {
-            interactions = new String[]{"player stands on"};
-        }
-        context.put("click_type", new Element(action.name()));
-
-        for (String interaction : interactions) // TODO: addAll?
-        {
-            events.add(interaction);
-        }
-
-        if (event.hasItem()) {
-            item = new dItem(event.getItem());
-            context.put("item", item);
-
-            for (String interaction : interactions) {
-                events.add(interaction + " with item");
-                events.add(interaction + " with " + item.identifySimple());
-                events.add(interaction + " with " + item.identifyMaterial());
-            }
-        }
-
-        if (event.hasBlock()) {
-            Block block = event.getClickedBlock();
-            dMaterial blockMaterial = dMaterial.getMaterialFrom(block.getType(), block.getData());
-            context.put("location", new dLocation(block.getLocation()));
-
-            for (String interaction : interactions) {
-                events.add(interaction + " block");
-                events.add(interaction + " " + blockMaterial.identifySimple());
-            }
-
-            if (event.hasItem()) {
-                for (String interaction : interactions) {
-                    events.add(interaction + " block with item");
-                    events.add(interaction + " block with " + item.identifySimple());
-                    events.add(interaction + " block with " + item.identifyMaterial());
-                    events.add(interaction + " " + blockMaterial.identifySimple() +
-                            " with item");
-                    events.add(interaction + " " + blockMaterial.identifySimple() +
-                            " with " + item.identifySimple());
-                    events.add(interaction + " " + blockMaterial.identifySimple() +
-                            " with " + item.identifyMaterial());
-                }
-            }
-
-            // Look for cuboids that contain the block's location
-            List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getClickedBlock().getLocation());
-
-            dList cuboid_context = new dList();
-            for (String interaction : interactions) {
-                if (cuboids.size() > 0) {
-                    events.add(interaction + " block in notable cuboid");
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in notable cuboid");
-                }
-                // TODO: Add all events + in <cuboid>
-                for (dCuboid cuboid : cuboids) {
-                    events.add(interaction + " block in " + cuboid.identifySimple());
-                    events.add(interaction + ' ' + blockMaterial.identifySimple() + " in " + cuboid.identifySimple());
-                }
-            }
-            for (dCuboid cuboid : cuboids) {
-                cuboid_context.add(cuboid.identifySimple());
-            }
-            // Add in cuboids context, with either the cuboids or an empty list
-            context.put("cuboids", cuboid_context);
-
-        }
-
-        String determination = doEvents(events, null, player, context, true).toUpperCase();
-
-        if (determination.startsWith("CANCELLED:FALSE")) {
-            event.setCancelled(false);
-        }
-        else if (determination.startsWith("CANCELLED")) {
-            event.setCancelled(true);
-        }
-    }
-
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerLogin(PlayerLoginEvent event) {

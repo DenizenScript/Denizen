@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftSkull;
 
@@ -22,9 +23,22 @@ import java.util.UUID;
 
 public class BlockHelper_v1_12_R1 implements BlockHelper {
 
+    public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
+        try {
+            return (T) cbs.getClass().getField("tileEntity").get(cbs);
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        GameProfile profile = ((CraftSkull) skull).getTileEntity().getGameProfile();
+        GameProfile profile = getTE(((CraftSkull) skull)).getGameProfile();
         if (profile == null) {
             return null;
         }
@@ -41,7 +55,7 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
             gameProfile.getProperties().put("textures",
                     new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         }
-        TileEntitySkull tileEntity = ((CraftSkull) skull).getTileEntity();
+        TileEntitySkull tileEntity = getTE((CraftSkull) skull);
         tileEntity.setSkullType(SkullType.PLAYER.ordinal());
         tileEntity.setGameProfile(gameProfile);
         skull.getBlock().getState().update();
@@ -49,7 +63,7 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        TileEntity tileEntity = ((CraftBlockState) block.getState()).getTileEntity();
+        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
         if (tileEntity == null) {
             return null;
         }
@@ -58,11 +72,11 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
 
     @Override
     public void setNbtData(Block block, CompoundTag compoundTag) {
-        TileEntity tileEntity = ((CraftBlockState) block.getState()).getTileEntity();
+        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
         if (tileEntity == null) {
             return;
         }
-        tileEntity.a(((CompoundTag_v1_12_R1) compoundTag).toNMSTag());
+        tileEntity.load(((CompoundTag_v1_12_R1) compoundTag).toNMSTag());
         tileEntity.update();
     }
 
