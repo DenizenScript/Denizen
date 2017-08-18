@@ -471,6 +471,9 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
         else {
             List<String> list = yaml.getStringList(key);
+            if (list == null) {
+                 list = new ArrayList<String>();
+            }
             if (index < 0) {
                 index = 0;
             }
