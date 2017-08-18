@@ -2759,6 +2759,48 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dEntity
+        // @name release_left_shoulder
+        // @input None
+        // @description
+        // Releases the player's left shoulder entity.
+        // Only applies to player-typed entities.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+                && mechanism.matches("release_left_shoulder")) {
+            Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityLeft();
+            if (bukkitEnt != null) {
+                dEntity ent = new dEntity(bukkitEnt);
+                String escript = ent.getEntityScript();
+                ent = dEntity.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
+                        + PropertyParser.getPropertiesString(ent));
+                ent.spawnAt(getEyeLocation());
+                ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name release_right_shoulder
+        // @input None
+        // @description
+        // Releases the player's right shoulder entity.
+        // Only applies to player-typed entities.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+                && mechanism.matches("release_right_shoulder")) {
+            Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityRight();
+            if (bukkitEnt != null) {
+                dEntity ent = new dEntity(bukkitEnt);
+                String escript = ent.getEntityScript();
+                ent = dEntity.valueOf("e@" + (escript != null && escript.length() > 0 ? escript : ent.getEntityType().getLowercaseName())
+                        + PropertyParser.getPropertiesString(ent));
+                ent.spawnAt(getEyeLocation());
+                ((HumanEntity) getLivingEntity()).setShoulderEntityRight(null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
         // @name left_shoulder
         // @input dEntity
         // @description
@@ -2772,7 +2814,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("left_shoulder")) {
-            if (!value.asString().isEmpty()) {
+            if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
                 }
@@ -2796,7 +2838,7 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("right_shoulder")) {
-            if (!value.asString().isEmpty()) {
+            if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
                 }
