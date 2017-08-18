@@ -17,6 +17,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Arrays;
@@ -63,13 +64,13 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (index == -1) return true;
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (in.equals("notable")
-                || dWorld.matches(in)
-                || dCuboid.matches(in)
-                || dEllipsoid.matches(in)) {
-            return true;
+        if (dInventory.valueOf("in@" + in, null, null, true) != null) {
+            return false;
         }
-        return false;
+        for (InventoryType type : InventoryType.values()) {
+            if (in.equalsIgnoreCase(type.name())) return false;
+        }
+        return true;
     }
 
     private boolean runUsingCheck(ScriptContainer scriptContainer, String s, String lower) {
