@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -62,13 +63,10 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (index == -1) return true;
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (in.equals("notable")
-                || dWorld.matches(in)
-                || dCuboid.matches(in)
-                || dEllipsoid.matches(in)) {
-            return true;
+        if (in.equals("inventory")) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     private boolean runUsingCheck(ScriptContainer scriptContainer, String s, String lower) {
@@ -208,7 +206,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         location = event.hasBlock() ? new dLocation(event.getClickedBlock().getLocation()) : null;
         relative = event.hasBlock() ? new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;
         click_type = new Element(event.getAction().name());
-        cancelled = event.isCancelled();
+        cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
         fire();
         event.setCancelled(cancelled);
