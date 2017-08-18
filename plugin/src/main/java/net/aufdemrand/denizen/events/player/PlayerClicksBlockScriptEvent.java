@@ -63,10 +63,13 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (index == -1) return true;
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (in.equals("inventory")) {
-            return false;
+        if (in.equals("notable")
+                || dWorld.matches(in)
+                || dCuboid.matches(in)
+                || dEllipsoid.matches(in)) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     private boolean runUsingCheck(ScriptContainer scriptContainer, String s, String lower) {
