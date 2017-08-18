@@ -474,11 +474,11 @@ public class YamlCommand extends AbstractCommand implements Listener {
             if (list == null) {
                  list = new ArrayList<String>();
             }
-            if (index < 0) {
-                index = 0;
-            }
             if (index > list.size()) {
                 index = list.size() - 1;
+            }
+            if (index < 0) {
+                index = 0;
             }
             if (list.size() == 0) {
                 list.add("");
