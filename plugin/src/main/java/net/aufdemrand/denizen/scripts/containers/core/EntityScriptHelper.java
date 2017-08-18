@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
 
+import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityBoundingBox;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.world.DenizenWorldAccess;
 import net.aufdemrand.denizencore.objects.Element;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -146,12 +148,18 @@ public class EntityScriptHelper implements Listener {
     /**
      * Removes the entity from the list of scripted entities.
      */
-    public static void unlinkEntity(Entity ent) {
+    public static void unlinkEntity(final Entity ent) {
         if (ent == null || ent.getUniqueId() == null) {
             return;
         }
-        entities.remove(ent.getUniqueId());
-        FlagManager.clearEntityFlags(new dEntity(ent));
-        EntityBoundingBox.remove(ent.getUniqueId());
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        entities.remove(ent.getUniqueId());
+                        FlagManager.clearEntityFlags(new dEntity(ent));
+                        EntityBoundingBox.remove(ent.getUniqueId());
+                    }
+                }, 5);
     }
 }
