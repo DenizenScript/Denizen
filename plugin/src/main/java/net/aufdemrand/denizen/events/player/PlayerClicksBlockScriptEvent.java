@@ -64,7 +64,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (index == -1) return true;
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
-        if (dInventory.valueOf("in@" + in, null, null, true) != null) {
+        if (dInventory.matches(in)) {
             return false;
         }
         for (InventoryType type : InventoryType.values()) {

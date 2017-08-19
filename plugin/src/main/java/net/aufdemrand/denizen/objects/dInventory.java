@@ -274,9 +274,33 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public static boolean matches(String arg) {
 
-        // Every single dInventory should have the in@ prefix. No exceptions.
-        return CoreUtilities.toLowerCase(arg).startsWith("in@");
+        if (CoreUtilities.toLowerCase(arg).startsWith("in@")) {
+            return true;
+        }
 
+        String tid = arg;
+        if (arg.contains("[")) {
+            tid = arg.substring(0, arg.indexOf('['));
+        }
+        if (new Element(tid).matchesEnum(InventoryType.values())) {
+            return true;
+        }
+
+        if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {
+            return true;
+        }
+
+        if (NotableManager.isSaved(tid) && NotableManager.isType(tid, dInventory.class)) {
+            return true;
+        }
+
+        for (String idType : idTypes) {
+            if (tid.equalsIgnoreCase(idType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
