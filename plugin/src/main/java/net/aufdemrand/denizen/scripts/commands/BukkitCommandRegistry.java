@@ -3651,7 +3651,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name SQL
-        // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>)/query:<query>/update:<update>]
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:<true/false>)/query:<query>/update:<update>]
         // @Required 1
         // @Stable unstable
         // @Short Interacts with a MySQL server.
@@ -3669,6 +3669,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // SQL connections are not instant - they can take several seconds, or just never connect at all.
         // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
         // as this will delay the commands following the connect command until after the connection is established.
+        // Is it possible to change the SSL if using Secure Socket Layer Certificate. This is by default set to false if not specified.
         //
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query or update command, of the form li@escaped_text/escaped_text|escaped_text/escaped_text
@@ -3677,6 +3678,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to connect to an SQL server.
         // - ~sql id:name connect:localhost:3306/test username:space password:space
+        //
+        // @Usage
+        // Use to connect to an SQL server with SSL option.
+        // - ~sql id:name connect:localhost:3306/test username:space password:space ssl:true
         //
         // @Usage
         // Use to connect to an SQL server with a UTF8 text encoding
