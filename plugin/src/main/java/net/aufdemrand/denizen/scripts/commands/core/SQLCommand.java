@@ -78,6 +78,12 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("password", arg.asElement());
             }
 
+            else if (!scriptEntry.hasObject("ssl")
+                    && arg.matchesPrefix("ssl")
+                    && arg.asElement().isBoolean()) {
+                        scriptEntry.addObject("ssl", arg.asElement());
+            }
+
             else {
                 arg.reportUnhandled();
             }
@@ -85,6 +91,10 @@ public class SQLCommand extends AbstractCommand implements Holdable {
 
         if (!scriptEntry.hasObject("sqlid")) {
             throw new InvalidArgumentsException("Must specify an ID!");
+        }
+
+        if (!scriptEntry.hasObject("ssl")) {
+            scriptEntry.defaultObject("ssl", new Element("false"));
         }
 
         if (!scriptEntry.hasObject("action")) {
@@ -99,6 +109,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         final Element server = scriptEntry.getElement("server");
         final Element username = scriptEntry.getElement("username");
         final Element password = scriptEntry.getElement("password");
+        final Element ssl = scriptEntry.getElement("ssl");
         final Element sqlID = scriptEntry.getElement("sqlid");
         final Element query = scriptEntry.getElement("query");
 
@@ -140,7 +151,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                             dB.echoDebug(scriptEntry, "Connecting to " + server.asString());
                         }
                         try {
-                            con = getConnection(username.asString(), password.asString(), server.asString());
+                            con = getConnection(username.asString(), password.asString(), server.asString(), ssl.asString());
                         }
                         catch (final Exception e) {
                             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
@@ -315,10 +326,11 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         }
     }
 
-    public Connection getConnection(String userName, String password, String server) throws SQLException {
+    public Connection getConnection(String userName, String password, String server, String ssl) throws SQLException {
         Properties connectionProps = new Properties();
         connectionProps.put("user", userName);
         connectionProps.put("password", password);
+        connectionProps.put("useSSL", ssl);
         connectionProps.put("LoginTimeout", "7");
         return DriverManager.getConnection("jdbc:mysql://" + server, connectionProps);
     }
