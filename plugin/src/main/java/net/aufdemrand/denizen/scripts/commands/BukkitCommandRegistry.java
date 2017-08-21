@@ -41,7 +41,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // To do this, the best way is to just escape the list value (see <@link language property escaping>).
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // Use to trigger a custom action
@@ -179,6 +179,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <n@npc.anchor[anchor_name]>
+        // <n@npc.anchor.list>
+        // <n@npc.has_anchors>
         //
         // @Usage
         // Use to add and remove anchors to a npc.
@@ -253,7 +255,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // allowing only selected players to see the chest animate as opened or closed.
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // Use to animate a chest to open at 15,89,-45 in world: world
@@ -336,6 +338,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <n@npc.script>
+        // <n@npc.has_script>
+        // <server.get_npcs_assigned[<assignment_script>]>
         //
         // @Usage
         // Use to assign an npc with an assignment script named 'Bob the Builder'.
@@ -740,7 +744,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Reset argument will turn the direction to default (spawn or bed)
         //
         // @Tags
-        // <p@player.compass.target>
+        // <p@player.compass_target>
         //
         // @Usage
         // Use to reset the compass direction to its default
@@ -812,6 +816,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <l@location.material>
+        // <l@location.inventory>
         //
         // @Usage
         // TODO: Document Command Details
@@ -978,7 +983,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
         //
         // @Tags
-        // TODO: Document Command Details
+        // <e@entity.item>
         // <entry[saveName].dropped> returns a dEntity of the spawned item.
         //
         // @Usage
@@ -1021,6 +1026,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You can also add 'delay:' to set the pickup delay of the item.
         //
         // @Tags
+        // <e@entity.item>
         // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
         //
         // @Usage
@@ -1109,6 +1115,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.equipment>
+        // <e@entity.equipment.helmet>
+        // <e@entity.equipment.chestplate>
+        // <e@entity.equipment.leggings>
+        // <e@entity.equipment.boots>
+        // <in@inventory.equipment>
         //
         // @Usage
         // Use to equip a stone block on the player's head.
@@ -1290,13 +1301,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         //
         // @Tags
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         //
         // @Usage
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         // -->
         registerCoreMember(FailCommand.class,
                 "FAIL", "fail (script:<name>)", 0);
@@ -1373,13 +1384,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         //
         // @Tags
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         //
         // @Usage
-        // TODO: Document Command Details
+        // DEPRECATED, use flags instead!
         // -->
         registerCoreMember(FinishCommand.class,
                 "FINISH", "finish (script:<name>)", 0);
@@ -1404,7 +1415,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.firework_item> returns the firework item which was used to launch the firework.
-        // TODO: Document Command Details
+        // <i@item.is_firework> returns if the item is a firework.
+        // <i@item.firework> Returns the firework's property string as a list.
         //
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
@@ -1439,7 +1451,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -1467,8 +1479,24 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <p@player.flag[<flag>]>
+        // <p@player.has_flag[<flag_name>]>
+        // <p@player.list_flags[(regex:)<search>]>
         // <n@npc.flag[<flag>]>
+        // <n@npc.has_flag[<flag_name>]>
+        // <n@npc.list_flags[(regex:)<search>]>
+        // <e@entity.flag[<flag_name>]>
+        // <e@entity.has_flag[<flag_name>]>
+        // <e@entity.list_flags[(regex:)<search>]>
         // <server.flag[<flag>]>
+        // <server.has_flag[<flag_name>]>
+        // <server.list_flags[(regex:)<search>]>
+        // <server.get_online_players_flagged[<flag_name>]>
+        // <server.get_players_flagged[<flag_name>]>
+        // <server.get_spawned_npcs_flagged[<flag_name>]>
+        // <server.get_npcs_flagged[<flag_name>]>
+        // <fl@flag_name.is_expired>
+        // <fl@flag_name.expiration>
+        // <fl@flag_name.as_list>
         //
         // @Usage
         // Use to create or set a flag on a player.
@@ -1519,7 +1547,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // <p@player.can_fly>
+        // <p@player.fly_speed>
+        // <p@player.is_flying>
         //
         // @Usage
         // TODO: Document Command Details
@@ -1703,6 +1733,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.in_group[<group>].global>
         // <p@player.in_group[<group>].world>
         // <p@player.groups>
+        // <server.list_permission_groups>
         //
         // @Usage
         // Use to add a player to the Admin group.
@@ -1735,6 +1766,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <i@item.skin>
+        // <i@item.has_skin>
         //
         // @Usage
         // Use to stick an awesome head on your head with the head command.
@@ -1805,7 +1837,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.health>
-        // <e@entity.health.max>
         // <n@npc.has_trait[health]>
         //
         // @Usage
@@ -1856,6 +1887,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.health>
+        // <e@entity.last_damage.amount>
+        // <e@entity.last_damage.cause>
+        // <e@entity.last_damage.duration>
         //
         // @Usage
         // Use to hurt the player for 1 HP.
@@ -1895,6 +1929,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <p@player.inventory>
         // <p@player.enderchest>
+        // <p@player.open_inventory>
         // <n@npc.inventory>
         // <l@location.inventory>
         //
@@ -1942,7 +1977,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -1964,7 +1999,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -2127,7 +2162,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Detailed usage information can be found in the specific listener files.
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // Use to listen for when the player kills 10 zombies.
@@ -2183,7 +2218,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // It's recommended you use this command minimally.
         //
         // @Tags
-        // None.
+        // None
         //
         // @Usage
         // Use to log some information to a file.
@@ -2450,7 +2485,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This command is ~holdable.
         //
         // @Tags
-        // <l@location.block.material>
+        // <l@location.material>
         //
         // @Usage
         // Use to change the block a player is looking at to stone.
@@ -2550,7 +2585,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
+        // Add or remove a notable object for that can be used to reference objects such as in events.
         // TODO: Document Command Details
+        // Notable objects keep their properties when added.
         //
         // @Tags
         // <server.list_notables[<type>]>
@@ -2570,6 +2607,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to note a location.
         // - note l@10,5,10,world as:mylocation
+        //
+        // @Usage
+        // Use to note a region with WorldEdit selection.
+        // - note <player.selected_region> as:mycuboid
         // -->
         registerCoreMember(NoteCommand.class,
                 "NOTE", "note [<Notable dObject>/remove] [as:<name>]", 2);
@@ -2681,7 +2722,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
+        // Allows the playing of particle effects anywhere without the need of the source it comes from originally.
+        // The particles you may use, can come from sources such as a potion effect or a portal/Enderman with their particles respectively.
+        // Some particles have different data which may include different behavior depending on the data. Default data is 0
+        // Specifying a visibility value changes the sight radius of the effect. For example if visibility is 15; Targeted players won't see it unless they are 15 blocks or closer.
+        // You can add a quantity value that allow multiple of the same effect played at the same time. If an offset is set, each particle will be played at a different location in the offset area.
+        // Everyone will see the particle effects unless a target has been specified.
         // See <@link language Particle Effects> for a list of valid effect names.
         //
         // @Tags
@@ -2766,7 +2812,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <p@player.has_permission[permission.node]>
         // <p@player.has_permission[permission.node].global>
-        // <p@player.has_permission[permission.node].world>
+        // <p@player.has_permission[permission.node].world[<world name>]>
+        // <server.has_permissions>
         //
         // @Usage
         // Use to give the player a permissions node.
@@ -2893,13 +2940,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
+        // Allows queues to be modified during their run. It can also be used to modify other queues currently running
+        // Clearing a queue will remove it and not run any of the next commands in the queue.
+        // It is possible to pause a queue but it will try to finish its last command that was executed.
         // TODO: Document Command Details
         //
         // @Tags
         // <queue>
         // <queue.id>
         // <queue.size>
+        // <queue.list>
+        // <queue.stats>
         // <queue.exists[queue_id]>
+        // <s@script.list_queues>
         //
         // @Usage
         // Use to clear the current queue.
@@ -2984,7 +3037,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Remove
         // @Syntax remove [<entity>|...]
         // @Required 1
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Despawns a list of entities, fully removing any NPCs.
         // @Author David Cernat
         // @Group entity
@@ -2996,8 +3049,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.is_spawned>
         //
+        // @Usage // Use to remove the entity the player is looking at.
+        // - remove <player.target>
+        //
+        // @Usage // Use to remove all nearby entities around the player, excluding the player itself.
+        // - remove <player.location.find.entities.within[10].exclude[<player>]>
+        //
         // @Usage
-        // TODO: Document Command Details
+        // Use to remove all dropped items in the world called cookies.
+        // - remove <w@cookies.entities.filter[name.is[EQUALS].to[DROPPED_ITEM]]>
         // -->
         registerCoreMember(RemoveCommand.class,
                 "REMOVE", "remove [<entity>|...] (<world>)", 1);
@@ -3077,7 +3137,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -3225,6 +3285,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <schematic[<name>].block[<location>]>
         // <schematic[<name>].origin>
         // <schematic[<name>].blocks>
+        // <schematic[<name>].exists>
+        // <schematic[<name>].cuboid[<origin location>]>
+        // <schematic.list>
         //
         // @Usage
         // Use to create a new schematic from a cuboid and an origin location
@@ -3360,7 +3423,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
@@ -3577,7 +3640,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
+        // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
+        // The direction arguement tells which direction the text shown. If a direction is not specified, it defaults to south.
         // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
         // If there is not already a sign there, defaults to a sign_post.
         //
@@ -3585,7 +3649,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <l@location.block.sign_contents>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to edit some text on a sign
+        // - sign type:automatic "Hello|this is|some|text" <player.location>
+        //
+        // @Usage
+        // Use to show the time on a sign that points north
+        // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" l@233,65,123,world direction:n
+        //
+        // @Usage
+        // Use to force a sign to be a wall_sign if no sign is found.
+        // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.list_online_players.size>" l@233,65,123,world
+        //
         // -->
         registerCoreMember(SignCommand.class,
                 "SIGN", "sign (type:{automatic}/sign_post/wall_sign) [\"<line>|...\"] [<location>] (direction:n/s/e/w)", 1);
@@ -3604,7 +3678,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -3726,7 +3800,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // None
         //
         // @Usage
         // TODO: Document Command Details
@@ -3802,7 +3876,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // <l@location.switched>
         //
         // @Usage
         // TODO: Document Command Details
@@ -4069,7 +4143,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // <n@npc.invulnerable>
         //
         // @Usage
         // TODO: Document Command Details
@@ -4139,7 +4213,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         //
         // @Tags
-        // TODO: Document Command Details
+        // <b@biome.downfall_type>
+        // <p@player.weather>
+        // <w@world.has_storm>
+        // <w@world.weather_duration>
+        // <w@world.thundering>
+        // <w@world.thunder_duration>
         //
         // @Usage
         // TODO: Document Command Details
@@ -4192,7 +4271,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // the size over the course of the duration.
         //
         // @Tags
-        // None
+        // <l@location.is_within_border>
+        // <w@world.border_size>
+        // <w@world.border_center>
+        // <w@world.border_damage>
+        // <w@world.border_damage_buffer>
+        // <w@world.border_warning_distance>
+        // <w@world.border_warning_time>
         //
         // @Usage
         // Use to set the size of a world border.
