@@ -262,6 +262,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 drops.add(new dItem(stack).identify());
             }
         }
+        cancelled = false;
         changed_drops = false;
         xp = event.getDroppedExp();
         this.event = event;
