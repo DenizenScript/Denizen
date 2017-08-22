@@ -72,7 +72,10 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
             message = determination;
             return true;
         }
-        return super.applyDetermination(container, determination);
+        else {
+            message = null;
+            return true;
+        }
     }
 
     @Override
