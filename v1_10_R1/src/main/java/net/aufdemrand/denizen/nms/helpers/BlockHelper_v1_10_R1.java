@@ -14,13 +14,27 @@ import net.minecraft.server.v1_10_R1.TileEntitySkull;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
+import org.bukkit.block.FlowerPot;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_10_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_10_R1.block.CraftSkull;
+import org.bukkit.material.MaterialData;
 
 import java.util.UUID;
 
 public class BlockHelper_v1_10_R1 implements BlockHelper {
+
+    @Override
+    public MaterialData getFlowerpotContents(Block block) {
+        return ((FlowerPot) block.getState()).getContents();
+    }
+
+    @Override
+    public void setFlowerpotContents(Block block, MaterialData data) {
+        FlowerPot flowerPot = (FlowerPot) block.getState();
+        flowerPot.setContents(data);
+        flowerPot.update();
+    }
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {

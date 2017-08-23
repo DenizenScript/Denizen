@@ -9,19 +9,41 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.TileEntity;
-import net.minecraft.server.v1_8_R3.TileEntitySkull;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_8_R3.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.UUID;
 
 public class BlockHelper_v1_8_R3 implements BlockHelper {
+
+    @Override
+    public MaterialData getFlowerpotContents(Block block) {
+        TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
+                new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        ItemStack is = new ItemStack(flowerPot.b());
+        return new MaterialData(CraftItemStack.asBukkitCopy(is).getType(), (byte) flowerPot.c());
+    }
+
+    @Override
+    public void setFlowerpotContents(Block block, MaterialData data) {
+        TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
+                new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        ItemStack contents = CraftItemStack.asNMSCopy(data.toItemStack());
+        if (contents == null)
+            flowerPot.a(null, 0);
+        else
+            flowerPot.a(contents.getItem(), contents.getData());
+
+        block.getState().update();
+    }
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
