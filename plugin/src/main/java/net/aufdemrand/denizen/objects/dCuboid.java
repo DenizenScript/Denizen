@@ -410,8 +410,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return list;
                 }
             }
+            list.add(pair.high.identify());
         }
-
         return list;
     }
 
