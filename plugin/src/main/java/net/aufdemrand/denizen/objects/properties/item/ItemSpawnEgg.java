@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -13,6 +15,9 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 public class ItemSpawnEgg implements Property {
 
     public static boolean describes(dObject item) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+            return false;
+        }
         return item instanceof dItem
                 && ((dItem) item).getItemStack().getType() == Material.MONSTER_EGG;
     }
