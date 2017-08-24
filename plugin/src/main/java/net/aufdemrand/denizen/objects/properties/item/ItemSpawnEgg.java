@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 public class ItemSpawnEgg implements Property {
 
     public static boolean describes(dObject item) {
-        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+        if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
             return false;
         }
         return item instanceof dItem
