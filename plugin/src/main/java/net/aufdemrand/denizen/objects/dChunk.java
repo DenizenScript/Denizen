@@ -608,6 +608,19 @@ public class dChunk implements dObject, Adjustable {
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 2);
         }
 
+        // <--[mechanism]
+        // @object dChunk
+        // @name refresh_chunk_sections
+        // @input None
+        // @description
+        // Refreshes all 16x16x16 chunk sections within the chunk.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("refresh_chunk_sections")) {
+            NMSHandler.getInstance().getChunkHelper().refreshChunkSections(chunk);
+        }
+
         if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();
         }

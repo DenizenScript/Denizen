@@ -5,8 +5,13 @@ import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.material.MaterialData;
 
 public interface BlockHelper {
+
+    MaterialData getFlowerpotContents(Block block);
+
+    void setFlowerpotContents(Block block, MaterialData data);
 
     PlayerProfile getPlayerProfile(Skull skull);
 
