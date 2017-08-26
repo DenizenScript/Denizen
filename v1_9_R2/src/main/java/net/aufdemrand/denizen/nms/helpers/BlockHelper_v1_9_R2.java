@@ -9,15 +9,15 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.minecraft.server.v1_9_R2.TileEntity;
-import net.minecraft.server.v1_9_R2.TileEntitySkull;
+import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
-import org.bukkit.block.FlowerPot;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_9_R2.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 import org.bukkit.material.MaterialData;
 
 import java.util.UUID;
@@ -26,15 +26,23 @@ public class BlockHelper_v1_9_R2 implements BlockHelper {
 
     @Override
     public MaterialData getFlowerpotContents(Block block) {
-        MaterialData contents = ((FlowerPot) block.getState()).getContents();
-        return contents == null ? new MaterialData(Material.AIR) : contents;
+        TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
+                new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        ItemStack is = new ItemStack(flowerPot.d());
+        return new MaterialData(CraftItemStack.asBukkitCopy(is).getType(), (byte) flowerPot.e());
     }
 
     @Override
     public void setFlowerpotContents(Block block, MaterialData data) {
-        FlowerPot flowerPot = (FlowerPot) block.getState();
-        flowerPot.setContents(data);
-        flowerPot.update();
+        TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
+                new BlockPosition(block.getX(), block.getY(), block.getZ()));
+        ItemStack contents = CraftItemStack.asNMSCopy(data.toItemStack());
+        if (contents == null)
+            flowerPot.a(null, 0);
+        else
+            flowerPot.a(contents.getItem(), contents.getData());
+
+        block.getState().update();
     }
 
     @Override
