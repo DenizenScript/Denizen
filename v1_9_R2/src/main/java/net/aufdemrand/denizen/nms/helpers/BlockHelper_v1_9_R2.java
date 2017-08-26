@@ -26,7 +26,8 @@ public class BlockHelper_v1_9_R2 implements BlockHelper {
 
     @Override
     public MaterialData getFlowerpotContents(Block block) {
-        return ((FlowerPot) block.getState()).getContents();
+        MaterialData contents = ((FlowerPot) block.getState()).getContents();
+        return contents == null ? new MaterialData(Material.AIR) : contents;
     }
 
     @Override
