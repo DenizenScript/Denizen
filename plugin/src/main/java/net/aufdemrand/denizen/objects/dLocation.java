@@ -749,7 +749,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
             return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
                         .getAttribute(attribute.fulfill(1));
-
         }
 
 
@@ -2206,6 +2205,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @input dMaterial
         // @description
         // Sets the contents of a flower pot.
+        // NOTE: Flowerpot contents will not update client-side until players refresh the chunk.
+        // Refresh a chunk manually with mechanism: refresh_chunk_sections for dChunk objects
         // @tags
         // <l@location.flowerpot_contents>
         // -->
@@ -2213,7 +2214,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = value.asType(dMaterial.class).getMaterialData();
                 NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
-                NMSHandler.getInstance().getChunkHelper().refreshChunk(getChunk());
             }
         }
 

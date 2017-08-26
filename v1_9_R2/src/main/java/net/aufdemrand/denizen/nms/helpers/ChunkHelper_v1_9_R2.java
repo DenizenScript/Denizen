@@ -1,26 +1,24 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.ChunkHelper;
-import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.v1_9_R2.CraftChunk;
-import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
-import org.bukkit.entity.Player;
-
-import static sun.audio.AudioPlayer.player;
+import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 
 public class ChunkHelper_v1_9_R2 implements ChunkHelper {
 
     @Override
-    public void refreshChunk(Chunk chunk) {
-
-        PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65535);
-
-        for (Player player : chunk.getWorld().getPlayers()) {
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    public void refreshChunkSections(Chunk chunk) {
+        PacketPlayOutMapChunk lowPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 255); // 00000000 11111111
+        PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280); // 11111111 00000000
+        PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getPlayerChunkMap()
+                .getChunk(chunk.getX(), chunk.getZ());
+        if (playerChunk == null) return;
+        for (EntityPlayer player : playerChunk.c) {
+            player.playerConnection.sendPacket(lowPacket);
+            player.playerConnection.sendPacket(highPacket);
         }
-
     }
 
     @Override

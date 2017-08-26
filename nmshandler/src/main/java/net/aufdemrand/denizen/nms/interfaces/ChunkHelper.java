@@ -4,7 +4,7 @@ import org.bukkit.Chunk;
 
 public interface ChunkHelper {
 
-    void refreshChunk(Chunk chunk);
+    void refreshChunkSections(Chunk chunk);
 
     int[] getHeightMap(Chunk chunk);
 }
