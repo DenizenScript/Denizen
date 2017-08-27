@@ -2141,7 +2141,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
-            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
+            CreatureSpawner spawner = ((CreatureSpawner) getBlock().getState());
+            spawner.setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
+            spawner.update();
         }
 
         // <--[mechanism]
