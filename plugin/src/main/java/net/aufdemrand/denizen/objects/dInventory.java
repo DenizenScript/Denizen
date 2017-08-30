@@ -152,6 +152,10 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
     }
 
+    public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
+        return valueOf(string, player, npc, false);
+    }
+
     /**
      * Gets a dInventory from a string format.
      *
@@ -159,7 +163,7 @@ public class dInventory implements dObject, Notable, Adjustable {
      * @return The dInventory value. If the string is incorrectly formatted or
      * the specified inventory is invalid, this is null.
      */
-    public static dInventory valueOf(String string, dPlayer player, dNPC npc) {
+    public static dInventory valueOf(String string, dPlayer player, dNPC npc, boolean silent) {
 
         if (string == null) {
             return null;
@@ -211,7 +215,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return new dInventory(arg.asElement().asInt());
                 }
                 else {
-                    dB.echoError("That type of inventory does not exist!");
+                    if (!silent) dB.echoError("That type of inventory does not exist!");
                 }
             }
             else if (type.equals("npc")) {
@@ -228,7 +232,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (dPlayer.matches(holder)) {
                     dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
                     if (workbench != null) {
-                        dB.echoError("Value of dInventory returning null (" + string + ")." +
+                        if (!silent) dB.echoError("Value of dInventory returning null (" + string + ")." +
                                 " Specified player does not have an open workbench.");
                     }
                     else {
@@ -253,12 +257,12 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
 
             // If the dInventory is invalid, alert the user and return null
-            dB.echoError("Value of dInventory returning null. Invalid " +
+            if (!silent) dB.echoError("Value of dInventory returning null. Invalid " +
                     type + " specified: " + holder);
             return null;
         }
 
-        dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
+        if (!silent) dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
         return null;
     }
 
@@ -270,9 +274,33 @@ public class dInventory implements dObject, Notable, Adjustable {
      */
     public static boolean matches(String arg) {
 
-        // Every single dInventory should have the in@ prefix. No exceptions.
-        return CoreUtilities.toLowerCase(arg).startsWith("in@");
+        if (CoreUtilities.toLowerCase(arg).startsWith("in@")) {
+            return true;
+        }
 
+        String tid = arg;
+        if (arg.contains("[")) {
+            tid = arg.substring(0, arg.indexOf('['));
+        }
+        if (new Element(tid).matchesEnum(InventoryType.values())) {
+            return true;
+        }
+
+        if (ScriptRegistry.containsScript(tid, InventoryScriptContainer.class)) {
+            return true;
+        }
+
+        if (NotableManager.isSaved(tid) && NotableManager.isType(tid, dInventory.class)) {
+            return true;
+        }
+
+        for (String idType : idTypes) {
+            if (tid.equalsIgnoreCase(idType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

@@ -740,6 +740,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.flowerpot_contents>
+        // @returns Element
+        // @description
+        // Returns the flower pot contents at the location.
+        // -->
+        if (attribute.startsWith("flowerpot_contents") && getBlock().getType() == Material.FLOWER_POT) {
+            MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
+            return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
+                        .getAttribute(attribute.fulfill(1));
+        }
+
+
+        // <--[tag]
         // @attribute <l@location.skull_type>
         // @returns Element
         // @description
@@ -2128,7 +2141,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
-            ((CreatureSpawner) getBlock().getState()).setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
+            CreatureSpawner spawner = ((CreatureSpawner) getBlock().getState());
+            spawner.setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
+            spawner.update();
         }
 
         // <--[mechanism]
@@ -2183,6 +2198,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
                 profile = NMSHandler.getInstance().fillPlayerProfile(profile);
                 NMSHandler.getInstance().getBlockHelper().setPlayerProfile((Skull) blockState, profile);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name flowerpot_contents
+        // @input dMaterial
+        // @description
+        // Sets the contents of a flower pot.
+        // NOTE: Flowerpot contents will not update client-side until players refresh the chunk.
+        // Refresh a chunk manually with mechanism: refresh_chunk_sections for dChunk objects
+        // @tags
+        // <l@location.flowerpot_contents>
+        // -->
+        if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(dMaterial.class)) {
+            if (getBlock().getType() == Material.FLOWER_POT) {
+                MaterialData data = value.asType(dMaterial.class).getMaterialData();
+                NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
         }
 

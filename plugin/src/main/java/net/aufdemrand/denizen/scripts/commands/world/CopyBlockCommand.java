@@ -129,8 +129,7 @@ public class CopyBlockCommand extends AbstractCommand {
                 ((CommandBlock) updateState).setCommand(((CommandBlock) sourceState).getCommand());
             }
             else if (sourceState instanceof CreatureSpawner) {
-                ((CreatureSpawner) updateState).setCreatureTypeByName(((CreatureSpawner) sourceState)
-                        .getCreatureTypeName());
+                ((CreatureSpawner) updateState).setSpawnedType(((CreatureSpawner) sourceState).getSpawnedType());
                 ((CreatureSpawner) updateState).setDelay(((CreatureSpawner) sourceState).getDelay());
             }
 
