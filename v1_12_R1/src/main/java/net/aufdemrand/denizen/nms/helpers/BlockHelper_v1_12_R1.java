@@ -21,13 +21,16 @@ import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftSkull;
 import org.bukkit.material.MaterialData;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class BlockHelper_v1_12_R1 implements BlockHelper {
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
-            return (T) cbs.getClass().getField("tileEntity").get(cbs);
+            Field f = CraftBlockEntityState.class.getField("tileEntity");
+            f.setAccessible(true);
+            return (T) f.get(cbs);
         }
         catch (IllegalAccessException e) {
             e.printStackTrace();
