@@ -137,6 +137,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
+        else if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
+            return true;
+        }
         else if (CoreUtilities.toLowerCase(mat.identifyNoIdentifier()).equals(comparedto)) {
             return true;
         }
