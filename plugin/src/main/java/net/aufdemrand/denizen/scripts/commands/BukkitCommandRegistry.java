@@ -2328,6 +2328,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
         // Custom maps do not persist over restarts.
         //
+        // @Tags
+        // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
+        //
         // @Usage
         // Use to add an auto-resized background image to map 3
         // - map 3 image:my_map_images/my_background.png resize
