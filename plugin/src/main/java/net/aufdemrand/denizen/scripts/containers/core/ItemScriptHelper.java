@@ -442,6 +442,15 @@ public class ItemScriptHelper implements Listener {
                     continue primary;
                 }
             }
+            int c = 0;
+            for (int i = 0; i < matrix.length; i++) {
+                if (matrix[i] != null && matrix[i].getType() != Material.AIR) {
+                    c++;
+                }
+            }
+            if (c != entry.getValue().size()) {
+                continue primary;
+            }
             return entry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
         }
 

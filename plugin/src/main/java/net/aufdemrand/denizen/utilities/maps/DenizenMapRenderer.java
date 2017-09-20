@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -67,6 +68,10 @@ public class DenizenMapRenderer extends MapRenderer {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+        if (!DenizenAPI.getCurrentInstance().isEnabled()) {
+            // Special case for shutdown borko
+            return;
+        }
         if (active) {
             try {
                 UUID uuid = player.getUniqueId();

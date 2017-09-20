@@ -235,7 +235,7 @@ public class dPlayer implements dObject, Adjustable {
     }
 
     public dNPC getSelectedNPC() {
-        if (Depends.citizens != null) {
+        if (Depends.citizens != null && CitizensAPI.hasImplementation()) {
             NPC npc = CitizensAPI.getDefaultNPCSelector().getSelected(getPlayerEntity());
             if (npc != null) {
                 return dNPC.mirrorCitizensNPC(npc);

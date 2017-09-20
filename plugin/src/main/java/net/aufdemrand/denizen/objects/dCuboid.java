@@ -1246,8 +1246,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                         chunks.add(maxChunk);
                     }
-                    dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
-                    dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
                     for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
                         for (int z = minChunk.getZ() + 1; z <= maxChunk.getZ() - 1; z++) {
                             chunks.add(obj.getWorld().getChunkAt(x, z));
@@ -1275,8 +1273,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (LocationPair pair : ((dCuboid) object).pairs) {
                     Chunk minChunk = pair.low.getChunk();
                     Chunk maxChunk = pair.high.getChunk();
-                    dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
-                    dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
                     for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
                         for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
                             chunks.add(((dCuboid) object).getWorld().getChunkAt(x, z));

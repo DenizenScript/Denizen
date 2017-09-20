@@ -21,12 +21,12 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on [^\s]+ created( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    // @Triggers when a vehicle created in the slightest.
+    // @Cancellable true
+    //
+    // @Triggers when a vehicle is created.
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.from> returns the location of where the vehicle was.
-    // <context.to> returns the location of where the vehicle is.
     //
     // -->
 
@@ -90,12 +90,14 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @EventHandler
-    public void onVehicleMove(VehicleCreateEvent event) {
+    public void onVehicleCreated(VehicleCreateEvent event) {
         Entity entity = event.getVehicle();
+        cancelled = event.isCancelled();
         dEntity.rememberEntity(entity);
         vehicle = new dEntity(entity);
         this.event = event;
         fire();
         dEntity.forgetEntity(entity);
+        event.setCancelled(cancelled);
     }
 }

@@ -52,7 +52,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     public dEntity entity;
     public dList blocks;
     public dLocation location;
-    public Float strength;
+    public float strength;
     private Boolean blockSet;
     public EntityExplodeEvent event;
 

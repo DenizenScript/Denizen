@@ -410,7 +410,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.log(ChatColor.YELLOW + " _/_ _  ._  _ _  ");
             dB.log(ChatColor.YELLOW + "(/(-/ )/ /_(-/ ) " + ChatColor.GRAY + " scriptable minecraft");
             dB.log("");
-            dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "aufdemrand");
+            dB.log(ChatColor.GRAY + "by: " + ChatColor.WHITE + "mcmonkey, Morphan1, aufdemrand and others");
+            dB.log(ChatColor.GRAY + "Chat with us at: " + ChatColor.WHITE + " https://discord.gg/Q6pZGSR");
+            dB.log(ChatColor.GRAY + "Or learn more at: " + ChatColor.WHITE + " https://denizenscript.com");
             dB.log(ChatColor.GRAY + "version: " + ChatColor.WHITE + versionTag);
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
         }

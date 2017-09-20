@@ -7,11 +7,13 @@ import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -82,22 +84,30 @@ public class SittingTrait extends Trait implements Listener {
     }
 
     private void sitInternal() {
-        DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
-                new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
-        //PlayerAnimation.SIT.play((Player)npc.getEntity());
+        if (npc.getEntity() instanceof Player) {
+            PlayerAnimation.SIT.play((Player)npc.getEntity());
+        }
+        else {
+            DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
+                    new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
+        }
         //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;
     }
 
     private void standInternal() {
-        Entity vehicle = npc.getEntity().getVehicle();
-        npc.despawn();
-        npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
-        if (vehicle != null && vehicle.isValid()) {
-            vehicle.setPassenger(null);
-            vehicle.remove();
+        if (npc.getEntity() instanceof Player) {
+            PlayerAnimation.STOP_SITTING.play((Player) npc.getEntity());
         }
-        //PlayerAnimation.STOP_SITTING.play((Player)npc.getEntity());
+        else {
+            Entity vehicle = npc.getEntity().getVehicle();
+            npc.despawn();
+            npc.spawn(npc.getStoredLocation().clone().add(0, 0.5, 0));
+            if (vehicle != null && vehicle.isValid()) {
+                vehicle.setPassenger(null);
+                vehicle.remove();
+            }
+        }
         //eh.getDataWatcher().watch(0, (byte) 0x00);
         sitting = false;
     }
