@@ -28,7 +28,7 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
-            Field f = CraftBlockEntityState.class.getField("tileEntity");
+            Field f = CraftBlockEntityState.class.getDeclaredField("tileEntity");
             f.setAccessible(true);
             return (T) f.get(cbs);
         }
