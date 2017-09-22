@@ -21,7 +21,8 @@ public class ItemPotion implements Property {
                 && (((dItem) item).getItemStack().getType() == Material.POTION
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
                 && (((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
-                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION)));
+                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION
+                || ((dItem) item).getItemStack().getType() == Material.TIPPED_ARROW)));
     }
 
     public static ItemPotion getFrom(dObject _item) {
