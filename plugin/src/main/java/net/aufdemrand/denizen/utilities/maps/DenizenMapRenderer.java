@@ -12,7 +12,7 @@ import java.util.*;
 
 public class DenizenMapRenderer extends MapRenderer {
 
-    private List<MapObject> mapObjects = new ArrayList<MapObject>();
+    public List<MapObject> mapObjects = new ArrayList<MapObject>();
     private List<MapRenderer> oldMapRenderers;
     private boolean autoUpdate;
 
@@ -92,6 +92,7 @@ public class DenizenMapRenderer extends MapRenderer {
                 dPlayer p = dPlayer.mirrorBukkitPlayer(player);
                 for (MapObject object : mapObjects) {
                     if (autoUpdate) {
+                        object.lastMap = mapView;
                         object.update(p, uuid);
                     }
                     if (object.isVisibleTo(p, uuid)) {

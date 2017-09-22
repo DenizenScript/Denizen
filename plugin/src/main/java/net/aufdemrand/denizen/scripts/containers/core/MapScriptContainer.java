@@ -63,9 +63,10 @@ public class MapScriptContainer extends ScriptContainer {
     //       # Specify a cursor - {RED|GREEN|WHITE|BLUE)_POINTER, WHITE_CROSS, WHITE_CIRCLE, RED_MARKER, SMALL_WHITE_CIRCLE,
     //       # MANSION, TEMPLE
     //       cursor: red_marker
-    //       # Supported on all objects: x/y positions.
+    //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
     //       x: 5
     //       y: 5
+    //       world_coordinates: false
     // </code>
     //
     // -->
@@ -98,6 +99,7 @@ public class MapScriptContainer extends ScriptContainer {
                 String x = objectSection.getString("X", "0");
                 String y = objectSection.getString("Y", "0");
                 String visible = objectSection.getString("VISIBLE", "true");
+                boolean worldC = objectSection.contains("WORLD_COORDINATES") && aH.getBooleanFrom(objectSection.getString("WORLD_COORDINATES", "false"));
                 if (type.equals("IMAGE")) {
                     if (!objectSection.contains("IMAGE")) {
                         dB.echoError("Map script '" + getName() + "'s image '" + objectKey
@@ -140,6 +142,12 @@ public class MapScriptContainer extends ScriptContainer {
                 else if (type.equals("DOT")) {
                     renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("RADIUS", "1"),
                             objectSection.getString("COLOR", "black")));
+                }
+                else {
+                    dB.echoError("Weird map data!");
+                }
+                if (worldC && renderer.mapObjects.size() > 0) {
+                    renderer.mapObjects.get(renderer.mapObjects.size() - 1).worldCoordinates = true;
                 }
             }
         }
