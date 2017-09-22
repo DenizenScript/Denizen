@@ -12,15 +12,20 @@ import java.util.*;
 
 public class DenizenMapRenderer extends MapRenderer {
 
-    private final List<MapObject> mapObjects = new ArrayList<MapObject>();
-    private final List<MapRenderer> oldMapRenderers;
-    private final boolean autoUpdate;
+    private List<MapObject> mapObjects = new ArrayList<MapObject>();
+    private List<MapRenderer> oldMapRenderers;
+    private boolean autoUpdate;
+
+    public boolean displayOriginal = true;
 
     private boolean active;
 
     public DenizenMapRenderer(List<MapRenderer> oldMapRenderers, boolean autoUpdate) {
         super(true);
         this.oldMapRenderers = oldMapRenderers;
+        if (oldMapRenderers.size() == 1 && oldMapRenderers.get(0) instanceof DenizenMapRenderer) {
+            this.oldMapRenderers = ((DenizenMapRenderer) oldMapRenderers.get(0)).oldMapRenderers;
+        }
         this.autoUpdate = autoUpdate;
         this.active = true;
     }
@@ -61,6 +66,7 @@ public class DenizenMapRenderer extends MapRenderer {
             }
             data.put("objects", objects);
             data.put("auto update", autoUpdate);
+            data.put("original", displayOriginal);
             return data;
         }
         throw new IllegalStateException("DenizenMapRenderer is not active");
@@ -74,6 +80,14 @@ public class DenizenMapRenderer extends MapRenderer {
         }
         if (active) {
             try {
+                while (mapCanvas.getCursors().size() > 0) {
+                    mapCanvas.getCursors().removeCursor(mapCanvas.getCursors().getCursor(0));
+                }
+                if (displayOriginal) {
+                    for (MapRenderer oldR : oldMapRenderers) {
+                        oldR.render(mapView, mapCanvas, player);
+                    }
+                }
                 UUID uuid = player.getUniqueId();
                 dPlayer p = dPlayer.mirrorBukkitPlayer(player);
                 for (MapObject object : mapObjects) {

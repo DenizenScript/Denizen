@@ -66,6 +66,7 @@ public class DenizenMapManager {
             }
             DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
                     mapsSection.getBoolean(key + ".auto update", false));
+            renderer.displayOriginal = mapsSection.getBoolean(key + ".original", true);
             List<String> objects = new ArrayList<String>(objectsData.getKeys(false));
             Collections.sort(objects, new NaturalOrderComparator());
             for (String objectKey : objects) {

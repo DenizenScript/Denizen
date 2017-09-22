@@ -20,10 +20,63 @@ public class MapScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
+    // <--[language]
+    // @name Map Script Containers
+    // @group Script Container System
+    // @description
+    // Map scripts allow you define custom in-game map items, for usage with the map command.
+    //
+    // The following is the format for the container.
+    //
+    // <code>
+    // # The name of the map script is used by the map command.
+    // Item Script Name:
+    //
+    //   type: map
+    //
+    //   # Whether to display the original map below the custom values.
+    //   original: true/false
+    //
+    //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
+    //   display name: custom name
+    //
+    //   # Lists all contained objects.
+    //   objects:
+    //
+    //     # The first object...
+    //     1:
+    //       # Specify the object type
+    //       type: image
+    //       # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
+    //       image: my_image.png
+    //       # Optionally add width/height numbers.
+    //
+    //     2:
+    //       type: text
+    //       # Specify any text, with tags.
+    //       text: Hello <player.name>
+    //       # Specify a tag to show or hide custom content! Valid for all objects.
+    //       visible: <player.name.contains[bob].not>
+    //
+    //     3:
+    //       type: cursor
+    //       # Specify a cursor - {RED|GREEN|WHITE|BLUE)_POINTER, WHITE_CROSS, WHITE_CIRCLE, RED_MARKER, SMALL_WHITE_CIRCLE,
+    //       # MANSION, TEMPLE
+    //       cursor: red_marker
+    //       # Supported on all objects: x/y positions.
+    //       x: 5
+    //       y: 5
+    // </code>
+    //
+    // -->
+
     public void applyTo(MapView mapView) {
         DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(),
                 aH.getBooleanFrom(getString("AUTO UPDATE", "true")));
         boolean debug = true;
+        if (contains("ORIGINAL")) {
+            renderer.displayOriginal = aH.getBooleanFrom(getString("ORIGINAL"));
+        }
         if (contains("DEBUG")) {
             debug = aH.getBooleanFrom(getString("DEBUG"));
         }
