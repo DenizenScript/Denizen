@@ -46,8 +46,8 @@ public abstract class MapObject {
         int tx = x;
         if (worldCoordinates && lastMap != null) {
             float f = (float) (tx - lastMap.getCenterX()) / (1 << (lastMap.getScale().getValue()));
-            byte bx = (byte) ((int) ((f * 2.0F) + 0.5D));
-            return bx;
+            int bx = ((int) ((f * 2.0F) + 0.5D));
+            return (bx < -127 ? -127 : (bx > 127 ? 127 : bx));
         }
         return tx;
     }
@@ -60,8 +60,8 @@ public abstract class MapObject {
         int ty = y;
         if (worldCoordinates && lastMap != null) {
             float f1 = (float) (ty - lastMap.getCenterZ()) / (1 << (lastMap.getScale().getValue()));
-            byte by = (byte) ((int) ((f1 * 2.0F) + 0.5D));
-            return by;
+            int by = ((int) ((f1 * 2.0F) + 0.5D));
+            return (by < -127 ? -127 : (by > 127 ? 127 : by));
         }
         return ty;
     }
