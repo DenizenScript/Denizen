@@ -288,7 +288,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     @TagManager.TagEvents
     public void schematicTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("schematic, schem")) {
+        if (!event.matches("schematic", "schem")) {
             return;
         }
 

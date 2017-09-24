@@ -54,9 +54,10 @@ public class TextTags implements Listener {
     }
 
 
-    // Thanks geckon :)
     final String[] code = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
             , "a", "b", "c", "d", "e", "f", "k", "l", "m", "n", "o", "r"};
+    final String[] code2 = {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9"
+            , "&a", "&b", "&c", "&d", "&e", "&f", "&k", "&l", "&m", "&n", "&o", "&r"};
 
     // <--[tag]
     // @attribute <&0>
@@ -378,7 +379,7 @@ public class TextTags implements Listener {
             if (event.matches(color.name())) {
                 event.setReplaced(new Element(color.toString()).getAttribute(attribute.fulfill(1)));
             }
-            else if (event.matches("&" + code[i])) {
+            else if (event.matches(code2[i])) {
                 event.setReplaced(new Element(ChatColor.getByChar(code[i]).toString()).getAttribute(attribute.fulfill(1)));
             }
             i++;
