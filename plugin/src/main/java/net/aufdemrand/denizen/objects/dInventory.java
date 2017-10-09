@@ -1236,6 +1236,17 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
 
+    public String bestName() {
+        if (isUnique()) {
+            return NotableManager.getSavedId(this);
+        }
+        else {
+            return (getIdType().equals("script") || getIdType().equals("notable")
+                    ? idHolder : (idType));
+        }
+    }
+
+
     @Override
     public String identifySimple() {
         if (isUnique()) {
@@ -1243,7 +1254,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else {
             return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
-                    ? idHolder : (idType + "[" + idHolder + ']'));
+                    ? idHolder : (idType + "[" + idHolder + "]"));
         }
     }
 
