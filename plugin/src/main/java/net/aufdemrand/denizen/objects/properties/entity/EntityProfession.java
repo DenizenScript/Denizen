@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Zombie;
+import org.bukkit.entity.ZombieVillager;
 
 public class EntityProfession implements Property {
 
@@ -21,7 +22,10 @@ public class EntityProfession implements Property {
             return false;
         }
         return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE);
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
+                && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER);
     }
 
     public static EntityProfession getFrom(dObject entity) {
@@ -46,14 +50,22 @@ public class EntityProfession implements Property {
     dEntity professional;
 
     private Villager.Profession getProfession() {
-        if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
+                && professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
+            return ((ZombieVillager) professional.getBukkitEntity()).getVillagerProfession();
+        }
+        else if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
             return ((Zombie) professional.getBukkitEntity()).getVillagerProfession();
         }
         return ((Villager) professional.getBukkitEntity()).getProfession();
     }
 
     public void setProfession(Villager.Profession profession) {
-        if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
+                && professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
+            ((ZombieVillager) professional.getBukkitEntity()).setVillagerProfession(profession);
+        }
+        else if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
             ((Zombie) professional.getBukkitEntity()).setVillagerProfession(profession);
         }
         else {
@@ -68,7 +80,8 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        if (professional.getBukkitEntityType() == EntityType.ZOMBIE && !((Zombie) professional.getBukkitEntity()).isVillager()) {
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE
+                && !((Zombie) professional.getBukkitEntity()).isVillager()) {
             return null;
         }
         return CoreUtilities.toLowerCase(getProfession().name());
