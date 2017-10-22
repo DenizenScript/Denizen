@@ -14,7 +14,7 @@ public class DenizenMapRenderer extends MapRenderer {
 
     public List<MapObject> mapObjects = new ArrayList<MapObject>();
     private List<MapRenderer> oldMapRenderers;
-    private boolean autoUpdate;
+    public boolean autoUpdate;
 
     public boolean displayOriginal = true;
 
