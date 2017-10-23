@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.NaturalOrderComparator;
 import org.bukkit.Bukkit;
@@ -66,6 +67,7 @@ public class DenizenMapManager {
             }
             DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
                     mapsSection.getBoolean(key + ".auto update", false));
+            renderer.displayOriginal = mapsSection.getBoolean(key + ".original", true);
             List<String> objects = new ArrayList<String>(objectsData.getKeys(false));
             Collections.sort(objects, new NaturalOrderComparator());
             for (String objectKey : objects) {
@@ -73,7 +75,8 @@ public class DenizenMapManager {
                 String xTag = objectsData.getString(objectKey + ".x");
                 String yTag = objectsData.getString(objectKey + ".y");
                 String visibilityTag = objectsData.getString(objectKey + ".visibility");
-                boolean debug = objectsData.getBoolean(objectKey + ".debug");
+                boolean debug = aH.getBooleanFrom(objectsData.getString(objectKey + ".debug", "false"));
+                boolean worldC = aH.getBooleanFrom(objectsData.getString(objectKey + ".world_coordinates", "false"));
                 MapObject object = null;
                 if (type.equals("CURSOR")) {
                     object = new MapCursor(xTag, yTag, visibilityTag, debug,
@@ -96,6 +99,7 @@ public class DenizenMapManager {
                             objectsData.getString(objectKey + ".text"));
                 }
                 if (object != null) {
+                    object.worldCoordinates = worldC;
                     renderer.addObject(object);
                 }
             }

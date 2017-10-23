@@ -57,13 +57,11 @@ public class MapCursor extends MapObject {
 
     @Override
     public void render(MapView mapView, MapCanvas mapCanvas, dPlayer player, UUID uuid) {
-        if (!cursors.containsKey(uuid)) {
-            org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) getX(player, uuid),
-                    (byte) getY(player, uuid), getDirection(player), getType(player).getValue(),
-                    isVisibleTo(player, uuid));
-            mapCanvas.getCursors().addCursor(cursor);
-            cursors.put(uuid, cursor);
-        }
+        org.bukkit.map.MapCursor cursor = new org.bukkit.map.MapCursor((byte) getX(player, uuid),
+                (byte) getY(player, uuid), getDirection(player), getType(player).getValue(),
+                isVisibleTo(player, uuid));
+        mapCanvas.getCursors().addCursor(cursor);
+        cursors.put(uuid, cursor);
     }
 
 }

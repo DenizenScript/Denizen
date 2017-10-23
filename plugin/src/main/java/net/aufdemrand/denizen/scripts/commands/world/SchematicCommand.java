@@ -202,8 +202,11 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 }
                 // TODO: Make me waitable!
                 int ang = angle.asInt();
-                if (ang < 0) {
+                while (ang < 0) {
                     ang = 360 + ang;
+                }
+                while (ang > 360) {
+                    ang -= 360;
                 }
                 while (ang > 0) {
                     ang -= 90;
@@ -288,7 +291,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
     @TagManager.TagEvents
     public void schematicTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("schematic, schem")) {
+        if (!event.matches("schematic", "schem")) {
             return;
         }
 

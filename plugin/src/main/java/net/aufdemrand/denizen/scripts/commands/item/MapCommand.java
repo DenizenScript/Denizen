@@ -166,6 +166,7 @@ public class MapCommand extends AbstractCommand {
                 int wide = width != null ? width.asInt() : resize.asBoolean() ? 128 : 0;
                 int high = height != null ? height.asInt() : resize.asBoolean() ? 128 : 0;
                 if (CoreUtilities.toLowerCase(image.asString()).endsWith(".gif")) {
+                    dmr.autoUpdate = true;
                     dmr.addObject(new MapAnimatedImage(x.asString(), y.asString(), "true", false, image.asString(),
                             wide, high));
                 }

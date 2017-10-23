@@ -21,6 +21,10 @@ public abstract class MapObject {
     protected Map<UUID, Boolean> currentVisibility = new HashMap<UUID, Boolean>();
     protected boolean debug;
 
+    public MapView lastMap;
+
+    public boolean worldCoordinates = false;
+
     public MapObject(String xTag, String yTag, String visibilityTag, boolean debug) {
         this.xTag = xTag;
         this.yTag = yTag;
@@ -29,25 +33,37 @@ public abstract class MapObject {
     }
 
     public void update(dPlayer player, UUID uuid) {
-        currentX.put(uuid, (int) aH.getDoubleFrom(tag(xTag, player)));
-        currentY.put(uuid, (int) aH.getDoubleFrom(tag(yTag, player)));
+        currentX.put(uuid, getX(player, uuid));
+        currentY.put(uuid, getY(player, uuid));
         currentVisibility.put(uuid, aH.getBooleanFrom(tag(visibilityTag, player)));
     }
 
     public int getX(dPlayer player, UUID uuid) {
-        if (!currentX.containsKey(uuid)) {
+        //if (!currentX.containsKey(uuid)) {
             int x = (int) aH.getDoubleFrom(tag(xTag, player));
             currentX.put(uuid, x);
+        //}
+        int tx = x;
+        if (worldCoordinates && lastMap != null) {
+            float f = (float) (tx - lastMap.getCenterX()) / (1 << (lastMap.getScale().getValue()));
+            int bx = ((int) ((f * 2.0F) + 0.5D));
+            return (bx < -127 ? -127 : (bx > 127 ? 127 : bx));
         }
-        return currentX.get(uuid);
+        return tx;
     }
 
     public int getY(dPlayer player, UUID uuid) {
-        if (!currentY.containsKey(uuid)) {
+        //if (!currentY.containsKey(uuid)) {
             int y = (int) aH.getDoubleFrom(tag(yTag, player));
             currentY.put(uuid, y);
+        //}
+        int ty = y;
+        if (worldCoordinates && lastMap != null) {
+            float f1 = (float) (ty - lastMap.getCenterZ()) / (1 << (lastMap.getScale().getValue()));
+            int by = ((int) ((f1 * 2.0F) + 0.5D));
+            return (by < -127 ? -127 : (by > 127 ? 127 : by));
         }
-        return currentY.get(uuid);
+        return ty;
     }
 
     public boolean isVisibleTo(dPlayer player, UUID uuid) {
@@ -68,6 +84,7 @@ public abstract class MapObject {
         data.put("y", yTag);
         data.put("visibility", visibilityTag);
         data.put("debug", debug ? "true" : "false");
+        data.put("world_coordinates", worldCoordinates ? "true" : "false");
         return data;
     }
 

@@ -2161,6 +2161,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_sheared>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether a sheep is sheared.
+        // -->
+        if (attribute.startsWith("is_sheared") && getBukkitEntity() instanceof Sheep) {
+            return new Element(((Sheep) getBukkitEntity()).isSheared())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.is_on_ground>
         // @returns Element(Boolean)
         // @group attributes
@@ -2859,6 +2871,20 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
             getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name sheared
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the sheep is sheared.
+        // @tags
+        // <e@entity.is_sheared>
+        // -->
+        if (mechanism.matches("sheared") && mechanism.requireBoolean()
+                && getBukkitEntity() instanceof Sheep) {
+            ((Sheep) getBukkitEntity()).setSheared(value.asBoolean());
         }
 
         // <--[mechanism]

@@ -20,10 +20,68 @@ public class MapScriptContainer extends ScriptContainer {
         super(configurationSection, scriptContainerName);
     }
 
+    // <--[language]
+    // @name Map Script Containers
+    // @group Script Container System
+    // @description
+    // Map scripts allow you define custom in-game map items, for usage with the map command.
+    //
+    // The following is the format for the container.
+    //
+    // <code>
+    // # The name of the map script is used by the map command.
+    // Item Script Name:
+    //
+    //   type: map
+    //
+    //   # Whether to display the original map below the custom values.
+    //   original: true/false
+    //
+    //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
+    //   display name: custom name
+    //
+    //
+    //   # Whether to constantly update things.
+    //   auto update: true
+    //
+    //   # Lists all contained objects.
+    //   objects:
+    //
+    //     # The first object...
+    //     1:
+    //       # Specify the object type
+    //       type: image
+    //       # Specify an HTTP url or file path within Denizen/images/ for the image. Supports animated .gif!
+    //       image: my_image.png
+    //       # Optionally add width/height numbers.
+    //
+    //     2:
+    //       type: text
+    //       # Specify any text, with tags.
+    //       text: Hello <player.name>
+    //       # Specify a tag to show or hide custom content! Valid for all objects.
+    //       visible: <player.name.contains[bob].not>
+    //
+    //     3:
+    //       type: cursor
+    //       # Specify a cursor - {RED|GREEN|WHITE|BLUE)_POINTER, WHITE_CROSS, WHITE_CIRCLE, RED_MARKER, SMALL_WHITE_CIRCLE,
+    //       # MANSION, TEMPLE
+    //       cursor: red_marker
+    //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
+    //       x: 5
+    //       y: 5
+    //       world_coordinates: false
+    // </code>
+    //
+    // -->
+
     public void applyTo(MapView mapView) {
         DenizenMapRenderer renderer = new DenizenMapRenderer(mapView.getRenderers(),
                 aH.getBooleanFrom(getString("AUTO UPDATE", "true")));
         boolean debug = true;
+        if (contains("ORIGINAL")) {
+            renderer.displayOriginal = aH.getBooleanFrom(getString("ORIGINAL"));
+        }
         if (contains("DEBUG")) {
             debug = aH.getBooleanFrom(getString("DEBUG"));
         }
@@ -45,6 +103,7 @@ public class MapScriptContainer extends ScriptContainer {
                 String x = objectSection.getString("X", "0");
                 String y = objectSection.getString("Y", "0");
                 String visible = objectSection.getString("VISIBLE", "true");
+                boolean worldC = objectSection.contains("WORLD_COORDINATES") && aH.getBooleanFrom(objectSection.getString("WORLD_COORDINATES", "false"));
                 if (type.equals("IMAGE")) {
                     if (!objectSection.contains("IMAGE")) {
                         dB.echoError("Map script '" + getName() + "'s image '" + objectKey
@@ -87,6 +146,12 @@ public class MapScriptContainer extends ScriptContainer {
                 else if (type.equals("DOT")) {
                     renderer.addObject(new MapDot(x, y, visible, debug, objectSection.getString("RADIUS", "1"),
                             objectSection.getString("COLOR", "black")));
+                }
+                else {
+                    dB.echoError("Weird map data!");
+                }
+                if (worldC && renderer.mapObjects.size() > 0) {
+                    renderer.mapObjects.get(renderer.mapObjects.size() - 1).worldCoordinates = true;
                 }
             }
         }
