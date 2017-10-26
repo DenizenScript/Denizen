@@ -2374,6 +2374,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_monster>
+        // @returns Element(Boolean)
+        // @group data
+        // @description
+        // Returns whether the entity is a hostile monster.
+        // -->
+        if (attribute.startsWith("is_monster")) {
+            return new Element(getBukkitEntity() instanceof Monster)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.is_mob>
         // @returns Element(Boolean)
         // @group data
