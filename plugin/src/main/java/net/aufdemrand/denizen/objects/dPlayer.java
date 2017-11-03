@@ -1503,6 +1503,15 @@ public class dPlayer implements dObject, Adjustable {
 
         // Player is required to be online after this point...
         if (!isOnline()) {
+
+            // Iterate through this object's properties' attributes
+            for (Property property : PropertyParser.getProperties(this)) {
+                String returned = property.getAttribute(attribute);
+                if (returned != null) {
+                    return returned;
+                }
+            }
+
             return new Element(identify()).getAttribute(attribute);
         }
 
