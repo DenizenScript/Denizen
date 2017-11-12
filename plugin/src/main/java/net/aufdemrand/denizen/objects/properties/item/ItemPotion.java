@@ -80,7 +80,24 @@ public class ItemPotion implements Property {
         }
 
         boolean has = item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta
-                && ((PotionMeta)item.getItemStack().getItemMeta()).hasCustomEffects();
+                && ((PotionMeta) item.getItemStack().getItemMeta()).hasCustomEffects();
+
+
+        // <--[tag]
+        // @attribute <i@item.potion_base>
+        // @returns Element
+        // @mechanism dItem.potion_effects
+        // @group properties
+        // @description
+        // Returns the potion effect on this item.
+        // In the format Effect,Level,Extended,Splash
+        // -->
+        if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
+            PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
+            return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
+                    + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
+                    .getAttribute(attribute.fulfill(1));
+        }
 
         // <--[tag]
         // @attribute <i@item.has_potion_effect>
@@ -96,7 +113,7 @@ public class ItemPotion implements Property {
 
         if (has) {
             if (attribute.startsWith("potion_effect")) {
-                PotionMeta meta = ((PotionMeta)item.getItemStack().getItemMeta());
+                PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
 
                 int potN = attribute.hasContext(1) ? attribute.getIntContext(1) - 1: 0;
                 if (potN < 0 || potN > meta.getCustomEffects().size()) {
