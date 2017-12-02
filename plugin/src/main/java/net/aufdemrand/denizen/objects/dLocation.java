@@ -578,6 +578,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.bed_color>
+        // @returns Element
+        // @description
+        // Returns the color of the bed at this location.
+        // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
+        // -->
+        if (attribute.startsWith("bed_color")) {
+            DyeColor color = ((Bed) getBlock().getState()).getColor();
+            return new Element(color != null ? color.name() : "WHITE").getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.base_color>
         // @returns Element
         // @description
