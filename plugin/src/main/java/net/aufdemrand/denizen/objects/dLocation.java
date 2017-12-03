@@ -581,10 +581,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.bed_color>
         // @returns Element
         // @description
-        // Returns the color of the bed at this location.
+        // Returns the base color of the bed at this location.
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // -->
-        if (attribute.startsWith("bed_color")) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("bed_color")) {
+        	if( !(getBlock().getState() instanceof Bed) ) {
+        		return null;
+        	}
             DyeColor color = ((Bed) getBlock().getState()).getColor();
             return new Element(color != null ? color.name() : "WHITE").getAttribute(attribute.fulfill(1));
         }
@@ -597,6 +600,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // For the list of possible colors, see <@link url http://bit.ly/1dydq12>.
         // -->
         if (attribute.startsWith("base_color")) {
+        	if( !(getBlock().getState() instanceof Banner) ) {
+        		return null;
+        	}
             DyeColor color = ((Banner) getBlock().getState()).getBaseColor();
             return new Element(color != null ? color.name() : "BLACK").getAttribute(attribute.fulfill(1));
         }
