@@ -1916,7 +1916,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the material of a fallingblock-type entity.
         // -->
-        if (attribute.startsWith("fallingblock_material")) {
+        if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
             return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2646,6 +2646,30 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
             entity.setFallDistance(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fallingblock_drop_item
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the falling block will drop an item if broken
+        // -->
+        if (mechanism.matches("fallingblock_drop_item") && mechanism.requireBoolean()
+                && entity instanceof FallingBlock) {
+            ((FallingBlock) entity).setDropItem(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fallingblock_hurt_enemies
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the falling block will hurt enemies when it lands
+        // -->
+        if (mechanism.matches("fallingblock_hurt_enemies") && mechanism.requireBoolean()
+                && entity instanceof FallingBlock) {
+            ((FallingBlock) entity).setHurtEntities(value.asBoolean());
         }
 
         // <--[mechanism]
