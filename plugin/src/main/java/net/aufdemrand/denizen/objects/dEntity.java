@@ -2662,12 +2662,12 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dEntity
-        // @name fallingblock_hurt_enemies
+        // @name fallingblock_hurt_entities
         // @input Element(Boolean)
         // @description
-        // Sets whether the falling block will hurt enemies when it lands
+        // Sets whether the falling block will hurt entities when it lands
         // -->
-        if (mechanism.matches("fallingblock_hurt_enemies") && mechanism.requireBoolean()
+        if (mechanism.matches("fallingblock_hurt_entities") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
             ((FallingBlock) entity).setHurtEntities(value.asBoolean());
         }
