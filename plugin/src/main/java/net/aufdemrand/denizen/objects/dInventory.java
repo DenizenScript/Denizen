@@ -1735,14 +1735,15 @@ public class dInventory implements dObject, Notable, Adjustable {
                 attribs = 2;
             }
             List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
-            if (!contains.isEmpty()) {
+            if (contains.size() == list.size()) {
                 for (dItem item : contains) {
                     if (!containsItem(item, qty)) {
                         return Element.FALSE.getAttribute(attribute.fulfill(attribs));
                     }
                 }
+                return Element.TRUE.getAttribute(attribute.fulfill(attribs));
             }
-            return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
