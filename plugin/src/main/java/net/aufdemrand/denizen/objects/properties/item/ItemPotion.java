@@ -122,6 +122,15 @@ public class ItemPotion implements Property {
 
                 attribute = attribute.fulfill(1);
 
+
+                // <--[tag]
+                // @attribute <i@item.potion_effect[<#>].is_splash>
+                // @returns Element(Boolean)
+                // @mechanism dItem.potion_effects
+                // @group properties
+                // @description
+                // Returns whether the potion is a splash potion.
+                // -->
                 if (attribute.startsWith("is_splash")) {
                     return new Element(item.getItemStack().getType() == Material.SPLASH_POTION)
                             .getAttribute(attribute.fulfill(1));
@@ -129,7 +138,7 @@ public class ItemPotion implements Property {
 
                 // <--[tag]
                 // @attribute <i@item.potion_effect[<#>].is_extended>
-                // @returns Element
+                // @returns Element(Boolean)
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
@@ -140,8 +149,16 @@ public class ItemPotion implements Property {
                             .getAttribute(attribute.fulfill(1));
                 }
 
+                // <--[tag]
+                // @attribute <i@item.potion_effect[<#>].level>
+                // @returns Element(Number)
+                // @mechanism dItem.potion_effects
+                // @group properties
+                // @description
+                // Returns the potion effect's level.
+                // -->
                 if (attribute.startsWith("level")) {
-                    return new Element(meta.getBasePotionData().isUpgraded() ? 2: 1)
+                    return new Element(meta.getBasePotionData().isUpgraded() ? 2 : 1)
                             .getAttribute(attribute.fulfill(1));
                 }
 
@@ -198,7 +215,7 @@ public class ItemPotion implements Property {
                 }
 
                 // <--[tag]
-                // @attribute <i@item.potion_effect[<#>].anplifier>
+                // @attribute <i@item.potion_effect[<#>].amplifier>
                 // @returns Element(Number)
                 // @mechanism dItem.potion_effects
                 // @group properties
