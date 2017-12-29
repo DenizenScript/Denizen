@@ -238,7 +238,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
         for (dLocation location : locations) {
             // Slightly increase the location's Y so effects don't seem to come out of the ground
-            location.clone().add(0, 1, 0);
+            location = new dLocation(location.clone().add(0, 1, 0));
 
             // Play the Bukkit effect the number of times specified
             if (effect != null) {
