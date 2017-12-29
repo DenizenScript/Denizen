@@ -926,6 +926,24 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <cu@cuboid.contains_location[<location>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether this cuboid contains a location.
+        // -->
+        registerTag("contains_location", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.contains_location[...] must have a value.");
+                    return null;
+                }
+                dLocation loc = dLocation.valueOf(attribute.getContext(1));
+                return new Element(((dCuboid) object).isInsideCuboid(loc)).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.is_within[<cuboid>]>
         // @returns Element(Boolean)
         // @description
@@ -1246,8 +1264,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                         chunks.add(maxChunk);
                     }
-                    dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
-                    dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
                     for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
                         for (int z = minChunk.getZ() + 1; z <= maxChunk.getZ() - 1; z++) {
                             chunks.add(obj.getWorld().getChunkAt(x, z));
@@ -1275,8 +1291,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (LocationPair pair : ((dCuboid) object).pairs) {
                     Chunk minChunk = pair.low.getChunk();
                     Chunk maxChunk = pair.high.getChunk();
-                    dB.log("min:" + minChunk.getX() + "," + minChunk.getZ());
-                    dB.log("max:" + maxChunk.getX() + "," + maxChunk.getZ());
                     for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
                         for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
                             chunks.add(((dCuboid) object).getWorld().getChunkAt(x, z));

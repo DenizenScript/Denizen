@@ -2267,6 +2267,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setBurnTime((short) value.asInt());
+                furnace.update();
             }
         }
 
@@ -2284,6 +2285,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setCookTime((short) value.asInt());
+                furnace.update();
             }
         }
 

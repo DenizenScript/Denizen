@@ -2311,7 +2311,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Map
-        // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/text:<text>] (x:<#>) (y:<#>)
+        // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
         // @Required 2
         // @Stable stable
         // @Short Modifies a new or existing map by adding images or text.
@@ -2328,6 +2328,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
         // Custom maps do not persist over restarts.
         //
+        // @Tags
+        // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
+        //
         // @Usage
         // Use to add an auto-resized background image to map 3
         // - map 3 image:my_map_images/my_background.png resize
@@ -2337,15 +2340,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - map new:w@world image:my_map_images/my_center_image.png x:64 y:64
         //
         // @Usage
-        // Use to add some text to map 0
-        // - map 0 "text:Hello World!" x:35 y:60
-        //
-        // @Usage
         // Reset map to have the center at the player's location
         // - map 3 reset:<player.location>
         // -->
         registerCoreMember(MapCommand.class,
-                "MAP", "map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/text:<text>] (x:<#>) (y:<#>)", 2);
+                "MAP", "map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)", 2);
 
         // <--[command]
         // @Name Midi

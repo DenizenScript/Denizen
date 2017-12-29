@@ -1236,6 +1236,17 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
 
+    public String bestName() {
+        if (isUnique()) {
+            return NotableManager.getSavedId(this);
+        }
+        else {
+            return (getIdType().equals("script") || getIdType().equals("notable")
+                    ? idHolder : (idType));
+        }
+    }
+
+
     @Override
     public String identifySimple() {
         if (isUnique()) {
@@ -1243,7 +1254,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else {
             return "in@" + (getIdType().equals("script") || getIdType().equals("notable")
-                    ? idHolder : (idType + "[" + idHolder + ']'));
+                    ? idHolder : (idType + "[" + idHolder + "]"));
         }
     }
 
@@ -1723,16 +1734,15 @@ public class dInventory implements dObject, Notable, Adjustable {
                 qty = attribute.getIntContext(2);
                 attribs = 2;
             }
-            // TODO: Fix logic
             List<dItem> contains = list.filter(dItem.class, attribute.getScriptEntry());
             if (!contains.isEmpty()) {
                 for (dItem item : contains) {
-                    if (containsItem(item, qty)) {
-                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                    if (!containsItem(item, qty)) {
+                        return Element.FALSE.getAttribute(attribute.fulfill(attribs));
                     }
                 }
             }
-            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+            return Element.TRUE.getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]

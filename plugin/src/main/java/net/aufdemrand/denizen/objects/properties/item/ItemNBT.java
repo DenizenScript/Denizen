@@ -73,7 +73,11 @@ public class ItemNBT implements Property {
         // Returns the value of this item's NBT key as a string Element as best it can.
         // -->
         if (attribute.matches("nbt")) {
-            return new Element(CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN))
+            String res = CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN);
+            if (res == null) {
+                return null;
+            }
+            return new Element(res)
                     .getAttribute(attribute.fulfill(1));
         }
 

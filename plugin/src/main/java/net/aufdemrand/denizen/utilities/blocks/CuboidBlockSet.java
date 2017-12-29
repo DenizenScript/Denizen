@@ -136,6 +136,9 @@ public class CuboidBlockSet implements BlockSet {
                 }
             }
         }
+        double xw = x_width;
+        x_width = z_height;
+        z_height = xw;
         blocks = bd;
     }
 
