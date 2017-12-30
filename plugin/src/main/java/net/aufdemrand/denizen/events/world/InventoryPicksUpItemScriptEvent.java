@@ -32,6 +32,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // @Context
     // <context.inventory> returns the dInventory that picked up the item.
     // <context.item> returns the dItem.
+    // <context.entity> returns a dEntity of the item entity.
     //
     // -->
 
