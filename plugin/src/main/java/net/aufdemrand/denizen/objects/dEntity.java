@@ -36,9 +36,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
@@ -2546,7 +2544,8 @@ public class dEntity implements dObject, Adjustable {
         //   AREA EFFECT CLOUD ATTRIBUTES
         /////////////////
 
-        if (entity instanceof AreaEffectCloud) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && entity instanceof AreaEffectCloud) {
 
             // <--[tag]
             // @attribute <e@entity.base_potion>
