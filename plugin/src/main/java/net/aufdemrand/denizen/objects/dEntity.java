@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -2537,6 +2538,149 @@ public class dEntity implements dObject, Adjustable {
             String escript = getEntityScript();
             return new Element("e@" + (escript != null && escript.length() > 0 ? escript : getEntityType().getLowercaseName())
                     + PropertyParser.getPropertiesString(this))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        /////////////////////
+        //   AREA EFFECT CLOUD ATTRIBUTES
+        /////////////////
+
+        // <--[tag]
+        // @attribute <e@entity.base_potion>
+        // @returns Element
+        // @group properties
+        // @description
+        // Returns the Area Effect Cloud's base potion data.
+        // In the format Effect,Level,Extended
+        // -->
+        if (attribute.startsWith("base_potion") && entity instanceof AreaEffectCloud) {
+            PotionData data = ((AreaEffectCloud) entity).getBasePotionData();
+            return new Element(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1) + "," + data.isExtended())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.particle>
+        // @returns Element
+        // @group properties
+        // @description
+        // Returns the Area Effect Cloud's particle
+        // -->
+        if (attribute.startsWith("particle") && entity instanceof AreaEffectCloud) {
+            return new Element(((AreaEffectCloud) entity).getParticle().name())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.particle_color>
+        // @returns dColor
+        // @group properties
+        // @description
+        // Returns the Area Effect Cloud's color.
+        // -->
+        if (attribute.startsWith("particle_color") && entity instanceof AreaEffectCloud) {
+            return new dColor(((AreaEffectCloud) entity).getColor())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.duration>
+        // @returns Duration
+        // @group properties
+        // @description
+        // Returns the Area Effect Cloud's duration.
+        // -->
+        if (attribute.startsWith("duration") && entity instanceof AreaEffectCloud) {
+            return new Duration((long) ((AreaEffectCloud) entity).getDuration())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.duration_on_use>
+        // @returns Duration
+        // @group properties
+        // @description
+        // Returns the duration the Area Effect Cloud
+        // will decrease by when it applies an effect to an entity.
+        // -->
+        if (attribute.startsWith("duration_on_use") && entity instanceof AreaEffectCloud) {
+            return new Duration((long) ((AreaEffectCloud) entity).getDurationOnUse())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.radius>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the Area Effect Cloud's radius.
+        // -->
+        if (attribute.startsWith("radius") && entity instanceof AreaEffectCloud) {
+            return new Element(((AreaEffectCloud) entity).getRadius())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.radius_on_use>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the amount the Area Effect Cloud's radius
+        // will decrease by when it applies an effect to an entity.
+        // -->
+        if (attribute.startsWith("radius_on_use") && entity instanceof AreaEffectCloud) {
+            return new Element(((AreaEffectCloud) entity).getRadiusOnUse())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.radius_per_tick>
+        // @returns Element(Number)
+        // @group properties
+        // @description
+        // Returns the amount the Area Effect Cloud's radius
+        // will decrease by every tick.
+        // -->
+        if (attribute.startsWith("radius_per_tick") && entity instanceof AreaEffectCloud) {
+            return new Element(((AreaEffectCloud) entity).getRadiusPerTick())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.reapplication_delay>
+        // @returns Duration
+        // @group properties
+        // @description
+        // Returns the duration an entity will be immune
+        // from the Area Effect Cloud's subsequent exposure.
+        // -->
+        if (attribute.startsWith("reapplication_delay") && entity instanceof AreaEffectCloud) {
+            return new Duration((long) ((AreaEffectCloud) entity).getReapplicationDelay())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.wait_time>
+        // @returns Duration
+        // @group properties
+        // @description
+        // Returns the duration an entity must be exposed to
+        // the Area Effect Cloud before its effect is applied.
+        // -->
+        if (attribute.startsWith("wait_time") && entity instanceof AreaEffectCloud) {
+            return new Duration((long) ((AreaEffectCloud) entity).getWaitTime())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.has_custom_effects>
+        // @returns Element(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the Area Effect Cloud has custom effects.
+        // -->
+        if (attribute.startsWith("has_custom_effects") && entity instanceof AreaEffectCloud) {
+            return new Element(((AreaEffectCloud) entity).hasCustomEffects())
                     .getAttribute(attribute.fulfill(1));
         }
 
