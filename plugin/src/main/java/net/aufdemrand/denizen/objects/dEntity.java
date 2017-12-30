@@ -2554,12 +2554,50 @@ public class dEntity implements dObject, Adjustable {
             // @group properties
             // @description
             // Returns the Area Effect Cloud's base potion data.
-            // In the format Effect,Level,Extended
+            // In the format TYPE,LEVEL,IS_EXTENDED
             // -->
             if (attribute.startsWith("base_potion")) {
                 PotionData data = ((AreaEffectCloud) entity).getBasePotionData();
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.type>
+                // @returns Element
+                // @group properties
+                // @description
+                // Returns the Area Effect Cloud's base potion type.
+                // -->
+                if (attribute.startsWith("type")) {
+                    return new Element(data.getType().name())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.level>
+                // @returns Element(Number)
+                // @group properties
+                // @description
+                // Returns the Area Effect Cloud's base potion level.
+                // -->
+                if (attribute.startsWith("level")) {
+                    return new Element(data.isUpgraded() ? 2 : 1)
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.is_extended>
+                // @returns Element(Boolean)
+                // @group properties
+                // @description
+                // Returns whether the Area Effect Cloud's base potion is extended.
+                // -->
+                if (attribute.startsWith("is_extended")) {
+                    return new Element(data.isExtended())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
                 return new Element(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1) + "," + data.isExtended())
-                        .getAttribute(attribute.fulfill(1));
+                        .getAttribute(attribute);
             }
 
             // <--[tag]
@@ -2682,13 +2720,25 @@ public class dEntity implements dObject, Adjustable {
             }
 
             // <--[tag]
-            // @attribute <e@entity.has_custom_effects>
+            // @attribute <e@entity.has_custom_effect[<effect>]>
             // @returns Element(Boolean)
             // @group properties
             // @description
-            // Returns whether the Area Effect Cloud has custom effects.
+            // Returns whether the Area Effect Cloud has a specified effect.
+            // If no effect is specified, returns whether it has any custom effect.
             // -->
-            if (attribute.startsWith("has_custom_effects")) {
+            if (attribute.startsWith("has_custom_effect")) {
+
+                if (attribute.hasContext(1)) {
+                    PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+                    for (PotionEffect effect : ((AreaEffectCloud) entity).getCustomEffects()) {
+                        if (effect.getType().equals(effectType)) {
+                            return Element.TRUE.getAttribute(attribute.fulfill(1));
+                        }
+                    }
+                    return Element.FALSE.getAttribute(attribute.fulfill(1));
+                }
+
                 return new Element(((AreaEffectCloud) entity).hasCustomEffects())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -2713,7 +2763,8 @@ public class dEntity implements dObject, Adjustable {
             // @returns dList
             // @group properties
             // @description
-            // Returns a dList of the Area Effect Cloud's custom effects.
+            // Returns a dList of the Area Effect Cloud's custom effects
+            // In the form TYPE,AMPLIFIER,DURATION,HAS_PARTICLES,IS_AMBIENT,COLOR|...
             // -->
             if (attribute.startsWith("custom_effects")) {
                 List<PotionEffect> effects = ((AreaEffectCloud) entity).getCustomEffects();
