@@ -36,8 +36,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.*;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -1916,7 +1916,7 @@ public class dEntity implements dObject, Adjustable {
         // @description
         // Returns the material of a fallingblock-type entity.
         // -->
-        if (attribute.startsWith("fallingblock_material")) {
+        if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
             return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2374,6 +2374,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_monster>
+        // @returns Element(Boolean)
+        // @group data
+        // @description
+        // Returns whether the entity is a hostile monster.
+        // -->
+        if (attribute.startsWith("is_monster")) {
+            return new Element(getBukkitEntity() instanceof Monster)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.is_mob>
         // @returns Element(Boolean)
         // @group data
@@ -2528,6 +2540,329 @@ public class dEntity implements dObject, Adjustable {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        /////////////////////
+        //   AREA EFFECT CLOUD ATTRIBUTES
+        /////////////////
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && entity instanceof AreaEffectCloud) {
+
+            // <--[tag]
+            // @attribute <e@entity.base_potion>
+            // @returns Element
+            // @group properties
+            // @description
+            // Returns the Area Effect Cloud's base potion data.
+            // In the format TYPE,LEVEL,IS_EXTENDED
+            // -->
+            if (attribute.startsWith("base_potion")) {
+                PotionData data = ((AreaEffectCloud) entity).getBasePotionData();
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.type>
+                // @returns Element
+                // @group properties
+                // @description
+                // Returns the Area Effect Cloud's base potion type.
+                // -->
+                if (attribute.startsWith("type")) {
+                    return new Element(data.getType().name())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.level>
+                // @returns Element(Number)
+                // @group properties
+                // @description
+                // Returns the Area Effect Cloud's base potion level.
+                // -->
+                if (attribute.startsWith("level")) {
+                    return new Element(data.isUpgraded() ? 2 : 1)
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.base_potion.is_extended>
+                // @returns Element(Boolean)
+                // @group properties
+                // @description
+                // Returns whether the Area Effect Cloud's base potion is extended.
+                // -->
+                if (attribute.startsWith("is_extended")) {
+                    return new Element(data.isExtended())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                return new Element(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1) + "," + data.isExtended())
+                        .getAttribute(attribute);
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.particle>
+            // @returns Element
+            // @group properties
+            // @description
+            // Returns the Area Effect Cloud's particle.
+            // -->
+            if (attribute.startsWith("particle")) {
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <e@entity.particle.color>
+                // @returns dColor
+                // @group properties
+                // @description
+                // Returns the Area Effect Cloud's particle color.
+                // -->
+                if (attribute.startsWith("color")) {
+                    return new dColor(((AreaEffectCloud) entity).getColor())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                return new Element(((AreaEffectCloud) entity).getParticle().name())
+                        .getAttribute(attribute);
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.duration>
+            // @returns Duration
+            // @group properties
+            // @description
+            // Returns the Area Effect Cloud's duration.
+            // -->
+            if (attribute.startsWith("duration")) {
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <e@entity.duration.on_use>
+                // @returns Duration
+                // @group properties
+                // @description
+                // Returns the duration the Area Effect Cloud
+                // will decrease by when it applies an effect to an entity.
+                // -->
+                if (attribute.startsWith("on_use")) {
+                    return new Duration((long) ((AreaEffectCloud) entity).getDurationOnUse())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                return new Duration((long) ((AreaEffectCloud) entity).getDuration())
+                        .getAttribute(attribute);
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.radius>
+            // @returns Element(Number)
+            // @group properties
+            // @description
+            // Returns the Area Effect Cloud's radius.
+            // -->
+            if (attribute.startsWith("radius")) {
+                attribute = attribute.fulfill(1);
+
+                // <--[tag]
+                // @attribute <e@entity.radius.on_use>
+                // @returns Element(Number)
+                // @group properties
+                // @description
+                // Returns the amount the Area Effect Cloud's radius
+                // will decrease by when it applies an effect to an entity.
+                // -->
+                if (attribute.startsWith("on_use")) {
+                    return new Element(((AreaEffectCloud) entity).getRadiusOnUse())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.radius.per_tick>
+                // @returns Element(Number)
+                // @group properties
+                // @description
+                // Returns the amount the Area Effect Cloud's radius
+                // will decrease by every tick.
+                // -->
+                if (attribute.startsWith("per_tick")) {
+                    return new Element(((AreaEffectCloud) entity).getRadiusPerTick())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                return new Element(((AreaEffectCloud) entity).getRadius())
+                        .getAttribute(attribute);
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.reapplication_delay>
+            // @returns Duration
+            // @group properties
+            // @description
+            // Returns the duration an entity will be immune
+            // from the Area Effect Cloud's subsequent exposure.
+            // -->
+            if (attribute.startsWith("reapplication_delay")) {
+                return new Duration((long) ((AreaEffectCloud) entity).getReapplicationDelay())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.wait_time>
+            // @returns Duration
+            // @group properties
+            // @description
+            // Returns the duration an entity must be exposed to
+            // the Area Effect Cloud before its effect is applied.
+            // -->
+            if (attribute.startsWith("wait_time")) {
+                return new Duration((long) ((AreaEffectCloud) entity).getWaitTime())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.has_custom_effect[<effect>]>
+            // @returns Element(Boolean)
+            // @group properties
+            // @description
+            // Returns whether the Area Effect Cloud has a specified effect.
+            // If no effect is specified, returns whether it has any custom effect.
+            // -->
+            if (attribute.startsWith("has_custom_effect")) {
+
+                if (attribute.hasContext(1)) {
+                    PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
+                    for (PotionEffect effect : ((AreaEffectCloud) entity).getCustomEffects()) {
+                        if (effect.getType().equals(effectType)) {
+                            return Element.TRUE.getAttribute(attribute.fulfill(1));
+                        }
+                    }
+                    return Element.FALSE.getAttribute(attribute.fulfill(1));
+                }
+
+                return new Element(((AreaEffectCloud) entity).hasCustomEffects())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.source>
+            // @returns dEntity
+            // @group properties
+            // @description
+            // Returns the source of the Area Effect Cloud.
+            // -->
+            if (attribute.startsWith("source")) {
+                ProjectileSource shooter = ((AreaEffectCloud) entity).getSource();
+                if (shooter != null && shooter instanceof LivingEntity) {
+                    return new dEntity((LivingEntity) shooter)
+                            .getAttribute(attribute.fulfill(1));
+                }
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.custom_effects>
+            // @returns dList
+            // @group properties
+            // @description
+            // Returns a dList of the Area Effect Cloud's custom effects
+            // In the form TYPE,AMPLIFIER,DURATION,HAS_PARTICLES,IS_AMBIENT,COLOR|...
+            // -->
+            if (attribute.startsWith("custom_effects")) {
+                List<PotionEffect> effects = ((AreaEffectCloud) entity).getCustomEffects();
+
+                if (!attribute.hasContext(1)) {
+                    dList list = new dList();
+                    for (PotionEffect effect : effects) {
+                        list.add(effect.getType().getName() + "," +
+                                effect.getAmplifier() + "," +
+                                new Duration((long) effect.getDuration()).identify() + "," +
+                                effect.hasParticles() + "," +
+                                effect.isAmbient() + "," +
+                                new dColor(effect.getColor()).identify());
+                    }
+                    return list.getAttribute(attribute.fulfill(1));
+                }
+
+                int val = attribute.getIntContext(1) - 1;
+                if (val < 0 || val >= effects.size()) {
+                    return null;
+                }
+
+                attribute = attribute.fulfill(1);
+                PotionEffect effect = effects.get(val);
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].type>
+                // @returns Element
+                // @group properties
+                // @description
+                // Returns the specified Area Effect Cloud potion effect type.
+                // -->
+                if (attribute.startsWith("type")) {
+                    return new Element(effect.getType().getName())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].amplifier>
+                // @returns Element(Number)
+                // @group properties
+                // @description
+                // Returns the specified Area Effect Cloud potion effect amplifier.
+                // -->
+                if (attribute.startsWith("amplifier")) {
+                    return new Element(effect.getAmplifier())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].duration>
+                // @returns Duration
+                // @group properties
+                // @description
+                // Returns the specified Area Effect Cloud potion effect duration.
+                // -->
+                if (attribute.startsWith("duration")) {
+                    return new Duration((long) effect.getDuration())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].has_particles>
+                // @returns Element(Boolean)
+                // @group properties
+                // @description
+                // Returns whether the specified Area Effect Cloud potion effect has particles.
+                // -->
+                if (attribute.startsWith("has_particles")) {
+                    return new Element(effect.hasParticles())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].is_ambient>
+                // @returns Element(Boolean)
+                // @group properties
+                // @description
+                // Returns whether the specified Area Effect Cloud potion effect is ambient.
+                // -->
+                if (attribute.startsWith("is_ambient")) {
+                    return new Element(effect.isAmbient())
+                            .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <e@entity.custom_effects[<#>].color>
+                // @returns dColor
+                // @group properties
+                // @description
+                // Returns the specified Area Effect Cloud potion effect color.
+                // -->
+                if (attribute.startsWith("color")) {
+                    return new dColor(effect.getColor())
+                            .getAttribute(attribute.fulfill(1));
+                }
+            }
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -2634,6 +2969,30 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
             entity.setFallDistance(value.asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fallingblock_drop_item
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the falling block will drop an item if broken
+        // -->
+        if (mechanism.matches("fallingblock_drop_item") && mechanism.requireBoolean()
+                && entity instanceof FallingBlock) {
+            ((FallingBlock) entity).setDropItem(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name fallingblock_hurt_entities
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the falling block will hurt entities when it lands
+        // -->
+        if (mechanism.matches("fallingblock_hurt_entities") && mechanism.requireBoolean()
+                && entity instanceof FallingBlock) {
+            ((FallingBlock) entity).setHurtEntities(value.asBoolean());
         }
 
         // <--[mechanism]

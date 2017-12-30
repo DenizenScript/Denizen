@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events.world;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -31,6 +32,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     // @Context
     // <context.inventory> returns the dInventory that picked up the item.
     // <context.item> returns the dItem.
+    // <context.entity> returns a dEntity of the item entity.
     //
     // -->
 
@@ -41,6 +43,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     public static InventoryPicksUpItemScriptEvent instance;
     public dInventory inventory;
     public dItem item;
+    public dEntity entity;
     public InventoryPickupItemEvent event;
 
     @Override
@@ -95,6 +98,9 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
         else if (name.equals("inventory")) {
             return inventory;
         }
+        else if (name.equals("entity")) {
+            return entity;
+        }
         return super.getContext(name);
     }
 
@@ -102,6 +108,7 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     public void onInvPicksUpItem(InventoryPickupItemEvent event) {
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         item = new dItem(event.getItem());
+        entity = new dEntity(event.getItem());
         cancelled = event.isCancelled();
         fire();
         event.setCancelled(cancelled);
