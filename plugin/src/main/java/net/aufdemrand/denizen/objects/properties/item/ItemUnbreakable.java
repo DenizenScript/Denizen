@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -51,10 +53,10 @@ public class ItemUnbreakable implements Property {
 
     public String getPropertyString() {
         ItemStack itemStack = item.getItemStack();
-        if (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable()) {
-            return "true";
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+            return (itemStack.hasItemMeta() && itemStack.getItemMeta().isUnbreakable()) ? "true" : null;
         }
-        return null;
+        return (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable()) ? "true" : null;
     }
 
     public String getPropertyId() {
