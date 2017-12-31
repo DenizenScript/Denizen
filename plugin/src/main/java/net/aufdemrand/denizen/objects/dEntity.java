@@ -24,12 +24,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -2763,7 +2758,7 @@ public class dEntity implements dObject, Adjustable {
             // @group properties
             // @description
             // Returns a dList of the Area Effect Cloud's custom effects
-            // In the form TYPE,AMPLIFIER,DURATION,HAS_PARTICLES,IS_AMBIENT,COLOR|...
+            // In the form Type,Amplifier,Duration,Ambient,Particles|...
             // -->
             if (attribute.startsWith("custom_effects")) {
                 List<PotionEffect> effects = ((AreaEffectCloud) entity).getCustomEffects();
@@ -2774,9 +2769,8 @@ public class dEntity implements dObject, Adjustable {
                         list.add(effect.getType().getName() + "," +
                                 effect.getAmplifier() + "," +
                                 new Duration((long) effect.getDuration()).identify() + "," +
-                                effect.hasParticles() + "," +
                                 effect.isAmbient() + "," +
-                                new dColor(effect.getColor()).identify());
+                                effect.hasParticles());
                     }
                     return list.getAttribute(attribute.fulfill(1));
                 }
@@ -2849,17 +2843,11 @@ public class dEntity implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(1));
                 }
 
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].color>
-                // @returns dColor
-                // @group properties
-                // @description
-                // Returns the specified Area Effect Cloud potion effect color.
-                // -->
-                if (attribute.startsWith("color")) {
-                    return new dColor(effect.getColor())
-                            .getAttribute(attribute.fulfill(1));
-                }
+                return new Element(effect.getType().getName() + "," +
+                        effect.getAmplifier() + "," +
+                        new Duration((long) effect.getDuration()).identify() + "," +
+                        effect.isAmbient() + "," +
+                        effect.hasParticles()).getAttribute(attribute);
             }
         }
 
@@ -3378,6 +3366,79 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
             ((TNTPrimed) getBukkitEntity()).setFuseTicks(value.asInt());
+        }
+
+        /////////////////////
+        //   AREA EFFECT CLOUD MECS
+        /////////////////
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && entity instanceof AreaEffectCloud) {
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name clear_custom_effects
+            // @input None
+            // @description
+            // Clears all custom effects from the Area Effect Cloud
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("clear_custom_effects")) {
+                ((AreaEffectCloud) entity).clearCustomEffects();
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name remove_custom_effect
+            // @input Element
+            // @description
+            // Removes the specified custom effect from the Area Effect Cloud
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("remove_custom_effect")) {
+                PotionEffectType type = PotionEffectType.getByName(value.asString().toUpperCase());
+                if (type != null) ((AreaEffectCloud) entity).removeCustomEffect(type);
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name custom_effects
+            // @input dList
+            // @description
+            // Adds a list of custom potion effects to the Area Effect Cloud
+            // In the form Type,Duration,Amplifier(,Ambient,Particles)|...
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("custom_effects")) {
+                dList list = mechanism.getValue().asType(dList.class);
+                ((AreaEffectCloud) entity).clearCustomEffects();
+
+                for (String item : list) {
+                    List<String> potionData = CoreUtilities.split(item, ',', 5);
+                    if (potionData.size() >= 3) {
+                        PotionEffectType type = PotionEffectType.getByName(potionData.get(0));
+                        Duration duration = Duration.valueOf(potionData.get(1));
+                        Element amplifier = new Element(potionData.get(2));
+                        Element ambient = new Element((potionData.size() > 3) ? potionData.get(3) : "false");
+                        Element particles = new Element((potionData.size() > 4) ? potionData.get(4) : "true");
+
+                        if (type == null || duration == null || !amplifier.isInt() || !ambient.isBoolean() || !particles.isBoolean()) {
+                            dB.echoError(item + " is not a valid potion effect!");
+                        }
+                        else {
+                            ((AreaEffectCloud) entity).addCustomEffect(
+                                    new PotionEffect(type, duration.getTicksAsInt(), amplifier.asInt(),
+                                            ambient.asBoolean(), particles.asBoolean()), true);
+                        }
+                    }
+                    else {
+                        dB.echoError(item + " is not a valid potion effect!");
+                    }
+                }
+            }
         }
 
         // Iterate through this object's properties' mechanisms
