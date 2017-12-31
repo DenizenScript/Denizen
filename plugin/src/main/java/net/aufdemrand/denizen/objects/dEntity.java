@@ -2636,7 +2636,7 @@ public class dEntity implements dObject, Adjustable {
                 // @group properties
                 // @description
                 // Returns the duration the Area Effect Cloud
-                // will decrease by when it applies an effect to an entity.
+                // will increase by when it applies an effect to an entity.
                 // -->
                 if (attribute.startsWith("on_use")) {
                     return new Duration((long) ((AreaEffectCloud) entity).getDurationOnUse())
@@ -2649,7 +2649,7 @@ public class dEntity implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <e@entity.radius>
-            // @returns Element(Number)
+            // @returns Element(Decimal)
             // @group properties
             // @description
             // Returns the Area Effect Cloud's radius.
@@ -2659,11 +2659,11 @@ public class dEntity implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <e@entity.radius.on_use>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @group properties
                 // @description
                 // Returns the amount the Area Effect Cloud's radius
-                // will decrease by when it applies an effect to an entity.
+                // will increase by when it applies an effect to an entity.
                 // -->
                 if (attribute.startsWith("on_use")) {
                     return new Element(((AreaEffectCloud) entity).getRadiusOnUse())
@@ -2672,11 +2672,11 @@ public class dEntity implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <e@entity.radius.per_tick>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @group properties
                 // @description
                 // Returns the amount the Area Effect Cloud's radius
-                // will decrease by every tick.
+                // will increase by every tick.
                 // -->
                 if (attribute.startsWith("per_tick")) {
                     return new Element(((AreaEffectCloud) entity).getRadiusPerTick())
@@ -3510,7 +3510,7 @@ public class dEntity implements dObject, Adjustable {
             // @input Duration
             // @description
             // Sets the duration the Area Effect Cloud
-            // will decrease by when it applies an effect to an entity.
+            // will increase by when it applies an effect to an entity.
             // @tags
             // <e@entity.duration.on_use>
             // -->
@@ -3550,7 +3550,7 @@ public class dEntity implements dObject, Adjustable {
             // @input Element(Decimal)
             // @description
             // Sets the radius the Area Effect Cloud
-            // will decrease by when it applies an effect to an entity.
+            // will increase by when it applies an effect to an entity.
             // @tags
             // <e@entity.radius.on_use>
             // -->
@@ -3564,7 +3564,7 @@ public class dEntity implements dObject, Adjustable {
             // @input Element(Decimal)
             // @description
             // Sets the radius the Area Effect Cloud
-            // will decrease by every tick.
+            // will increase by every tick.
             // @tags
             // <e@entity.radius.per_tick>
             // -->
