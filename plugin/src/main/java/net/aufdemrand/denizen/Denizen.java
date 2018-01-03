@@ -858,6 +858,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
             propertyParser.registerProperty(ItemFirework.class, dItem.class);
             propertyParser.registerProperty(ItemFlags.class, dItem.class);
+            propertyParser.registerProperty(ItemInventory.class, dItem.class);
             propertyParser.registerProperty(ItemLore.class, dItem.class);
             propertyParser.registerProperty(ItemMap.class, dItem.class);
             propertyParser.registerProperty(ItemNBT.class, dItem.class);
