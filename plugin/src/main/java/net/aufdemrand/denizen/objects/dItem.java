@@ -773,6 +773,38 @@ public class dItem implements dObject, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <i@item.has_inventory>
+        // @returns Element(Boolean)
+        // @group properties
+        // Returns whether the item has an inventory.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.inventory>, and <@link tag i@item.inventory>
+        // -->
+        registerTag("has_inventory", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemInventory.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.is_lockable>
+        // @returns Element(Boolean)
+        // @group properties
+        // Returns whether the item is lockable.
+        // If this returns true, it will enable access to:
+        // <@link mechanism dItem.lock>, and <@link tag i@item.lock>
+        // -->
+        registerTag("is_lockable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemLock.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <i@item.material>
         // @returns dMaterial
         // @group conversion

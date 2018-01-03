@@ -24,12 +24,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -2553,7 +2548,7 @@ public class dEntity implements dObject, Adjustable {
             // @group properties
             // @description
             // Returns the Area Effect Cloud's base potion data.
-            // In the format TYPE,LEVEL,IS_EXTENDED
+            // In the format Type,Upgraded,Extended
             // -->
             if (attribute.startsWith("base_potion")) {
                 PotionData data = ((AreaEffectCloud) entity).getBasePotionData();
@@ -2572,14 +2567,14 @@ public class dEntity implements dObject, Adjustable {
                 }
 
                 // <--[tag]
-                // @attribute <e@entity.base_potion.level>
-                // @returns Element(Number)
+                // @attribute <e@entity.base_potion.is_upgraded>
+                // @returns Element(Boolean)
                 // @group properties
                 // @description
-                // Returns the Area Effect Cloud's base potion level.
+                // Returns whether the Area Effect Cloud's base potion is upgraded.
                 // -->
-                if (attribute.startsWith("level")) {
-                    return new Element(data.isUpgraded() ? 2 : 1)
+                if (attribute.startsWith("is_upgraded")) {
+                    return new Element(data.isUpgraded())
                             .getAttribute(attribute.fulfill(1));
                 }
 
@@ -2595,7 +2590,7 @@ public class dEntity implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(1));
                 }
 
-                return new Element(data.getType().name() + "," + (data.isUpgraded() ? 2 : 1) + "," + data.isExtended())
+                return new Element(data.getType().name() + "," + data.isUpgraded() + "," + data.isExtended())
                         .getAttribute(attribute);
             }
 
@@ -2641,7 +2636,7 @@ public class dEntity implements dObject, Adjustable {
                 // @group properties
                 // @description
                 // Returns the duration the Area Effect Cloud
-                // will decrease by when it applies an effect to an entity.
+                // will increase by when it applies an effect to an entity.
                 // -->
                 if (attribute.startsWith("on_use")) {
                     return new Duration((long) ((AreaEffectCloud) entity).getDurationOnUse())
@@ -2654,7 +2649,7 @@ public class dEntity implements dObject, Adjustable {
 
             // <--[tag]
             // @attribute <e@entity.radius>
-            // @returns Element(Number)
+            // @returns Element(Decimal)
             // @group properties
             // @description
             // Returns the Area Effect Cloud's radius.
@@ -2664,11 +2659,11 @@ public class dEntity implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <e@entity.radius.on_use>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @group properties
                 // @description
                 // Returns the amount the Area Effect Cloud's radius
-                // will decrease by when it applies an effect to an entity.
+                // will increase by when it applies an effect to an entity.
                 // -->
                 if (attribute.startsWith("on_use")) {
                     return new Element(((AreaEffectCloud) entity).getRadiusOnUse())
@@ -2677,11 +2672,11 @@ public class dEntity implements dObject, Adjustable {
 
                 // <--[tag]
                 // @attribute <e@entity.radius.per_tick>
-                // @returns Element(Number)
+                // @returns Element(Decimal)
                 // @group properties
                 // @description
                 // Returns the amount the Area Effect Cloud's radius
-                // will decrease by every tick.
+                // will increase by every tick.
                 // -->
                 if (attribute.startsWith("per_tick")) {
                     return new Element(((AreaEffectCloud) entity).getRadiusPerTick())
@@ -2763,7 +2758,7 @@ public class dEntity implements dObject, Adjustable {
             // @group properties
             // @description
             // Returns a dList of the Area Effect Cloud's custom effects
-            // In the form TYPE,AMPLIFIER,DURATION,HAS_PARTICLES,IS_AMBIENT,COLOR|...
+            // In the form Type,Amplifier,Duration,Ambient,Particles|...
             // -->
             if (attribute.startsWith("custom_effects")) {
                 List<PotionEffect> effects = ((AreaEffectCloud) entity).getCustomEffects();
@@ -2774,9 +2769,8 @@ public class dEntity implements dObject, Adjustable {
                         list.add(effect.getType().getName() + "," +
                                 effect.getAmplifier() + "," +
                                 new Duration((long) effect.getDuration()).identify() + "," +
-                                effect.hasParticles() + "," +
                                 effect.isAmbient() + "," +
-                                new dColor(effect.getColor()).identify());
+                                effect.hasParticles());
                     }
                     return list.getAttribute(attribute.fulfill(1));
                 }
@@ -2849,17 +2843,11 @@ public class dEntity implements dObject, Adjustable {
                             .getAttribute(attribute.fulfill(1));
                 }
 
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].color>
-                // @returns dColor
-                // @group properties
-                // @description
-                // Returns the specified Area Effect Cloud potion effect color.
-                // -->
-                if (attribute.startsWith("color")) {
-                    return new dColor(effect.getColor())
-                            .getAttribute(attribute.fulfill(1));
-                }
+                return new Element(effect.getType().getName() + "," +
+                        effect.getAmplifier() + "," +
+                        new Duration((long) effect.getDuration()).identify() + "," +
+                        effect.isAmbient() + "," +
+                        effect.hasParticles()).getAttribute(attribute);
             }
         }
 
@@ -3378,6 +3366,252 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
             ((TNTPrimed) getBukkitEntity()).setFuseTicks(value.asInt());
+        }
+
+        /////////////////////
+        //   AREA EFFECT CLOUD MECS
+        /////////////////
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && entity instanceof AreaEffectCloud) {
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name clear_custom_effects
+            // @input None
+            // @description
+            // Clears all custom effects from the Area Effect Cloud
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("clear_custom_effects")) {
+                ((AreaEffectCloud) entity).clearCustomEffects();
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name remove_custom_effect
+            // @input Element
+            // @description
+            // Removes the specified custom effect from the Area Effect Cloud
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("remove_custom_effect")) {
+                PotionEffectType type = PotionEffectType.getByName(value.asString().toUpperCase());
+                if (type != null) ((AreaEffectCloud) entity).removeCustomEffect(type);
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name custom_effects
+            // @input dList
+            // @description
+            // Adds a list of custom potion effects to the Area Effect Cloud
+            // In the form Type,Amplifier,Duration(,Ambient,Particles)|...
+            // @tags
+            // <e@entity.custom_effects>
+            // -->
+            if (mechanism.matches("custom_effects")) {
+                dList list = value.asType(dList.class);
+                ((AreaEffectCloud) entity).clearCustomEffects();
+
+                for (String item : list) {
+                    List<String> potionData = CoreUtilities.split(item, ',', 5);
+                    if (potionData.size() >= 3) {
+                        PotionEffectType type = PotionEffectType.getByName(potionData.get(0));
+                        Element amplifier = new Element(potionData.get(1));
+                        Duration duration = Duration.valueOf(potionData.get(2));
+                        Element ambient = new Element((potionData.size() > 3) ? potionData.get(3) : "false");
+                        Element particles = new Element((potionData.size() > 4) ? potionData.get(4) : "true");
+
+                        if (type == null || duration == null || !amplifier.isInt() || !ambient.isBoolean() || !particles.isBoolean()) {
+                            dB.echoError(item + " is not a valid potion effect!");
+                        }
+                        else {
+                            ((AreaEffectCloud) entity).addCustomEffect(
+                                    new PotionEffect(type, duration.getTicksAsInt(), amplifier.asInt(),
+                                            ambient.asBoolean(), particles.asBoolean()), true);
+                        }
+                    }
+                    else {
+                        dB.echoError(item + " is not a valid potion effect!");
+                    }
+                }
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name particle_color
+            // @input dColor
+            // @description
+            // Sets the Area Effect Cloud's particle color.
+            // @tags
+            // <e@entity.particle.color>
+            // -->
+            if (mechanism.matches("particle_color") && mechanism.requireObject(dColor.class)) {
+                ((AreaEffectCloud) entity).setColor(dColor.valueOf(value.asString()).getColor());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name base_potion
+            // @input Element
+            // @description
+            // Sets the Area Effect Cloud's base potion.
+            // In the form: Type,Upgraded,Extended
+            // NOTE: Potion cannot be both upgraded and extended
+            // @tags
+            // <e@entity.base_potion>
+            // <e@entity.base_potion.type>
+            // <e@entity.base_potion.is_upgraded>
+            // <e@entity.base_potion.is_extended>
+            // -->
+            if (mechanism.matches("base_potion")) {
+                List<String> data = CoreUtilities.split(value.asString().toUpperCase(), ',');
+                if (data.size() != 3) {
+                    dB.echoError(value.asString() + " is not a valid base potion!");
+                }
+                else {
+                    try {
+                        PotionType type = PotionType.valueOf(data.get(0));
+                        boolean extended = type.isExtendable() && CoreUtilities.toLowerCase(data.get(1)).equals("true");
+                        boolean upgraded = type.isUpgradeable() && CoreUtilities.toLowerCase(data.get(2)).equals("true");
+                        if (extended && upgraded) {
+                            dB.echoError("Potion cannot be both upgraded and extended");
+                        }
+                        else {
+                            ((AreaEffectCloud) entity).setBasePotionData(
+                                    new PotionData(type, extended, upgraded));
+                        }
+                    }
+                    catch (Exception e) {
+                        dB.echoError(value.asString() + " is not a valid base potion!");
+                    }
+                }
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name duration
+            // @input Duration
+            // @description
+            // Sets the Area Effect Cloud's duration.
+            // @tags
+            // <e@entity.duration>
+            // -->
+            if (mechanism.matches("duration") && mechanism.requireObject(Duration.class)) {
+                ((AreaEffectCloud) entity).setDuration(Duration.valueOf(value.asString()).getTicksAsInt());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name duration_on_use
+            // @input Duration
+            // @description
+            // Sets the duration the Area Effect Cloud
+            // will increase by when it applies an effect to an entity.
+            // @tags
+            // <e@entity.duration.on_use>
+            // -->
+            if (mechanism.matches("duration_on_use") && mechanism.requireObject(Duration.class)) {
+                ((AreaEffectCloud) entity).setDurationOnUse(Duration.valueOf(value.asString()).getTicksAsInt());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name particle
+            // @input Element
+            // @description
+            // Sets the particle of the Area Effect Cloud
+            // @tags
+            // <e@entity.particle>
+            // -->
+            if (mechanism.matches("particle") && mechanism.requireEnum(false, Particle.values())) {
+                ((AreaEffectCloud) entity).setParticle(Particle.valueOf(value.asString().toUpperCase()));
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name radius
+            // @input Element(Decimal)
+            // @description
+            // Sets the radius of the Area Effect Cloud
+            // @tags
+            // <e@entity.radius>
+            // -->
+            if (mechanism.matches("radius") && mechanism.requireFloat()) {
+                ((AreaEffectCloud) entity).setRadius(value.asFloat());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name radius_on_use
+            // @input Element(Decimal)
+            // @description
+            // Sets the radius the Area Effect Cloud
+            // will increase by when it applies an effect to an entity.
+            // @tags
+            // <e@entity.radius.on_use>
+            // -->
+            if (mechanism.matches("radius_on_use") && mechanism.requireFloat()) {
+                ((AreaEffectCloud) entity).setRadiusOnUse(value.asFloat());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name radius_per_tick
+            // @input Element(Decimal)
+            // @description
+            // Sets the radius the Area Effect Cloud
+            // will increase by every tick.
+            // @tags
+            // <e@entity.radius.per_tick>
+            // -->
+            if (mechanism.matches("radius_per_tick") && mechanism.requireFloat()) {
+                ((AreaEffectCloud) entity).setRadiusPerTick(value.asFloat());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name reapplication_delay
+            // @input Duration
+            // @description
+            // Sets the duration an entity will be immune
+            // from the Area Effect Cloud's subsequent exposure.
+            // @tags
+            // <e@entity.reapplication_delay>
+            // -->
+            if (mechanism.matches("reapplication_delay") && mechanism.requireObject(Duration.class)) {
+                ((AreaEffectCloud) entity).setReapplicationDelay(Duration.valueOf(value.asString()).getTicksAsInt());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name source
+            // @input dEntity
+            // @description
+            // Sets the source of the Area Effect Cloud
+            // @tags
+            // <e@entity.source>
+            // -->
+            if (mechanism.matches("source") && mechanism.requireObject(dEntity.class)) {
+                ((AreaEffectCloud) entity).setSource((ProjectileSource) dEntity.valueOf(value.asString()).getBukkitEntity());
+            }
+
+            // <--[mechanism]
+            // @object dEntity
+            // @name wait_time
+            // @input Duration
+            // @description
+            // Sets the duration an entity must be exposed to
+            // the Area Effect Cloud before its effect is applied.
+            // @tags
+            // <e@entity.wait_time>
+            // -->
+            if (mechanism.matches("wait_time") && mechanism.requireObject(Duration.class)) {
+                ((AreaEffectCloud) entity).setWaitTime(Duration.valueOf(value.asString()).getTicksAsInt());
+            }
         }
 
         // Iterate through this object's properties' mechanisms
