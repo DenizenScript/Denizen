@@ -12,9 +12,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.tags.TagManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,10 +27,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
@@ -200,7 +195,6 @@ public class ItemScriptHelper implements Listener {
     // clicks are made in CRAFTING or RESULT slots
     @EventHandler
     public void specialRecipeClick(InventoryClickEvent event) {
-
         // Proceed only if at least one special recipe has been stored
         if (ItemScriptContainer.specialrecipesMap.isEmpty()
                 && ItemScriptContainer.shapelessRecipesMap.isEmpty()) {
@@ -221,9 +215,24 @@ public class ItemScriptHelper implements Listener {
 
             CraftingInventory inventory = (CraftingInventory) event.getInventory();
             Player player = (Player) event.getWhoClicked();
+            Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = null;
 
             if (slotType == SlotType.RESULT && inventory.getResult() != null
                     && inventory.getResult().getData().getItemType() != Material.AIR) {
+
+                // Proceed only if the player can fit more items on their cursor
+                if (!event.isShiftClick() && event.getCursor().getData().getItemType() != Material.AIR
+                        && (!event.getCursor().isSimilar(inventory.getResult())
+                            || event.getCursor().getAmount() + inventory.getResult().getAmount() > event.getCursor().getMaxStackSize())) {
+                    return;
+                }
+
+                // Couldn't match a recipe script to the result
+                recipeEntry = getSpecialRecipeEntry(inventory.getMatrix());
+                if (recipeEntry == null) {
+                    return;
+                }
+
                 PlayerCraftsItemScriptEvent scriptEvent = PlayerCraftsItemScriptEvent.instance;
                 scriptEvent.inventory = inventory;
                 scriptEvent.result = new dItem(inventory.getResult());
@@ -261,12 +270,12 @@ public class ItemScriptHelper implements Listener {
                 clicked = processSpecialRecipes(inventory, player);
             }
             if (clicked && slotType.equals(SlotType.RESULT)) {
-                removeOneFromEachSlot(inventory, player);
+                removeFromEachSlot(inventory, recipeEntry.getValue(), player);
             }
         }
     }
 
-    public void removeOneFromEachSlot(final CraftingInventory inventory, final Player player) {
+    public void removeFromEachSlot(final CraftingInventory inventory, final List<dItem> recipe, final Player player) {
         // This cloning is a workaround for what seems to be a Spigot issue
         // Basically, after taking the crafted item, it randomly sets the recipe items
         // to twice their amount minus 2. I have no idea why.
@@ -285,8 +294,8 @@ public class ItemScriptHelper implements Listener {
                                     matrix[i] = null;
                                 }
                                 else {
-                                    matrix[i].setAmount(matrix[i].getAmount() - 1);
-                                    if (matrix[i].getAmount() == 0) {
+                                    matrix[i].setAmount(matrix[i].getAmount() - (recipe != null ? recipe.get(i).getAmount() : 1));
+                                    if (matrix[i].getAmount() <= 0) {
                                         matrix[i] = null;
                                     }
                                 }
@@ -397,10 +406,7 @@ public class ItemScriptHelper implements Listener {
         return returnme;
     }
 
-    // Check if a CraftingInventory's crafting matrix matches a special
-    // recipe and return that recipe's dItem result if it does
-    public dItem getSpecialRecipeResult(ItemStack[] matrix, Player player) {
-
+    public Map.Entry<ItemScriptContainer, List<dItem>> getSpecialRecipeEntry(ItemStack[] matrix) {
         // Iterate through all the special recipes
         master:
         for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
@@ -418,53 +424,100 @@ public class ItemScriptHelper implements Listener {
                 if (valueN.isItemscript() != matrixN.isItemscript()) {
                     continue master;
                 }
+
+                // If the item's quantity is less than the recipe item's quantity, it's a fail
+                if (matrixN.getAmount() < valueN.getAmount()) {
+                    continue master;
+                }
+
                 // If they're both item scripts, and they are different scripts, it's a fail
                 if (valueN.isItemscript() && matrixN.isItemscript()) {
                     if (!valueN.getScriptName().equalsIgnoreCase(matrixN.getScriptName())) {
                         continue master;
                     }
                 }
+
                 // If they're both not item scripts, and the materials are different, it's a fail
-                else if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData())) {
+                if (!valueN.getMaterial().matchesMaterialData(matrixN.getMaterial().getMaterialData())) {
                     continue master;
                 }
             }
 
             // If all the items match, return the special recipe's dItem key
-            return entry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
+            return entry;
         }
 
+        // Forms a shaped recipe from a shapeless recipe
         primary:
         for (Map.Entry<ItemScriptContainer, List<dItem>> entry :
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
-            for (int i = 0; i < entry.getValue().size(); i++) {
-                if (!containsAny(entry.getValue().get(i), matrix)) {
-                    continue primary;
+
+            // Clone recipe & matrix so we can remove items from them
+            List<ItemStack> entryList = new ArrayList<ItemStack>();
+            List<ItemStack> matrixList = new ArrayList<ItemStack>();
+            for (dItem entryItem : entry.getValue()) {
+                entryList.add(entryItem.getItemStack().clone());
+            }
+            for (ItemStack itemStack : matrix) {
+                matrixList.add(itemStack != null ? itemStack.clone() : new ItemStack(Material.AIR));
+            }
+
+            List<dItem> shapedRecipe = new ArrayList<dItem>();
+            ItemStack matrixItem;
+            ItemStack entryItem;
+
+            // Iterate through each item in the matrix.
+            Iterator<ItemStack> mL = matrixList.iterator();
+            while (mL.hasNext()) {
+                matrixItem = mL.next();
+
+                if (matrixItem != null && matrixItem.getType() != Material.AIR) {
+                    boolean matched = false;
+
+                    // Iterate through the remaining shapeless recipe items to see if any match
+                    Iterator<ItemStack> eL = entryList.iterator();
+                    while (eL.hasNext()) {
+                        entryItem = eL.next();
+
+                        // If the items are similar & the matrix has enough, we have a match
+                        if (matrixItem.isSimilar(entryItem) && matrixItem.getAmount() >= entryItem.getAmount()) {
+                            shapedRecipe.add(new dItem(entryItem));
+                            mL.remove();
+                            eL.remove();
+                            matched = true;
+                            break;
+                        }
+                    }
+                    // If a matrix item doesn't match any items from the recipe, it's a fail
+                    if (!matched) continue primary;
+                }
+                else {
+                    shapedRecipe.add(new dItem(Material.AIR));
+                    mL.remove();
                 }
             }
-            int c = 0;
-            for (int i = 0; i < matrix.length; i++) {
-                if (matrix[i] != null && matrix[i].getType() != Material.AIR) {
-                    c++;
-                }
-            }
-            if (c != entry.getValue().size()) {
+
+            // If successful, we should have removed every entry from both the matrix and the shapeless recipe
+            // Otherwise, it's a fail
+            if (!entryList.isEmpty() || !matrixList.isEmpty()) {
                 continue primary;
             }
-            return entry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
+
+            // Returns a shaped recipe entry based on the shapeless recipe
+            return new AbstractMap.SimpleEntry<ItemScriptContainer, List<dItem>>(entry.getKey(), shapedRecipe);
         }
 
         return null;
     }
 
-    public boolean containsAny(dItem item, ItemStack[] matrix) {
-        String full = item.getFullString();
-        for (int i = 0; i < matrix.length; i++) {
-            if (full.equalsIgnoreCase(new dItem(matrix[i]).getFullString())) {
-                return true;
-            }
+    // Check if a CraftingInventory's crafting matrix matches a special
+    // recipe and return that recipe's dItem result if it does
+    public dItem getSpecialRecipeResult(ItemStack[] matrix, Player player) {
+        Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = getSpecialRecipeEntry(matrix);
+        if (recipeEntry != null) {
+            return recipeEntry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
         }
-        return false;
+        return null;
     }
 
     // Because Denizen special recipes are basically fake recipes,
@@ -478,32 +531,34 @@ public class ItemScriptHelper implements Listener {
             matrix[i] = matrix[i] == null ? new ItemStack(Material.AIR) : matrix[i].clone();
         }
 
-        // Get the result of the special recipe that this matrix matches,
-        // if any
-        dItem result = getSpecialRecipeResult(matrix, player);
+        // Get the recipe entry for this matrix, if any
+        Map.Entry<ItemScriptContainer, List<dItem>> recipeEntry = getSpecialRecipeEntry(matrix);
 
         // Proceed only if the result was not null
-        if (result != null) {
+        if (recipeEntry != null) {
+            List<dItem> recipe = recipeEntry.getValue();
+            dItem result = recipeEntry.getKey().getItemFrom(dPlayer.mirrorBukkitPlayer(player), null);
 
             // In a shift click, the amount of the resulting dItem should
-            // be based on the amount of the least numerous ingredient,
+            // be based on the amount of the least numerous ingredient multiple,
             // so track it
             int lowestAmount = 0;
 
             // Set lowestAmount to the amount of the first item found,
-            // then set it to that of the ingredient with the lowest amount
+            // then set it to that of the ingredient with the lowest multiple
             // found that isn't zero
             for (int n = 0; n < matrix.length; n++) {
-                if ((matrix[n].getAmount() > 0 &&
-                        matrix[n].getAmount() < lowestAmount) || lowestAmount == 0) {
-                    lowestAmount = matrix[n].getAmount();
+                if (matrix[n].getAmount() == 0 || recipe.get(n).getAmount() == 0) continue;
+
+                if ((matrix[n].getAmount() / recipe.get(n).getAmount() < lowestAmount) || lowestAmount == 0) {
+                    lowestAmount = matrix[n].getAmount() / recipe.get(n).getAmount();
                 }
             }
 
-            // Deduct that amount from every ingredient in the matrix
+            // Deduct that multiple from every ingredient in the matrix
             for (int n = 0; n < matrix.length; n++) {
                 if (matrix[n].getAmount() > 0) {
-                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount);
+                    matrix[n].setAmount(matrix[n].getAmount() - lowestAmount * recipe.get(n).getAmount());
                     if (matrix[n].getAmount() <= 0) {
                         matrix[n] = null;
                     }
