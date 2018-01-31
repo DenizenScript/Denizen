@@ -77,7 +77,12 @@ public class ItemUnbreakable implements Property {
         if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
             ItemStack itemStack = item.getItemStack().clone();
             ItemMeta meta = itemStack.getItemMeta();
-            meta.spigot().setUnbreakable(mechanism.getValue().asBoolean());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                meta.setUnbreakable(mechanism.getValue().asBoolean());
+            }
+            else {
+                meta.spigot().setUnbreakable(mechanism.getValue().asBoolean());
+            }
             itemStack.setItemMeta(meta);
             item.setItemStack(itemStack);
         }

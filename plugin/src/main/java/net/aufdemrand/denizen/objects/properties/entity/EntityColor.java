@@ -56,9 +56,9 @@ public class EntityColor implements Property {
         EntityType type = colored.getBukkitEntityType();
 
         if (type == EntityType.HORSE) {
-            return ((Horse) colored.getBukkitEntity()).getColor().name() + "|" +
-                    ((Horse) colored.getBukkitEntity()).getStyle().name() + "|" +
-                    ((Horse) colored.getBukkitEntity()).getVariant().name();
+            Horse horse = (Horse) colored.getBukkitEntity();
+            return horse.getColor().name() + "|" + horse.getStyle().name() +
+                    (NMSHandler.getVersion().isAtMost(NMSVersion.v1_10_R1) ? "|" + horse.getVariant().name() : "");
         }
 
         else if (type == EntityType.SHEEP) {
@@ -113,13 +113,14 @@ public class EntityColor implements Property {
     // This is a quick rundown of the styling information used to create a horse,
     // used for both <@link tag e@entity.color> and <@link mechanism e@entity.color>.
     //
-    // The output/input is formatted as COLOR|STYLE|VARIANT
+    // The output/input is formatted as COLOR|STYLE(|VARIANT)
     // Where color is:
     // BLACK, BROWN, CHESTNUT, CREAMY, DARK_BROWN, GRAY, or WHITE.
     // and where style is:
     // WHITE, WHITE_DOTS, WHITEFIELD, BLACK_DOTS, or NONE.
     // and where variant is:
     // DONKEY, MULE, SKELETON_HORSE, UNDEAD_HORSE, or HORSE.
+    //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
     // -->
 
     // <--[language]
@@ -152,7 +153,8 @@ public class EntityColor implements Property {
         // @description
         // If the entity can have a color, returns the entity's color.
         // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, and Parrot type entities can have a color.
-        // For horses, the output is COLOR|STYLE|VARIANT, see <@link language horse types>.
+        // For horses, the output is COLOR|STYLE(|VARIANT), see <@link language horse types>.
+        //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
@@ -175,7 +177,8 @@ public class EntityColor implements Property {
         // @description
         // Changes the entity's color.
         // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, and Parrot type entities can have a color.
-        // For horses, the input is COLOR|STYLE|VARIANT, see <@link language horse types>
+        // For horses, the input is COLOR|STYLE(|VARIANT), see <@link language horse types>
+        //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
@@ -197,7 +200,8 @@ public class EntityColor implements Property {
                     ((Horse) colored.getBukkitEntity())
                             .setStyle(Horse.Style.valueOf(horse_info.get(1).toUpperCase()));
                 }
-                if (horse_info.size() > 2 && new Element(horse_info.get(2)).matchesEnum(Horse.Variant.values())) {
+                if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_10_R1)
+                        && horse_info.size() > 2 && new Element(horse_info.get(2)).matchesEnum(Horse.Variant.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setVariant(Horse.Variant.valueOf(horse_info.get(2).toUpperCase()));
                 }

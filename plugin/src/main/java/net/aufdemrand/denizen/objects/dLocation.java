@@ -725,6 +725,46 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.lock>
+        // @mechanism dLocation.lock
+        // @returns Element
+        // @description
+        // Returns the password to a locked container.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
+                && attribute.startsWith("lock") && getBlock().getState() instanceof Lockable) {
+            Lockable lock = (Lockable) getBlock().getState();
+            return new Element(lock.isLocked() ? lock.getLock() : null)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.is_locked>
+        // @mechanism dLocation.lock
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the container is locked.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
+                && attribute.startsWith("is_locked") && getBlock().getState() instanceof Lockable) {
+            return new Element(((Lockable) getBlock().getState()).isLocked())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.is_lockable>
+        // @mechanism dLocation.lock
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the container is lockable.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
+                && attribute.startsWith("is_lockable")) {
+            return new Element(getBlock().getState() instanceof Lockable)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.drops>
         // @returns dList(dItem)
         // @description
@@ -2144,6 +2184,26 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             CreatureSpawner spawner = ((CreatureSpawner) getBlock().getState());
             spawner.setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
             spawner.update();
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name lock
+        // @input Element
+        // @description
+        // Sets the container's lock password.
+        // Locked containers can only be opened while holding an item with the name of the lock.
+        // Leave blank to remove a container's lock.
+        // @tags
+        // <l@location.lock>
+        // <l@location.is_locked>
+        // <l@location.is_lockable>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
+                && mechanism.matches("lock") && getBlock().getState() instanceof Lockable) {
+            BlockState state = getBlock().getState();
+            ((Lockable) state).setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
+            state.update();
         }
 
         // <--[mechanism]
