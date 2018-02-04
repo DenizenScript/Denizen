@@ -21,8 +21,6 @@ import com.google.gson.JsonObject;
 /**
  * Manages Advancements.
  * TODO: Advancement Script Containers?
- *
- * @author Mergu
  */
 public class AdvancementHelper {
 
@@ -77,7 +75,8 @@ public class AdvancementHelper {
     private void add() {
         try {
             Bukkit.getUnsafe().loadAdvancement(id, getJson());
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             dB.echoError("Error registering advancement!");
         }
     }
