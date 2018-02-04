@@ -120,6 +120,42 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(AdjustCommand.class,
                 "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
 
+        // <--[command]
+        // @Name Advancement
+        // @Syntax advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)
+        // @Required 1
+        // @Stable unstable
+        // @Short Awards the player with a custom Advancement.
+        // @Author Mergu
+        // @Group player
+        //
+        // @Description
+        // Awards the player with a custom Advancement. If no target is specified it will default to the attached
+        // player. The description argument changes the text displayed on hovering over the chat announcement.
+        // The icon argument changes the icon displayed in the toast pop-up notification. The frame argument
+        // changes the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK. Include the
+        // announce argument to announce the advancement to chat, and hide_toast to disable the pop-up notification.
+        //
+        // @Tags
+        // None
+        //
+        // @Usage
+        // Welcomes the player with an advancement.
+        // - advancement "Welcome <player.name>!"
+        //
+        // @Usage
+        // Sends the player an advancement with a custom description & icon, announced to chat.
+        // - advancement "Diggy Diggy Hole" "d:<player.name> dug a hole!" icon:iron_spade announce
+        //
+        // @Usage
+        // Sends the player a "Challenge Complete!" type advancement.
+        // - advancement "You finished a challenge!" frame:challenge icon:diamond
+        //
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            registerCoreMember(AdvancementCommand.class,
+                    "ADVANCEMENT", "advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)", 1);
+        }
 
         // <--[command]
         // @Name Age

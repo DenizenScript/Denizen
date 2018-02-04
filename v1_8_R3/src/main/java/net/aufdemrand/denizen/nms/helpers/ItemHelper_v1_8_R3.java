@@ -23,6 +23,11 @@ import java.util.UUID;
 public class ItemHelper_v1_8_R3 implements ItemHelper {
 
     @Override
+    public String getVanillaName(ItemStack itemStack) {
+        return CraftItemStack.asNMSCopy(itemStack).save(new NBTTagCompound()).getString("id");
+    }
+
+    @Override
     public String getJsonString(ItemStack itemStack) {
         String json = CraftItemStack.asNMSCopy(itemStack).C().getChatModifier().toString();
         return json.substring(176, json.length() - 185);
