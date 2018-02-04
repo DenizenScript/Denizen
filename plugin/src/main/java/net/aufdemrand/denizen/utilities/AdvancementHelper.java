@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.utilities;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
@@ -19,8 +19,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 /**
- * Manages custom temporary Advancements.
- * TODO: Persistent Advancement Script Containers?
+ * Manages Advancements.
+ * TODO: Advancement Script Containers?
+ *
  * @author Mergu
  */
 public class AdvancementHelper {
@@ -34,13 +35,14 @@ public class AdvancementHelper {
     private boolean toast;
 
     /**
-     * Initializes variables
-     * @param title Title of advancement, text shown in toast notification
-     * @param description Advancement description, shown on hover in announcement
-     * @param icon Material icon shown in toast notification
-     * @param frame Defines the type of advancement. Valid types are challenge/goal/task
-     * @param announce Whether to show the advancement in chat
-     * @param toast Whether to show the advancement toast
+     * Initializes advancement variables.
+     *
+     * @param title       Advancement title
+     * @param description Advancement description
+     * @param icon        Advancement icon material
+     * @param frame       Defines the type of advancement. Valid types are challenge/goal/task
+     * @param announce    Whether to show the advancement in chat
+     * @param toast       Whether to show the advancement toast
      */
     public AdvancementHelper(String title, String description, Material icon, String frame, boolean announce, boolean toast) {
         this.id = new NamespacedKey(NMSHandler.getJavaPlugin(), UUID.randomUUID().toString());
@@ -53,14 +55,14 @@ public class AdvancementHelper {
     }
 
     /**
-     * Shows the custom advancement to a list of players
-     * @param players List of players
+     * Shows the advancement to a collection of players.
+     *
+     * @param players Players to show the advancement to
      */
-    public void showTo(final Collection<? extends Player> players) {
+    public void showTo(final List<Player> players) {
         add();
         grant(players);
         new BukkitRunnable() {
-
             @Override
             public void run() {
                 revoke(players);
@@ -70,13 +72,12 @@ public class AdvancementHelper {
     }
 
     /**
-     * Registers the temporary advancement
+     * Adds the advancement
      */
     private void add() {
         try {
             Bukkit.getUnsafe().loadAdvancement(id, getJson());
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             dB.echoError("Error registering advancement!");
         }
     }
@@ -90,16 +91,17 @@ public class AdvancementHelper {
     }
 
     /**
-     * Grants & displays this custom advancement by fulfilling its criteria
-     * @param players List of players
+     * Grants this advancement by fulfilling its criteria
+     *
+     * @param players Players to grant the advancement to
      */
-    private void grant(Collection<? extends Player> players) {
+    private void grant(List<Player> players) {
         Advancement advancement = Bukkit.getAdvancement(id);
         AdvancementProgress progress;
         for (Player player : players) {
             progress = player.getAdvancementProgress(advancement);
-            if (!progress.isDone())	{
-                for (String criteria : progress.getRemainingCriteria())	{
+            if (!progress.isDone()) {
+                for (String criteria : progress.getRemainingCriteria()) {
                     progress.awardCriteria(criteria);
                 }
             }
@@ -107,10 +109,11 @@ public class AdvancementHelper {
     }
 
     /**
-     * Revokes the granted criteria for this advancement
-     * @param players List of players
+     * Revokes this advancement by revoking its criteria
+     *
+     * @param players Players to revoke the advancement from
      */
-    private void revoke(Collection<? extends Player> players) {
+    private void revoke(List<Player> players) {
         Advancement advancement = Bukkit.getAdvancement(id);
         AdvancementProgress progress;
         for (Player player : players) {
@@ -124,12 +127,12 @@ public class AdvancementHelper {
     }
 
     /**
-     * Constructs a valid Advancement JSON String
+     * Constructs a valid Advancement JSON String to be saved to the server's advancements folder.
      * See: https://minecraft.gamepedia.com/Advancements#JSON_Format
-     * TODO: Implement unused portions in Advancement Script Containers
-     * @return Formatted Advancement JSON String
+     *
+     * @return Advancement JSON String
      */
-    private String getJson()	{
+    private String getJson() {
 
         JsonObject json = new JsonObject();
 

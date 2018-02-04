@@ -108,12 +108,8 @@ public class AdvancementCommand extends AbstractCommand {
         }
 
         AdvancementHelper advancement = new AdvancementHelper(
-                text.asString(),
-                description.asString(),
-                icon.getMaterial(),
-                frame.asString(),
-                announce.asBoolean(),
-                toast.asBoolean());
+                text.asString(), description.asString(), icon.getMaterial(),
+                frame.asString(), announce.asBoolean(), toast.asBoolean());
         advancement.showTo(bukkitPlayers);
     }
 }
