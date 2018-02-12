@@ -1320,7 +1320,7 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return isPlayer() || isCitizensNPC() || isSpawned()
+        return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity()
                 || (entity != null && rememberedEntities.containsKey(entity.getUniqueId()));  // || isSaved()
     }
 

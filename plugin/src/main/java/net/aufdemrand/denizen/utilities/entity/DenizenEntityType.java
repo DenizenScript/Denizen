@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.enums.CustomEntityType;
 import net.aufdemrand.denizen.nms.interfaces.CustomEntity;
 import net.aufdemrand.denizen.nms.interfaces.CustomEntityHelper;
@@ -91,6 +92,9 @@ public class DenizenEntityType {
                 return location.getWorld().dropItem(location, itemStack);
             }
             else if (!isCustom()) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                    return SpawnEntityHelper.spawn(location, bukkitEntityType, mechanisms);
+                }
                 return location.getWorld().spawnEntity(location, bukkitEntityType);
             }
             else {
