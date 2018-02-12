@@ -11,7 +11,9 @@ public class ParrotHelper {
     }
 
     public static void setParrotColor(dEntity colored, Mechanism mechanism) {
-        ((Parrot) colored.getBukkitEntity())
-                .setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
+        if (mechanism.getValue().matchesEnum(Parrot.Variant.values())) {
+            ((Parrot) colored.getBukkitEntity())
+                    .setVariant(Parrot.Variant.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
     }
 }
