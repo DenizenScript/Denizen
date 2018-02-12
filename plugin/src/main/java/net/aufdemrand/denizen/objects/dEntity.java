@@ -993,43 +993,6 @@ public class dEntity implements dObject, Adjustable {
         NMSHandler.getInstance().getEntityHelper().setTarget((Creature) entity, target);
     }
 
-    /**
-     * Set the subtype of this entity by using the chosen method and Enum from
-     * this Bukkit entity's class and:
-     * 1) using a random subtype if value is "RANDOM"
-     * 2) looping through the entity's subtypes until one matches the value string
-     * <p/>
-     * Example: setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", "SIAMESE_CAT");
-     *
-     * @param entityName The name of the entity's class.
-     * @param typeName   The name of the entity class' Enum with subtypes.
-     * @param method     The name of the method used to set the subtype of this entity.
-     * @param value      The value of the subtype.
-     */
-
-    public void setSubtype(String entityName, String typeName, String method, String value)
-            throws Exception {
-
-        Class<?> entityClass = Class.forName(entityName);
-        Class<?> typeClass = Class.forName(typeName);
-        Object[] types = typeClass.getEnumConstants();
-
-        if (value.equalsIgnoreCase("RANDOM")) {
-
-            entityClass.getMethod(method, typeClass).invoke(entity, types[CoreUtilities.getRandom().nextInt(types.length)]);
-        }
-        else {
-            for (Object type : types) {
-
-                if (type.toString().equalsIgnoreCase(value)) {
-
-                    entityClass.getMethod(method, typeClass).invoke(entity, type);
-                    break;
-                }
-            }
-        }
-    }
-
     public void setEntity(Entity entity) {
         this.entity = entity;
     }
