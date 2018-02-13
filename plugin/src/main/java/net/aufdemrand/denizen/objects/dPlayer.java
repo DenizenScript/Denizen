@@ -2417,6 +2417,19 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name sprinting
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the player is sprinting.
+        // @tags
+        // <p@player.is_sprinting>
+        // -->
+        if (mechanism.matches("sprinting") && mechanism.requireBoolean()) {
+            getPlayerEntity().setSprinting(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name gamemode
         // @input Element
         // @description
