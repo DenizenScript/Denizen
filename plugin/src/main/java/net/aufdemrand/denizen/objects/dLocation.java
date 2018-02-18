@@ -21,11 +21,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
@@ -2434,6 +2430,23 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("data") && mechanism.hasValue()) {
             getBlock().setData((byte) value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name generate_tree
+        // @input Element
+        // @description
+        // Generates a tree at this location if possible.
+        // For a list of valid tree types, see <@link url http://bit.ly/2o7m1je>
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
+            boolean generated = getWorld().generateTree(this, TreeType.valueOf(value.asString().toUpperCase()));
+            if (!generated) {
+                dB.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
+            }
         }
 
         if (!mechanism.fulfilled()) {
