@@ -1,4 +1,4 @@
-package net.aufdemrand.denizen.utilities;
+package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Mechanism;

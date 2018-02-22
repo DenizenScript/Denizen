@@ -1862,6 +1862,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.body_yaw>
+        // @returns Element(Decimal)
+        // @group location
+        // @description
+        // Returns the entity's body yaw (separate from head yaw).
+        // -->
+        if (attribute.startsWith("body_yaw")) {
+            return new Element(NMSHandler.getInstance().getEntityHelper().getBaseYaw(entity))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.velocity>
         // @returns dLocation
         // @group location

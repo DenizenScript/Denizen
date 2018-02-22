@@ -388,6 +388,12 @@ public class EntityHelper_v1_10_R1 implements EntityHelper {
     }
 
     @Override
+    public float getBaseYaw(Entity entity) {
+        net.minecraft.server.v1_10_R1.Entity handle = ((CraftEntity) entity).getHandle();
+        return ((EntityLiving) handle).aP;
+    }
+
+    @Override
     public void look(Entity entity, float yaw, float pitch) {
         net.minecraft.server.v1_10_R1.Entity handle = ((CraftEntity) entity).getHandle();
         if (handle != null) {
