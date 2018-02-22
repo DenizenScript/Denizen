@@ -39,7 +39,7 @@ public class PacketOutSetSlot_v1_10_R1 implements PacketOutSetSlot {
             e.printStackTrace();
         }
     }
-    
+
     private static final Field ITEM_STACK;
 
     static {
