@@ -2934,6 +2934,23 @@ public class dEntity implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dEntity
+        // @name attach_to
+        // @input dEntity
+        // @description
+        // Attaches this entity's client-visible motion to another entity.
+        // Run with no value to disable attachment.
+        // -->
+        if (mechanism.matches("attach_to")) {
+            if (mechanism.hasValue()) {
+                NMSHandler.getInstance().forceAttachMove(entity, mechanism.getValue().asType(dEntity.class).getBukkitEntity());
+            }
+            else {
+                NMSHandler.getInstance().forceAttachMove(entity, null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dEntity
         // @name shooter
         // @input dEntity
         // @description

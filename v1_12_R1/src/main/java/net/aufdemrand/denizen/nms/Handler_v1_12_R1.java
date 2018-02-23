@@ -28,9 +28,12 @@ import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Handler_v1_12_R1 extends NMSHandler {
 
@@ -210,5 +213,21 @@ public class Handler_v1_12_R1 extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_12_R1(biome);
+    }
+
+    public HashMap<UUID, UUID> attachmentsA = new HashMap<UUID, UUID>();
+    public HashMap<UUID, UUID> attachments2 = new HashMap<UUID, UUID>();
+
+    @Override
+    public void forceAttachMove(Entity a, Entity b) {
+        if (attachmentsA.containsKey(a.getUniqueId())) {
+            attachments2.remove(attachmentsA.get(a.getUniqueId()));
+            attachmentsA.remove(a.getUniqueId());
+        }
+        if (b == null) {
+            return;
+        }
+        attachmentsA.put(a.getUniqueId(), b.getUniqueId());
+        attachments2.put(b.getUniqueId(), a.getUniqueId());
     }
 }
