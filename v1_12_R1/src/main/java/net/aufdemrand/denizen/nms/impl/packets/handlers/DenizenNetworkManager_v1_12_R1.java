@@ -4,6 +4,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.aufdemrand.denizen.nms.Handler_v1_12_R1;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_12_R1;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_12_R1;
@@ -15,15 +16,18 @@ import net.aufdemrand.denizen.nms.impl.packets.PacketOutTradeList_v1_12_R1;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_12_R1;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.minecraft.server.v1_12_R1.*;
+import net.minecraft.server.v1_12_R1.Entity;
 import net.minecraft.server.v1_12_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import javax.crypto.SecretKey;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
+import java.util.UUID;
 
 public class DenizenNetworkManager_v1_12_R1 extends NetworkManager {
 
@@ -80,11 +84,120 @@ public class DenizenNetworkManager_v1_12_R1 extends NetworkManager {
         oldManager.setPacketListener(packetlistener);
     }
 
+    public static Field ENTITY_ID_PACKENT = ReflectionHelper.getFields(PacketPlayOutEntity.class).get("a");
+    public static Field ENTITY_ID_PACKVELENT = ReflectionHelper.getFields(PacketPlayOutEntityVelocity.class).get("a");
+    public static Field ENTITY_ID_PACKTELENT = ReflectionHelper.getFields(PacketPlayOutEntityTeleport.class).get("a");
+
+    public static Object duplo(Object a) {
+        try {
+            Class clazz = a.getClass();
+            Object reter = clazz.newInstance();
+            for (Field f : clazz.getDeclaredFields()) {
+                f.setAccessible(true);
+                f.set(reter, f.get(a));
+            }
+            Class subc = clazz;
+            while (subc.getSuperclass() != null) {
+                subc = subc.getSuperclass();
+                for (Field f : subc.getDeclaredFields()) {
+                    f.setAccessible(true);
+                    f.set(reter, f.get(a));
+                }
+            }
+            return reter;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public void sendPacket(Packet packet) {
         // If the packet sending isn't cancelled, allow normal sending
         if (packet instanceof PacketPlayOutChat) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChat_v1_12_R1((PacketPlayOutChat) packet))) {
                 oldManager.sendPacket(packet);
+            }
+        }
+        else if (packet instanceof PacketPlayOutEntity) {
+            try {
+                int ider = ENTITY_ID_PACKENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (e == null) {
+                    oldManager.sendPacket(packet);
+                }
+                else {
+                    if (!((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
+                            || ((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
+                        oldManager.sendPacket(packet);
+                    }
+                    UUID att = ((Handler_v1_12_R1) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
+                    if (att != null) {
+                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                        if (target != null) {
+                            Packet pNew = (Packet) duplo(packet);
+                            ENTITY_ID_PACKENT.setInt(pNew, target.getEntityId());
+                            oldManager.sendPacket(pNew);
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else if (packet instanceof PacketPlayOutEntityVelocity) {
+            try {
+                int ider = ENTITY_ID_PACKVELENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (e == null) {
+                    oldManager.sendPacket(packet);
+                }
+                else {
+                    if (!((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
+                            || ((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
+                        oldManager.sendPacket(packet);
+                    }
+                    UUID att = ((Handler_v1_12_R1) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
+                    if (att != null) {
+                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                        if (target != null) {
+                            Packet pNew = (Packet) duplo(packet);
+                            ENTITY_ID_PACKVELENT.setInt(pNew, target.getEntityId());
+                            oldManager.sendPacket(pNew);
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else if (packet instanceof PacketPlayOutEntityTeleport) {
+            try {
+                int ider = ENTITY_ID_PACKTELENT.getInt(packet);
+                Entity e = player.getWorld().getEntity(ider);
+                if (e == null) {
+                    oldManager.sendPacket(packet);
+                }
+                else {
+                    if (!((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
+                            || ((Handler_v1_12_R1) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
+                        oldManager.sendPacket(packet);
+                    }
+                    UUID att = ((Handler_v1_12_R1) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
+                    if (att != null) {
+                        org.bukkit.entity.Entity target = Bukkit.getEntity(att);
+                        if (target != null) {
+                            Packet pNew = (Packet) duplo(packet);
+                            ENTITY_ID_PACKTELENT.setInt(pNew, target.getEntityId());
+                            oldManager.sendPacket(pNew);
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
         else if (packet instanceof PacketPlayOutNamedEntitySpawn

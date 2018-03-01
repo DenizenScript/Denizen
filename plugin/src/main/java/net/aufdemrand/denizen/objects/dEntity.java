@@ -1740,6 +1740,18 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
+        // @attribute <e@entity.body_yaw>
+        // @returns Element(Decimal)
+        // @group location
+        // @description
+        // Returns the entity's body yaw (separate from head yaw).
+        // -->
+        if (attribute.startsWith("body_yaw")) {
+            return new Element(NMSHandler.getInstance().getEntityHelper().getBaseYaw(entity))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.velocity>
         // @returns dLocation
         // @group location
@@ -2796,6 +2808,23 @@ public class dEntity implements dObject, Adjustable {
         // -->
         if (mechanism.matches("item_in_offhand")) {
             NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name attach_to
+        // @input dEntity
+        // @description
+        // Attaches this entity's client-visible motion to another entity.
+        // Run with no value to disable attachment.
+        // -->
+        if (mechanism.matches("attach_to")) {
+            if (mechanism.hasValue()) {
+                NMSHandler.getInstance().forceAttachMove(entity, mechanism.getValue().asType(dEntity.class).getBukkitEntity());
+            }
+            else {
+                NMSHandler.getInstance().forceAttachMove(entity, null);
+            }
         }
 
         // <--[mechanism]

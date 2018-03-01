@@ -199,17 +199,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
         // @Required 2
         // @Stable stable
-        // @Short Controls a NPC's Anchor Trait.
+        // @Short Controls an NPC's Anchor Trait.
         // @Author aufdemrand
         // @Group npc
         //
         // @Description
-        // The anchor system inside Citizens2 allows locations to be 'bound' to a NPC, saved by an 'id'. The anchor
+        // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'. The anchor
         // command can add and remove new anchors, as well as the ability to teleport NPCs to anchors with the 'assume'
         // argument.
         // The Anchors Trait can also be used as a sort of 'waypoints' system. For ease of use, the anchor command
         // provides function for NPCs to walk to or walk near an anchor.
-        // As the Anchor command is a NPC specific command, a valid npc object must be referenced in the script entry.
+        // As the Anchor command is an NPC specific command, a valid npc object must be referenced in the script entry.
         // If none is provided by default, the use of the 'npc:n@id' argument, replacing the id with the npcid of the
         // NPC desired, can create a link, or alternatively override the default linked npc.
         //
@@ -219,13 +219,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.has_anchors>
         //
         // @Usage
-        // Use to add and remove anchors to a npc.
+        // Use to add and remove anchors to an NPC.
         // - define location_name <context.message>
         // - chat "I have saved this location as <def[location_name]>.'
         // - anchor add <npc.location> "id:<def[location_name]>"
         //
         // @Usage
-        // Use to make a NPC walk to or walk near a saved anchor.
+        // Use to make an NPC walk to or walk near a saved anchor.
         // - anchor walkto i:waypoint_1
         // - anchor walknear i:waypoint_2 r:5
         // -->
@@ -405,7 +405,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group entity
         //
         // @Description
-        // By itself, the 'attack' command will act as a NPC command in the sense that an attached
+        // By itself, the 'attack' command will act as an NPC command in the sense that an attached
         // NPC will attack the attached player, or specified target. It can also accept a specified entity,
         // or list of entities, to fulfill the command, just specify a 'fetchable' entity object. This includes
         // player objects (dPlayers) and NPC objects (dNPCs). To specify the target, prefix the entity
@@ -419,11 +419,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.navigator.target_entity>
         //
         // @Usage
-        // Use to make a NPC attack a player in an interact script.
+        // Use to make an NPC attack a player in an interact script.
         // - attack
         //
         // @Usage
-        // Use to make a NPC attack a nearby entity.
+        // Use to make an NPC attack a nearby entity.
         // - attack target:<npc.location.find.living_entities.within[10].random>
         //
         // @Usage
@@ -524,7 +524,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // By itself, the 'break' command will act as a NPC command in the sense that an attached
+        // By itself, the 'break' command will act as an NPC command in the sense that an attached
         // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
         // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
         // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
@@ -674,7 +674,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
         // @Stable stable
-        // @Short Causes a NPC/NPCs to send a chat message to nearby players.
+        // @Short Causes an NPC/NPCs to send a chat message to nearby players.
         // @Author aufdemrand
         // @Group player
         //
@@ -685,7 +685,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // can be specified to have any Entity chat to a different target/targets, or specify 'no_target' to
         // not send the message to any specific target.
         //
-        // Chat from a NPC is formatted by the settings present in Denizen's config.yml. Players being chatted
+        // Chat from an NPC is formatted by the settings present in Denizen's config.yml. Players being chatted
         // to see a slightly different message than surrounding players. By default, a 'chat' will allow other
         // players nearby to also see the conversation. For example:
         // <code>
@@ -703,11 +703,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
         //
         // @Usage
-        // Use to emulate a NPC talking out loud to a Player within an interact script-container.
+        // Use to emulate an NPC talking out loud to a Player within an interact script-container.
         // - chat "Hello, <player.name>! Nice day, eh?"
         //
         // @Usage
-        // Use to have a NPC talk to a group of individuals.
+        // Use to have an NPC talk to a group of individuals.
         // - flag <npc> talk_targets:!
         // - foreach <npc.location.find.players.within[6]> {
         //     - if <def[value].has_flag[clan_initiate]> {
@@ -968,13 +968,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax disengage
         // @Required 0
         // @Stable stable
-        // @Short Enables a NPCs triggers that have been temporarily disabled by the engage command.
+        // @Short Enables an NPCs triggers that have been temporarily disabled by the engage command.
         // @Author aufdemrand
         // @Group npc
         //
         // @Description
         // Re-enables any toggled triggers that have been disabled by disengage. Using
-        // disengage inside scripts must have a NPC to reference, or one may be specified
+        // disengage inside scripts must have an NPC to reference, or one may be specified
         // by supplying a valid dNPC object with the npc argument.
         //
         // This is mostly regarded as an 'interact script command', though it may be used inside
@@ -990,7 +990,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.is_engaged>
         //
         // @Usage
-        // Use to reenable a NPC's triggers, disabled via 'engage'.
+        // Use to reenable an NPC's triggers, disabled via 'engage'.
         // - engage
         // - chat 'Be right there!'
         // - walk <player.location>
@@ -1090,15 +1090,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax engage (<duration>)
         // @Required 0
         // @Stable stable
-        // @Short Temporarily disables a NPCs toggled interact script-container triggers.
+        // @Short Temporarily disables an NPCs toggled interact script-container triggers.
         // @Author aufdemrand
         // @Group npc
         //
         // @Description
-        // Engaging a NPC will temporarily disable any interact script-container triggers. To reverse
+        // Engaging an NPC will temporarily disable any interact script-container triggers. To reverse
         // this behavior, use either the disengage command, or specify a duration in which the engage
         // should timeout. Specifying an engage without a duration will render the NPC engaged until
-        // a disengage is used on the NPC. Engaging a NPC affects all players attempting to interact
+        // a disengage is used on the NPC. Engaging an NPC affects all players attempting to interact
         // with the NPC.
         //
         // While engaged, all triggers and actions associated with triggers will not 'fire', except
@@ -1114,7 +1114,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <n@npc.is_engaged>
         //
         // @Usage
-        // Use to make a NPC appear 'busy'.
+        // Use to make an NPC appear 'busy'.
         // - engage
         // - chat 'Give me a few minutes while I mix you a potion!'
         // - walk <npc.anchor[mixing_station]>
@@ -1315,7 +1315,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - explode power:5 <player.location> fire breakblocks
         //
         // @Usage
-        // Use to create an explosion with a power radius of 3 at a NPC's location.
+        // Use to create an explosion with a power radius of 3 at an NPC's location.
         // - explode power:3 <npc.location>
         //
         // @Usage
@@ -2315,13 +2315,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
         // @Required 0
         // @Stable stable
-        // @Short Interacts with a NPCs 'lookclose' trait as provided by Citizens2.
+        // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens2.
         // @Author aufdemrand
         // @Group npc
         //
         // @Description
         // Use this command with any NPC to alter the state and options of its 'lookclose'
-        // trait. When a NPC's 'lookclose' trait is toggled to true, the NPC's head will
+        // trait. When an NPC's 'lookclose' trait is toggled to true, the NPC's head will
         // follow nearby players. Specifying realistic will enable a higher precision
         // and detection of players, while taking into account 'line-of-sight', however can
         // use more CPU cycles. You may also specify a range integer to specify the number
