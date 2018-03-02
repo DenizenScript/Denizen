@@ -16,7 +16,7 @@ public interface PacketHelper {
 
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
-    void setFieldOfView(Player player, Float fov);
+    void setFieldOfView(Player player, float fov);
 
     void showDemoScreen(Player player);
 

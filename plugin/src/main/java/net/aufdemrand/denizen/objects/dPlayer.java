@@ -2832,7 +2832,7 @@ public class dPlayer implements dObject, Adjustable {
                 NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), value.asFloat());
             }
             else {
-                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), null);
+                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), Float.NaN);
             }
         }
 

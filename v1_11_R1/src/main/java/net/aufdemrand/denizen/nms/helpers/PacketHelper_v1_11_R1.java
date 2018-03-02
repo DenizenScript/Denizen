@@ -38,9 +38,9 @@ public class PacketHelper_v1_11_R1 implements PacketHelper {
     }
 
     @Override
-    public void setFieldOfView(Player player, Float fov) {
+    public void setFieldOfView(Player player, float fov) {
         PacketPlayOutAbilities packet = new PacketPlayOutAbilities(((CraftPlayer) player).getHandle().abilities);
-        if (fov != null) {
+        if (!Float.isNaN(fov)) {
             packet.b(fov);
         }
         sendPacket(player, packet);
