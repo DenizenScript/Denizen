@@ -2820,6 +2820,24 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name fov_multiplier
+        // @input Element(Decimal)
+        // @description
+        // Sets the player's field of view multiplier.
+        // Leave input empty to reset.
+        // Note: Values outside a (-1, 1) range will have little effect on the player's fov.
+        // -->
+        if (mechanism.matches("fov_multiplier")) {
+            if (mechanism.hasValue() && mechanism.requireFloat()) {
+                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), value.asFloat());
+            }
+            else {
+                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), null);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name item_message
         // @input Element
         // @description
@@ -2839,6 +2857,17 @@ public class dPlayer implements dObject, Adjustable {
         // -->
         if (mechanism.matches("show_endcredits")) {
             NMSHandler.getInstance().getPlayerHelper().showEndCredits(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name show_demo
+        // @input None
+        // @description
+        // Shows the player the demo screen.
+        // -->
+        if (mechanism.matches("show_demo")) {
+            NMSHandler.getInstance().getPacketHelper().showDemoScreen(getPlayerEntity());
         }
 
         // <--[mechanism]

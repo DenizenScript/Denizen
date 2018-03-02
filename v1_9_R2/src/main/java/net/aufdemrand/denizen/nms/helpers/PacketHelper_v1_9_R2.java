@@ -39,6 +39,20 @@ public class PacketHelper_v1_9_R2 implements PacketHelper {
     }
 
     @Override
+    public void setFieldOfView(Player player, Float fov) {
+        PacketPlayOutAbilities packet = new PacketPlayOutAbilities(((CraftPlayer) player).getHandle().abilities);
+        if (fov != null) {
+            packet.b(fov);
+        }
+        sendPacket(player, packet);
+    }
+
+    @Override
+    public void showDemoScreen(Player player) {
+        sendPacket(player, new PacketPlayOutGameStateChange(5, 0.0F));
+    }
+
+    @Override
     public void showBlockAction(Player player, Location location, int action, int state) {
         BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
         Block block = ((CraftWorld) location.getWorld()).getHandle().getType(position).getBlock();
