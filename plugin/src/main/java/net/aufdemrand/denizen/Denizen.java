@@ -429,8 +429,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            // Create the dNPC Registry
-            dNPCRegistry = new dNPCRegistry(this);
+            // If Citizens is enabled, Create the dNPC Registry
+            if (Depends.citizens != null) {
+                dNPCRegistry = new dNPCRegistry(this);
+            }
 
             // Create our CommandManager to handle '/denizen' commands
             commandManager = new CommandManager();

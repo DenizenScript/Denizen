@@ -47,6 +47,7 @@ public class dNPCRegistry implements Listener {
         plugin = denizen;
         if (Depends.citizens != null) {
             plugin.getServer().getPluginManager().registerEvents(this, plugin);
+            INVENTORY_TRAIT_VIEW = ReflectionHelper.getFields(net.citizensnpcs.api.trait.trait.Inventory.class).get("view");
         }
         actionHandler = new ActionHandler(plugin);
     }
@@ -142,7 +143,7 @@ public class dNPCRegistry implements Listener {
         }
     }
 
-    public static Field INVENTORY_TRAIT_VIEW = ReflectionHelper.getFields(net.citizensnpcs.api.trait.trait.Inventory.class).get("view");
+    public static Field INVENTORY_TRAIT_VIEW;
 
     /**
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
