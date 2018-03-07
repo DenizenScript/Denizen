@@ -340,17 +340,20 @@ public class EntityHelper_v1_9_R2 implements EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer)player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
-        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity) && hiddenEntities.containsKey(playerUUID)) {
-            Set hidden = hiddenEntities.get(playerUUID);
+        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
             UUID entityUUID = entity.getUniqueId();
-            if (hidden.contains(entityUUID)) {
-                hidden.remove(entityUUID);
-                EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_9_R2.Entity other = ((CraftEntity)entity).getHandle();
-                EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
-                if(entry != null && !entry.trackedPlayers.contains(entityPlayer)) {
-                    entry.updatePlayer(entityPlayer);
+            if (hiddenEntities.containsKey(playerUUID)) {
+                Set hidden = hiddenEntities.get(playerUUID);
+                if (hidden.contains(entityUUID)) {
+                    hidden.remove(entityUUID);
                 }
+            }
+            EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
+            net.minecraft.server.v1_9_R2.Entity other = ((CraftEntity)entity).getHandle();
+            EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
+            if (entry != null) {
+                entry.clear(entityPlayer);
+                entry.updatePlayer(entityPlayer);
             }
         }
     }
@@ -361,7 +364,8 @@ public class EntityHelper_v1_9_R2 implements EntityHelper {
             return !player.canSee((Player) entity);
         }
         UUID uuid = player.getUniqueId();
-        return hiddenEntities.containsKey(uuid) && hiddenEntities.get(uuid).contains(entity.getUniqueId());
+        Set<UUID> hiding = hiddenEntities.get(uuid);
+        return hiding != null && hiding.contains(entity.getUniqueId());
     }
 
     @Override
