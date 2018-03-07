@@ -1306,7 +1306,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns whether the inventory can fit an item.
         // -->
         if (attribute.startsWith("can_fit") && attribute.hasContext(1)) {
-            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class);
+            List<dItem> items = dList.valueOf(attribute.getContext(1)).filter(dItem.class, attribute.getScriptEntry());
             if (items == null || items.isEmpty()) {
                 return null;
             }

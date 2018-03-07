@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.npc;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.flags.FlagManager;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.npc.actions.ActionHandler;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -16,26 +17,24 @@ import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Used for keeping track and retrieving dNPC objects which offer some Denizen-specific
- * methods when dealing with NPCs.
- *
- * @author Jeremy Schroeder
+ * Used for keeping track and retrieving dNPC objects which offer some Denizen-specific methods when dealing with NPCs.
  */
 public class dNPCRegistry implements Listener {
 
     private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
-    private static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
+    //private static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
 
     public static dNPCRegistry getCurrentInstance() {
         return DenizenAPI.getCurrentInstance().getNPCRegistry();
@@ -48,6 +47,7 @@ public class dNPCRegistry implements Listener {
         plugin = denizen;
         if (Depends.citizens != null) {
             plugin.getServer().getPluginManager().registerEvents(this, plugin);
+            INVENTORY_TRAIT_VIEW = ReflectionHelper.getFields(net.citizensnpcs.api.trait.trait.Inventory.class).get("view");
         }
         actionHandler = new ActionHandler(plugin);
     }
@@ -76,9 +76,9 @@ public class dNPCRegistry implements Listener {
         int id = denizenNPC.getId();
         if (!denizenNPCs.containsKey(id)) {
             denizenNPCs.put(id, denizenNPC);
-            Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
-            npcInventory.setContents(Arrays.copyOf(denizenNPC.getInventoryTrait().getContents(), npcInventory.getSize()));
-            npcInventories.put(id, npcInventory);
+            //Inventory npcInventory = Bukkit.getServer().createInventory(denizenNPC, InventoryType.PLAYER);
+            //npcInventory.setContents(Arrays.copyOf(denizenNPC.getInventoryTrait().getContents(), npcInventory.getSize()));
+            //npcInventories.put(id, npcInventory);
         }
     }
 
@@ -116,11 +116,34 @@ public class dNPCRegistry implements Listener {
         if (npc == null) {
             return null;
         }
-        if (!npcInventories.containsKey(npc.getId())) {
+        /*if (!npcInventories.containsKey(npc.getId())) {
             _registerNPC(npc);
         }
-        return npcInventories.get(npc.getId());
+        return npcInventories.get(npc.getId());*/
+        if (npc.isSpawned() && npc.getEntity() instanceof InventoryHolder) {
+            return ((InventoryHolder) npc.getEntity()).getInventory();
+        }
+        else {
+            try {
+                Inventory inv = (Inventory) INVENTORY_TRAIT_VIEW.get(getDenizen(npc).getInventoryTrait());
+                if (inv != null) {
+                    return inv;
+                }
+                else {
+                    // TODO: ???
+                    Inventory npcInventory = Bukkit.getServer().createInventory(getDenizen(npc), InventoryType.PLAYER);
+                    npcInventory.setContents(Arrays.copyOf(getDenizen(npc).getInventoryTrait().getContents(), npcInventory.getSize()));
+                    return npcInventory;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
+
+    public static Field INVENTORY_TRAIT_VIEW;
 
     /**
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
@@ -229,7 +252,7 @@ public class dNPCRegistry implements Listener {
         getDenizen(npc).action("remove", null);
         if (_isRegistered(npc)) {
             denizenNPCs.remove(npc.getId());
-            npcInventories.remove(npc.getId());
+            //npcInventories.remove(npc.getId());
         }
         FlagManager.clearNPCFlags(npc.getId());
     }

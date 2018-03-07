@@ -75,6 +75,8 @@ public interface EntityHelper {
      */
     void rotate(Entity entity, float yaw, float pitch);
 
+    float getBaseYaw(Entity entity);
+
     // Taken from C2 NMS class for less dependency on C2
     void look(Entity entity, float yaw, float pitch);
 

@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -111,4 +112,8 @@ public abstract class NMSHandler {
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 
     public abstract int getPort();
+
+    public void forceAttachMove(Entity a, Entity b) {
+        throw new RuntimeException("Unsupported forceAttachMove!");
+    }
 }

@@ -20,7 +20,7 @@ Scripts:
     Events:
       On player chats:
         # Whether to use the dangerous 'async' chat event (not recommended!)
-        Use asynchronous event: true
+        Use asynchronous event: false
       On time changes:
         Frequency of check: 250t
   Queue speed: 0.5s

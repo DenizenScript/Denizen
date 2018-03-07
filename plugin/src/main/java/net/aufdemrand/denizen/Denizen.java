@@ -429,8 +429,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            // Create the dNPC Registry
-            dNPCRegistry = new dNPCRegistry(this);
+            // If Citizens is enabled, Create the dNPC Registry
+            if (Depends.citizens != null) {
+                dNPCRegistry = new dNPCRegistry(this);
+            }
 
             // Create our CommandManager to handle '/denizen' commands
             commandManager = new CommandManager();
@@ -859,7 +861,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemFirework.class, dItem.class);
             propertyParser.registerProperty(ItemFlags.class, dItem.class);
             propertyParser.registerProperty(ItemInventory.class, dItem.class);
-            propertyParser.registerProperty(ItemLock.class, dItem.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
+                propertyParser.registerProperty(ItemLock.class, dItem.class);
+            }
             propertyParser.registerProperty(ItemLore.class, dItem.class);
             propertyParser.registerProperty(ItemMap.class, dItem.class);
             propertyParser.registerProperty(ItemNBT.class, dItem.class);
@@ -870,6 +874,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 propertyParser.registerProperty(ItemPotion.class, dItem.class);
             }
             propertyParser.registerProperty(ItemQuantity.class, dItem.class);
+            propertyParser.registerProperty(ItemSignContents.class, dItem.class);
             propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
                 propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
