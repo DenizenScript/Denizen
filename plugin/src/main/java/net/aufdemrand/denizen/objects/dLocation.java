@@ -21,11 +21,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
@@ -2237,10 +2233,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[mechanism]
         // @object dLocation
         // @name skull_skin
-        // @input Element
+        // @input Element(|Element(|Element))
         // @description
         // Sets the skin of a skull block.
-        // Takes a username.
+        // The first Element is a UUID.
+        // Optionally, use the second Element for the skin texture cache.
+        // Optionally, use the third Element for a player name.
         // @tags
         // <l@location.skull_skin>
         // -->
@@ -2249,14 +2247,26 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (blockState instanceof Skull) {
                 dList list = mechanism.getValue().asType(dList.class);
                 String idString = list.get(0);
+                String texture = null;
+                if (list.size() > 1) {
+                    texture = list.get(1);
+                }
                 PlayerProfile profile;
                 if (idString.contains("-")) {
                     UUID uuid = UUID.fromString(idString);
-                    profile = new PlayerProfile(null, uuid, null);
-                } else {
-                    profile = new PlayerProfile(idString, null, null);
+                    String name = null;
+                    if (list.size() > 2) {
+                        name = list.get(2);
+                    }
+                    profile = new PlayerProfile(name, uuid, texture);
+                }
+                else {
+                    profile = new PlayerProfile(idString, null, texture);
                 }
                 profile = NMSHandler.getInstance().fillPlayerProfile(profile);
+                if (texture != null) { // Ensure we didn't get overwritten
+                    profile.setTexture(texture);
+                }
                 NMSHandler.getInstance().getBlockHelper().setPlayerProfile((Skull) blockState, profile);
             }
         }
@@ -2420,6 +2430,23 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("data") && mechanism.hasValue()) {
             getBlock().setData((byte) value.asInt());
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name generate_tree
+        // @input Element
+        // @description
+        // Generates a tree at this location if possible.
+        // For a list of valid tree types, see <@link url http://bit.ly/2o7m1je>
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
+            boolean generated = getWorld().generateTree(this, TreeType.valueOf(value.asString().toUpperCase()));
+            if (!generated) {
+                dB.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
+            }
         }
 
         if (!mechanism.fulfilled()) {
