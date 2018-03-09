@@ -30,7 +30,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
     //
     // @Context
     // <context.vehicle> returns the dEntity of the vehicle.
-    // <context.entity> returns the dEntity of the exiting entity.
+    // <context.entity> returns the dEntity of the entering entity.
     //
     // @Player when the entity that entered the vehicle is a player.
     //
