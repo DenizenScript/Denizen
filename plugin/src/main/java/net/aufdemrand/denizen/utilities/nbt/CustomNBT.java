@@ -227,8 +227,11 @@ public class CustomNBT {
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
 
         if (compoundTag.getValue().containsKey(basekey)) {
-             CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
-            return denizenTag.getString(CoreUtilities.toLowerCase(key));
+            CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
+            String lowerKey = CoreUtilities.toLowerCase(key);
+            if (denizenTag.containsKey(lowerKey)) {
+                return denizenTag.getString(lowerKey);
+            }
         }
 
         return null;
