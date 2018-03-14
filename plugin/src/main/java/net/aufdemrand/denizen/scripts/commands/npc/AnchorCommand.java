@@ -60,7 +60,7 @@ public class AnchorCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("action")) {
-            throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values());
+            throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values()); // TODO: Fix output (array stringifier)
         }
 
     }

@@ -7,7 +7,6 @@ import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class EntityFakePlayer_v1_10_R1 extends EntityPlayer {
 

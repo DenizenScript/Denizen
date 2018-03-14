@@ -16,7 +16,6 @@ import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -275,13 +274,12 @@ public class ServerTags implements Listener {
             dList allNotables = new dList();
             if (attribute.hasContext(1)) {
                 String type = CoreUtilities.toLowerCase(attribute.getContext(1));
-                types:
                 for (Map.Entry<String, Class> typeClass : NotableManager.getReverseClassIdMap().entrySet()) {
                     if (type.equals(CoreUtilities.toLowerCase(typeClass.getKey()))) {
                         for (Object notable : NotableManager.getAllType(typeClass.getValue())) {
                             allNotables.add(((dObject) notable).identify());
                         }
-                        break types;
+                        break;
                     }
                 }
             }

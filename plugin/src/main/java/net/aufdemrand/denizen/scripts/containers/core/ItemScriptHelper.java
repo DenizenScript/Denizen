@@ -500,7 +500,7 @@ public class ItemScriptHelper implements Listener {
             // If successful, we should have removed every entry from both the matrix and the shapeless recipe
             // Otherwise, it's a fail
             if (!entryList.isEmpty() || !matrixList.isEmpty()) {
-                continue primary;
+                continue;
             }
 
             // Returns a shaped recipe entry based on the shapeless recipe

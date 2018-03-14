@@ -5,7 +5,6 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftItem;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.projectiles.ProjectileSource;
 
 public class CraftItemProjectile_v1_12_R1 extends CraftItem implements ItemProjectile {

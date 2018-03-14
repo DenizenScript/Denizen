@@ -12,7 +12,6 @@ import org.bukkit.entity.EntityType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class BiomeNMS_v1_11_R1 extends BiomeNMS {
 

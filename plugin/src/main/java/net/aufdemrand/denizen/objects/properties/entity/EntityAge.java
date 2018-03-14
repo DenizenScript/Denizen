@@ -11,7 +11,6 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Age;
 import org.bukkit.entity.Ageable;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Zombie;
 
 public class EntityAge implements Property {

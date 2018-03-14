@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;

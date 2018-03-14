@@ -9,5 +9,5 @@ public interface MenuCloseBehaviour {
      *
      * @param player The player closing the menu
      */
-    public void onClose(Player player);
+    void onClose(Player player);
 }
