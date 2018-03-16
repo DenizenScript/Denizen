@@ -47,6 +47,11 @@ public class dEntity implements dObject, Adjustable {
     //   STATIC METHODS
     /////////////////
 
+    // List a mechanism here if it can be safely run before spawn.
+    public static HashSet<String> earlyValidMechanisms = new HashSet<String>(Arrays.asList(
+            "max_health", "health_data", "health"
+    ));
+
     private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
 
     public static void rememberEntity(Entity entity) {
