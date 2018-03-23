@@ -1200,6 +1200,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // -->
         if (mechanism.matches("skin_blob")) {
             if (!mechanism.hasValue()) {
+                getCitizen().data().remove("cached-skin-uuid");
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
                 if (getCitizen().isSpawned()) {
@@ -1209,13 +1210,14 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
             }
             else {
                 String[] dat = mechanism.getValue().asString().split(";");
+                getCitizen().data().remove("cached-skin-uuid");
                 getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, dat[0]);
                 getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, dat.length > 0 ? dat[1] : null);
                 if (dat.length > 1) {
                     getCitizen().data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, dat[2]);
                 }
                 if (getCitizen().isSpawned() && getCitizen().getEntity() instanceof SkinnableEntity) {
-                    ((SkinnableEntity) getCitizen().getEntity()).setSkinPersistent(dat.length > 1 ? dat[2] : "unspecified", dat[0], dat.length > 0 ? dat[1] : null);
+                    ((SkinnableEntity) getCitizen().getEntity()).setSkinPersistent(dat.length > 1 ? dat[2] : "unspecified", dat.length > 0 ? dat[1] : null, dat[0]);
                     ((SkinnableEntity) getCitizen().getEntity()).getSkinTracker().notifySkinChange(true);
                 }
             }
