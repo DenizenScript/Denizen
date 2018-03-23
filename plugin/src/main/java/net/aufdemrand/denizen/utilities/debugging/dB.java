@@ -263,6 +263,14 @@ public class dB {
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                 (script != null ? " in script '" + script.getName() + "'" : "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
+        if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+            try {
+                throw new RuntimeException("Verbose info for above error");
+            }
+            catch (Throwable e) {
+                echoError(source, e);
+            }
+        }
     }
 
     private static boolean ThrowErrorEvent = true;
