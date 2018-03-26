@@ -93,7 +93,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 && dLocation.matches(positions.get(0))
                 && dLocation.matches(positions.get(1))) {
             if (positions.size() % 2 != 0) {
-                dB.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
+                if (context == null || context.debug) {
+                    dB.echoError("valueOf dCuboid returning null (Uneven number of locations): '" + string + "'.");
+                }
                 return null;
             }
 
@@ -107,12 +109,16 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
                 // Must be valid locations
                 if (pos_1 == null || pos_2 == null) {
-                    dB.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
+                    if (context == null || context.debug) {
+                        dB.echoError("valueOf in dCuboid returning null (null locations): '" + string + "'.");
+                    }
                     return null;
                 }
                 // Must have valid worlds
                 if (pos_1.getWorld() == null || pos_2.getWorld() == null) {
-                    dB.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
+                    if (context == null || context.debug) {
+                        dB.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
+                    }
                     return null;
                 }
                 toReturn.addPair(pos_1, pos_2);
@@ -134,7 +140,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return (dCuboid) NotableManager.getSavedObject(m.group(2));
         }
 
-        dB.echoError("valueOf dCuboid returning null: " + string);
+        if (context == null || context.debug) {
+            dB.echoError("valueOf dCuboid returning null: " + string);
+        }
 
         return null;
     }
