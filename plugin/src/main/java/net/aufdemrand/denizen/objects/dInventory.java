@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.aH.Argument;
 import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
@@ -1621,6 +1622,44 @@ public class dInventory implements dObject, Notable, Adjustable {
 
             for (ItemStack item : getContents()) {
                 if (item != null && scrName.equalsIgnoreCase(new dItem(item).getScriptName())) {
+                    found_items += item.getAmount();
+                    if (found_items >= qty) {
+                        break;
+                    }
+                }
+            }
+
+            return new Element(found_items >= qty).getAttribute(attribute.fulfill(attribs));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.contains.nbt[<key>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the inventory contains an item with the specified key.
+        // -->
+        if (attribute.startsWith("contains.nbt") && attribute.hasContext(2)) {
+            String keyName = attribute.getContext(2);
+            int qty = 1;
+            int attribs = 2;
+
+            // <--[tag]
+            // @attribute <in@inventory.contains.nbt[<key>].quantity[<#>]>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the inventory contains a certain quantity of an item with the specified key.
+            // -->
+            if ((attribute.getAttribute(3).startsWith("quantity") || attribute.getAttribute(3).startsWith("qty")) &&
+                    attribute.hasContext(3) &&
+                    aH.matchesInteger(attribute.getContext(3))) {
+                qty = attribute.getIntContext(3);
+                attribs = 3;
+            }
+
+            int found_items = 0;
+
+            for (ItemStack item : getContents()) {
+                if (CustomNBT.hasCustomNBT(item, keyName, CustomNBT.KEY_DENIZEN)) {
                     found_items += item.getAmount();
                     if (found_items >= qty) {
                         break;
