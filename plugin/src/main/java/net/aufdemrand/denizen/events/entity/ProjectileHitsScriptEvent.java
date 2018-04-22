@@ -128,13 +128,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public dObject getContext(String name) {
         if (name.equals("projectile")) {
-            return projectile;
+            return projectile.getDenizenObject();
         }
         else if (name.equals("location")) {
             return location;
         }
         else if (name.equals("shooter") && shooter != null) {
-            return shooter;
+            return shooter.getDenizenObject();
         }
         return super.getContext(name);
     }
