@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -363,16 +364,16 @@ public class YamlCommand extends AbstractCommand implements Listener {
 
                     switch (yaml_action) {
                         case INCREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) + aH.getFloatFrom(valueStr)));
+                            Set(yaml, index, keyStr, CoreUtilities.doubleToString(aH.getDoubleFrom(Get(yaml, index, keyStr, "0")) + aH.getDoubleFrom(valueStr)));
                             break;
                         case DECREASE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "0")) - aH.getFloatFrom(valueStr)));
+                            Set(yaml, index, keyStr, CoreUtilities.doubleToString(aH.getDoubleFrom(Get(yaml, index, keyStr, "0")) - aH.getDoubleFrom(valueStr)));
                             break;
                         case MULTIPLY:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) * aH.getFloatFrom(valueStr)));
+                            Set(yaml, index, keyStr, CoreUtilities.doubleToString(aH.getDoubleFrom(Get(yaml, index, keyStr, "1")) * aH.getDoubleFrom(valueStr)));
                             break;
                         case DIVIDE:
-                            Set(yaml, index, keyStr, String.valueOf(aH.getFloatFrom(Get(yaml, index, keyStr, "1")) / aH.getFloatFrom(valueStr)));
+                            Set(yaml, index, keyStr, CoreUtilities.doubleToString(aH.getDoubleFrom(Get(yaml, index, keyStr, "1")) / aH.getDoubleFrom(valueStr)));
                             break;
                         case DELETE:
                             yaml.set(keyStr, null);
