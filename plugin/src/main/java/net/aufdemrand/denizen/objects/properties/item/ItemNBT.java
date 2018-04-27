@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -16,7 +17,7 @@ import java.util.List;
 public class ItemNBT implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem && ((dItem) item).getMaterial().getMaterial() != Material.AIR;
+        return item instanceof dItem;
     }
 
     public static ItemNBT getFrom(dObject item) {
@@ -119,6 +120,10 @@ public class ItemNBT implements Property {
         // <i@item.nbt[<key>]>
         // -->
         if (mechanism.matches("nbt")) {
+            if (item.getMaterial().getMaterial() == Material.AIR) {
+                dB.echoError("Cannot apply NBT to AIR!");
+                return;
+            }
             dList list = mechanism.getValue().asType(dList.class);
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
