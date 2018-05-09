@@ -86,13 +86,13 @@ public class SignCommand extends AbstractCommand {
             if (type == Type.WALL_SIGN) {
                 if (direction != null) {
                     BlockFace bf = Utilities.chooseSignRotation(direction);
-                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.SIGN);
+                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
                     sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
                 }
                 else {
                     BlockFace bf = Utilities.chooseSignRotation(sign);
-                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.SIGN);
+                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
                     sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
                 }
@@ -102,9 +102,18 @@ public class SignCommand extends AbstractCommand {
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
-                else {
-                    Utilities.setSignRotation(sign.getState());
-                }
+            }
+        }
+        else if (sign.getType() != Material.WALL_SIGN
+                && sign.getType() != Material.SIGN_POST) {
+            if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
+                sign.setType(Material.SIGN_POST, false);
+            }
+            else {
+                BlockFace bf = Utilities.chooseSignRotation(sign);
+                org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+                sgntmp.setFacingDirection(bf);
+                sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
             }
         }
         BlockState signState = sign.getState();
