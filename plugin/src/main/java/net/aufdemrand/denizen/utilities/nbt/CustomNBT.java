@@ -3,13 +3,13 @@ package net.aufdemrand.denizen.utilities.nbt;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class CustomNBT {
 
@@ -36,7 +36,7 @@ public class CustomNBT {
     }
 
     public static List<AttributeReturn> getAttributes(ItemStack itemStack) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -111,7 +111,7 @@ public class CustomNBT {
     }
 
     public static ItemStack addAttribute(ItemStack itemStack, String attr, String slot, int op, double amt) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -146,7 +146,7 @@ public class CustomNBT {
     }
 
     public static ItemStack addCustomNBT(ItemStack itemStack, String key, String value, String basekey) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -169,7 +169,7 @@ public class CustomNBT {
     }
 
     public static ItemStack clearAttributes(ItemStack itemStack) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -181,7 +181,7 @@ public class CustomNBT {
     }
 
     public static ItemStack removeCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -204,7 +204,7 @@ public class CustomNBT {
     }
 
     public static boolean hasCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return false;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
@@ -221,14 +221,17 @@ public class CustomNBT {
     }
 
     public static String getCustomNBT(ItemStack itemStack, String key, String basekey) {
-        if (itemStack == null || key == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR || key == null) {
             return null;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
 
         if (compoundTag.getValue().containsKey(basekey)) {
-             CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
-            return denizenTag.getString(CoreUtilities.toLowerCase(key));
+            CompoundTag denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
+            String lowerKey = CoreUtilities.toLowerCase(key);
+            if (denizenTag.containsKey(lowerKey)) {
+                return denizenTag.getString(lowerKey);
+            }
         }
 
         return null;
@@ -236,7 +239,7 @@ public class CustomNBT {
 
     public static List<String> listNBT(ItemStack itemStack, String basekey) {
         List<String> nbt = new ArrayList<String>();
-        if (itemStack == null) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return nbt;
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);

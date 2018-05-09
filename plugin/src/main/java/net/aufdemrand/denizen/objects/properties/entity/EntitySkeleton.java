@@ -94,9 +94,13 @@ public class EntitySkeleton implements Property {
         // -->
 
         if (mechanism.matches("skeleton") && mechanism.requireEnum(false, Skeleton.SkeletonType.values())) {
+            String skelGoal = mechanism.getValue().asString().toUpperCase();
+            if (((Skeleton) skeleton.getBukkitEntity()).getSkeletonType().name().equals(skelGoal)) {
+                return;
+            }
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
                 // TODO: improve this
-                Skeleton.SkeletonType skeletonType = Skeleton.SkeletonType.valueOf(mechanism.getValue().asString().toUpperCase());
+                Skeleton.SkeletonType skeletonType = Skeleton.SkeletonType.valueOf(skelGoal);
                 Skeleton current = (Skeleton) skeleton.getBukkitEntity();
                 Skeleton newSkeleton = null;
                 switch (skeletonType) {
@@ -116,8 +120,7 @@ public class EntitySkeleton implements Property {
                 skeleton.setEntity(newSkeleton);
             }
             else {
-                ((Skeleton) skeleton.getBukkitEntity()).setSkeletonType(
-                        Skeleton.SkeletonType.valueOf(mechanism.getValue().asString().toUpperCase()));
+                ((Skeleton) skeleton.getBukkitEntity()).setSkeletonType(Skeleton.SkeletonType.valueOf(skelGoal));
             }
         }
     }

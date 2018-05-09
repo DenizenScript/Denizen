@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;

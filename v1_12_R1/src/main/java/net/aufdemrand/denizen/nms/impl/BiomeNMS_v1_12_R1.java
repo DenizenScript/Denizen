@@ -104,12 +104,17 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
         List<EntityType> entityTypes = new ArrayList<EntityType>();
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
             // TODO: verifyme!
-            String n = EntityTypes.getName(meta.b).b();
-            EntityType et = EntityType.fromName(n);
-            if (et == null) {
-                et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
+            try {
+                String n = EntityTypes.getName(meta.b).b();
+                EntityType et = EntityType.fromName(n);
+                if (et == null) {
+                    et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
+                }
+                entityTypes.add(et);
             }
-            entityTypes.add(et);
+            catch (Throwable e) {
+                // Ignore the error. Likely from invalid entity type name output.
+            }
         }
         return entityTypes;
     }

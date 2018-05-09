@@ -1051,10 +1051,10 @@ public class dItem implements dObject, Notable, Adjustable {
                 }
 
                 if (id.endsWith(" off")) {
-                    id = new String(id.substring(0, id.length() - 4));
+                    id = id.substring(0, id.length() - 4);
                 }
                 if (id.endsWith(" on")) {
-                    id = new String(id.substring(0, id.length() - 3));
+                    id = id.substring(0, id.length() - 3);
                 }
 
                 if (id.equals("rotten flesh") || id.equals("cooked fish")

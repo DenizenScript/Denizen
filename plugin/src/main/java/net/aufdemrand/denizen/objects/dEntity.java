@@ -47,6 +47,11 @@ public class dEntity implements dObject, Adjustable {
     //   STATIC METHODS
     /////////////////
 
+    // List a mechanism here if it can be safely run before spawn.
+    public static HashSet<String> earlyValidMechanisms = new HashSet<String>(Arrays.asList(
+            "max_health", "health_data", "health"
+    ));
+
     private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
 
     public static void rememberEntity(Entity entity) {
@@ -853,7 +858,7 @@ public class dEntity implements dObject, Adjustable {
 
                 else {
 
-                    org.bukkit.entity.Entity ent = null;
+                    org.bukkit.entity.Entity ent;
 
                     if (entity_type.getName().equals("PLAYER")) {
                         if (Depends.citizens == null) {
@@ -889,7 +894,6 @@ public class dEntity implements dObject, Adjustable {
 
                         // If material is null or not a block, default to SAND
                         if (material == null || (!material.isBlock())) {
-
                             material = Material.SAND;
                         }
 
@@ -919,90 +923,6 @@ public class dEntity implements dObject, Adjustable {
                         uuid = entity.getUniqueId();
                         if (entityScript != null) {
                             EntityScriptHelper.setEntityScript(entity, entityScript);
-                        }
-
-                        if (entity_type.getName().equals("PIG_ZOMBIE")) {
-
-                            // Give pig zombies golden swords by default, unless data2 specifies
-                            // a different weapon
-                            if (!dItem.matches(data1)) {
-                                data1 = "gold_sword";
-                            }
-
-                            ((PigZombie) entity).getEquipment()
-                                    .setItemInHand(dItem.valueOf(data1).getItemStack());
-                        }
-                        else if (entity_type.getName().equals("SKELETON")) {
-
-                            // Give skeletons bows by default, unless data2 specifies
-                            // a different weapon
-                            if (!dItem.matches(data2)) {
-                                data2 = "bow";
-                            }
-
-                            ((Skeleton) entity).getEquipment()
-                                    .setItemInHand(dItem.valueOf(data2).getItemStack());
-                        }
-
-                        // If there is some special subtype data associated with this dEntity,
-                        // use the setSubtype method to set it in a clean, object-oriented
-                        // way that uses reflection
-                        //
-                        // Otherwise, just use entity-specific methods manually
-                        if (data1 != null) {
-
-                            // TODO: Discourage usage of + delete the below (Use properties instead!)
-                            // TODO: Remove in 1.0
-                            try {
-
-                                // Allow creepers to be powered - replaced by EntityPowered
-                                if (ent instanceof Creeper && data1.equalsIgnoreCase("POWERED")) {
-                                    ((Creeper) entity).setPowered(true);
-                                }
-
-                                // Allow setting of blocks held by endermen - replaced by EntityItem
-                                else if (ent instanceof Enderman && dMaterial.matches(data1)) {
-                                    ((Enderman) entity).setCarriedMaterial(dMaterial.valueOf(data1).getMaterialData());
-                                }
-
-                                // Allow setting of horse variants and colors - replaced by EntityColor
-                                else if (ent instanceof Horse) {
-                                    setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Variant", "setVariant", data1);
-
-                                    if (data2 != null) {
-                                        setSubtype("org.bukkit.entity.Horse", "org.bukkit.entity.Horse$Color", "setColor", data2);
-                                    }
-                                }
-
-                                // Allow setting of ocelot types - replaced by EntityColor
-                                else if (ent instanceof Ocelot) {
-                                    setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", data1);
-                                }
-
-                                // Allow setting of sheep colors - replaced by EntityColor
-                                else if (ent instanceof Sheep) {
-                                    setSubtype("org.bukkit.entity.Sheep", "org.bukkit.DyeColor", "setColor", data1);
-                                }
-
-                                // Allow setting of skeleton types - replaced by EntitySkeleton
-                                else if (ent instanceof Skeleton) {
-                                    setSubtype("org.bukkit.entity.Skeleton", "org.bukkit.entity.Skeleton$SkeletonType", "setSkeletonType", data1);
-                                }
-                                // Allow setting of slime sizes - replaced by EntitySize
-                                else if (ent instanceof Slime && aH.matchesInteger(data1)) {
-                                    ((Slime) entity).setSize(aH.getIntegerFrom(data1));
-                                }
-
-                                // Allow setting of villager professions - replaced by EntityProfession
-                                else if (ent instanceof Villager) {
-                                    setSubtype("org.bukkit.entity.Villager", "org.bukkit.entity.Villager$Profession", "setProfession", data1);
-                                }
-
-                            }
-                            catch (Exception e) {
-                                dB.echoError("Error setting custom entity data.");
-                                dB.echoError(e);
-                            }
                         }
                     }
                 }
@@ -1076,43 +996,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         NMSHandler.getInstance().getEntityHelper().setTarget((Creature) entity, target);
-    }
-
-    /**
-     * Set the subtype of this entity by using the chosen method and Enum from
-     * this Bukkit entity's class and:
-     * 1) using a random subtype if value is "RANDOM"
-     * 2) looping through the entity's subtypes until one matches the value string
-     * <p/>
-     * Example: setSubtype("org.bukkit.entity.Ocelot", "org.bukkit.entity.Ocelot$Type", "setCatType", "SIAMESE_CAT");
-     *
-     * @param entityName The name of the entity's class.
-     * @param typeName   The name of the entity class' Enum with subtypes.
-     * @param method     The name of the method used to set the subtype of this entity.
-     * @param value      The value of the subtype.
-     */
-
-    public void setSubtype(String entityName, String typeName, String method, String value)
-            throws Exception {
-
-        Class<?> entityClass = Class.forName(entityName);
-        Class<?> typeClass = Class.forName(typeName);
-        Object[] types = typeClass.getEnumConstants();
-
-        if (value.equalsIgnoreCase("RANDOM")) {
-
-            entityClass.getMethod(method, typeClass).invoke(entity, types[CoreUtilities.getRandom().nextInt(types.length)]);
-        }
-        else {
-            for (Object type : types) {
-
-                if (type.toString().equalsIgnoreCase(value)) {
-
-                    entityClass.getMethod(method, typeClass).invoke(entity, type);
-                    break;
-                }
-            }
-        }
     }
 
     public void setEntity(Entity entity) {
@@ -1320,7 +1203,7 @@ public class dEntity implements dObject, Adjustable {
 
     @Override
     public boolean isUnique() {
-        return isPlayer() || isCitizensNPC() || isSpawned()
+        return isPlayer() || isCitizensNPC() || isSpawned() || isLivingEntity()
                 || (entity != null && rememberedEntities.containsKey(entity.getUniqueId()));  // || isSaved()
     }
 

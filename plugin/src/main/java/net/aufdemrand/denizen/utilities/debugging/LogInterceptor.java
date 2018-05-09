@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
+/*
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.nms.NMSHandler;
@@ -22,6 +23,7 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+*/
 
 /**
  * Intercepts system.out operations for the sake of blocking messages at request.

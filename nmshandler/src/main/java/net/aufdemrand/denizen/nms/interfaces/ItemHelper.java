@@ -12,6 +12,8 @@ import java.util.Map;
 
 public interface ItemHelper {
 
+    String getVanillaName(ItemStack itemStack);
+
     String getJsonString(ItemStack itemStack);
 
     PlayerProfile getSkullSkin(ItemStack itemStack);

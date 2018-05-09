@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
@@ -858,7 +859,7 @@ public class FlagManager {
                 case MULTIPLY:
                 case DIVIDE:
                     double currentValue = get(index).asDouble();
-                    set(Double.toString(math(currentValue, Double.valueOf(value.asString()), action)), index);
+                    set(CoreUtilities.doubleToString(math(currentValue, Double.valueOf(value.asString()), action)), index);
                     break;
 
                 case SET_BOOLEAN:

@@ -120,6 +120,42 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(AdjustCommand.class,
                 "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
 
+        // <--[command]
+        // @Name Advancement
+        // @Syntax advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)
+        // @Required 1
+        // @Stable unstable
+        // @Short Awards the player with a custom Advancement.
+        // @Author Mergu
+        // @Group player
+        //
+        // @Description
+        // Awards the player with a custom Advancement. If no target is specified it will default to the attached
+        // player. The description argument changes the text displayed on hovering over the chat announcement.
+        // The icon argument changes the icon displayed in the toast pop-up notification. The frame argument
+        // changes the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK. Include the
+        // announce argument to announce the advancement to chat, and hide_toast to disable the pop-up notification.
+        //
+        // @Tags
+        // None
+        //
+        // @Usage
+        // Welcomes the player with an advancement.
+        // - advancement "Welcome <player.name>!"
+        //
+        // @Usage
+        // Sends the player an advancement with a custom description & icon, announced to chat.
+        // - advancement "Diggy Diggy Hole" "d:<player.name> dug a hole!" icon:iron_spade announce
+        //
+        // @Usage
+        // Sends the player a "Challenge Complete!" type advancement.
+        // - advancement "You finished a challenge!" frame:challenge icon:diamond
+        //
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            registerCoreMember(AdvancementCommand.class,
+                    "ADVANCEMENT", "advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)", 1);
+        }
 
         // <--[command]
         // @Name Age
@@ -3724,8 +3760,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name SQL
-        // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:<true/false>)/query:<query>/update:<update>]
-        // @Required 1
+        // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:true/{false})/query:<query>/update:<update>]
+        // @Required 2
         // @Stable unstable
         // @Short Interacts with a MySQL server.
         // @Author mcmonkey
@@ -3736,13 +3772,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // The general usage order is connect -> update/query -> disconnect.
         // It is not required that you disconnect right after using, and in fact encouraged that you keep a connection open where possible.
         // When connecting, the server format is IP:Port/Database, EG 'localhost:3306/test'.
+        // You can switch whether SSL is used for the connection (defaults to false).
         // Note that when using tag, it is recommended you escape unusual inputs to avoid SQL injection.
         // The SQL command is merely a wrapper for SQL queries, and further usage details should be gathered from an official
         // MySQL query reference rather than from Denizen command help.
         // SQL connections are not instant - they can take several seconds, or just never connect at all.
         // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
         // as this will delay the commands following the connect command until after the connection is established.
-        // Is it possible to change the SSL if using Secure Socket Layer Certificate. This is by default set to false if not specified.
         //
         // @Tags
         // <entry[saveName].result> returns a dList of all rows from a query or update command, of the form li@escaped_text/escaped_text|escaped_text/escaped_text
@@ -3753,11 +3789,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - ~sql id:name connect:localhost:3306/test username:space password:space
         //
         // @Usage
-        // Use to connect to an SQL server with SSL option.
+        // Use to connect to an SQL server over an SSL connection.
         // - ~sql id:name connect:localhost:3306/test username:space password:space ssl:true
         //
         // @Usage
-        // Use to connect to an SQL server with a UTF8 text encoding
+        // Use to connect to an SQL server with a UTF8 text encoding.
         // - ~sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
         //
         // @Usage
@@ -3783,7 +3819,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - sql disconnect id:name
         // -->
         registerCoreMember(SQLCommand.class,
-                "SQL", "sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>)/query:<query>/update:<update>]", 2);
+                "SQL", "sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:true/{false})/query:<query>/update:<update>]", 2);
 
 
         // <--[command]

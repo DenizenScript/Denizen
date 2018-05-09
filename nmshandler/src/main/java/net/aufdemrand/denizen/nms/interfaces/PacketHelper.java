@@ -16,6 +16,10 @@ public interface PacketHelper {
 
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
+    void setFieldOfView(Player player, float fov);
+
+    void showDemoScreen(Player player);
+
     void showBlockAction(Player player, Location location, int action, int state);
 
     void showBlockCrack(Player player, int id, Location location, int progress);

@@ -27,6 +27,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Equipment;
 import net.citizensnpcs.api.trait.trait.Owner;
+import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
@@ -1192,23 +1193,33 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @name skin_blob
         // @input Element
         // @description
-        // Sets the skin blob of an NPC.
+        // Sets the skin blob of an NPC, in the form of "texture;signature;name".
+        // Call with no value to clear the value.
         // @tags
         // <n@npc.skin>
         // -->
         if (mechanism.matches("skin_blob")) {
             if (!mechanism.hasValue()) {
+                getCitizen().data().remove("cached-skin-uuid");
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA);
                 getCitizen().data().remove(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA);
+                if (getCitizen().isSpawned()) {
+                    getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
+                    getCitizen().spawn(getCitizen().getStoredLocation());
+                }
             }
             else {
                 String[] dat = mechanism.getValue().asString().split(";");
+                getCitizen().data().remove("cached-skin-uuid");
                 getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_METADATA, dat[0]);
-                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, dat.length > 0 ? dat[1] : null);
-            }
-            if (getCitizen().isSpawned()) {
-                getCitizen().despawn(DespawnReason.PENDING_RESPAWN);
-                getCitizen().spawn(getCitizen().getStoredLocation());
+                getCitizen().data().setPersistent(NPC.PLAYER_SKIN_TEXTURE_PROPERTIES_SIGN_METADATA, dat.length > 1 ? dat[1] : null);
+                if (dat.length > 2) {
+                    getCitizen().data().setPersistent(NPC.PLAYER_SKIN_UUID_METADATA, dat[2]);
+                }
+                if (getCitizen().isSpawned() && getCitizen().getEntity() instanceof SkinnableEntity) {
+                    ((SkinnableEntity) getCitizen().getEntity()).setSkinPersistent(dat.length > 2 ? dat[2] : "unspecified", dat.length > 1 ? dat[1] : null, dat[0]);
+                    ((SkinnableEntity) getCitizen().getEntity()).getSkinTracker().notifySkinChange(true);
+                }
             }
         }
 
@@ -1217,7 +1228,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // @name skin
         // @input Element
         // @description
-        // Sets the skin of an NPC.
+        // Sets the skin of an NPC by name.
+        // Call with no value to clear the value.
         // @tags
         // <n@npc.skin>
         // -->

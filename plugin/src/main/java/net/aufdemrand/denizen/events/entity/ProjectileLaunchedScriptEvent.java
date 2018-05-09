@@ -86,7 +86,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     @Override
     public dObject getContext(String name) {
         if (name.equals("entity")) {
-            return projectile;
+            return projectile.getDenizenObject();
         }
         return super.getContext(name);
     }
