@@ -261,6 +261,37 @@ public class Utilities {
     }
 
 
+    public static BlockFace chooseSignRotation(Block signBlock) {
+
+        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+
+        for (BlockFace blockFace : blockFaces) {
+
+            Block block = signBlock.getRelative(blockFace);
+
+            if ((block.getType() != Material.AIR)
+                    && block.getType() != Material.SIGN_POST
+                    && block.getType() != Material.WALL_SIGN) {
+
+                return blockFace.getOppositeFace();
+            }
+        }
+
+        return BlockFace.SOUTH;
+    }
+
+    public static BlockFace chooseSignRotation(String direction) {
+
+        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+
+        for (BlockFace blockFace : blockFaces) {
+            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1))) {
+                return blockFace;
+            }
+        }
+        return BlockFace.SOUTH;
+    }
+
     /**
      * Make a wall sign attach itself to an available surface
      *
