@@ -53,7 +53,7 @@ public class EntityPotionEffects implements Property {
             return entity.getLivingEntity().getActivePotionEffects();
         }
         else if (entity.getBukkitEntityType() == EntityType.TIPPED_ARROW) {
-            return ((TippedArrow) entity).getCustomEffects();
+            return ((TippedArrow) entity.getBukkitEntity()).getCustomEffects();
         }
         return new ArrayList<PotionEffect>();
     }
@@ -161,7 +161,7 @@ public class EntityPotionEffects implements Property {
                                 Integer.valueOf(split.get(1))));
                     }
                     else if (entity.getBukkitEntityType() == EntityType.TIPPED_ARROW) {
-                        ((TippedArrow) entity).addCustomEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
+                        ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
                                 Integer.valueOf(split.get(1))), true);
                     }
                 }
