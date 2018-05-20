@@ -1950,30 +1950,6 @@ public class dEntity implements dObject, Adjustable {
         }
 
         // <--[tag]
-        // @attribute <e@entity.has_effect[<effect>]>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns whether the entity has a specified effect.
-        // If no effect is specified, returns whether the entity has any effect.
-        // -->
-        if (attribute.startsWith("has_effect")) {
-            boolean returnElement = false;
-            if (attribute.hasContext(1)) {
-                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
-                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
-                    if (effect.getType().equals(effectType)) {
-                        returnElement = true;
-                    }
-                }
-            }
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) {
-                returnElement = true;
-            }
-            return new Element(returnElement).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.can_breed>
         // @returns Element(Boolean)
         // @group attributes
