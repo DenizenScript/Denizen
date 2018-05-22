@@ -1841,7 +1841,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @group attributes
         // @description
-        // Returns if the entity is currently ablaze or not.
+        // Returns whether the entity is currently ablaze or not.
         // -->
         if (attribute.startsWith("on_fire")) {
             return new Element(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
@@ -2149,7 +2149,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @group attributes
         // @description
-        // Returns if the entity despawns when away from players.
+        // Returns whether the entity despawns when away from players.
         // -->
         if (attribute.startsWith("remove_when_far")) {
             return new Element(getLivingEntity().getRemoveWhenFarAway())

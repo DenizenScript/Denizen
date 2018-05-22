@@ -681,7 +681,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Chat uses an NPCs DenizenSpeechController provided by Denizen, typically inside 'interact' or 'task'
         // script-containers. Typically there is already player and NPC context inside a queue that is using
-        // the 'chat' command. In this case, only a text string is required. Alternatively, target entities
+        // the 'chat' command. In this case, only a text input is required. Alternatively, target entities
         // can be specified to have any Entity chat to a different target/targets, or specify 'no_target' to
         // not send the message to any specific target.
         //
@@ -1450,9 +1450,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // flicker option means the firework will explode with a flicker effect.
         //
         // @Tags
-        // <e@entity.firework_item> returns the firework item which was used to launch the firework.
-        // <i@item.is_firework> returns if the item is a firework.
-        // <i@item.firework> Returns the firework's property string as a list.
+        // <e@entity.firework_item>
+        // <i@item.is_firework>
+        // <i@item.firework>
         //
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
@@ -2807,7 +2807,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If a location is specified, it will play the sound for
         // all players if they are nearby that location specified.
         //
-        // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound string to something like 'random.click'
+        // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound name to something like 'random.click'
         //
         // For a list of all sounds, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
         //

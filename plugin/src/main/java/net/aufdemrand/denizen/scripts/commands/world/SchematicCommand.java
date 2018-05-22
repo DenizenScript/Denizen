@@ -301,7 +301,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
         // <--[tag]
         // @attribute <schematic.list>
-        // @returns dList(Element)
+        // @returns dList
         // @description
         // Returns a list of all loaded schematics.
         // -->

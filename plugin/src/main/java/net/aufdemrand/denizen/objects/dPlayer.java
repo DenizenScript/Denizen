@@ -1580,7 +1580,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.sidebar.scores>
-        // @returns dList(Element(Number))
+        // @returns dList
         // @description
         // Returns the current scores set on the player's Sidebar via the Sidebar command,
         // in the same order as <@link tag p@player.sidebar.lines>.
