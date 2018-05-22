@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
@@ -136,6 +137,9 @@ public class DropCommand extends AbstractCommand {
 
             case DROP_ITEM:
                 for (dItem item : items) {
+                    if (item.getMaterial().getMaterial() == Material.AIR) {
+                        continue;
+                    }
                     if (qty.asInt() > 1 && item.isUnique()) {
                         dB.echoDebug(scriptEntry, "Cannot drop multiples of this item because it is Unique!");
                     }
