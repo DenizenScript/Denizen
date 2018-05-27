@@ -1677,6 +1677,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public boolean allowedToWebget() {
         return Settings.allowWebget();
     }
+
+    @Override
+    public void preTagExecute() {
+        try {
+            org.spigotmc.AsyncCatcher.enabled = false;
+        }
+        catch (Throwable e) {
+            dB.echoError("Running not-Spigot?!");
+        }
+    }
 }
 
 
