@@ -5,14 +5,14 @@ Denizen: Helpful Citizens for Bukkit!
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen/  
 **Download (VERY Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen_Developmental/  
-**Download (BukkitDev)**: http://dev.bukkit.org/bukkit-plugins/denizen/  
-**Download (SpigotMC)**: https://www.spigotmc.org/resources/denizen.21039/  
+**Download (BukkitDev - unmaintained)**: http://dev.bukkit.org/bukkit-plugins/denizen/  
+**Download (SpigotMC - very slow releases)**: https://www.spigotmc.org/resources/denizen.21039/  
 
 #### Need help using Denizen? Try one of these places:
 
-**IRC** (Modern): http://webchat.esper.net/?channels=citizens,denizen-dev  
-(irc.esper.net in the channels #denizen-dev or #citizens)  
-**Forum** (NEW!): https://forum.mcmonkey.org/index.php  
+**Discord** (Modern): https://discord.gg/Q6pZGSR  
+**IRC** (Replaced by Discord): (irc.esper.net in the channels #denizen-dev or #citizens)  
+**Forum** (New but not used much): https://forum.mcmonkey.org/index.php  
 **command/tag/event/etc. search** (Modern): http://old.mcmonkey.org/denizen/logs/  
 **Tutorial Videos** (Modern): http://old.mcmonkey.org/denizen/vids  
 **Denizen Handbook** (OLD): http://bit.ly/XaWBLN  
