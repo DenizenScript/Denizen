@@ -748,7 +748,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dLocation getLocation() {
 
-        if (isUnique() && entity != null) {
+        if (entity != null) {
             return new dLocation(entity.getLocation());
         }
 
