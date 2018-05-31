@@ -43,11 +43,9 @@ public class StandCommand extends AbstractCommand {
         if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
             ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(false);
         }
-
         else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.WOLF) {
             ((Wolf) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(false);
         }
-
         else {
             NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
             SittingTrait trait = npc.getTrait(SittingTrait.class);

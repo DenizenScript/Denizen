@@ -60,7 +60,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     private boolean couldMatchIn(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
-        if (index == -1) return true;
+        if (index == -1) {
+            return true;
+        }
 
         String in = CoreUtilities.getXthArg(index + 1, lower);
         if (dInventory.matches(in) || in.equalsIgnoreCase("inventory")) {
@@ -86,7 +88,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
         int index = CoreUtilities.split(lower, ' ').indexOf("with");
-        if (index == -1) return true;
+        if (index == -1) {
+            return true;
+        }
 
         String with = CoreUtilities.getXthArg(index + 1, lower);
         if (with != null) {
@@ -112,8 +116,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return (lower.startsWith("player clicks")
                 || lower.startsWith("player left clicks")
                 || (lower.startsWith("player right clicks")
-                    && !list.contains(CoreUtilities.getXthArg(3, lower))
-                    && !dEntity.matches(CoreUtilities.getXthArg(3, lower))))
+                && !list.contains(CoreUtilities.getXthArg(3, lower))
+                && !dEntity.matches(CoreUtilities.getXthArg(3, lower))))
                 && couldMatchIn(lower);  // Avoid matching "clicks in inventory"
     }
 

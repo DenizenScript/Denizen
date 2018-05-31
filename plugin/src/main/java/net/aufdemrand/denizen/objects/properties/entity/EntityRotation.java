@@ -26,7 +26,6 @@ public class EntityRotation implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityRotation((dEntity) entity);
         }

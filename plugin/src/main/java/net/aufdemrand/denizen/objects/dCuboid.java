@@ -738,7 +738,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (isUnique()) {
             return "cu@" + NotableManager.getSavedId(this);
         }
-
         else {
             return identifyFull();
         }

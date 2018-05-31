@@ -37,47 +37,47 @@ import java.util.Map;
 
 public class HealthTrait extends Trait implements Listener {
 
-// <--[language]
-// @name Health Trait
-// @group NPC Traits
-// @description
-// By default, NPCs are invulnerable, unable to be damaged. If you want your NPC
-// to be able to take damage, or use the left click as an interaction, it must
-// have the health trait. The Health trait is automatically enabled if you set
-// the damage trigger state to true.
-//
-// You can use the denizen vulnerable command to make your NPCs react to left
-// click, but not take damage. - vulnerable state:false
-//
-// Enable Damage trigger via dScript: - trigger name:damage state:true
-// Enable Health trait via dScript: - trait state:true health
-// Enable Health trait via npc command: /npc health --set # (-r)
-//
-// Enable automatic respawn (default delay 300t): /npc health --respawndelay [delay as a duration]
-// Set respawn location: - flag <npc> respawn_location:<location>
-//
-// Related Tags
-// <@link tag npc.health>
-// <@link tag npc.health.formatted>
-// <@link tag npc.health.max>
-// <@link tag npc.health.percentage>
-// <@link tag npc.has_trait[health]>
-//
-// Related Mechanisms
-// <@link mechanism health>
-// <@link mechanism max_health>
-//
-// Related Commands
-// <@link command heal>
-// <@link command health>
-// <@link command vulnerable>
-//
-// Related Actions
-// <@link action on damage>
-// <@link action on damaged>
-// <@link action on no damage trigger>
-//
-// -->
+    // <--[language]
+    // @name Health Trait
+    // @group NPC Traits
+    // @description
+    // By default, NPCs are invulnerable, unable to be damaged. If you want your NPC
+    // to be able to take damage, or use the left click as an interaction, it must
+    // have the health trait. The Health trait is automatically enabled if you set
+    // the damage trigger state to true.
+    //
+    // You can use the denizen vulnerable command to make your NPCs react to left
+    // click, but not take damage. - vulnerable state:false
+    //
+    // Enable Damage trigger via dScript: - trigger name:damage state:true
+    // Enable Health trait via dScript: - trait state:true health
+    // Enable Health trait via npc command: /npc health --set # (-r)
+    //
+    // Enable automatic respawn (default delay 300t): /npc health --respawndelay [delay as a duration]
+    // Set respawn location: - flag <npc> respawn_location:<location>
+    //
+    // Related Tags
+    // <@link tag npc.health>
+    // <@link tag npc.health.formatted>
+    // <@link tag npc.health.max>
+    // <@link tag npc.health.percentage>
+    // <@link tag npc.has_trait[health]>
+    //
+    // Related Mechanisms
+    // <@link mechanism health>
+    // <@link mechanism max_health>
+    //
+    // Related Commands
+    // <@link command heal>
+    // <@link command health>
+    // <@link command vulnerable>
+    //
+    // Related Actions
+    // <@link action on damage>
+    // <@link action on damaged>
+    // <@link action on no damage trigger>
+    //
+    // -->
 
     // Saved to the C2 saves.yml
     @Persist("animatedeath")

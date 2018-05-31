@@ -67,7 +67,9 @@ public class ItemSignContents implements Property {
     @Override
     public String getPropertyString() {
         for (String line : getSignContents()) {
-            if (line.length() > 0) return getSignContents().identify();
+            if (line.length() > 0) {
+                return getSignContents().identify();
+            }
         }
         return null;
     }

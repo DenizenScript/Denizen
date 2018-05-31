@@ -28,7 +28,6 @@ public class EntityAge implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityAge((dEntity) entity);
         }
@@ -67,11 +66,9 @@ public class EntityAge implements Property {
             if (ageable.getBukkitEntity() instanceof Zombie) {
                 ((Zombie) ageable.getBukkitEntity()).setBaby(bool);
             }
-
             else if (bool) {
                 ((Ageable) ageable.getBukkitEntity()).setBaby();
             }
-
             else {
                 ((Ageable) ageable.getBukkitEntity()).setAdult();
             }

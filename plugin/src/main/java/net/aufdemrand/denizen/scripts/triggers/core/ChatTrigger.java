@@ -206,7 +206,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         + npc.getNicknameTrait().getNickname() + ", " + message);
                 return new ChatContext(false);
             }
-
             else {
                 if (HyperDebug) {
                     dB.log("No trigger in step, chatting globally");

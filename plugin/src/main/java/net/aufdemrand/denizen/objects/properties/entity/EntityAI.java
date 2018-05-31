@@ -19,7 +19,6 @@ public class EntityAI implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityAI((dEntity) entity);
         }

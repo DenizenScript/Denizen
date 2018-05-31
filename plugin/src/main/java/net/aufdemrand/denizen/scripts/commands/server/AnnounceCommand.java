@@ -34,18 +34,15 @@ public class AnnounceCommand extends AbstractCommand {
                     && arg.matches("to_ops")) {
                 scriptEntry.addObject("type", AnnounceType.TO_OPS);
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("to_console")) {
                 scriptEntry.addObject("type", AnnounceType.TO_CONSOLE);
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesPrefix("to_flagged")) {
                 scriptEntry.addObject("type", AnnounceType.TO_FLAGGED);
                 scriptEntry.addObject("flag", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("format")
                     && arg.matchesPrefix("format")) {
                 FormatScriptContainer format = null;
@@ -56,7 +53,6 @@ public class AnnounceCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("format", format);
             }
-
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(arg.raw_value));
             }
@@ -93,7 +89,6 @@ public class AnnounceCommand extends AbstractCommand {
         if (type == AnnounceType.ALL) {
             DenizenAPI.getCurrentInstance().getServer().broadcastMessage(message);
         }
-
         else if (type == AnnounceType.TO_OPS) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (player.isOp()) {
@@ -101,7 +96,6 @@ public class AnnounceCommand extends AbstractCommand {
                 }
             }
         }
-
         else if (type == AnnounceType.TO_FLAGGED) {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (FlagManager.playerHasFlag(dPlayer.mirrorBukkitPlayer(player), flag.asString())) {
@@ -109,7 +103,6 @@ public class AnnounceCommand extends AbstractCommand {
                 }
             }
         }
-
         else if (type == AnnounceType.TO_CONSOLE) {
             Bukkit.getServer().getConsoleSender().sendMessage(message);
         }

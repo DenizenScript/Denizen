@@ -12,9 +12,9 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class OxygenCommand extends AbstractCommand {
 
-    public enum Type { MAXIMUM, REMAINING }
+    public enum Type {MAXIMUM, REMAINING}
 
-    public enum Mode { SET, ADD, REMOVE }
+    public enum Mode {SET, ADD, REMOVE}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -26,13 +26,11 @@ public class OxygenCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("mode")
                     && arg.matchesPrefix("mode", "m")
                     && arg.matchesEnum(Mode.values())) {
                 scriptEntry.addObject("mode", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("amount")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("amount", arg.asElement());

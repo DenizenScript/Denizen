@@ -31,7 +31,6 @@ public class EnchantedRequirement extends AbstractRequirement {
                 checkType = CheckType.ITEMINHAND;
                 dB.echoDebug(context.getScriptContainer(), "...will check item in hand");
             }
-
             else {
                 dB.echoError("Could not match argument '" + thisArg + "'");
             }

@@ -62,48 +62,40 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
                 }
             }
-
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesArgumentType(dLocation.class)
                     && arg.matchesPrefix("destination", "d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
-
-
             else if (!scriptEntry.hasObject("lead")
                     && arg.matchesArgumentType(dLocation.class)
                     && arg.matchesPrefix("lead")) {
 
                 scriptEntry.addObject("lead", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("height", "h")) {
 
                 scriptEntry.addObject("height", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("speed")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("script")
                     && (arg.matchesArgumentType(dScript.class)
                     || arg.matchesPrefix("script"))) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("shooter")
                     && arg.matchesArgumentType(dEntity.class)
                     && arg.matchesPrefix("shooter")) {
                 scriptEntry.addObject("shooter", arg.asType(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
@@ -117,22 +109,18 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
                 scriptEntry.addObject("gravity", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("spread")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("spread")) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
                 scriptEntry.addObject("no_rotate", new Element(true));
             }
-
             else if (arg.matchesPrefix("def", "define", "context")) {
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -178,7 +166,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
                 (originEntity != null ? new dLocation(originEntity.getEyeLocation().clone()
                         .add(originEntity.getEyeLocation().clone().getDirection().multiply(30)))
                         : (originLocation != null ? new dLocation(originLocation.clone().add(
-                        originLocation.getDirection().multiply(30))): null));
+                        originLocation.getDirection().multiply(30))) : null));
 
         // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {

@@ -19,7 +19,6 @@ public class EntityElder implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityElder((dEntity) entity);
         }

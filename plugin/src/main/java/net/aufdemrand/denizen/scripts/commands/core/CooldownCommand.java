@@ -54,7 +54,6 @@ public class CooldownCommand extends AbstractCommand {
                     throw new InvalidArgumentsException("Specified an invalid script!");
                 }
             }
-
             else {
                 arg.reportUnhandled();
             }

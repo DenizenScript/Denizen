@@ -30,12 +30,10 @@ public class RandomCommand extends BracedCommand {
             if (arg.matches("{")) {
                 break;
             }
-
             else if (!scriptEntry.hasObject("possibilities")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("possibilities", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -103,7 +101,6 @@ public class RandomCommand extends BracedCommand {
                 if (x != selected) {
                     queue.removeEntry(0);
                 }
-
                 else {
                     dB.echoDebug(scriptEntry, "...selected '" + queue.getEntry(0).getCommandName() + ": "
                             + queue.getEntry(0).getArguments() + "'.");

@@ -45,25 +45,21 @@ public class WhileCommand extends BracedCommand {
                 scriptEntry.addObject("stop", Element.TRUE);
                 break;
             }
-
             else if (!scriptEntry.hasObject("next")
                     && arg.matches("next")) {
                 scriptEntry.addObject("next", Element.TRUE);
                 break;
             }
-
             else if (!scriptEntry.hasObject("callback")
                     && arg.matches("\0CALLBACK")) {
                 scriptEntry.addObject("callback", Element.TRUE);
                 break;
             }
-
             else if (!scriptEntry.hasObject("value")) {
                 scriptEntry.addObject("value", new Element(original.raw_value));
                 scriptEntry.addObject("parsed_value", new Element(arg.raw_value));
                 break;
             }
-
             else {
                 arg.reportUnhandled();
                 break;
@@ -184,7 +180,6 @@ public class WhileCommand extends BracedCommand {
                 dB.echoError(scriptEntry.getResidingQueue(), "While CALLBACK invalid: not a real callback!");
             }
         }
-
         else {
 
             // Get objects

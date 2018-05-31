@@ -200,7 +200,6 @@ public class InteractScriptHelper {
                     }
                     return interactScript;
                 }
-
                 else {
                     if (dB.shouldDebug(interactScript)) {
                         dB.log("...no trigger on this overlay assignment. Skipping.");

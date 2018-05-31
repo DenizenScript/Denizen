@@ -24,12 +24,10 @@ public class NBTCommand extends AbstractCommand {
                 scriptEntry.addObject("key", new Element(flagArgs[0]));
                 scriptEntry.addObject("value", new Element(flagArgs[1]));
             }
-
             else if (!scriptEntry.hasObject("item")
                     && arg.matchesArgumentType(dItem.class)) {
                 scriptEntry.addObject("item", arg.asType(dItem.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

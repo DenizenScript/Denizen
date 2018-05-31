@@ -28,17 +28,14 @@ public class RemoveCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("region")
                     && arg.matchesPrefix("region", "r")) {
                 scriptEntry.addObject("region", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

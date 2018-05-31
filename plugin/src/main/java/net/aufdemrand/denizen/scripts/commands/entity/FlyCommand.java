@@ -39,13 +39,11 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("cancel", "");
             }
-
             else if (!scriptEntry.hasObject("destinations")
                     && arg.matchesPrefix("destination", "destinations", "d")) {
 
                 scriptEntry.addObject("destinations", arg.asType(dList.class).filter(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("controller")
                     && arg.matchesArgumentType(dPlayer.class)
                     && arg.matchesPrefix("controller", "c")) {
@@ -53,32 +51,27 @@ public class FlyCommand extends AbstractCommand {
                 // Check if it matches a dPlayer, but save it as a dEntity
                 scriptEntry.addObject("controller", (arg.asType(dEntity.class)));
             }
-
             else if (!scriptEntry.hasObject("origin")
                     && arg.matchesArgumentType(dLocation.class)) {
 
                 scriptEntry.addObject("origin", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("rotationThreshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("rotationThreshold", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

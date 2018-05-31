@@ -105,7 +105,6 @@ public class NoteBlockReceiver implements Receiver {
         if (location != null) {
             location.getWorld().playSound(location, instrument, volume, pitch);
         }
-
         else if (entities != null && !entities.isEmpty()) {
             for (int i = 0; i < entities.size(); i++) {
                 dEntity entity = entities.get(i);

@@ -19,7 +19,6 @@ public class EntityCritical implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityCritical((dEntity) entity);
         }

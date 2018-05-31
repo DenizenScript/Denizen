@@ -19,7 +19,6 @@ public class EntityArms implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityArms((dEntity) entity);
         }

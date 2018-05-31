@@ -50,7 +50,6 @@ public class NarrateCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));
             }
-
             else {
                 arg.reportUnhandled();
             }

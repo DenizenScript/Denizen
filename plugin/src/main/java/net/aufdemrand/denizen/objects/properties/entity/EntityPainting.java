@@ -20,7 +20,6 @@ public class EntityPainting implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityPainting((dEntity) entity);
         }

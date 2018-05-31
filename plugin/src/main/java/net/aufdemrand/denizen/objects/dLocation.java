@@ -181,7 +181,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return null;
             }
         }
-
         else if (split.size() == 4)
         // If 4 values, standard dScript location format
         // x,y,z,world
@@ -199,8 +198,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return null;
             }
         }
-
-
         else if (split.size() == 6)
 
         // If 6 values, location with pitch/yaw
@@ -769,7 +766,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("drops")) {
             Collection<ItemStack> its = getBlock().getDrops();
             dList list = new dList();
-            for (ItemStack it: its) {
+            for (ItemStack it : its) {
                 list.add(new dItem(it).identify());
             }
             return list.getAttribute(attribute.fulfill(1));
@@ -784,7 +781,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("flowerpot_contents") && getBlock().getType() == Material.FLOWER_POT) {
             MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
             return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
-                        .getAttribute(attribute.fulfill(1));
+                    .getAttribute(attribute.fulfill(1));
         }
 
 

@@ -27,24 +27,20 @@ public class InvisibleCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("state", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("PLAYER")
                     && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("NPC")
                     && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

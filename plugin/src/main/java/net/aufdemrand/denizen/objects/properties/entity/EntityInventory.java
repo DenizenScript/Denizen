@@ -22,7 +22,6 @@ public class EntityInventory implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityInventory((dEntity) entity);
         }

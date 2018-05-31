@@ -35,25 +35,21 @@ public class RepeatCommand extends BracedCommand {
                 scriptEntry.addObject("qty", arg.asElement());
                 break;
             }
-
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
                 scriptEntry.addObject("stop", Element.TRUE);
                 break;
             }
-
             else if (!scriptEntry.hasObject("next")
                     && arg.matches("next")) {
                 scriptEntry.addObject("next", Element.TRUE);
                 break;
             }
-
             else if (!scriptEntry.hasObject("callback")
                     && arg.matches("\0CALLBACK")) {
                 scriptEntry.addObject("callback", Element.TRUE);
                 break;
             }
-
             else {
                 arg.reportUnhandled();
                 break;
@@ -164,7 +160,6 @@ public class RepeatCommand extends BracedCommand {
                 dB.echoError("Repeat CALLBACK invalid: not a real callback!");
             }
         }
-
         else {
 
             // Get objects

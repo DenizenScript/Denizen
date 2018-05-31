@@ -88,7 +88,6 @@ public class AssignmentTrait extends Trait {
             dNPCRegistry.getDenizen(npc).action("assignment", player);
             return true;
         }
-
         else {
             return false;
         }
@@ -257,7 +256,6 @@ public class AssignmentTrait extends Trait {
                     return;
                 }
             }
-
             else {
                 return;
             }

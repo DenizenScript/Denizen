@@ -61,7 +61,9 @@ public class AreaEffectCloudHelper {
 
     public void setParticle(String name) {
         Particle particle = Particle.valueOf(name);
-        if (particle != null) entity.setParticle(particle);
+        if (particle != null) {
+            entity.setParticle(particle);
+        }
     }
 
     ////////////////

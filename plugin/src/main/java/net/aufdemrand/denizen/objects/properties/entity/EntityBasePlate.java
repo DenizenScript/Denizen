@@ -19,7 +19,6 @@ public class EntityBasePlate implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityBasePlate((dEntity) entity);
         }

@@ -51,37 +51,31 @@ public class ViewerCommand extends AbstractCommand implements Listener {
             {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(Type.values()))
             // add Action
             {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("display")
                     && arg.matchesEnum(Display.values()))
             // add Action
             {
                 scriptEntry.addObject("display, d", Display.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (arg.matchesPrefix("i, id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
             // Location arg
             {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
             }
-
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction, dir")) {
                 scriptEntry.addObject("direction", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

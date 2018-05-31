@@ -19,7 +19,6 @@ public class EntityKnockback implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityKnockback((dEntity) entity);
         }

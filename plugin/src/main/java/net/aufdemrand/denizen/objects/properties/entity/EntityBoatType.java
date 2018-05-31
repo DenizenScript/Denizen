@@ -20,7 +20,6 @@ public class EntityBoatType implements Property {
         if (!describes(object)) {
             return null;
         }
-
         else {
             return new EntityBoatType((dEntity) object);
         }

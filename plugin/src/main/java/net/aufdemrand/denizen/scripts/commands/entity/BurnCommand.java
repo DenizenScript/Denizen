@@ -26,13 +26,11 @@ public class BurnCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", (arg.asType(dList.class)).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

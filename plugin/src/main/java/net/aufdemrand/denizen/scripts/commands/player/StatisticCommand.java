@@ -31,24 +31,20 @@ public class StatisticCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (arg.matchesPrefix("players")
                     && !scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class));
                 specified_players = true;
             }
-
             else if (!scriptEntry.hasObject("statistic")
                     && arg.matchesEnum(Statistic.values())) {
                 scriptEntry.addObject("statistic", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("amount")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-
             else if (arg.matchesPrefix("qualifier", "q")
                     && !scriptEntry.hasObject("material")
                     && !scriptEntry.hasObject("entity")) {

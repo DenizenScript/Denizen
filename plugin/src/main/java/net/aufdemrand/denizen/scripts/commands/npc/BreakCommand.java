@@ -31,17 +31,14 @@ public class BreakCommand extends AbstractCommand implements Holdable {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("npc")
                     && arg.matchesArgumentType(dNPC.class)) {
                 scriptEntry.addObject("npc", arg.asType(dNPC.class));
             }
-
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

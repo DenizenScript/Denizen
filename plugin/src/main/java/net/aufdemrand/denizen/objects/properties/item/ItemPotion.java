@@ -48,10 +48,10 @@ public class ItemPotion implements Property {
         if (!(item.getItemStack().getItemMeta() instanceof PotionMeta)) {
             return null;
         }
-        PotionMeta meta = (PotionMeta)item.getItemStack().getItemMeta();
+        PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
         dList effects = new dList();
         effects.add(meta.getBasePotionData().getType() + "," + meta.getBasePotionData().isUpgraded() + "," + meta.getBasePotionData().isExtended());
-        for (PotionEffect pot: meta.getCustomEffects()) {
+        for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
             sb.append(pot.getType().getName()).append(",")
                     .append(pot.getAmplifier()).append(",")
@@ -114,7 +114,7 @@ public class ItemPotion implements Property {
             if (attribute.startsWith("potion_effect")) {
                 PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
 
-                int potN = attribute.hasContext(1) ? attribute.getIntContext(1) - 1: 0;
+                int potN = attribute.hasContext(1) ? attribute.getIntContext(1) - 1 : 0;
                 if (potN < 0 || potN > meta.getCustomEffects().size()) {
                     return null;
                 }
@@ -255,7 +255,7 @@ public class ItemPotion implements Property {
                 // In the format Effect,Level,Extended,Splash
                 // -->
                 return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
-                + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
+                        + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
                         .getAttribute(attribute);
             }
         }
@@ -286,7 +286,7 @@ public class ItemPotion implements Property {
         if (mechanism.matches("potion_effects")) {
             dList data = mechanism.getValue().asType(dList.class);
             String[] d1 = data.get(0).split(",");
-            PotionMeta meta = (PotionMeta)item.getItemStack().getItemMeta();
+            PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
@@ -295,7 +295,7 @@ public class ItemPotion implements Property {
                 String[] d2 = data.get(i).split(",");
                 meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(d2[0].toUpperCase()),
                         new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
-                        new Element(d2[4]).asBoolean(), d2.length > 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor(): null), false);
+                        new Element(d2[4]).asBoolean(), d2.length > 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor() : null), false);
             }
             item.getItemStack().setItemMeta(meta);
         }

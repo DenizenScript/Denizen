@@ -71,7 +71,6 @@ public class PlayEffectCommand extends AbstractCommand {
 
                 scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("particleeffect") &&
                     !scriptEntry.hasObject("iconcrack")) {
@@ -138,28 +137,24 @@ public class PlayEffectCommand extends AbstractCommand {
                     scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
                 }
             }
-
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility", "v", "radius", "r")) {
 
                 scriptEntry.addObject("radius", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("data")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("data", "d")) {
 
                 scriptEntry.addObject("data", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && arg.matchesPrefix("qty", "q", "quantity")) {
 
                 scriptEntry.addObject("qty", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("offset")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("offset", "o")) {
@@ -167,21 +162,18 @@ public class PlayEffectCommand extends AbstractCommand {
                 double offset = arg.asElement().asDouble();
                 scriptEntry.addObject("offset", new dLocation(null, offset, offset, offset));
             }
-
             else if (!scriptEntry.hasObject("offset")
                     && arg.matchesArgumentType(dLocation.class)
                     && arg.matchesPrefix("offset", "o")) {
 
                 scriptEntry.addObject("offset", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesArgumentList(dPlayer.class)
                     && arg.matchesPrefix("targets", "target", "t")) {
 
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -302,7 +294,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 // TODO: better this all
                 if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short)(iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);

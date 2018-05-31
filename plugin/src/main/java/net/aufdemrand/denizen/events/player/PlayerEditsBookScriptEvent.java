@@ -126,7 +126,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @EventHandler
-    public void onPlayerEditsBook(PlayerEditBookEvent event){
+    public void onPlayerEditsBook(PlayerEditBookEvent event) {
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         signing = new Element(event.isSigning());
         bookMeta = event.getNewBookMeta();

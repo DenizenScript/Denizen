@@ -24,15 +24,14 @@ public class EntityPotionEffects implements Property {
     public static boolean describes(dObject object) {
         return object instanceof dEntity &&
                 (((dEntity) object).isLivingEntity()
-                || ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && ((dEntity) object).getBukkitEntityType() == EntityType.TIPPED_ARROW)));
+                        || ((NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                        && ((dEntity) object).getBukkitEntityType() == EntityType.TIPPED_ARROW)));
     }
 
     public static EntityPotionEffects getFrom(dObject object) {
         if (!describes(object)) {
             return null;
         }
-
         else {
             return new EntityPotionEffects((dEntity) object);
         }

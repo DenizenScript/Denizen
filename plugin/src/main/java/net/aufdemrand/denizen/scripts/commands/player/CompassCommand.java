@@ -26,12 +26,10 @@ public class CompassCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element(true));
             }
-
             else {
                 arg.reportUnhandled();
             }

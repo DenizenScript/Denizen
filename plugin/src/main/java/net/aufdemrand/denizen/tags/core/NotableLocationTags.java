@@ -32,7 +32,6 @@ public class NotableLocationTags implements Listener {
             id = event.getValue();
             tag = tag.split(":", 2)[1];
         }
-
         else if (event.hasNameContext()) {
             id = event.getNameContext();
         }

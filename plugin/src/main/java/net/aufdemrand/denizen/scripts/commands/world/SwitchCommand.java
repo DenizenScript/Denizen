@@ -39,17 +39,14 @@ public class SwitchCommand extends AbstractCommand {
                     arg.matchesArgumentList(dLocation.class)) {
                 scriptEntry.addObject("locations", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("duration") &&
                     arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("state") &&
                     arg.matchesEnum(SwitchState.values())) {
                 scriptEntry.addObject("switchstate", new Element(arg.getValue().toUpperCase()));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -26,7 +26,6 @@ public class EntityArmorPose implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityArmorPose((dEntity) entity);
         }

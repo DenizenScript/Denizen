@@ -16,7 +16,9 @@ public class ChunkHelper_v1_12_R1 implements ChunkHelper {
         PacketPlayOutMapChunk highPacket = new PacketPlayOutMapChunk(((CraftChunk) chunk).getHandle(), 65280); // 11111111 00000000
         PlayerChunk playerChunk = ((CraftWorld) chunk.getWorld()).getHandle().getPlayerChunkMap()
                 .getChunk(chunk.getX(), chunk.getZ());
-        if (playerChunk == null) return;
+        if (playerChunk == null) {
+            return;
+        }
         for (EntityPlayer player : playerChunk.c) {
             player.playerConnection.sendPacket(lowPacket);
             player.playerConnection.sendPacket(highPacket);

@@ -37,46 +37,38 @@ public class BossBarCommand extends AbstractCommand {
                     && arg.matchesPrefix("title", "t")) {
                 scriptEntry.addObject("title", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("progress")
                     && arg.matchesPrefix("progress", "health", "p", "h")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("progress", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("color")
                     && arg.matchesPrefix("color", "c")
                     && arg.matchesEnum(BarColor.values())) {
                 scriptEntry.addObject("color", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("style")
                     && arg.matchesPrefix("style", "s")
                     && arg.matchesEnum(BarStyle.values())) {
                 scriptEntry.addObject("style", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("flags")
                     && arg.matchesPrefix("flags", "flag", "f")
                     && arg.matchesEnumList(BarFlag.values())) {
                 scriptEntry.addObject("flags", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -135,7 +127,7 @@ public class BossBarCommand extends AbstractCommand {
                 double barProgress = progress != null ? progress.asDouble() : 1D;
                 BarColor barColor = color != null ? BarColor.valueOf(color.asString().toUpperCase()) : BarColor.WHITE;
                 BarStyle barStyle = style != null ? BarStyle.valueOf(style.asString().toUpperCase()) : BarStyle.SOLID;
-                BarFlag[] barFlags = new BarFlag[flags != null? flags.size() : 0];
+                BarFlag[] barFlags = new BarFlag[flags != null ? flags.size() : 0];
                 if (flags != null) {
                     for (int i = 0; i < flags.size(); i++) {
                         barFlags[i] = (BarFlag.valueOf(flags.get(i).toUpperCase()));

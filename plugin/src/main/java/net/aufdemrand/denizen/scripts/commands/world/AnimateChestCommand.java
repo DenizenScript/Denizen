@@ -30,23 +30,19 @@ public class AnimateChestCommand extends AbstractCommand {
                     && arg.matchesEnum(ChestAction.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrefix("sound")
                     && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

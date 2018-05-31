@@ -49,11 +49,9 @@ public class SitCommand extends AbstractCommand {
         if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
             ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(true);
         }
-
         else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.WOLF) {
             ((Wolf) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(true);
         }
-
         else {
             SittingTrait trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(SittingTrait.class);
             if (!((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().hasTrait(SittingTrait.class)) {

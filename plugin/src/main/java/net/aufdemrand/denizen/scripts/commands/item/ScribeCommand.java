@@ -41,18 +41,15 @@ public class ScribeCommand extends AbstractCommand implements Listener {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", BookAction.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
                 scriptEntry.addObject("action", BookAction.DROP);
             }
-
             else if (!scriptEntry.hasObject("item")
                     && arg.matchesArgumentType(dItem.class)) {
                 scriptEntry.addObject("item", arg.asType(dItem.class));

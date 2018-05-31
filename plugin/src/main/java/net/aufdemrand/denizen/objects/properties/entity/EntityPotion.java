@@ -24,7 +24,6 @@ public class EntityPotion implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityPotion((dEntity) entity);
         }

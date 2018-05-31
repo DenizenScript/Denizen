@@ -23,7 +23,6 @@ public class EntityGravity implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityGravity((dEntity) entity);
         }

@@ -220,8 +220,8 @@ public class dEntity implements dObject, Adjustable {
                     ex.getCause(); // DO NOTHING
                 }
 
-//                else if (isSaved(m.group(2)))
-//                    return getSaved(m.group(2));
+                // else if (isSaved(m.group(2)))
+                //     return getSaved(m.group(2));
             }
         }
 
@@ -836,7 +836,6 @@ public class dEntity implements dObject, Adjustable {
         else if (entity != null && isUnique()) {
             entity.teleport(location);
         }
-
         else {
             if (entity_type != null) {
                 if (despawned_entity != null) {
@@ -855,7 +854,6 @@ public class dEntity implements dObject, Adjustable {
 
                     despawned_entity = null;
                 }
-
                 else {
 
                     org.bukkit.entity.Entity ent;
@@ -927,7 +925,6 @@ public class dEntity implements dObject, Adjustable {
                     }
                 }
             }
-
             else {
                 dB.echoError("Cannot spawn a null dEntity!");
             }
@@ -3067,7 +3064,8 @@ public class dEntity implements dObject, Adjustable {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
                 }
-            } else {
+            }
+            else {
                 ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(null);
             }
         }
@@ -3091,7 +3089,8 @@ public class dEntity implements dObject, Adjustable {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
                 }
-            } else {
+            }
+            else {
                 ((HumanEntity) getLivingEntity()).setShoulderEntityRight(null);
             }
         }
@@ -3291,7 +3290,9 @@ public class dEntity implements dObject, Adjustable {
             // -->
             if (mechanism.matches("remove_custom_effect")) {
                 PotionEffectType type = PotionEffectType.getByName(value.asString().toUpperCase());
-                if (type != null) helper.removeEffect(type);
+                if (type != null) {
+                    helper.removeEffect(type);
+                }
             }
 
             // <--[mechanism]

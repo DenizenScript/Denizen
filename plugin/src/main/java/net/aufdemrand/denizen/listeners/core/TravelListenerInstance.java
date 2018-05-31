@@ -94,20 +94,16 @@ public class TravelListenerInstance extends AbstractListener implements Listener
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 distance_required = aH.getIntegerFrom(arg.getValue());
             }
-
             else if (arg.matchesPrefix("r, radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 radius = aH.getIntegerFrom(arg.getValue());
             }
-
             else if (arg.matchesArgumentType(dCuboid.class)) {
                 end_cuboid = arg.asType(dCuboid.class);
             }
-
             else if (arg.matchesArgumentType(dLocation.class)) {
                 end_point = arg.asType(dLocation.class);
             }
-
             else if (arg.matchesArgumentType(dNPC.class)) {
                 target = arg.asType(dNPC.class);
             }

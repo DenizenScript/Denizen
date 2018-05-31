@@ -17,7 +17,8 @@ public class EntitySilent implements Property {
     public static EntitySilent getFrom(dObject entity) {
         if (!describes(entity)) {
             return null;
-        } else {
+        }
+        else {
             return new EntitySilent((dEntity) entity);
         }
     }

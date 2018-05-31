@@ -26,17 +26,14 @@ public class DisplayItemCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && !scriptEntry.hasObject("item")) {
                 scriptEntry.addObject("item", arg.asType(dItem.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

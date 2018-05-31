@@ -18,7 +18,7 @@ public class GameRuleCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("world")
-                && arg.matchesArgumentType(dWorld.class)) {
+                    && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
             else if (!scriptEntry.hasObject("gamerule")) {

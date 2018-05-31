@@ -47,64 +47,53 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     dB.echoError("Ignoring unrecognized argument: " + arg.raw_value);
                 }
             }
-
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesArgumentType(dLocation.class)
                     && arg.matchesPrefix("destination", "d")) {
 
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("duration", "d")) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("speed", "s")) {
 
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("script")
                     && (arg.matchesArgumentType(dScript.class)
                     || arg.matchesPrefix("script"))) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("force_along")
                     && arg.matches("force_along")) {
                 scriptEntry.addObject("force_along", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("no_rotate")
                     && arg.matches("no_rotate")) {
                 scriptEntry.addObject("no_rotate", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("precision")
                     && arg.matchesPrefix("precision")) {
                 scriptEntry.addObject("precision", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("no_damage")
                     && arg.matches("no_damage")) {
                 scriptEntry.addObject("no_damage", new Element(true));
             }
-
             else if (arg.matchesPrefix("def", "define", "context")) {
                 scriptEntry.addObject("definitions", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

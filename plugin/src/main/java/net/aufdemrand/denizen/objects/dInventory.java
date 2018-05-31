@@ -216,7 +216,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return new dInventory(arg.asElement().asInt());
                 }
                 else {
-                    if (!silent) dB.echoError("That type of inventory does not exist!");
+                    if (!silent) {
+                        dB.echoError("That type of inventory does not exist!");
+                    }
                 }
             }
             else if (type.equals("npc")) {
@@ -233,8 +235,10 @@ public class dInventory implements dObject, Notable, Adjustable {
                 if (dPlayer.matches(holder)) {
                     dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
                     if (workbench != null) {
-                        if (!silent) dB.echoError("Value of dInventory returning null (" + string + ")." +
-                                " Specified player does not have an open workbench.");
+                        if (!silent) {
+                            dB.echoError("Value of dInventory returning null (" + string + ")." +
+                                    " Specified player does not have an open workbench.");
+                        }
                     }
                     else {
                         return workbench;
@@ -258,12 +262,16 @@ public class dInventory implements dObject, Notable, Adjustable {
             }
 
             // If the dInventory is invalid, alert the user and return null
-            if (!silent) dB.echoError("Value of dInventory returning null. Invalid " +
-                    type + " specified: " + holder);
+            if (!silent) {
+                dB.echoError("Value of dInventory returning null. Invalid " +
+                        type + " specified: " + holder);
+            }
             return null;
         }
 
-        if (!silent) dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
+        if (!silent) {
+            dB.echoError("Value of dInventory returning null. Invalid dInventory specified: " + string);
+        }
         return null;
     }
 
@@ -1152,6 +1160,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             destination.setContents(this.getContents());
         }
     }
+
     public dInventory setSlots(int slot, ItemStack... items) {
         return setSlots(slot, items, items.length);
     }

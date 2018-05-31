@@ -113,7 +113,6 @@ public class dItem implements dObject, Notable, Adjustable {
                     stack = ScriptRegistry.getScriptContainerAs
                             (m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
                 }
-
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
                     // Get book from script
                     stack = ScriptRegistry.getScriptContainerAs
@@ -313,7 +312,6 @@ public class dItem implements dObject, Notable, Adjustable {
                         determination++;
                     }
                 }
-
                 else {
                     return -1;
                 }

@@ -29,21 +29,17 @@ public class SignCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
             }
-
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction", "dir")) {
                 scriptEntry.addObject("direction", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

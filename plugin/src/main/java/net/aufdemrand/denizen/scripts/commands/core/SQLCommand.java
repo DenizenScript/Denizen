@@ -44,46 +44,38 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                     && arg.matchesPrefix("id")) {
                 scriptEntry.addObject("sqlid", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesPrefix("connect")) {
                 scriptEntry.addObject("action", new Element("CONNECT"));
                 scriptEntry.addObject("server", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("disconnect")) {
                 scriptEntry.addObject("action", new Element("DISCONNECT"));
             }
-
             else if (!scriptEntry.hasObject("query")
                     && arg.matchesPrefix("query")) {
                 scriptEntry.addObject("action", new Element("QUERY"));
                 scriptEntry.addObject("query", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("query")
                     && arg.matchesPrefix("update")) {
                 scriptEntry.addObject("action", new Element("UPDATE"));
                 scriptEntry.addObject("query", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("username")
                     && arg.matchesPrefix("username")) {
                 scriptEntry.addObject("username", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("password")
                     && arg.matchesPrefix("password")) {
                 scriptEntry.addObject("password", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("ssl")
                     && arg.matchesPrefix("ssl")
                     && arg.asElement().isBoolean()) {
-                        scriptEntry.addObject("ssl", arg.asElement());
+                scriptEntry.addObject("ssl", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -227,7 +227,6 @@ public class dBiome implements dObject, Adjustable {
                 else if (attribute.startsWith("water")) {
                     entityTypes = biome.getWaterEntities();
                 }
-
                 else {
                     entityTypes = biome.getAllEntities();
                     hasAttribute = false;

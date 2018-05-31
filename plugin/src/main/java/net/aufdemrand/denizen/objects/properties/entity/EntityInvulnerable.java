@@ -17,7 +17,6 @@ public class EntityInvulnerable implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityInvulnerable((dEntity) entity);
         }

@@ -98,7 +98,6 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             resultChanged = true;
             return true;
         }
-
         else {
             return super.applyDetermination(container, determination);
         }

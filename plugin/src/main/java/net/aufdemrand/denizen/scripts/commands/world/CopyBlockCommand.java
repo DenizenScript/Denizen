@@ -42,11 +42,9 @@ public class CopyBlockCommand extends AbstractCommand {
                     && arg.matchesPrefix("t", "to")) {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
-
             else if (arg.matches("remove_original")) {
                 scriptEntry.addObject("remove", Element.TRUE);
             }
-
             else {
                 arg.reportUnhandled();
             }

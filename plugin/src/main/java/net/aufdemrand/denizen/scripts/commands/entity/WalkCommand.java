@@ -42,39 +42,32 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("lookat", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Percentage)
                     && arg.matchesPrefix("s, speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("auto_range")
                     && arg.matches("auto_range")) {
                 scriptEntry.addObject("auto_range", Element.TRUE);
             }
-
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("radius")) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
                 scriptEntry.addObject("stop", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

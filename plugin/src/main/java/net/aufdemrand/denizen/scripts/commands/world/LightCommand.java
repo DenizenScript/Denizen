@@ -23,17 +23,14 @@ public class LightCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("light")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("light", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")
                     && arg.matchesArgumentType(Duration.class)) {

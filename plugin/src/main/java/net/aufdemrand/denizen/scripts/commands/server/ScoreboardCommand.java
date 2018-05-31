@@ -33,43 +33,35 @@ public class ScoreboardCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("lines")
                     && arg.matchesPrefix("lines", "l")) {
                 scriptEntry.addObject("lines", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("id")
                     && arg.matchesPrefix("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("objective")
                     && arg.matchesPrefix("objective", "obj", "o")) {
                 scriptEntry.addObject("objective", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("criteria")
                     && arg.matchesPrefix("criteria", "c")) {
                 scriptEntry.addObject("criteria", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("score")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("score", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("displayslot")
                     && (arg.matchesEnum(DisplaySlot.values()) ||
                     arg.matches("none"))) {
                 scriptEntry.addObject("displayslot", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("viewers")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -26,7 +26,6 @@ public class PoweredRequirement extends AbstractRequirement {
                     dB.echoDebug(context.getScriptContainer(), "...block to check is type '" + blockToCheck.getType().toString() + "'");
                 }
             }
-
             else {
                 dB.echoError("Could not match argument '" + thisArg + "'");
             }

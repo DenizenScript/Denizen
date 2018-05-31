@@ -37,11 +37,9 @@ public class ShowFakeCommand extends AbstractCommand {
                 }
                 added_entities = true; // TODO: handle lists properly
             }
-
             else if (arg.matchesArgumentList(dMaterial.class)) {
                 scriptEntry.addObject("materials", arg.asType(dList.class));
             }
-
             else if (locations.isEmpty()
                     && arg.matchesArgumentType(dList.class)) {
                 for (String item : dList.valueOf(arg.getValue())) {
@@ -50,21 +48,17 @@ public class ShowFakeCommand extends AbstractCommand {
                     }
                 }
             }
-
             else if (locations.isEmpty()
                     && arg.matchesArgumentType(dLocation.class)) {
                 locations.add(arg.getValue());
             }
-
             else if (arg.matchesPrefix("d", "duration")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (arg.matches("cancel")) {
                 scriptEntry.addObject("cancel", new Element(true));
             }
-
             else {
                 arg.reportUnhandled();
             }

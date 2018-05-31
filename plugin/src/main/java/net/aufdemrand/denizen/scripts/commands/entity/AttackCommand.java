@@ -27,21 +27,18 @@ public class AttackCommand extends AbstractCommand {
 
                 scriptEntry.addObject("cancel", "true");
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)
                     && arg.matchesPrefix("target", "t")) {
                 // Single entity arg
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)
                     && !arg.matchesPrefix("target", "t")) {
                 // Entity dList arg
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -28,31 +28,26 @@ public class TeamCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else if (arg.matchesPrefix("name")
                     && !scriptEntry.hasObject("name")) {
                 Element nameElement = arg.asElement();
                 name = nameElement.asString();
                 scriptEntry.addObject("name", nameElement);
             }
-
             else if (arg.matchesPrefix("add")
                     && !scriptEntry.hasObject("add")) {
                 scriptEntry.addObject("add", arg.asType(dList.class));
             }
-
             else if (arg.matchesPrefix("remove")
                     && !scriptEntry.hasObject("remove")) {
                 scriptEntry.addObject("remove", arg.asType(dList.class));
             }
-
             else if (arg.matchesPrefix("prefix")
                     && !scriptEntry.hasObject("prefix")) {
                 Element prefixElement = arg.asElement();
                 prefix = prefixElement.asString();
                 scriptEntry.addObject("prefix", prefixElement);
             }
-
             else if (arg.matchesPrefix("suffix")
                     && !scriptEntry.hasObject("suffix")) {
                 Element suffixElement = arg.asElement();

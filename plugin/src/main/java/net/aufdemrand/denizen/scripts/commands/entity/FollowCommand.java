@@ -24,41 +24,34 @@ public class FollowCommand extends AbstractCommand {
                     arg.matches("STOP")) {
                 scriptEntry.addObject("stop", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("lead") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
                     arg.matchesPrefix("l", "lead")) {
                 scriptEntry.addObject("lead", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("max") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
                     arg.matchesPrefix("max")) {
                 scriptEntry.addObject("max", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("allow_wander") &&
                     arg.matches("allow_wander")) {
                 scriptEntry.addObject("allow_wander", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("speed") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Percentage) &&
                     arg.matchesPrefix("s", "speed")) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("entities") &&
                     arg.matchesPrefix("followers", "follower") &&
                     arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("target") &&
                     arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

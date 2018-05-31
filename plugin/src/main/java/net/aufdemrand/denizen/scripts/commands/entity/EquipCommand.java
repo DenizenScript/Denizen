@@ -39,37 +39,30 @@ public class EquipCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("head", "helmet")) {
                 equipment.put("head", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("chest", "chestplate")) {
                 equipment.put("chest", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("legs", "leggings")) {
                 equipment.put("legs", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("boots", "feet")) {
                 equipment.put("boots", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("saddle")) {
                 equipment.put("saddle", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("horse_armor", "horse_armour")) {
                 equipment.put("horse_armor", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("offhand")) {
                 equipment.put("offhand", dItem.valueOf(arg.getValue()));
@@ -79,12 +72,10 @@ public class EquipCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dItem.class)) {
                 equipment.put("hand", dItem.valueOf(arg.getValue()));
             }
-
             else if (arg.matches("player") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 // Player arg for compatibility with old scripts
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -492,7 +492,7 @@ public class ServerTags implements Listener {
                 return;
             }
             dList list = new dList();
-            for (File file: files) {
+            for (File file : files) {
                 list.add(file.getName());
             }
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
@@ -1109,8 +1109,7 @@ public class ServerTags implements Listener {
         // -->
         else if (attribute.startsWith("current_bossbars")) {
             dList dl = new dList();
-            for (String str : BossBarCommand.bossBarMap.keySet())
-            {
+            for (String str : BossBarCommand.bossBarMap.keySet()) {
                 dl.add(str);
             }
             event.setReplaced(dl.getAttribute(attribute.fulfill(1)));

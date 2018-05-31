@@ -49,7 +49,8 @@ public class CustomEntityHelper_v1_12_R1 implements CustomEntityHelper {
         String suffix = null;
         if (name == null) {
             return null;
-        } else if (fullName.length() > 16) {
+        }
+        else if (fullName.length() > 16) {
             prefix = fullName.substring(0, 16);
             if (fullName.length() > 30) {
                 int len = 30;
@@ -58,17 +59,21 @@ public class CustomEntityHelper_v1_12_R1 implements CustomEntityHelper {
                     if (fullName.length() >= 32) {
                         len = 32;
                         name = fullName.substring(16, 32);
-                    } else if (fullName.length() == 31) {
+                    }
+                    else if (fullName.length() == 31) {
                         len = 31;
                         name = fullName.substring(16, 31);
                     }
-                } else if (name.length() > 46) {
+                }
+                else if (name.length() > 46) {
                     throw new IllegalArgumentException("You must specify a name with no more than 46 characters for FAKE_PLAYER entities!");
-                } else {
+                }
+                else {
                     name = ChatColor.RESET + name;
                 }
                 suffix = fullName.substring(len);
-            } else {
+            }
+            else {
                 name = fullName.substring(16);
                 if (!name.matches(".*[^A-Za-z0-9_].*")) {
                     name = ChatColor.RESET + name;
@@ -123,7 +128,8 @@ public class CustomEntityHelper_v1_12_R1 implements CustomEntityHelper {
                 byte[] bytes = teamName.getBytes("UTF-8");
                 md.update(bytes, 0, bytes.length);
                 hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
             if (hash != null) {

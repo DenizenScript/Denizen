@@ -125,7 +125,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 + (filename != null ? filename.debug() : "")
                 + (cuboid != null ? cuboid.debug() : "")
                 + (angle != null ? angle.debug() : "")
-                + (noair != null ? noair.debug(): "")
+                + (noair != null ? noair.debug() : "")
                 + (delayed != null ? delayed.debug() : ""));
 
         CuboidBlockSet set;
@@ -134,7 +134,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             dB.echoError("Tried to wait for a non-paste schematic command.");
             scriptEntry.setFinished(true);
         }
-        String fname = filename != null ? filename.asString(): name.asString();
+        String fname = filename != null ? filename.asString() : name.asString();
         switch (ttype) {
             case CREATE:
                 if (schematics.containsKey(name.asString().toUpperCase())) {
@@ -295,7 +295,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
             return;
         }
 
-        String id = event.hasNameContext() ? event.getNameContext().toUpperCase(): null;
+        String id = event.hasNameContext() ? event.getNameContext().toUpperCase() : null;
 
         Attribute attribute = event.getAttributes().fulfill(1);
 

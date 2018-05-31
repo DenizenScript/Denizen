@@ -32,23 +32,19 @@ public class HeadCommand extends AbstractCommand {
                     && !arg.matchesPrefix("skin", "s")) {
                 scriptEntry.addObject("material", arg.asType(dMaterial.class));
             }
-
             else if (!scriptEntry.hasObject("skin")
                     && (arg.matchesPrefix("skin", "s"))) {
                 scriptEntry.addObject("skin", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matches("player")
                     && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -110,7 +106,6 @@ public class HeadCommand extends AbstractCommand {
                 if (entity.isLivingEntity() && entity.getLivingEntity().getEquipment() != null) {
                     entity.getLivingEntity().getEquipment().setHelmet(item);
                 }
-
                 else {
                     dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not a living entity!");
                 }

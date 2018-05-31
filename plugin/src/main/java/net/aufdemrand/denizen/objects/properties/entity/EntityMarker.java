@@ -19,7 +19,6 @@ public class EntityMarker implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityMarker((dEntity) entity);
         }

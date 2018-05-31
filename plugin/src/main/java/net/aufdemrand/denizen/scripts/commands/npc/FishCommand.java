@@ -26,18 +26,15 @@ public class FishCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("catch")
                     && arg.matchesPrefix("catch")
                     && arg.matchesEnum(FishingHelper.CatchType.values())) {
                 scriptEntry.addObject("catch", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
                 scriptEntry.addObject("stop", Element.TRUE);
             }
-
             else if (!scriptEntry.hasObject("percent")
                     && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {

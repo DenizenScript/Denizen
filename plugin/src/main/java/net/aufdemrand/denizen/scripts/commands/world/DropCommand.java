@@ -34,46 +34,39 @@ public class DropCommand extends AbstractCommand {
                 scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
                 scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class));
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience", "exp", "xp"))
             // Experience arg
             {
                 scriptEntry.addObject("action", new Element(Action.DROP_EXP.toString()).setPrefix("action"));
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ENTITY.toString()).setPrefix("action"));
                 scriptEntry.addObject("entity", arg.asType(dEntity.class).setPrefix("entity"));
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class))
             // Location arg
             {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
             }
-
             else if (!scriptEntry.hasObject("speed")
                     && arg.matchesPrefix("speed")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("speed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer))
             // Quantity arg
             {
                 scriptEntry.addObject("qty", arg.asElement().setPrefix("qty"));
             }
-
             else if (!scriptEntry.hasObject("delay") && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("delay", "d")) {
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -223,7 +223,7 @@ public class ItemScriptHelper implements Listener {
                 // Proceed only if the player can fit more items on their cursor
                 if (!event.isShiftClick() && event.getCursor().getData().getItemType() != Material.AIR
                         && (!event.getCursor().isSimilar(inventory.getResult())
-                            || event.getCursor().getAmount() + inventory.getResult().getAmount() > event.getCursor().getMaxStackSize())) {
+                        || event.getCursor().getAmount() + inventory.getResult().getAmount() > event.getCursor().getMaxStackSize())) {
                     return;
                 }
 
@@ -489,7 +489,9 @@ public class ItemScriptHelper implements Listener {
                         }
                     }
                     // If a matrix item doesn't match any items from the recipe, it's a fail
-                    if (!matched) continue primary;
+                    if (!matched) {
+                        continue primary;
+                    }
                 }
                 else {
                     shapedRecipe.add(new dItem(Material.AIR));
@@ -548,7 +550,9 @@ public class ItemScriptHelper implements Listener {
             // then set it to that of the ingredient with the lowest multiple
             // found that isn't zero
             for (int n = 0; n < matrix.length; n++) {
-                if (matrix[n].getAmount() == 0 || recipe.get(n).getAmount() == 0) continue;
+                if (matrix[n].getAmount() == 0 || recipe.get(n).getAmount() == 0) {
+                    continue;
+                }
 
                 if ((matrix[n].getAmount() / recipe.get(n).getAmount() < lowestAmount) || lowestAmount == 0) {
                     lowestAmount = matrix[n].getAmount() / recipe.get(n).getAmount();

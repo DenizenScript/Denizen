@@ -87,7 +87,7 @@ public class CuboidBlockSet implements BlockSet {
                     long z = index.theInt % ((long) (z_height));
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
-                    if (!noAir || blocks.get((int)index.theInt).getMaterial() != Material.AIR) {
+                    if (!noAir || blocks.get((int) index.theInt).getMaterial() != Material.AIR) {
                         blocks.get((int) index.theInt).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock());
                     }
                     index.theInt++;
@@ -130,7 +130,7 @@ public class CuboidBlockSet implements BlockSet {
         center_z = cx;
         for (int x = 0; x < z_height; x++) {
             for (int y = 0; y < y_length; y++) {
-                for (int z = (int)x_width - 1; z >= 0; z--) {
+                for (int z = (int) x_width - 1; z >= 0; z--) {
                     bd.add(blockAt(z, y, x));
                 }
             }
@@ -144,7 +144,7 @@ public class CuboidBlockSet implements BlockSet {
     public void flipX() {
         List<BlockData> bd = new ArrayList<BlockData>();
         center_x = x_width - center_x;
-        for (int x = (int)x_width - 1; x >= 0; x--) {
+        for (int x = (int) x_width - 1; x >= 0; x--) {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
                     bd.add(blockAt(x, y, z));
@@ -158,7 +158,7 @@ public class CuboidBlockSet implements BlockSet {
         List<BlockData> bd = new ArrayList<BlockData>();
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
-            for (int y = (int)y_length - 1; y >= 0; y--) {
+            for (int y = (int) y_length - 1; y >= 0; y--) {
                 for (int z = 0; z < z_height; z++) {
                     bd.add(blockAt(x, y, z));
                 }
@@ -172,7 +172,7 @@ public class CuboidBlockSet implements BlockSet {
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
-                for (int z = (int)z_height - 1; z >= 0; z--) {
+                for (int z = (int) z_height - 1; z >= 0; z--) {
                     bd.add(blockAt(x, y, z));
                 }
             }
@@ -181,7 +181,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public BlockData blockAt(double X, double Y, double Z) {
-        return blocks.get((int)(Z + Y * z_height + X * z_height * y_length));
+        return blocks.get((int) (Z + Y * z_height + X * z_height * y_length));
         // This calculation should produce the same result as the below nonsense:
         /*
         int index = 0;

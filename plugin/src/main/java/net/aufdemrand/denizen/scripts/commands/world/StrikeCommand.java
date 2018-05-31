@@ -22,11 +22,9 @@ public class StrikeCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (arg.matches("no_damage") || arg.matches("nodamage")) {
                 scriptEntry.addObject("damage", Element.FALSE);
             }
-
             else {
                 arg.reportUnhandled();
             }

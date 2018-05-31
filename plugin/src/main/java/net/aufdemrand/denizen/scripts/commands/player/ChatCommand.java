@@ -32,7 +32,6 @@ public class ChatCommand extends AbstractCommand {
                 }
                 specified_targets = true;
             }
-
             else if (arg.matches("no_target")) {
                 scriptEntry.addObject("targets", new dList());
             }
@@ -45,17 +44,14 @@ public class ChatCommand extends AbstractCommand {
                 specified_talker = true;
 
             }
-
             else if (arg.matchesPrefix("range", "r")) {
                 if (arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                     scriptEntry.addObject("range", arg.asElement());
                 }
             }
-
             else if (!scriptEntry.hasObject("message")) {
                 scriptEntry.addObject("message", new Element(arg.raw_value));
             }
-
             else {
                 arg.reportUnhandled();
             }

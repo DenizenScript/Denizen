@@ -144,31 +144,24 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 if (flagArgs[1].equals("->")) {
                     scriptEntry.addObject("action", FlagManager.Action.INSERT);
                 }
-
                 else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("action", FlagManager.Action.REMOVE);
                 }
-
                 else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("action", FlagManager.Action.SPLIT);
                 }
-
                 else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
                 }
-
                 else if (flagArgs[1].equals("--") || flagArgs[1].equals("-")) {
                     scriptEntry.addObject("action", FlagManager.Action.DECREASE);
                 }
-
                 else if (flagArgs[1].equals("**") || flagArgs[1].equals("*")) {
                     scriptEntry.addObject("action", FlagManager.Action.MULTIPLY);
                 }
-
                 else if (flagArgs[1].equals("//") || flagArgs[1].equals("/")) {
                     scriptEntry.addObject("action", FlagManager.Action.DIVIDE);
                 }
-
                 else {
                     scriptEntry.addObject("action", FlagManager.Action.SET_VALUE);
                     scriptEntry.addObject("value", new Element(arg.raw_value.split(":", 2)[1]));
@@ -177,7 +170,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
                 scriptEntry.addObject("value", new Element(flagArgs[2]));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -235,19 +227,15 @@ public class FlagCommand extends AbstractCommand implements Listener {
         if (flag_target instanceof Element) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getGlobalFlag(name.asString());
         }
-
         else if (flag_target instanceof dPlayer) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getPlayerFlag((dPlayer) flag_target, name.asString());
         }
-
         else if (flag_target instanceof dNPC) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getNPCFlag(((dNPC) flag_target).getId(), name.asString());
         }
-
         else if (flag_target instanceof dEntity) {
             flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
         }
-
         else {
             throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
         }
@@ -260,7 +248,6 @@ public class FlagCommand extends AbstractCommand implements Listener {
             flag.setExpiration(DenizenCore.currentTimeMillis
                     + Double.valueOf(duration.getSeconds() * 1000.0).longValue());
         }
-
         else if (flag.StillValid() && flag.expiration().getMillis() != 0L) {
             flag.setExpiration(0L);
         }

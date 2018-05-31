@@ -36,26 +36,20 @@ public class ScriptRequirement extends AbstractRequirement {
                     dB.echoError("Invalid check type. Valid: FINISHED, FAILED, STEP.");
                 }
             }
-
             else if (aH.matchesScript(thisArg)) {
                 checkScript = aH.getStringFrom(thisArg).toUpperCase();
             }
-
             else if (aH.matchesValueArg("STEP", thisArg, ArgumentType.String)) {
                 step = aH.getStringFrom(thisArg).toUpperCase();
             }
-
             else if (aH.matchesQuantity(thisArg)) {
                 quantity = aH.getIntegerFrom(thisArg);
             }
-
-
             else if (aH.matchesArg("EXACTLY", thisArg))
             //im pretty confident this was missing from the original requirement
             {
                 exactly = true;
             }
-
             else {
                 dB.echoError("Could not match argument '" + thisArg + "'");
             }

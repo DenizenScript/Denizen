@@ -46,6 +46,7 @@ public class BossBar_v1_8_R3 {
     }.runTaskTimer(NMSHandler.getJavaPlugin(), 20, 20);
 
     private static final EntityWither wither = new EntityWither(((CraftWorld) Bukkit.getWorlds().get(0)).getHandle());
+
     static {
         wither.b(true);
         wither.setInvisible(true);

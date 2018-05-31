@@ -24,17 +24,14 @@ public class TimeCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("value", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

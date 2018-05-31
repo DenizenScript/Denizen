@@ -106,20 +106,17 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
             cost = aH.getIntegerFrom(determination);
             return true;
         }
-
         else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
             String ditem = determination.substring("result:".length());
             item = dItem.valueOf(ditem);
             itemEdited = true;
             return true;
         }
-
         else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
             String ditem = determination.substring("enchants:".length());
             enchantsRes = dItem.valueOf(ditem);
             return true;
         }
-
         else {
             return super.applyDetermination(container, determination);
         }

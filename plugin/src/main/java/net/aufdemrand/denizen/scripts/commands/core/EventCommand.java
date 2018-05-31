@@ -26,11 +26,9 @@ public class EventCommand extends AbstractCommand {
                     && arg.matchesPrefix("context", "c")) {
                 scriptEntry.addObject("context", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("events")) {
                 scriptEntry.addObject("events", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

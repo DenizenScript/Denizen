@@ -24,7 +24,6 @@ public class EntityTame implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityTame((dEntity) entity);
         }

@@ -23,7 +23,6 @@ public class EntityHealth implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityHealth((dEntity) entity);
         }
@@ -71,7 +70,6 @@ public class EntityHealth implements Property {
         else if ((float) entity.getLivingEntity().getHealth() / maxHealth < 1) {
             return new Element("scraped").getAttribute(attribute.fulfill(2));
         }
-
         else {
             return new Element("healthy").getAttribute(attribute.fulfill(2));
         }

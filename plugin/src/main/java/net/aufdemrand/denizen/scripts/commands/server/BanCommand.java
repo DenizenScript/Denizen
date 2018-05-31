@@ -31,21 +31,17 @@ public class BanCommand extends AbstractCommand {
                     || arg.matchesEnum(Actions.values()))) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("targets") && (arg.matchesPrefix("targets", "target")
                     || arg.matchesArgumentList(dPlayer.class))) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else if (!scriptEntry.hasObject("reason") && arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("duration") && (arg.matchesPrefix("duration", "time", "d", "expiration")
                     || arg.matchesArgumentType(Duration.class))) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -32,7 +32,7 @@ public class Particle_v1_8_R3 implements Particle {
             dataArray = new int[]{((ItemStack) data).getType().getId(), ((ItemStack) data).getDurability()};
         }
         else if (data instanceof MaterialData) {
-            dataArray = new int[]{((MaterialData) data).getItemTypeId()+ (((MaterialData) data).getData() << 12)};
+            dataArray = new int[]{((MaterialData) data).getItemTypeId() + (((MaterialData) data).getData() << 12)};
         }
         PacketHelper_v1_8_R3.sendPacket(player, new PacketPlayOutWorldParticles(particle, true,
                 (float) location.getX(), (float) location.getY(), (float) location.getZ(),

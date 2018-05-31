@@ -24,15 +24,12 @@ public class NoteCommand extends AbstractCommand {
             if (arg.matchesPrefix("as", "i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else if (ObjectFetcher.canFetch(arg.getValue().split("@")[0])) {
                 scriptEntry.addObject("object", arg.getValue());
             }
-
             else if (arg.matches("remove")) {
                 scriptEntry.addObject("remove", Element.TRUE);
             }
-
             else {
                 arg.reportUnhandled();
             }
