@@ -751,7 +751,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public int firstEmpty(int startSlot) {
-        ItemStack[] inventory = getContents();
+        ItemStack[] inventory = getStorageContents();
         for (int i = startSlot; i < inventory.length; i++) {
             if (inventory[i] == null) {
                 return i;
@@ -1800,7 +1800,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         // Returns -1 if the inventory is full.
         // -->
         if (attribute.startsWith("first_empty")) {
-            return new Element(firstEmpty(0)).getAttribute(attribute.fulfill(1));
+            int val = firstEmpty(0);
+            return new Element(val >= 0 ? (val + 1) : -1).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
