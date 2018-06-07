@@ -127,24 +127,27 @@ public class ItemScriptHelper implements Listener {
             FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
             Bukkit.getServer().addRecipe(recipe);
         }
+        currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>(furnace_to_register);
 
         recipes_to_register.clear();
         shapeless_to_register.clear();
         furnace_to_register.clear();
     }
 
+    public Map<ItemScriptContainer, String> currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>();
+
     @EventHandler
     public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
         if (isItemscript(event.getResult())) {
             ItemScriptContainer isc = getItemScriptContainer(event.getResult());
-            String inp = furnace_to_register.get(isc);
+            String inp = currentFurnaceRecipes.get(isc);
             if (inp != null) {
                 dItem itm = dItem.valueOf(inp);
                 if (itm != null) {
                     itm.setAmount(1);
-                    dItem ref = isc.getCleanReference();
-                    ref.setAmount(1);
-                    if (!itm.getFullString().equals(ref.getFullString())) {
+                    dItem src = new dItem(event.getSource().clone());
+                    src.setAmount(1);
+                    if (!itm.getFullString().equals(src.getFullString())) {
                         event.setCancelled(true);
                     }
                 }
