@@ -53,7 +53,10 @@ public class dItem implements dObject, Notable, Adjustable {
             return valueOf(string, null, null);
         }
         else {
-            return valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+            nope = !context.debug;
+            dItem tmp = valueOf(string, ((BukkitTagContext) context).player, ((BukkitTagContext) context).npc);
+            nope = false;
+            return tmp;
         }
     }
 
@@ -79,7 +82,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // Handle objects with properties through the object fetcher
         m = ObjectFetcher.DESCRIBED_PATTERN.matcher(string);
         if (m.matches()) {
-            return ObjectFetcher.getObjectFrom(dItem.class, string, new BukkitTagContext(player, npc, false, null, true, null));
+            return ObjectFetcher.getObjectFrom(dItem.class, string, new BukkitTagContext(player, npc, false, null, !nope, null));
         }
 
         ////////
@@ -109,9 +112,9 @@ public class dItem implements dObject, Notable, Adjustable {
                 // Match item and book script custom items
 
                 if (ScriptRegistry.containsScript(m.group(1), ItemScriptContainer.class)) {
-                    // Get item from script
-                    stack = ScriptRegistry.getScriptContainerAs
-                            (m.group(1), ItemScriptContainer.class).getItemFrom(player, npc);
+                    ItemScriptContainer isc = ScriptRegistry.getScriptContainerAs(m.group(1), ItemScriptContainer.class);
+                    // TODO: If a script does not contain tags, get the clean reference here.
+                    stack = isc.getItemFrom(player, npc);
                 }
                 else if (ScriptRegistry.containsScript(m.group(1), BookScriptContainer.class)) {
                     // Get book from script
@@ -265,7 +268,7 @@ public class dItem implements dObject, Notable, Adjustable {
     // Compare item to item.
     // -1 indicates it is not a match
     //  0 indicates it is a perfect match
-    //  1 indicates the item being matched against
+    //  1 or higher indicates the item being matched against
     //    was probably originally alike, but may have been
     //    modified or enhanced.
 

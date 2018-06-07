@@ -71,7 +71,9 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # You can specify a material that can be smelted into your item.
     //   # Note: This can overwrite existing furnace recipes.
-    //   # Additional note: This does not support dynamic data currently, only specific material types can be used as a recipe.
+    //   # If no_id is specified, only the material/data pair will be validated.
+    //   # This might misbehave with some smelting systems, as the Minecraft smelting logic may refuse
+    //   # To continue smelting items in some cases when the script validator gets in the way.
     //   furnace_recipe: i@item
     //
     //   # You can specify a list of materials that make up a shapeless recipe.
@@ -131,6 +133,15 @@ public class ItemScriptContainer extends ScriptContainer {
             // Process later so that any item script ingredients can be fulfilled
             ItemScriptHelper.furnace_to_register.put(this, getString("FURNACE_RECIPE"));
         }
+    }
+
+    private dItem cleanReference;
+
+    public dItem getCleanReference() {
+        if (cleanReference == null) {
+            cleanReference = getItemFrom();
+        }
+        return new dItem(cleanReference.getItemStack().clone());
     }
 
     public String getHashID() {

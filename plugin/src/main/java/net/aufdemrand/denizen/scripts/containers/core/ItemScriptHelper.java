@@ -16,6 +16,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -123,13 +124,32 @@ public class ItemScriptHelper implements Listener {
                 dB.echoError("Invalid item '" + entry.getValue() + "'");
                 continue;
             }
-            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
+            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
             Bukkit.getServer().addRecipe(recipe);
         }
 
         recipes_to_register.clear();
         shapeless_to_register.clear();
         furnace_to_register.clear();
+    }
+
+    @EventHandler
+    public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
+        if (isItemscript(event.getResult())) {
+            ItemScriptContainer isc = getItemScriptContainer(event.getResult());
+            String inp = furnace_to_register.get(isc);
+            if (inp != null) {
+                dItem itm = dItem.valueOf(inp);
+                if (itm != null) {
+                    itm.setAmount(1);
+                    dItem ref = isc.getCleanReference();
+                    ref.setAmount(1);
+                    if (!itm.getFullString().equals(ref.getFullString())) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
     }
 
     public static boolean isBound(ItemStack item) {
