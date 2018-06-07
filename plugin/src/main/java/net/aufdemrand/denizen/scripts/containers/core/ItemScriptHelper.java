@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -148,7 +149,16 @@ public class ItemScriptHelper implements Listener {
                     dItem src = new dItem(event.getSource().clone());
                     src.setAmount(1);
                     if (!itm.getFullString().equals(src.getFullString())) {
+                        List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
+                        for (Recipe rec : recipes) {
+                            if (rec instanceof FurnaceRecipe) {
+                                // TODO: Also make sure non-script recipes still burn somehow. FurnaceBurnEvent? Maybe also listen to inventory clicking and manually start a burn?
+                                event.setResult(rec.getResult());
+                                return;
+                            }
+                        }
                         event.setCancelled(true);
+                        return;
                     }
                 }
             }
