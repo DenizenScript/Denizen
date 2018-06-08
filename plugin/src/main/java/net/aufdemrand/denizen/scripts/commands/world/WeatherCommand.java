@@ -28,17 +28,14 @@ public class WeatherCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", Type.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
-
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesEnum(Value.values())) {
                 scriptEntry.addObject("value", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -30,12 +30,10 @@ public class GroupCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
-
             else if (!scriptEntry.hasObject("group")) {
                 scriptEntry.addObject("group", arg.asElement());
             }

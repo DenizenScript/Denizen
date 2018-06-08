@@ -143,11 +143,11 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         item = new dItem(event.getOldCursor());
         slots = new dList();
         for (Integer slot : event.getInventorySlots()) {
-            slots.add(slot.toString());
+            slots.add(String.valueOf(slot + 1));
         }
         raw_slots = new dList();
         for (Integer raw_slot : event.getRawSlots()) {
-            raw_slots.add(raw_slot.toString());
+            raw_slots.add(String.valueOf(raw_slot + 1));
         }
         cancelled = event.isCancelled();
         manual_cancelled = false;

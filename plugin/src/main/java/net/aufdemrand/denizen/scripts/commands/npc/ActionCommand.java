@@ -28,16 +28,13 @@ public class ActionCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dNPC.class)) {
                 scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class));
             }
-
             else if (!scriptEntry.hasObject("context")
                     && arg.matchesPrefix("context", "c")) {
                 scriptEntry.addObject("context", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("actions")) {
                 scriptEntry.addObject("actions", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -333,7 +333,7 @@ public class dPlayer implements dObject, Adjustable {
 
     public dInventory getInventory() {
         if (isOnline()) {
-            return new dInventory(getPlayerEntity().getInventory());
+            return dInventory.mirrorBukkitInventory(getPlayerEntity().getInventory());
         }
         else {
             return new dInventory(getNBTEditor());
@@ -1006,7 +1006,6 @@ public class dPlayer implements dObject, Adjustable {
                 }
                 return new dList(players).getAttribute(attribute.fulfill(2));
             }
-
             else if (attribute.startsWith("list.offline")) {
                 for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                     if (!player.isOnline()) {
@@ -1033,7 +1032,6 @@ public class dPlayer implements dObject, Adjustable {
         {
             return new Element(getName()).getAttribute(attribute.fulfill(1));
         }
-
         else if (attribute.startsWith("uuid") && !isOnline())
         // This can be parsed later with more detail if the player is online, so only check for offline.
         {
@@ -1523,7 +1521,7 @@ public class dPlayer implements dObject, Adjustable {
         // inventory, this returns the player's inventory.
         // -->
         if (attribute.startsWith("open_inventory")) {
-            return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
+            return dInventory.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1580,7 +1578,7 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <p@player.sidebar.scores>
-        // @returns dList(Element(Number))
+        // @returns dList
         // @description
         // Returns the current scores set on the player's Sidebar via the Sidebar command,
         // in the same order as <@link tag p@player.sidebar.lines>.
@@ -2678,7 +2676,7 @@ public class dPlayer implements dObject, Adjustable {
             if (!value.asString().isEmpty()) {
                 String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble()/200);
+                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble() * (1.0 / 200.0));
                 }
                 else {
                     NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);

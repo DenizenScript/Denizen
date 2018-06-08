@@ -21,7 +21,6 @@ public class EntityJumpStrength implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityJumpStrength((dEntity) entity);
         }

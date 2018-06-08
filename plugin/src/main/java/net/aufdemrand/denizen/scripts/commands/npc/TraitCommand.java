@@ -26,7 +26,6 @@ public class TraitCommand extends AbstractCommand {
                     && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("state", new Element(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("trait")) {
                 scriptEntry.addObject("trait", new Element(arg.getValue()));
             }

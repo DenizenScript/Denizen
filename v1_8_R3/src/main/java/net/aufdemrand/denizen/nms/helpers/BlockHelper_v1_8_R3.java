@@ -37,10 +37,12 @@ public class BlockHelper_v1_8_R3 implements BlockHelper {
         TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
                 new BlockPosition(block.getX(), block.getY(), block.getZ()));
         ItemStack contents = CraftItemStack.asNMSCopy(data.toItemStack());
-        if (contents == null)
+        if (contents == null) {
             flowerPot.a(null, 0);
-        else
+        }
+        else {
             flowerPot.a(contents.getItem(), contents.getData());
+        }
 
         block.getState().update();
     }

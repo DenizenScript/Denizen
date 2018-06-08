@@ -69,7 +69,7 @@ public class FishingHelper_v1_12_R1 implements FishingHelper {
         fishHook.owner.a(StatisticList.F, 1);
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a(worldServer);
-        playerFishEvent2.a((float)EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
         List<ItemStack> itemStacks = fishHook.getWorld().getLootTableRegistry().a(LootTables.aA).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
@@ -77,8 +77,8 @@ public class FishingHelper_v1_12_R1 implements FishingHelper {
     private ItemStack catchRandomTreasure(EntityFishingHook fishHook) {
         fishHook.owner.a(StatisticList.G, 1);
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
-        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        playerFishEvent2.a((float)EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
+        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer) fishHook.getWorld());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
         List<ItemStack> itemStacks = fishHook.getWorld().getLootTableRegistry().a(LootTables.aB).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
@@ -87,8 +87,8 @@ public class FishingHelper_v1_12_R1 implements FishingHelper {
         //float f3 = f - f2;
         fishHook.owner.a(StatisticList.E, 1);
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
-        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer)fishHook.getWorld());
-        playerFishEvent2.a((float)EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
+        LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer) fishHook.getWorld());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.du());
         List<ItemStack> itemStacks = fishHook.getWorld().getLootTableRegistry().a(LootTables.aC).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }

@@ -28,31 +28,26 @@ public class SpawnCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
 
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)
                     && arg.matchesPrefix("target")) {
 
                 scriptEntry.addObject("target", arg.asType(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("spread")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("spread", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("persistent")
                     && arg.matches("persistent")) {
 
                 scriptEntry.addObject("persistent", "");
             }
-
             else {
                 arg.reportUnhandled();
             }

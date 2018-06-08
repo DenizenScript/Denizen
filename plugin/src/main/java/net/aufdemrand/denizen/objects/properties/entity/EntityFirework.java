@@ -23,7 +23,6 @@ public class EntityFirework implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityFirework((dEntity) entity);
         }

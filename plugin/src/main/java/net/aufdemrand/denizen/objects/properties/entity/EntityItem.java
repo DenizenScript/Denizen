@@ -23,7 +23,6 @@ public class EntityItem implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityItem((dEntity) entity);
         }

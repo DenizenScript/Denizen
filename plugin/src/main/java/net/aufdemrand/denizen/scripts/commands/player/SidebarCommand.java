@@ -51,37 +51,30 @@ public class SidebarCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 action = Action.valueOf(arg.getValue().toUpperCase());
             }
-
             else if (!scriptEntry.hasObject("title")
                     && arg.matchesPrefix("title", "t", "objective", "obj", "o")) {
                 scriptEntry.addObject("title", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("lines")
                     && arg.matchesPrefix("lines", "line", "l")) {
                 scriptEntry.addObject("lines", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesPrefix("value", "values", "val", "v")) {
                 scriptEntry.addObject("value", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("increment")
                     && arg.matchesPrefix("increment", "inc", "i")) {
                 scriptEntry.addObject("increment", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("start")
                     && arg.matchesPrefix("start", "s")) {
                 scriptEntry.addObject("start", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesPrefix("players", "player", "p")) {
                 scriptEntry.addObject("players", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("per_player")
                     && arg.matches("per_player")) {
                 scriptEntry.addObject("per_player", new Element(true));

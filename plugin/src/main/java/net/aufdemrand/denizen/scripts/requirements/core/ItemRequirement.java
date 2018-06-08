@@ -24,7 +24,6 @@ public class ItemRequirement extends AbstractRequirement {
                     && arg.matchesArgumentType(dItem.class)) {
                 contains = arg.asType(dItem.class);
             }
-
             else if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 quantity = aH.getIntegerFrom(arg.getValue());
             }

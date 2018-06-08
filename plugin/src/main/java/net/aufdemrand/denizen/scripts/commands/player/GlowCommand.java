@@ -43,12 +43,10 @@ public class GlowCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("glowing")
                     && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("glowing", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -68,7 +66,7 @@ public class GlowCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        final ArrayList<dEntity> entities = (ArrayList<dEntity>)scriptEntry.getObject("entities");
+        final ArrayList<dEntity> entities = (ArrayList<dEntity>) scriptEntry.getObject("entities");
         Element glowing = scriptEntry.getElement("glowing");
 
         dB.report(scriptEntry, getName(), aH.debugList("entities", entities) + glowing.debug());
@@ -82,7 +80,7 @@ public class GlowCommand extends AbstractCommand {
             return;
         }
 
-        for (dEntity ent: entities) {
+        for (dEntity ent : entities) {
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(ent.getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(ent.getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, shouldGlow);
             }

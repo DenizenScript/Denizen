@@ -24,53 +24,44 @@ public class WorldBorderCommand extends AbstractCommand {
                     && arg.matchesPrefix("center")) {
                 scriptEntry.addObject("center", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("damage")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("damage")) {
                 scriptEntry.addObject("damage", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("damagebuffer")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("damagebuffer")) {
                 scriptEntry.addObject("damagebuffer", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("size")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("size")) {
                 scriptEntry.addObject("size", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("duration")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("warningdistance")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && arg.matchesPrefix("warningdistance")) {
                 scriptEntry.addObject("warningdistance", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("warningtime")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("warningtime")) {
                 scriptEntry.addObject("warningtime", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("world")
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
-
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element("true"));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -115,7 +106,7 @@ public class WorldBorderCommand extends AbstractCommand {
                 + (damagebuffer != null ? damagebuffer.debug() : "")
                 + (warningdistance != null ? warningdistance.debug() : "")
                 + (warningtime != null ? warningtime.debug() : "")
-                + duration.debug()+ reset.debug());
+                + duration.debug() + reset.debug());
 
         WorldBorder worldborder = world.getWorld().getWorldBorder();
 

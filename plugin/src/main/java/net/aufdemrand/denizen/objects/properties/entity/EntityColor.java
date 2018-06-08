@@ -35,7 +35,6 @@ public class EntityColor implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityColor((dEntity) entity);
         }
@@ -60,27 +59,21 @@ public class EntityColor implements Property {
             return horse.getColor().name() + "|" + horse.getStyle().name() +
                     (NMSHandler.getVersion().isAtMost(NMSVersion.v1_10_R1) ? "|" + horse.getVariant().name() : "");
         }
-
         else if (type == EntityType.SHEEP) {
             return ((Sheep) colored.getBukkitEntity()).getColor().name();
         }
-
         else if (type == EntityType.WOLF) {
             return ((Wolf) colored.getBukkitEntity()).getCollarColor().name();
         }
-
         else if (type == EntityType.OCELOT) {
             return ((Ocelot) colored.getBukkitEntity()).getCatType().name();
         }
-
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
-
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
             return ParrotHelper.parrotColor(colored);
         }
-
         else // Should never happen
         {
             return null;
@@ -206,25 +199,21 @@ public class EntityColor implements Property {
                             .setVariant(Horse.Variant.valueOf(horse_info.get(2).toUpperCase()));
                 }
             }
-
             else if (type == EntityType.SHEEP
                     && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Sheep) colored.getBukkitEntity())
                         .setColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-
             else if (type == EntityType.WOLF
                     && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ((Wolf) colored.getBukkitEntity())
                         .setCollarColor(DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-
             else if (type == EntityType.OCELOT
                     && mechanism.getValue().matchesEnum(Ocelot.Type.values())) {
                 ((Ocelot) colored.getBukkitEntity())
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-
             else if (type == EntityType.RABBIT) {
                 if (mechanism.getValue().matchesEnum(RabbitType.values())) {
                     ((Rabbit) colored.getBukkitEntity()).setRabbitType(RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()).getType());
@@ -233,7 +222,6 @@ public class EntityColor implements Property {
                     ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
                 }
             }
-
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
                 ParrotHelper.setParrotColor(colored, mechanism);
             }

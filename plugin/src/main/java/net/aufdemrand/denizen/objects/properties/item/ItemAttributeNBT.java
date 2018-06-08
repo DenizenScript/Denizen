@@ -50,8 +50,9 @@ public class ItemAttributeNBT implements Property {
         // @attribute <i@item.nbt_attributes>
         // @returns Element(Boolean)
         // @group properties
+        // @mechanism dItem.nbt_attributes
         // @description
-        // Returns the NBT attribute string, if any.
+        // Returns the NBT attribute data (as matches the mechanism input), if any.
         // -->
         if (attribute.startsWith("nbt_attributes")) {
             String prop = getPropertyString();

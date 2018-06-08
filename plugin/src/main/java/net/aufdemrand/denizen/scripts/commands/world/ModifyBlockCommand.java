@@ -49,63 +49,51 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("locations", arg.asType(dCuboid.class).getBlockLocations());
             }
-
             else if (arg.matchesArgumentType(dEllipsoid.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("locations", arg.asType(dEllipsoid.class).getBlockLocations());
             }
-
             else if (arg.matchesArgumentList(dLocation.class)
                     && !scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("location_list")) {
                 scriptEntry.addObject("location_list", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("materials")
                     && arg.matchesArgumentList(dMaterial.class)) {
                 scriptEntry.addObject("materials", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("radius", new Element(arg.getValue()));
             }
-
             else if (!scriptEntry.hasObject("height")
                     && arg.matchesPrefix("height", "h")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("height", new Element(arg.getValue()));
             }
-
             else if (!scriptEntry.hasObject("depth")
                     && arg.matchesPrefix("depth", "d")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("depth", new Element(arg.getValue()));
             }
-
             else if (arg.matches("no_physics")) {
                 scriptEntry.addObject("physics", new Element(false));
             }
-
             else if (arg.matches("naturally")) {
                 scriptEntry.addObject("natural", new Element(true));
             }
-
             else if (arg.matches("delayed")) {
                 scriptEntry.addObject("delayed", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("percents")) {
                 scriptEntry.addObject("percents", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

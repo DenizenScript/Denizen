@@ -26,26 +26,21 @@ public class TitleCommand extends AbstractCommand {
             if (arg.matchesPrefix("title")) {
                 scriptEntry.addObject("title", arg.asElement());
             }
-
             else if (arg.matchesPrefix("subtitle")) {
                 scriptEntry.addObject("subtitle", arg.asElement());
             }
-
             else if (arg.matchesPrefix("fade_in")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("fade_in", arg.asType(Duration.class));
             }
-
             else if (arg.matchesPrefix("stay")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("stay", arg.asType(Duration.class));
             }
-
             else if (arg.matchesPrefix("fade_out")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("fade_out", arg.asType(Duration.class));
             }
-
             else if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));

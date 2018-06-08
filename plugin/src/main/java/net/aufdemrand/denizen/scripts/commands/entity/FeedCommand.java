@@ -23,13 +23,11 @@ public class FeedCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-
             else if (arg.matchesArgumentType(dPlayer.class)
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")) {
                 scriptEntry.addObject("targetplayer", arg.asType(dPlayer.class));
             }
-
             else if (Depends.citizens != null && arg.matchesArgumentType(dNPC.class)
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")) {
@@ -43,14 +41,12 @@ public class FeedCommand extends AbstractCommand {
                     && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("targetnpc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
             }
-
             else if (arg.matches("PLAYER")
                     && !scriptEntry.hasObject("targetplayer")
                     && !scriptEntry.hasObject("targetnpc")
                     && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 scriptEntry.addObject("targetplayer", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
             }
-
             else {
                 arg.reportUnhandled();
             }

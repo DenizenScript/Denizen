@@ -32,7 +32,6 @@ public class EngageCommand extends AbstractCommand {
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

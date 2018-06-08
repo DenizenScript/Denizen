@@ -12,6 +12,7 @@ public enum NMSVersion {
     public boolean isAtLeast(NMSVersion version) {
         return ordinal() >= version.ordinal();
     }
+
     public boolean isAtMost(NMSVersion version) {
         return ordinal() <= version.ordinal();
     }

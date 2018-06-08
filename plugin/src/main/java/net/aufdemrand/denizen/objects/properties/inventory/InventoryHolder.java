@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.citizensnpcs.api.CitizensAPI;
@@ -49,6 +50,10 @@ public class InventoryHolder implements Property {
         if (inventory.getIdType() != null
                 && (inventory.getIdType().equals("player") || inventory.getIdType().equals("enderchest"))) {
             return dPlayer.valueOf(inventory.getIdHolder());
+        }
+        else if (inventory.getIdType() != null && inventory.getIdType().equalsIgnoreCase("script")
+                && dScript.matches(inventory.getIdHolder())) {
+            return dScript.valueOf(inventory.getIdHolder());
         }
         org.bukkit.inventory.InventoryHolder holder = inventory.getInventory().getHolder();
 

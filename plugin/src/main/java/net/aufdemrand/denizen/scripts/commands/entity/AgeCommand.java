@@ -86,23 +86,18 @@ public class AgeCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("agetype")
                     && arg.matchesEnum(AgeType.values())) {
                 scriptEntry.addObject("agetype", AgeType.valueOf(arg.getValue().toUpperCase()));
             }
-
             else if (!scriptEntry.hasObject("age")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("age", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("lock")
                     && arg.matches("lock")) {
                 scriptEntry.addObject("lock", Element.TRUE);
             }
-
-
             else {
                 arg.reportUnhandled();
             }
@@ -159,7 +154,6 @@ public class AgeCommand extends AbstractCommand {
                     // Adjust 'locked'
                     property.setLock(lock);
                 }
-
                 else {
                     dB.echoError(scriptEntry.getResidingQueue(), entity.identify() + " is not ageable!");
                 }

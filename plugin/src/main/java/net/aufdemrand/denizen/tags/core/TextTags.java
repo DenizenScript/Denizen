@@ -30,23 +30,18 @@ public class TextTags implements Listener {
         if (event.getName().equals("&auml")) {
             event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
         }
-
         else if (event.getName().equals("&Auml")) {
             event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
         }
-
         else if (event.getName().equals("&ouml")) {
             event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
         }
-
         else if (event.getName().equals("&Ouml")) {
             event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
         }
-
         else if (event.getName().equals("&uuml")) {
             event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
         }
-
         else if (event.getName().equals("&Uuml")) {
             event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
         }

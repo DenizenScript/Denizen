@@ -38,7 +38,6 @@ public class EntitySpeed implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntitySpeed((dEntity) entity);
         }

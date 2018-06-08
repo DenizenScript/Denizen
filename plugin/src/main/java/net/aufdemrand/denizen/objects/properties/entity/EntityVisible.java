@@ -20,7 +20,6 @@ public class EntityVisible implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityVisible((dEntity) entity);
         }

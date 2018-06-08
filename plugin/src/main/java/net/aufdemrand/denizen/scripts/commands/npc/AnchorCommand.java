@@ -29,26 +29,19 @@ public class AnchorCommand extends AbstractCommand {
                     && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
-
-
             else if (!scriptEntry.hasObject("range")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("range", "r")) {
                 scriptEntry.addObject("range", arg.asElement());
             }
-
-
             else if (!scriptEntry.hasObject("id")
                     && arg.matchesPrefix("id", "i")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

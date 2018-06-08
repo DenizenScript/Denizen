@@ -32,21 +32,17 @@ public class CreateCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("entity_type", ent);
             }
-
             else if (!scriptEntry.hasObject("spawn_location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("spawn_location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("name")) {
                 scriptEntry.addObject("name", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("traits")
                     && arg.matchesPrefix("t", "trait", "traits")) {
                 scriptEntry.addObject("traits", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

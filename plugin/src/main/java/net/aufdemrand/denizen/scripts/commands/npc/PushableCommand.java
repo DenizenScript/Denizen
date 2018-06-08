@@ -26,13 +26,11 @@ public class PushableCommand extends AbstractCommand {
                     && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("state", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("delay")
                     && arg.matchesPrefix("delay", "d")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("return")
                     && arg.matchesPrefix("return", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {

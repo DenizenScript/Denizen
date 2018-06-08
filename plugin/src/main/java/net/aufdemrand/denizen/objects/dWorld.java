@@ -856,7 +856,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("border_damage_buffer", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element (((dWorld) object).getWorld().getWorldBorder().getDamageBuffer())
+                return new Element(((dWorld) object).getWorld().getWorldBorder().getDamageBuffer())
                         .getAttribute(attribute.fulfill(1));
             }
         });

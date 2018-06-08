@@ -32,7 +32,6 @@ public class EntityProfession implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityProfession((dEntity) entity);
         }

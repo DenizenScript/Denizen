@@ -21,7 +21,6 @@ public class EntityAngry implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityAngry((dEntity) entity);
         }

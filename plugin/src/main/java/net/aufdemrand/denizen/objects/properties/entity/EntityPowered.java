@@ -19,7 +19,6 @@ public class EntityPowered implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityPowered((dEntity) entity);
         }

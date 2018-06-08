@@ -42,7 +42,6 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public static EntityCreatePortalScriptEvent instance;
     public dEntity entity;
     public Element portal_type;
-    //    public dList blocks;
     public EntityCreatePortalEvent event;
 
     @Override
@@ -99,9 +98,6 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
         else if (name.equals("portal_type")) {
             return portal_type;
         }
-//        else if (name.equals("blocks")) {
-//            return blocks;
-//        }
         return super.getContext(name);
     }
 
@@ -109,6 +105,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public void onEntityCreatesPortal(EntityCreatePortalEvent event) {
         entity = new dEntity(event.getEntity());
         portal_type = new Element(event.getPortalType().toString());
+        // TODO: Add this back?
 /*
         blocks = new dList();
         for (int i=0; i < event.getBlocks().size(); i++) {

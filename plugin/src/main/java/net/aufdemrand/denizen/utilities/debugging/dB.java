@@ -411,7 +411,6 @@ public class dB {
                 if (filter.isEmpty()) {
                     should_send = caller.shouldDebug();
                 }
-
                 else {
                     should_send = false;
                     for (String criteria : filter) {

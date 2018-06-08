@@ -112,21 +112,17 @@ public class InjectCommand extends AbstractCommand {
             if (arg.matches("instant", "instantly")) {
                 scriptEntry.addObject("instant", new Element(true));
             }
-
             else if (arg.matches("local", "locally")) {
                 scriptEntry.addObject("local", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
                     && !arg.matchesPrefix("p", "path")) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("path")) {
                 scriptEntry.addObject("path", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

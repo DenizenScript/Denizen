@@ -21,7 +21,6 @@ public class EntitySkeleton implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntitySkeleton((dEntity) entity);
         }

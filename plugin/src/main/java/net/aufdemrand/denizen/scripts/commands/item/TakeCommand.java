@@ -30,39 +30,33 @@ public class TakeCommand extends AbstractCommand {
                     && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("item_in_hand", "iteminhand")) {
                 scriptEntry.addObject("type", Type.ITEMINHAND);
             }
-
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrefix("q", "qty", "quantity")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("items")
                     && arg.matchesPrefix("bydisplay")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.BYDISPLAY);
                 scriptEntry.addObject("displayname", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("bycover")) {
                 scriptEntry.addObject("type", Type.BYCOVER);
                 scriptEntry.addObject("cover", arg.asType(dList.class));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
                     && arg.matchesPrefix("script", "scriptname")) {
                 scriptEntry.addObject("type", Type.SCRIPTNAME);
                 scriptEntry.addObject("scriptitem", arg.asType(dItem.class));
             }
-
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesPrefix("slot")
@@ -70,24 +64,20 @@ public class TakeCommand extends AbstractCommand {
                 scriptEntry.addObject("type", Type.SLOT);
                 scriptEntry.addObject("slot", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")
                     && arg.matchesArgumentList(dItem.class)) {
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.replace("item:", "")).filter(dItem.class, scriptEntry));
             }
-
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("f", "from")
                     && arg.matchesArgumentType(dInventory.class)) {
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("inventory")) {
                 scriptEntry.addObject("type", Type.INVENTORY);
             }
-
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matches("npc")) {
                 scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity().getInventory());

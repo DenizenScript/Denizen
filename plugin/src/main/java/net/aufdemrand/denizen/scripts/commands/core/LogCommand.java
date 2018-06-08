@@ -30,16 +30,13 @@ public class LogCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("file")
                     && arg.matchesPrefix("file")) {
                 scriptEntry.addObject("file", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("message")) {
                 scriptEntry.addObject("message", new Element(arg.raw_value));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -97,7 +94,6 @@ public class LogCommand extends AbstractCommand {
             }
             return;
         }
-
         else if (type == Type.CLEAR) {
             try {
                 FileWriter fw = new FileWriter(file);

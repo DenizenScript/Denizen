@@ -27,7 +27,6 @@ public class EntityBoundingBox implements Property {
         if (!describes(object)) {
             return null;
         }
-
         else {
             return new EntityBoundingBox((dEntity) object);
         }

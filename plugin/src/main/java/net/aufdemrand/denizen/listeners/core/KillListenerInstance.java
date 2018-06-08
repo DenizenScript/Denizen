@@ -76,21 +76,17 @@ public class KillListenerInstance extends AbstractListener implements Listener {
             if (arg.matchesEnum(KillType.values()) && type == null) {
                 this.type = KillType.valueOf(arg.getValue().toUpperCase());
             }
-
             else if (arg.matchesPrefix("qty, q")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
             }
-
             else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
             }
-
             else if (arg.matchesPrefix("cuboid, c")
                     && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);
             }
-
             else if (arg.matchesPrefix("targets, target, t, name, names")) {
                 targets = arg.asType(dList.class);
             }
@@ -371,15 +367,12 @@ public class KillListenerInstance extends AbstractListener implements Listener {
         if (event.getValue().equalsIgnoreCase("region")) {
             event.setReplaced(region);
         }
-
         else if (event.getValue().equalsIgnoreCase("required")) {
             event.setReplaced(String.valueOf(required));
         }
-
         else if (event.getValue().equalsIgnoreCase("currentkills")) {
             event.setReplaced(String.valueOf(kills_so_far));
         }
-
         else if (event.getValue().equalsIgnoreCase("targets")) {
             String targetList = "";
             for (String curTar : targets) {
@@ -388,7 +381,6 @@ public class KillListenerInstance extends AbstractListener implements Listener {
             }
             event.setReplaced(targetList);
         }
-
         else if (event.getValue().equalsIgnoreCase("mobnames")) {
             String namesList = "";
             for (String curNam : names) {

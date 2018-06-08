@@ -32,47 +32,40 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
                 scriptEntry.addObject("cancel", new Element("true"));
             }
-
             else if (!scriptEntry.hasObject("infinite")
                     && arg.matches("infinite")) {
 
                 scriptEntry.addObject("infinite", new Element("true"));
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("duration", "d")) {
 
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("frequency")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("frequency", "f")) {
 
                 scriptEntry.addObject("frequency", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("yaw")
                     && arg.matchesPrefix("yaw", "y", "rotation", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("yaw", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrefix("pitch", "p", "tilt", "t")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
                 scriptEntry.addObject("pitch", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -146,7 +139,6 @@ public class RotateCommand extends AbstractCommand implements Holdable {
                     scriptEntry.setFinished(true);
                     this.cancel();
                 }
-
                 else if (infinite || ticks < maxTicks) {
                     for (dEntity entity : entities) {
                         if (entity.isSpawned() && rotatingEntities.contains(entity.getUUID())) {

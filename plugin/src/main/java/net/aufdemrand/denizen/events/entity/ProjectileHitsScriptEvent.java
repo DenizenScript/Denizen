@@ -164,7 +164,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
                         break;
                     }
                 }
-            } catch (IllegalStateException ex) {
+            }
+            catch (IllegalStateException ex) {
                 // This happens because it can. Also not explainable whatsoever.
                 // As this error happens on no fault of the user, display no error message... just cancel the event.
                 return;

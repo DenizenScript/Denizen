@@ -31,7 +31,6 @@ public class TeleportCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
@@ -41,7 +40,6 @@ public class TeleportCommand extends AbstractCommand {
             else if (arg.matches("npc") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
                 scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -79,7 +77,7 @@ public class TeleportCommand extends AbstractCommand {
                     Bukkit.getPluginManager().callEvent(new EntityTeleportEvent(entity.getBukkitEntity(), entity.getLocation(), location));
                 }
                 else {
-                    Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent((Player)entity.getBukkitEntity(), entity.getLocation(), location));
+                    Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent((Player) entity.getBukkitEntity(), entity.getLocation(), location));
                 }
             }
             entity.spawnAt(location);

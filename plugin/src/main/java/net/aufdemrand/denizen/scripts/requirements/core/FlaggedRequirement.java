@@ -34,7 +34,6 @@ public class FlaggedRequirement extends AbstractRequirement {
             if (aH.matchesArg("GLOBAL, NPC, DENIZEN, GLOBAL", arg)) {
                 type = Type.valueOf(arg.toUpperCase().replace("DENIZEN", "NPC"));
             }
-
             else if (arg.split(":", 2).length > 1) {
                 String[] flagArgs = arg.split(":");
                 value = flagArgs[1].toUpperCase();
@@ -47,7 +46,6 @@ public class FlaggedRequirement extends AbstractRequirement {
                     name = flagArgs[0].toUpperCase();
                 }
             }
-
             else {
                 name = arg.toUpperCase();
             }

@@ -23,11 +23,9 @@ public class HoldingRequirement extends AbstractRequirement {
             if (aH.matchesQuantity(thisArg)) {
                 quantity = aH.getIntegerFrom(thisArg);
             }
-
             else if (aH.matchesArg("EXACT, EXACTLY, EQUALS", thisArg)) {
                 exact = true;
             }
-
             else {
                 itemToCheck = dItem.valueOf(thisArg);
             }

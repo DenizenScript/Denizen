@@ -44,7 +44,6 @@ public class ExecuteCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("type", new Element("AS_PLAYER"));
             }
-
             else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
                     && !scriptEntry.hasObject("type")) {
                 if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
@@ -52,7 +51,6 @@ public class ExecuteCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("type", new Element("AS_OP"));
             }
-
             else if (arg.matches("ASNPC", "AS_NPC", "NPC")
                     && !scriptEntry.hasObject("type")) {
                 if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
@@ -60,21 +58,17 @@ public class ExecuteCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("type", new Element("AS_NPC"));
             }
-
             else if (arg.matches("ASSERVER", "AS_SERVER", "SERVER")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", new Element("AS_SERVER"));
             }
-
             else if (!scriptEntry.hasObject("silent")
                     && arg.matches("silent")) {
                 scriptEntry.addObject("silent", new Element("true"));
             }
-
             else if (!scriptEntry.hasObject("command")) {
                 scriptEntry.addObject("command", new Element(arg.raw_value));
             }
-
             else {
                 arg.reportUnhandled();
             }

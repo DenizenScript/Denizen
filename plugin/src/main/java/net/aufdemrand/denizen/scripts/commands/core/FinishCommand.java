@@ -44,11 +44,9 @@ public class FinishCommand extends AbstractCommand {
             if (arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (arg.matchesArgumentType(dPlayer.class)) {
                 scriptEntry.addObject("player", arg.asType(dPlayer.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -355,7 +355,7 @@ public class dChunk implements dObject, Adjustable {
 
         // <--[tag]
         // @attribute <ch@chunk.height_map>
-        // @returns dList(Element)
+        // @returns dList
         // @description
         // Returns a list of the height of each block in the chunk.
         // -->

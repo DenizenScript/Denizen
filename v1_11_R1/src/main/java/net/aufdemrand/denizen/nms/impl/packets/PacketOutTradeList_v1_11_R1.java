@@ -50,7 +50,7 @@ public class PacketOutTradeList_v1_11_R1 implements PacketOutTradeList {
             PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
             serializer.a("MC|TrList");
             serializer.writeInt(container);
-            serializer.writeByte((byte)(tradeOffers.size() & 255));
+            serializer.writeByte((byte) (tradeOffers.size() & 255));
             for (TradeOffer tradeOffer : tradeOffers) {
                 serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getFirstCost()));
                 serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getProduct()));

@@ -32,32 +32,27 @@ public class HurtCommand extends AbstractCommand {
                     || arg.matchesPrimitive(aH.PrimitiveType.Integer))) {
                 scriptEntry.addObject("amount", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("source")
                     && arg.matchesPrefix("source", "s")
                     && arg.matchesArgumentType(dEntity.class)) {
                 scriptEntry.addObject("source", arg.asType(dEntity.class));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dList.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
                 specified_targets = true;
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dEntity.class)) {
                 // Entity arg
                 scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
                 specified_targets = true;
             }
-
             else if (!scriptEntry.hasObject("cause")
                     && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
                 scriptEntry.addObject("cause", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

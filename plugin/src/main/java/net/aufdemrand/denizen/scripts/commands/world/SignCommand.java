@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
@@ -28,21 +29,17 @@ public class SignCommand extends AbstractCommand {
                     && arg.matchesEnum(Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class).setPrefix("location"));
             }
-
             else if (!scriptEntry.hasObject("direction")
                     && arg.matchesPrefix("direction", "dir")) {
                 scriptEntry.addObject("direction", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", arg.asType(dList.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -82,16 +79,41 @@ public class SignCommand extends AbstractCommand {
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
                 && sign.getType() != Material.SIGN_POST)) {
-            sign.setType(type == Type.WALL_SIGN ? Material.WALL_SIGN : Material.SIGN_POST, false);
+            if (type == Type.WALL_SIGN) {
+                if (direction != null) {
+                    BlockFace bf = Utilities.chooseSignRotation(direction);
+                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+                    sgntmp.setFacingDirection(bf);
+                    sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+                }
+                else {
+                    BlockFace bf = Utilities.chooseSignRotation(sign);
+                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+                    sgntmp.setFacingDirection(bf);
+                    sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+                }
+            }
+            else {
+                sign.setType(Material.SIGN_POST, false);
+                if (direction != null) {
+                    Utilities.setSignRotation(sign.getState(), direction);
+                }
+            }
+        }
+        else if (sign.getType() != Material.WALL_SIGN
+                && sign.getType() != Material.SIGN_POST) {
+            if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
+                sign.setType(Material.SIGN_POST, false);
+            }
+            else {
+                BlockFace bf = Utilities.chooseSignRotation(sign);
+                org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+                sgntmp.setFacingDirection(bf);
+                sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+            }
         }
         BlockState signState = sign.getState();
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));
-        if (direction != null) {
-            Utilities.setSignRotation(signState, direction);
-        }
-        else if (type == Type.WALL_SIGN) {
-            Utilities.setSignRotation(signState);
-        }
     }
 }

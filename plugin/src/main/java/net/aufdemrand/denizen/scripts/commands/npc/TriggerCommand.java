@@ -26,27 +26,22 @@ public class TriggerCommand extends AbstractCommand {
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("cooldown", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrefix("radius", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("radius", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("toggle")
                     && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("npc")
                     && arg.matchesArgumentType(dNPC.class)) {
                 scriptEntry.addObject("npc", arg.asType(dNPC.class));
             }
-
             else if (!scriptEntry.hasObject("trigger")) {
                 scriptEntry.addObject("trigger", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

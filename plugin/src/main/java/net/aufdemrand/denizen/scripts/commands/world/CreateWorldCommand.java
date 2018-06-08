@@ -28,34 +28,28 @@ public class CreateWorldCommand extends AbstractCommand {
                     && arg.matchesPrefix("generator", "g")) {
                 scriptEntry.addObject("generator", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("worldtype")
                     && arg.matchesPrefix("worldtype")
                     && arg.matchesEnum(WorldType.values())) {
                 scriptEntry.addObject("worldtype", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("environment")
                     && arg.matchesPrefix("environment")
                     && arg.matchesEnum(World.Environment.values())) {
                 scriptEntry.addObject("environment", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("copy_from")
                     && arg.matchesPrefix("copy_from")) {
                 scriptEntry.addObject("copy_from", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("seed")
                     && arg.matchesPrefix("seed", "s")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("seed", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("world_name")) {
                 scriptEntry.addObject("world_name", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -86,7 +80,7 @@ public class CreateWorldCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(), worldName.debug() +
                 (generator != null ? generator.debug() : "") +
                 environment.debug() +
-                (copy_from != null ? copy_from.debug(): "") +
+                (copy_from != null ? copy_from.debug() : "") +
                 worldType.debug() +
                 (seed != null ? seed.debug() : ""));
 

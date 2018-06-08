@@ -133,7 +133,6 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 recipients.add(player.getPlayerEntity());
             }
         }
-
         else if (!lower.startsWith("cancelled")) {
             message = new Element(determination);
         }

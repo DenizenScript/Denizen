@@ -264,7 +264,7 @@ public class ServerTags implements Listener {
 
         // <--[tag]
         // @attribute <server.list_notables[<type>]>
-        // @returns dList(Notable)
+        // @returns dList
         // @description
         // Lists all saved Notables currently on the server.
         // Optionally, specify a type to search for.
@@ -375,7 +375,7 @@ public class ServerTags implements Listener {
 
         // <--[tag]
         // @attribute <server.get_event_handlers[<event_name>]>
-        // @returns dList<dScript>
+        // @returns dList(dScript)
         // @description
         // Returns a list of all world scripts that will handle a given event name.
         // This tag will ignore dObject identifiers (see <@link language dobject>).
@@ -492,7 +492,7 @@ public class ServerTags implements Listener {
                 return;
             }
             dList list = new dList();
-            for (File file: files) {
+            for (File file : files) {
                 list.add(file.getName());
             }
             event.setReplaced(list.getAttribute(attribute.fulfill(1)));
@@ -553,7 +553,7 @@ public class ServerTags implements Listener {
         // @attribute <server.version>
         // @returns Element
         // @description
-        // Returns the version string of the server.
+        // Returns the version of the server.
         // -->
         if (attribute.startsWith("version")) {
             event.setReplaced(new Element(Bukkit.getServer().getVersion())
@@ -1109,8 +1109,7 @@ public class ServerTags implements Listener {
         // -->
         else if (attribute.startsWith("current_bossbars")) {
             dList dl = new dList();
-            for (String str : BossBarCommand.bossBarMap.keySet())
-            {
+            for (String str : BossBarCommand.bossBarMap.keySet()) {
                 dl.add(str);
             }
             event.setReplaced(dl.getAttribute(attribute.fulfill(1)));
@@ -1118,7 +1117,7 @@ public class ServerTags implements Listener {
 
         // <--[tag]
         // @attribute <server.recent_tps>
-        // @returns dList(Element(Decimal))
+        // @returns dList
         // @description
         // Returns the 3 most recent ticks per second measurements.
         // -->
@@ -1178,7 +1177,7 @@ public class ServerTags implements Listener {
         // @name run_java
         // @input Element
         // @description
-        // Executes an arbitrary Java string. Warning: EXTREMELY DANGEROUS.
+        // Executes an arbitrary Java method (input as the text of Java code to run). Warning: EXTREMELY DANGEROUS.
         // Require config setting 'Commands.Java.Allow Running java'.
         // @tags
         // None

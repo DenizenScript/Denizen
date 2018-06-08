@@ -12,9 +12,9 @@ public class DenizenAliasHelpTopic extends HelpTopic {
     private final HelpMap helpMap;
 
     public DenizenAliasHelpTopic(String alias, String aliasFor, HelpMap helpMap) {
-        this.aliasFor = aliasFor.startsWith("/")?aliasFor:"/" + aliasFor;
+        this.aliasFor = aliasFor.startsWith("/") ? aliasFor : "/" + aliasFor;
         this.helpMap = helpMap;
-        this.name = alias.startsWith("/")?alias:"/" + alias;
+        this.name = alias.startsWith("/") ? alias : "/" + alias;
         Validate.isTrue(!this.name.equals(this.aliasFor), "Command " + this.name + " cannot be alias for itself");
         this.shortText = ChatColor.YELLOW + "Alias for " + ChatColor.WHITE + this.aliasFor;
     }
@@ -22,7 +22,7 @@ public class DenizenAliasHelpTopic extends HelpTopic {
     public String getFullText(CommandSender forWho) {
         StringBuilder sb = new StringBuilder(this.shortText);
         HelpTopic aliasForTopic = this.helpMap.getHelpTopic(this.aliasFor);
-        if(aliasForTopic != null) {
+        if (aliasForTopic != null) {
             sb.append("\n");
             sb.append(aliasForTopic.getFullText(forWho));
         }
@@ -31,10 +31,11 @@ public class DenizenAliasHelpTopic extends HelpTopic {
     }
 
     public boolean canSee(CommandSender commandSender) {
-        if(this.amendedPermission == null) {
+        if (this.amendedPermission == null) {
             HelpTopic aliasForTopic = this.helpMap.getHelpTopic(this.aliasFor);
             return aliasForTopic != null && aliasForTopic.canSee(commandSender);
-        } else {
+        }
+        else {
             return commandSender.hasPermission(this.amendedPermission);
         }
     }

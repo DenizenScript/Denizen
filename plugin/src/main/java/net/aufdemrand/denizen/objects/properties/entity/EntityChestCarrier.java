@@ -19,7 +19,6 @@ public class EntityChestCarrier implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityChestCarrier((dEntity) entity);
         }

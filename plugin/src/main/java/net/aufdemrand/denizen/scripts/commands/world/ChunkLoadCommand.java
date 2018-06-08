@@ -51,22 +51,18 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                     scriptEntry.addObject("location", new dLocation(Bukkit.getWorlds().get(0), 0, 0, 0));
                 }
             }
-
             else if (arg.matchesArgumentType(dChunk.class)
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dChunk.class).getCenter());
             }
-
             else if (arg.matchesArgumentType(dLocation.class)
                     && !scriptEntry.hasObject("location")) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (arg.matchesArgumentType(Duration.class)
                     && !scriptEntry.hasObject("duration")) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -140,11 +136,9 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
             if (chunkDelays.get(chunkString) == 0) {
                 e.setCancelled(true);
             }
-
             else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
                 e.setCancelled(true);
             }
-
             else {
                 chunkDelays.remove(chunkString);
             }
@@ -163,11 +157,9 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 if (chunkDelays.get(chunkString) == 0) {
                     e.setCancelled(true);
                 }
-
                 else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
                     e.setCancelled(true);
                 }
-
                 else {
                     chunkDelays.remove(chunkString);
                 }

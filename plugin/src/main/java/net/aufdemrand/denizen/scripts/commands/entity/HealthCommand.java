@@ -32,22 +32,18 @@ public class HealthCommand extends AbstractCommand {
                 }
                 scriptEntry.addObject("target", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
             }
-
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("qty", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("target", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
-
             else if (!scriptEntry.hasObject("action")
                     && arg.matchesPrefix("state")) {
                 scriptEntry.addObject("action", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -165,7 +165,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 }
             }
         }
-
         else if (determination.equalsIgnoreCase("cancelled")) {
             cancelled = true;
         }

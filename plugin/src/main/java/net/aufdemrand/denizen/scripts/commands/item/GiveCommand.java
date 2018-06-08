@@ -35,45 +35,37 @@ public class GiveCommand extends AbstractCommand {
                 scriptEntry.addObject("qty", arg.asElement());
                 scriptEntry.addObject("set_quantity", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("money", "coins")) {
                 scriptEntry.addObject("type", Type.MONEY);
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("xp", "exp", "experience")) {
                 scriptEntry.addObject("type", Type.EXP);
             }
-
             else if (!scriptEntry.hasObject("engrave")
                     && arg.matches("engrave")) {
                 scriptEntry.addObject("engrave", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("unlimit_stack_size")
                     && arg.matches("unlimit_stack_size")) {
                 scriptEntry.addObject("unlimit_stack_size", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("items")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("items", dList.valueOf(arg.raw_value.startsWith("item:") ?
                         arg.raw_value.substring("item:".length()) : arg.raw_value).filter(dItem.class, scriptEntry));
             }
-
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matchesPrefix("t", "to")
                     && arg.matchesArgumentType(dInventory.class)) {
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
             }
-
             else if (!scriptEntry.hasObject("slot")
                     && arg.matchesPrefix("slot")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

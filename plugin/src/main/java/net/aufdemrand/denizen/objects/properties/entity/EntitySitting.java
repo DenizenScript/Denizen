@@ -22,7 +22,6 @@ public class EntitySitting implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntitySitting((dEntity) entity);
         }

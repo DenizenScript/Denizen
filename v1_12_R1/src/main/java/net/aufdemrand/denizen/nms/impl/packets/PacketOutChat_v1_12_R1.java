@@ -34,7 +34,7 @@ public class PacketOutChat_v1_12_R1 implements PacketOutChat {
                 rawJson = ComponentSerializer.toString(internal.components);
                 bungee = true;
             }
-            position = (ChatMessageType)POSITION.get(internal);
+            position = (ChatMessageType) POSITION.get(internal);
         }
         catch (Exception e) {
             e.printStackTrace();

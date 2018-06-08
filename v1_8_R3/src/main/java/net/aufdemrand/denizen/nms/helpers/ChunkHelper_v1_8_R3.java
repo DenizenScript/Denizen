@@ -37,8 +37,10 @@ public class ChunkHelper_v1_8_R3 implements ChunkHelper {
 
             return (List<EntityPlayer>) fieldPlayers.get(playerChunk);
         }
-        catch (NoSuchFieldException e) {}
-        catch (IllegalAccessException e) {}
+        catch (NoSuchFieldException e) {
+        }
+        catch (IllegalAccessException e) {
+        }
 
         return new ArrayList<EntityPlayer>();
     }

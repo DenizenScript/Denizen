@@ -16,6 +16,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -24,6 +25,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -123,13 +125,44 @@ public class ItemScriptHelper implements Listener {
                 dB.echoError("Invalid item '" + entry.getValue() + "'");
                 continue;
             }
-            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getItemFrom().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
+            FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
             Bukkit.getServer().addRecipe(recipe);
         }
+        currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>(furnace_to_register);
 
         recipes_to_register.clear();
         shapeless_to_register.clear();
         furnace_to_register.clear();
+    }
+
+    public Map<ItemScriptContainer, String> currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>();
+
+    @EventHandler
+    public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
+        if (isItemscript(event.getResult())) {
+            ItemScriptContainer isc = getItemScriptContainer(event.getResult());
+            String inp = currentFurnaceRecipes.get(isc);
+            if (inp != null) {
+                dItem itm = dItem.valueOf(inp);
+                if (itm != null) {
+                    itm.setAmount(1);
+                    dItem src = new dItem(event.getSource().clone());
+                    src.setAmount(1);
+                    if (!itm.getFullString().equals(src.getFullString())) {
+                        List<Recipe> recipes = Bukkit.getServer().getRecipesFor(event.getSource());
+                        for (Recipe rec : recipes) {
+                            if (rec instanceof FurnaceRecipe) {
+                                // TODO: Also make sure non-script recipes still burn somehow. FurnaceBurnEvent? Maybe also listen to inventory clicking and manually start a burn?
+                                event.setResult(rec.getResult());
+                                return;
+                            }
+                        }
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     public static boolean isBound(ItemStack item) {
@@ -223,7 +256,7 @@ public class ItemScriptHelper implements Listener {
                 // Proceed only if the player can fit more items on their cursor
                 if (!event.isShiftClick() && event.getCursor().getData().getItemType() != Material.AIR
                         && (!event.getCursor().isSimilar(inventory.getResult())
-                            || event.getCursor().getAmount() + inventory.getResult().getAmount() > event.getCursor().getMaxStackSize())) {
+                        || event.getCursor().getAmount() + inventory.getResult().getAmount() > event.getCursor().getMaxStackSize())) {
                     return;
                 }
 
@@ -489,7 +522,9 @@ public class ItemScriptHelper implements Listener {
                         }
                     }
                     // If a matrix item doesn't match any items from the recipe, it's a fail
-                    if (!matched) continue primary;
+                    if (!matched) {
+                        continue primary;
+                    }
                 }
                 else {
                     shapedRecipe.add(new dItem(Material.AIR));
@@ -548,7 +583,9 @@ public class ItemScriptHelper implements Listener {
             // then set it to that of the ingredient with the lowest multiple
             // found that isn't zero
             for (int n = 0; n < matrix.length; n++) {
-                if (matrix[n].getAmount() == 0 || recipe.get(n).getAmount() == 0) continue;
+                if (matrix[n].getAmount() == 0 || recipe.get(n).getAmount() == 0) {
+                    continue;
+                }
 
                 if ((matrix[n].getAmount() / recipe.get(n).getAmount() < lowestAmount) || lowestAmount == 0) {
                     lowestAmount = matrix[n].getAmount() / recipe.get(n).getAmount();

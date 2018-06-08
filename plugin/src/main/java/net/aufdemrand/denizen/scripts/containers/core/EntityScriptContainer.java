@@ -66,7 +66,6 @@ public class EntityScriptContainer extends ScriptContainer {
                         (player, npc, false, null, shouldDebug(), new dScript(this)));
                 entity = dEntity.valueOf(entityType);
             }
-
             else {
                 throw new Exception("Missing entity_type argument!");
             }

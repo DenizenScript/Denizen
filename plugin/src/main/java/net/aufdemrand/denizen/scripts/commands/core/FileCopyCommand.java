@@ -26,17 +26,14 @@ public class FileCopyCommand extends AbstractCommand {
                     && arg.matchesPrefix("origin", "o")) {
                 scriptEntry.addObject("origin", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("destination")
                     && arg.matchesPrefix("destination", "d")) {
                 scriptEntry.addObject("destination", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("overwrite")
                     && arg.matches("overwrite")) {
                 scriptEntry.addObject("overwrite", new Element("true"));
             }
-
             else {
                 arg.reportUnhandled();
             }

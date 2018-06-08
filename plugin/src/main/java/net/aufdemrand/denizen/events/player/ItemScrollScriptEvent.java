@@ -48,8 +48,8 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.equals("player holds item")
-                || lower.equals("player scrolls their hotbar");
+        return lower.startsWith("player holds item")
+                || lower.startsWith("player scrolls their hotbar");
     }
 
     @Override

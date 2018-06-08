@@ -182,7 +182,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
 
     @Override
     public void follow(final Entity target, final Entity follower, final double speed, final double lead,
-                              final double maxRange, final boolean allowWander) {
+                       final double maxRange, final boolean allowWander) {
         if (target == null || follower == null) {
             return;
         }
@@ -308,7 +308,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
             player.hidePlayer((Player) entity);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer)player;
+        CraftPlayer craftPlayer = (CraftPlayer) player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
@@ -319,8 +319,8 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
             UUID entityUUID = entity.getUniqueId();
             if (!hidden.contains(entityUUID)) {
                 hidden.add(entityUUID);
-                EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity)entity).getHandle();
+                EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+                net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity) entity).getHandle();
                 EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
                 if (entry != null) {
                     entry.clear(entityPlayer);
@@ -336,7 +336,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
             player.showPlayer((Player) entity);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer)player;
+        CraftPlayer craftPlayer = (CraftPlayer) player;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         UUID playerUUID = player.getUniqueId();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
@@ -347,8 +347,8 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
                     hidden.remove(entityUUID);
                 }
             }
-            EntityTracker tracker = ((WorldServer)craftPlayer.getHandle().world).tracker;
-            net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity)entity).getHandle();
+            EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+            net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity) entity).getHandle();
             EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);

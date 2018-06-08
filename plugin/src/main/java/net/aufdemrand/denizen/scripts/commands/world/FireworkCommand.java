@@ -33,44 +33,36 @@ public class FireworkCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matches("random")) {
                 scriptEntry.addObject("type", new Element(FireworkEffect.Type.values()[CoreUtilities.getRandom().nextInt(FireworkEffect.Type.values().length)].name()));
             }
-
             else if (!scriptEntry.hasObject("type")
                     && arg.matchesEnum(FireworkEffect.Type.values())) {
                 scriptEntry.addObject("type", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("power", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("flicker")
                     && arg.matches("flicker")) {
                 scriptEntry.addObject("flicker", "");
             }
-
             else if (!scriptEntry.hasObject("trail")
                     && arg.matches("trail")) {
                 scriptEntry.addObject("trail", "");
             }
-
             else if (!scriptEntry.hasObject("primary")
                     && arg.matchesPrefix("primary")
                     && arg.matchesArgumentList(dColor.class)) {
                 scriptEntry.addObject("primary", arg.asType(dList.class).filter(dColor.class));
             }
-
             else if (!scriptEntry.hasObject("fade")
                     && arg.matchesPrefix("fade")
                     && arg.matchesArgumentList(dColor.class)) {
                 scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class));
             }
-
             else {
                 arg.reportUnhandled();
             }

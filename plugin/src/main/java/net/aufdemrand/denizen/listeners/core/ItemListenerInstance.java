@@ -41,20 +41,16 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
             if (arg.matchesEnum(ItemType.values()) && type == null) {
                 this.type = ItemType.valueOf(arg.getValue().toUpperCase());
             }
-
             else if (arg.matchesPrefix("qty, q")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
             }
-
             else if (arg.matchesPrefix("items, item, i, name, names")) {
                 items = arg.asType(dList.class);
             }
-
             else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
             }
-
             else if (arg.matchesPrefix("cuboid, c")
                     && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);

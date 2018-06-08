@@ -28,35 +28,29 @@ public class PlaySoundCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dLocation.class)) {
                 scriptEntry.addObject("locations", arg.asType(dList.class).filter(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("locations")
                     && !scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else if (!scriptEntry.hasObject("volume")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("volume, v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("pitch")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("pitch, p")) {
                 scriptEntry.addObject("pitch", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("sound")
                     && arg.matchesPrimitive(aH.PrimitiveType.String)) {
                 scriptEntry.addObject("sound", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("custom")
                     && arg.matches("custom")) {
                 scriptEntry.addObject("custom", Element.TRUE);
             }
-
             else {
                 arg.reportUnhandled();
             }

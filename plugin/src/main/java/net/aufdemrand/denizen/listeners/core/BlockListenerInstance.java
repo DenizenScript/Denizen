@@ -56,21 +56,17 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
             if (arg.matchesEnum(BlockType.values()) && type == null) {
                 type = BlockType.valueOf(arg.getValue().toUpperCase());
             }
-
             else if (arg.matchesPrefix("qty, q")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 this.required = aH.getIntegerFrom(arg.getValue());
             }
-
             else if (arg.matchesPrefix("region, r")) {
                 this.region = arg.getValue();
             }
-
             else if (arg.matchesPrefix("cuboid, c")
                     && arg.matchesArgumentType(dCuboid.class)) {
                 this.cuboid = arg.asType(dCuboid.class);
             }
-
             else if (arg.matchesPrefix("blocks, block, b, name, names")) {
                 blocks = arg.asType(dList.class);
             }
@@ -363,15 +359,12 @@ public class BlockListenerInstance extends AbstractListener implements Listener 
         if (event.getValue().equalsIgnoreCase("region")) {
             event.setReplaced(region);
         }
-
         else if (event.getValue().equalsIgnoreCase("required")) {
             event.setReplaced(required.toString());
         }
-
         else if (event.getValue().equalsIgnoreCase("blocks_so_far")) {
             event.setReplaced(blocks_so_far.toString());
         }
-
         else if (event.getValue().equalsIgnoreCase("blocks")) {
             String blockList = "";
             for (String curTar : blocks) {

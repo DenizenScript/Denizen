@@ -85,7 +85,7 @@ public class SittingTrait extends Trait implements Listener {
 
     private void sitInternal() {
         if (npc.getEntity() instanceof Player) {
-            PlayerAnimation.SIT.play((Player)npc.getEntity());
+            PlayerAnimation.SIT.play((Player) npc.getEntity());
         }
         else {
             DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),

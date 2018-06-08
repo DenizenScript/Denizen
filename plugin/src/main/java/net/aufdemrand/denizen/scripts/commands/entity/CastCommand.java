@@ -29,40 +29,33 @@ public class CastCommand extends AbstractCommand {
                     && arg.matches("remove", "cancel")) {
                 scriptEntry.addObject("remove", new Element(true));
             }
-
             else if (!scriptEntry.hasObject("ambient")
                     && arg.matches("no_ambient")) {
                 scriptEntry.addObject("ambient", new Element(false));
             }
-
             else if (!scriptEntry.hasObject("show_particles")
                     && arg.matches("hide_particles")) {
                 scriptEntry.addObject("show_particles", new Element(false));
             }
-
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("duration", "d")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("amplifier")
                     && arg.matchesPrefix("power", "p", "amplifier", "a")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("amplifier", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("effect")
                     && PotionEffectType.getByName(arg.asElement().asString()) != null) {
                 scriptEntry.addObject("effect", PotionEffectType.getByName(arg.asElement().asString()));
             }
-
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
 
             }
-
             else {
                 arg.reportUnhandled();
             }

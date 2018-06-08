@@ -23,26 +23,22 @@ public class ExplodeCommand extends AbstractCommand {
 
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
-
             else if (!scriptEntry.hasObject("power")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)
                     && arg.matchesPrefix("power", "p")) {
 
                 scriptEntry.addObject("power", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("breakblocks")
                     && arg.matches("breakblocks")) {
 
                 scriptEntry.addObject("breakblocks", "");
             }
-
             else if (!scriptEntry.hasObject("fire")
                     && arg.matches("fire")) {
 
                 scriptEntry.addObject("fire", "");
             }
-
             else {
                 arg.reportUnhandled();
             }

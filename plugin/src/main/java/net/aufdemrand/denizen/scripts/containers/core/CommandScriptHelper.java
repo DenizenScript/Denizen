@@ -155,7 +155,10 @@ public class CommandScriptHelper implements Listener {
     }
 
     private static class IsCommandTopicPredicate implements Predicate<HelpTopic> {
-        public boolean test(HelpTopic topic) { return apply(topic); }
+        public boolean test(HelpTopic topic) {
+            return apply(topic);
+        }
+
         public boolean apply(HelpTopic topic) {
             return topic.getName().charAt(0) == '/';
         }

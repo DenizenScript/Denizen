@@ -220,8 +220,8 @@ public class dEntity implements dObject, Adjustable {
                     ex.getCause(); // DO NOTHING
                 }
 
-//                else if (isSaved(m.group(2)))
-//                    return getSaved(m.group(2));
+                // else if (isSaved(m.group(2)))
+                //     return getSaved(m.group(2));
             }
         }
 
@@ -693,7 +693,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dInventory getInventory() {
         return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
-                : new dInventory(getBukkitInventory()) : null;
+                : dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
     public String getName() {
@@ -748,7 +748,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dLocation getLocation() {
 
-        if (isUnique() && entity != null) {
+        if (entity != null) {
             return new dLocation(entity.getLocation());
         }
 
@@ -836,7 +836,6 @@ public class dEntity implements dObject, Adjustable {
         else if (entity != null && isUnique()) {
             entity.teleport(location);
         }
-
         else {
             if (entity_type != null) {
                 if (despawned_entity != null) {
@@ -855,7 +854,6 @@ public class dEntity implements dObject, Adjustable {
 
                     despawned_entity = null;
                 }
-
                 else {
 
                     org.bukkit.entity.Entity ent;
@@ -927,7 +925,6 @@ public class dEntity implements dObject, Adjustable {
                     }
                 }
             }
-
             else {
                 dB.echoError("Cannot spawn a null dEntity!");
             }
@@ -1841,7 +1838,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @group attributes
         // @description
-        // Returns if the entity is currently ablaze or not.
+        // Returns whether the entity is currently ablaze or not.
         // -->
         if (attribute.startsWith("on_fire")) {
             return new Element(entity.getFireTicks() > 0).getAttribute(attribute.fulfill(1));
@@ -1947,30 +1944,6 @@ public class dEntity implements dObject, Adjustable {
                 return new dEntity(entity.getVehicle())
                         .getAttribute(attribute.fulfill(1));
             }
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.has_effect[<effect>]>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns whether the entity has a specified effect.
-        // If no effect is specified, returns whether the entity has any effect.
-        // -->
-        if (attribute.startsWith("has_effect")) {
-            boolean returnElement = false;
-            if (attribute.hasContext(1)) {
-                PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
-                for (org.bukkit.potion.PotionEffect effect : getLivingEntity().getActivePotionEffects()) {
-                    if (effect.getType().equals(effectType)) {
-                        returnElement = true;
-                    }
-                }
-            }
-            else if (!getLivingEntity().getActivePotionEffects().isEmpty()) {
-                returnElement = true;
-            }
-            return new Element(returnElement).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2173,7 +2146,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @group attributes
         // @description
-        // Returns if the entity despawns when away from players.
+        // Returns whether the entity despawns when away from players.
         // -->
         if (attribute.startsWith("remove_when_far")) {
             return new Element(getLivingEntity().getRemoveWhenFarAway())
@@ -3091,7 +3064,8 @@ public class dEntity implements dObject, Adjustable {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
                 }
-            } else {
+            }
+            else {
                 ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(null);
             }
         }
@@ -3115,7 +3089,8 @@ public class dEntity implements dObject, Adjustable {
                 if (mechanism.requireObject(dEntity.class)) {
                     ((HumanEntity) getLivingEntity()).setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
                 }
-            } else {
+            }
+            else {
                 ((HumanEntity) getLivingEntity()).setShoulderEntityRight(null);
             }
         }
@@ -3315,7 +3290,9 @@ public class dEntity implements dObject, Adjustable {
             // -->
             if (mechanism.matches("remove_custom_effect")) {
                 PotionEffectType type = PotionEffectType.getByName(value.asString().toUpperCase());
-                if (type != null) helper.removeEffect(type);
+                if (type != null) {
+                    helper.removeEffect(type);
+                }
             }
 
             // <--[mechanism]

@@ -34,7 +34,9 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     //
     // -->
 
-    public PlayerStandsOnScriptEvent() { instance = this; }
+    public PlayerStandsOnScriptEvent() {
+        instance = this;
+    }
 
     PlayerStandsOnScriptEvent instance;
     PlayerInteractEvent event;

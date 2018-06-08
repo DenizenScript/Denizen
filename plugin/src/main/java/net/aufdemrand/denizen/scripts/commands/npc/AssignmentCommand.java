@@ -24,8 +24,6 @@ public class AssignmentCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", Action.valueOf(arg.getValue().toUpperCase()));
             }
-
-
             else if (arg.matchesArgumentType(dScript.class)
                     && !scriptEntry.hasObject("script")) {
                 // Check the type of script.. it must be an assignment-type container
@@ -37,8 +35,6 @@ public class AssignmentCommand extends AbstractCommand {
                     throw new InvalidArgumentsException("Script specified is not an 'assignment-type' container.");
                 }
             }
-
-
             else {
                 arg.reportUnhandled();
             }
@@ -72,7 +68,6 @@ public class AssignmentCommand extends AbstractCommand {
             ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .setAssignment(script.getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
         }
-
         else if (scriptEntry.getObject("action").equals(Action.REMOVE)) {
             ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(AssignmentTrait.class)
                     .removeAssignment(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());

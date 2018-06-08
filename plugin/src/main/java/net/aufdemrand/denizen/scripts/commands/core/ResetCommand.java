@@ -23,30 +23,24 @@ public class ResetCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.FINISH);
             }
-
             else if (arg.matches("fails", "failed", "fail")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.FAIL);
             }
-
             else if (arg.matches("cooldown")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.PLAYER_COOLDOWN);
             }
-
             else if (arg.matches("global_cooldown")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.GLOBAL_COOLDOWN);
             }
-
             else if (arg.matches("saves") && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.SAVES);
             }
-
             else if (arg.matchesArgumentType(dScript.class)) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("players", arg.asType(dList.class));
             }

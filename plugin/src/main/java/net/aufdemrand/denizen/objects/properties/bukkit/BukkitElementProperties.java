@@ -310,9 +310,9 @@ public class BukkitElementProperties implements Property {
         // <--[tag]
         // @attribute <el@element.last_color>
         // @returns Element
-        // @group string checking
+        // @group text checking
         // @description
-        // Returns the ChatColors used at the end of a string.
+        // Returns the ChatColors used last in an element.
         // -->
         if (attribute.startsWith("last_color")) {
             return new Element(ChatColor.getLastColors(element.asString())).getAttribute(attribute.fulfill(1));
@@ -321,7 +321,7 @@ public class BukkitElementProperties implements Property {
         // <--[tag]
         // @attribute <el@element.format[<script>]>
         // @returns Element
-        // @group string manipulation
+        // @group text manipulation
         // @description
         // Returns the text re-formatted according to a format script.
         // See <@link example using format scripts>.
@@ -344,7 +344,7 @@ public class BukkitElementProperties implements Property {
         // <--[tag]
         // @attribute <el@element.strip_color>
         // @returns Element
-        // @group string manipulation
+        // @group text manipulation
         // @description
         // Returns the element with all color encoding stripped.
         // -->
@@ -355,7 +355,7 @@ public class BukkitElementProperties implements Property {
         // <--[tag]
         // @attribute <el@element.parse_color[<prefix>]>
         // @returns Element
-        // @group string manipulation
+        // @group text manipulation
         // @description
         // Returns the element with all color codes parsed.
         // Optionally, specify a character to prefix the color ids. Defaults to '&' if not specified.

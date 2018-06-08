@@ -19,7 +19,6 @@ public class AdjustCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("object")) {
                 scriptEntry.addObject("object", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("mechanism")) {
                 if (arg.hasPrefix()) {
                     scriptEntry.addObject("mechanism", new Element(arg.getPrefix().getValue()));
@@ -31,7 +30,6 @@ public class AdjustCommand extends AbstractCommand {
                 }
 
             }
-
             else {
                 arg.reportUnhandled();
             }
@@ -67,7 +65,6 @@ public class AdjustCommand extends AbstractCommand {
                 ServerTags.adjustServer(new Mechanism(mechanism, value));
                 continue;
             }
-
             else if (object.equalsIgnoreCase("system")) {
                 UtilTags.adjustSystem(new Mechanism(mechanism, value));
                 continue;

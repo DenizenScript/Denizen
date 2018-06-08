@@ -96,13 +96,11 @@ public class RunCommand extends AbstractCommand implements Holdable {
             if (arg.matchesPrefix("i", "id")) {
                 scriptEntry.addObject("id", arg.asElement());
             }
-
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dPlayer.class)) {
                 ((BukkitScriptEntryData) scriptEntry.entryData).setPlayer(arg.asType(dPlayer.class));
                 dB.echoError(scriptEntry.getResidingQueue(), "Run as:<player> is outdated, use player:<player>");
             }
-
             else if (arg.matchesPrefix("a", "as")
                     && arg.matchesArgumentType(dNPC.class)) {
                 ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
@@ -113,40 +111,32 @@ public class RunCommand extends AbstractCommand implements Holdable {
             else if (arg.matchesPrefix("a", "as")) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Specified target was not attached. Value must contain a valid PLAYER or NPC object.");
             }
-
             else if (arg.matchesPrefix("d", "def", "define", "c", "context")) {
                 scriptEntry.addObject("definitions", arg.asElement());
             }
-
             else if (arg.matches("instant", "instantly")) {
                 scriptEntry.addObject("instant", new Element(true));
             }
-
             else if (arg.matchesPrefix("delay")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("delay", arg.asType(Duration.class));
             }
-
             else if (arg.matches("local", "locally")) {
                 scriptEntry.addObject("local", new Element("true"));
                 scriptEntry.addObject("script", scriptEntry.getScript());
             }
-
             else if (!scriptEntry.hasObject("script")
                     && arg.matchesArgumentType(dScript.class)
                     && !arg.matchesPrefix("p", "path")) {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
-
             else if (!scriptEntry.hasObject("speed") && arg.matchesPrefix("speed")
                     && arg.matchesArgumentType(Duration.class)) {
                 scriptEntry.addObject("speed", arg.asType(Duration.class));
             }
-
             else if (!scriptEntry.hasObject("path")) {
                 scriptEntry.addObject("path", arg.asElement());
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -82,7 +82,7 @@ public class ItemFirework implements Property {
         // @group properties
         // @mechanism dItem.firework
         // @description
-        // Returns the firework's property string as a list.
+        // Returns the firework's property value as a list, matching the format of the mechanism.
         // -->
         // TODO: Easy tags to get individual parts...
         if (attribute.startsWith("firework")) {

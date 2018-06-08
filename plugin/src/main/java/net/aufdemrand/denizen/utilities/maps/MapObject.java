@@ -40,8 +40,8 @@ public abstract class MapObject {
 
     public int getX(dPlayer player, UUID uuid) {
         //if (!currentX.containsKey(uuid)) {
-            int x = (int) aH.getDoubleFrom(tag(xTag, player));
-            currentX.put(uuid, x);
+        int x = (int) aH.getDoubleFrom(tag(xTag, player));
+        currentX.put(uuid, x);
         //}
         int tx = x;
         if (worldCoordinates && lastMap != null) {
@@ -54,8 +54,8 @@ public abstract class MapObject {
 
     public int getY(dPlayer player, UUID uuid) {
         //if (!currentY.containsKey(uuid)) {
-            int y = (int) aH.getDoubleFrom(tag(yTag, player));
-            currentY.put(uuid, y);
+        int y = (int) aH.getDoubleFrom(tag(yTag, player));
+        currentY.put(uuid, y);
         //}
         int ty = y;
         if (worldCoordinates && lastMap != null) {

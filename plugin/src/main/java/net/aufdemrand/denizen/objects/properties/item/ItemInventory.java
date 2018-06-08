@@ -30,7 +30,7 @@ public class ItemInventory implements Property {
     }
 
     private dInventory getItemInventory() {
-        return new dInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
+        return dInventory.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }
 
     private ItemInventory(dItem _item) {
@@ -87,7 +87,9 @@ public class ItemInventory implements Property {
         // -->
         if (mechanism.matches("inventory") && mechanism.requireObject(dInventory.class)) {
             dInventory inventory = mechanism.getValue().asType(dInventory.class);
-            if (inventory == null || inventory.getInventory() == null) return;
+            if (inventory == null || inventory.getInventory() == null) {
+                return;
+            }
 
             ItemStack itemStack = item.getItemStack();
             BlockStateMeta bsm = ((BlockStateMeta) itemStack.getItemMeta());

@@ -22,7 +22,6 @@ public class EntityEquipment implements Property {
         if (!describes(entity)) {
             return null;
         }
-
         else {
             return new EntityEquipment((dEntity) entity);
         }

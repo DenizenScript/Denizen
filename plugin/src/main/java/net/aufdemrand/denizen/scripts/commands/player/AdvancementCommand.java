@@ -31,38 +31,31 @@ public class AdvancementCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dPlayer.class)) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
             }
-
             else if (!scriptEntry.hasObject("description")
                     && arg.matchesPrefix("description", "d")) {
                 scriptEntry.addObject("description", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
                     && arg.matchesArgumentType(dMaterial.class)) {
                 scriptEntry.addObject("icon", arg.asType(dMaterial.class));
             }
-
             else if (!scriptEntry.hasObject("frame")
                     && arg.matchesPrefix("frame", "f")
                     && arg.matchesEnum(Frame.values())) {
                 scriptEntry.addObject("frame", arg.asElement());
             }
-
             else if (!scriptEntry.hasObject("toast")
                     && arg.matches("hide_toast")) {
                 scriptEntry.addObject("toast", Element.FALSE);
             }
-
             else if (!scriptEntry.hasObject("announce")
                     && arg.matches("announce")) {
                 scriptEntry.addObject("announce", Element.TRUE);
             }
-
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(arg.raw_value));
             }
-
             else {
                 arg.reportUnhandled();
             }

@@ -128,7 +128,7 @@ public class NPCCommandHandler {
     // @description
     // The /npc constants command configures a NPC's constants. Uses Denizen's ConstantTrait to keep track of
     // NPC-specific constants. This provides seamless integration with an assignment script's 'Default Constants' in
-    // which string variables can be stored and retrieved with the use of 'replaceable tags', or API. Constants set at
+    // which text variables can be stored and retrieved with the use of 'replaceable tags', or API. Constants set at
     // the NPC level override any constants from the NPC's assignment script.
     //
     // Constants may be used in several ways: Setting, Removing, and Viewing

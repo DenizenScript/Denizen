@@ -109,7 +109,6 @@ public class RequirementChecker {
                     if (!negativeRequirement) {
                         dB.echoApproval("Checking 'VALUEOF " + arg + "...requirement not met!");
                     }
-
                     else {
                         dB.echoApproval("Checking '-VALUEOF " + arg + "...requirement met!");// Not met!
                         numberMet++;

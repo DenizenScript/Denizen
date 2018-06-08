@@ -22,20 +22,16 @@ public class LookcloseCommand extends AbstractCommand {
             if (arg.matches("realistic", "realistically")) {
                 scriptEntry.addObject("realistic", Element.TRUE);
             }
-
             else if (arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("range", arg.asElement());
             }
-
             else if (arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {
                 scriptEntry.addObject("toggle", arg.asElement());
             }
-
             else if (arg.matchesArgumentType(dNPC.class)) // TODO: better way of handling this?
             {
                 ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(arg.asType(dNPC.class));
             }
-
             else {
                 arg.reportUnhandled();
             }
