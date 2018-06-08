@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class AdvancementCommand extends AbstractCommand {
 
         AdvancementHelper advancement = new AdvancementHelper(
                 text.asString(), description.asString(), icon.getMaterial(),
-                frame.asString(), announce.asBoolean(), toast.asBoolean());
+                CoreUtilities.toLowerCase(frame.asString()), announce.asBoolean(), toast.asBoolean());
         advancement.showTo(bukkitPlayers);
     }
 }
