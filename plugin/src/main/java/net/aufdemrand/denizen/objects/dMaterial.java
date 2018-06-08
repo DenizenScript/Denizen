@@ -405,6 +405,14 @@ public class dMaterial implements dObject {
     public final static dMaterial ANDESITE = new dMaterial(Material.STONE, 5).forceIdentifyAs("ANDESITE");
     public final static dMaterial POLISHED_ANDESITE = new dMaterial(Material.STONE, 6).forceIdentifyAs("POLISHED_ANDESITE");
 
+    // Version checks for version-specific materials
+    public static dMaterial getMaterial1_12(String material, int data, String name) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
+        }
+        return null;
+    }
+
     // Concrete
     public final static dMaterial WHITE_CONCRETE = getMaterial1_12("CONCRETE", 0, "WHITE_CONCRETE");
     public final static dMaterial ORANGE_CONCRETE = getMaterial1_12("CONCRETE", 1, "ORANGE_CONCRETE");
@@ -1182,13 +1190,5 @@ public class dMaterial implements dObject {
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
-    }
-
-    // Version checks for version-specific materials
-    public static dMaterial getMaterial1_12(String material, int data, String name) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
-        }
-        return null;
     }
 }
