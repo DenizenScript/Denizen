@@ -742,17 +742,25 @@ public class dItem implements dObject, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <i@item.is_dyeable>
+        // @attribute <i@item.is_colorable>
         // @returns Element(Boolean)
         // @group properties
-        // Returns whether the item can have a dye.
+        // Returns whether the item can have a custom color.
         // If this returns true, it will enable access to:
-        // <@link mechanism dItem.dye>, and <@link tag i@item.dye_color>
+        // <@link mechanism dItem.color>, and <@link tag i@item.color>
         // -->
+        registerTag("is_colorable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(ItemColor.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
         registerTag("is_dyeable", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(ItemDye.describes(object))
+                return new Element(ItemColor.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
