@@ -1521,7 +1521,7 @@ public class dPlayer implements dObject, Adjustable {
         // inventory, this returns the player's inventory.
         // -->
         if (attribute.startsWith("open_inventory")) {
-            return new dInventory(getPlayerEntity().getOpenInventory().getTopInventory())
+            return dInventory.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
         }
 
