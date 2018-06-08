@@ -319,7 +319,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     public dInventory getInventory() {
-        return hasInventory() ? new dInventory(getBukkitInventory()) : null;
+        return hasInventory() ? dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
     public BlockFace getSkullBlockFace(int rotation) {

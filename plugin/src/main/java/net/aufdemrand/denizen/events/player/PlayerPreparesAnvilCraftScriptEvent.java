@@ -123,7 +123,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return newName;
         }
         else if (name.equals("inventory")) {
-            return new dInventory(inventory);
+            return dInventory.mirrorBukkitInventory(inventory);
         }
         return super.getContext(name);
     }

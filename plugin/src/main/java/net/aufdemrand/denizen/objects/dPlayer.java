@@ -333,7 +333,7 @@ public class dPlayer implements dObject, Adjustable {
 
     public dInventory getInventory() {
         if (isOnline()) {
-            return new dInventory(getPlayerEntity().getInventory());
+            return dInventory.mirrorBukkitInventory(getPlayerEntity().getInventory());
         }
         else {
             return new dInventory(getNBTEditor());

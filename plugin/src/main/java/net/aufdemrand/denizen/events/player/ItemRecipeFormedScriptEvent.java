@@ -114,7 +114,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
             return result;
         }
         else if (name.equals("inventory")) {
-            return new dInventory(inventory);
+            return dInventory.mirrorBukkitInventory(inventory);
         }
         else if (name.equals("recipe")) {
             return recipe;

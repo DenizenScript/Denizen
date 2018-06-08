@@ -693,7 +693,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dInventory getInventory() {
         return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
-                : new dInventory(getBukkitInventory()) : null;
+                : dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
     public String getName() {

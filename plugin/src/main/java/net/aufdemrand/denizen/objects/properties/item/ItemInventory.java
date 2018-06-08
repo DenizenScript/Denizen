@@ -30,7 +30,7 @@ public class ItemInventory implements Property {
     }
 
     private dInventory getItemInventory() {
-        return new dInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
+        return dInventory.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }
 
     private ItemInventory(dItem _item) {
