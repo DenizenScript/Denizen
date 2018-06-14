@@ -224,6 +224,20 @@ public class ServerTags implements Listener {
         }
 
         // <--[tag]
+        // @attribute <server.list_sounds>
+        // @returns dList
+        // @description
+        // Returns a list of all sounds known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_sounds")) {
+            dList sounds = new dList();
+            for (Sound s : Sound.values()) {
+                sounds.add(s.toString());
+            }
+            event.setReplaced(sounds.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_flags[(regex:)<search>]>
         // @returns dList
         // @description
