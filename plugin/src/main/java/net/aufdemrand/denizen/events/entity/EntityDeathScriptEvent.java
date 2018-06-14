@@ -243,10 +243,10 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                     damager = damageEntity.getDenizenObject();
                 }
             }
+            else if (livingEntity.getKiller() != null) {
+            	damager = new dPlayer(livingEntity.getKiller());
+            }
 
-        }
-        else if (livingEntity.getKiller() != null) {
-        	damager = new dPlayer(livingEntity.getKiller());
         }
 
         message = null;
