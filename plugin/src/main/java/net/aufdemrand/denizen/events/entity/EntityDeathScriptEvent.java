@@ -245,6 +245,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             }
 
         }
+        else if (livingEntity.getKiller() != null) {
+        	damager = new dPlayer(livingEntity.getKiller());
+        }
 
         message = null;
         inventory = null;
@@ -286,8 +289,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             }
         }
         if (subEvent != null) {
-            ((PlayerDeathEvent) event).setKeepInventory(keep_inv);
-            ((PlayerDeathEvent) event).setKeepLevel(keep_level);
+            subEvent.setKeepInventory(keep_inv);
+            subEvent.setKeepLevel(keep_level);
             if (message != null) {
                 subEvent.setDeathMessage(message.asString());
             }
