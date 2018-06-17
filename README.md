@@ -1,7 +1,7 @@
 Denizen: Helpful Citizens for Bukkit!
 -------------------------------------
 
-**Version 1.0.2**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, and 1.12!
+**Version 1.0.2**: Compatible with Spigot 1.8.8, 1.9.4, 1.10.2, 1.11.2, and 1.12.2!
 
 **Download (Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen/  
 **Download (VERY Developmental builds)**: http://ci.citizensnpcs.co/job/Denizen_Developmental/  
@@ -12,12 +12,12 @@ Denizen: Helpful Citizens for Bukkit!
 
 **Discord** (Modern): https://discord.gg/Q6pZGSR  
 **IRC** (Replaced by Discord): (irc.esper.net in the channels #denizen-dev or #citizens)  
-**Forum** (New but not used much): https://forum.mcmonkey.org/index.php  
-**command/tag/event/etc. search** (Modern): http://old.mcmonkey.org/denizen/logs/  
-**Tutorial Videos** (Modern): http://old.mcmonkey.org/denizen/vids  
+**Forum** (New but not used much): https://forum.denizenscript.com/  
+**command/tag/event/etc. search** (Modern): https://one.denizenscript.com/denizen/logs/  
+**Tutorial Videos** (Modern): https://one.denizenscript.com/denizen/vids  
 **Denizen Handbook** (OLD): http://bit.ly/XaWBLN  
 **Beginner's Guide** (OLD): http://bit.ly/1bHkByR  
-**Wiki** (OLD): http://wiki.citizensnpcs.co/Denizen  
+**Wiki** (OLD): https://wiki.citizensnpcs.co/Denizen  
 
 #### Also check out:
 
