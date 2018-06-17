@@ -217,7 +217,7 @@ public class dEntity implements dObject, Adjustable {
                     return null;
                 }
                 catch (Exception ex) {
-                    ex.getCause(); // DO NOTHING
+                    // DO NOTHING
                 }
 
                 // else if (isSaved(m.group(2)))
@@ -259,6 +259,18 @@ public class dEntity implements dObject, Adjustable {
             if (DenizenEntityType.isRegistered(m.group(1))) {
                 return new dEntity(DenizenEntityType.getByName(m.group(1)), data1, data2);
             }
+        }
+
+        try {
+            UUID entityID = UUID.fromString(string);
+            Entity entity = getEntityForID(entityID);
+            if (entity != null) {
+                return new dEntity(entity);
+            }
+            return null;
+        }
+        catch (Exception ex) {
+            // DO NOTHING
         }
 
         if (context == null || context.debug) {

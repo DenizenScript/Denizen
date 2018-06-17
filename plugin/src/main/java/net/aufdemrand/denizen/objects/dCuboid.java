@@ -149,7 +149,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     // The regex below: optional-"|" + "<#.#>," x3 + <text> + "|" + "<#.#>," x3 + <text> -- repeating
     final static Pattern cuboidLocations =
-            Pattern.compile("(\\|?([\\d\\.]+,){3}[\\w\\s]+\\|([\\d\\.]+,){3}[\\w\\s]+)+",
+            Pattern.compile("(\\|?([-\\d\\.]+,){3}[\\w\\s]+\\|([-\\d\\.]+,){3}[\\w\\s]+)+",
                     Pattern.CASE_INSENSITIVE);
 
 

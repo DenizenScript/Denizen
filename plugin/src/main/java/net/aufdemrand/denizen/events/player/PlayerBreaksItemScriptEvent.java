@@ -75,10 +75,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (CoreUtilities.toLowerCase(determination).startsWith("cancelled")) {
-            cancelled = true;
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 

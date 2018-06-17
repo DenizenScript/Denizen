@@ -60,7 +60,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         String lower = CoreUtilities.toLowerCase(s);
         String fish = CoreUtilities.getXthArg(2, lower);
 
-        if (!fish.isEmpty() && !fish.equals("in")) {
+        if (!fish.isEmpty() && !fish.equals("in") && !fish.equals("while")) {
             if (entity == null) {
                 return false;
             }
@@ -75,7 +75,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         }
 
         List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 0; index < data.size(); index++) {
+        for (int index = 2; index < data.size(); index++) {
             if (data.get(index).equals("while") && !data.get(index + 1).equalsIgnoreCase(state.asString())) {
                 return false;
             }

@@ -24,6 +24,9 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -76,8 +79,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     public dInventory inventory;
     public Element cause;
     public dList drops;
+    public List<dItem> dropItems;
     public Integer xp;
-    public boolean changed_drops;
     public boolean keep_inv;
     public boolean keep_level;
     public EntityDeathEvent event;
@@ -133,7 +136,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         //Handle no_drops and no_drops_or_xp and just no_xp
         if (lower.startsWith("no_drops")) {
             drops.clear();
-            changed_drops = true;
+            dropItems = new ArrayList<dItem>();
             if (lower.endsWith("_or_xp")) {
                 xp = 0;
             }
@@ -155,13 +158,14 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         // Change dropped items if dList detected
         else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             drops.clear();
-            changed_drops = true;
+            dropItems = new ArrayList<dItem>();
             dList drops_list = dList.valueOf(determination);
             drops_list.filter(dItem.class);
             for (String drop : drops_list) {
                 dItem item = dItem.valueOf(drop);
                 if (item != null) {
-                    drops.add(item.identify()); // TODO: Why not just store the dItem in an arraylist?
+                    dropItems.add(item);
+                    drops.add(item.identify());
                 }
             }
         }
@@ -224,11 +228,23 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             player = entity.getDenizenPlayer();
         }
 
+        cause = null;
         damager = null;
         EntityDamageEvent lastDamage = entity.getBukkitEntity().getLastDamageCause();
         if (lastDamage != null) {
+            cause = new Element(event.getEntity().getLastDamageCause().getCause().toString());
             if (lastDamage instanceof EntityDamageByEntityEvent) {
-                damager = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager()).getDenizenObject();
+                dEntity damageEntity = new dEntity(((EntityDamageByEntityEvent) lastDamage).getDamager());
+                dEntity shooter = damageEntity.getShooter();
+                if (shooter != null) {
+                    damager = shooter.getDenizenObject();
+                }
+                else {
+                    damager = damageEntity.getDenizenObject();
+                }
+            }
+            else if (livingEntity.getKiller() != null) {
+            	damager = new dPlayer(livingEntity.getKiller());
             }
 
         }
@@ -247,10 +263,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             keep_inv = subEvent.getKeepInventory();
             keep_level = subEvent.getKeepLevel();
         }
-        cause = null;
-        if (event.getEntity().getLastDamageCause() != null) {
-            cause = new Element(event.getEntity().getLastDamageCause().getCause().toString());
-        }
 
         drops = new dList();
         for (ItemStack stack : event.getDrops()) {
@@ -262,30 +274,29 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             }
         }
         cancelled = false;
-        changed_drops = false;
+        dropItems = null;
         xp = event.getDroppedExp();
         this.event = event;
         fire();
 
         event.setDroppedExp(xp);
-        if (changed_drops) {
+        if (dropItems != null) {
             event.getDrops().clear();
-            for (String drop : drops) {
-                dItem item = dItem.valueOf(drop);
-                if (item != null) {
-                    event.getDrops().add(item.getItemStack());
+            for (dItem drop : dropItems) {
+                if (drop != null) {
+                    event.getDrops().add(drop.getItemStack());
                 }
             }
         }
-        if (event instanceof PlayerDeathEvent) {
-            ((PlayerDeathEvent) event).setKeepInventory(keep_inv);
-            ((PlayerDeathEvent) event).setKeepLevel(keep_level);
-        }
-        if (message != null && subEvent != null) {
-            subEvent.setDeathMessage(message.asString());
-        }
-        if (cancelled && subEvent != null) {
-            subEvent.setDeathMessage(null);
+        if (subEvent != null) {
+            subEvent.setKeepInventory(keep_inv);
+            subEvent.setKeepLevel(keep_level);
+            if (message != null) {
+                subEvent.setDeathMessage(message.asString());
+            }
+            if (cancelled) {
+                subEvent.setDeathMessage(null);
+            }
         }
 
         dEntity.forgetEntity(livingEntity);

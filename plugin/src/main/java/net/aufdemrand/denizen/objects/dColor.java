@@ -168,12 +168,12 @@ public class dColor implements dObject {
     public String identify() {
         for (Field field : Color.class.getFields()) {
             try {
-                if (((Color) field.get(null)).asRGB() == getColor().asRGB()) {
+                if (Color.class.isAssignableFrom(field.getType()) && ((Color) field.get(null)).asRGB() == getColor().asRGB()) {
                     return "co@" + field.getName();
                 }
             }
             catch (Exception e) {
-                dB.echoError("Exception trying to fetch color!");
+                dB.echoError("Exception trying to fetch color: " + e.getClass().getCanonicalName() + ": " + e.getMessage());
             }
         }
         return "co@" + getColor().getRed() + "," + getColor().getGreen() + "," + getColor().getBlue();

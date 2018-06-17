@@ -644,6 +644,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
@@ -682,6 +685,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClicksBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
@@ -856,7 +862,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             propertyParser.registerProperty(ItemBook.class, dItem.class);
             propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
             propertyParser.registerProperty(ItemDurability.class, dItem.class);
-            propertyParser.registerProperty(ItemDye.class, dItem.class);
+            propertyParser.registerProperty(ItemColor.class, dItem.class);
             propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
             propertyParser.registerProperty(ItemFirework.class, dItem.class);
             propertyParser.registerProperty(ItemFlags.class, dItem.class);

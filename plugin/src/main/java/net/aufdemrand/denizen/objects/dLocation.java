@@ -2413,7 +2413,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.head_rotation>
         // -->
         if (mechanism.matches("head_rotation") && mechanism.requireInteger()) {
-            ((Skull) getBlock().getState()).setRotation(getSkullBlockFace(value.asInt() - 1));
+            Skull sk = (Skull) getBlock().getState();
+            sk.setRotation(getSkullBlockFace(value.asInt() - 1));
+            sk.update();
         }
 
         // <--[mechanism]

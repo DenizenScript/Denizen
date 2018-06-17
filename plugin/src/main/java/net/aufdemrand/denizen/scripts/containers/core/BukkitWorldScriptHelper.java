@@ -220,6 +220,7 @@ public class BukkitWorldScriptHelper implements Listener {
     //
     // @Determine
     // "CANCELLED" to stop the player from clicking.
+    // dItem to set the current item for the event.
     //
     // -->
     @EventHandler
@@ -232,7 +233,7 @@ public class BukkitWorldScriptHelper implements Listener {
         dItem holding;
 
         dInventory inventory = dInventory.mirrorBukkitInventory(event.getInventory());
-        final dPlayer player = dEntity.getPlayerFrom((Player) event.getWhoClicked());
+        final dPlayer player = dEntity.getPlayerFrom(event.getWhoClicked());
         String type = event.getInventory().getType().name();
         String click = event.getClick().name();
         String slotType = event.getSlotType().name();
@@ -347,6 +348,15 @@ public class BukkitWorldScriptHelper implements Listener {
                     }
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
+        }
+        else if (dItem.matches(determination)) {
+            dItem dit = dItem.valueOf(determination, player, null);
+            if (dit == null) {
+                dB.echoError("Invalid dItem: " + dit);
+            }
+            else {
+                event.setCurrentItem(dit.getItemStack());
+            }
         }
     }
 
