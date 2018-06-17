@@ -30,19 +30,18 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // player (<click type>) clicks (<material>) (with <item>) (using hand/off_hand/either_hand) (in <area>)
     // player (<click type>) clicks block (with <item>) (using hand/off_hand/either_hand) (in <area>)
     //
+    // @Cancellable true
+    //
     // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?)))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
     // @Triggers when a player clicks on a block or in the air.
+    //
     // @Context
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
     // <context.relative> returns a dLocation of the air block in front of the clicked block.
     // <context.click_type> returns an Element of the click type.
     // <context.hand> returns an Element of the used hand.
-    //
-    // @Determine
-    // "CANCELLED" to stop the click from happening.
-    // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
     //
     // -->
 
@@ -109,17 +108,20 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
+    private static final List<String> matchHelpList = Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging");
+
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        List<String> list = Arrays.asList("at", "entity", "npc", "player", "vehicle", "projectile", "hanging");
         return (lower.startsWith("player clicks")
                 || lower.startsWith("player left clicks")
                 || (lower.startsWith("player right clicks")
-                && !list.contains(CoreUtilities.getXthArg(3, lower))
+                && !matchHelpList.contains(CoreUtilities.getXthArg(3, lower))
                 && !dEntity.matches(CoreUtilities.getXthArg(3, lower))))
                 && couldMatchIn(lower);  // Avoid matching "clicks in inventory"
     }
+
+    private static final List<String> withHelpList = Arrays.asList("with", "using", "in");
 
     @Override
     public boolean matches(ScriptContainer scriptContainer, String s) {
@@ -134,7 +136,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         dMaterial material = event.hasBlock() ? dMaterial.getMaterialFrom(event.getClickedBlock().getType(), event.getClickedBlock().getData()) : null;
         String mat = CoreUtilities.getXthArg(index, lower);
         if (mat.length() > 0
-                && !Arrays.asList("with", "using", "in").contains(mat)
+                && !withHelpList.contains(mat)
                 && !tryMaterial(material, mat)) {
             return false;
         }
@@ -170,8 +172,11 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         PlayerInteractEvent.getHandlerList().unregister(this);
     }
 
+    public boolean wasCancellationAltered;
+
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
+        wasCancellationAltered = true;
         return super.applyDetermination(container, determination);
     }
 
@@ -212,8 +217,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         click_type = new Element(event.getAction().name());
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
+        wasCancellationAltered = false;
         fire();
-        if (cancelled) { // Workaround for Spigot=Dumb!
+        if (wasCancellationAltered) { // Workaround for Spigot=Dumb!
             event.setCancelled(cancelled);
         }
     }
