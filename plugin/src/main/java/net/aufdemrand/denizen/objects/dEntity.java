@@ -3518,6 +3518,30 @@ public class dEntity implements dObject, Adjustable {
             }
         }
 
+        // END AREA EFFECT CLOUD BLOCK
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name show_to_players
+        // @input None
+        // @description
+        // Marks the entity as visible to players by default (if it was hidden).
+        // -->
+        if (mechanism.matches("show_to_players")) {
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(null, getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name hide_from_players
+        // @input None
+        // @description
+        // Hides the entity from players by default.
+        // -->
+        if (mechanism.matches("hide_from_players")) {
+            NMSHandler.getInstance().getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+        }
+
         // Iterate through this object's properties' mechanisms
         for (Property property : PropertyParser.getProperties(this)) {
             property.adjust(mechanism);

@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 
 public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: Advancement scripts
     // <--[event]
     // @Events
     // player completes advancement

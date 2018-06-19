@@ -2655,6 +2655,9 @@ public class dPlayer implements dObject, Adjustable {
                     dB.echoError("'" + split[0] + "' is not a valid entity!");
                 }
             }
+            else {
+                dB.echoError("Must specify an entity to hide!");
+            }
         }
 
         // <--[mechanism]
