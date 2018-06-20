@@ -185,7 +185,9 @@ public class dEntity implements dObject, Adjustable {
                 dNPC npc = dNPC.valueOf(string);
 
                 if (npc != null) {
-                    return new dEntity(npc);
+                    if (npc.isSpawned()) {
+                        return new dEntity(npc);
+                    }
                 }
                 else {
                     dB.echoError("NPC '" + string
