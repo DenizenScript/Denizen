@@ -435,7 +435,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         String myItem = CoreUtilities.toLowerCase(item.getFullString());
         for (int i = 0; i < inventory.getSize(); i++) {
             ItemStack is = inventory.getItem(i);
-            if (is == null) {
+            if (is == null || item.getMaterial().getMaterial() != is.getType()) {
                 continue;
             }
             is = is.clone();
