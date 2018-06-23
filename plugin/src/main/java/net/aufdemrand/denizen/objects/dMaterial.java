@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 
 public class dMaterial implements dObject {
 
-    final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[,:]?(\\d+)?", Pattern.CASE_INSENSITIVE);
-
     // Will be called a lot, no need to construct/deconstruct.
     public final static dMaterial AIR = new dMaterial(Material.AIR);
 
@@ -574,43 +572,40 @@ public class dMaterial implements dObject {
     @Fetchable("m")
     public static dMaterial valueOf(String string, TagContext context) {
 
-        if (CoreUtilities.toLowerCase(string).matches("random")
-                || CoreUtilities.toLowerCase(string).matches("m@random")) {
-
-            // Get a random material
-            return new dMaterial(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
+        string = string.toUpperCase();
+        if (string.startsWith("M@")) {
+            string = string.substring("M@".length());
         }
-
-        Matcher m = materialPattern.matcher(string);
-
-        if (m.matches()) {
-            int data = 0;
-            if (m.group(2) != null) {
-                data = aH.getIntegerFrom(m.group(2));
+        if (string.equals("RANDOM")) {
+            return getMaterialFrom(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
+        }
+        int index = string.indexOf(',');
+        if (index < 0) {
+            index = string.indexOf(':');
+        }
+        int data = 0;
+        if (index >= 0) {
+            data = aH.getIntegerFrom(string.substring(index + 1));
+            string = string.substring(0, index);
+        }
+        Material m = Material.getMaterial(string);
+        if (m != null) {
+            return getMaterialFrom(m, data);
+        }
+        dMaterial mat = all_dMaterials.get(string);
+        if (mat != null) {
+            if (data == 0) {
+                return mat;
             }
-
-            String materialName = m.group(1);
-
-            if (aH.matchesInteger(materialName)) {
-                return dMaterial.getMaterialFrom(Material.getMaterial(aH.getIntegerFrom(materialName)), data);
-            }
-            else {
-                // Iterate through Materials
-                for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(materialName)) {
-                        return dMaterial.getMaterialFrom(material, data);
-                    }
-                }
-
-                // Iterate through dMaterials
-                dMaterial mat = all_dMaterials.get(materialName.toUpperCase());
-                if (mat != null) {
-                    return mat;
-                }
+            return getMaterialFrom(mat.material, data);
+        }
+        int matid = aH.getIntegerFrom(string);
+        if (matid != 0) {
+            m = Material.getMaterial(matid);
+            if (m != null) {
+                return getMaterialFrom(m, data);
             }
         }
-
-        // No match
         return null;
     }
 
@@ -621,47 +616,12 @@ public class dMaterial implements dObject {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-
-        // Avoid case sensitivity
         arg = arg.toUpperCase();
-
-        if (arg.startsWith("M@")) {
+        if (arg.startsWith("m@")) {
             return true;
         }
-
-        if (arg.matches("(?:M@)?RANDOM")) {
+        if (valueOf(arg) != null) {
             return true;
-        }
-
-        Matcher m = materialPattern.matcher(arg);
-
-        if (m.matches()) {
-
-            String materialName = m.group(1);
-
-            // If this argument is in an integer, return true if it does not
-            // exceed the number of materials in Bukkit
-            if (aH.matchesInteger(materialName)) {
-                if (aH.getIntegerFrom(arg) < Material.values().length) {
-                    return true;
-                }
-            }
-
-            // Check if this argument matches a Material or a special stored
-            // dMaterial's name
-            else {
-                // Iterate through Bukkit Materials
-                for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(materialName)) {
-                        return true;
-                    }
-                }
-
-                // Iterate through dMaterials
-                if (all_dMaterials.get(materialName) != null) {
-                    return true;
-                }
-            }
         }
 
         return false;
