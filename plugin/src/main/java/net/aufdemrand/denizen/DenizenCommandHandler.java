@@ -158,7 +158,7 @@ public class DenizenCommandHandler {
     @Command(
             aliases = {"denizen"}, usage = "debug",
             desc = "Toggles debug mode for Denizen.", modifiers = {"debug", "de", "db", "dbug"},
-            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxov")
+            min = 1, max = 5, permission = "denizen.debug", flags = "scebrxovn")
     public void debug(CommandContext args, CommandSender sender) throws CommandException {
         if (args.hasFlag('s')) {
             if (!dB.showDebug) {
