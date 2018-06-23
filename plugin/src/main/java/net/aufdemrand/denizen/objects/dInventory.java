@@ -425,6 +425,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         if (notableColors != null) {
             title += notableColors;
+            InventoryScriptHelper.notableInventories.remove(inventory.getTitle());
+            InventoryScriptHelper.notableInventories.put(title, this);
         }
         else if (inventory == null) {
             inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
