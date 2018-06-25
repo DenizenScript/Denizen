@@ -156,7 +156,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
-        else if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
+        if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
             return true;
         }
         else if (CoreUtilities.toLowerCase(mat.identifyNoIdentifier()).equals(comparedto)) {
