@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.npc.traits.ConstantsTrait;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -13,14 +14,17 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.Listener;
 
 @Deprecated
-public class ConstantTags implements Listener {
+public class ConstantTags {
 
     public ConstantTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                constantTags(event);
+            }
+        }, "cons");
     }
 
-    @TagManager.TagEvents
     public void constantTags(ReplaceableTagEvent event) {
         if (!event.matches("cons")) {
             return;

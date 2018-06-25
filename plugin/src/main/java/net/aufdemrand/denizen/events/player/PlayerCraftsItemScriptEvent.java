@@ -22,27 +22,27 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-// <--[event]
-// @Events
-// player crafts item
-// player crafts <item>
-//
-// @Regex ^on player crafts [^\s]+$
-//
-// @Cancellable true
-//
-// @Triggers when a player fully crafts an item.
-// @Context
-// <context.inventory> returns the dInventory of the crafting inventory.
-// <context.item> returns the dItem to be crafted.
-// <context.recipe> returns a dList of dItems in the recipe.
-//
-// @Determine
-// dItem to change the item that is crafted.
-//
-// -->
-
 public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // player crafts item
+    // player crafts <item>
+    //
+    // @Regex ^on player crafts [^\s]+$
+    //
+    // @Cancellable true
+    //
+    // @Triggers when a player fully crafts an item.
+    // @Context
+    // <context.inventory> returns the dInventory of the crafting inventory.
+    // <context.item> returns the dItem to be crafted.
+    // <context.recipe> returns a dList of dItems in the recipe.
+    //
+    // @Determine
+    // dItem to change the item that is crafted.
+    //
+    // -->
 
     public PlayerCraftsItemScriptEvent() {
         instance = this;

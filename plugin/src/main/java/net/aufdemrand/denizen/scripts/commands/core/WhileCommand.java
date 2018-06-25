@@ -10,16 +10,18 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
+import net.aufdemrand.denizencore.scripts.commands.core.IfCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WhileCommand extends BracedCommand {
 
     private class WhileData {
         public int index;
-        public String value;
+        public List<String> value;
         public long LastChecked;
         int instaTicks;
     }
@@ -27,50 +29,38 @@ public class WhileCommand extends BracedCommand {
     @Override
     public void onEnable() {
         setBraced();
+        setParseArgs(false);
     }
 
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        List<aH.Argument> original_args = aH.interpret(scriptEntry.modifiedArguments());
-        List<aH.Argument> parsed_args = aH.interpret(scriptEntry.getArguments());
-        for (int i = 0; i < parsed_args.size(); i++) {
+        List<String> comparisons = new ArrayList<String>();
 
-            aH.Argument arg = parsed_args.get(i);
-            aH.Argument original = original_args.get(i);
-
-            if (!scriptEntry.hasObject("stop")
-                    && arg.matches("stop")) {
-                scriptEntry.addObject("stop", Element.TRUE);
-                break;
+        if (scriptEntry.getOriginalArguments().size() == 1) {
+            String arg = scriptEntry.getOriginalArguments().get(0);
+            if (arg.equalsIgnoreCase("stop")) {
+                scriptEntry.addObject("stop", new Element(true));
             }
-            else if (!scriptEntry.hasObject("next")
-                    && arg.matches("next")) {
-                scriptEntry.addObject("next", Element.TRUE);
-                break;
+            else if (arg.equalsIgnoreCase("next")) {
+                scriptEntry.addObject("next", new Element(true));
             }
-            else if (!scriptEntry.hasObject("callback")
-                    && arg.matches("\0CALLBACK")) {
-                scriptEntry.addObject("callback", Element.TRUE);
-                break;
-            }
-            else if (!scriptEntry.hasObject("value")) {
-                scriptEntry.addObject("value", new Element(original.raw_value));
-                scriptEntry.addObject("parsed_value", new Element(arg.raw_value));
-                break;
-            }
-            else {
-                arg.reportUnhandled();
-                break;
+            else if (arg.equals("\0CALLBACK")) {
+                scriptEntry.addObject("callback", new Element(true));
             }
         }
-
-        if (!scriptEntry.hasObject("value") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback")) {
+        for (String arg : scriptEntry.getOriginalArguments()) {
+            if (arg.equals("{")) {
+                break;
+            }
+            comparisons.add(arg);
+        }
+        if (comparisons.isEmpty() && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback")) {
             throw new InvalidArgumentsException("Must specify a comparison value or 'stop' or 'next'!");
         }
-
         scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
+        scriptEntry.addObject("comparisons", comparisons);
 
     }
 
@@ -154,7 +144,8 @@ public class WhileCommand extends BracedCommand {
                     data.instaTicks = 0;
                 }
                 data.LastChecked = System.currentTimeMillis();
-                if (TagManager.tag(data.value, DenizenCore.getImplementation().getTagContextFor(scriptEntry, false)).equalsIgnoreCase("true")) {
+                boolean run = new IfCommand.ArgComparer().compare(data.value, scriptEntry);
+                if (run) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
@@ -171,9 +162,12 @@ public class WhileCommand extends BracedCommand {
                     bracedCommands.add(callbackEntry);
                     for (int i = 0; i < bracedCommands.size(); i++) {
                         bracedCommands.get(i).setInstant(true);
-                        bracedCommands.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
+                        bracedCommands.get(i).addObject("reqId", scriptEntry.getObject("reqid"));
                     }
                     scriptEntry.getResidingQueue().injectEntries(bracedCommands, 0);
+                }
+                else {
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "While loop complete");
                 }
             }
             else {
@@ -181,28 +175,30 @@ public class WhileCommand extends BracedCommand {
             }
         }
         else {
-
-            // Get objects
-            Element value = scriptEntry.getElement("value");
-            Element parsed_value = scriptEntry.getElement("parsed_value");
-            List<ScriptEntry> bracedCommandsList =
-                    ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
+            List<String> comparisons = (List<String>) scriptEntry.getObject("comparisons");
+            List<BracedData> data = ((List<BracedData>) scriptEntry.getObject("braces"));
+            if (data == null || data.isEmpty()) {
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces (internal)!");
+                return;
+            }
+            List<ScriptEntry> bracedCommandsList = data.get(0).value;
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
                 dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
                 return;
             }
+            boolean run = new IfCommand.ArgComparer().compare(comparisons, scriptEntry);
 
             // Report to dB
-            dB.report(scriptEntry, getName(), value.debug());
+            dB.report(scriptEntry, getName(), aH.debugObj("run_first_loop", run));
 
-            if (!parsed_value.asString().equalsIgnoreCase("true")) {
+            if (!run) {
                 return;
             }
 
             WhileData datum = new WhileData();
             datum.index = 1;
-            datum.value = value.asString();
+            datum.value = comparisons;
             datum.LastChecked = System.currentTimeMillis();
             datum.instaTicks = 1;
             scriptEntry.setData(datum);
@@ -220,7 +216,7 @@ public class WhileCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("loop_index", "1");
             for (int i = 0; i < bracedCommandsList.size(); i++) {
                 bracedCommandsList.get(i).setInstant(true);
-                bracedCommandsList.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
+                bracedCommandsList.get(i).addObject("reqId", scriptEntry.getObject("reqid"));
             }
             scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }

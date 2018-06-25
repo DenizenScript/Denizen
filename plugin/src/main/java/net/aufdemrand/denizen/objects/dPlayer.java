@@ -695,7 +695,7 @@ public class dPlayer implements dObject, Adjustable {
         // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list")) {
-            return new dList(PlayerTags.playerChatHistory.get(getName())) // TODO: UUID?
+            return new dList(PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -713,10 +713,10 @@ public class dPlayer implements dObject, Adjustable {
                 x = attribute.getIntContext(1);
             }
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(getName())) { // TODO: UUID?
+            if (!PlayerTags.playerChatHistory.containsKey(getPlayerEntity().getUniqueId())) {
                 return null;
             }
-            List<String> messages = PlayerTags.playerChatHistory.get(getName()); // TODO: UUID?
+            List<String> messages = PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId());
             if (messages.size() < x || x < 1) {
                 return null;
             }

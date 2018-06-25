@@ -9,11 +9,11 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
-public class TextTags implements Listener {
+public class TextTags {
 
     public TextTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
         TagManager.registerTagEvents(this);
+        // TODO: register handlers
     }
 
     @TagManager.TagEvents

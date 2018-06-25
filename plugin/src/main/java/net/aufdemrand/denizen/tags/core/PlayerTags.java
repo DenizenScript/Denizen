@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -18,20 +19,26 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerTags implements Listener {
 
     public PlayerTags(Denizen denizen) {
         denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                playerTags(event);
+            }
+        }, "player", "pl");
     }
 
     ///////////
     // Player Chat History
     /////////
 
-    public static Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>(8, 0.9f, 2);
+    public static Map<UUID, List<String>> playerChatHistory = new ConcurrentHashMap<UUID, List<String>>(8, 0.9f, 2);
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(final AsyncPlayerChatEvent event) {
@@ -40,7 +47,7 @@ public class PlayerTags implements Listener {
             Bukkit.getScheduler().runTaskLater(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {
-                    List<String> history = playerChatHistory.get(event.getPlayer().getName());
+                    List<String> history = playerChatHistory.get(event.getPlayer().getUniqueId());
                     // If history hasn't been started for this player, initialize a new ArrayList
                     if (history == null) {
                         history = new ArrayList<String>();
@@ -52,7 +59,7 @@ public class PlayerTags implements Listener {
                     // Add message to history
                     history.add(0, event.getMessage());
                     // Store the new history
-                    playerChatHistory.put(event.getPlayer().getName(), history);
+                    playerChatHistory.put(event.getPlayer().getUniqueId(), history);
                 }
             }, 1);
         }
@@ -63,7 +70,6 @@ public class PlayerTags implements Listener {
     //  ReplaceableTagEvent handler
     ////////
 
-    @TagManager.TagEvents
     public void playerTags(ReplaceableTagEvent event) {
 
         if (!event.matches("player", "pl") || event.replaced()) {

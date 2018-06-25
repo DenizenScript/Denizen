@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -35,7 +36,12 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
 
     @Override
     public void onEnable() {
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                schematicTags(event);
+            }
+        }, "schematic", "schem");
         schematics = new HashMap<String, CuboidBlockSet>();
         noPhys = false;
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
@@ -288,7 +294,6 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         }
     }
 
-    @TagManager.TagEvents
     public void schematicTags(ReplaceableTagEvent event) {
 
         if (!event.matches("schematic", "schem")) {

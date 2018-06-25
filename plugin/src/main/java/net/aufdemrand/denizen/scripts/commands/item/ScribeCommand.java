@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -21,15 +22,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class ScribeCommand extends AbstractCommand implements Listener {
+public class ScribeCommand extends AbstractCommand {
 
 
     private enum BookAction {GIVE, DROP, EQUIP, NONE}
 
     @Override
     public void onEnable() {
-        DenizenAPI.getCurrentInstance().getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                paragraph(event);
+            }
+        }, "p", "n");
     }
 
     @Override
@@ -155,7 +160,6 @@ public class ScribeCommand extends AbstractCommand implements Listener {
      *
      * @param e ReplaceableTagEvent
      */
-    @TagManager.TagEvents
     public void paragraph(ReplaceableTagEvent e) {
         // <--[tag]
         // @attribute <P>

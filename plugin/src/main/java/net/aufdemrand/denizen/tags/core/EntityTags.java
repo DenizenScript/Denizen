@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -10,14 +11,18 @@ import net.aufdemrand.denizencore.tags.TagManager;
 public class EntityTags {
 
     public EntityTags(Denizen denizen) {
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                entityTags(event);
+            }
+        }, "entity");
     }
 
     //////////
     //  ReplaceableTagEvent handler
     ////////
 
-    @TagManager.TagEvents
     public void entityTags(ReplaceableTagEvent event) {
 
         if (!event.matches("entity") || event.replaced()) {

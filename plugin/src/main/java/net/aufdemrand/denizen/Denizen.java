@@ -65,6 +65,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
+import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -265,7 +266,8 @@ import java.util.logging.Logger;
 
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
-    public final static int configVersion = 12;
+
+    public final static int configVersion = 15;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -307,16 +309,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public TriggerRegistry getTriggerRegistry() {
         return triggerRegistry;
-    }
-
-
-    /*
-     * Denizen Property Parser
-     */
-    private PropertyParser propertyParser;
-
-    public PropertyParser getPropertyParser() {
-        return propertyParser;
     }
 
     /*
@@ -513,7 +505,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             // Warn if configuration is outdated / too new
             if (!getConfig().isSet("Config.Version") ||
-                    getConfig().getInt("Config.Version", 0) < configVersion) {
+                    getConfig().getInt("Config.Version", 0) != configVersion) {
 
                 dB.echoError("Your Denizen config file is from an older version. " +
                         "Some settings will not be available unless you generate a new one. " +
@@ -797,95 +789,113 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             // Initialize non-standard dMaterials
             dMaterial._initialize();
 
-            // Initialize Property Parser
-            propertyParser = new PropertyParser();
             // register properties that add Bukkit code to core objects
-            propertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
-            propertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
-            propertyParser.registerProperty(BukkitElementProperties.class, Element.class);
-            propertyParser.registerProperty(BukkitListProperties.class, dList.class);
+            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
+                @Override
+                public Property get(dObject o) {
+                    return BukkitScriptProperties.getFrom(o);
+                }
+            }, dScript.class, "cooled_down", "requirements", "cooldown", "step");
+            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
+                @Override
+                public Property get(dObject o) {
+                    return BukkitQueueProperties.getFrom(o);
+                }
+            }, ScriptQueue.class, "npc", "player");
+            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
+                @Override
+                public Property get(dObject o) {
+                    return BukkitElementProperties.getFrom(o);
+                }
+            }, Element.class, BukkitElementProperties.handledAttribs);
+            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
+                @Override
+                public Property get(dObject o) {
+                    return BukkitListProperties.getFrom(o);
+                }
+            }, dList.class, "formatted", "expiration");
 
             // register core dEntity properties
-            propertyParser.registerProperty(EntityAge.class, dEntity.class);
-            propertyParser.registerProperty(EntityAI.class, dEntity.class);
-            propertyParser.registerProperty(EntityAnger.class, dEntity.class);
-            propertyParser.registerProperty(EntityAngry.class, dEntity.class);
+            PropertyParser.registerProperty(EntityAge.class, dEntity.class);
+            PropertyParser.registerProperty(EntityAI.class, dEntity.class);
+            PropertyParser.registerProperty(EntityAnger.class, dEntity.class);
+            PropertyParser.registerProperty(EntityAngry.class, dEntity.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                propertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
-                propertyParser.registerProperty(EntityInvulnerable.class, dEntity.class);
-                propertyParser.registerProperty(EntityBoatType.class, dEntity.class);
+                PropertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
+                PropertyParser.registerProperty(EntityInvulnerable.class, dEntity.class);
+                PropertyParser.registerProperty(EntityBoatType.class, dEntity.class);
             }
-            propertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
-            propertyParser.registerProperty(EntityArms.class, dEntity.class);
-            propertyParser.registerProperty(EntityBasePlate.class, dEntity.class);
-            propertyParser.registerProperty(EntityBoundingBox.class, dEntity.class);
-            propertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
-            propertyParser.registerProperty(EntityColor.class, dEntity.class);
-            propertyParser.registerProperty(EntityCritical.class, dEntity.class);
-            propertyParser.registerProperty(EntityCustomName.class, dEntity.class);
-            propertyParser.registerProperty(EntityPotionEffects.class, dEntity.class);
-            propertyParser.registerProperty(EntityElder.class, dEntity.class);
-            propertyParser.registerProperty(EntityEquipment.class, dEntity.class);
-            propertyParser.registerProperty(EntityFirework.class, dEntity.class);
-            propertyParser.registerProperty(EntityFramed.class, dEntity.class);
-            propertyParser.registerProperty(EntityGravity.class, dEntity.class);
-            propertyParser.registerProperty(EntityHealth.class, dEntity.class);
-            propertyParser.registerProperty(EntityInfected.class, dEntity.class);
-            propertyParser.registerProperty(EntityInventory.class, dEntity.class);
-            propertyParser.registerProperty(EntityItem.class, dEntity.class);
-            propertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
-            propertyParser.registerProperty(EntityKnockback.class, dEntity.class);
-            propertyParser.registerProperty(EntityMarker.class, dEntity.class);
-            propertyParser.registerProperty(EntityPainting.class, dEntity.class);
-            propertyParser.registerProperty(EntityPotion.class, dEntity.class);
-            propertyParser.registerProperty(EntityPowered.class, dEntity.class);
-            propertyParser.registerProperty(EntityProfession.class, dEntity.class);
-            propertyParser.registerProperty(EntityRotation.class, dEntity.class);
-            propertyParser.registerProperty(EntitySmall.class, dEntity.class);
-            propertyParser.registerProperty(EntitySilent.class, dEntity.class);
-            propertyParser.registerProperty(EntitySitting.class, dEntity.class);
-            propertyParser.registerProperty(EntitySize.class, dEntity.class);
-            propertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
-            propertyParser.registerProperty(EntitySpeed.class, dEntity.class);
-            propertyParser.registerProperty(EntityTame.class, dEntity.class);
-            propertyParser.registerProperty(EntityVisible.class, dEntity.class);
+            PropertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
+            PropertyParser.registerProperty(EntityArms.class, dEntity.class);
+            PropertyParser.registerProperty(EntityBasePlate.class, dEntity.class);
+            PropertyParser.registerProperty(EntityBoundingBox.class, dEntity.class);
+            PropertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
+            PropertyParser.registerProperty(EntityColor.class, dEntity.class);
+            PropertyParser.registerProperty(EntityCritical.class, dEntity.class);
+            PropertyParser.registerProperty(EntityCustomName.class, dEntity.class);
+            PropertyParser.registerProperty(EntityPotionEffects.class, dEntity.class);
+            PropertyParser.registerProperty(EntityElder.class, dEntity.class);
+            PropertyParser.registerProperty(EntityEquipment.class, dEntity.class);
+            PropertyParser.registerProperty(EntityFirework.class, dEntity.class);
+            PropertyParser.registerProperty(EntityFramed.class, dEntity.class);
+            PropertyParser.registerProperty(EntityGravity.class, dEntity.class);
+            PropertyParser.registerProperty(EntityHealth.class, dEntity.class);
+            PropertyParser.registerProperty(EntityInfected.class, dEntity.class);
+            PropertyParser.registerProperty(EntityInventory.class, dEntity.class);
+            PropertyParser.registerProperty(EntityItem.class, dEntity.class);
+            PropertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
+            PropertyParser.registerProperty(EntityKnockback.class, dEntity.class);
+            PropertyParser.registerProperty(EntityMarker.class, dEntity.class);
+            PropertyParser.registerProperty(EntityPainting.class, dEntity.class);
+            PropertyParser.registerProperty(EntityPotion.class, dEntity.class);
+            PropertyParser.registerProperty(EntityPowered.class, dEntity.class);
+            PropertyParser.registerProperty(EntityProfession.class, dEntity.class);
+            PropertyParser.registerProperty(EntityRotation.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySmall.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySilent.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySitting.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySize.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
+            PropertyParser.registerProperty(EntitySpeed.class, dEntity.class);
+            PropertyParser.registerProperty(EntityTame.class, dEntity.class);
+            PropertyParser.registerProperty(EntityVisible.class, dEntity.class);
 
             // register core dInventory properties
-            propertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
-            propertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
-            propertyParser.registerProperty(InventoryContents.class, dInventory.class);
-            propertyParser.registerProperty(InventoryTitle.class, dInventory.class);
+            PropertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
+            PropertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
+            PropertyParser.registerProperty(InventoryContents.class, dInventory.class);
+            PropertyParser.registerProperty(InventoryTitle.class, dInventory.class);
 
             // register core dItem properties
-            propertyParser.registerProperty(ItemApple.class, dItem.class);
-            propertyParser.registerProperty(ItemBaseColor.class, dItem.class);
-            propertyParser.registerProperty(ItemBook.class, dItem.class);
-            propertyParser.registerProperty(ItemDisplayname.class, dItem.class);
-            propertyParser.registerProperty(ItemDurability.class, dItem.class);
-            propertyParser.registerProperty(ItemColor.class, dItem.class);
-            propertyParser.registerProperty(ItemEnchantments.class, dItem.class);
-            propertyParser.registerProperty(ItemFirework.class, dItem.class);
-            propertyParser.registerProperty(ItemFlags.class, dItem.class);
-            propertyParser.registerProperty(ItemInventory.class, dItem.class);
+            PropertyParser.registerProperty(ItemApple.class, dItem.class);
+            PropertyParser.registerProperty(ItemBaseColor.class, dItem.class);
+            PropertyParser.registerProperty(ItemBook.class, dItem.class);
+            PropertyParser.registerProperty(ItemDisplayname.class, dItem.class);
+            PropertyParser.registerProperty(ItemDurability.class, dItem.class);
+            PropertyParser.registerProperty(ItemColor.class, dItem.class);
+            PropertyParser.registerProperty(ItemEnchantments.class, dItem.class);
+            PropertyParser.registerProperty(ItemFirework.class, dItem.class);
+            PropertyParser.registerProperty(ItemFlags.class, dItem.class);
+            PropertyParser.registerProperty(ItemInventory.class, dItem.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
-                propertyParser.registerProperty(ItemLock.class, dItem.class);
+                PropertyParser.registerProperty(ItemLock.class, dItem.class);
             }
-            propertyParser.registerProperty(ItemLore.class, dItem.class);
-            propertyParser.registerProperty(ItemMap.class, dItem.class);
-            propertyParser.registerProperty(ItemNBT.class, dItem.class);
-            propertyParser.registerProperty(ItemAttributeNBT.class, dItem.class);
-            propertyParser.registerProperty(ItemPatterns.class, dItem.class);
-            propertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
+            PropertyParser.registerProperty(ItemLore.class, dItem.class);
+            PropertyParser.registerProperty(ItemMap.class, dItem.class);
+            PropertyParser.registerProperty(ItemNBT.class, dItem.class);
+            PropertyParser.registerProperty(ItemAttributeNBT.class, dItem.class);
+            PropertyParser.registerProperty(ItemPatterns.class, dItem.class);
+            PropertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                propertyParser.registerProperty(ItemPotion.class, dItem.class);
+                PropertyParser.registerProperty(ItemPotion.class, dItem.class);
             }
-            propertyParser.registerProperty(ItemQuantity.class, dItem.class);
-            propertyParser.registerProperty(ItemSignContents.class, dItem.class);
-            propertyParser.registerProperty(ItemSkullskin.class, dItem.class);
+            PropertyParser.registerProperty(ItemQuantity.class, dItem.class);
+            PropertyParser.registerProperty(ItemSignContents.class, dItem.class);
+            PropertyParser.registerProperty(ItemSkullskin.class, dItem.class);
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                propertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
+                PropertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
             }
-            propertyParser.registerProperty(ItemUnbreakable.class, dItem.class);
+            PropertyParser.registerProperty(ItemUnbreakable.class, dItem.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1391,26 +1401,37 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
-    public void handleCommandSpecialCases(ScriptEntry scriptEntry) {
-        if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()
-                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen() == null) {
-            ((BukkitScriptEntryData) scriptEntry.entryData).setNPC(null);
-        }
+    public boolean shouldDebug(Debuggable debug) {
+        return dB.shouldDebug(debug);
+    }
+
+    @Override
+    public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
+        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Queue '" + queue + "' Executing: " + execute);
+    }
+
+    @Override
+    public void debugTagFill(ScriptEntry entry, String tag, String result) {
+        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
+                + ChatColor.DARK_GRAY + "> with '" + ChatColor.WHITE + result + ChatColor.DARK_GRAY + "'.");
     }
 
     @Override
     public void debugCommandHeader(ScriptEntry scriptEntry) {
+        if (!dB.shouldDebug(scriptEntry)) {
+            return;
+        }
         if (scriptEntry.getOriginalArguments() == null ||
                 scriptEntry.getOriginalArguments().size() == 0 ||
                 !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
+            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 dB.echoDebug(scriptEntry, DebugElement.Header,
                         "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" +
                                 ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
             }
             else {
                 dB.echoDebug(scriptEntry, DebugElement.Header, "Executing dCommand: " +
-                        scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null ?
+                        scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ?
                         "/n@" + ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getName() : ""));
             }
         }
@@ -1423,6 +1444,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return new BukkitTagContext(player, npc, b, scriptEntry,
                 scriptEntry != null ? scriptEntry.shouldDebug() : true,
                 scriptEntry != null ? scriptEntry.getScript() : null);
+    }
+
+    @Override
+    public boolean needsHandleArgPrefix(String prefix) {
+        return prefix.equals("player") || prefix.equals("npc") || prefix.equals("npcid");
     }
 
     @Override

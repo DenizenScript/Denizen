@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.flags.FlagManager.Value;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
@@ -13,14 +14,18 @@ import org.bukkit.event.Listener;
 import java.text.DecimalFormat;
 
 @Deprecated
-public class FlagTags implements Listener {
+public class FlagTags {
 
     Denizen denizen;
 
     public FlagTags(Denizen denizen) {
         this.denizen = denizen;
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                flagTag(event);
+            }
+        }, "flag");
     }
 
     private enum ReplaceType {LENGTH, SIZE, ASSTRING, ABS, ASINT, ASDOUBLE, ASLIST, ASMONEY, ASPLAYERLIST, ASNPCLIST, ASCSLIST, ISEXPIRED, EXPIRATION}
@@ -31,7 +36,6 @@ public class FlagTags implements Listener {
      * @param event ReplaceableTagEvent
      */
 
-    @TagManager.TagEvents
     public void flagTag(ReplaceableTagEvent event) {
         if (!event.matches("FLAG")) {
             return;
@@ -46,7 +50,7 @@ public class FlagTags implements Listener {
         // Replace <FLAG...> TAGs.
         String flagName = event.getValue().split(":").length > 1
                 ? event.getValue().split(":")[0].toUpperCase() : event.getValue().toUpperCase();
-        String flagFallback = event.hasAlternative() ? event.getAlternative() : "EMPTY";
+        String flagFallback = event.hasAlternative() ? event.getAlternative().toString() : "EMPTY";
         int index = -1;
         ReplaceType replaceType = ReplaceType.ASSTRING;
 

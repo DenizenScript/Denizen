@@ -3,14 +3,11 @@ package net.aufdemrand.denizen.scripts.commands.core;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dList;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
@@ -27,12 +24,16 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-public class YamlCommand extends AbstractCommand implements Listener {
+public class YamlCommand extends AbstractCommand {
 
     @Override
     public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                yaml(event);
+            }
+        }, "yaml");
     }
 
     Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
@@ -472,7 +473,6 @@ public class YamlCommand extends AbstractCommand implements Listener {
         }
     }
 
-    @TagManager.TagEvents
     public void yaml(ReplaceableTagEvent event) {
 
         if (!event.matches("yaml")) {

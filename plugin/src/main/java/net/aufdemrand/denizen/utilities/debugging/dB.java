@@ -109,7 +109,7 @@ public class dB {
      * @param report all the debug information related to the command
      */
     public static void report(Debuggable caller, String name, String report) {
-        if (!showDebug) {
+        if (!showDebug || !shouldDebug(caller)) {
             return;
         }
         echo("<Y>+> <G>Executing '<Y>" + name + "<G>': "
@@ -134,7 +134,7 @@ public class dB {
     }
 
     public static void echoDebug(Debuggable caller, DebugElement element) {
-        if (!showDebug) {
+        if (!showDebug || !shouldDebug(caller)) {
             return;
         }
         echoDebug(caller, element, null);
@@ -145,7 +145,7 @@ public class dB {
     // to help scripters see what is going on. Debugging an element is usually
     // for formatting debug information.
     public static void echoDebug(Debuggable caller, DebugElement element, String string) {
-        if (!showDebug) {
+        if (!showDebug || !shouldDebug(caller)) {
             return;
         }
         StringBuilder sb = new StringBuilder(24);
@@ -167,7 +167,7 @@ public class dB {
     // Used by the various parts of Denizen that output debuggable information
     // to help scripters see what is going on.
     public static void echoDebug(Debuggable caller, String message) {
-        if (!showDebug) {
+        if (!showDebug || !shouldDebug(caller)) {
             return;
         }
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
@@ -263,15 +263,19 @@ public class dB {
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                 (script != null ? " in script '" + script.getName() + "'" : "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
-        if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose) {
+        if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
+            depthCorrectError++;
             try {
                 throw new RuntimeException("Verbose info for above error");
             }
             catch (Throwable e) {
                 echoError(source, e);
             }
+            depthCorrectError--;
         }
     }
+
+    static long depthCorrectError = 0;
 
     private static boolean ThrowErrorEvent = true;
 
