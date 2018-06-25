@@ -17,7 +17,7 @@ public class AdjustCommand extends AbstractCommand {
 
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
             if (!scriptEntry.hasObject("object")) {
-                scriptEntry.addObject("object", arg.asElement());
+                scriptEntry.addObject("object", arg.asType(dList.class));
             }
             else if (!scriptEntry.hasObject("mechanism")) {
                 if (arg.hasPrefix()) {
@@ -51,12 +51,12 @@ public class AdjustCommand extends AbstractCommand {
         Element mechanism = scriptEntry.getElement("mechanism");
         Element value = scriptEntry.getElement("mechanism_value");
 
+        dList objects = scriptEntry.getdObject("object");
+
         dB.report(scriptEntry, getName(),
-                scriptEntry.getElement("object").debug()
+                objects.debug()
                         + mechanism.debug()
                         + value.debug());
-
-        dList objects = dList.valueOf(scriptEntry.getElement("object").asString());
 
         dList result = new dList();
 
