@@ -118,6 +118,11 @@ public class dBiome implements dObject, Adjustable {
     }
 
     @Override
+    public String toString() {
+        return identify();
+    }
+
+    @Override
     public dObject setPrefix(String prefix) {
         if (prefix != null) {
             this.prefix = prefix;
