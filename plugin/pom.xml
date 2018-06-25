@@ -90,6 +90,8 @@
             <version>1.5.6</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Removed due to jar space concerns, and minimal realistic need for this dependency anyway. -->
+        <!--
         <dependency>
             <groupId>org.abstractmeta</groupId>
             <artifactId>compilation-toolbox</artifactId>
@@ -97,6 +99,7 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.alicebot</groupId>
             <artifactId>ab</artifactId>
