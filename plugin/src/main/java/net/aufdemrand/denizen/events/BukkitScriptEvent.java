@@ -113,7 +113,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
         if (quickOf != null) {
-            return item.getMaterial().equals(quickOf);
+            dMaterial mat = item.getMaterial();
+            if (quickOf.getMaterial() != mat.getMaterial()) {
+                return false;
+            }
+            if (quickOf.equals(mat)) {
+                return true;
+            }
         }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
@@ -143,7 +149,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
         if (quickOf != null) {
-            return mat.equals(quickOf);
+            if (quickOf.getMaterial() != mat.getMaterial()) {
+                return false;
+            }
+            if (quickOf.equals(mat)) {
+                return true;
+            }
         }
         else if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
             return true;
