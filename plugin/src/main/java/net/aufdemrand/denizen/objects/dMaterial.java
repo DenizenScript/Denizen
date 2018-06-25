@@ -609,6 +609,31 @@ public class dMaterial implements dObject {
         return null;
     }
 
+    public static dMaterial quickOfNamed(String string) {
+        string = string.toUpperCase();
+        int index = string.indexOf(',');
+        if (index < 0) {
+            index = string.indexOf(':');
+        }
+        int data = 0;
+        if (index >= 0) {
+            data = aH.getIntegerFrom(string.substring(index + 1));
+            string = string.substring(0, index);
+        }
+        Material m = Material.getMaterial(string);
+        if (m != null) {
+            return getMaterialFrom(m, data);
+        }
+        dMaterial mat = all_dMaterials.get(string);
+        if (mat != null) {
+            if (data == 0) {
+                return mat;
+            }
+            return getMaterialFrom(mat.material, data);
+        }
+        return null;
+    }
+
     /**
      * Determine whether a string is a valid material.
      *
@@ -634,11 +659,12 @@ public class dMaterial implements dObject {
     @Override
     public boolean equals(Object object) {
         if (object instanceof dMaterial) {
-            return ((dMaterial) object).identify().equals(this.identify());
+            return getMaterial() == ((dMaterial) object).getMaterial()
+                    && getData((byte) 0) == ((dMaterial) object).getData((byte) 0);
         }
         else {
             dMaterial parsed = valueOf(object.toString());
-            return parsed != null && parsed.identify().equals(this.identify());
+            return equals(parsed);
         }
     }
 
@@ -680,7 +706,7 @@ public class dMaterial implements dObject {
     }
 
 
-    public Byte getData(byte fallback) {
+    public byte getData(byte fallback) {
         if (data == null) {
             return fallback;
         }
