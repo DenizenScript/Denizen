@@ -143,6 +143,8 @@ Commands:
 Tags:
   # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
   Timeout: 10
+  # Whether the tag system should still timeout when debug is off.
+  Timeout when silent: false
   # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place

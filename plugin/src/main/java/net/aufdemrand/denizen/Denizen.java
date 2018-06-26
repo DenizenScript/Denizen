@@ -1708,6 +1708,16 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError("Running not-Spigot?!");
         }
     }
+
+    Boolean tTimeoutSil = null;
+
+    @Override
+    public boolean tagTimeoutWhenSilent() {
+        if (tTimeoutSil == null) {
+            tTimeoutSil = Settings.tagTimeoutSilent();
+        }
+        return tTimeoutSil;
+    }
 }
 
 

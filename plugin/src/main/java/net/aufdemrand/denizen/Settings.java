@@ -441,6 +441,11 @@ public class Settings {
                 .getInt("Tags.Timeout", 10);
     }
 
+    public static boolean tagTimeoutSilent() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Tags.Timeout when silent", false);
+    }
+
     public static boolean packetInterception() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Packets.Interception", true);
