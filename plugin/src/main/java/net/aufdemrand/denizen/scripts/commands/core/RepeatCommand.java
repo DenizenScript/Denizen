@@ -205,6 +205,7 @@ public class RepeatCommand extends BracedCommand {
                 bracedCommandsList.get(i).setInstant(true);
                 bracedCommandsList.get(i).addObject("reqId", scriptEntry.getObject("reqid"));
             }
+            scriptEntry.setInstant(true);
             scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }
     }
