@@ -25,7 +25,7 @@ public class AnchorTags {
     }
 
     public void anchorTags(ReplaceableTagEvent event) {
-        if (!event.matches("ANCHOR")) {
+        if (!event.matches("anchor")) {
             return;
         }
 

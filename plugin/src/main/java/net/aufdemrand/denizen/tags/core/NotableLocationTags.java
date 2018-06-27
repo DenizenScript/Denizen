@@ -24,7 +24,7 @@ public class NotableLocationTags {
 
     public void notableTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("NOTABLE")) {
+        if (!event.matches("notable")) {
             return;
         }
 

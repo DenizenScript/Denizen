@@ -37,7 +37,7 @@ public class FlagTags {
      */
 
     public void flagTag(ReplaceableTagEvent event) {
-        if (!event.matches("FLAG")) {
+        if (!event.matches("flag")) {
             return;
         }
 

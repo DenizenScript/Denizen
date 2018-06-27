@@ -162,21 +162,21 @@ public class ScribeCommand extends AbstractCommand {
      */
     public void paragraph(ReplaceableTagEvent e) {
         // <--[tag]
-        // @attribute <P>
+        // @attribute <p>
         // @returns Element
         // @description
         // Returns a paragraph, for use in books.
         // -->
-        if (e.matches("P")) {
+        if (e.matches("p")) {
             e.setReplaced("\n \u00A7r \n");
             // <--[tag]
-            // @attribute <N>
+            // @attribute <n>
             // @returns Element
             // @description
             // Returns a newline symbol, for use in books.
             // -->
         }
-        else if (e.matches("N")) {
+        else if (e.matches("n")) {
             e.setReplaced("\n");
         }
     }
