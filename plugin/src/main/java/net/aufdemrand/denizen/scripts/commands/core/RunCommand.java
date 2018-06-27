@@ -188,6 +188,11 @@ public class RunCommand extends AbstractCommand implements Holdable {
             entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
         }
 
+        if (entries == null) {
+            dB.echoError("Script run failed (invalid path or script name)!");
+            return;
+        }
+
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
                 (scriptEntry.getElement("id")).asString() : ScriptQueue.getNextId(script.getContainer().getName()));
