@@ -171,7 +171,7 @@ public class InjectCommand extends AbstractCommand {
         }
 
         if (entries == null) {
-            dB.echoError("Script run failed (invalid path or script name)!");
+            dB.echoError(scriptEntry.getResidingQueue(), "Script inject failed (invalid path or script name)!");
             return;
         }
 
