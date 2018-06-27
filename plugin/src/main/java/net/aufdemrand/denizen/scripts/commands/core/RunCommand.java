@@ -233,7 +233,12 @@ public class RunCommand extends AbstractCommand implements Holdable {
             dList definitions = dList.valueOf(raw_defintions.asString());
             String[] definition_names = null;
             try {
-                definition_names = script.getContainer().getString("definitions").split("\\|");
+                if (script != null && script.getContainer() != null) {
+                    String str = script.getContainer().getString("definitions");
+                    if (str != null) {
+                        definition_names = str.split("\\|");
+                    }
+                }
             }
             catch (Exception e) {
                 // TODO: less lazy handling
