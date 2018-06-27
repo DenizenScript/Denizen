@@ -38,8 +38,8 @@ public class WhileCommand extends BracedCommand {
 
         List<String> comparisons = new ArrayList<String>();
 
-        if (scriptEntry.getOriginalArguments().size() == 1) {
-            String arg = scriptEntry.getOriginalArguments().get(0);
+        if (scriptEntry.getArguments().size() == 1) {
+            String arg = scriptEntry.getArguments().get(0);
             if (arg.equalsIgnoreCase("stop")) {
                 scriptEntry.addObject("stop", new Element(true));
             }
@@ -50,7 +50,7 @@ public class WhileCommand extends BracedCommand {
                 scriptEntry.addObject("callback", new Element(true));
             }
         }
-        for (String arg : scriptEntry.getOriginalArguments()) {
+        for (String arg : scriptEntry.getArguments()) {
             if (arg.equals("{")) {
                 break;
             }
