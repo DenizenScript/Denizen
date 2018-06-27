@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.CommandExecuter;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
@@ -225,6 +226,9 @@ public class dB {
     }
 
     public static void echoError(ScriptQueue source, String message) {
+        if (source == null) {
+            source = CommandExecuter.currentQueue;
+        }
         dScript script = null;
         if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
             script = source.getEntries().get(0).getScript();
@@ -297,6 +301,9 @@ public class dB {
     }
 
     public static void echoError(ScriptQueue source, Throwable ex) {
+        if (source == null) {
+            source = CommandExecuter.currentQueue;
+        }
         if (ThrowErrorEvent) {
             ThrowErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
