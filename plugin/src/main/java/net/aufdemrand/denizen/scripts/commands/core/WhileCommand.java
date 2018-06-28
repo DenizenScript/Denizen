@@ -144,7 +144,7 @@ public class WhileCommand extends BracedCommand {
                     data.instaTicks = 0;
                 }
                 data.LastChecked = System.currentTimeMillis();
-                boolean run = new IfCommand.ArgComparer().compare(data.value, scriptEntry);
+                boolean run = new IfCommand.ArgComparer().compare(new ArrayList(data.value), scriptEntry);
                 if (run) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
