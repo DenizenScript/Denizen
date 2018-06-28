@@ -72,7 +72,7 @@ public class EntityScriptContainer extends ScriptContainer {
 
             Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
             for (StringHolder string : strings) {
-                if (!string.low.equals("entity_type") && !string.low.equals("type")) {
+                if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug")) {
                     String value = TagManager.tag((getString(string.low, "")), new BukkitTagContext
                             (player, npc, false, null, shouldDebug(), new dScript(this)));
                     entity.adjust(new Mechanism(new Element(string.low), new Element(value)));
