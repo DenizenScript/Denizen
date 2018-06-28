@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -163,15 +164,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
         }
 
-        // Debugger
-        dB.report(script, name, aH.debugObj("Player", player.getName())
-                + aH.debugObj("NPC", npc.toString())
-                + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
-                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
-                + aH.debugObj("Trigger text", message)
-                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
-                + aH.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
-
         // Change the text if it's in the determination
         if (trigger.hasDetermination()) {
             message = trigger.getDetermination();
@@ -183,6 +175,14 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
             return new ChatContext(message, false);
         }
+
+        dB.report(script, name, aH.debugObj("Player", player.getName())
+                + aH.debugObj("NPC", npc.toString())
+                + aH.debugObj("Radius(Max)", npc.getLocation().distance(player.getLocation())
+                + "(" + npc.getTriggerTrait().getRadius(name) + ")")
+                + aH.debugObj("Trigger text", message)
+                + aH.debugObj("LOS", String.valueOf(player.hasLineOfSight(npc.getEntity())))
+                + aH.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
 
         // Check if the NPC has Chat Triggers for this step.
         if (!script.containsTriggerInStep(
