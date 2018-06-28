@@ -420,18 +420,18 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (!(getIdType().equals("generic") || getIdType().equals("script")) || title == null) {
             return;
         }
-        if (inventory.getTitle().equals(title)) {
+        if (inventory != null && inventory.getTitle().equals(title)) {
             return;
         }
-        if (notableColors != null) {
-            title += notableColors;
-            InventoryScriptHelper.notableInventories.remove(inventory.getTitle());
-            InventoryScriptHelper.notableInventories.put(title, this);
-        }
-        else if (inventory == null) {
+        if (inventory == null) {
             inventory = Bukkit.getServer().createInventory(null, maxSlots, title);
             loadIdentifiers();
             return;
+        }
+        else if (notableColors != null) {
+            title += notableColors;
+            InventoryScriptHelper.notableInventories.remove(inventory.getTitle());
+            InventoryScriptHelper.notableInventories.put(title, this);
         }
         ItemStack[] contents = inventory.getContents();
         if (inventory.getType() == InventoryType.CHEST) {
