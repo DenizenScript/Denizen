@@ -57,6 +57,7 @@ public class PlayerOpensInvScriptEvent extends ScriptEvent implements Listener {
         if (!inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(inventory.getInventoryType().name()))
                 && !inv.equals(CoreUtilities.toLowerCase(inventory.getIdHolder()))
+                && !(inv.equals("notable") && !nname.equals("\0"))
                 && !inv.equals(nname)) {
             return false;
         }
