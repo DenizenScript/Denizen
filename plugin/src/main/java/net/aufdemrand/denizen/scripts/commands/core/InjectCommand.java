@@ -176,7 +176,7 @@ public class InjectCommand extends AbstractCommand {
         }
 
         // For determine
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("reqid"));
+        ScriptBuilder.addObjectToEntries(entries, "reqid", scriptEntry.getObject("reqid"));
 
         // If 'instantly' was specified, run the commands immediately.
         if (scriptEntry.hasObject("instant")) {

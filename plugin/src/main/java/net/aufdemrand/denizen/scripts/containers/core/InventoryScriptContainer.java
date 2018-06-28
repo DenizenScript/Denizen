@@ -209,7 +209,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "PROCEDURAL ITEMS");
                 if (!entries.isEmpty()) {
                     long id = DetermineCommand.getNewId();
-                    ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+                    ScriptBuilder.addObjectToEntries(entries, "reqid", id);
                     InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("INV_SCRIPT_ITEM_PROC"));
                     queue.addEntries(entries);
                     queue.setReqId(id);

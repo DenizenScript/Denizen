@@ -276,7 +276,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
         queue.setReqId(reqId);
 
         // Also add the reqId to each of the entries for reasons
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", reqId);
+        ScriptBuilder.addObjectToEntries(entries, "reqid", reqId);
 
         // Save the queue for script referencing
         scriptEntry.addObject("created_queue", queue);
