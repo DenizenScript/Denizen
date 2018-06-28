@@ -87,7 +87,9 @@ public class dMaterial implements dObject {
         ORANGE_CONCRETE_POWDER, MAGENTA_CONCRETE_POWDER, LIGHT_BLUE_CONCRETE_POWDER, YELLOW_CONCRETE_POWDER,
         LIME_CONCRETE_POWDER, PINK_CONCRETE_POWDER, GRAY_CONCRETE_POWDER, LIGHT_GRAY_CONCRETE_POWDER,
         CYAN_CONCRETE_POWDER, PURPLE_CONCRETE_POWDER, BLUE_CONCRETE_POWDER, BROWN_CONCRETE_POWDER,
-        GREEN_CONCRETE_POWDER, RED_CONCRETE_POWDER, BLACK_CONCRETE_POWDER
+        GREEN_CONCRETE_POWDER, RED_CONCRETE_POWDER, BLACK_CONCRETE_POWDER, WHITE_BED, ORANGE_BED,
+        MAGENTA_BED, LIGHT_BLUE_BED, YELLOW_BED, LIME_BED, PINK_BED, GRAY_BED, LIGHT_GRAY_BED,
+        CYAN_BED, PURPLE_BED, BLUE_BED, BROWN_BED, GREEN_BED, RED_BED, BLACK_BED
     }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
@@ -402,6 +404,24 @@ public class dMaterial implements dObject {
     public final static dMaterial POLISHED_DIORITE = new dMaterial(Material.STONE, 4).forceIdentifyAs("POLISHED_DIORITE");
     public final static dMaterial ANDESITE = new dMaterial(Material.STONE, 5).forceIdentifyAs("ANDESITE");
     public final static dMaterial POLISHED_ANDESITE = new dMaterial(Material.STONE, 6).forceIdentifyAs("POLISHED_ANDESITE");
+
+    // Bed
+    public final static dMaterial WHITE_BED = new dMaterial(Material.BED, 0).forceIdentifyAs("WHITE_BED");
+    public final static dMaterial ORANGE_BED = new dMaterial(Material.BED, 1).forceIdentifyAs("ORANGE_BED");
+    public final static dMaterial MAGENTA_BED = new dMaterial(Material.BED, 2).forceIdentifyAs("MAGENTA_BED");
+    public final static dMaterial LIGHT_BLUE_BED = new dMaterial(Material.BED, 3).forceIdentifyAs("LIGHT_BLUE_BED");
+    public final static dMaterial YELLOW_BED = new dMaterial(Material.BED, 4).forceIdentifyAs("YELLOW_BED");
+    public final static dMaterial LIME_BED = new dMaterial(Material.BED, 5).forceIdentifyAs("LIME_BED");
+    public final static dMaterial PINK_BED = new dMaterial(Material.BED, 6).forceIdentifyAs("PINK_BED");
+    public final static dMaterial GRAY_BED = new dMaterial(Material.BED, 7).forceIdentifyAs("GRAY_BED");
+    public final static dMaterial LIGHT_GRAY_BED = new dMaterial(Material.BED, 8).forceIdentifyAs("LIGHT_GRAY_BED");
+    public final static dMaterial CYAN_BED = new dMaterial(Material.BED, 9).forceIdentifyAs("CYAN_BED");
+    public final static dMaterial PURPLE_BED = new dMaterial(Material.BED, 10).forceIdentifyAs("PURPLE_BED");
+    public final static dMaterial BLUE_BED = new dMaterial(Material.BED, 11).forceIdentifyAs("BLUE_BED");
+    public final static dMaterial BROWN_BED = new dMaterial(Material.BED, 12).forceIdentifyAs("BROWN_BED");
+    public final static dMaterial GREEN_BED = new dMaterial(Material.BED, 13).forceIdentifyAs("GREEN_BED");
+    public final static dMaterial RED_BED = new dMaterial(Material.BED, 14).forceIdentifyAs("RED_BED");
+    public final static dMaterial BLACK_BED = new dMaterial(Material.BED, 15).forceIdentifyAs("BLACK_BED");
 
     // Version checks for version-specific materials
     public static dMaterial getMaterial1_12(String material, int data, String name) {
