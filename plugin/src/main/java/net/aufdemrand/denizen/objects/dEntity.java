@@ -188,6 +188,12 @@ public class dEntity implements dObject, Adjustable {
                     if (npc.isSpawned()) {
                         return new dEntity(npc);
                     }
+                    else {
+                        if (context != null && context.debug) {
+                            dB.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
+                        }
+                        return new dEntity(npc);
+                    }
                 }
                 else {
                     dB.echoError("NPC '" + string
@@ -510,7 +516,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dObject getDenizenObject() {
 
-        if (entity == null) {
+        if (entity == null && npc == null) {
             return null;
         }
 
@@ -2769,6 +2775,16 @@ public class dEntity implements dObject, Adjustable {
 
         if (isGeneric()) {
             mechanisms.add(mechanism);
+            return;
+        }
+
+        if (getBukkitEntity() == null) {
+            if (isCitizensNPC()) {
+                dB.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
+            }
+            else {
+                dB.echoError("Cannot adjust entity " + this);
+            }
             return;
         }
 
