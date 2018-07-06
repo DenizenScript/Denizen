@@ -67,6 +67,12 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (dInventory.matches(in) || in.equalsIgnoreCase("inventory")) {
             return false;
         }
+        if (in.equalsIgnoreCase("notable")) {
+            String next = CoreUtilities.getXthArg(index + 2, lower);
+            if (!next.equalsIgnoreCase("cuboid") && !next.equalsIgnoreCase("ellipsoid")) {
+                return false;
+            }
+        }
         return true;
     }
 
