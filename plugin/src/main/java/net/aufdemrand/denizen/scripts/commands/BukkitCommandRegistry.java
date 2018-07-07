@@ -840,22 +840,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CopyBlock
-        // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
+        // @Syntax copyblock [<location>] [to:<location>] (remove_original)
         // @Required 1
         // @Stable unstable
-        // @Short Copies a block to another location, keeping all metadata.
+        // @Short Copies a block to another location, keeping metadata when possible.
         // @Author aufdemrand, David Cernat
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
-        //
+        // Copies a single block to another location.
+        // Does not appear to support most inventories, e.g; Chest, Furnaces, Droppers
+        // (Signs/Spawners/Jukeboxes are supported)
+        // (Does not support cuboids - use '<@link command schematic> command)
         // @Tags
         // <l@location.material>
-        // <l@location.inventory>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Use to copy the block the player is looking at to their current location
+        // - copyblock <pl.location.cursor_on> to:<pl.location>
+        //
+        // @Usage
+        // Use to move the block the player is looking at to their current location (removing it from its original location)
+        // - copyblock <pl.location.cursor_on> to:<pl.location> remove_original
         // -->
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
@@ -1251,13 +1257,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Experience
         // @Syntax experience [{set}/give/take] (level) [<#>]
         // @Required 2
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Gives or takes experience points to the player.
         // @Author aufdemrand
         // @Group player
         //
         // @Description
-        // TODO: Document Command Details
+        // This command allows modification of a players experience points.
+        // Experience can be modified in terms of XP points, or by levels.
+        // Note that the "set" command does not affect levels, but xp bar fullness.
+        // (E.g. setting experience to 0 will not change a players level, but will
+        // set the players experience bar to 0)
         //
         // @Tags
         // <p@player.xp>
@@ -1266,8 +1276,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <p@player.xp.level>
         //
         // @Usage
-        // Use to set a player's experience to 0.
-        // - experience 0
+        // Use to set a player's experience bar to 0.
+        // - experience set 0
         //
         // @Usage
         // Use give give a player 1 level.
@@ -1484,13 +1494,23 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // TODO: Document Command Details
+        // Causes an NPC to begin fishing at the specified location.
+        // Setting catch determines what items the NPC may fish up, and
+        // the chance is the odds of the NPC fishing up an item.
+        // (It appears the catch type currently does not do anything)
+        // Also note that it seems you must specify the same location initially chosen for the NPC to fish at
+        // when stopping it.
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish
+        // - fish <pl.location.cursor_on> catch:fish chance:50
+        //
+        // @Usage
+        // Makes the NPC stop fishing
+        // - fish <pl.location.cursor_on> stop
         // -->
         registerCoreMember(FishCommand.class,
                 "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
@@ -1511,7 +1531,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // All the flag values are stored default in "plugins/denizen/saves.yml" file.
         // For an alternative way of storing values, use either yaml (See <@link command yaml>)
         // or sql (See <@link command sql>)
-        // TODO: Document Command Details
+        // Besides being set, flags can be incremented or decremented (added to or subtracted from).
+        // E.g.
+        // - flag player counter:++    or      - flag player counter:--
+        // Which adds or subtracts 1 from the player flag "counter".
+        //
+        // To add or subtract more than one, the action is "+" or "-", written as so:
+        // - flag player counter:+:10
+        // Which adds 10 the the "counter" flag.
+        //
+        // See <@link language flags> for more info.
         //
         // @Tags
         // <p@player.flag[<flag>]>
@@ -1604,8 +1633,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // Copies a file from one location to another.
         // The starting directory is server/plugins/Denizen.
+        // May overwrite existing copies of files.
+        // (Does not appear to preserve file extension)
         //
         // @Tags
         // <entry[saveName].success> returns whether the copy succeeded (if not, either an error or occurred, or there is an existing file in the destination.)
@@ -1659,7 +1690,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Note: Be careful, gamerules are CASE SENSITIVE.
         //
         // @Tags
-        // TODO: Add tags and then document them!
+        // No tags currently exist
         //
         // @Usage
         // Use to disable fire spreading in world "Adventure".
@@ -1728,7 +1759,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
         // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
         // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
-        // TODO: Document Command Details
         //
         // @Tags
         // <e@entity.glowing>
@@ -1751,7 +1781,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Group
         // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Adds a player to, removes a player from or sets a players permissions group.
         // @Author GnomeffinWay
         // @Group player
@@ -1913,11 +1943,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
         // (half a heart).
         //
-        // TODO: Document Command Details
         //
         // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
         // be warned this does not always work as intended, and is liable to glitch.
-        // Optionally, specify a damage cause to fire a proper damage event with the given cause,
+        // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
         // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
         // than using the raw damage input number. See <@link language damage cause> for damage causes.
         //
@@ -2010,13 +2039,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // TODO: Document Command Details
+        // Injects a script into the current ScriptQueue.
+        // This means this task will run with all of the queues associated definitions and tags.
+        // It will also now be part of the queue, so any delays or definitions used in the injected script will be
+        // accessible in the original queue.
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // - inject InjectedTask
+        // Injects the InjectedTask task into the current queue
         // -->
         registerCoreMember(InjectCommand.class,
                 "INJECT", "inject (locally) [<script>] (path:<name>) (instantly)", 1);
@@ -2032,13 +2065,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group entity
         //
         // @Description
-        // TODO: Document Command Details
+        // For non-armor stand entities, applies a maximum duration invisibility potion effect. (2,147,483,647t, or about 3.4 years)
+        // For armor stands, toggles them invisible.
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // - invisible <player> state:true
+        // Makes the player invisible
+        //
+        // @Usage
+        // - invisible <npc> state:toggle
+        // Makes the attached NPC visible if previously invisible, and invisible if not
         // -->
         registerCoreMember(InvisibleCommand.class,
                 "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
@@ -2109,28 +2148,31 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)
         // @Required 1
         // @Stable stable
-        // @Short Sticks a leash on target entity, held by a fence post or another entity.
+        // @Short Sticks a leash on target entity, held by a fence or another entity.
         // @Author Alain Blanquet, mcmonkey
         // @Group entity
         //
         // @Description
-        // TODO: Document Command Details
+        // Attaches a leash to the specified entity.
+        // The leash may be attached to a fence, or another entity.
+        // Players/NPCs may not be leashed.
+        // Note that releasing a mob from a fence post may leave the leash attached to that fence post.
         //
         // @Tags
         // <e@entity.is_leashed>
         // <e@entity.get_leash_holder>
         //
         // @Usage
-        // Use to attach hold an entity in hand.
-        // - leash <npc> holder:<player>
+        // Use to attach a leash to the players target.
+        // - leash <player.target> holder:<player>
         //
         // @Usage
-        // Use to attach an entity to a fence post.
-        // - leash <npc> holder:<player.location.cursor_on>
+        // Use to attach the closest cow in 10 blocks to the fence the player is looking at.
+        // - leash <player.location.find.entities[cow].within[10].first> holder:<player.location.cursor_on>
         //
         // @Usage
-        // Use to release an entity.
-        // - leash cancel <npc>
+        // Use to release the target entity.
+        // - leash cancel <pl.target>
         // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
@@ -2150,6 +2192,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // of block. It will be shown to all players near the location until it is reset.
         // The brightness must be between 0 and 15, inclusive.
         // Optionally, specify the amount of time the light should exist before being removed.
+        // WARNING: May cause lag spikes, use carefully.
         //
         // @Tags
         // <l@location.light>
@@ -2192,7 +2235,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Kill - Used to detect when a player kills an NPC, player, entity, or player in a specific permission group.
         // Block - Used to detect when a player breaks, places, or collects blocks in the specified list.
         // Item - Used to detect when a player crafts, smelts, or fishes an item on the specified list.
-        // Itemdrop - TODO: Document Command Details
+        // Itemdrop - Used to detect when an item is dropped
         // Travel - Used to detect when a player travels to an npc, to a specific location, into an area, or a specific distance.
         //
         // Detailed usage information can be found in the specific listener files.
@@ -2217,7 +2260,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - listen item type:craft item:wood_sword quantity:1 script:SwordCrafted
         //
         // @Usage
-        // Use to... (TODO: Itemdrop)
+        // DEPRECATED
         //
         // @Usage
         // Use to listen for when a player walks for 150 blocks.
@@ -2621,7 +2664,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Add or remove a notable object for that can be used to reference objects such as in events.
-        // TODO: Document Command Details
+        // Notable objects are "permanent" versions of other dObjects. (See: <@link language Particle Effects>)
         // Notable objects keep their properties when added.
         //
         // @Tags
@@ -3070,16 +3113,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Remove
-        // @Syntax remove [<entity>|...]
+        // @Syntax remove [<entity>|...] (world:<world name>)
         // @Required 1
         // @Stable stable
-        // @Short Despawns a list of entities, fully removing any NPCs.
+        // @Short Despawns an entity or list of entities, including any NPCs.
         // @Author David Cernat
         // @Group entity
         //
         // @Description
-        // TODO: CUBOID OPTION
-        // TODO: Document Command Details
+        // Removes the selected entity. May also take a list of entities to remove.
+        // Any NPC removed this way is completely removed, as if by '/npc remove'.
+        // If a generic entity name is given (see: <@link language entities>)
+        // it will remove all entities of that type from the given world.
+        // Optionally, you may specific a world to target.
+        // (Defaults to the world of the player running the command)
+        //
         //
         // @Tags
         // <e@entity.is_spawned>
@@ -3092,7 +3140,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to remove all dropped items in the world called cookies.
-        // - remove <w@cookies.entities.filter[name.is[EQUALS].to[DROPPED_ITEM]]>
+        // - remove dropped_item world:cookies
         // -->
         registerCoreMember(RemoveCommand.class,
                 "REMOVE", "remove [<entity>|...] (<world>)", 1);
@@ -3100,7 +3148,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Rename
-        // @Syntax rename [<name>]
+        // @Syntax rename [<name>] (npc:<npc>)
         // @Required 1
         // @Stable unstable
         // @Short Renames the linked NPC.
@@ -3108,7 +3156,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // TODO: Document Command Details
+        // Renames the linked NPC.
         //
         // @Tags
         // <n@npc.name>
@@ -3243,7 +3291,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // it assumes the default script speed that are configured.
         //
         // Specifying context or definitions as argument
-        // allows the transfer oof definitions to the new queue.
+        // allows the transfer of definitions to the new queue.
         // Definitions are not carried over if not specified.
         // (See <@link command define>)
         //
@@ -3311,7 +3359,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author mcmonkey
         //
         // @Description
-        // TODO: Document Command Details
+        // Creates, loads , pastes and saves schemactics. Schematics are files containing info about
+        // blocks and the order of those blocks.
+        //
+        // Denizen offers a number of tools to manipulate and work with schematics.
+        // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
+        // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace
+        // any blocks in the target location.
+        // The "delayed" option
         //
         // @Tags
         // <schematic[<name>].height>
@@ -3521,16 +3576,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
          *
          * <br><b>Sample Book Script:</b><br>
          * <ol><pre>
-         * "Cosmos Book":<br>
-         *   Type: Book<br>
-         *   Title: Cosmos, a Personal Voyage<br>
-         *   Author: Carl Sagan<br>
-         *   Text:<br>
-         *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br>
-         *     you, let him live. In a hundred billion galaxies, you will not find another<br>
-         *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
-         *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
-         *     made of starstuff.<br>
          * </pre></ol>
          *
          * <p>Note: ScribeCommand also implements a replaceable tag for &#60;P>, which creates a new
@@ -3564,15 +3609,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Scribe
-        // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
+        // @Syntax scribe [<script>] (give/equip/{drop <location>})
         // @Required 1
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Writes information to a book from a book-type script or a book item.
         // @Author Jeebiss, aufdemrand
         // @Group item
         //
         // @Description
-        // TODO: Document Command Details
+        // Create a book item from a book-type script or book item.
+        // This can then be directly given to a player, or dropped at a specific location
+        // Read more about book-scripts here: <@link language book script containers>
         //
         // @Tags
         // <i@item.book.author>
@@ -3581,8 +3628,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <i@item.book.get_page[<#>]>
         // <i@item.book.pages>
         //
+        //
         // @Usage
-        // TODO: Document Command Details
+        // Gives the book "Cosmos Book" to the player
+        // - scribe "Cosmos Book" give
+        //
+        // @Usage
+        // Drops the "Cosmos Book" at the players location
+        // - scribe "Cosmos Book" drop <pl.location>
+        //
+        // @Usage
+        // Puts the "Cosmos Book" in the players hand
+        // - scribe "Cosmos Book" equip
         // -->
         registerCoreMember(ScribeCommand.class,
                 "SCRIBE", "scribe [<script>] (<item>/give/equip/{drop <location>})", 1);
@@ -3710,13 +3767,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // TODO: Document Command Details
+        // Makes the linked NPC sit at the specified location.
+        // Use <@link command Stand> to make the NPC stand up again.
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // Make the linked NPC sit at the players cursor location.
+        // - sit <pl.location.cursor_on>
+        //
         // -->
         registerCoreMember(SitCommand.class,
                 "SIT", "sit (<location>)", 0);
@@ -3832,13 +3892,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // TODO: Document Command Details
+        // Makes the linked NPC stop sitting.
+        // To make them sit, see <@link command Sit>.
         //
         // @Tags
         // None
         //
         // @Usage
-        // TODO: Document Command Details
+        // Make the linked NPC stand up.
+        // - stand
+        //
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(StandCommand.class,
@@ -3856,7 +3919,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group player
         //
         // @Description
-        // TODO: Document Command Details
+        // Changes the specified statistic for the player.
+        // For more info on statistics, see https://minecraft.gamepedia.com/Statistics
+        // For statistic names, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
+        //
         //
         // @Tags
         // <p@player.statistic[<statistic>]>
@@ -3908,13 +3974,20 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
+        // Changes the state of a lever at the given location.
+        // Can specify a duration before it returns to the previous state.
+        // By default, will toggle the lever (on to off, or off to on)
         //
         // @Tags
         // <l@location.switched>
         //
         // @Usage
-        // TODO: Document Command Details
+        // At the players location, switch a lever on, no matter what state it was in before.
+        // - switch <pl.location> state:on
+        //
+        // Toggle a lever at the players location.
+        // - switch <pl.location>
+        //
         // -->
         registerCoreMember(SwitchCommand.class,
                 "SWITCH", "switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)", 1);
@@ -4026,16 +4099,19 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Time
         // @Syntax time ({global}/player) [<time duration>] (<world>)
         // @Required 1
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Changes the current time in the minecraft world.
         // @Author David Cernat, mcmonkey
         // @Group world
         //
         // @Description
         // Changes the current time in a world or the time that a player sees the world in.
-        // TODO: Document Command Details
         // If no world is specified, defaults to the NPCs world. If no NPC is available,
         // defaults to the player's world. If no player is available, an error will be thrown.
+        // If a player is specified, it will change their personal time.
+        // This is separate from the global time, and does not affect other players.
+        // When that player logs off, their time will be reset to the global time.
+        // (May currently be broken)
         //
         // @Tags
         // <w@world.time>
@@ -4053,8 +4129,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to set the time in a specific world.
         // - time 500t w@myworld
         //
-        // @Usage
-        // TODO: Document Command Details
         // -->
         registerCoreMember(TimeCommand.class,
                 "TIME", "time ({global}/player) [<time duration>] (<world>)", 1);
@@ -4070,6 +4144,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Shows the players a large, noticeable wall of text in the center of the screen.
+        // You can also show a "subtitle" below that title.
         // You may add timings for fading in, staying there, and fading out.
         // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
         //
@@ -4175,13 +4250,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // TODO: Document Command Details
+        // Toggles whether a NPC can be hurt or not. (Defaults to false)
+        // If you specify a state, sets the NPC to that.
         //
         // @Tags
         // <n@npc.invulnerable>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Makes an NPC vulnerable.
+        // - vulnerable state:true
+        // Makes an NPC vulnerable if it is not, and invulnerable if it is.
+        // - vulnerable
+        //
         // -->
         if (Depends.citizens != null) {
             registerCoreMember(VulnerableCommand.class,
@@ -4239,13 +4319,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Weather
         // @Syntax weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
         // @Required 1
-        // @Stable TODO: Document Command Details
+        // @Stable stable
         // @Short Changes the current weather in the minecraft world.
         // @Author David Cernat
         // @Group world
         //
         // @Description
-        // TODO: Document Command Details
+        // Changes the weather in the specified world.
+        // You can also set weather for the attached player, where that player will experience personal
+        // weather that is different from the global weather.
+        // Logging off will reset personal weather.
         //
         // @Tags
         // <b@biome.downfall_type>
@@ -4256,7 +4339,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <w@world.thunder_duration>
         //
         // @Usage
-        // TODO: Document Command Details
+        // Makes the weather sunny
+        // - weather sunny
+        //
+        // @Usage
+        // Makes the weather storm in world "cookies"
+        // - weather storm world:cookies
+        //
+        // @Usage
+        // Make the weather storm for the player "Rickyling"
+        // - weather type:player storm player:p@Rickyling
+        //
         // -->
         registerCoreMember(WeatherCommand.class,
                 "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
@@ -4272,7 +4365,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Video /denizen/vids/Loops
         //
         // @Description
-        // TODO: Document Command Details
+        // Loops the commands within the braces so long as the tag returns true.
         //
         // @Tags
         // <def[loop_index]> to get the number of loops so far.
@@ -4284,8 +4377,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //     - wait 1s
         //   }
         //
-        // @Usage
-        // TODO: Document Command Details
         // -->
         registerCoreMember(WhileCommand.class,
                 "WHILE", "while [stop/next/<comparison tag>] [<commands>]", 1);
