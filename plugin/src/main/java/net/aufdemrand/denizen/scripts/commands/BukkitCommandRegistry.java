@@ -840,28 +840,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name CopyBlock
-        // @Syntax copyblock [<location>] [to:<location>] (remove_original)
+        // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
         // @Required 1
         // @Stable unstable
-        // @Short Copies a block to another location, keeping metadata when possible.
+        // @Short Copies a block or cuboid to another location, keeping metadata when possible.
         // @Author aufdemrand, David Cernat
         // @Group world
         //
         // @Description
-        // Copies a single block to another location.
-        // Does not appear to support most inventories, e.g; Chest, Furnaces, Droppers
-        // (Signs/Spawners/Jukeboxes are supported)
-        // (Does not support cuboids - use '<@link command schematic> command)
+        // Copies a block or cuboid to another location.
+        // You may also use the 'remove_original' argument to delete the original block.
+        // This effectively moves the block to the target location.
+        //
         // @Tags
         // <l@location.material>
         //
         // @Usage
         // Use to copy the block the player is looking at to their current location
-        // - copyblock <pl.location.cursor_on> to:<pl.location>
+        // - copyblock <player.location.cursor_on> to:<player.location>
         //
         // @Usage
         // Use to move the block the player is looking at to their current location (removing it from its original location)
-        // - copyblock <pl.location.cursor_on> to:<pl.location> remove_original
+        // - copyblock <player.location.cursor_on> to:<player.location> remove_original
         // -->
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
@@ -1497,7 +1497,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Causes an NPC to begin fishing at the specified location.
         // Setting catch determines what items the NPC may fish up, and
         // the chance is the odds of the NPC fishing up an item.
-        // (It appears the catch type currently does not do anything)
+        // Catch
         // Also note that it seems you must specify the same location initially chosen for the NPC to fish at
         // when stopping it.
         //
@@ -1506,11 +1506,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish
-        // - fish <pl.location.cursor_on> catch:fish chance:50
+        // - fish <player.location.cursor_on> catch:fish chance:50
         //
         // @Usage
         // Makes the NPC stop fishing
-        // - fish <pl.location.cursor_on> stop
+        // - fish <player.location.cursor_on> stop
         // -->
         registerCoreMember(FishCommand.class,
                 "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
@@ -1528,19 +1528,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // The flag command sets or modifies custom value storage database entries connected to
         // each player, each NPC, each entity, and the server.
-        // All the flag values are stored default in "plugins/denizen/saves.yml" file.
-        // For an alternative way of storing values, use either yaml (See <@link command yaml>)
-        // or sql (See <@link command sql>)
-        // Besides being set, flags can be incremented or decremented (added to or subtracted from).
-        // E.g.
-        // - flag player counter:++    or      - flag player counter:--
-        // Which adds or subtracts 1 from the player flag "counter".
-        //
-        // To add or subtract more than one, the action is "+" or "-", written as so:
-        // - flag player counter:+:10
-        // Which adds 10 the the "counter" flag.
+        // Flags can have operations performed upon them, such as:
+        // - flag player counter:++            (Adds 1 to the flag)
+        // - flag player counter:+:3           (Adds 3 to the flag)
+        // - flag player counter:-:2           (Remove 2 from the flag)
         //
         // See <@link language flags> for more info.
+        //
+        // All the flag values are stored by default in "plugins/denizen/saves.yml" file.
+        // For an alternative way of storing values, use either yaml (See <@link command yaml>)
+        // or sql (See <@link command sql>)
+        //
         //
         // @Tags
         // <p@player.flag[<flag>]>
@@ -1690,7 +1688,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Note: Be careful, gamerules are CASE SENSITIVE.
         //
         // @Tags
-        // No tags currently exist
+        // TODO: Add tags and then document them!
         //
         // @Usage
         // Use to disable fire spreading in world "Adventure".
@@ -1782,7 +1780,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable stable
-        // @Short Adds a player to, removes a player from or sets a players permissions group.
+        // @Short Adds a player to, removes a player from or sets a player's permissions group.
         // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
@@ -1942,8 +1940,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
         // (half a heart).
-        //
-        //
         // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
         // be warned this does not always work as intended, and is liable to glitch.
         // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
@@ -2040,7 +2036,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Injects a script into the current ScriptQueue.
-        // This means this task will run with all of the queues associated definitions and tags.
+        // This means this task will run with all of the original queue's definitions and tags.
         // It will also now be part of the queue, so any delays or definitions used in the injected script will be
         // accessible in the original queue.
         //
@@ -2048,8 +2044,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
         //
         // @Usage
-        // - inject InjectedTask
         // Injects the InjectedTask task into the current queue
+        // - inject InjectedTask
         // -->
         registerCoreMember(InjectCommand.class,
                 "INJECT", "inject (locally) [<script>] (path:<name>) (instantly)", 1);
@@ -2060,13 +2056,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax invisible [<entity>] (state:true/false/toggle)
         // @Required 1
         // @Stable unstable
-        // @Short Makes an NPC or entity go invisible (Note: use '/npc playerlist' to make it work on NPCs!)
+        // @Short Makes an NPC or entity go invisible
         // @Author aufdemrand, mcmonkey
         // @Group entity
         //
         // @Description
-        // For non-armor stand entities, applies a maximum duration invisibility potion effect. (2,147,483,647t, or about 3.4 years)
+        // For non-armor stand entities, applies a maximum duration invisibility potion.
+        //
         // For armor stands, toggles them invisible.
+        //
+        // NPCs can't be made invisible if not added to the playerlist.
+        // See <@link language invisible trait>)
         //
         // @Tags
         // None
@@ -2155,8 +2155,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Attaches a leash to the specified entity.
         // The leash may be attached to a fence, or another entity.
-        // Players/NPCs may not be leashed.
+        // Players/Player NPCs may not be leashed.
         // Note that releasing a mob from a fence post may leave the leash attached to that fence post.
+        //
+        // Non-player NPCs can be leashed if '/npc leashable' is enabled.
         //
         // @Tags
         // <e@entity.is_leashed>
@@ -2172,7 +2174,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to release the target entity.
-        // - leash cancel <pl.target>
+        // - leash cancel <player.target>
         // -->
         registerCoreMember(LeashCommand.class,
                 "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
@@ -2235,7 +2237,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Kill - Used to detect when a player kills an NPC, player, entity, or player in a specific permission group.
         // Block - Used to detect when a player breaks, places, or collects blocks in the specified list.
         // Item - Used to detect when a player crafts, smelts, or fishes an item on the specified list.
-        // Itemdrop - Used to detect when an item is dropped
+        // Itemdrop - TODO: Document Command Details
         // Travel - Used to detect when a player travels to an npc, to a specific location, into an area, or a specific distance.
         //
         // Detailed usage information can be found in the specific listener files.
@@ -2663,8 +2665,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // Add or remove a notable object for that can be used to reference objects such as in events.
-        // Notable objects are "permanent" versions of other dObjects. (See: <@link language Particle Effects>)
+        // Add or remove a notable object that can referenced in events or scripts.
+        // Notable objects are "permanent" versions of other dObjects. (See: <@link language dObject>)
         // Notable objects keep their properties when added.
         //
         // @Tags
@@ -3119,13 +3121,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Despawns an entity or list of entities, including any NPCs.
         // @Author David Cernat
         // @Group entity
-        //
         // @Description
+        //  TODO: CUBOID OPTION
         // Removes the selected entity. May also take a list of entities to remove.
         // Any NPC removed this way is completely removed, as if by '/npc remove'.
         // If a generic entity name is given (see: <@link language entities>)
         // it will remove all entities of that type from the given world.
-        // Optionally, you may specific a world to target.
+        // Optionally, you may specifiy a world to target.
         // (Defaults to the world of the player running the command)
         //
         //
@@ -3359,14 +3361,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author mcmonkey
         //
         // @Description
-        // Creates, loads , pastes and saves schemactics. Schematics are files containing info about
+        // Creates, loads , pastes and saves schematics. Schematics are files containing info about
         // blocks and the order of those blocks.
         //
         // Denizen offers a number of tools to manipulate and work with schematics.
         // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
         // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace
         // any blocks in the target location.
-        // The "delayed" option
+        // The "delayed" option delays how many blocks can be pasted at once. This is recommended for large schematics.
         //
         // @Tags
         // <schematic[<name>].height>
@@ -3392,7 +3394,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - schematic unload name:MySchematic
         //
         // @Usage
-        // Use to paste a loaded schematic
+        // Use to paste a loaded schematic with no air blocks
         // - schematic paste name:MySchematic <player.location> noair
         //
         // @Usage
@@ -3635,7 +3637,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Drops the "Cosmos Book" at the players location
-        // - scribe "Cosmos Book" drop <pl.location>
+        // - scribe "Cosmos Book" drop <player.location>
         //
         // @Usage
         // Puts the "Cosmos Book" in the players hand
@@ -3774,8 +3776,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // None
         //
         // @Usage
-        // Make the linked NPC sit at the players cursor location.
-        // - sit <pl.location.cursor_on>
+        // Make the linked NPC sit at the player's cursor location.
+        // - sit <player.location.cursor_on>
         //
         // -->
         registerCoreMember(SitCommand.class,
@@ -3969,24 +3971,30 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
         // @Required 1
         // @Stable stable
-        // @Short Switches a lever.
+        // @Short Switches state of the block.
         // @Author aufdemrand, Jeebiss, David Cernat
         // @Group world
         //
         // @Description
-        // Changes the state of a lever at the given location.
+        // Changes the state of a block at the given location.
         // Can specify a duration before it returns to the previous state.
-        // By default, will toggle the lever (on to off, or off to on)
+        // By default, will toggle the state (on to off, or off to on).
+        // Works on doors, trapdoors and gates.
         //
         // @Tags
         // <l@location.switched>
         //
         // @Usage
-        // At the players location, switch a lever on, no matter what state it was in before.
-        // - switch <pl.location> state:on
+        // At the player's location, switch a lever on, no matter what state it was in before.
+        // - switch <player.location> state:on
         //
-        // Toggle a lever at the players location.
-        // - switch <pl.location>
+        // @Usage
+        // Opens a door that the player is looking at.
+        // - switch <player.location.cursor_on> state:on
+        //
+        // @Usage
+        // Toggle a lever at the player's location.
+        // - switch <player.location>
         //
         // -->
         registerCoreMember(SwitchCommand.class,
@@ -4250,8 +4258,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // Toggles whether a NPC can be hurt or not. (Defaults to false)
-        // If you specify a state, sets the NPC to that.
+        // Toggles whether a NPC can be hurt or not.
         //
         // @Tags
         // <n@npc.invulnerable>
@@ -4259,6 +4266,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Makes an NPC vulnerable.
         // - vulnerable state:true
+        //
+        // @Usage
         // Makes an NPC vulnerable if it is not, and invulnerable if it is.
         // - vulnerable
         //
@@ -4347,8 +4356,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - weather storm world:cookies
         //
         // @Usage
-        // Make the weather storm for the player "Rickyling"
-        // - weather type:player storm player:p@Rickyling
+        // Make the weather storm for the attached player.
+        // - weather type:player storm
         //
         // -->
         registerCoreMember(WeatherCommand.class,
@@ -4365,7 +4374,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Video /denizen/vids/Loops
         //
         // @Description
-        // Loops the commands within the braces so long as the tag returns true.
+        // Runs a series of braced commands until the tag returns false.
+        // Use 'stop' argument to prematurely stop the loop.
+        // Use 'next' argument to skip the current loop.
         //
         // @Tags
         // <def[loop_index]> to get the number of loops so far.
