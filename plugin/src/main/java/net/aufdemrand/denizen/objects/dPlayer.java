@@ -383,7 +383,7 @@ public class dPlayer implements dObject, Adjustable {
             return getPlayerEntity().getWorld();
         }
         else {
-            return null;
+            return getLocation().getWorld();
         }
     }
 
@@ -1087,6 +1087,10 @@ public class dPlayer implements dObject, Adjustable {
 
         if (attribute.startsWith("location") && !isOnline()) {
             return getLocation().getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("world") && !isOnline()) {
+            return new dWorld(getWorld()).getAttribute(attribute.fulfill(1));
         }
 
 

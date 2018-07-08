@@ -1791,7 +1791,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dWorld
         // @group location
         // @description
-        // Returns the world the entity is in.
+        // Returns the world the entity is in. Works with offline players.
         // -->
         if (attribute.startsWith("world")) {
             return new dWorld(entity.getWorld())
