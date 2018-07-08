@@ -3118,7 +3118,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Remove
-        // @Syntax remove [<entity>|...] (world:<world name>)
+        // @Syntax remove [<entity>|...] (world:<world>)
         // @Required 1
         // @Stable stable
         // @Short Despawns an entity or list of entities, including any NPCs.
