@@ -1529,9 +1529,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // The flag command sets or modifies custom value storage database entries connected to
         // each player, each NPC, each entity, and the server.
         // Flags can have operations performed upon them, such as:
-        // - flag player counter:++            (Adds 1 to the flag)
-        // - flag player counter:+:3           (Adds 3 to the flag)
-        // - flag player counter:-:2           (Remove 2 from the flag)
+        // Increment a flag by 1:
+        // - flag player counter:++
+        // Increment a flag by 3:
+        // - flag player counter:+:3
+        // Decrement a flag by 2:
+        // - flag player counter:-:2
         //
         // See <@link language flags> for more info.
         //
@@ -1780,7 +1783,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
         // @Stable stable
-        // @Short Adds a player to, removes a player from or sets a player's permissions group.
+        // @Short Adds a player to, removes a player from, or sets a player's permissions group.
         // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
@@ -2665,7 +2668,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group core
         //
         // @Description
-        // Add or remove a notable object that can referenced in events or scripts.
+        // Add or remove a notable object that can be referenced in events or scripts.
         // Notable objects are "permanent" versions of other dObjects. (See: <@link language dObject>)
         // Notable objects keep their properties when added.
         //
@@ -3361,7 +3364,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Author mcmonkey
         //
         // @Description
-        // Creates, loads , pastes and saves schematics. Schematics are files containing info about
+        // Creates, loads, pastes, and saves schematics. Schematics are files containing info about
         // blocks and the order of those blocks.
         //
         // Denizen offers a number of tools to manipulate and work with schematics.
@@ -3979,7 +3982,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Changes the state of a block at the given location.
         // Can specify a duration before it returns to the previous state.
         // By default, will toggle the state (on to off, or off to on).
-        // Works on doors, trapdoors and gates.
+        // Works on doors, trapdoors, and gates.
         //
         // @Tags
         // <l@location.switched>
@@ -4119,7 +4122,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If a player is specified, it will change their personal time.
         // This is separate from the global time, and does not affect other players.
         // When that player logs off, their time will be reset to the global time.
-        // (May currently be broken)
         //
         // @Tags
         // <w@world.time>
@@ -4258,7 +4260,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group npc
         //
         // @Description
-        // Toggles whether a NPC can be hurt or not.
+        // Toggles whether an NPC can be hurt or not.
         //
         // @Tags
         // <n@npc.invulnerable>
@@ -4375,8 +4377,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Runs a series of braced commands until the tag returns false.
-        // Use 'stop' argument to prematurely stop the loop.
-        // Use 'next' argument to skip the current loop.
+        // To end a while loop, do - while stop
+        // To jump immediately to the next entry in the loop, do - while next
         //
         // @Tags
         // <def[loop_index]> to get the number of loops so far.

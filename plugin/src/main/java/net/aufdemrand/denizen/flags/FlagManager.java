@@ -91,7 +91,7 @@ import java.util.*;
 // <code>
 // - flag <npc> friends:->:<player>
 // - foreach <npc.flag[friends].as_list> {
-//     - chat t:def[value] 'You are my friend!'
+//     - chat t:<def[value]> 'You are my friend!'
 //   }
 // </code>
 //
