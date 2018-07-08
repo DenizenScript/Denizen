@@ -3755,7 +3755,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
         // -->
         registerCoreMember(SpawnCommand.class,
-                "SPAWN", "spawn [<entity>|...] [<location>] (target:<entity>) (persistent)", 2);
+                "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
 
 
         // <--[command]
