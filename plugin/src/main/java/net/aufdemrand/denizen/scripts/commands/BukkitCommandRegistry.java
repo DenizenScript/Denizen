@@ -1497,7 +1497,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Causes an NPC to begin fishing at the specified location.
         // Setting catch determines what items the NPC may fish up, and
         // the chance is the odds of the NPC fishing up an item.
-        // Catch
+        //
         // Also note that it seems you must specify the same location initially chosen for the NPC to fish at
         // when stopping it.
         //
@@ -1529,11 +1529,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // The flag command sets or modifies custom value storage database entries connected to
         // each player, each NPC, each entity, and the server.
         // Flags can have operations performed upon them, such as:
-        // Increment a flag by 1:
+        // Increment a flag:
         // - flag player counter:++
-        // Increment a flag by 3:
+        // Increase a flag by 3:
         // - flag player counter:+:3
-        // Decrement a flag by 2:
+        // Decrease a flag by 2:
         // - flag player counter:-:2
         //
         // See <@link language flags> for more info.
@@ -1637,14 +1637,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Copies a file from one location to another.
         // The starting directory is server/plugins/Denizen.
         // May overwrite existing copies of files.
-        // (Does not appear to preserve file extension)
         //
         // @Tags
         // <entry[saveName].success> returns whether the copy succeeded (if not, either an error or occurred, or there is an existing file in the destination.)
         //
         // @Usage
         // Use to copy a custom YAML data file to a backup folder, overwriting any old backup of it that exists.
-        // - filecopy o:data/custom.yml d:data/backup/ overwrite save:copy
+        // - filecopy o:data/custom.yml d:data/backup.yml overwrite save:copy
         // - narrate "Copy success<&co> <entry[copy].success>"
         //
         // -->
@@ -2065,10 +2064,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // For non-armor stand entities, applies a maximum duration invisibility potion.
-        //
         // For armor stands, toggles them invisible.
+        // Applies the 'invisible' trait to NPCs.
         //
         // NPCs can't be made invisible if not added to the playerlist.
+        // (The invisible trait adds the NPC to the playerlist when set)
         // See <@link language invisible trait>)
         //
         // @Tags
@@ -2158,7 +2158,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Attaches a leash to the specified entity.
         // The leash may be attached to a fence, or another entity.
-        // Players/Player NPCs may not be leashed.
+        // Players and Player NPCs may not be leashed.
         // Note that releasing a mob from a fence post may leave the leash attached to that fence post.
         //
         // Non-player NPCs can be leashed if '/npc leashable' is enabled.
@@ -2168,7 +2168,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.get_leash_holder>
         //
         // @Usage
-        // Use to attach a leash to the players target.
+        // Use to attach a leash to the player's target.
         // - leash <player.target> holder:<player>
         //
         // @Usage
@@ -2895,7 +2895,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <p@player.has_permission[permission.node]>
         // <p@player.has_permission[permission.node].global>
-        // <p@player.has_permission[permission.node].world[<world name>]>
+        // <p@player.has_permission[permission.node].world[<world>]>
         // <server.has_permissions>
         //
         // @Usage
@@ -3153,7 +3153,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Rename
-        // @Syntax rename [<name>] (npc:<npc>)
+        // @Syntax rename [<name>]
         // @Required 1
         // @Stable unstable
         // @Short Renames the linked NPC.
@@ -3162,6 +3162,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Renames the linked NPC.
+        // Functions like the '/npc rename' command.
+        // NPC names may exceed the 16 character limit of normal Minecraft names.
         //
         // @Tags
         // <n@npc.name>
@@ -3581,6 +3583,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
          *
          * <br><b>Sample Book Script:</b><br>
          * <ol><pre>
+         * "Cosmos Book":<br>
+         *   Type: Book<br>
+         *   Title: Cosmos, a Personal Voyage<br>
+         *   Author: Carl Sagan<br>
+         *   Text:<br>
+         *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br>
+         *     you, let him live. In a hundred billion galaxies, you will not find another<br>
+         *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
+         *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
+         *     made of starstuff.<br>
          * </pre></ol>
          *
          * <p>Note: ScribeCommand also implements a replaceable tag for &#60;P>, which creates a new
@@ -3614,7 +3626,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Scribe
-        // @Syntax scribe [<script>] (give/equip/{drop <location>})
+        // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
         // @Required 1
         // @Stable stable
         // @Short Writes information to a book from a book-type script or a book item.
@@ -3982,13 +3994,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Changes the state of a block at the given location.
         // Can specify a duration before it returns to the previous state.
         // By default, will toggle the state (on to off, or off to on).
-        // Works on doors, trapdoors, and gates.
+        // Works on any interactable blocks.
         //
         // @Tags
         // <l@location.switched>
         //
         // @Usage
-        // At the player's location, switch a lever on, no matter what state it was in before.
+        // At the player's location, switch the state of the block to on, no matter what state it was in before.
         // - switch <player.location> state:on
         //
         // @Usage
@@ -3996,7 +4008,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - switch <player.location.cursor_on> state:on
         //
         // @Usage
-        // Toggle a lever at the player's location.
+        // Toggle a block at the player's location.
         // - switch <player.location>
         //
         // -->
