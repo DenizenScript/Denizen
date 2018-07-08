@@ -963,7 +963,7 @@ public class dPlayer implements dObject, Adjustable {
                 by = b.getY();
                 bz = b.getZ();
 
-                if (b.getType() != Material.AIR) {
+                if (b.getType().isSolid()) {
                     // Line of sight is broken
                     break;
                 }

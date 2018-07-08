@@ -997,7 +997,7 @@ public class dMaterial implements dObject {
         registerTag("is_solid", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(!NMSHandler.getInstance().getBlockHelper().isSafeBlock(((dMaterial) object).material))
+                return new Element(((dMaterial) object).material.isSolid())
                         .getAttribute(attribute.fulfill(1));
             }
         });
