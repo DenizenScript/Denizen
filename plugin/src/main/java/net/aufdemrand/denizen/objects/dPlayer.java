@@ -2203,6 +2203,35 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name respawn
+        // @input None
+        // @description
+        // Forces the player to respawn if they are on the death screen.
+        // -->
+        if (mechanism.matches("respawn")) {
+            NMSHandler.getInstance().getPacketHelper().respawn(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name vision
+        // @input Element
+        // @description
+        // Changes the player's vision to the provided entity type. Valid types:
+        // ENDERMAN, CAVE_SPIDER, SPIDER, CREEPER
+        // Provide no value to reset the player's vision.
+        // -->
+        if (mechanism.matches("vision")) {
+            if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {
+                NMSHandler.getInstance().getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(value.asString().toUpperCase()));
+            }
+            else {
+                NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name level
         // @input Element(Number)
         // @description

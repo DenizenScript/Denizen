@@ -5,6 +5,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -17,6 +18,10 @@ public interface PacketHelper {
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
     void setFieldOfView(Player player, float fov);
+
+    void respawn(Player player);
+
+    void setVision(Player player, EntityType entityType);
 
     void showDemoScreen(Player player);
 
