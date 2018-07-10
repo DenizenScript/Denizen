@@ -4389,8 +4389,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Description
         // Runs a series of braced commands until the tag returns false.
-        // To end a while loop, do - while stop
-        // To jump immediately to the next entry in the loop, do - while next
+        // To end a while loop, use the 'stop' argument.
+        // To jump to the next entry in the loop, use the 'next' argument.
         //
         // @Tags
         // <def[loop_index]> to get the number of loops so far.
