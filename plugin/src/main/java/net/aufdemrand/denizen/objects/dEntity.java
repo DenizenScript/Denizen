@@ -865,7 +865,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                     // Else, use the entity_type specified/remembered
                     else {
-                        entity = entity_type.spawnNewEntity(location, mechanisms);
+                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                     }
 
                     getLivingEntity().teleport(location);
@@ -930,7 +930,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                     else {
 
-                        ent = entity_type.spawnNewEntity(location, mechanisms);
+                        ent = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         entity = ent;
                         if (entity == null) {
                             if (dB.verbose) {

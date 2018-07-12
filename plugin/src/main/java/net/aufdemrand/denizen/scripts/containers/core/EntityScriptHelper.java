@@ -36,7 +36,7 @@ public class EntityScriptHelper implements Listener {
                 .registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onEntityDeath(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         dEntity.rememberEntity(entity);
@@ -63,11 +63,17 @@ public class EntityScriptHelper implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldUnload(WorldUnloadEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         unlinkWorld(event.getWorld());
     }
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
         // TODO: This doesn't work. Awaiting Entity Despawn Event PR's for Bukkit:
         // Bukkit: https://github.com/Bukkit/Bukkit/pull/1070
         // CraftBukkit: https://github.com/Bukkit/CraftBukkit/pull/1386

@@ -79,7 +79,7 @@ public class DenizenEntityType {
         this.customEntityType = CustomEntityType.valueOf(name.toUpperCase());
     }
 
-    public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms) {
+    public Entity spawnNewEntity(Location location, ArrayList<Mechanism> mechanisms, String scriptName) {
         try {
             if (name.equals("DROPPED_ITEM")) {
                 ItemStack itemStack = new ItemStack(Material.STONE);
@@ -93,7 +93,7 @@ public class DenizenEntityType {
             }
             else if (!isCustom()) {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                    return SpawnEntityHelper.spawn(location, bukkitEntityType, mechanisms);
+                    return SpawnEntityHelper.spawn(location, bukkitEntityType, mechanisms, scriptName);
                 }
                 return location.getWorld().spawnEntity(location, bukkitEntityType);
             }

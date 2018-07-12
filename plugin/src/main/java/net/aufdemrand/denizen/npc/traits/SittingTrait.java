@@ -89,7 +89,7 @@ public class SittingTrait extends Trait implements Listener {
         }
         else {
             DenizenEntityType.getByName("FAKE_ARROW").spawnNewEntity(npc.getEntity().getLocation(),
-                    new ArrayList<Mechanism>()).setPassenger(npc.getEntity());
+                    new ArrayList<Mechanism>(), null).setPassenger(npc.getEntity());
         }
         //eh.getDataWatcher().watch(0, (byte) 0x04);
         sitting = true;
