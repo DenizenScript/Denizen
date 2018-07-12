@@ -28,6 +28,8 @@ public class EntityScriptContainer extends ScriptContainer {
     // The following is the format for the container. Except for the 'entity_type' key (and the dScript
     // required 'type' key), all other keys are optional.
     //
+    // You can also include a 'custom' key to hold any custom yaml data attached to the script.
+    //
     // <code>
     // # The name of the entity script is the same name that you can use to construct a new
     // # dEntity based on this entity script. For example, an entity script named 'space zombie'
@@ -38,6 +40,8 @@ public class EntityScriptContainer extends ScriptContainer {
     //
     //   # Must be a valid dEntity (EG e@zombie or e@pig[age=baby]) See 'dEntity' for more information.
     //   entity_type: e@base_entity
+    //
+    //   # Samples of mechanisms to use (any valid dEntity mechanisms may be listed like this):
     //
     //   # Whether the entity has the default AI
     //   has_ai: true/false
@@ -72,7 +76,7 @@ public class EntityScriptContainer extends ScriptContainer {
 
             Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
             for (StringHolder string : strings) {
-                if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug")) {
+                if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
                     String value = TagManager.tag((getString(string.low, "")), new BukkitTagContext
                             (player, npc, false, null, shouldDebug(), new dScript(this)));
                     entity.adjust(new Mechanism(new Element(string.low), new Element(value)));
