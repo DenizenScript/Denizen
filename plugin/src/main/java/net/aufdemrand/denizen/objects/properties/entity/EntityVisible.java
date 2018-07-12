@@ -1,11 +1,14 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.npc.traits.InvisibleTrait;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 
@@ -96,7 +99,12 @@ public class EntityVisible implements Property {
         // <e@entity.visible>
         // -->
         if (mechanism.matches("visible") && mechanism.requireBoolean()) {
-            stand.setVisible(mechanism.getValue().asBoolean());
+            if (Depends.citizens != null) {
+                InvisibleTrait.setInvisible(stand, CitizensAPI.getNPCRegistry().getNPC(stand), mechanism.getValue().asBoolean());
+            }
+            else {
+                stand.setVisible(mechanism.getValue().asBoolean());
+            }
         }
     }
 }
