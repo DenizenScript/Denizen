@@ -26,7 +26,6 @@ public class AdjustCommand extends AbstractCommand {
                 }
                 else {
                     scriptEntry.addObject("mechanism", arg.asElement());
-                    scriptEntry.addObject("mechanism_value", new Element(""));
                 }
 
             }
@@ -56,7 +55,7 @@ public class AdjustCommand extends AbstractCommand {
         dB.report(scriptEntry, getName(),
                 objects.debug()
                         + mechanism.debug()
-                        + value.debug());
+                        + (value == null ? "" : value.debug()));
 
         dList result = new dList();
 
