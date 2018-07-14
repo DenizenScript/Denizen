@@ -100,7 +100,7 @@ public class EntityVisible implements Property {
         // -->
         if (mechanism.matches("visible") && mechanism.requireBoolean()) {
             if (Depends.citizens != null) {
-                InvisibleTrait.setInvisible(stand, CitizensAPI.getNPCRegistry().getNPC(stand), mechanism.getValue().asBoolean());
+                InvisibleTrait.setInvisible(stand, CitizensAPI.getNPCRegistry().getNPC(stand), !mechanism.getValue().asBoolean());
             }
             else {
                 stand.setVisible(mechanism.getValue().asBoolean());
