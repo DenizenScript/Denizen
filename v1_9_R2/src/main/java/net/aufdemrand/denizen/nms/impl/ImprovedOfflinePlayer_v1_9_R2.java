@@ -66,20 +66,41 @@ public class ImprovedOfflinePlayer_v1_9_R2 extends ImprovedOfflinePlayer {
 
     @Override
     public double getMaxHealth() {
-        return getAttributes().a("generic.maxHealth").getValue();
+        AttributeInstance maxHealth = getAttributes().a(GenericAttributes.maxHealth);
+        return maxHealth == null ? GenericAttributes.maxHealth.b() : maxHealth.getValue();
     }
 
     @Override
     public void setMaxHealth(double input) {
         AttributeMapBase attributes = getAttributes();
-        attributes.a("generic.maxHealth").setValue(input);
+        AttributeInstance maxHealth = attributes.a(GenericAttributes.maxHealth);
+        if (maxHealth == null) {
+            maxHealth = attributes.b(GenericAttributes.maxHealth);
+        }
+        maxHealth.setValue(input);
         setAttributes(attributes);
     }
 
     private AttributeMapBase getAttributes() {
         AttributeMapBase amb = new AttributeMapServer();
-        GenericAttributes.a(amb, ((CompoundTag_v1_9_R2) this.compound).toNMSTag().getList("Attributes", 0));
+        initAttributes(amb);
+        GenericAttributes.a(amb, ((CompoundTag_v1_9_R2) this.compound).toNMSTag().getList("Attributes", 10));
         return amb;
+    }
+
+    private void initAttributes(AttributeMapBase amb) {
+        // ===== from EntityHuman superclass (EntityLiving) =====
+        amb.b(GenericAttributes.maxHealth);
+        amb.b(GenericAttributes.c);
+        //this.getAttributeMap().b(GenericAttributes.MOVEMENT_SPEED); -- merged below to simplify code
+        amb.b(GenericAttributes.g);
+        amb.b(GenericAttributes.h);
+        // ===== from EntityHuman =====
+        amb.b(GenericAttributes.ATTACK_DAMAGE).setValue(1.0D);
+        //this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D); -- merged below
+        amb.b(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D);
+        amb.b(GenericAttributes.f);
+        amb.b(GenericAttributes.i);
     }
 
     public void setAttributes(AttributeMapBase attributes) {
