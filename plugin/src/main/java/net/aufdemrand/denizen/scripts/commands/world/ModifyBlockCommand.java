@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -343,7 +344,10 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             location.getBlock().breakNaturally();
         }
         else {
-            location.getBlock().setTypeIdAndData(material.getMaterial().getId(), material.getMaterialData().getData(), physics);
+            // TODO: 1.13 - check if this works
+            Block block = location.getBlock();
+            block.setType(material.getMaterial());
+            block.setData(material.getMaterialData().getData(), physics);
         }
     }
 

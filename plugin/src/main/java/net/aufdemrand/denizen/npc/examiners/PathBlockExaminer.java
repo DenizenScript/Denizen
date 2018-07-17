@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.npc.examiners;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.citizensnpcs.api.astar.pathfinder.BlockExaminer;
@@ -52,7 +54,7 @@ public class PathBlockExaminer implements BlockExaminer {
         // Encourage materials that are not in the filter
         for (dMaterial mat : pathing_materials) {
             // Discourage walking through web
-            if (above == Material.WEB || in == Material.WEB) {
+            if (above == COBWEB || in == COBWEB) {
                 return 1F;
             }
 
@@ -111,21 +113,88 @@ public class PathBlockExaminer implements BlockExaminer {
     }
 
     public static boolean isLiquid(Material... materials) {
-        return contains(materials, Material.WATER, Material.STATIONARY_WATER, Material.LAVA, Material.STATIONARY_LAVA);
+        return contains(materials, combine(WATER, LAVA));
+    }
+
+    // TODO: 1.13 - ...everything below.
+    private static final Material COBWEB;
+    private static final Material[] WATER;
+    private static final Material[] LAVA;
+    private static final Material[] REPEATER;
+    private static final Material[] FENCE_GATE;
+    private static final Material TALL_GRASS;
+    private static final Material[] REDSTONE_TORCH;
+    private static final Material[] CARPET;
+    private static final Material ROSE_RED;
+    private static final Material RAIL;
+    private static final Material[] WOOD_BUTTON;
+    private static final Material[] WOODEN_DOOR;
+    private static final Material SUGAR_CANE;
+    private static final Material[] SIGN;
+
+    private static Material[] combine(Material[] first, Material... second) {
+        int firstLen = first.length;
+        int secondLen = second.length;
+        Material[] ret = new Material[firstLen + secondLen];
+        System.arraycopy(first, 0, ret, 0, firstLen);
+        System.arraycopy(second, 0, ret, firstLen, secondLen);
+        return ret;
+    }
+
+    static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            COBWEB = Material.COBWEB;
+            WATER = new Material[] { Material.WATER };
+            LAVA = new Material[] { Material.LAVA };
+            REPEATER = new Material[] { Material.REPEATER };
+            FENCE_GATE = new Material[] { Material.ACACIA_FENCE_GATE, Material.BIRCH_FENCE_GATE,
+                    Material.DARK_OAK_FENCE_GATE, Material.JUNGLE_FENCE_GATE,
+                    Material.OAK_FENCE_GATE, Material.SPRUCE_FENCE_GATE };
+            TALL_GRASS = Material.TALL_GRASS;
+            REDSTONE_TORCH = new Material[] { Material.REDSTONE_TORCH };
+            CARPET = new Material[] { Material.BLACK_CARPET, Material.BLUE_CARPET, Material.BROWN_CARPET,
+                    Material.CYAN_CARPET, Material.GRAY_CARPET, Material.GREEN_CARPET, Material.LIME_CARPET,
+                    Material.LIGHT_BLUE_CARPET, Material.LIGHT_GRAY_CARPET, Material.MAGENTA_CARPET,
+                    Material.ORANGE_CARPET, Material.PINK_CARPET, Material.PURPLE_CARPET, Material.RED_CARPET,
+                    Material.WHITE_CARPET, Material.YELLOW_CARPET };
+            ROSE_RED = Material.ROSE_RED;
+            RAIL = Material.RAIL;
+            WOOD_BUTTON = new Material[] { Material.ACACIA_BUTTON, Material.BIRCH_BUTTON,
+                    Material.DARK_OAK_BUTTON, Material.JUNGLE_BUTTON,
+                    Material.OAK_BUTTON, Material.SPRUCE_BUTTON };
+            WOODEN_DOOR = new Material[] { Material.ACACIA_DOOR, Material.BIRCH_DOOR,
+                    Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
+                    Material.OAK_DOOR, Material.SPRUCE_DOOR };
+            SUGAR_CANE = Material.SUGAR_CANE;
+            SIGN = new Material[] { Material.SIGN, Material.WALL_SIGN };
+        }
+        else {
+            COBWEB = Material.valueOf("WEB");
+            WATER = new Material[] { Material.valueOf("WATER"), Material.valueOf("STATIONARY_WATER") };
+            LAVA = new Material[] { Material.valueOf("LAVA"), Material.valueOf("STATIONARY_LAVA") };
+            REPEATER = new Material[] { Material.valueOf("DIODE"), Material.valueOf("DIODE_BLOCK_OFF"), Material.valueOf("DIODE_BLOCK_ON") };
+            FENCE_GATE = new Material[] { Material.valueOf("FENCE_GATE") };
+            TALL_GRASS = Material.valueOf("LONG_GRASS");
+            REDSTONE_TORCH = new Material[] { Material.valueOf("REDSTONE_TORCH_ON"), Material.valueOf("REDSTONE_TORCH_OFF") };
+            CARPET = new Material[] { Material.valueOf("CARPET") };
+            ROSE_RED = Material.valueOf("RED_ROSE");
+            RAIL = Material.valueOf("RAILS");
+            WOOD_BUTTON = new Material[] { Material.valueOf("WOOD_BUTTON") };
+            WOODEN_DOOR = new Material[] { Material.valueOf("WOODEN_DOOR") };
+            SUGAR_CANE = Material.valueOf("SUGAR_CANE_BLOCK");
+            SIGN = new Material[] { Material.valueOf("SIGN_POST"), Material.valueOf("WALL_SIGN") };
+        }
     }
 
     private static final Vector DOWN = new Vector(0, -1, 0);
-    private static final Set<Material> PASSABLE = EnumSet.of(Material.AIR, Material.DEAD_BUSH, Material.DETECTOR_RAIL,
-            Material.DIODE, Material.DIODE_BLOCK_OFF, Material.DIODE_BLOCK_ON, Material.FENCE_GATE,
-            Material.ITEM_FRAME, Material.LADDER, Material.LEVER, Material.LONG_GRASS, Material.CARPET,
-            Material.MELON_STEM, Material.NETHER_FENCE, Material.PUMPKIN_STEM, Material.POWERED_RAIL, Material.RAILS,
-            Material.RED_ROSE, Material.RED_MUSHROOM, Material.REDSTONE, Material.REDSTONE_TORCH_OFF,
-            Material.REDSTONE_TORCH_OFF, Material.REDSTONE_WIRE, Material.SIGN, Material.SIGN_POST, Material.SNOW,
-            Material.STRING, Material.STONE_BUTTON, Material.SUGAR_CANE_BLOCK, Material.TRIPWIRE, Material.VINE,
-            Material.WALL_SIGN, Material.WHEAT, Material.WATER, Material.WEB, Material.WOOD_BUTTON,
-            Material.WOODEN_DOOR, Material.STATIONARY_WATER);
-    private static final Set<Material> UNWALKABLE = EnumSet.of(Material.AIR, Material.LAVA, Material.STATIONARY_LAVA,
-            Material.CACTUS);
+    private static final Set<Material> PASSABLE = EnumSet.of(Material.AIR, combine(REPEATER, combine(FENCE_GATE,
+            combine(WATER, combine(CARPET, combine(WOOD_BUTTON, combine(REDSTONE_TORCH, combine(WOODEN_DOOR, combine(SIGN,
+                    COBWEB, TALL_GRASS, ROSE_RED, RAIL, SUGAR_CANE, Material.DEAD_BUSH, Material.DETECTOR_RAIL,
+                    Material.ITEM_FRAME, Material.LADDER, Material.LEVER, Material.MELON_STEM,
+                    Material.PUMPKIN_STEM, Material.POWERED_RAIL, Material.RED_MUSHROOM, Material.REDSTONE,
+                    Material.REDSTONE_WIRE, Material.SNOW, Material.STRING, Material.STONE_BUTTON,
+                    Material.TRIPWIRE, Material.VINE, Material.WHEAT)))))))));
+    private static final Set<Material> UNWALKABLE = EnumSet.of(Material.AIR, combine(LAVA, Material.CACTUS));
     private static final Vector UP = new Vector(0, 1, 0);
 }
 

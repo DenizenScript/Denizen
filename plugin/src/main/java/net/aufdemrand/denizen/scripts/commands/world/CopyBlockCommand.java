@@ -89,7 +89,9 @@ public class CopyBlockCommand extends AbstractCommand {
             BlockState sourceState = source.getState();
             Block update = destination.getBlock();
 
-            update.setTypeIdAndData(source.getTypeId(), source.getData(), false);
+            // TODO: 1.13 - check if this works
+            update.setType(source.getType());
+            update.setData(source.getData(), false);
 
             BlockState updateState = update.getState();
 

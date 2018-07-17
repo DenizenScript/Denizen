@@ -141,16 +141,17 @@ public class dItem implements dObject, Notable, Adjustable {
             try {
                 String material = m.group(1).toUpperCase();
 
-                if (aH.matchesInteger(material)) {
-                    stack = new dItem(Integer.valueOf(material));
-                }
-                else {
+                // TODO: 1.13 - should we rework this?
+//                if (aH.matchesInteger(material)) {
+//                    stack = new dItem(Integer.valueOf(material));
+//                }
+//                else {
                     dMaterial mat = dMaterial.valueOf(material);
                     stack = new dItem(mat.getMaterial());
                     if (mat.hasData()) {
                         stack.setDurability(mat.getData());
                     }
-                }
+//                }
 
                 if (m.group(2) != null) {
                     stack.setDurability(Short.valueOf(m.group(2)));
@@ -220,9 +221,14 @@ public class dItem implements dObject, Notable, Adjustable {
         this(new ItemStack(material));
     }
 
-    public dItem(int itemId) {
-        this(new ItemStack(itemId));
-    }
+    // TODO: 1.13 - should we rework these?
+//    public dItem(int itemId) {
+//        this(new ItemStack(itemId));
+//    }
+
+//    public dItem(int type, int qty) {
+//        this(new ItemStack(type, qty));
+//    }
 
     public dItem(Material material, int qty) {
         this(new ItemStack(material, qty));
@@ -230,10 +236,6 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public dItem(dMaterial material, int qty) {
         this(new ItemStack(material.getMaterial(), qty, (short) 0, material.getData()));
-    }
-
-    public dItem(int type, int qty) {
-        this(new ItemStack(type, qty));
     }
 
     public dItem(ItemStack item) {
@@ -287,7 +289,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // Will return -1 if these are not the same
         // Material IDs
-        if (compared.getTypeId() != compared_to.getTypeId()) {
+        if (compared.getType().getId() != compared_to.getType().getId()) {
             return -1;
         }
 
@@ -538,7 +540,8 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        // TODO: 1.13 - what is this check???
+        if (item.getType().getId() != 0) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -573,7 +576,8 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        // TODO: 1.13 - what is this check???
+        if (item.getType().getId() != 0) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -598,7 +602,8 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        // TODO: 1.13 - what is this check???
+        if (item.getType().getId() != 0) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -664,7 +669,8 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).getItemStack().getTypeId())
+                // TODO: 1.13 - should we keep this
+                return new Element(((dItem) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });

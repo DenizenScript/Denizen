@@ -103,8 +103,9 @@ public class ItemListenerInstance extends AbstractListener implements Listener {
                 final ItemStack item = new ItemStack(event.getCurrentItem());
 
                 //if item isn't a required item, then return
+                // TODO: 1.13 - better method?
                 if (!items.contains(CoreUtilities.toLowerCase(item.getType().name()))
-                        && !items.contains(String.valueOf(item.getTypeId())) && !items.contains("*")) {
+                        && !items.contains(String.valueOf(item.getType().getId())) && !items.contains("*")) {
                     return;
                 }
 

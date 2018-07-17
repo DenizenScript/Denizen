@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -86,7 +88,9 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("item")) {
-            ItemStack itemStack = new ItemStack(Material.FIREWORK);
+            // TODO: 1.13 - better method?
+            Material firework = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+            ItemStack itemStack = new ItemStack(firework);
             itemStack.setItemMeta(event.getEntity().getFireworkMeta());
             return new dItem(itemStack);
         }
