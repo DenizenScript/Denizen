@@ -2,27 +2,27 @@ package net.aufdemrand.denizen.nms.impl;
 
 import net.aufdemrand.denizen.nms.abstracts.BiomeNMS;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
-import net.minecraft.server.v1_12_R1.BiomeBase;
-import net.minecraft.server.v1_12_R1.BlockPosition;
-import net.minecraft.server.v1_12_R1.Chunk;
-import net.minecraft.server.v1_12_R1.EntityTypes;
-import net.minecraft.server.v1_12_R1.EnumCreatureType;
-import net.minecraft.server.v1_12_R1.WorldServer;
+import net.minecraft.server.v1_13_R1.BiomeBase;
+import net.minecraft.server.v1_13_R1.BlockPosition;
+import net.minecraft.server.v1_13_R1.Chunk;
+import net.minecraft.server.v1_13_R1.EntityTypes;
+import net.minecraft.server.v1_13_R1.EnumCreatureType;
+import net.minecraft.server.v1_13_R1.WorldServer;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_13_R1.block.CraftBlock;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class BiomeNMS_v1_12_R1 extends BiomeNMS {
+public class BiomeNMS_v1_13_R1 extends BiomeNMS {
 
     private final BiomeBase biomeBase;
 
-    public BiomeNMS_v1_12_R1(Biome biome) {
+    public BiomeNMS_v1_13_R1(Biome biome) {
         super(biome);
         this.biomeBase = CraftBlock.biomeToBiomeBase(biome);
     }
@@ -76,28 +76,20 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
             Chunk chunk = world.getChunkAtWorldCoords(new BlockPosition(x, 0, z));
 
             if (chunk != null) {
-                byte[] biomevals = chunk.getBiomeIndex();
-                biomevals[((z & 0xF) << 4) | (x & 0xF)] = (byte) BiomeBase.a(biomeBase);
+                BiomeBase[] biomevals = chunk.getBiomeIndex();
+                biomevals[((z & 0xF) << 4) | (x & 0xF)] = biomeBase;
             }
         }
     }
 
     @Override
     protected boolean getDoesRain() {
-        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "F", biomeBase);
-        if (rains != null) {
-            return rains;
-        }
-        return false;
+        return biomeBase.c() == BiomeBase.Precipitation.RAIN;
     }
 
     @Override
     protected boolean getDoesSnow() {
-        Boolean rains = ReflectionHelper.getFieldValue(BiomeBase.class, "E", biomeBase);
-        if (rains != null) {
-            return rains;
-        }
-        return false;
+        return biomeBase.c() == BiomeBase.Precipitation.SNOW;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
@@ -105,7 +97,7 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
             // TODO: check if this works
             try {
-                String n = EntityTypes.getName(meta.b).getKey();
+                String n = EntityTypes.getName(meta.b).b();
                 EntityType et = EntityType.fromName(n);
                 if (et == null) {
                     et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
