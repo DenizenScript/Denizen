@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Fetchable;
@@ -13,6 +14,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.material.MaterialData;
@@ -92,6 +94,30 @@ public class dMaterial implements dObject {
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
     // they are special :)
+
+    private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID;
+
+    static {
+        MATERIAL_BY_LEGACY_ID = new HashMap<Integer, Material>();
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
+            for (Material material : map.values()) {
+                if (material.isLegacy()) {
+                    MATERIAL_BY_LEGACY_ID.put(material.getId(), Bukkit.getUnsafe().fromLegacy(material));
+                }
+            }
+        }
+        else {
+            for (Material material : Material.values()) {
+                MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
+            }
+        }
+    }
+
+    @Deprecated
+    public static Material getLegacyMaterial(int id) {
+        return MATERIAL_BY_LEGACY_ID.get(id);
+    }
 
     public static dMaterial getMaterialPre1_13(String material, int data, String name) {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
@@ -624,14 +650,16 @@ public class dMaterial implements dObject {
             }
             return getMaterialFrom(mat.material, data);
         }
-        // TODO: 1.13 - re-implement?
-//        int matid = aH.getIntegerFrom(string);
-//        if (matid != 0) {
-//            m = Material.getMaterial(matid);
-//            if (m != null) {
-//                return getMaterialFrom(m, data);
-//            }
-//        }
+        int matid = aH.getIntegerFrom(string);
+        if (matid != 0) {
+            if (!nope) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            }
+            m = getLegacyMaterial(matid);
+            if (m != null) {
+                return getMaterialFrom(m, data);
+            }
+        }
         return null;
     }
 
@@ -660,6 +688,10 @@ public class dMaterial implements dObject {
         return null;
     }
 
+    // :( boolean for technicality, can be fixed
+    // by making matches() method better.
+    public static boolean nope = false;
+
     /**
      * Determine whether a string is a valid material.
      *
@@ -671,10 +703,14 @@ public class dMaterial implements dObject {
         if (arg.startsWith("m@")) {
             return true;
         }
+        // TODO: Make this better. Probably creating some unnecessary
+        // objects by doing this :(
+        nope = true;
         if (valueOf(arg) != null) {
+            nope = false;
             return true;
         }
-
+        nope = false;
         return false;
     }
 
@@ -877,6 +913,24 @@ public class dMaterial implements dObject {
 
     public static void registerTags() {
 
+        registerTag("id", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                return new Element(((dMaterial) object).material.getId())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        registerTag("data", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                return new Element(((dMaterial) object).getData())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
         // <--[tag]
         // @attribute <m@material.has_gravity>
         // @returns Element(Boolean)
@@ -887,20 +941,6 @@ public class dMaterial implements dObject {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(((dMaterial) object).material.hasGravity())
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <m@material.id>
-        // @returns Element(Number)
-        // @description
-        // Returns the material's ID.
-        // -->
-        registerTag("id", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).material.getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });
@@ -1113,22 +1153,6 @@ public class dMaterial implements dObject {
                     return new Element(((dMaterial) object).identify())
                             .getAttribute(attribute.fulfill(1));
                 }
-            }
-        });
-
-        // <--[tag]
-        // @attribute <m@material.data>
-        // @returns Element(Number)
-        // @description
-        // Returns the bukkit Material data value. For example: <m@red_clay.data>
-        // will return '14'. Note: This kind of 'material identification' has been deprecated
-        // by bukkit and should be used sparingly.
-        // -->
-        registerTag("data", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dMaterial) object).getData())
-                        .getAttribute(attribute.fulfill(1));
             }
         });
 
