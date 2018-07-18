@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -144,7 +145,9 @@ public class SwitchCommand extends AbstractCommand {
                     else {
                         block = interactLocation;
                     }
-                    block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(ironDoor, (byte) (block.getBlock().getData() ^ 4));
+                    blockData.setBlock(block.getBlock(), false);
                 }
                 else {
                     NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);

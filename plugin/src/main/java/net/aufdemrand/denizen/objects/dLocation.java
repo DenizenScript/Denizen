@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -2159,6 +2160,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
         Element value = mechanism.getValue();
 
+        if (mechanism.matches("data") && mechanism.hasValue()) {
+            dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
+            blockData.setBlock(getBlock(), false);
+        }
+
         // <--[mechanism]
         // @object dLocation
         // @name block_type
@@ -2171,10 +2178,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
             dMaterial mat = value.asType(dMaterial.class);
             byte data = mat.hasData() ? mat.getData() : 0;
-            // TODO: 1.13 - confirm this works
-            Block block = getBlock();
-            block.setType(mat.getMaterial());
-            block.setData(data, false);
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(mat.getMaterial(), data);
+            blockData.setBlock(getBlock(), false);
         }
 
         // <--[mechanism]
@@ -2451,19 +2456,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Skull sk = (Skull) getBlock().getState();
             sk.setRotation(getSkullBlockFace(value.asInt() - 1));
             sk.update();
-        }
-
-        // <--[mechanism]
-        // @object dLocation
-        // @name data
-        // @input Element(Number)
-        // @description
-        // Sets the data-value of a block.
-        // @tags
-        // <l@location.material.data>
-        // -->
-        if (mechanism.matches("data") && mechanism.hasValue()) {
-            getBlock().setData((byte) value.asInt());
         }
 
         // <--[mechanism]

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -89,9 +91,9 @@ public class CopyBlockCommand extends AbstractCommand {
             BlockState sourceState = source.getState();
             Block update = destination.getBlock();
 
-            // TODO: 1.13 - check if this works
-            update.setType(source.getType());
-            update.setData(source.getData(), false);
+            // TODO: 1.13 - confirm this works
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(source);
+            blockData.setBlock(update, false);
 
             BlockState updateState = update.getState();
 

@@ -7,27 +7,31 @@ import net.aufdemrand.denizen.nms.util.jnbt.CompoundTagBuilder;
 import net.minecraft.server.v1_13_R1.BlockPosition;
 import net.minecraft.server.v1_13_R1.NBTTagCompound;
 import net.minecraft.server.v1_13_R1.TileEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_13_R1.CraftWorld;
 
 public class BlockData_v1_13_R1 implements BlockData {
 
-    private Material material;
-    private byte data;
+    private org.bukkit.block.data.BlockData blockData;
 
     public BlockData_v1_13_R1() {
     }
 
-    public BlockData_v1_13_R1(short mat, byte dat) {
-        // TODO: 1.13
-        //material = Material.getMaterial(mat);
-        data = dat;
+    public BlockData_v1_13_R1(Material mat, byte dat) {
+        if (!mat.isLegacy()) {
+            if (dat == 0) {
+                blockData = Bukkit.createBlockData(mat);
+                return;
+            }
+            mat = Bukkit.getUnsafe().toLegacy(mat);
+        }
+        blockData = Bukkit.getUnsafe().fromLegacy(mat, dat);
     }
 
     public BlockData_v1_13_R1(Block block) {
-        material = block.getType();
-        data = block.getData();
+        blockData = block.getBlockData();
         TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
                 new BlockPosition(block.getX(), block.getY(), block.getZ()));
         if (te != null) {
@@ -37,9 +41,8 @@ public class BlockData_v1_13_R1 implements BlockData {
         }
     }
 
-    public void setBlock(Block block) {
-        // TODO: 1.13
-        //block.setTypeIdAndData(material.getId(), (byte) data, false);
+    public void setBlock(Block block, boolean physics) {
+        block.setBlockData(blockData, physics);
         if (ctag != null) {
             CompoundTagBuilder builder = ctag.createBuilder();
             builder.putInt("x", block.getX());
@@ -54,19 +57,12 @@ public class BlockData_v1_13_R1 implements BlockData {
     }
 
     public String toCompressedFormat() {
-        return "{" + material.getId() + ":" + data + "}";
+        return "{" + blockData.getMaterial().name() + "}";
     }
 
     public static BlockData fromCompressedString(String str) {
-        BlockData data = new BlockData_v1_13_R1();
-        String inner = str.substring(1, str.length() - 1);
-        String[] datas = inner.split(":");
-        // TODO: 1.13
-        //data.setMaterial(Material.getMaterial(Integer.parseInt(datas[0])));
-        data.setData(Byte.parseByte(datas[1]));
-        if (data.getMaterial() == null) {
-            throw new RuntimeException("Null material: " + datas[0]);
-        }
+        BlockData_v1_13_R1 data = new BlockData_v1_13_R1();
+        data.blockData = Bukkit.createBlockData(Material.getMaterial(str));
         return data;
     }
 
@@ -84,21 +80,21 @@ public class BlockData_v1_13_R1 implements BlockData {
 
     @Override
     public Material getMaterial() {
-        return material;
+        return blockData.getMaterial();
     }
 
     @Override
     public void setMaterial(Material material) {
-        this.material = material;
+        blockData = Bukkit.createBlockData(material);
     }
 
     @Override
     public byte getData() {
-        return data;
+        return 0;
     }
 
     @Override
     public void setData(byte data) {
-        this.data = data;
+        // no
     }
 }

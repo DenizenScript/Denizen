@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 
 public interface BlockData {
 
-    void setBlock(Block block);
+    void setBlock(Block block, boolean physics);
 
     String toCompressedFormat();
 

@@ -513,7 +513,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                 for (int y = 0; y != y_distance + 1; y++) {
                     for (int z = 0; z != z_distance + 1; z++) {
                         if (loc_1.getY() + y >= 0 && loc_1.getY() + y < 256) {
-                            materials.get(index).setBlock(loc_1.clone().add(x, y, z).getBlock());
+                            materials.get(index).setBlock(loc_1.clone().add(x, y, z).getBlock(), false);
                         }
                         index++;
                     }

@@ -19,8 +19,8 @@ public class BlockData_v1_8_R3 implements BlockData {
     public BlockData_v1_8_R3() {
     }
 
-    public BlockData_v1_8_R3(short mat, byte dat) {
-        material = Material.getMaterial(mat);
+    public BlockData_v1_8_R3(Material mat, byte dat) {
+        material = mat;
         data = dat;
     }
 
@@ -36,8 +36,8 @@ public class BlockData_v1_8_R3 implements BlockData {
         }
     }
 
-    public void setBlock(Block block) {
-        block.setTypeIdAndData(material.getId(), (byte) data, false);
+    public void setBlock(Block block, boolean physics) {
+        block.setTypeIdAndData(material.getId(), (byte) data, physics);
         if (ctag != null) {
             CompoundTagBuilder builder = ctag.createBuilder();
             builder.putInt("x", block.getX());

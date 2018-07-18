@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -88,17 +89,17 @@ public class SignCommand extends AbstractCommand {
                     BlockFace bf = Utilities.chooseSignRotation(direction);
                     org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
-                    // TODO: 1.13 - check if this works
-                    sign.setType(Material.WALL_SIGN);
-                    sign.setData(sgntmp.getData(), false);
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                    blockData.setBlock(sign, false);
                 }
                 else {
                     BlockFace bf = Utilities.chooseSignRotation(sign);
                     org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
-                    // TODO: 1.13 - check if this works
-                    sign.setType(Material.WALL_SIGN);
-                    sign.setData(sgntmp.getData(), false);
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                    blockData.setBlock(sign, false);
                 }
             }
             else {
@@ -121,9 +122,9 @@ public class SignCommand extends AbstractCommand {
                 BlockFace bf = Utilities.chooseSignRotation(sign);
                 org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                 sgntmp.setFacingDirection(bf);
-                // TODO: 1.13 - check if this works
-                sign.setType(Material.WALL_SIGN);
-                sign.setData(sgntmp.getData(), false);
+                // TODO: 1.13 - confirm this works
+                BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                blockData.setBlock(sign, false);
             }
         }
         BlockState signState = sign.getState();

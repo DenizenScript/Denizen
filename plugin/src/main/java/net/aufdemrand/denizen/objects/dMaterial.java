@@ -14,7 +14,6 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.material.MaterialData;
@@ -103,7 +102,7 @@ public class dMaterial implements dObject {
             Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
             for (Material material : map.values()) {
                 if (material.isLegacy()) {
-                    MATERIAL_BY_LEGACY_ID.put(material.getId(), Bukkit.getUnsafe().fromLegacy(material));
+                    MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
                 }
             }
         }
@@ -602,6 +601,8 @@ public class dMaterial implements dObject {
             }
         }
 
+        material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+
         return new dMaterial(material, data);
     }
 
@@ -641,10 +642,16 @@ public class dMaterial implements dObject {
         }
         Material m = Material.getMaterial(string);
         if (m != null) {
+            if (!nope && index >= 0) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            }
             return getMaterialFrom(m, data);
         }
         dMaterial mat = all_dMaterials.get(string);
         if (mat != null) {
+            if (!nope && index >= 0) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            }
             if (data == 0) {
                 return mat;
             }

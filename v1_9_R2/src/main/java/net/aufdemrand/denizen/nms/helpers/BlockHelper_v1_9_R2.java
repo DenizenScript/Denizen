@@ -92,8 +92,8 @@ public class BlockHelper_v1_9_R2 implements BlockHelper {
     }
 
     @Override
-    public BlockData getBlockData(short id, byte data) {
-        return new BlockData_v1_9_R2(id, data);
+    public BlockData getBlockData(Material material, byte data) {
+        return new BlockData_v1_9_R2(material, data);
     }
 
     @Override
