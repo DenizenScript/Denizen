@@ -42,7 +42,17 @@ public class CommandScriptHelper implements Listener {
             CommandMap commandMap = (CommandMap) commandMapField.get(server);
 
             // Get the knownCommands for the server's CommandMap
-            final Field knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+            Field kcf = null;
+            Class commandMapClass = commandMap.getClass();
+            while (kcf == null && commandMapClass != Object.class) {
+                try {
+                    kcf = commandMapClass.getDeclaredField("knownCommands");
+                }
+                catch (NoSuchFieldException e) {
+                    commandMapClass = commandMapClass.getSuperclass();
+                }
+            }
+            final Field knownCommandsField = kcf;
             knownCommandsField.setAccessible(true);
             knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
 
