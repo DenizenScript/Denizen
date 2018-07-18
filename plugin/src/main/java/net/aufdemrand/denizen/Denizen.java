@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.events.entity.*;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
@@ -287,7 +286,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
     private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-    private ListenerRegistry listenerRegistry = new ListenerRegistry();
     private dNPCRegistry dNPCRegistry;
 
 
@@ -297,10 +295,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public dNPCRegistry getNPCRegistry() {
         return dNPCRegistry;
-    }
-
-    public ListenerRegistry getListenerRegistry() {
-        return listenerRegistry;
     }
 
     public RequirementRegistry getRequirementRegistry() {
@@ -567,7 +561,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 getTriggerRegistry().registerCoreMembers();
             }
             getRequirementRegistry().registerCoreMembers();
-            getListenerRegistry().registerCoreMembers();
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1004,26 +997,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         // Save offline player inventories
         InventoryScriptHelper._savePlayerInventories();
-
-        // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
-        for (Player player : this.getServer().getOnlinePlayers()) {
-            getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
-        }
-
-        for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
-            try {
-                getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
-            }
-            catch (Exception e) {
-                if (player == null) {
-                    dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
-                }
-                else {
-                    dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
-                            "You might have a corrupt player file!");
-                }
-            }
-        }
 
         // Unload loaded dExternals
         for (dExternal external : RuntimeCompiler.loadedExternals) {
