@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.objects.properties.bukkit;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.commands.core.CooldownCommand;
-import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -58,24 +57,6 @@ public class BukkitScriptProperties implements Property {
             }
             else {
                 return null;
-            }
-        }
-
-        // <--[tag]
-        // @attribute <s@script.requirements[<player>].check[<path>]>
-        // @returns Element
-        // @description
-        // Returns whether the player specified (defaults to current) has the requirement.
-        // Must be an INTERACT script.
-        // -->
-        if (attribute.startsWith("requirements.check")) {
-            dPlayer player = (attribute.hasContext(1) ? dPlayer.valueOf(attribute.getContext(1))
-                    : ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer());
-            if (attribute.hasContext(2)) {
-                return new Element(((InteractScriptContainer) script.getContainer()).checkRequirements(player,
-                        ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC(),
-                        attribute.getContext(2)))
-                        .getAttribute(attribute.fulfill(2));
             }
         }
 
