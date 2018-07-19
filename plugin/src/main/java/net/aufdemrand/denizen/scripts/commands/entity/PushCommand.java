@@ -101,9 +101,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or player's locations as the origin if one is not specified
 
-        if (!scriptEntry.hasObject("originLocation")) {
+        if (!scriptEntry.hasObject("originlocation")) {
 
-            scriptEntry.defaultObject("originEntity",
+            scriptEntry.defaultObject("originentity",
                     ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity() : null,
                     ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
         }
@@ -119,7 +119,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             throw new InvalidArgumentsException("Must specify entity/entities!");
         }
 
-        if (!scriptEntry.hasObject("originEntity") && !scriptEntry.hasObject("originLocation")) {
+        if (!scriptEntry.hasObject("originentity") && !scriptEntry.hasObject("originlocation")) {
             throw new InvalidArgumentsException("Must specify an origin location!");
         }
     }
@@ -128,9 +128,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dEntity originEntity = (dEntity) scriptEntry.getObject("originEntity");
-        dLocation originLocation = scriptEntry.hasObject("originLocation") ?
-                (dLocation) scriptEntry.getObject("originLocation") :
+        dEntity originEntity = (dEntity) scriptEntry.getObject("originentity");
+        dLocation originLocation = scriptEntry.hasObject("originlocation") ?
+                (dLocation) scriptEntry.getObject("originlocation") :
                 new dLocation(originEntity.getEyeLocation()
                         .add(originEntity.getEyeLocation().getDirection())
                         .subtract(0, 0.4, 0));

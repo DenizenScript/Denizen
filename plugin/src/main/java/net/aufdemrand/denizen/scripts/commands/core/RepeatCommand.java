@@ -151,9 +151,12 @@ public class RepeatCommand extends BracedCommand {
                     bracedCommands.add(callbackEntry);
                     for (int i = 0; i < bracedCommands.size(); i++) {
                         bracedCommands.get(i).setInstant(true);
-                        bracedCommands.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
+                        bracedCommands.get(i).addObject("reqid", scriptEntry.getObject("reqid"));
                     }
                     scriptEntry.getResidingQueue().injectEntries(bracedCommands, 0);
+                }
+                else {
+                    dB.echoDebug(scriptEntry, DebugElement.Header, "Repeat loop complete");
                 }
             }
             else {
@@ -161,10 +164,13 @@ public class RepeatCommand extends BracedCommand {
             }
         }
         else {
-
-            // Get objects
-            List<ScriptEntry> bracedCommandsList =
-                    ((List<BracedData>) scriptEntry.getObject("braces")).get(0).value;
+            List<BracedData> data = ((List<BracedData>) scriptEntry.getObject("braces"));
+            if (data == null || data.isEmpty()) {
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces (internal)!");
+                dB.echoError(scriptEntry.getResidingQueue(), "Empty braces!");
+                return;
+            }
+            List<ScriptEntry> bracedCommandsList = data.get(0).value;
 
             if (bracedCommandsList == null || bracedCommandsList.isEmpty()) {
                 dB.echoError("Empty braces!");
@@ -197,8 +203,9 @@ public class RepeatCommand extends BracedCommand {
             scriptEntry.getResidingQueue().addDefinition("value", "1");
             for (int i = 0; i < bracedCommandsList.size(); i++) {
                 bracedCommandsList.get(i).setInstant(true);
-                bracedCommandsList.get(i).addObject("reqId", scriptEntry.getObject("reqId"));
+                bracedCommandsList.get(i).addObject("reqid", scriptEntry.getObject("reqid"));
             }
+            scriptEntry.setInstant(true);
             scriptEntry.getResidingQueue().injectEntries(bracedCommandsList, 0);
         }
     }

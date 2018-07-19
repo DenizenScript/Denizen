@@ -383,7 +383,7 @@ public class dPlayer implements dObject, Adjustable {
             return getPlayerEntity().getWorld();
         }
         else {
-            return null;
+            return getLocation().getWorld();
         }
     }
 
@@ -695,7 +695,7 @@ public class dPlayer implements dObject, Adjustable {
         // Works with offline players.
         // -->
         if (attribute.startsWith("chat_history_list")) {
-            return new dList(PlayerTags.playerChatHistory.get(getName())) // TODO: UUID?
+            return new dList(PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -713,10 +713,10 @@ public class dPlayer implements dObject, Adjustable {
                 x = attribute.getIntContext(1);
             }
             // No playerchathistory? Return null.
-            if (!PlayerTags.playerChatHistory.containsKey(getName())) { // TODO: UUID?
+            if (!PlayerTags.playerChatHistory.containsKey(getPlayerEntity().getUniqueId())) {
                 return null;
             }
-            List<String> messages = PlayerTags.playerChatHistory.get(getName()); // TODO: UUID?
+            List<String> messages = PlayerTags.playerChatHistory.get(getPlayerEntity().getUniqueId());
             if (messages.size() < x || x < 1) {
                 return null;
             }
@@ -963,7 +963,7 @@ public class dPlayer implements dObject, Adjustable {
                 by = b.getY();
                 bz = b.getZ();
 
-                if (b.getType() != Material.AIR) {
+                if (b.getType().isSolid()) {
                     // Line of sight is broken
                     break;
                 }
@@ -1087,6 +1087,10 @@ public class dPlayer implements dObject, Adjustable {
 
         if (attribute.startsWith("location") && !isOnline()) {
             return getLocation().getAttribute(attribute.fulfill(1));
+        }
+
+        if (attribute.startsWith("world") && !isOnline()) {
+            return new dWorld(getWorld()).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -2199,6 +2203,35 @@ public class dPlayer implements dObject, Adjustable {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name respawn
+        // @input None
+        // @description
+        // Forces the player to respawn if they are on the death screen.
+        // -->
+        if (mechanism.matches("respawn")) {
+            NMSHandler.getInstance().getPacketHelper().respawn(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name vision
+        // @input Element
+        // @description
+        // Changes the player's vision to the provided entity type. Valid types:
+        // ENDERMAN, CAVE_SPIDER, SPIDER, CREEPER
+        // Provide no value to reset the player's vision.
+        // -->
+        if (mechanism.matches("vision")) {
+            if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {
+                NMSHandler.getInstance().getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(value.asString().toUpperCase()));
+            }
+            else {
+                NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name level
         // @input Element(Number)
         // @description
@@ -2654,6 +2687,9 @@ public class dPlayer implements dObject, Adjustable {
                 else {
                     dB.echoError("'" + split[0] + "' is not a valid entity!");
                 }
+            }
+            else {
+                dB.echoError("Must specify an entity to hide!");
             }
         }
 

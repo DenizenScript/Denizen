@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
@@ -38,11 +39,15 @@ public class NPCTags implements Listener {
     public NPCTags(Denizen denizen) {
         if (Depends.citizens != null) {
             denizen.getServer().getPluginManager().registerEvents(this, denizen);
-            TagManager.registerTagEvents(this);
+            TagManager.registerTagHandler(new TagRunnable.RootForm() {
+                @Override
+                public void run(ReplaceableTagEvent event) {
+                    npcTags(event);
+                }
+            }, "npc");
         }
     }
 
-    @TagManager.TagEvents
     public void npcTags(ReplaceableTagEvent event) {
 
         if (!event.matches("npc") || event.replaced()) {

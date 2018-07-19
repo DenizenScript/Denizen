@@ -3,9 +3,10 @@
 Debug:
   Show: true
   Ex command help: true
-  # Adjust to your console width minus 16. Ideally, we'd calculate this, but we currently can't.
-  Console width: 64
-  Trim length: 512
+  # The max length of a line of debug output. Shorten this if your console is hard to read.
+  Line length: 128
+  # The max length of debug output. After this length, all further output will be cut off.
+  Trim length limit: 1024
   # Whether to permit the "server.redirect_logging" mechanism
   Allow console redirection: false
   # Whether to send basic statistic information to the Denizen central server.
@@ -142,6 +143,8 @@ Commands:
 Tags:
   # How long a tag can parse before force-closing the tag parser engine. Set to 0 to disable tag parse timing entirely.
   Timeout: 10
+  # Whether the tag system should still timeout when debug is off.
+  Timeout when silent: false
   # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place
@@ -163,4 +166,4 @@ Packets:
 # The version of this configuration file, used to check if your
 # configuration file is outdated or too new
 Config:
-  Version: 14
+  Version: 15

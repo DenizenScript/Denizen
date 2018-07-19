@@ -2,57 +2,32 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.apache.logging.log4j.core.Core;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 
-public class TextTags implements Listener {
+public class TextTags {
 
     public TextTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
         TagManager.registerTagEvents(this);
+        // TODO: register handlers for other events
+        for (ChatColor color : ChatColor.values()) {
+            final String nameVal = CoreUtilities.toLowerCase(color.name());
+            final String codeVal = "&" + String.valueOf(color.getChar());
+            final String retVal = color.toString();
+            TagManager.registerTagHandler(new TagRunnable.RootForm() {
+                @Override
+                public void run(ReplaceableTagEvent event) {
+                    event.setReplacedObject(new Element(retVal).getObjectAttribute(event.getAttributes().fulfill(1)));
+                }
+            }, nameVal, codeVal);
+        }
     }
-
-    @TagManager.TagEvents
-    public void foreignCharacterTags(ReplaceableTagEvent event) {
-
-
-        if (!event.getName().startsWith("&")) {
-            return;
-        }
-        Attribute attribute = event.getAttributes();
-
-        // TODO: Handle case-sensitivity stuff better here!
-
-        if (event.getName().equals("&auml")) {
-            event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Auml")) {
-            event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&ouml")) {
-            event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Ouml")) {
-            event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&uuml")) {
-            event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
-        }
-        else if (event.getName().equals("&Uuml")) {
-            event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
-        }
-
-    }
-
-
-    final String[] code = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-            , "a", "b", "c", "d", "e", "f", "k", "l", "m", "n", "o", "r"};
-    final String[] code2 = {"&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9"
-            , "&a", "&b", "&c", "&d", "&e", "&f", "&k", "&l", "&m", "&n", "&o", "&r"};
 
     // <--[tag]
     // @attribute <&0>
@@ -364,31 +339,33 @@ public class TextTags implements Listener {
 
 
     @TagManager.TagEvents
-    public void colorTags(ReplaceableTagEvent event) {
-        Attribute attribute = event.getAttributes();
-        int i = 0;
-        for (ChatColor color : ChatColor.values()) {
-            if (i > 22) {
-                break;
-            }
-            if (event.matches(color.name())) {
-                event.setReplaced(new Element(color.toString()).getAttribute(attribute.fulfill(1)));
-            }
-            else if (event.matches(code2[i])) {
-                event.setReplaced(new Element(ChatColor.getByChar(code[i]).toString()).getAttribute(attribute.fulfill(1)));
-            }
-            i++;
-        }
-    }
-
-
-    @TagManager.TagEvents
     public void specialCharacterTags(ReplaceableTagEvent event) {
         if (!event.getName().startsWith("&")) {
             return;
         }
         String lower = CoreUtilities.toLowerCase(event.getName());
         Attribute attribute = event.getAttributes();
+
+        // TODO: Handle case-sensitivity stuff better here!
+
+        if (event.getName().equals("&auml")) {
+            event.setReplaced(new Element("ä").getAttribute(attribute.fulfill(1)));
+        }
+        else if (event.getName().equals("&Auml")) {
+            event.setReplaced(new Element("Ä").getAttribute(attribute.fulfill(1)));
+        }
+        else if (event.getName().equals("&ouml")) {
+            event.setReplaced(new Element("ö").getAttribute(attribute.fulfill(1)));
+        }
+        else if (event.getName().equals("&Ouml")) {
+            event.setReplaced(new Element("Ö").getAttribute(attribute.fulfill(1)));
+        }
+        else if (event.getName().equals("&uuml")) {
+            event.setReplaced(new Element("ü").getAttribute(attribute.fulfill(1)));
+        }
+        else if (event.getName().equals("&Uuml")) {
+            event.setReplaced(new Element("Ü").getAttribute(attribute.fulfill(1)));
+        }
 
         // <--[tag]
         // @attribute <&nl>

@@ -111,6 +111,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("potion") && CoreUtilities.toLowerCase(item.getItemStack().getType().name()).contains("potion")) {
             return true;
         }
+        dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
+        if (quickOf != null) {
+            dMaterial mat = item.getMaterial();
+            if (quickOf.getMaterial() != mat.getMaterial()) {
+                return false;
+            }
+            if (quickOf.equals(mat)) {
+                return true;
+            }
+        }
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
@@ -137,7 +147,16 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("block") || comparedto.equals("material")) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
+        dMaterial quickOf = dMaterial.quickOfNamed(comparedto);
+        if (quickOf != null) {
+            if (quickOf.getMaterial() != mat.getMaterial()) {
+                return false;
+            }
+            if (quickOf.equals(mat)) {
+                return true;
+            }
+        }
+        if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
             return true;
         }
         else if (CoreUtilities.toLowerCase(mat.identifyNoIdentifier()).equals(comparedto)) {

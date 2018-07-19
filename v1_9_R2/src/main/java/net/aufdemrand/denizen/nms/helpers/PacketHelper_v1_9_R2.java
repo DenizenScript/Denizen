@@ -11,15 +11,18 @@ import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_9_R2.*;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.craftbukkit.v1_9_R2.CraftEquipmentSlot;
+import org.bukkit.craftbukkit.v1_9_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -45,6 +48,35 @@ public class PacketHelper_v1_9_R2 implements PacketHelper {
             packet.b(fov);
         }
         sendPacket(player, packet);
+    }
+
+    @Override
+    public void respawn(Player player) {
+        ((CraftPlayer) player).getHandle().playerConnection.a(new PacketPlayInClientCommand(PacketPlayInClientCommand.EnumClientCommand.PERFORM_RESPAWN));
+    }
+
+    @Override
+    public void setVision(Player player, EntityType entityType) {
+        final EntityLiving entity;
+        if (entityType == EntityType.CREEPER) {
+            entity = new EntityCreeper(((CraftWorld) player.getWorld()).getHandle());
+        }
+        else if (entityType == EntityType.SPIDER || entityType == EntityType.CAVE_SPIDER) {
+            entity = new EntitySpider(((CraftWorld) player.getWorld()).getHandle());
+        }
+        else if (entityType == EntityType.ENDERMAN) {
+            entity = new EntityEnderman(((CraftWorld) player.getWorld()).getHandle());
+        }
+        else {
+            return;
+        }
+
+        // Spectating an entity then immediately respawning the player prevents a client shader update,
+        // allowing the player to retain whatever vision the mob they spectated had.
+        sendPacket(player, new PacketPlayOutSpawnEntityLiving(entity));
+        sendPacket(player, new PacketPlayOutCamera(entity));
+        ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(),
+                ((CraftWorld) player.getWorld()).getHandle().dimension, true, player.getLocation(), false);
     }
 
     @Override

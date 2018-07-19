@@ -34,73 +34,16 @@ public class BukkitElementProperties implements Property {
         this.element = element;
     }
 
+    public static final String[] handledAttribs = new String[] {
+            "aschunk", "as_chunk", "ascolor", "as_color", "ascuboid", "as_cuboid", "asentity", "as_entity",
+            "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
+            "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",
+            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash" };
+
     Element element;
 
     @Override
     public String getAttribute(Attribute attribute) {
-
-        // <--[tag]
-        // @attribute <el@element.is[<operator>].to[<element>]>
-        // @returns Element(Boolean)
-        // @group comparison
-        // @description
-        // Takes an operator, and compares the value of the element to the supplied
-        // element. Returns the outcome of the comparable, either true or false. For
-        // information on operators, see <@link language operator>.
-        // Equivalent to <@link tag el@element.is[<operator>].than[<element>]>
-        // -->
-
-        // <--[tag]
-        // @attribute <el@element.is[<operator>].than[<element>]>
-        // @returns Element(Boolean)
-        // @group comparison
-        // @description
-        // Takes an operator, and compares the value of the element to the supplied
-        // element. Returns the outcome of the comparable, either true or false. For
-        // information on operators, see <@link language operator>.
-        // Equivalent to <@link tag el@element.is[<operator>].to[<element>]>
-        // -->
-        if (attribute.startsWith("is") && attribute.hasContext(1)
-                && (attribute.startsWith("to", 2) || attribute.startsWith("than", 2)) && attribute.hasContext(2)) {
-
-            // Use the Comparable object as implemented for the IF command. First, a new Comparable!
-            Comparable com = new Comparable();
-
-            // Check for negative logic
-            String operator;
-            if (attribute.getContext(1).startsWith("!")) {
-                operator = attribute.getContext(1).substring(1);
-                com.setNegativeLogic();
-            }
-            else {
-                operator = attribute.getContext(1);
-            }
-
-            // Operator is the value of the .is[] context. Valid are Comparable.Operators, same
-            // as used by the IF command.
-            Comparable.Operator comparableOperator = null;
-            try {
-                comparableOperator = Comparable.Operator.valueOf(operator.replace("==", "EQUALS")
-                        .replace(">=", "OR_MORE").replace("<=", "OR_LESS").replace("<", "LESS")
-                        .replace(">", "MORE").replace("=", "EQUALS").toUpperCase());
-            }
-            catch (IllegalArgumentException e) {
-            }
-
-            if (comparableOperator != null) {
-                com.setOperator(comparableOperator);
-
-                // Comparable is the value of this element
-                com.setComparable(element.asString());
-                // Compared_to is the value of the .to[] context.
-                com.setComparedto(attribute.getContext(2));
-
-                return new Element(com.determineOutcome()).getAttribute(attribute.fulfill(2));
-            }
-            else {
-                net.aufdemrand.denizencore.utilities.debugging.dB.echoError("Unknown operator '" + operator + "'.");
-            }
-        }
 
         // <--[tag]
         // @attribute <el@element.as_chunk>
@@ -293,18 +236,6 @@ public class BukkitElementProperties implements Property {
             if (object != null) {
                 return object.getAttribute(attribute.fulfill(1));
             }
-        }
-
-        // <--[tag]
-        // @attribute <el@element.debug.no_color>
-        // @returns Element
-        // @group debug
-        // @description
-        // Returns a standard debug representation of the Element with colors stripped.
-        // -->
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(element.debug()))
-                    .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]

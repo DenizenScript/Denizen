@@ -48,11 +48,27 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class ServerTags implements Listener {
+public class ServerTags {
 
     public ServerTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                mathTag(event);
+            }
+        }, "math", "m");
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                ternaryTag(event);
+            }
+        }, "ternary", "tern", "t");
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                serverTag(event);
+            }
+        }, "server", "svr", "global");
     }
 
     // <--[tag]
@@ -64,8 +80,7 @@ public class ServerTags implements Listener {
     // Since this is a 'value' tag, to get an int value, you will need to do '<math.as_int:calc>',
     // and similar for all other element tags.
     // -->
-    @TagManager.TagEvents
-    public void mathTag(ReplaceableTagEvent event) {
+    public void mathTag(ReplaceableTagEvent event) { // TODO: Core
         if (!event.matches("math", "m")) {
             return;
         }
@@ -89,8 +104,7 @@ public class ServerTags implements Listener {
     // otherwise the fallback element will show.
     // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
     // -->
-    @TagManager.TagEvents
-    public void ternaryTag(ReplaceableTagEvent event) {
+    public void ternaryTag(ReplaceableTagEvent event) { // TODO: Core
         if (!event.matches("ternary", "tern", "t")) {
             return;
         }
@@ -109,7 +123,6 @@ public class ServerTags implements Listener {
     }
 
 
-    @TagManager.TagEvents
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;

@@ -185,7 +185,15 @@ public class dEntity implements dObject, Adjustable {
                 dNPC npc = dNPC.valueOf(string);
 
                 if (npc != null) {
-                    return new dEntity(npc);
+                    if (npc.isSpawned()) {
+                        return new dEntity(npc);
+                    }
+                    else {
+                        if (context != null && context.debug) {
+                            dB.echoDebug(context.entry, "NPC '" + string + "' is not spawned, errors may follow!");
+                        }
+                        return new dEntity(npc);
+                    }
                 }
                 else {
                     dB.echoError("NPC '" + string
@@ -508,7 +516,7 @@ public class dEntity implements dObject, Adjustable {
 
     public dObject getDenizenObject() {
 
-        if (entity == null) {
+        if (entity == null && npc == null) {
             return null;
         }
 
@@ -857,7 +865,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                     // Else, use the entity_type specified/remembered
                     else {
-                        entity = entity_type.spawnNewEntity(location, mechanisms);
+                        entity = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                     }
 
                     getLivingEntity().teleport(location);
@@ -922,7 +930,7 @@ public class dEntity implements dObject, Adjustable {
                     }
                     else {
 
-                        ent = entity_type.spawnNewEntity(location, mechanisms);
+                        ent = entity_type.spawnNewEntity(location, mechanisms, entityScript);
                         entity = ent;
                         if (entity == null) {
                             if (dB.verbose) {
@@ -1783,7 +1791,7 @@ public class dEntity implements dObject, Adjustable {
         // @returns dWorld
         // @group location
         // @description
-        // Returns the world the entity is in.
+        // Returns the world the entity is in. Works with offline players.
         // -->
         if (attribute.startsWith("world")) {
             return new dWorld(entity.getWorld())
@@ -2770,6 +2778,16 @@ public class dEntity implements dObject, Adjustable {
             return;
         }
 
+        if (getBukkitEntity() == null) {
+            if (isCitizensNPC()) {
+                dB.echoError("Cannot adjust not-spawned NPC " + getDenizenNPC());
+            }
+            else {
+                dB.echoError("Cannot adjust entity " + this);
+            }
+            return;
+        }
+
         Element value = mechanism.getValue();
 
         // <--[mechanism]
@@ -3516,6 +3534,30 @@ public class dEntity implements dObject, Adjustable {
             if (mechanism.matches("wait_time") && mechanism.requireObject(Duration.class)) {
                 helper.setWaitTime(Duration.valueOf(value.asString()).getTicksAsInt());
             }
+        }
+
+        // END AREA EFFECT CLOUD BLOCK
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name show_to_players
+        // @input None
+        // @description
+        // Marks the entity as visible to players by default (if it was hidden).
+        // -->
+        if (mechanism.matches("show_to_players")) {
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(null, getBukkitEntity());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name hide_from_players
+        // @input None
+        // @description
+        // Hides the entity from players by default.
+        // -->
+        if (mechanism.matches("hide_from_players")) {
+            NMSHandler.getInstance().getEntityHelper().hideEntity(null, getBukkitEntity(), false);
         }
 
         // Iterate through this object's properties' mechanisms

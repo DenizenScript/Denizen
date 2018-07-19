@@ -25,8 +25,6 @@ import java.util.regex.Pattern;
 
 public class dMaterial implements dObject {
 
-    final static Pattern materialPattern = Pattern.compile("(?:m@)?(\\w+)[,:]?(\\d+)?", Pattern.CASE_INSENSITIVE);
-
     // Will be called a lot, no need to construct/deconstruct.
     public final static dMaterial AIR = new dMaterial(Material.AIR);
 
@@ -89,7 +87,9 @@ public class dMaterial implements dObject {
         ORANGE_CONCRETE_POWDER, MAGENTA_CONCRETE_POWDER, LIGHT_BLUE_CONCRETE_POWDER, YELLOW_CONCRETE_POWDER,
         LIME_CONCRETE_POWDER, PINK_CONCRETE_POWDER, GRAY_CONCRETE_POWDER, LIGHT_GRAY_CONCRETE_POWDER,
         CYAN_CONCRETE_POWDER, PURPLE_CONCRETE_POWDER, BLUE_CONCRETE_POWDER, BROWN_CONCRETE_POWDER,
-        GREEN_CONCRETE_POWDER, RED_CONCRETE_POWDER, BLACK_CONCRETE_POWDER
+        GREEN_CONCRETE_POWDER, RED_CONCRETE_POWDER, BLACK_CONCRETE_POWDER, WHITE_BED, ORANGE_BED,
+        MAGENTA_BED, LIGHT_BLUE_BED, YELLOW_BED, LIME_BED, PINK_BED, GRAY_BED, LIGHT_GRAY_BED,
+        CYAN_BED, PURPLE_BED, BLUE_BED, BROWN_BED, GREEN_BED, RED_BED, BLACK_BED
     }
 
     // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
@@ -405,6 +405,24 @@ public class dMaterial implements dObject {
     public final static dMaterial ANDESITE = new dMaterial(Material.STONE, 5).forceIdentifyAs("ANDESITE");
     public final static dMaterial POLISHED_ANDESITE = new dMaterial(Material.STONE, 6).forceIdentifyAs("POLISHED_ANDESITE");
 
+    // Bed
+    public final static dMaterial WHITE_BED = new dMaterial(Material.BED, 0).forceIdentifyAs("WHITE_BED");
+    public final static dMaterial ORANGE_BED = new dMaterial(Material.BED, 1).forceIdentifyAs("ORANGE_BED");
+    public final static dMaterial MAGENTA_BED = new dMaterial(Material.BED, 2).forceIdentifyAs("MAGENTA_BED");
+    public final static dMaterial LIGHT_BLUE_BED = new dMaterial(Material.BED, 3).forceIdentifyAs("LIGHT_BLUE_BED");
+    public final static dMaterial YELLOW_BED = new dMaterial(Material.BED, 4).forceIdentifyAs("YELLOW_BED");
+    public final static dMaterial LIME_BED = new dMaterial(Material.BED, 5).forceIdentifyAs("LIME_BED");
+    public final static dMaterial PINK_BED = new dMaterial(Material.BED, 6).forceIdentifyAs("PINK_BED");
+    public final static dMaterial GRAY_BED = new dMaterial(Material.BED, 7).forceIdentifyAs("GRAY_BED");
+    public final static dMaterial LIGHT_GRAY_BED = new dMaterial(Material.BED, 8).forceIdentifyAs("LIGHT_GRAY_BED");
+    public final static dMaterial CYAN_BED = new dMaterial(Material.BED, 9).forceIdentifyAs("CYAN_BED");
+    public final static dMaterial PURPLE_BED = new dMaterial(Material.BED, 10).forceIdentifyAs("PURPLE_BED");
+    public final static dMaterial BLUE_BED = new dMaterial(Material.BED, 11).forceIdentifyAs("BLUE_BED");
+    public final static dMaterial BROWN_BED = new dMaterial(Material.BED, 12).forceIdentifyAs("BROWN_BED");
+    public final static dMaterial GREEN_BED = new dMaterial(Material.BED, 13).forceIdentifyAs("GREEN_BED");
+    public final static dMaterial RED_BED = new dMaterial(Material.BED, 14).forceIdentifyAs("RED_BED");
+    public final static dMaterial BLACK_BED = new dMaterial(Material.BED, 15).forceIdentifyAs("BLACK_BED");
+
     // Version checks for version-specific materials
     public static dMaterial getMaterial1_12(String material, int data, String name) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
@@ -574,43 +592,65 @@ public class dMaterial implements dObject {
     @Fetchable("m")
     public static dMaterial valueOf(String string, TagContext context) {
 
-        if (CoreUtilities.toLowerCase(string).matches("random")
-                || CoreUtilities.toLowerCase(string).matches("m@random")) {
-
-            // Get a random material
-            return new dMaterial(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
+        string = string.toUpperCase();
+        if (string.startsWith("M@")) {
+            string = string.substring("M@".length());
         }
-
-        Matcher m = materialPattern.matcher(string);
-
-        if (m.matches()) {
-            int data = 0;
-            if (m.group(2) != null) {
-                data = aH.getIntegerFrom(m.group(2));
+        if (string.equals("RANDOM")) {
+            return getMaterialFrom(Material.values()[CoreUtilities.getRandom().nextInt(Material.values().length)]);
+        }
+        int index = string.indexOf(',');
+        if (index < 0) {
+            index = string.indexOf(':');
+        }
+        int data = 0;
+        if (index >= 0) {
+            data = aH.getIntegerFrom(string.substring(index + 1));
+            string = string.substring(0, index);
+        }
+        Material m = Material.getMaterial(string);
+        if (m != null) {
+            return getMaterialFrom(m, data);
+        }
+        dMaterial mat = all_dMaterials.get(string);
+        if (mat != null) {
+            if (data == 0) {
+                return mat;
             }
-
-            String materialName = m.group(1);
-
-            if (aH.matchesInteger(materialName)) {
-                return dMaterial.getMaterialFrom(Material.getMaterial(aH.getIntegerFrom(materialName)), data);
-            }
-            else {
-                // Iterate through Materials
-                for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(materialName)) {
-                        return dMaterial.getMaterialFrom(material, data);
-                    }
-                }
-
-                // Iterate through dMaterials
-                dMaterial mat = all_dMaterials.get(materialName.toUpperCase());
-                if (mat != null) {
-                    return mat;
-                }
+            return getMaterialFrom(mat.material, data);
+        }
+        int matid = aH.getIntegerFrom(string);
+        if (matid != 0) {
+            m = Material.getMaterial(matid);
+            if (m != null) {
+                return getMaterialFrom(m, data);
             }
         }
+        return null;
+    }
 
-        // No match
+    public static dMaterial quickOfNamed(String string) {
+        string = string.toUpperCase();
+        int index = string.indexOf(',');
+        if (index < 0) {
+            index = string.indexOf(':');
+        }
+        int data = 0;
+        if (index >= 0) {
+            data = aH.getIntegerFrom(string.substring(index + 1));
+            string = string.substring(0, index);
+        }
+        Material m = Material.getMaterial(string);
+        if (m != null) {
+            return getMaterialFrom(m, data);
+        }
+        dMaterial mat = all_dMaterials.get(string);
+        if (mat != null) {
+            if (data == 0) {
+                return mat;
+            }
+            return getMaterialFrom(mat.material, data);
+        }
         return null;
     }
 
@@ -621,47 +661,12 @@ public class dMaterial implements dObject {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-
-        // Avoid case sensitivity
         arg = arg.toUpperCase();
-
-        if (arg.startsWith("M@")) {
+        if (arg.startsWith("m@")) {
             return true;
         }
-
-        if (arg.matches("(?:M@)?RANDOM")) {
+        if (valueOf(arg) != null) {
             return true;
-        }
-
-        Matcher m = materialPattern.matcher(arg);
-
-        if (m.matches()) {
-
-            String materialName = m.group(1);
-
-            // If this argument is in an integer, return true if it does not
-            // exceed the number of materials in Bukkit
-            if (aH.matchesInteger(materialName)) {
-                if (aH.getIntegerFrom(arg) < Material.values().length) {
-                    return true;
-                }
-            }
-
-            // Check if this argument matches a Material or a special stored
-            // dMaterial's name
-            else {
-                // Iterate through Bukkit Materials
-                for (Material material : Material.values()) {
-                    if (material.name().equalsIgnoreCase(materialName)) {
-                        return true;
-                    }
-                }
-
-                // Iterate through dMaterials
-                if (all_dMaterials.get(materialName) != null) {
-                    return true;
-                }
-            }
         }
 
         return false;
@@ -674,11 +679,12 @@ public class dMaterial implements dObject {
     @Override
     public boolean equals(Object object) {
         if (object instanceof dMaterial) {
-            return ((dMaterial) object).identify().equals(this.identify());
+            return getMaterial() == ((dMaterial) object).getMaterial()
+                    && getData((byte) 0) == ((dMaterial) object).getData((byte) 0);
         }
         else {
             dMaterial parsed = valueOf(object.toString());
-            return parsed != null && parsed.identify().equals(this.identify());
+            return equals(parsed);
         }
     }
 
@@ -720,7 +726,7 @@ public class dMaterial implements dObject {
     }
 
 
-    public Byte getData(byte fallback) {
+    public byte getData(byte fallback) {
         if (data == null) {
             return fallback;
         }
@@ -991,7 +997,7 @@ public class dMaterial implements dObject {
         registerTag("is_solid", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(!NMSHandler.getInstance().getBlockHelper().isSafeBlock(((dMaterial) object).material))
+                return new Element(((dMaterial) object).material.isSolid())
                         .getAttribute(attribute.fulfill(1));
             }
         });

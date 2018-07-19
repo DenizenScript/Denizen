@@ -4,8 +4,8 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
-import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
+//import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
+//import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
 import org.bukkit.ChatColor;
 
 import java.io.*;
@@ -44,6 +44,7 @@ public class RuntimeCompiler {
     @SuppressWarnings("unchecked")
     public void loader() {
 
+        /*
         dB.log("Loading external dependencies for run-time compiler.");
         dependencies = new ArrayList<String>();
         try {
@@ -116,12 +117,14 @@ public class RuntimeCompiler {
         catch (Exception error) {
             dB.echoError(error);
         }
+        */
     }
 
     public int i = 0;
 
     public void runString(String input) {
         try {
+            /*
             i++;
             JavaSourceCompiler javaSourceCompiler = new JavaSourceCompilerImpl();
             JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit();
@@ -139,6 +142,8 @@ public class RuntimeCompiler {
             loadedClass.load();
             loadedClass.run();
             loadedClass.unload();
+            */
+            dB.echoError("Run time compiler is temporarily disabled. If you need this functionality, please post an issue on GitHub or speak to mcmonkey on Discord.");
         }
         catch (Exception e) {
             dB.echoError(e);

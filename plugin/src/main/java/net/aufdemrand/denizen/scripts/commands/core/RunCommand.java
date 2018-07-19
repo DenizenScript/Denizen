@@ -188,6 +188,11 @@ public class RunCommand extends AbstractCommand implements Holdable {
             entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
         }
 
+        if (entries == null) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Script run failed (invalid path or script name)!");
+            return;
+        }
+
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
                 (scriptEntry.getElement("id")).asString() : ScriptQueue.getNextId(script.getContainer().getName()));
@@ -233,7 +238,12 @@ public class RunCommand extends AbstractCommand implements Holdable {
             dList definitions = dList.valueOf(raw_defintions.asString());
             String[] definition_names = null;
             try {
-                definition_names = script.getContainer().getString("definitions").split("\\|");
+                if (script != null && script.getContainer() != null) {
+                    String str = script.getContainer().getString("definitions");
+                    if (str != null) {
+                        definition_names = str.split("\\|");
+                    }
+                }
             }
             catch (Exception e) {
                 // TODO: less lazy handling
@@ -266,7 +276,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
         queue.setReqId(reqId);
 
         // Also add the reqId to each of the entries for reasons
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", reqId);
+        ScriptBuilder.addObjectToEntries(entries, "reqid", reqId);
 
         // Save the queue for script referencing
         scriptEntry.addObject("created_queue", queue);

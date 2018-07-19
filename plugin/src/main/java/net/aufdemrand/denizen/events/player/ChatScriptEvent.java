@@ -48,6 +48,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // @Determine
     // Element to change the message.
     // "FORMAT:" + dScript to set the format script the message should use.
+    // "RAW_FORMAT:" + Element to set the format directly (without a format script).
     // "RECIPIENTS:" + dList(dPlayer) to set the list of players that will receive the message.
     //
     // -->
@@ -123,6 +124,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 }
                 format = new Element(formatstr);
             }
+        }
+        else if (lower.startsWith("raw_format")) {
+            String form = determination.substring("raw_format".length());
+            format = new Element(form);
         }
         else if (lower.startsWith("recipients:")) {
             String rec_new = determination.substring(11);

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -145,6 +146,9 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
             }
             cuboid_context.add(cuboid.identifySimple());
         }
+        for (String str : events) {
+            cuboidEvents.add(str + " in " + new dWorld(event.getPlayer().getLocation().getWorld()).identifySimple());
+        }
         events.addAll(cuboidEvents);
         // Add in cuboids context, with either the cuboids or an empty list
         context.put("cuboids", cuboid_context);
@@ -162,7 +166,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
 
         // Run any event scripts and get the determination.
         determination = BukkitWorldScriptHelper.doEvents(events,
-                null, dEntity.getPlayerFrom(event.getPlayer()), context).toUpperCase();
+                null, dEntity.getPlayerFrom(event.getPlayer()), context, true).toUpperCase();
 
         // If a script has determined fulfilled, cancel this event so the player doesn't
         // receive the default 'Invalid command' gibberish from bukkit.

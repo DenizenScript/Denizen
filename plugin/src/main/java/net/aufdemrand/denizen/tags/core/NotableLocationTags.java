@@ -4,23 +4,27 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.event.Listener;
 
 @Deprecated
-public class NotableLocationTags implements Listener {
+public class NotableLocationTags {
 
     public NotableLocationTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                notableTags(event);
+            }
+        }, "notable");
     }
 
-    @TagManager.TagEvents
     public void notableTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("NOTABLE")) {
+        if (!event.matches("notable")) {
             return;
         }
 

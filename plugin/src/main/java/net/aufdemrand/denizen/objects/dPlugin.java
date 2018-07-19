@@ -126,6 +126,11 @@ public class dPlugin implements dObject {
     }
 
     @Override
+    public String toString() {
+        return identify();
+    }
+
+    @Override
     public dPlugin setPrefix(String prefix) {
         this.prefix = prefix;
         return this;

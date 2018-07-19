@@ -3755,7 +3755,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
         // -->
         registerCoreMember(SpawnCommand.class,
-                "SPAWN", "spawn [<entity>|...] [<location>] (target:<entity>) (persistent)", 2);
+                "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
 
 
         // <--[command]
@@ -4263,7 +4263,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name While
-        // @Syntax while [stop/next/<comparison tag>] [<commands>]
+        // @Syntax while [stop/next/[<value>] (!)(<operator> <value>) (&&/|| ...)] [<commands>]
         // @Required 1
         // @Stable stable
         // @Short Runs a series of braced commands until the tag returns false.
@@ -4278,11 +4278,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <def[loop_index]> to get the number of loops so far.
         //
         // @Usage
-        // Use loop through a command several times.
-        // - define value 1
-        // - while <def[value].is[OR_LESS].than[5]> {
-        //     - announce "Loop <def[loop_index]> value <def[value]>"
-        //     - define value <def[value].add[1]>
+        // Use to loop until a player sneaks, or the player goes offline.
+        // - while !<player.is_sneaking> && <player.is_online> {
+        //     - narrate "Waiting for you to sneak..."
+        //     - wait 1s
         //   }
         //
         // @Usage

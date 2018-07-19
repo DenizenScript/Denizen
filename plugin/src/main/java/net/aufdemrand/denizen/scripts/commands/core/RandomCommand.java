@@ -92,6 +92,8 @@ public class RandomCommand extends BracedCommand {
 
         dB.report(scriptEntry, getName(), aH.debugObj("possibilities", possibilities) + aH.debugObj("choice", selected + 1));
 
+        scriptEntry.setInstant(true);
+
         if (bracedCommands == null) {
 
             ScriptEntry keeping = null;
@@ -114,7 +116,7 @@ public class RandomCommand extends BracedCommand {
 
         }
         else {
-            queue.injectEntry(bracedCommands.get(selected).addObject("reqID", scriptEntry.getObject("reqID")), 0);
+            queue.injectEntry(bracedCommands.get(selected).addObject("reqid", scriptEntry.getObject("reqid")), 0);
         }
     }
 }

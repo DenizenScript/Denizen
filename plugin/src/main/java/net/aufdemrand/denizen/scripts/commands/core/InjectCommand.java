@@ -170,8 +170,13 @@ public class InjectCommand extends AbstractCommand {
             entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
         }
 
+        if (entries == null) {
+            dB.echoError(scriptEntry.getResidingQueue(), "Script inject failed (invalid path or script name)!");
+            return;
+        }
+
         // For determine
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", scriptEntry.getObject("ReqId"));
+        ScriptBuilder.addObjectToEntries(entries, "reqid", scriptEntry.getObject("reqid"));
 
         // If 'instantly' was specified, run the commands immediately.
         if (scriptEntry.hasObject("instant")) {

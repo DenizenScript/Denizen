@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.Utilities;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -18,8 +19,13 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -299,54 +305,153 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
         Hide Entity
      */
 
-    public static Map<UUID, Set<UUID>> hiddenEntities = new HashMap<UUID, Set<UUID>>();
+    public static class EnforcePlayerHides implements Listener {
 
-    @Override
-    public void hideEntity(Player player, Entity entity, boolean keepInTabList) { // TODO: remove or reimplement tablist option somehow?
-        // Use Bukkit API for Player entities
+        public Plugin denizenPlugin;
+
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            for (UUID id : hiddenByDefaultPlayers) {
+                Entity pTarget = Bukkit.getEntity(id);
+                if (pTarget != null && pTarget instanceof Player) {
+                    event.getPlayer().hidePlayer((Player) pTarget);
+                }
+            }
+            final Player pl = event.getPlayer();
+            final Set<UUID> hides = hiddenEntitiesPlEnt.get(pl.getUniqueId());
+            if (hides == null || hides.isEmpty()) {
+                return;
+            }
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (pl.isOnline()) {
+                        for (UUID id : hides) {
+                            Entity ent = Bukkit.getEntity(id);
+                            if (ent != null) {
+                                sendHidePacket(pl, ent);
+                            }
+                        }
+                    }
+                }
+            }.runTaskLater(denizenPlugin, 5);
+        }
+    }
+
+    public static Map<UUID, Set<UUID>> hiddenEntitiesEntPl = new HashMap<UUID, Set<UUID>>();
+
+    public static Map<UUID, Set<UUID>> hiddenEntitiesPlEnt = new HashMap<UUID, Set<UUID>>();
+
+    public static EnforcePlayerHides EPH = null;
+
+    public static Set<UUID> hiddenByDefaultPlayers = new HashSet<UUID>();
+
+    public static void ensurePlayerHiding() {
+        if (EPH == null) {
+            Plugin pl = Bukkit.getPluginManager().getPlugin("Denizen"); // Very lazy way to get the correct plugin instance
+            EPH = new EnforcePlayerHides();
+            EPH.denizenPlugin = pl;
+            Bukkit.getPluginManager().registerEvents(EPH, pl);
+        }
+    }
+
+    public boolean addHide(UUID player, UUID entity) {
+        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
+        if (hidden == null) {
+            hidden = new HashSet<UUID>();
+            hiddenEntitiesEntPl.put(entity, hidden);
+        }
+        if (player.equals(DEFAULT_HIDE)) {
+            for (UUID pl : hidden) {
+                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
+                if (plHid != null) {
+                    plHid.remove(entity);
+                }
+            }
+            hidden.clear();
+        }
+        else {
+            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
+            if (plHid == null) {
+                plHid = new HashSet<UUID>();
+                hiddenEntitiesPlEnt.put(player, plHid);
+            }
+            plHid.add(entity);
+        }
+        return hidden.add(player);
+    }
+
+    public static void sendHidePacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
-            player.hidePlayer((Player) entity);
+            ensurePlayerHiding();
+            pl.hidePlayer((Player) entity);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) player;
+        CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
-        UUID playerUUID = player.getUniqueId();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            if (!hiddenEntities.containsKey(playerUUID)) {
-                hiddenEntities.put(playerUUID, new HashSet<UUID>());
-            }
-            Set hidden = hiddenEntities.get(playerUUID);
-            UUID entityUUID = entity.getUniqueId();
-            if (!hidden.contains(entityUUID)) {
-                hidden.add(entityUUID);
-                EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity) entity).getHandle();
-                EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
-                if (entry != null) {
-                    entry.clear(entityPlayer);
-                }
+            EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+            net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity) entity).getHandle();
+            EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
+            if (entry != null) {
+                entry.clear(entityPlayer);
             }
         }
     }
 
     @Override
-    public void unhideEntity(Player player, Entity entity) {
-        // Use Bukkit API for Player entities
-        if (entity instanceof Player) {
-            player.showPlayer((Player) entity);
+    public void hideEntity(Player player, Entity entity, boolean keepInTabList) { // TODO: remove or reimplement tablist option somehow?
+        if (player == null) {
+            addHide(DEFAULT_HIDE, entity.getUniqueId());
+            if (entity instanceof Player) {
+                hiddenByDefaultPlayers.add(entity.getUniqueId());
+            }
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                sendHidePacket(pl, entity);
+            }
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-        EntityPlayer entityPlayer = craftPlayer.getHandle();
-        UUID playerUUID = player.getUniqueId();
-        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            UUID entityUUID = entity.getUniqueId();
-            if (hiddenEntities.containsKey(playerUUID)) {
-                Set hidden = hiddenEntities.get(playerUUID);
-                if (hidden.contains(entityUUID)) {
-                    hidden.remove(entityUUID);
+        if (isHiddenByDefault(entity)) {
+            removeHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        else {
+            addHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        sendHidePacket(player, entity);
+    }
+
+    public static boolean removeHide(UUID player, UUID entity) {
+        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
+        if (hidden == null) {
+            return false;
+        }
+        boolean toRet = hidden.remove(player);
+        if (player.equals(DEFAULT_HIDE)) {
+            for (UUID pl : hidden) {
+                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
+                if (plHid != null) {
+                    plHid.remove(entity);
                 }
             }
+            hidden.clear();
+        }
+        else {
+            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
+            if (plHid != null) {
+                plHid.remove(entity);
+            }
+        }
+        return toRet;
+    }
+
+    public void sendShowPacket(Player pl, Entity entity) {
+        if (entity instanceof Player) {
+            pl.showPlayer((Player) entity);
+            return;
+        }
+        CraftPlayer craftPlayer = (CraftPlayer) pl;
+        EntityPlayer entityPlayer = craftPlayer.getHandle();
+        if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
             EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
             net.minecraft.server.v1_12_R1.Entity other = ((CraftEntity) entity).getHandle();
             EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
@@ -358,13 +463,41 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     }
 
     @Override
-    public boolean isHidden(Player player, Entity entity) {
-        if (entity instanceof Player) {
-            return !player.canSee((Player) entity);
+    public void unhideEntity(Player player, Entity entity) {
+        if (player == null) {
+            removeHide(DEFAULT_HIDE, entity.getUniqueId());
+            if (entity instanceof Player) {
+                hiddenByDefaultPlayers.remove(entity.getUniqueId());
+            }
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                sendShowPacket(pl, entity);
+            }
+            return;
         }
-        UUID uuid = player.getUniqueId();
-        Set<UUID> hiding = hiddenEntities.get(uuid);
-        return hiding != null && hiding.contains(entity.getUniqueId());
+        if (isHiddenByDefault(entity)) {
+            addHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        else {
+            removeHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        sendShowPacket(player, entity);
+    }
+
+    public static UUID DEFAULT_HIDE = new UUID(0, 0);
+
+    public boolean isHiddenByDefault(Entity ent) { // TODO: Backport?
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(ent.getUniqueId());
+        return hiding != null && hiding.contains(DEFAULT_HIDE);
+    }
+
+    @Override
+    public boolean isHidden(Player player, Entity entity) {
+        if (isHiddenByDefault(entity)) {
+            Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+            return hiding == null || !hiding.contains(player.getUniqueId());
+        }
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+        return hiding != null && hiding.contains(player.getUniqueId());
     }
 
     @Override

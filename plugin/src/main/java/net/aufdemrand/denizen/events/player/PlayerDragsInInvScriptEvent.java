@@ -78,6 +78,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!inv.equals("") && !inv.equals("inventory")
                 && !inv.equals(CoreUtilities.toLowerCase(dInv.getInventoryType().name()))
                 && !inv.equals(CoreUtilities.toLowerCase(dInv.bestName()))
+                && !(inv.equals("notable") && !nname.equals("\0"))
                 && !inv.equals(nname)) {
             return false;
         }

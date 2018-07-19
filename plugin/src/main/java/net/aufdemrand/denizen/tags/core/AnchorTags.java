@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
@@ -12,16 +13,19 @@ import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
 @Deprecated
-public class AnchorTags implements Listener {
+public class AnchorTags {
 
     public AnchorTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                anchorTags(event);
+            }
+        }, "anchor");
     }
 
-    @TagManager.TagEvents
     public void anchorTags(ReplaceableTagEvent event) {
-        if (!event.matches("ANCHOR")) {
+        if (!event.matches("anchor")) {
             return;
         }
 

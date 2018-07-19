@@ -20,11 +20,11 @@ public class BukkitScriptEntryData extends ScriptEntryData {
     }
 
     public dNPC getNPC() {
-        return npc;
+        return npc != null && npc.getCitizen() != null ? npc : null;
     }
 
     public boolean hasNPC() {
-        return npc != null;
+        return npc != null && npc.getCitizen() != null;
     }
 
     public boolean hasPlayer() {

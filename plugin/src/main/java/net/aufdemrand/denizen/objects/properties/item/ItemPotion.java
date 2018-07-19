@@ -50,7 +50,11 @@ public class ItemPotion implements Property {
         }
         PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
         dList effects = new dList();
-        effects.add(meta.getBasePotionData().getType() + "," + meta.getBasePotionData().isUpgraded() + "," + meta.getBasePotionData().isExtended());
+        effects.add(meta.getBasePotionData().getType()
+                + "," + meta.getBasePotionData().isUpgraded()
+                + "," + meta.getBasePotionData().isExtended()
+                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+        );
         for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
             sb.append(pot.getType().getName()).append(",")
@@ -89,13 +93,14 @@ public class ItemPotion implements Property {
         // @group properties
         // @description
         // Returns the potion effect on this item.
-        // In the format Effect,Level,Extended,Splash
+        // In the format Effect,Level,Extended,Splash,Color
         // -->
         if (attribute.startsWith("potion_base") && item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof PotionMeta) {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
             return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
-                    + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION))
-                    .getAttribute(attribute.fulfill(1));
+                    + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
+                    + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+            ).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -272,7 +277,7 @@ public class ItemPotion implements Property {
         // @input dList
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended|Type,Amplifier,Duration,Ambient,Particles(,Color)|...
+        // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Color)|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,red
         // @tags
         // <i@item.potion_effect[<#>]>
@@ -290,6 +295,9 @@ public class ItemPotion implements Property {
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
+            if (d1.length > 3) {
+                meta.setColor(dColor.valueOf(d1[3]).getColor());
+            }
             meta.clearCustomEffects();
             for (int i = 1; i < data.size(); i++) {
                 String[] d2 = data.get(i).split(",");

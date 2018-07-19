@@ -3,20 +3,26 @@ package net.aufdemrand.denizen.tags.core;
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.TagRunnable;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.Listener;
 
-public class ParseTags implements Listener {
+public class ParseTags {
 
     // TODO: Move me to the core
 
     public ParseTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
-        TagManager.registerTagEvents(this);
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                parseTags(event);
+            }
+        }, "parse");
     }
 
-    @TagManager.TagEvents
     public void parseTags(ReplaceableTagEvent event) {
         // <--[tag]
         // @attribute <parse:<text to parse>>
@@ -31,8 +37,8 @@ public class ParseTags implements Listener {
                 dB.echoError("Escape tag '" + event.raw_tag + "' does not have a value!");
                 return;
             }
-            String read = TagManager.tag(TagManager.cleanOutputFully(event.getValue()), event.getContext());
-            event.setReplaced(new Element(read).getAttribute(event.getAttributes().fulfill(1)));
+            dObject read = TagManager.tagObject(TagManager.cleanOutputFully(event.getValue()), event.getContext());
+            event.setReplacedObject(CoreUtilities.autoAttrib(read, event.getAttributes().fulfill(1)));
         }
     }
 }

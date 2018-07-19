@@ -273,7 +273,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
     @Override
     public String toString() {
-        return getCitizen().getName() + '/' + getCitizen().getId();
+        return identify();
     }
 
     public boolean isEngaged() {

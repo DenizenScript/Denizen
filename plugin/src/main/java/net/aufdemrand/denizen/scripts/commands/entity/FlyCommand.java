@@ -61,7 +61,7 @@ public class FlyCommand extends AbstractCommand {
 
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
             }
-            else if (!scriptEntry.hasObject("rotationThreshold")
+            else if (!scriptEntry.hasObject("rotationthreshold")
                     && arg.matchesPrefix("rotationthreshold", "rotation", "r")
                     && arg.matchesPrimitive(aH.PrimitiveType.Float)) {
 
@@ -158,7 +158,7 @@ public class FlyCommand extends AbstractCommand {
         }
 
         final double speed = ((Element) scriptEntry.getObject("speed")).asDouble();
-        final float rotationThreshold = ((Element) scriptEntry.getObject("rotationThreshold")).asFloat();
+        final float rotationThreshold = ((Element) scriptEntry.getObject("rotationthreshold")).asFloat();
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB

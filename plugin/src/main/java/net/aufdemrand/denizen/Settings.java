@@ -41,12 +41,12 @@ public class Settings {
 
     public static int consoleWidth() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.Console width", 60);
+                .getInt("Debug.Line length", 128);
     }
 
     public static int trimLength() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.Trim length", 512);
+                .getInt("Debug.Trim length limit", 1024);
     }
 
     public static boolean showExHelp() {
@@ -439,6 +439,11 @@ public class Settings {
     public static int tagTimeout() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Timeout", 10);
+    }
+
+    public static boolean tagTimeoutSilent() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Tags.Timeout when silent", false);
     }
 
     public static boolean packetInterception() {

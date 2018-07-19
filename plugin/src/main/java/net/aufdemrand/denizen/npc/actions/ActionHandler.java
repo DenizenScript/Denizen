@@ -67,7 +67,7 @@ public class ActionHandler {
         long id = DetermineCommand.getNewId();
 
         // Add the reqId to each of the entries for the determine command
-        ScriptBuilder.addObjectToEntries(script, "ReqId", id);
+        ScriptBuilder.addObjectToEntries(script, "reqid", id);
 
         dB.echoDebug(assignment, DebugElement.Header,
                 "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());

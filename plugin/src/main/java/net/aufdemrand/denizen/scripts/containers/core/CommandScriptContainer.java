@@ -163,7 +163,7 @@ public class CommandScriptContainer extends ScriptContainer {
         // Add the reqId to each of the entries for the determine command
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
         long id = DetermineCommand.getNewId();
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+        ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
@@ -179,7 +179,7 @@ public class CommandScriptContainer extends ScriptContainer {
         // Add the reqId to each of the entries for the determine command
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
         long id = DetermineCommand.getNewId();
-        ScriptBuilder.addObjectToEntries(entries, "ReqId", id);
+        ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
         ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
         if (context != null) {
