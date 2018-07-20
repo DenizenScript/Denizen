@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -660,8 +661,22 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("switched")) {
             Material type = getBlock().getType();
-            if (type == Material.IRON_DOOR_BLOCK
-                    || type == Material.WOODEN_DOOR
+            // TODO: 1.13
+            Material ironDoor;
+            Material oakDoor;
+            Material oakTrapDoor;
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                ironDoor = Material.IRON_DOOR;
+                oakDoor = Material.OAK_DOOR;
+                oakTrapDoor = Material.OAK_TRAPDOOR;
+            }
+            else {
+                ironDoor = Material.valueOf("IRON_DOOR_BLOCK");
+                oakDoor = Material.valueOf("WOODEN_DOOR");
+                oakTrapDoor = Material.valueOf("TRAP_DOOR");
+            }
+            if (type == ironDoor
+                    || type == oakDoor
                     || type == Material.DARK_OAK_DOOR
                     || type == Material.BIRCH_DOOR
                     || type == Material.ACACIA_DOOR
@@ -674,8 +689,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
                 return new Element((location.getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
             }
-            else if (type == Material.TRAP_DOOR
-                    || type == Material.IRON_TRAPDOOR) {
+            else if ((type == oakTrapDoor
+                    || type == Material.IRON_TRAPDOOR)
+                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)
+                    && (type == Material.DARK_OAK_TRAPDOOR
+                    || type == Material.BIRCH_TRAPDOOR)
+                    || type == Material.ACACIA_TRAPDOOR
+                    || type == Material.JUNGLE_TRAPDOOR
+                    || type == Material.SPRUCE_TRAPDOOR)) {
                 return new Element((getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
             }
             else {
@@ -2055,7 +2076,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the name a command block is set to.
         // -->
         if (attribute.startsWith("command_block_name")
-                && getBlock().getType() == Material.COMMAND) {
+                // TODO: 1.13 - is there a better way?
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                : getBlock().getType() == Material.valueOf("COMMAND"))) {
             return new Element(((CommandBlock) getBlock().getState()).getName())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2068,7 +2091,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the command a command block is set to.
         // -->
         if (attribute.startsWith("command_block")
-                && getBlock().getType() == Material.COMMAND) {
+                // TODO: 1.13 - is there a better way?
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                : getBlock().getType() == Material.valueOf("COMMAND"))) {
             return new Element(((CommandBlock) getBlock().getState()).getCommand())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2135,6 +2160,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
         Element value = mechanism.getValue();
 
+        if (mechanism.matches("data") && mechanism.hasValue()) {
+            dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
+            blockData.setBlock(getBlock(), false);
+        }
+
         // <--[mechanism]
         // @object dLocation
         // @name block_type
@@ -2147,7 +2178,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
             dMaterial mat = value.asType(dMaterial.class);
             byte data = mat.hasData() ? mat.getData() : 0;
-            getBlock().setTypeIdAndData(mat.getMaterial().getId(), data, false);
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(mat.getMaterial(), data);
+            blockData.setBlock(getBlock(), false);
         }
 
         // <--[mechanism]
@@ -2296,7 +2328,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block_name>
         // -->
         if (mechanism.matches("command_block_name")) {
-            if (getBlock().getType() == Material.COMMAND) {
+            // TODO: 1.13 - is there a better way?
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                    : getBlock().getType() == Material.valueOf("COMMAND")) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setName(value.asString());
                 block.update();
@@ -2313,7 +2347,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block>
         // -->
         if (mechanism.matches("command_block")) {
-            if (getBlock().getType() == Material.COMMAND) {
+            // TODO: 1.13 - is there a better way?
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                    : getBlock().getType() == Material.valueOf("COMMAND")) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
@@ -2331,7 +2367,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("furnace_burn_time")) {
             Material material = getBlock().getType();
-            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+            if (material == Material.FURNACE
+                    // TODO: 1.13 - is there a better way?
+                    || (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && material == Material.valueOf("BURNING_FURNACE"))) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setBurnTime((short) value.asInt());
                 furnace.update();
@@ -2349,7 +2387,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("furnace_cook_time")) {
             Material material = getBlock().getType();
-            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+            if (material == Material.FURNACE
+                    // TODO: 1.13 - is there a better way?
+                    || (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && material == Material.valueOf("BURNING_FURNACE"))) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setCookTime((short) value.asInt());
                 furnace.update();
@@ -2416,19 +2456,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Skull sk = (Skull) getBlock().getState();
             sk.setRotation(getSkullBlockFace(value.asInt() - 1));
             sk.update();
-        }
-
-        // <--[mechanism]
-        // @object dLocation
-        // @name data
-        // @input Element(Number)
-        // @description
-        // Sets the data-value of a block.
-        // @tags
-        // <l@location.material.data>
-        // -->
-        if (mechanism.matches("data") && mechanism.hasValue()) {
-            getBlock().setData((byte) value.asInt());
         }
 
         // <--[mechanism]

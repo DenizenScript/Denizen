@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -71,7 +73,8 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("SIGNED")) {
             if (getString("SIGNED").equalsIgnoreCase("false")) {
-                book.getItemStack().setType(Material.BOOK_AND_QUILL);
+                // TODO: 1.13 - better method?
+                book.getItemStack().setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.WRITABLE_BOOK : Material.valueOf("BOOK_AND_QUILL"));
             }
         }
 

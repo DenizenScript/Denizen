@@ -4,6 +4,8 @@ version: ${project.version} (build ${BUILD_NUMBER})
 main: net.aufdemrand.denizen.Denizen
 softdepend: [Citizens, Vault]
 
+api-version: 1.13
+
 commands:
   denizen:
     description: Lists denizen commands.
@@ -61,4 +63,4 @@ permissions:
       denizen.npc.assign: true
       denizen.npc.constants: true
       denizen.npc.pushable: true
-      
+

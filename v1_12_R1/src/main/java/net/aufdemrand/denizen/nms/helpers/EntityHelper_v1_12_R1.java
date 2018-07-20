@@ -23,7 +23,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -145,7 +144,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().o();
+        ((EntityInsentient) nmsEntity).getNavigation().p();
     }
 
     @Override
@@ -246,7 +245,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.o();
+                    followerNavigation.p();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             }

@@ -898,13 +898,25 @@ public class dEntity implements dObject, Adjustable {
 
                             material = dMaterial.valueOf(data1).getMaterial();
 
+                            // TODO: 1.13
+                            Material netherPortal;
+                            Material endPortal;
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                                netherPortal = Material.NETHER_PORTAL;
+                                endPortal = Material.END_PORTAL;
+                            }
+                            else {
+                                netherPortal = Material.valueOf("PORTAL");
+                                endPortal = Material.valueOf("ENDER_PORTAL");
+                            }
+
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
                             while (data1.equalsIgnoreCase("RANDOM") &&
                                     ((!material.isBlock()) ||
                                             material == Material.AIR ||
-                                            material == Material.PORTAL ||
-                                            material == Material.ENDER_PORTAL)) {
+                                            material == netherPortal ||
+                                            material == endPortal)) {
 
                                 material = dMaterial.valueOf(data1).getMaterial();
                             }

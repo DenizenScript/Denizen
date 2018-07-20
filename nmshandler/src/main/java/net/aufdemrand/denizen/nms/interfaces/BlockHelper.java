@@ -21,7 +21,7 @@ public interface BlockHelper {
 
     void setNbtData(Block block, CompoundTag compoundTag);
 
-    BlockData getBlockData(short id, byte data);
+    BlockData getBlockData(Material material, byte data);
 
     BlockData getBlockData(Block block);
 

@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.events.block;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -99,11 +101,15 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Material changedType = event.getChangedType();
+        // TODO: 1.13 - better method?
         if (changedType == Material.REDSTONE_WIRE
-                || changedType == Material.DIODE_BLOCK_OFF
-                || changedType == Material.DIODE_BLOCK_ON
-                || changedType == Material.REDSTONE_COMPARATOR_OFF
-                || changedType == Material.REDSTONE_COMPARATOR_ON) {
+                || NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)
+                ? (changedType == Material.REPEATER
+                || changedType == Material.COMPARATOR)
+                : (changedType == Material.valueOf("DIODE_BLOCK_OFF")
+                || changedType == Material.valueOf("DIODE_BLOCK_ON")
+                || changedType == Material.valueOf("REDSTONE_COMPARATOR_OFF")
+                || changedType == Material.valueOf("REDSTONE_COMPARATOR_ON"))) {
             return;
         }
         location = new dLocation(event.getBlock().getLocation());

@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen;
 
-
-import net.aufdemrand.denizen.listeners.AbstractListener;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
@@ -26,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -304,91 +301,6 @@ public class DenizenCommandHandler {
         DenizenAPI.getCurrentInstance().saveSaves();
 
         Messaging.send(sender, "Denizen/saves.yml saved to disk from memory.");
-    }
-
-
-    /*
-     * DENIZEN LISTENER
-     */
-    @Command(
-            aliases = {"denizen"}, usage = "listener (--player) --id listener_id --report|cancel|finish",
-            desc = "Checks/cancels/finishes listeners in progress.", modifiers = {"listener"},
-            min = 1, max = 3, permission = "denizen.basic", flags = "s")
-    public void listener(CommandContext args, CommandSender sender) throws CommandException {
-
-        dPlayer player = null;
-        if (sender instanceof Player) {
-            player = dPlayer.mirrorBukkitPlayer((Player) sender);
-        }
-
-        if (args.hasValueFlag("player")) {
-            player = dPlayer.valueOf(args.getFlag("player"));
-        }
-
-        if (player == null) {
-            throw new CommandException("Specified player not online or not found!");
-        }
-
-        Map<String, AbstractListener> listeners = denizen.getListenerRegistry().getListenersFor(player);
-
-        if (listeners == null || listeners.isEmpty()) {
-            Messaging.send(sender, player.getName() + " has no active listeners.");
-            return;
-        }
-
-        if (args.hasValueFlag("report")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
-                if (quest.getListenerId().equalsIgnoreCase(args.getFlag("report"))) {
-                    Messaging.send(sender, quest.report());
-                }
-            }
-            return;
-
-        }
-        else if (args.hasValueFlag("cancel")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
-                if (quest.getListenerId().equalsIgnoreCase(args.getFlag("cancel"))) {
-
-                    Messaging.send(sender, "Cancelling '" + quest.getListenerId() + "' for " + player.getName() + ".");
-                    quest.cancel();
-                }
-            }
-            return;
-
-        }
-        else if (args.hasValueFlag("finish")) {
-            for (AbstractListener quest : denizen.getListenerRegistry().getListenersFor(player).values()) {
-                if (quest.getListenerId().equalsIgnoreCase(args.getFlag("finish"))) {
-                    Messaging.send(sender, "Force-finishing '" + quest.getListenerId() + "' for " + player.getName() + ".");
-                    quest.finish();
-                }
-            }
-            return;
-
-        }
-        else if (args.length() > 2 && args.getInteger(1, 0) < 1) {
-            Messaging.send(sender, "");
-            Messaging.send(sender, "<f>Use '--report|cancel|finish id' to modify/view a specific quest listener.");
-            Messaging.send(sender, "<b>Example: /denizen listener --report \"Journey 1\"");
-            Messaging.send(sender, "");
-            return;
-        }
-
-        Paginator paginator = new Paginator();
-        paginator.header("Active quest listeners for " + player.getName() + ":");
-        paginator.addLine("<e>Key: <a>Type  <b>ID");
-
-        if (listeners == null || listeners.isEmpty()) {
-            paginator.addLine("None.");
-        }
-        else {
-            for (AbstractListener quest : listeners.values()) {
-                paginator.addLine("<a>" + quest.getListenerType() + "  <b>" + quest.getListenerId());
-            }
-        }
-
-        paginator.sendPage(sender, args.getInteger(1, 1));
-
     }
 
 

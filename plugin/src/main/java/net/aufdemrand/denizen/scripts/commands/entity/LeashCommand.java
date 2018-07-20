@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -75,7 +77,18 @@ public class LeashCommand extends AbstractCommand {
         }
         else if (holderObject instanceof dLocation) {
             holderLoc = ((dLocation) scriptEntry.getObject("holder"));
-            if (holderLoc.getBlock().getType() == Material.FENCE || holderLoc.getBlock().getType() == Material.NETHER_FENCE
+            // TODO: 1.13 - better method?
+            Material oakFence;
+            Material netherBrickFence;
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                oakFence = Material.OAK_FENCE;
+                netherBrickFence = Material.NETHER_BRICK_FENCE;
+            }
+            else {
+                oakFence = Material.valueOf("FENCE");
+                netherBrickFence = Material.valueOf("NETHER_FENCE");
+            }
+            if (holderLoc.getBlock().getType() == oakFence || holderLoc.getBlock().getType() == netherBrickFence
                     || holderLoc.getBlock().getType() == Material.ACACIA_FENCE || holderLoc.getBlock().getType() == Material.BIRCH_FENCE
                     || holderLoc.getBlock().getType() == Material.JUNGLE_FENCE || holderLoc.getBlock().getType() == Material.DARK_OAK_FENCE
                     || holderLoc.getBlock().getType() == Material.SPRUCE_FENCE) {

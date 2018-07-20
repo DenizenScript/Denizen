@@ -94,8 +94,8 @@ public class BlockHelper_v1_8_R3 implements BlockHelper {
     }
 
     @Override
-    public BlockData getBlockData(short id, byte data) {
-        return new BlockData_v1_8_R3(id, data);
+    public BlockData getBlockData(Material material, byte data) {
+        return new BlockData_v1_8_R3(material, data);
     }
 
     @Override

@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -127,15 +129,25 @@ public class SwitchCommand extends AbstractCommand {
                 state.equals("TOGGLE")) {
 
             try {
-                if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
+                // TODO: 1.13 - better method?
+                Material ironDoor;
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                    ironDoor = Material.IRON_DOOR;
+                }
+                else {
+                    ironDoor = Material.valueOf("IRON_DOOR_BLOCK");
+                }
+                if (interactLocation.getBlock().getType() == ironDoor) {
                     Location block;
-                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK) {
+                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == ironDoor) {
                         block = interactLocation.clone().add(0, -1, 0);
                     }
                     else {
                         block = interactLocation;
                     }
-                    block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(ironDoor, (byte) (block.getBlock().getData() ^ 4));
+                    blockData.setBlock(block.getBlock(), false);
                 }
                 else {
                     NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);

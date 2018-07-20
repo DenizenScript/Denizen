@@ -11,7 +11,6 @@ import net.aufdemrand.denizen.events.entity.*;
 import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.flags.FlagManager;
-import net.aufdemrand.denizen.listeners.ListenerRegistry;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
@@ -34,8 +33,6 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.*;
-import net.aufdemrand.denizen.scripts.requirements.RequirementChecker;
-import net.aufdemrand.denizen.scripts.requirements.RequirementRegistry;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
@@ -286,8 +283,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
      */
     private BukkitCommandRegistry commandRegistry = new BukkitCommandRegistry();
     private TriggerRegistry triggerRegistry = new TriggerRegistry();
-    private RequirementRegistry requirementRegistry = new RequirementRegistry(this);
-    private ListenerRegistry listenerRegistry = new ListenerRegistry();
     private dNPCRegistry dNPCRegistry;
 
 
@@ -297,14 +292,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public dNPCRegistry getNPCRegistry() {
         return dNPCRegistry;
-    }
-
-    public ListenerRegistry getListenerRegistry() {
-        return listenerRegistry;
-    }
-
-    public RequirementRegistry getRequirementRegistry() {
-        return requirementRegistry;
     }
 
     public TriggerRegistry getTriggerRegistry() {
@@ -342,17 +329,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     private BukkitWorldScriptHelper ws_helper;
 
     public final static long startTime = System.currentTimeMillis();
-
-    private RequirementChecker requirementChecker;
-
-    /**
-     * Gets the currently loaded instance of the RequirementChecker
-     *
-     * @return ScriptHelper
-     */
-    public RequirementChecker getRequirementChecker() {
-        return requirementChecker;
-    }
 
     /*
      * Sets up Denizen on start of the CraftBukkit server.
@@ -394,8 +370,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 //return;
             }
             startedSuccessful = true;
-
-            requirementChecker = new RequirementChecker();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -566,8 +540,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (Depends.citizens != null) {
                 getTriggerRegistry().registerCoreMembers();
             }
-            getRequirementRegistry().registerCoreMembers();
-            getListenerRegistry().registerCoreMembers();
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1004,26 +976,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         // Save offline player inventories
         InventoryScriptHelper._savePlayerInventories();
-
-        // Deconstruct listeners (server shutdown seems not to be triggering a PlayerQuitEvent)
-        for (Player player : this.getServer().getOnlinePlayers()) {
-            getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
-        }
-
-        for (OfflinePlayer player : this.getServer().getOfflinePlayers()) {
-            try {
-                getListenerRegistry().deconstructPlayer(dPlayer.mirrorBukkitPlayer(player));
-            }
-            catch (Exception e) {
-                if (player == null) {
-                    dB.echoError("Tell the Denizen team ASAP about this error! ERR: OPN: " + e.toString());
-                }
-                else {
-                    dB.echoError("'" + player.getName() + "' is having trouble deconstructing! " +
-                            "You might have a corrupt player file!");
-                }
-            }
-        }
 
         // Unload loaded dExternals
         for (dExternal external : RuntimeCompiler.loadedExternals) {

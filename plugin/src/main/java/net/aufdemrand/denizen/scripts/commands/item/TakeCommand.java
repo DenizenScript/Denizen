@@ -141,7 +141,8 @@ public class TakeCommand extends AbstractCommand {
             case ITEMINHAND:
                 int inHandAmt = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = (int) qty.asDouble();
-                ItemStack newHandItem = new ItemStack(0);
+                // TODO: 1.13 - ???
+                ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
                     ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);

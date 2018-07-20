@@ -142,6 +142,9 @@ public class dItem implements dObject, Notable, Adjustable {
                 String material = m.group(1).toUpperCase();
 
                 if (aH.matchesInteger(material)) {
+                    if (!nope) {
+                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                    }
                     stack = new dItem(Integer.valueOf(material));
                 }
                 else {
@@ -220,8 +223,14 @@ public class dItem implements dObject, Notable, Adjustable {
         this(new ItemStack(material));
     }
 
+    @Deprecated
     public dItem(int itemId) {
-        this(new ItemStack(itemId));
+        this(new ItemStack(dMaterial.getLegacyMaterial(itemId)));
+    }
+
+    @Deprecated
+    public dItem(int itemId, int qty) {
+        this(new ItemStack(dMaterial.getLegacyMaterial(itemId), qty));
     }
 
     public dItem(Material material, int qty) {
@@ -230,10 +239,6 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public dItem(dMaterial material, int qty) {
         this(new ItemStack(material.getMaterial(), qty, (short) 0, material.getData()));
-    }
-
-    public dItem(int type, int qty) {
-        this(new ItemStack(type, qty));
     }
 
     public dItem(ItemStack item) {
@@ -287,7 +292,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
         // Will return -1 if these are not the same
         // Material IDs
-        if (compared.getTypeId() != compared_to.getTypeId()) {
+        if (compared.getType().getId() != compared_to.getType().getId()) {
             return -1;
         }
 
@@ -538,7 +543,7 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        if (item.getType() != Material.AIR) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -573,7 +578,7 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        if (item.getType() != Material.AIR) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -598,7 +603,7 @@ public class dItem implements dObject, Notable, Adjustable {
             return "null";
         }
 
-        if (item.getTypeId() != 0) {
+        if (item.getType() != Material.AIR) {
 
             // If saved item, return that
             if (isUnique()) {
@@ -652,35 +657,19 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public static void registerTags() {
 
-        // <--[tag]
-        // @attribute <i@item.id>
-        // @returns Element(Number)
-        // @group deprecated info
-        // @description
-        // Returns the item ID number of the item.
-        // EG, a stone item will return 1.
-        // Note that ID numbers are considered deprecated - you should use the names instead!
-        // -->
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).getItemStack().getTypeId())
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                return new Element(((dItem) object).getItemStack().getType().getId())
                         .getAttribute(attribute.fulfill(1));
             }
         });
 
-        // <--[tag]
-        // @attribute <i@item.data>
-        // @returns Element(Number)
-        // @group deprecated info
-        // @description
-        // Returns the data value of the material of the item.
-        // EG, white wool will return 0, while red wool will return 14.
-        // Note that data values are considered deprecated - you should use the names instead!
-        // -->
         registerTag("data", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
                 return new Element(((dItem) object).getItemStack().getData().getData())
                         .getAttribute(attribute.fulfill(1));
             }

@@ -160,7 +160,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
                         projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
                 while (bi.hasNext()) {
                     block = bi.next();
-                    if (block.getTypeId() != 0) {
+                    // TODO: 1.13 - ???
+                    if (block.getType().getId() != 0) {
                         break;
                     }
                 }

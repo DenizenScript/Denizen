@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -77,7 +79,13 @@ public class HeadCommand extends AbstractCommand {
 
         // Create head item with chosen skin, or item/skin
         if (skin != null) {
-            item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+            // TODO: 1.13 - does this work?
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                item = new ItemStack(Material.PLAYER_HEAD, 1);
+            }
+            else {
+                item = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
+            }
             ItemMeta itemMeta = item.getItemMeta();
             ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", ""));
             item.setItemMeta(itemMeta);

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -44,7 +46,9 @@ public class EntityFirework implements Property {
 
     @Override
     public String getPropertyString() {
-        ItemStack item = new ItemStack(Material.FIREWORK);
+        // TODO: 1.13 - better method?
+        Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+        ItemStack item = new ItemStack(material);
         item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
         return new dItem(item).identify();
     }
@@ -74,7 +78,9 @@ public class EntityFirework implements Property {
         // If the entity is a firework, returns the firework item used to launch it.
         // -->
         if (attribute.startsWith("firework_item")) {
-            ItemStack item = new ItemStack(Material.FIREWORK);
+            // TODO: 1.13 - better method?
+            Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+            ItemStack item = new ItemStack(material);
             item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
             return new dItem(item).getAttribute(attribute.fulfill(1));
         }

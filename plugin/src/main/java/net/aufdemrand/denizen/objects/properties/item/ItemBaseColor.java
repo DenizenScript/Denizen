@@ -1,8 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -21,10 +20,8 @@ public class ItemBaseColor implements Property {
     public static boolean describes(dObject item) {
         if (item instanceof dItem) {
             Material material = ((dItem) item).getItemStack().getType();
-            return material == Material.BANNER
-                    || material == Material.WALL_BANNER
-                    || material == Material.STANDING_BANNER
-                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.SHIELD);
+            // TODO: 1.13 - better method?
+            return Utilities.isBannerOrShield(material);
         }
         return false;
     }

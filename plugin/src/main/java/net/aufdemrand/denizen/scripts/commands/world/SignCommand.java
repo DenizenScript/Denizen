@@ -1,5 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -78,38 +81,50 @@ public class SignCommand extends AbstractCommand {
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
-                && sign.getType() != Material.SIGN_POST)) {
+                // TODO: 1.13 - better method?
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? sign.getType() == Material.SIGN
+                : sign.getType() == Material.valueOf("SIGN_POST")))) {
             if (type == Type.WALL_SIGN) {
                 if (direction != null) {
                     BlockFace bf = Utilities.chooseSignRotation(direction);
                     org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
-                    sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                    blockData.setBlock(sign, false);
                 }
                 else {
                     BlockFace bf = Utilities.chooseSignRotation(sign);
                     org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                     sgntmp.setFacingDirection(bf);
-                    sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+                    // TODO: 1.13 - confirm this works
+                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                    blockData.setBlock(sign, false);
                 }
             }
             else {
-                sign.setType(Material.SIGN_POST, false);
+                // TODO: 1.13 - better method?
+                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
             }
         }
         else if (sign.getType() != Material.WALL_SIGN
-                && sign.getType() != Material.SIGN_POST) {
+                // TODO: 1.13 - better method?
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? sign.getType() != Material.SIGN
+                : sign.getType() != Material.valueOf("SIGN_POST"))) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
-                sign.setType(Material.SIGN_POST, false);
+                // TODO: 1.13 - better method?
+                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
             }
             else {
                 BlockFace bf = Utilities.chooseSignRotation(sign);
                 org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
                 sgntmp.setFacingDirection(bf);
-                sign.setTypeIdAndData(Material.WALL_SIGN.getId(), sgntmp.getData(), false);
+                // TODO: 1.13 - confirm this works
+                BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+                blockData.setBlock(sign, false);
             }
         }
         BlockState signState = sign.getState();

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
@@ -14,11 +16,10 @@ import java.util.ArrayList;
 public class ItemBook implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem
-                && (
-                ((dItem) item).getItemStack().getType().equals(Material.WRITTEN_BOOK)
-                        || ((dItem) item).getItemStack().getType().equals(Material.BOOK_AND_QUILL)
-        );
+        Material material = ((dItem) item).getItemStack().getType();
+        // TODO: 1.13 - better method?
+        return (material == Material.WRITTEN_BOOK || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? material == Material.WRITABLE_BOOK
+                : material == Material.valueOf("BOOK_AND_QUILL")));
     }
 
     public static ItemBook getFrom(dObject _item) {

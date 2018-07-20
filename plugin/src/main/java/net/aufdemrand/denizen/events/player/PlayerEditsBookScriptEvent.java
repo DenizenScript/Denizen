@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
@@ -95,7 +97,9 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             if (script.getContainer() instanceof BookScriptContainer) {
                 dItem dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
-                if (dBook.getMaterial().getMaterial() == Material.BOOK_AND_QUILL) {
+                // TODO: 1.13 - better method?
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK
+                    : dBook.getMaterial().getMaterial() == Material.valueOf("BOOK_AND_QUILL")) {
                     signing = Element.FALSE;
                 }
             }
