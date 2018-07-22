@@ -15,15 +15,17 @@ public class Sidebar_v1_13_R1 extends Sidebar {
 
     public Sidebar_v1_13_R1(Player player) {
         super(player);
-        this.obj1 = new ScoreboardObjective(dummyScoreboard, "dummy_1", dummyCriteria, title);
-        this.obj2 = new ScoreboardObjective(dummyScoreboard, "dummy_2", dummyCriteria, title);
+        IChatBaseComponent chatComponentTitle = new ChatComponentText(title);
+        this.obj1 = new ScoreboardObjective(dummyScoreboard, "dummy_1", dummyCriteria, chatComponentTitle, IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER);
+        this.obj2 = new ScoreboardObjective(dummyScoreboard, "dummy_2", dummyCriteria, chatComponentTitle, IScoreboardCriteria.EnumScoreboardHealthDisplay.INTEGER);
     }
 
     @Override
     protected void setDisplayName(String title) {
         if (this.obj1 != null) {
-            this.obj1.setDisplayName(title);
-            this.obj2.setDisplayName(title);
+            IChatBaseComponent chatComponentTitle = new ChatComponentText(title);
+            this.obj1.setDisplayName(chatComponentTitle);
+            this.obj2.setDisplayName(chatComponentTitle);
         }
     }
 

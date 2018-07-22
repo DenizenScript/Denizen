@@ -69,7 +69,7 @@ public class FishingHelper_v1_13_R1 implements FishingHelper {
         //fishHook.owner.a(StatisticList.F, 1); -- removed stat as of 1.12
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a(worldServer);
-        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dI());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().aP().a(LootTables.aP).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
@@ -78,7 +78,7 @@ public class FishingHelper_v1_13_R1 implements FishingHelper {
         //fishHook.owner.a(StatisticList.G, 1); -- removed stat as of 1.12
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer) fishHook.getWorld());
-        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dI());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().aP().a(LootTables.aQ).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
@@ -88,7 +88,7 @@ public class FishingHelper_v1_13_R1 implements FishingHelper {
         fishHook.owner.a(StatisticList.FISH_CAUGHT, 1);
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.a playerFishEvent2 = new LootTableInfo.a((WorldServer) fishHook.getWorld());
-        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dI());
+        playerFishEvent2.a((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().aP().a(LootTables.aR).a(worldServer.random, playerFishEvent2.a());
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }

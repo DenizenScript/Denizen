@@ -144,7 +144,7 @@ public class EntityHelper_v1_13_R1 implements EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().r();
+        ((EntityInsentient) nmsEntity).getNavigation().q();
     }
 
     @Override
@@ -245,7 +245,7 @@ public class EntityHelper_v1_13_R1 implements EntityHelper {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.r();
+                    followerNavigation.q();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             }
@@ -280,7 +280,7 @@ public class EntityHelper_v1_13_R1 implements EntityHelper {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (entityNavigation.q() || path.b()) {
+                    if (entityNavigation.p() || path.b()) {
                         if (callback != null) {
                             callback.run();
                         }

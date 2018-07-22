@@ -89,7 +89,7 @@ public class BlockHelper_v1_13_R1 implements BlockHelper {
         if (tileEntity == null) {
             return null;
         }
-        return CompoundTag_v1_13_R1.fromNMSTag(tileEntity.Z_());
+        return CompoundTag_v1_13_R1.fromNMSTag(tileEntity.aa_());
     }
 
     @Override
