@@ -2300,7 +2300,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
         // images and texts on the map and show the default world map at the specified location.
         // Note that all maps have a size of 128x128.
-        // The file path is relative to the '../plugins/Denizen/' folder.
+        // The file path is relative to the 'plugins/Denizen/images/' folder.
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
         // Custom maps do not persist over restarts.
         //
