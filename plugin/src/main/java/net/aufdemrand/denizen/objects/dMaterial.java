@@ -600,9 +600,9 @@ public class dMaterial implements dObject {
                 return material_varieties.get(material).get(data);
             }
         }
-
-        material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
-
+        if (material.isBlock()) {
+            material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+        }
         return new dMaterial(material, data);
     }
 
