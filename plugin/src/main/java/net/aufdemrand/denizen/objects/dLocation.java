@@ -693,10 +693,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     || type == Material.IRON_TRAPDOOR)
                     || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)
                     && (type == Material.DARK_OAK_TRAPDOOR
-                    || type == Material.BIRCH_TRAPDOOR)
+                    || type == Material.BIRCH_TRAPDOOR
                     || type == Material.ACACIA_TRAPDOOR
                     || type == Material.JUNGLE_TRAPDOOR
-                    || type == Material.SPRUCE_TRAPDOOR)) {
+                    || type == Material.SPRUCE_TRAPDOOR))) {
                 return new Element((getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
             }
             else {
