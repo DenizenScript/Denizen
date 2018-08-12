@@ -198,6 +198,8 @@ public interface EntityHelper {
 
     void move(Entity entity, Vector vector);
 
+    void teleport(Entity entity, Vector vector);
+
     BoundingBox getBoundingBox(Entity entity);
 
     void setBoundingBox(Entity entity, BoundingBox boundingBox);

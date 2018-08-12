@@ -842,7 +842,6 @@ public class dEntity implements dObject, Adjustable {
 
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
-
         if (isCitizensNPC()) {
             if (getDenizenNPC().getCitizen().isSpawned()) {
                 getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
@@ -855,6 +854,9 @@ public class dEntity implements dObject, Adjustable {
         }
         else if (entity != null && isUnique()) {
             entity.teleport(location);
+            if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
+                NMSHandler.getInstance().getEntityHelper().teleport(entity, location.toVector());
+            }
         }
         else {
             if (entity_type != null) {

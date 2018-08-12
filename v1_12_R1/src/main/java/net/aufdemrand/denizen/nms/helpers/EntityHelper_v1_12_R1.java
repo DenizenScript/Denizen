@@ -744,6 +744,11 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     }
 
     @Override
+    public void teleport(Entity entity, Vector vector) {
+        ((CraftEntity) entity).getHandle().setPosition(vector.getX(), vector.getY(), vector.getZ());
+    }
+
+    @Override
     public BoundingBox getBoundingBox(Entity entity) {
         AxisAlignedBB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
         Vector position = new Vector(boundingBox.a, boundingBox.b, boundingBox.c);
