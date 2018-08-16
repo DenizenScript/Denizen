@@ -150,6 +150,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("action", FlagManager.Action.SPLIT);
                 }
+                else if (flagArgs[1].equals("!|")) {
+                    scriptEntry.addObject("action", FlagManager.Action.SPLIT_NEW);
+                }
                 else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
                 }

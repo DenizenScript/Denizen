@@ -1559,6 +1559,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - flag server cool_people:<-:p@morphan1
         //
         // @Usage
+        // Use to clear a flag and fill it with a new list of values.
+        // - flag server cool_people:!|:p@mcmonkey4eva|p@morphan1|p@xenmai
+        //
+        // @Usage
         // Use to completely remove a flag.
         // - flag server cool_people:!
         //

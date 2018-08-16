@@ -112,7 +112,7 @@ public class FlagManager {
     // Valid flag actions
     public static enum Action {
         SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY,
-        DIVIDE, INSERT, REMOVE, SPLIT, DELETE
+        DIVIDE, INSERT, REMOVE, SPLIT, SPLIT_NEW, DELETE
     }
 
 
@@ -486,18 +486,34 @@ public class FlagManager {
         public int split(Object obj) {
             checkExpired();
             dList split = dList.valueOf(obj.toString());
-
             if (split.size() > 0) {
                 for (String val : split) {
                     if (val.length() > 0) {
                         value.values.add(val);
                     }
                 }
-
                 save();
                 rebuild();
             }
+            return size();
+        }
 
+        public int splitNew(Object obj) {
+            checkExpired();
+            dList split = dList.valueOf(obj.toString());
+            if (split.size() > 0) {
+                value.values.clear();
+                for (String val : split) {
+                    if (val.length() > 0) {
+                        value.values.add(val);
+                    }
+                }
+                save();
+                rebuild();
+            }
+            else {
+                clear();
+            }
             return size();
         }
 
@@ -882,8 +898,13 @@ public class FlagManager {
                     split(val);
                     break;
 
+                case SPLIT_NEW:
+                    splitNew(val);
+                    break;
+
                 case DELETE:
                     clear();
+                    break;
             }
         }
 
