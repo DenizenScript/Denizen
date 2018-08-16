@@ -36,7 +36,6 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -1098,7 +1097,7 @@ public class ServerTags {
         // -->
         else if (attribute.startsWith("entity_is_spawned")
                 && attribute.hasContext(1)) {
-            dEntity ent = dEntity.valueOf(attribute.getContext(1));
+            dEntity ent = dEntity.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
             event.setReplaced(new Element((ent != null && ent.isUnique() && ent.isSpawned()) ? "true" : "false")
                     .getAttribute(attribute.fulfill(1)));
         }
@@ -1123,7 +1122,7 @@ public class ServerTags {
         // -->
         else if (attribute.startsWith("npc_is_valid")
                 && attribute.hasContext(1)) {
-            dNPC npc = dNPC.valueOf(attribute.getContext(1));
+            dNPC npc = dNPC.valueOf(attribute.getContext(1), new BukkitTagContext(null, null, false, null, false, null));
             event.setReplaced(new Element((npc != null && npc.isValid()))
                     .getAttribute(attribute.fulfill(1)));
         }
