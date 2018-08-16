@@ -69,11 +69,20 @@ public class ItemNBT implements Property {
         // <--[tag]
         // @attribute <i@item.nbt[<key>]>
         // @returns Element
+        // @mechanism dItem.nbt
         // @group properties
         // @description
         // Returns the value of this item's NBT key as an Element as best it can.
+        // If no key is specified, returns the full list of NBT key/value pairs (valid for input to nbt mechanism).
         // -->
         if (attribute.matches("nbt")) {
+            if (!attribute.hasContext(1)) {
+                dList list = getNBTDataList();
+                if (list == null) {
+                    return null;
+                }
+                return list.getAttribute(attribute.fulfill(1));
+            }
             String res = CustomNBT.getCustomNBT(item.getItemStack(), attribute.getContext(1), CustomNBT.KEY_DENIZEN);
             if (res == null) {
                 return null;
@@ -85,9 +94,7 @@ public class ItemNBT implements Property {
         return null;
     }
 
-
-    @Override
-    public String getPropertyString() {
+    public dList getNBTDataList() {
         ItemStack itemStack = item.getItemStack();
         List<String> nbtKeys = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
@@ -95,9 +102,18 @@ public class ItemNBT implements Property {
             for (String key : nbtKeys) {
                 list.add(key + "/" + CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN));
             }
-            return list.identify();
+            return list;
         }
         return null;
+    }
+
+    @Override
+    public String getPropertyString() {
+        dList list = getNBTDataList();
+        if (list == null) {
+            return null;
+        }
+        return list.identify();
     }
 
     @Override
