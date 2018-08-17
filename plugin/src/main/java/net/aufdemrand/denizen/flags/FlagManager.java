@@ -77,7 +77,7 @@ import java.util.*;
 // # Inside the loop, check if the player's flag 'completed' contains in it an element named 'beginners tutorial'.
 // # If it does, increment the server flag 'completes_counter' by one, and give it 10 seconds to live.
 // - foreach <server.list_players> {
-//     - if <%value%.flag[completed].as_list> contains 'beginners tutorial'
+//     - if <def[value].flag[completed].as_list> contains 'beginners tutorial'
 //       flag server completes_counter:++ duration:10s
 //   }
 // # Now show the number of players who had the element in their 'completed' flag.
@@ -91,7 +91,7 @@ import java.util.*;
 // <code>
 // - flag <npc> friends:->:<player>
 // - foreach <npc.flag[friends].as_list> {
-//     - chat t:%value% 'You are my friend!'
+//     - chat t:<def[value]> 'You are my friend!'
 //   }
 // </code>
 //
