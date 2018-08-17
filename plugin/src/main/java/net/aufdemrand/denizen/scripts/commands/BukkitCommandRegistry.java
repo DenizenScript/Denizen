@@ -2533,10 +2533,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This can be useful for storing hidden information on items.
         //
         // @Tags
-        // <entry[saveName].new_item>
+        // <entry[saveName].new_item> returns the item resulting from the NBT change.
         //
         // @Usage
-        // Use to set a hidden value on an item and give it to  a player.
+        // Use to set a hidden value on an item and give the item to a player.
         // - nbt i@snow_ball "MyCustomNBT.Damage:10" "save:SnowballOfDeath"
         // - give <entry[SnowballOfDeath].new_item>
         //
