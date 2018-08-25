@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_9_R2;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Material;
@@ -104,6 +105,42 @@ public class BlockHelper_v1_9_R2 implements BlockHelper {
     @Override
     public BlockData getBlockData(String compressedString) {
         return BlockData_v1_9_R2.fromCompressedString(compressedString);
+    }
+
+    private static net.minecraft.server.v1_9_R2.Block getBlockFrom(Material material) {
+        ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
+        if (is == null) {
+            return null;
+        }
+        Item item = is.getItem();
+        if (!(item instanceof ItemBlock)) {
+            return null;
+        }
+        return ((ItemBlock) item).d();
+    }
+
+    @Override
+    public boolean hasBlock(Material material) {
+        return getBlockFrom(material) != null;
+    }
+
+    @Override
+    public boolean setBlockResistance(Material material, float resistance) {
+        net.minecraft.server.v1_9_R2.Block block = getBlockFrom(material);
+        if (block == null) {
+            return false;
+        }
+        ReflectionHelper.setFieldValue(net.minecraft.server.v1_9_R2.Block.class, "durability", block, resistance);
+        return true;
+    }
+
+    @Override
+    public float getBlockResistance(Material material) {
+        net.minecraft.server.v1_9_R2.Block block = getBlockFrom(material);
+        if (block == null) {
+            return 0;
+        }
+        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_9_R2.Block.class, "durability", block);
     }
 
     @Override

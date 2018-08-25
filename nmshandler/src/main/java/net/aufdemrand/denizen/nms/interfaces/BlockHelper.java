@@ -27,5 +27,11 @@ public interface BlockHelper {
 
     BlockData getBlockData(String compressedString);
 
+    boolean hasBlock(Material material);
+
+    boolean setBlockResistance(Material material, float resistance);
+
+    float getBlockResistance(Material material);
+
     boolean isSafeBlock(Material material);
 }

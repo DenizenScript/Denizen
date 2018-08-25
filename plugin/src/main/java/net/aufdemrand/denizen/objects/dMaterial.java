@@ -4,11 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Element;
-import net.aufdemrand.denizencore.objects.Fetchable;
-import net.aufdemrand.denizencore.objects.TagRunnable;
-import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dObject;
+import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -22,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class dMaterial implements dObject {
+public class dMaterial implements dObject, Adjustable {
 
     // Will be called a lot, no need to construct/deconstruct.
     public final static dMaterial AIR = new dMaterial(Material.AIR);
@@ -1079,6 +1075,26 @@ public class dMaterial implements dObject {
         });
 
         // <--[tag]
+        // @attribute <m@material.block_resistance>
+        // @returns Element(Decimal)
+        // @mechanism dMaterial.block_resistance
+        // @description
+        // Returns the explosion resistance for all blocks of this material type.
+        // -->
+        registerTag("block_resistance", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dMaterial material = (dMaterial) object;
+                if (!NMSHandler.getInstance().getBlockHelper().hasBlock(material.getMaterial())) {
+                    dB.echoError("Provided material does not have a placeable block.");
+                    return null;
+                }
+                return new Element(NMSHandler.getInstance().getBlockHelper().getBlockResistance(material.getMaterial()))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <m@material.max_stack_size>
         // @returns Element(Number)
         // @description
@@ -1228,5 +1244,41 @@ public class dMaterial implements dObject {
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
+    }
+
+    @Override
+    public void applyProperty(Mechanism mechanism) {
+        dB.echoError("Cannot apply properties to a material!");
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dMaterial
+        // @name block_resistance
+        // @input Element(Decimal)
+        // @description
+        // Sets the explosion resistance for all blocks of this material type.
+        // @tags
+        // <m@material.block_resistance>
+        // -->
+        if (mechanism.matches("block_resistance") && mechanism.requireFloat()) {
+            if (!NMSHandler.getInstance().getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
+                dB.echoError("Provided material does not have a placeable block.");
+            }
+        }
+
+        // Iterate through this object's properties' mechanisms
+        for (Property property : PropertyParser.getProperties(this)) {
+            property.adjust(mechanism);
+            if (mechanism.fulfilled()) {
+                break;
+            }
+        }
+
+        if (!mechanism.fulfilled()) {
+            mechanism.reportInvalid();
+        }
     }
 }
