@@ -272,7 +272,7 @@ public class Utilities {
 
             if ((block.getType() != Material.AIR)
                     // TODO: 1.13 - better method?
-                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? block.getType() != Material.SIGN
+                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? block.getType() != Material.SIGN
                     : block.getType() != Material.valueOf("SIGN_POST"))
                     && block.getType() != Material.WALL_SIGN) {
 
@@ -310,7 +310,7 @@ public class Utilities {
 
             if ((block.getType() != Material.AIR)
                     // TODO: 1.13 - better method?
-                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? block.getType() != Material.SIGN
+                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? block.getType() != Material.SIGN
                     : block.getType() != Material.valueOf("SIGN_POST"))
                     && block.getType() != Material.WALL_SIGN) {
 
@@ -371,7 +371,7 @@ public class Utilities {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.SHIELD) {
             return true;
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             switch (material) {
                 case BLACK_BANNER:
                 case BLUE_BANNER:

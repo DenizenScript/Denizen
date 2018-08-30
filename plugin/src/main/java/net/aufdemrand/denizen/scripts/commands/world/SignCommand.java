@@ -82,7 +82,7 @@ public class SignCommand extends AbstractCommand {
         if (type != Type.AUTOMATIC
                 || (sign.getType() != Material.WALL_SIGN
                 // TODO: 1.13 - better method?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? sign.getType() == Material.SIGN
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? sign.getType() == Material.SIGN
                 : sign.getType() == Material.valueOf("SIGN_POST")))) {
             if (type == Type.WALL_SIGN) {
                 if (direction != null) {
@@ -104,7 +104,7 @@ public class SignCommand extends AbstractCommand {
             }
             else {
                 // TODO: 1.13 - better method?
-                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
+                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
@@ -112,11 +112,11 @@ public class SignCommand extends AbstractCommand {
         }
         else if (sign.getType() != Material.WALL_SIGN
                 // TODO: 1.13 - better method?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? sign.getType() != Material.SIGN
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? sign.getType() != Material.SIGN
                 : sign.getType() != Material.valueOf("SIGN_POST"))) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
                 // TODO: 1.13 - better method?
-                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
+                sign.setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.SIGN : Material.valueOf("SIGN_POST"), false);
             }
             else {
                 BlockFace bf = Utilities.chooseSignRotation(sign);

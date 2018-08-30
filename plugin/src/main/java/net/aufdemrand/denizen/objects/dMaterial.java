@@ -94,7 +94,7 @@ public class dMaterial implements dObject, Adjustable {
 
     static {
         MATERIAL_BY_LEGACY_ID = new HashMap<Integer, Material>();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
             for (Material material : map.values()) {
                 if (material.isLegacy()) {

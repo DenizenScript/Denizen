@@ -80,7 +80,7 @@ public class HeadCommand extends AbstractCommand {
         // Create head item with chosen skin, or item/skin
         if (skin != null) {
             // TODO: 1.13 - does this work?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 item = new ItemStack(Material.PLAYER_HEAD, 1);
             }
             else {

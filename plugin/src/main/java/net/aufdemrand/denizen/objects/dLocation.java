@@ -665,7 +665,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Material ironDoor;
             Material oakDoor;
             Material oakTrapDoor;
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 ironDoor = Material.IRON_DOOR;
                 oakDoor = Material.OAK_DOOR;
                 oakTrapDoor = Material.OAK_TRAPDOOR;
@@ -691,7 +691,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             else if ((type == oakTrapDoor
                     || type == Material.IRON_TRAPDOOR)
-                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)
+                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
                     && (type == Material.DARK_OAK_TRAPDOOR
                     || type == Material.BIRCH_TRAPDOOR
                     || type == Material.ACACIA_TRAPDOOR
@@ -2077,7 +2077,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("command_block_name")
                 // TODO: 1.13 - is there a better way?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
                 : getBlock().getType() == Material.valueOf("COMMAND"))) {
             return new Element(((CommandBlock) getBlock().getState()).getName())
                     .getAttribute(attribute.fulfill(1));
@@ -2092,7 +2092,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("command_block")
                 // TODO: 1.13 - is there a better way?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
                 : getBlock().getType() == Material.valueOf("COMMAND"))) {
             return new Element(((CommandBlock) getBlock().getState()).getCommand())
                     .getAttribute(attribute.fulfill(1));
@@ -2329,7 +2329,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("command_block_name")) {
             // TODO: 1.13 - is there a better way?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
                     : getBlock().getType() == Material.valueOf("COMMAND")) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setName(value.asString());
@@ -2348,7 +2348,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("command_block")) {
             // TODO: 1.13 - is there a better way?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? getBlock().getType() == Material.COMMAND_BLOCK
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
                     : getBlock().getType() == Material.valueOf("COMMAND")) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());

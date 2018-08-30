@@ -35,7 +35,7 @@ public class ItemChangeMessage implements Listener {
         // which is probably the least intrusive
         if (item == null || item.getType() == Material.AIR) {
             // TODO: better method?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
             }
             else {

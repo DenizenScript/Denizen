@@ -89,7 +89,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("item")) {
             // TODO: 1.13 - better method?
-            Material firework = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+            Material firework = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
             ItemStack itemStack = new ItemStack(firework);
             itemStack.setItemMeta(event.getEntity().getFireworkMeta());
             return new dItem(itemStack);

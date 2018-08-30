@@ -47,7 +47,7 @@ public class EntityFirework implements Property {
     @Override
     public String getPropertyString() {
         // TODO: 1.13 - better method?
-        Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+        Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
         ItemStack item = new ItemStack(material);
         item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
         return new dItem(item).identify();
@@ -79,7 +79,7 @@ public class EntityFirework implements Property {
         // -->
         if (attribute.startsWith("firework_item")) {
             // TODO: 1.13 - better method?
-            Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
+            Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
             ItemStack item = new ItemStack(material);
             item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
             return new dItem(item).getAttribute(attribute.fulfill(1));

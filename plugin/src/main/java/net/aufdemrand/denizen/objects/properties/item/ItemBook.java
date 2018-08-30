@@ -18,7 +18,7 @@ public class ItemBook implements Property {
     public static boolean describes(dObject item) {
         Material material = ((dItem) item).getItemStack().getType();
         // TODO: 1.13 - better method?
-        return (material == Material.WRITTEN_BOOK || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? material == Material.WRITABLE_BOOK
+        return (material == Material.WRITTEN_BOOK || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? material == Material.WRITABLE_BOOK
                 : material == Material.valueOf("BOOK_AND_QUILL")));
     }
 

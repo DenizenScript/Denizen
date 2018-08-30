@@ -67,7 +67,7 @@
         </dependency>
         <dependency>
             <groupId>net.aufdemrand</groupId>
-            <artifactId>denizen-v1_13_R1</artifactId>
+            <artifactId>denizen-v1_13_R2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>

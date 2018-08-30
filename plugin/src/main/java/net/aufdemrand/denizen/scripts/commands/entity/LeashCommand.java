@@ -80,7 +80,7 @@ public class LeashCommand extends AbstractCommand {
             // TODO: 1.13 - better method?
             Material oakFence;
             Material netherBrickFence;
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 oakFence = Material.OAK_FENCE;
                 netherBrickFence = Material.NETHER_BRICK_FENCE;
             }

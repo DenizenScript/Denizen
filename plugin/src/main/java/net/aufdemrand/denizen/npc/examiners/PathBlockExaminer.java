@@ -142,7 +142,7 @@ public class PathBlockExaminer implements BlockExaminer {
     }
 
     static {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             COBWEB = Material.COBWEB;
             WATER = new Material[] { Material.WATER };
             LAVA = new Material[] { Material.LAVA };

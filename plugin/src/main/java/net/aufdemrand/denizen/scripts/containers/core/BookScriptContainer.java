@@ -74,7 +74,7 @@ public class BookScriptContainer extends ScriptContainer {
         if (contains("SIGNED")) {
             if (getString("SIGNED").equalsIgnoreCase("false")) {
                 // TODO: 1.13 - better method?
-                book.getItemStack().setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1) ? Material.WRITABLE_BOOK : Material.valueOf("BOOK_AND_QUILL"));
+                book.getItemStack().setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.WRITABLE_BOOK : Material.valueOf("BOOK_AND_QUILL"));
             }
         }
 

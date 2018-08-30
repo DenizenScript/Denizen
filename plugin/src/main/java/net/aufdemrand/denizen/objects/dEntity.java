@@ -903,7 +903,7 @@ public class dEntity implements dObject, Adjustable {
                             // TODO: 1.13
                             Material netherPortal;
                             Material endPortal;
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R1)) {
+                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                                 netherPortal = Material.NETHER_PORTAL;
                                 endPortal = Material.END_PORTAL;
                             }
