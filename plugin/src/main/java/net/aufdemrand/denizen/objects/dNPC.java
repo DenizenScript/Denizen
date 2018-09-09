@@ -151,6 +151,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public NPC getCitizen() {
+        if (npcid < 0) {
+            return null;
+        }
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null) {
             //dB.echoError(new RuntimeException("StackTraceOutput"));
