@@ -75,6 +75,6 @@ public class FakeChannel_v1_13_R2 extends AbstractChannel {
 
     @Override
     public ChannelMetadata metadata() {
-        return null;
+        return new ChannelMetadata(true);
     }
 }
