@@ -103,13 +103,13 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
         Material changedType = event.getChangedType();
         // TODO: 1.13 - better method?
         if (changedType == Material.REDSTONE_WIRE
-                || NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
                 ? (changedType == Material.REPEATER
                 || changedType == Material.COMPARATOR)
                 : (changedType == Material.valueOf("DIODE_BLOCK_OFF")
                 || changedType == Material.valueOf("DIODE_BLOCK_ON")
                 || changedType == Material.valueOf("REDSTONE_COMPARATOR_OFF")
-                || changedType == Material.valueOf("REDSTONE_COMPARATOR_ON"))) {
+                || changedType == Material.valueOf("REDSTONE_COMPARATOR_ON")))) {
             return;
         }
         location = new dLocation(event.getBlock().getLocation());
