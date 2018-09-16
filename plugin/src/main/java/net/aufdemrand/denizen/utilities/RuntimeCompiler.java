@@ -6,7 +6,6 @@ import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 //import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 //import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
-import org.bukkit.ChatColor;
 
 import java.io.*;
 import java.util.ArrayList;

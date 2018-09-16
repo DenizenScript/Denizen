@@ -10,7 +10,6 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Anchors;
 import org.bukkit.Location;
-import org.bukkit.event.Listener;
 
 @Deprecated
 public class AnchorTags {

@@ -3502,7 +3502,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "SCOREBOARD", "scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)", 1);
 
 
-        /**
+        /*
          * <b>dScript Usage:</b><br>
          * <pre>Scribe [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
          *

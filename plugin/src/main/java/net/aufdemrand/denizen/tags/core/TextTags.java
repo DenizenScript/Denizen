@@ -7,9 +7,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.apache.logging.log4j.core.Core;
 import org.bukkit.ChatColor;
-import org.bukkit.event.Listener;
 
 public class TextTags {
 

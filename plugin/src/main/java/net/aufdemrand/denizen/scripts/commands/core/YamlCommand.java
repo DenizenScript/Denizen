@@ -16,8 +16,6 @@ import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.json.JSONObject;
 
 import java.io.*;

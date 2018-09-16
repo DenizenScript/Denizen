@@ -22,7 +22,6 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.apache.logging.log4j.core.Core;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
