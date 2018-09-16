@@ -22,6 +22,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.apache.logging.log4j.core.Core;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
@@ -892,7 +893,7 @@ public class dPlayer implements dObject, Adjustable {
             // @attribute <p@player.target[(<entity>|...)].within[(<#>)]>
             // @returns dEntity
             // @description
-            // Returns the entity that the player is looking at within the specified range limit,
+            // Returns the living entity that the player is looking at within the specified range limit,
             // or null if the player is not looking at an entity.
             // Optionally, specify a list of entities, entity types, or 'npc' to only count those targets.
             // -->
@@ -905,40 +906,46 @@ public class dPlayer implements dObject, Adjustable {
 
             List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
             ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
-            for (Entity entity : entities) {
-                if (entity instanceof LivingEntity) {
-
-                    // if we have a context for entity types, check the entity
-                    if (attribute.hasContext(1)) {
-                        String context = attribute.getContext(1);
-                        if (CoreUtilities.toLowerCase(context).startsWith("li@")) {
-                            context = context.substring(3);
-                        }
-                        for (String ent : context.split("\\|")) {
+            if (!attribute.hasContext(1)) {
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity) {
+                        possibleTargets.add((LivingEntity) entity);
+                    }
+                }
+            }
+            else {
+                dList list = dList.getListFor(attribute.getContextObject(1));
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity) {
+                        for (dObject obj : list.objectForms) {
                             boolean valid = false;
-
-                            if (ent.equalsIgnoreCase("npc") && dEntity.isCitizensNPC(entity)) {
-                                valid = true;
+                            dEntity filterEntity = null;
+                            if (obj instanceof dEntity) {
+                                filterEntity = (dEntity) obj;
                             }
-                            else if (dEntity.matches(ent)) {
-                                // only accept generic entities that are not NPCs
-                                if (dEntity.valueOf(ent).isGeneric()) {
-                                    if (dEntity.isCitizensNPC(entity)) {
-                                        valid = true;
-                                    }
+                            else if (CoreUtilities.toLowerCase(obj.toString()).equals("npc")) {
+                                valid = dEntity.isCitizensNPC(entity);
+                            }
+                            else {
+                                filterEntity = dEntity.getEntityFor(obj, attribute.context);
+                                if (filterEntity == null) {
+                                    dB.echoError("Trying to filter 'player.target[...]' tag with invalid input: " + obj.toString());
+                                    continue;
+                                }
+                            }
+                            if (!valid && filterEntity != null) {
+                                if (filterEntity.isGeneric()) {
+                                    valid = filterEntity.getBukkitEntityType().equals(entity.getType());
                                 }
                                 else {
-                                    valid = true;
+                                    valid = filterEntity.getUUID().equals(entity.getUniqueId());
                                 }
                             }
                             if (valid) {
                                 possibleTargets.add((LivingEntity) entity);
+                                break;
                             }
                         }
-                    }
-                    else { // no entity type specified
-                        possibleTargets.add((LivingEntity) entity);
-                        entity.getType();
                     }
                 }
             }

@@ -114,6 +114,20 @@ public class dEntity implements dObject, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dEntity getEntityFor(dObject object, TagContext context) {
+        if (object instanceof dEntity) {
+            return (dEntity) object;
+        }
+        else if (object instanceof dPlayer && ((dPlayer) object).isOnline()) {
+            return new dEntity(((dPlayer) object).getPlayerEntity());
+        }
+        else if (object instanceof dNPC) {
+            return new dEntity((dNPC) object);
+        }
+        else {
+            return valueOf(object.toString(), context);
+        }
+    }
 
     public static dEntity valueOf(String string) {
         return valueOf(string, null);
