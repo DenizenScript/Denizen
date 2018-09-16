@@ -1442,6 +1442,25 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         // <--[mechanism]
         // @object dNPC
+        // @name clear_waypoints
+        // @input None
+        // @description
+        // Clears all waypoint locations in the NPC's path.
+        // @tags
+        // TODO
+        // -->
+        if (mechanism.matches("clear_waypoints")) {
+            if (!getCitizen().hasTrait(Waypoints.class)) {
+                getCitizen().addTrait(Waypoints.class);
+            }
+            Waypoints wp = getCitizen().getTrait(Waypoints.class);
+            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
+                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dNPC
         // @name add_waypoint
         // @input dLocation
         // @description
