@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class dNPC implements dObject, Adjustable, InventoryHolder {
+public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObject {
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
         if (dNPCRegistry._isRegistered(npc)) {
@@ -192,6 +192,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
 
+    @Override
     public dEntity getDenizenEntity() {
         try {
             return new dEntity(getCitizen().getEntity());

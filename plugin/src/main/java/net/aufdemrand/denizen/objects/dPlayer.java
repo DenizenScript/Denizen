@@ -46,7 +46,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-public class dPlayer implements dObject, Adjustable {
+public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
 
     /////////////////////
@@ -230,6 +230,7 @@ public class dPlayer implements dObject, Adjustable {
         return NMSHandler.getInstance().getPlayerHelper().getOfflineData(getOfflinePlayer());
     }
 
+    @Override
     public dEntity getDenizenEntity() {
         return new dEntity(getPlayerEntity());
     }

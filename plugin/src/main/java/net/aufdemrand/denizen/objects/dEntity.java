@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dEntity implements dObject, Adjustable {
+public class dEntity implements dObject, Adjustable, EntityFormObject {
 
 
     /////////////////////
@@ -520,6 +520,11 @@ public class dEntity implements dObject, Adjustable {
         return baseID.substring(0, 2) + "." + baseID;
     }
 
+    @Override
+    public dEntity getDenizenEntity() {
+        return this;
+    }
+
     /**
      * Get the dObject that most accurately describes this entity,
      * useful for automatically saving dEntities to contexts as
@@ -528,7 +533,7 @@ public class dEntity implements dObject, Adjustable {
      * @return The dObject
      */
 
-    public dObject getDenizenObject() {
+    public EntityFormObject getDenizenObject() {
 
         if (entity == null && npc == null) {
             return null;
