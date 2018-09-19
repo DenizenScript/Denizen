@@ -33,6 +33,23 @@ import java.util.List;
  */
 public class Utilities {
 
+    public static boolean canReadFile(File f) {
+        if (Settings.allowStupids()) {
+            return true;
+        }
+        try {
+            if (!Settings.allowStrangeYAMLSaves() &&
+                    !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+            return false;
+        }
+    }
+
     public static boolean isSafeFile(File f) {
         if (Settings.allowStupids()) {
             return true;
@@ -41,6 +58,10 @@ public class Utilities {
             String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
             if (dB.verbose) {
                 dB.log("Checking file : " + lown);
+            }
+            if (!Settings.allowStrangeYAMLSaves() &&
+                    !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
+                return false;
             }
             if (lown.contains("denizen/config.yml")) {
                 return false;

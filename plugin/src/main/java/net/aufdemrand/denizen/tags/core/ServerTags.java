@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -477,8 +478,7 @@ public class ServerTags {
         if (attribute.startsWith("has_file") && attribute.hasContext(1)) {
             File f = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             try {
-                if (!Settings.allowStrangeYAMLSaves() &&
-                        !f.getCanonicalPath().startsWith(DenizenAPI.getCurrentInstance().getDataFolder().getCanonicalPath())) {
+                if (!Utilities.canReadFile(f)) {
                     dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
                     return;
                 }
@@ -499,13 +499,13 @@ public class ServerTags {
         // -->
         if (attribute.startsWith("list_files") && attribute.hasContext(1)) {
             File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
-            if (!folder.exists() || !folder.isDirectory()) {
-                return;
-            }
             try {
-                if (!Settings.allowStrangeYAMLSaves() &&
-                        !folder.getCanonicalPath().startsWith(DenizenAPI.getCurrentInstance().getDataFolder().getCanonicalPath())) {
+                if (!Utilities.canReadFile(folder)) {
                     dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    return;
+                }
+                if (!folder.exists() || !folder.isDirectory()) {
+                    dB.echoError("Invalid path specified. No directory exists at that path.");
                     return;
                 }
             }
@@ -1188,6 +1188,10 @@ public class ServerTags {
                 return;
             }
             File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
+            if (!Utilities.isSafeFile(file)) {
+                dB.echoError("Cannot delete that file (unsafe path).");
+                return;
+            }
             try {
                 if (!file.delete()) {
                     dB.echoError("Failed to delete file: returned false");

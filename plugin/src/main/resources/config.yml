@@ -122,7 +122,7 @@ Commands:
         # Set to 'false' if you're worried about security.
         Allow logging: true
   Yaml:
-        # Whether the YAML command is allowed to save outside the minecraft folder.
+        # Whether the YAML command (or any other file-alteration command) is allowed to save outside the minecraft server folder.
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
   Webget:
