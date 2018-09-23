@@ -68,13 +68,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     public static String getSaved(dLocation location) {
         for (dLocation saved : NotableManager.getAllType(dLocation.class)) {
-            if (saved.getBlockX() != location.getBlockX()) {
+            if (saved.getBlockX() != location.getX()) {
                 continue;
             }
-            if (saved.getBlockY() != location.getBlockY()) {
+            if (saved.getBlockY() != location.getY()) {
                 continue;
             }
-            if (saved.getBlockZ() != location.getBlockZ()) {
+            if (saved.getBlockZ() != location.getZ()) {
                 continue;
             }
             if (!saved.getWorld().getName().equals(location.getWorld().getName())) {
