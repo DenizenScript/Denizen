@@ -77,10 +77,10 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (saved.getBlockZ() != location.getZ()) {
                 continue;
             }
-            if (!saved.getWorld().getName().equals(location.getWorld().getName())) {
-                continue;
+            if ((saved.getWorld() == null && location.getWorld() == null)
+                    || (saved.getWorld() != null && location.getWorld() != null && saved.getWorld().getName().equals(location.getWorld().getName()))) {
+                return NotableManager.getSavedId(saved);
             }
-            return NotableManager.getSavedId(saved);
         }
         return null;
     }
