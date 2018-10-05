@@ -67,8 +67,10 @@ public class PermissionCommand extends AbstractCommand {
         dWorld world = (dWorld) scriptEntry.getObject("world");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), action.debug() + permission.debug()
-                + (group != null ? group.debug() : "") + (world != null ? world.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), action.debug() + permission.debug()
+                    + (group != null ? group.debug() : "") + (world != null ? world.debug() : ""));
+        }
 
         World bukkitWorld = null;
         if (world != null) {

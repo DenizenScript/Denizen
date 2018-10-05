@@ -23,9 +23,9 @@ public class ItemColor implements Property {
                 || ((dItem) item).getItemStack().getType() == Material.LEATHER_HELMET
                 || ((dItem) item).getItemStack().getType() == Material.LEATHER_LEGGINGS
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                        && (((dItem) item).getItemStack().getType() == Material.POTION
-                        || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
-                        || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION)));
+                && (((dItem) item).getItemStack().getType() == Material.POTION
+                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
+                || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION)));
     }
 
     public static ItemColor getFrom(dObject _item) {
@@ -119,10 +119,10 @@ public class ItemColor implements Property {
                     && (mat == Material.POTION
                     || mat == Material.LINGERING_POTION
                     || mat == Material.SPLASH_POTION)) {
-                    PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
-                    meta.setColor(color.getColor());
-                    item.getItemStack().setItemMeta(meta);
-                    return;
+                PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
+                meta.setColor(color.getColor());
+                item.getItemStack().setItemMeta(meta);
+                return;
             }
             LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
             meta.setColor(color.getColor());

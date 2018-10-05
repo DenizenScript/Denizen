@@ -170,7 +170,9 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
 
         // TODO: Same as PUSH -- is this the place to do this?
         if (destination == null) {
-            dB.report(scriptEntry, getName(), "No destination specified!");
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), "No destination specified!");
+            }
             return;
         }
 
@@ -187,18 +189,20 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
         dLocation lead = (dLocation) scriptEntry.getObject("lead");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                aH.debugObj("entities", entities.toString()) +
-                destination.debug() +
-                height.debug() +
-                (gravity != null ? gravity.debug() : "") +
-                (speed != null ? speed.debug() : "") +
-                (script != null ? script.debug() : "") +
-                (shooter != null ? shooter.debug() : "") +
-                (spread != null ? spread.debug() : "") +
-                (lead != null ? lead.debug() : "") +
-                (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
-                (definitions != null ? definitions.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+                    aH.debugObj("entities", entities.toString()) +
+                    destination.debug() +
+                    height.debug() +
+                    (gravity != null ? gravity.debug() : "") +
+                    (speed != null ? speed.debug() : "") +
+                    (script != null ? script.debug() : "") +
+                    (shooter != null ? shooter.debug() : "") +
+                    (spread != null ? spread.debug() : "") +
+                    (lead != null ? lead.debug() : "") +
+                    (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                    (definitions != null ? definitions.debug() : ""));
+        }
 
         // Keep a dList of entities that can be called using <entry[name].shot_entities>
         // later in the script queue

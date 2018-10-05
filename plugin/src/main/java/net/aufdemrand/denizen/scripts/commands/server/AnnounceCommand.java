@@ -77,11 +77,13 @@ public class AnnounceCommand extends AbstractCommand {
         Element flag = scriptEntry.getElement("flag");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Message", text)
-                        + (format != null ? aH.debugObj("Format", format.getName()) : "")
-                        + aH.debugObj("Type", type.name())
-                        + (flag != null ? aH.debugObj("Flag_Name", flag) : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("Message", text)
+                            + (format != null ? aH.debugObj("Format", format.getName()) : "")
+                            + aH.debugObj("Type", type.name())
+                            + (flag != null ? aH.debugObj("Flag_Name", flag) : ""));
+        }
 
         String message = format != null ? format.getFormattedText(scriptEntry) : text.asString();
 

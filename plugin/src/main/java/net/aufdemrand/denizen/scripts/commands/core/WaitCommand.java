@@ -47,8 +47,12 @@ public class WaitCommand extends AbstractCommand {
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("queue", queue.id) + delay.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("queue", queue.id) + delay.debug());
+
+        }
 
         // Tell the queue to delay
         if (queue instanceof Delayable) {

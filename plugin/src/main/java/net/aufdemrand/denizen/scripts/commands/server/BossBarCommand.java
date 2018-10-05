@@ -106,13 +106,17 @@ public class BossBarCommand extends AbstractCommand {
         Element style = scriptEntry.getElement("style");
         dList flags = scriptEntry.getdObject("flags");
 
-        dB.report(scriptEntry, getName(), id.debug() + action.debug()
-                + (players != null ? players.debug() : "")
-                + (title != null ? title.debug() : "")
-                + (progress != null ? progress.debug() : "")
-                + (color != null ? color.debug() : "")
-                + (style != null ? style.debug() : "")
-                + (flags != null ? flags.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), id.debug() + action.debug()
+                    + (players != null ? players.debug() : "")
+                    + (title != null ? title.debug() : "")
+                    + (progress != null ? progress.debug() : "")
+                    + (color != null ? color.debug() : "")
+                    + (style != null ? style.debug() : "")
+                    + (flags != null ? flags.debug() : ""));
+
+        }
 
         String idString = CoreUtilities.toLowerCase(id.asString());
 

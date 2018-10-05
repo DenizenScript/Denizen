@@ -73,11 +73,13 @@ public class AnimateCommand extends AbstractCommand {
                 (String) scriptEntry.getObject("nms_animation") : null;
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (animation != null ?
-                aH.debugObj("animation", animation.name()) : effect != null ?
-                aH.debugObj("effect", effect.name()) :
-                aH.debugObj("animation", nmsAnimation)) +
-                aH.debugObj("entities", entities.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (animation != null ?
+                    aH.debugObj("animation", animation.name()) : effect != null ?
+                    aH.debugObj("effect", effect.name()) :
+                    aH.debugObj("animation", nmsAnimation)) +
+                    aH.debugObj("entities", entities.toString()));
+        }
 
         // Go through all the entities and animate them
         for (dEntity entity : entities) {

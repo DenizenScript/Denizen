@@ -54,7 +54,11 @@ public class NoteCommand extends AbstractCommand {
         Element id = scriptEntry.getElement("id");
         Element remove = scriptEntry.getElement("remove");
 
-        dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug() + remove.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugObj("object", object) + id.debug() + remove.debug());
+
+        }
 
         if (remove.asBoolean()) {
             if (NotableManager.isSaved(id.asString())) {

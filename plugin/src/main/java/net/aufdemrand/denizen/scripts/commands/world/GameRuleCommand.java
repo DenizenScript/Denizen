@@ -55,7 +55,9 @@ public class GameRuleCommand extends AbstractCommand {
         Element value = scriptEntry.getElement("value");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), world.debug() + gamerule.debug() + value.debug());
+        }
 
         // Execute
         if (!world.getWorld().setGameRuleValue(gamerule.asString(), value.asString())) {

@@ -69,7 +69,11 @@ public class GlowCommand extends AbstractCommand {
         final ArrayList<dEntity> entities = (ArrayList<dEntity>) scriptEntry.getObject("entities");
         Element glowing = scriptEntry.getElement("glowing");
 
-        dB.report(scriptEntry, getName(), aH.debugList("entities", entities) + glowing.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugList("entities", entities) + glowing.debug());
+
+        }
 
         boolean shouldGlow = glowing.asBoolean();
 

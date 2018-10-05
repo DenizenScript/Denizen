@@ -102,8 +102,12 @@ public class ShowFakeCommand extends AbstractCommand {
         dList players = scriptEntry.getdObject("entities");
         Element cancel = scriptEntry.getElement("cancel");
 
-        dB.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
-                + list.debug() + players.debug() + duration.debug() + cancel.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), (material_list != null ? material_list.debug() : "")
+                    + list.debug() + players.debug() + duration.debug() + cancel.debug());
+
+        }
 
 
         boolean shouldCancel = cancel.asBoolean();

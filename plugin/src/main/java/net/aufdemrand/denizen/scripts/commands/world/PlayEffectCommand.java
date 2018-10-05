@@ -88,49 +88,49 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 // TODO: 1.13 - these systems have changed
-//                else if (arg.startsWith("iconcrack_")) {
-//                    // Allow iconcrack_[id],[data] for item break effects (ex: iconcrack_1)
-//                    String shrunk = arg.getValue().substring("iconcrack_".length());
-//                    String[] split = shrunk.split(",");
-//                    Element typeId = new Element(split[0]);
-//                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-//                        scriptEntry.addObject("iconcrack", typeId);
-//                    }
-//                    else {
-//                        dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
-//                    }
-//                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-//                    scriptEntry.addObject("iconcrack_data", dataId);
-//                    scriptEntry.addObject("iconcrack_type", new Element("iconcrack"));
-//                }
-//                else if (arg.startsWith("blockcrack_")) {
-//                    String shrunk = arg.getValue().substring("blockcrack_".length());
-//                    String[] split = shrunk.split(",");
-//                    Element typeId = new Element(split[0]);
-//                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-//                        scriptEntry.addObject("iconcrack", typeId);
-//                    }
-//                    else {
-//                        dB.echoError("Invalid blockcrack_[id]. Must be a valid Material ID, besides 0.");
-//                    }
-//                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-//                    scriptEntry.addObject("iconcrack_data", dataId);
-//                    scriptEntry.addObject("iconcrack_type", new Element("blockcrack"));
-//                }
-//                else if (arg.startsWith("blockdust_")) {
-//                    String shrunk = arg.getValue().substring("blockdust_".length());
-//                    String[] split = shrunk.split(",");
-//                    Element typeId = new Element(split[0]);
-//                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-//                        scriptEntry.addObject("iconcrack", typeId);
-//                    }
-//                    else {
-//                        dB.echoError("Invalid blockdust_[id]. Must be a valid Material ID, besides 0.");
-//                    }
-//                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-//                    scriptEntry.addObject("iconcrack_data", dataId);
-//                    scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
-//                }
+                //                else if (arg.startsWith("iconcrack_")) {
+                //                    // Allow iconcrack_[id],[data] for item break effects (ex: iconcrack_1)
+                //                    String shrunk = arg.getValue().substring("iconcrack_".length());
+                //                    String[] split = shrunk.split(",");
+                //                    Element typeId = new Element(split[0]);
+                //                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
+                //                        scriptEntry.addObject("iconcrack", typeId);
+                //                    }
+                //                    else {
+                //                        dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
+                //                    }
+                //                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
+                //                    scriptEntry.addObject("iconcrack_data", dataId);
+                //                    scriptEntry.addObject("iconcrack_type", new Element("iconcrack"));
+                //                }
+                //                else if (arg.startsWith("blockcrack_")) {
+                //                    String shrunk = arg.getValue().substring("blockcrack_".length());
+                //                    String[] split = shrunk.split(",");
+                //                    Element typeId = new Element(split[0]);
+                //                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
+                //                        scriptEntry.addObject("iconcrack", typeId);
+                //                    }
+                //                    else {
+                //                        dB.echoError("Invalid blockcrack_[id]. Must be a valid Material ID, besides 0.");
+                //                    }
+                //                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
+                //                    scriptEntry.addObject("iconcrack_data", dataId);
+                //                    scriptEntry.addObject("iconcrack_type", new Element("blockcrack"));
+                //                }
+                //                else if (arg.startsWith("blockdust_")) {
+                //                    String shrunk = arg.getValue().substring("blockdust_".length());
+                //                    String[] split = shrunk.split(",");
+                //                    Element typeId = new Element(split[0]);
+                //                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
+                //                        scriptEntry.addObject("iconcrack", typeId);
+                //                    }
+                //                    else {
+                //                        dB.echoError("Invalid blockdust_[id]. Must be a valid Material ID, besides 0.");
+                //                    }
+                //                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
+                //                    scriptEntry.addObject("iconcrack_data", dataId);
+                //                    scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
+                //                }
                 else if (particleHelper.hasEffect(arg.getValue())) {
                     scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
                 }
@@ -216,15 +216,17 @@ public class PlayEffectCommand extends AbstractCommand {
         dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
-                particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
-                        iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
-                aH.debugObj("locations", locations.toString()) +
-                (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
-                radius.debug() +
-                data.debug() +
-                qty.debug() +
-                offset.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
+                    particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
+                            iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
+                    aH.debugObj("locations", locations.toString()) +
+                    (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
+                    radius.debug() +
+                    data.debug() +
+                    qty.debug() +
+                    offset.debug());
+        }
 
         for (dLocation location : locations) {
             // Slightly increase the location's Y so effects don't seem to come out of the ground
@@ -292,27 +294,27 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
                 // TODO: better this all
                 // TODO: 1.13 - these systems have changed
-//                if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-//                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
-//                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
-//                    for (Player player : players) {
-//                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
-//                    }
-//                }
-//                else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
-//                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
-//                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
-//                    for (Player player : players) {
-//                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
-//                    }
-//                }
-//                else { // blockdust
-//                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
-//                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
-//                    for (Player player : players) {
-//                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
-//                    }
-//                }
+                //                if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
+                //                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                //                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
+                //                    for (Player player : players) {
+                //                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
+                //                    }
+                //                }
+                //                else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
+                //                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                //                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
+                //                    for (Player player : players) {
+                //                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
+                //                    }
+                //                }
+                //                else { // blockdust
+                //                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                //                    Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
+                //                    for (Player player : players) {
+                //                        particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
+                //                    }
+                //                }
             }
         }
     }

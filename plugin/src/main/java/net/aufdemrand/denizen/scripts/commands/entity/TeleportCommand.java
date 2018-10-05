@@ -66,8 +66,10 @@ public class TeleportCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("location", location) +
-                aH.debugObj("entities", entities.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("location", location) +
+                    aH.debugObj("entities", entities.toString()));
+        }
 
         for (dEntity entity : entities) {
             // Call a Bukkit event for compatibility with "on entity teleports"

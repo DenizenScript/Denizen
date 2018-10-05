@@ -144,45 +144,45 @@ public class PathBlockExaminer implements BlockExaminer {
     static {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             COBWEB = Material.COBWEB;
-            WATER = new Material[] { Material.WATER };
-            LAVA = new Material[] { Material.LAVA };
-            REPEATER = new Material[] { Material.REPEATER };
-            FENCE_GATE = new Material[] { Material.ACACIA_FENCE_GATE, Material.BIRCH_FENCE_GATE,
+            WATER = new Material[]{Material.WATER};
+            LAVA = new Material[]{Material.LAVA};
+            REPEATER = new Material[]{Material.REPEATER};
+            FENCE_GATE = new Material[]{Material.ACACIA_FENCE_GATE, Material.BIRCH_FENCE_GATE,
                     Material.DARK_OAK_FENCE_GATE, Material.JUNGLE_FENCE_GATE,
-                    Material.OAK_FENCE_GATE, Material.SPRUCE_FENCE_GATE };
+                    Material.OAK_FENCE_GATE, Material.SPRUCE_FENCE_GATE};
             TALL_GRASS = Material.TALL_GRASS;
-            REDSTONE_TORCH = new Material[] { Material.REDSTONE_TORCH };
-            CARPET = new Material[] { Material.BLACK_CARPET, Material.BLUE_CARPET, Material.BROWN_CARPET,
+            REDSTONE_TORCH = new Material[]{Material.REDSTONE_TORCH};
+            CARPET = new Material[]{Material.BLACK_CARPET, Material.BLUE_CARPET, Material.BROWN_CARPET,
                     Material.CYAN_CARPET, Material.GRAY_CARPET, Material.GREEN_CARPET, Material.LIME_CARPET,
                     Material.LIGHT_BLUE_CARPET, Material.LIGHT_GRAY_CARPET, Material.MAGENTA_CARPET,
                     Material.ORANGE_CARPET, Material.PINK_CARPET, Material.PURPLE_CARPET, Material.RED_CARPET,
-                    Material.WHITE_CARPET, Material.YELLOW_CARPET };
+                    Material.WHITE_CARPET, Material.YELLOW_CARPET};
             ROSE_RED = Material.ROSE_RED;
             RAIL = Material.RAIL;
-            WOOD_BUTTON = new Material[] { Material.ACACIA_BUTTON, Material.BIRCH_BUTTON,
+            WOOD_BUTTON = new Material[]{Material.ACACIA_BUTTON, Material.BIRCH_BUTTON,
                     Material.DARK_OAK_BUTTON, Material.JUNGLE_BUTTON,
-                    Material.OAK_BUTTON, Material.SPRUCE_BUTTON };
-            WOODEN_DOOR = new Material[] { Material.ACACIA_DOOR, Material.BIRCH_DOOR,
+                    Material.OAK_BUTTON, Material.SPRUCE_BUTTON};
+            WOODEN_DOOR = new Material[]{Material.ACACIA_DOOR, Material.BIRCH_DOOR,
                     Material.DARK_OAK_DOOR, Material.JUNGLE_DOOR,
-                    Material.OAK_DOOR, Material.SPRUCE_DOOR };
+                    Material.OAK_DOOR, Material.SPRUCE_DOOR};
             SUGAR_CANE = Material.SUGAR_CANE;
-            SIGN = new Material[] { Material.SIGN, Material.WALL_SIGN };
+            SIGN = new Material[]{Material.SIGN, Material.WALL_SIGN};
         }
         else {
             COBWEB = Material.valueOf("WEB");
-            WATER = new Material[] { Material.valueOf("WATER"), Material.valueOf("STATIONARY_WATER") };
-            LAVA = new Material[] { Material.valueOf("LAVA"), Material.valueOf("STATIONARY_LAVA") };
-            REPEATER = new Material[] { Material.valueOf("DIODE"), Material.valueOf("DIODE_BLOCK_OFF"), Material.valueOf("DIODE_BLOCK_ON") };
-            FENCE_GATE = new Material[] { Material.valueOf("FENCE_GATE") };
+            WATER = new Material[]{Material.valueOf("WATER"), Material.valueOf("STATIONARY_WATER")};
+            LAVA = new Material[]{Material.valueOf("LAVA"), Material.valueOf("STATIONARY_LAVA")};
+            REPEATER = new Material[]{Material.valueOf("DIODE"), Material.valueOf("DIODE_BLOCK_OFF"), Material.valueOf("DIODE_BLOCK_ON")};
+            FENCE_GATE = new Material[]{Material.valueOf("FENCE_GATE")};
             TALL_GRASS = Material.valueOf("LONG_GRASS");
-            REDSTONE_TORCH = new Material[] { Material.valueOf("REDSTONE_TORCH_ON"), Material.valueOf("REDSTONE_TORCH_OFF") };
-            CARPET = new Material[] { Material.valueOf("CARPET") };
+            REDSTONE_TORCH = new Material[]{Material.valueOf("REDSTONE_TORCH_ON"), Material.valueOf("REDSTONE_TORCH_OFF")};
+            CARPET = new Material[]{Material.valueOf("CARPET")};
             ROSE_RED = Material.valueOf("RED_ROSE");
             RAIL = Material.valueOf("RAILS");
-            WOOD_BUTTON = new Material[] { Material.valueOf("WOOD_BUTTON") };
-            WOODEN_DOOR = new Material[] { Material.valueOf("WOODEN_DOOR") };
+            WOOD_BUTTON = new Material[]{Material.valueOf("WOOD_BUTTON")};
+            WOODEN_DOOR = new Material[]{Material.valueOf("WOODEN_DOOR")};
             SUGAR_CANE = Material.valueOf("SUGAR_CANE_BLOCK");
-            SIGN = new Material[] { Material.valueOf("SIGN_POST"), Material.valueOf("WALL_SIGN") };
+            SIGN = new Material[]{Material.valueOf("SIGN_POST"), Material.valueOf("WALL_SIGN")};
         }
     }
 

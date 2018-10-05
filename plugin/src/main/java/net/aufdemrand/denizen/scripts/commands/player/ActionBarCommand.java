@@ -70,7 +70,11 @@ public class ActionBarCommand extends AbstractCommand {
 
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
-        dB.report(scriptEntry, getName(), text.debug() + aH.debugList("Targets", targets));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), text.debug() + aH.debugList("Targets", targets));
+
+        }
         if (format != null) {
             text = new Element(format.getFormattedText(scriptEntry));
         }

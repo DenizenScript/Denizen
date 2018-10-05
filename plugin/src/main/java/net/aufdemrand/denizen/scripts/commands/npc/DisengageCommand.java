@@ -30,8 +30,10 @@ public class DisengageCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
+        }
 
         // Set Disengaged
         EngageCommand.setEngaged(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen(), false);

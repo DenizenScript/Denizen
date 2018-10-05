@@ -48,10 +48,14 @@ public class LookcloseCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
-        dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug()
-                + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
-                + aH.debugObj("range", scriptEntry.getObject("range"))
-                + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug()
+                    + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
+                    + aH.debugObj("range", scriptEntry.getObject("range"))
+                    + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
+
+        }
 
         // Get the instance of the trait that belongs to the target NPC
         LookClose trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(LookClose.class);

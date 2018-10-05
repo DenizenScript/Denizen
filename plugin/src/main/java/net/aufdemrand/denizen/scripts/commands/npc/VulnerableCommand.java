@@ -41,7 +41,9 @@ public class VulnerableCommand extends AbstractCommand {
         BukkitScriptEntryData entryData = (BukkitScriptEntryData) scriptEntry.entryData;
 
         // Report to dB
-        dB.report(scriptEntry, getName(), entryData.getNPC().debug() + action.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), entryData.getNPC().debug() + action.debug());
+        }
 
         NPC npc = entryData.getNPC().getCitizen();
         Toggle toggle = Toggle.valueOf(action.asString().toUpperCase());

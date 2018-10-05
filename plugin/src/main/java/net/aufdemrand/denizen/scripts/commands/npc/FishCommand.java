@@ -68,7 +68,11 @@ public class FishCommand extends AbstractCommand {
         dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
         FishingTrait trait = npc.getFishingTrait();
 
-        dB.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), location.debug() + catchtype.debug() + percent.debug() + stop.debug());
+
+        }
 
         if (stop.asBoolean()) {
             trait.stopFishing();

@@ -65,7 +65,11 @@ public class ActionCommand extends AbstractCommand {
         dList context = (dList) scriptEntry.getObject("context");
         List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
 
-        dB.report(scriptEntry, getName(), actions.debug() + context.debug() + aH.debugList("npcs", npcs));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), actions.debug() + context.debug() + aH.debugList("npcs", npcs));
+
+        }
 
         if (context.size() % 2 == 1) { // Size is uneven!
             context.add("null");

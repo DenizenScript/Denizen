@@ -73,8 +73,12 @@ public class CopyBlockCommand extends AbstractCommand {
         dCuboid copy_cuboid = (dCuboid) scriptEntry.getObject("cuboid");
         Element remove_original = (Element) scriptEntry.getObject("remove");
 
-        dB.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
-                + (copy_cuboid != null ? copy_cuboid.debug() : "") + destination.debug() + remove_original.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), (copy_location != null ? copy_location.debug() : "")
+                    + (copy_cuboid != null ? copy_cuboid.debug() : "") + destination.debug() + remove_original.debug());
+
+        }
 
         List<Location> locations = new ArrayList<Location>();
 

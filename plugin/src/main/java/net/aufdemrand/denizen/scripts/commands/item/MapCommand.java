@@ -115,10 +115,14 @@ public class MapCommand extends AbstractCommand {
         Element x = scriptEntry.getElement("x-value");
         Element y = scriptEntry.getElement("y-value");
 
-        dB.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
-                + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
-                + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
-                + (height != null ? height.debug() : "") + x.debug() + y.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), (id != null ? id.debug() : "") + (create != null ? create.debug() : "")
+                    + reset.debug() + (resetLoc != null ? resetLoc.debug() : "") + (image != null ? image.debug() : "")
+                    + (script != null ? script.debug() : "") + resize.debug() + (width != null ? width.debug() : "")
+                    + (height != null ? height.debug() : "") + x.debug() + y.debug());
+
+        }
 
         MapView map = null;
         if (create != null) {

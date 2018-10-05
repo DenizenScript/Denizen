@@ -66,8 +66,10 @@ public class RemoveCommand extends AbstractCommand {
         Element region = (Element) scriptEntry.getObject("region");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugList("entities", entities) +
-                (region != null ? aH.debugObj("region", region) : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugList("entities", entities) +
+                    (region != null ? aH.debugObj("region", region) : ""));
+        }
 
         boolean conditionsMet;
 

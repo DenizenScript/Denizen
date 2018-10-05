@@ -71,9 +71,11 @@ public class MountCommand extends AbstractCommand {
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                aH.debugObj("location", location) +
-                aH.debugObj("entities", entities.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+                    aH.debugObj("location", location) +
+                    aH.debugObj("entities", entities.toString()));
+        }
 
         // Mount or dismount all of the entities
         if (!cancel) {

@@ -57,10 +57,14 @@ public class PushableCommand extends AbstractCommand {
             state = new Element("TOGGLE");
         }
 
-        dB.report(scriptEntry, getName(),
-                (state != null ? state.debug() : "") +
-                        (delay != null ? delay.debug() : "") +
-                        (returnable != null ? returnable.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    (state != null ? state.debug() : "") +
+                            (delay != null ? delay.debug() : "") +
+                            (returnable != null ? returnable.debug() : ""));
+
+        }
 
         if (delay != null) {
             trait.setDelay(delay.getSecondsAsInt());

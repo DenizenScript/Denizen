@@ -74,10 +74,12 @@ public class CooldownCommand extends AbstractCommand {
                 (Type) scriptEntry.getObject("type") : Type.PLAYER);
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
-                + script.debug()
-                + (type.name().equalsIgnoreCase("player") ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
-                + duration.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
+                    + script.debug()
+                    + (type.name().equalsIgnoreCase("player") ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
+                    + duration.debug());
+        }
 
         // Perform cooldown
         switch (type) {

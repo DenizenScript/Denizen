@@ -38,7 +38,11 @@ public class StandCommand extends AbstractCommand {
             return;
         }
 
-        dB.report(scriptEntry, getName(), aH.debugObj("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugObj("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
+
+        }
 
         if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
             ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(false);

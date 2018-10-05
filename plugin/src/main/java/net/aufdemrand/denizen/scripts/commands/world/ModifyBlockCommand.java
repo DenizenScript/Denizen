@@ -143,16 +143,20 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         final List<dMaterial> materialList = materials.filter(dMaterial.class);
 
-        dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
-                + materials.debug()
-                + physics.debug()
-                + radiusElement.debug()
-                + heightElement.debug()
-                + depthElement.debug()
-                + natural.debug()
-                + delayed.debug()
-                + (script != null ? script.debug() : "")
-                + (percents != null ? percents.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
+                    + materials.debug()
+                    + physics.debug()
+                    + radiusElement.debug()
+                    + heightElement.debug()
+                    + depthElement.debug()
+                    + natural.debug()
+                    + delayed.debug()
+                    + (script != null ? script.debug() : "")
+                    + (percents != null ? percents.debug() : ""));
+
+        }
 
         final boolean doPhysics = physics.asBoolean();
         final boolean isNatural = natural.asBoolean();

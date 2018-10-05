@@ -101,20 +101,22 @@ public class ScoreboardCommand extends AbstractCommand {
         Action act = Action.valueOf(action.asString().toUpperCase());
 
         // Report to dB
-        dB.report(scriptEntry, getName(), action.debug() +
-                id.debug() +
-                (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
-                (objective != null ? objective.debug() : "") +
-                (act.equals(Action.ADD) && objective != null
-                        ? criteria.debug()
-                        : "") +
-                (!lines.isEmpty() ? lines.debug() : "") +
-                (act.equals(Action.ADD) && score != null
-                        ? score.debug()
-                        : "") +
-                (act.equals(Action.ADD) && objective != null
-                        ? displaySlot.debug()
-                        : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), action.debug() +
+                    id.debug() +
+                    (viewers != null ? aH.debugObj("viewers", viewers.toString()) : "") +
+                    (objective != null ? objective.debug() : "") +
+                    (act.equals(Action.ADD) && objective != null
+                            ? criteria.debug()
+                            : "") +
+                    (!lines.isEmpty() ? lines.debug() : "") +
+                    (act.equals(Action.ADD) && score != null
+                            ? score.debug()
+                            : "") +
+                    (act.equals(Action.ADD) && objective != null
+                            ? displaySlot.debug()
+                            : ""));
+        }
 
         Scoreboard board = null;
 

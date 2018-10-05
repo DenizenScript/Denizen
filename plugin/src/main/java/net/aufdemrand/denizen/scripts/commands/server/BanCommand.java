@@ -73,11 +73,15 @@ public class BanCommand extends AbstractCommand {
             expiration = new Date(new Duration(System.currentTimeMillis() / 50 + duration.getTicks()).getTicks() * 50);
         }
 
-        dB.report(scriptEntry, getName(),
-                action.debug() +
-                        aH.debugObj("targets", targets) +
-                        reason.debug() +
-                        (duration != null ? duration.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    action.debug() +
+                            aH.debugObj("targets", targets) +
+                            reason.debug() +
+                            (duration != null ? duration.debug() : ""));
+
+        }
 
         Actions banAction = Actions.valueOf(action.toString().toUpperCase());
 

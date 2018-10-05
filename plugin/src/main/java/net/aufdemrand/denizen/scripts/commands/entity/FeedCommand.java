@@ -78,10 +78,14 @@ public class FeedCommand extends AbstractCommand {
         dNPC npc = (dNPC) scriptEntry.getObject("targetnpc");
         Element amount = scriptEntry.getElement("amount");
 
-        dB.report(scriptEntry, getName(),
-                (player == null ? "" : player.debug())
-                        + (npc == null ? "" : npc.debug())
-                        + amount.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    (player == null ? "" : player.debug())
+                            + (npc == null ? "" : npc.debug())
+                            + amount.debug());
+
+        }
 
         if (npc != null) {
             if (!npc.getCitizen().hasTrait(HungerTrait.class)) {

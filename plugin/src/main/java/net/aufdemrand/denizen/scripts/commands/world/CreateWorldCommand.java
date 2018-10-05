@@ -77,12 +77,16 @@ public class CreateWorldCommand extends AbstractCommand {
         Element copy_from = scriptEntry.getElement("copy_from");
         Element seed = scriptEntry.getElement("seed");
 
-        dB.report(scriptEntry, getName(), worldName.debug() +
-                (generator != null ? generator.debug() : "") +
-                environment.debug() +
-                (copy_from != null ? copy_from.debug() : "") +
-                worldType.debug() +
-                (seed != null ? seed.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), worldName.debug() +
+                    (generator != null ? generator.debug() : "") +
+                    environment.debug() +
+                    (copy_from != null ? copy_from.debug() : "") +
+                    worldType.debug() +
+                    (seed != null ? seed.debug() : ""));
+
+        }
 
         if (copy_from != null) {
             try {

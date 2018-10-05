@@ -56,7 +56,11 @@ public class FileCopyCommand extends AbstractCommand {
         Element destination = scriptEntry.getElement("destination");
         Element overwrite = scriptEntry.getElement("overwrite");
 
-        dB.report(scriptEntry, getName(), origin.debug() + destination.debug() + overwrite.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), origin.debug() + destination.debug() + overwrite.debug());
+
+        }
 
         if (!Settings.allowFilecopy()) {
             dB.echoError(scriptEntry.getResidingQueue(), "File copy disabled by server administrator.");

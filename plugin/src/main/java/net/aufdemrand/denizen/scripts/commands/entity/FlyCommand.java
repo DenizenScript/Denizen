@@ -124,7 +124,9 @@ public class FlyCommand extends AbstractCommand {
                         // the controller
                         if (entities.get(entities.size() - 1) != entity) {
                             controller = entity;
-                            dB.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
+                            if (scriptEntry.dbCallShouldDebug()) {
+                                dB.report(scriptEntry, getName(), "Flight control defaulting to " + controller);
+                            }
                             break;
                         }
                     }
@@ -132,7 +134,9 @@ public class FlyCommand extends AbstractCommand {
 
                 // If the controller is still null, we cannot continue
                 if (controller == null) {
-                    dB.report(scriptEntry, getName(), "There is no one to control the flight's path!");
+                    if (scriptEntry.dbCallShouldDebug()) {
+                        dB.report(scriptEntry, getName(), "There is no one to control the flight's path!");
+                    }
                     return;
                 }
             }
@@ -151,7 +155,9 @@ public class FlyCommand extends AbstractCommand {
 
                 // Add the controller to the entity list
                 if (!found) {
-                    dB.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
+                    if (scriptEntry.dbCallShouldDebug()) {
+                        dB.report(scriptEntry, getName(), "Adding controller " + controller + " to flying entities.");
+                    }
                     entities.add(0, controller);
                 }
             }
@@ -162,13 +168,15 @@ public class FlyCommand extends AbstractCommand {
         boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                aH.debugObj("origin", origin) +
-                aH.debugObj("entities", entities.toString()) +
-                aH.debugObj("speed", speed) +
-                aH.debugObj("rotation threshold degrees", rotationThreshold) +
-                (freeflight ? aH.debugObj("controller", controller)
-                        : aH.debugObj("destinations", destinations.toString())));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+                    aH.debugObj("origin", origin) +
+                    aH.debugObj("entities", entities.toString()) +
+                    aH.debugObj("speed", speed) +
+                    aH.debugObj("rotation threshold degrees", rotationThreshold) +
+                    (freeflight ? aH.debugObj("controller", controller)
+                            : aH.debugObj("destinations", destinations.toString())));
+        }
 
         // Mount or dismount all of the entities
         if (!cancel) {

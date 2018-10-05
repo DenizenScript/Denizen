@@ -148,7 +148,9 @@ public class PushCommand extends AbstractCommand implements Holdable {
 
         // TODO: Should this be checked in argument parsing?
         if (destination == null) {
-            dB.report(scriptEntry, getName(), "No destination specified!");
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), "No destination specified!");
+            }
             scriptEntry.setFinished(true);
             return;
         }
@@ -164,17 +166,19 @@ public class PushCommand extends AbstractCommand implements Holdable {
         Element precision = scriptEntry.getElement("precision");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
-                aH.debugObj("entities", entities.toString()) +
-                aH.debugObj("destination", destination) +
-                aH.debugObj("speed", speed) +
-                aH.debugObj("max ticks", maxTicks) +
-                (script != null ? script.debug() : "") +
-                force_along.debug() +
-                precision.debug() +
-                (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
-                (no_damage ? aH.debugObj("no_damage", "true") : "") +
-                (definitions != null ? definitions.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("origin", originEntity != null ? originEntity : originLocation) +
+                    aH.debugObj("entities", entities.toString()) +
+                    aH.debugObj("destination", destination) +
+                    aH.debugObj("speed", speed) +
+                    aH.debugObj("max ticks", maxTicks) +
+                    (script != null ? script.debug() : "") +
+                    force_along.debug() +
+                    precision.debug() +
+                    (no_rotate ? aH.debugObj("no_rotate", "true") : "") +
+                    (no_damage ? aH.debugObj("no_damage", "true") : "") +
+                    (definitions != null ? definitions.debug() : ""));
+        }
 
         final boolean forceAlong = force_along.asBoolean();
 

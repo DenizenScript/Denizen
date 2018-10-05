@@ -120,11 +120,15 @@ public class InventoryCommand extends AbstractCommand {
         dInventory destination = destinationentry.getValue();
         Element slot = scriptEntry.getElement("slot");
 
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("actions", actions.toString())
-                        + (destination.debug())
-                        + (origin != null ? origin.debug() : "")
-                        + slot.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("actions", actions.toString())
+                            + (destination.debug())
+                            + (origin != null ? origin.debug() : "")
+                            + slot.debug());
+
+        }
 
         for (String action : actions) {
             switch (Action.valueOf(action.toUpperCase())) {

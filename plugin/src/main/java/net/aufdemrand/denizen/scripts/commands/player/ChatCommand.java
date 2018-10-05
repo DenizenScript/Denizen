@@ -92,7 +92,11 @@ public class ChatCommand extends AbstractCommand {
         Element message = scriptEntry.getElement("message");
         Element chatRange = scriptEntry.getElement("range");
 
-        dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), talkers.debug() + targets.debug() + message.debug() + chatRange.debug());
+
+        }
 
         // Create new speech context
         DenizenSpeechContext context = new DenizenSpeechContext(TagManager.cleanOutputFully(message.asString()),

@@ -155,15 +155,17 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-        dB.report(scriptEntry, getName(),
-                (scriptEntry.hasObject("script") ? scriptEntry.getdObject("script").debug() : scriptEntry.getScript().debug())
-                        + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : "")
-                        + (scriptEntry.hasObject("path") ? scriptEntry.getElement("path").debug() : "")
-                        + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : "")
-                        + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : "")
-                        + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : "")
-                        + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug() : "")
-                        + (scriptEntry.hasObject("speed") ? scriptEntry.getdObject("speed").debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    (scriptEntry.hasObject("script") ? scriptEntry.getdObject("script").debug() : scriptEntry.getScript().debug())
+                            + (scriptEntry.hasObject("instant") ? scriptEntry.getdObject("instant").debug() : "")
+                            + (scriptEntry.hasObject("path") ? scriptEntry.getElement("path").debug() : "")
+                            + (scriptEntry.hasObject("local") ? scriptEntry.getElement("local").debug() : "")
+                            + (scriptEntry.hasObject("delay") ? scriptEntry.getdObject("delay").debug() : "")
+                            + (scriptEntry.hasObject("id") ? scriptEntry.getdObject("id").debug() : "")
+                            + (scriptEntry.hasObject("definitions") ? scriptEntry.getdObject("definitions").debug() : "")
+                            + (scriptEntry.hasObject("speed") ? scriptEntry.getdObject("speed").debug() : ""));
+        }
 
         // Get the script
         dScript script = scriptEntry.getdObject("script");

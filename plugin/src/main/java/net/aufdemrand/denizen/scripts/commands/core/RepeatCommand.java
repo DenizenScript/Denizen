@@ -75,7 +75,9 @@ public class RepeatCommand extends BracedCommand {
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), stop.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), stop.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -103,7 +105,9 @@ public class RepeatCommand extends BracedCommand {
         }
         else if (next != null && next.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), next.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), next.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -178,7 +182,9 @@ public class RepeatCommand extends BracedCommand {
             }
 
             // Report to dB
-            dB.report(scriptEntry, getName(), quantity.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), quantity.debug());
+            }
 
             int target = quantity.asInt();
             if (target <= 0) {

@@ -111,14 +111,18 @@ public class GiveCommand extends AbstractCommand {
             items = (List<dItem>) items_object;
         }
 
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Type", type.name())
-                        + (inventory != null ? inventory.debug() : "")
-                        + aH.debugObj("Quantity", qty.asDouble())
-                        + engrave.debug()
-                        + unlimit_stack_size.debug()
-                        + (items != null ? aH.debugObj("Items", items) : "")
-                        + slot.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("Type", type.name())
+                            + (inventory != null ? inventory.debug() : "")
+                            + aH.debugObj("Quantity", qty.asDouble())
+                            + engrave.debug()
+                            + unlimit_stack_size.debug()
+                            + (items != null ? aH.debugObj("Items", items) : "")
+                            + slot.debug());
+
+        }
 
         switch (type) {
 

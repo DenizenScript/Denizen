@@ -99,7 +99,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 // TODO: 1.13 - better method?
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? dBook.getMaterial().getMaterial() == Material.WRITABLE_BOOK
-                    : dBook.getMaterial().getMaterial() == Material.valueOf("BOOK_AND_QUILL")) {
+                        : dBook.getMaterial().getMaterial() == Material.valueOf("BOOK_AND_QUILL")) {
                     signing = Element.FALSE;
                 }
             }

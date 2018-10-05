@@ -73,9 +73,11 @@ public class SignCommand extends AbstractCommand {
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), typeElement.debug()
-                + location.debug()
-                + text.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), typeElement.debug()
+                    + location.debug()
+                    + text.debug());
+        }
 
         Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();

@@ -71,9 +71,11 @@ public class HeadCommand extends AbstractCommand {
         dMaterial material = scriptEntry.getdObject("material");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("entities", entities.toString()) +
-                        (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("entities", entities.toString()) +
+                            (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
+        }
 
         ItemStack item = null;
 

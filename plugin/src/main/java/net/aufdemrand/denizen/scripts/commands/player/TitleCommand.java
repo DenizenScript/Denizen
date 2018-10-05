@@ -68,13 +68,17 @@ public class TitleCommand extends AbstractCommand {
         Duration fade_out = scriptEntry.getdObject("fade_out");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
-        dB.report(scriptEntry, getName(),
-                (title != null ? title.debug() : "") +
-                        (subtitle != null ? subtitle.debug() : "") +
-                        fade_in.debug() +
-                        stay.debug() +
-                        fade_out.debug() +
-                        aH.debugObj("targets", targets));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    (title != null ? title.debug() : "") +
+                            (subtitle != null ? subtitle.debug() : "") +
+                            fade_in.debug() +
+                            stay.debug() +
+                            fade_out.debug() +
+                            aH.debugObj("targets", targets));
+
+        }
 
         for (dPlayer player : targets) {
             if (player.isValid() && player.isOnline()) {

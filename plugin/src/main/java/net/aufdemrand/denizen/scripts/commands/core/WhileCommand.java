@@ -72,7 +72,9 @@ public class WhileCommand extends BracedCommand {
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), stop.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), stop.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -100,7 +102,9 @@ public class WhileCommand extends BracedCommand {
         }
         else if (next != null && next.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), next.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), next.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -188,7 +192,9 @@ public class WhileCommand extends BracedCommand {
             boolean run = new IfCommand.ArgComparer().compare(comparisons, scriptEntry);
 
             // Report to dB
-            dB.report(scriptEntry, getName(), aH.debugObj("run_first_loop", run));
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), aH.debugObj("run_first_loop", run));
+            }
 
             if (!run) {
                 return;

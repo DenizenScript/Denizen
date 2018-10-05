@@ -161,9 +161,13 @@ public class ExperienceCommand extends AbstractCommand {
         Boolean level = (Boolean) scriptEntry.getObject("level");
         Boolean silent = (Boolean) scriptEntry.getObject("silent");
 
-        dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
-                + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
-                + aH.debugObj("Player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName()));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
+                    + aH.debugObj("Quantity", level ? quantity.toString() + " levels" : quantity.toString())
+                    + aH.debugObj("Player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName()));
+
+        }
 
         Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
 

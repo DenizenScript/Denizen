@@ -70,9 +70,11 @@ public class SwitchCommand extends AbstractCommand {
 
         final Player player = ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity() : null;
         // Switch the Block
-        dB.report(scriptEntry, getName(), interactLocations.debug()
-                + aH.debugObj("duration", duration + "t")
-                + aH.debugObj("switchstate", switchState.name()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), interactLocations.debug()
+                    + aH.debugObj("duration", duration + "t")
+                    + aH.debugObj("switchstate", switchState.name()));
+        }
 
         for (final dLocation interactLocation : interactLocations.filter(dLocation.class)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
