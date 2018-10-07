@@ -1364,7 +1364,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @attribute <p@player.in_group[<group_name>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the player is in the specified group (requires the player to be online)
+        // Returns whether the player is in the specified group.
+        // This requires an online player - if the player may be offline, consider using
+        // <@link tag p@player.in_group[group_name].global>.
         // -->
         if (attribute.startsWith("in_group")) {
             if (Depends.permissions == null) {
@@ -1393,11 +1395,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.in_group[<group_name>].world>
+            // @attribute <p@player.in_group[<group_name>].world[<world>]>
             // @returns Element(Boolean)
             // @description
-            // Returns whether the player has the group in regards to the
-            // player's current world.
+            // Returns whether the player has the group in regards to a specific world.
             // (Works with offline players)
             // (Note: This may or may not be functional with your permissions system.)
             // -->
