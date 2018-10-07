@@ -412,6 +412,9 @@ public class dB {
         if (debugOverride) {
             return true;
         }
+        if (!showDebug) {
+            return false;
+        }
         boolean should_send = true;
 
         // Attempt to see if the debug should even be sent by checking the
