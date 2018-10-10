@@ -58,15 +58,19 @@ public class ReflectionHelper {
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            int mod = field.getModifiers();
-            if (Modifier.isFinal(mod)) {
-                setFieldValue(Field.class, "modifiers", field, mod & ~Modifier.FINAL);
-            }
+            fixFinal(field);
             cache.put(fieldName, field);
             field.set(object, value);
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void fixFinal(Field field) {
+        int mod = field.getModifiers();
+        if (Modifier.isFinal(mod)) {
+            setFieldValue(Field.class, "modifiers", field, mod & ~Modifier.FINAL);
         }
     }
 

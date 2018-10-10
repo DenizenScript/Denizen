@@ -125,7 +125,6 @@ public class DenizenPacketHandler implements PacketHandler {
     @Override
     public boolean sendPacket(Player player, PacketOutEntityMetadata entityMetadata) {
         HashSet<UUID> players = GlowCommand.glowViewers.get(entityMetadata.getEntityId());
-        // TODO: Check effect type against GLOWING (24)
         return players != null && entityMetadata.checkForGlow() && !players.contains(player.getUniqueId());
     }
 

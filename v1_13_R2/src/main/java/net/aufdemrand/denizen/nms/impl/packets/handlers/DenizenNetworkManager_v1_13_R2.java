@@ -118,11 +118,11 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
     }
 
     @Override
-    public void sendPacket(Packet packet) {
+    public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         // If the packet sending isn't cancelled, allow normal sending
         if (packet instanceof PacketPlayOutChat) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutChat_v1_13_R2((PacketPlayOutChat) packet))) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else if (packet instanceof PacketPlayOutEntity) {
@@ -130,12 +130,12 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                 int ider = ENTITY_ID_PACKENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet);
+                    oldManager.sendPacket(packet, genericfuturelistener);
                 }
                 else {
                     if (!((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
                             || ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet);
+                        oldManager.sendPacket(packet, genericfuturelistener);
                     }
                     UUID att = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
                     if (att != null) {
@@ -157,12 +157,12 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                 int ider = ENTITY_ID_PACKVELENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet);
+                    oldManager.sendPacket(packet, genericfuturelistener);
                 }
                 else {
                     if (!((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
                             || ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet);
+                        oldManager.sendPacket(packet, genericfuturelistener);
                     }
                     UUID att = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
                     if (att != null) {
@@ -184,12 +184,12 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                 int ider = ENTITY_ID_PACKTELENT.getInt(packet);
                 Entity e = player.getWorld().getEntity(ider);
                 if (e == null) {
-                    oldManager.sendPacket(packet);
+                    oldManager.sendPacket(packet, genericfuturelistener);
                 }
                 else {
                     if (!((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.containsKey(e.getUniqueID())
                             || ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentsA.get(e.getUniqueID()).equals(player.getUniqueID())) {
-                        oldManager.sendPacket(packet);
+                        oldManager.sendPacket(packet, genericfuturelistener);
                     }
                     UUID att = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachments2.get(e.getUniqueID());
                     if (att != null) {
@@ -214,7 +214,7 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
             PacketOutSpawnEntity spawnEntity = new PacketOutSpawnEntity_v1_13_R2(player, packet);
             final Entity entity = player.getWorld().getEntity(spawnEntity.getEntityId());
             if (entity == null) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
             else if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity())) {
                 if (entity instanceof EntityFakePlayer_v1_13_R2) {
@@ -227,7 +227,7 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                         }
                     }, 5);
                 }
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else if (packet instanceof PacketPlayOutPlayerInfo) {
@@ -237,17 +237,17 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
         }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_13_R2((PacketPlayOutEntityMetadata) packet))) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else if (packet instanceof PacketPlayOutSetSlot) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutSetSlot_v1_13_R2((PacketPlayOutSetSlot) packet))) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else if (packet instanceof PacketPlayOutWindowItems) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutWindowItems_v1_13_R2((PacketPlayOutWindowItems) packet))) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else if (packet instanceof PacketPlayOutCustomPayload) {
@@ -263,25 +263,20 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                 MinecraftKey key = serializer.l();
                 if (key != null && key.equals(PacketPlayOutCustomPayload.a)) { // MC|TrList -> minecraft:trader_list
                     if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_13_R2(payload, serializer))) {
-                        oldManager.sendPacket(packet);
+                        oldManager.sendPacket(packet, genericfuturelistener);
                     }
                 }
                 else {
-                    oldManager.sendPacket(packet);
+                    oldManager.sendPacket(packet, genericfuturelistener);
                 }
             }
             catch (Exception e) {
-                oldManager.sendPacket(packet);
+                oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
         else {
-            oldManager.sendPacket(packet);
+            oldManager.sendPacket(packet, genericfuturelistener);
         }
-    }
-
-    @Override
-    public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
-        oldManager.sendPacket(packet, genericfuturelistener);
     }
 
     @Override
@@ -369,6 +364,7 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
             directionField.setAccessible(true);
             managerField = PlayerConnection.class.getDeclaredField("networkManager");
             managerField.setAccessible(true);
+            ReflectionHelper.fixFinal(managerField);
         }
         catch (Exception e) {
             e.printStackTrace();
