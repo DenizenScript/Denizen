@@ -88,9 +88,6 @@ public class dMaterial implements dObject, Adjustable {
         CYAN_BED, PURPLE_BED, BLUE_BED, BROWN_BED, GREEN_BED, RED_BED, BLACK_BED
     }
 
-    // dMaterials are just made and disposed of for standard 'Materials', but these we will keep around since
-    // they are special :)
-
     private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID;
 
     static {

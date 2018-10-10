@@ -9,6 +9,8 @@ import org.bukkit.material.MaterialData;
 
 public interface BlockHelper {
 
+    int idFor(Material mat);
+
     MaterialData getFlowerpotContents(Block block);
 
     void setFlowerpotContents(Block block, MaterialData data);

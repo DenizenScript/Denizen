@@ -351,15 +351,16 @@ public class CuboidBlockSet implements BlockSet {
                         int index = (int) (y * (x_width) * (z_height) + z * (x_width) + x);
                         BlockData bd = this.blocks.get(indexer);//blockAt(x, y, z);
                         indexer++;
-                        if (bd.getMaterial().getId() > 255) {
+                        int matId = NMSHandler.getInstance().getBlockHelper().idFor(bd.getMaterial());
+                        if (matId > 255) {
                             if (addBlocks == null) {
                                 addBlocks = new byte[(blocks.length >> 1) + 1];
                             }
                             addBlocks[index >> 1] = (byte) (((index & 1) == 0) ?
-                                    addBlocks[index >> 1] & 0xF0 | (bd.getMaterial().getId() >> 8) & 0xF
-                                    : addBlocks[index >> 1] & 0xF | ((bd.getMaterial().getId() >> 8) & 0xF) << 4);
+                                    addBlocks[index >> 1] & 0xF0 | (matId >> 8) & 0xF
+                                    : addBlocks[index >> 1] & 0xF | ((matId >> 8) & 0xF) << 4);
                         }
-                        blocks[index] = (byte) bd.getMaterial().getId();
+                        blocks[index] = (byte) matId;
                         blockData[index] = bd.getData();
 
                         CompoundTag rawTag = bd.getCompoundTag();

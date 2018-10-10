@@ -118,6 +118,11 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
     }
 
     @Override
+    public void sendPacket(Packet<?> packet) {
+        sendPacket(packet, null);
+    }
+
+    @Override
     public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         // If the packet sending isn't cancelled, allow normal sending
         if (packet instanceof PacketPlayOutChat) {

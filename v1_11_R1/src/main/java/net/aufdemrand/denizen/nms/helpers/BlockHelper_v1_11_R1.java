@@ -30,6 +30,11 @@ import java.util.UUID;
 public class BlockHelper_v1_11_R1 implements BlockHelper {
 
     @Override
+    public int idFor(Material mat) {
+        return mat.getId();
+    }
+
+    @Override
     public MaterialData getFlowerpotContents(Block block) {
         MaterialData contents = ((FlowerPot) block.getState()).getContents();
         return contents == null ? new MaterialData(Material.AIR) : contents;

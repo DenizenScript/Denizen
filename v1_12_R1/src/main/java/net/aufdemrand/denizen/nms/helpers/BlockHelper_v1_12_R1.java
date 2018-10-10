@@ -31,6 +31,11 @@ import java.util.UUID;
 
 public class BlockHelper_v1_12_R1 implements BlockHelper {
 
+    @Override
+    public int idFor(Material mat) {
+        return mat.getId();
+    }
+
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
             Field f = CraftBlockEntityState.class.getDeclaredField("tileEntity");

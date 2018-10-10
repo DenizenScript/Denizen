@@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_13_R2.util.CraftLegacy;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
@@ -44,6 +45,14 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int idFor(Material mat) {
+        if (mat.isLegacy()) {
+            return mat.getId();
+        }
+        return CraftLegacy.toLegacy(mat).getId();
     }
 
     @Override

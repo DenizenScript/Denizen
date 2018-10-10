@@ -26,6 +26,11 @@ import java.util.UUID;
 public class BlockHelper_v1_9_R2 implements BlockHelper {
 
     @Override
+    public int idFor(Material mat) {
+        return mat.getId();
+    }
+
+    @Override
     public MaterialData getFlowerpotContents(Block block) {
         TileEntityFlowerPot flowerPot = (TileEntityFlowerPot) ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
                 new BlockPosition(block.getX(), block.getY(), block.getZ()));
