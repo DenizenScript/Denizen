@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.scripts.commands.world.SwitchCommand;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.PathFinder;
@@ -660,48 +661,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // To change this, see <@link command Switch>
         // -->
         if (attribute.startsWith("switched")) {
-            Material type = getBlock().getType();
-            // TODO: 1.13
-            Material ironDoor;
-            Material oakDoor;
-            Material oakTrapDoor;
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                ironDoor = Material.IRON_DOOR;
-                oakDoor = Material.OAK_DOOR;
-                oakTrapDoor = Material.OAK_TRAPDOOR;
-            }
-            else {
-                ironDoor = Material.valueOf("IRON_DOOR_BLOCK");
-                oakDoor = Material.valueOf("WOODEN_DOOR");
-                oakTrapDoor = Material.valueOf("TRAP_DOOR");
-            }
-            if (type == ironDoor
-                    || type == oakDoor
-                    || type == Material.DARK_OAK_DOOR
-                    || type == Material.BIRCH_DOOR
-                    || type == Material.ACACIA_DOOR
-                    || type == Material.JUNGLE_DOOR
-                    || type == Material.SPRUCE_DOOR) {
-                Location location = this;
-                int data = getBlock().getData();
-                if (data >= 8) {
-                    location = clone().add(0, -1, 0);
-                }
-                return new Element((location.getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
-            }
-            else if ((type == oakTrapDoor
-                    || type == Material.IRON_TRAPDOOR)
-                    || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
-                    && (type == Material.DARK_OAK_TRAPDOOR
-                    || type == Material.BIRCH_TRAPDOOR
-                    || type == Material.ACACIA_TRAPDOOR
-                    || type == Material.JUNGLE_TRAPDOOR
-                    || type == Material.SPRUCE_TRAPDOOR))) {
-                return new Element((getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
-            }
+            return new Element(SwitchCommand.switchState(getBlock()))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
