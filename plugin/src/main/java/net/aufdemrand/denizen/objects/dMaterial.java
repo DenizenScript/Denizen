@@ -639,14 +639,14 @@ public class dMaterial implements dObject, Adjustable {
         }
         Material m = Material.getMaterial(string);
         if (m != null) {
-            if (context.debug && index >= 0) {
+            if ((context == null || context.debug) && index >= 0) {
                 dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
             }
             return getMaterialFrom(m, data);
         }
         dMaterial mat = all_dMaterials.get(string);
         if (mat != null) {
-            if (context.debug && index >= 0) {
+            if ((context == null || context.debug) && index >= 0) {
                 dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
             }
             if (data == 0) {
