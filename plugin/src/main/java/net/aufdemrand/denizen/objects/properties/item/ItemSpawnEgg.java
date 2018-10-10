@@ -84,6 +84,9 @@ public class ItemSpawnEgg implements Property {
 
     @Override
     public String getPropertyString() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return null; // handled by the Material itself in 1.13
+        }
         return getEntityType() != null ? getEntityType().name() : null;
     }
 
