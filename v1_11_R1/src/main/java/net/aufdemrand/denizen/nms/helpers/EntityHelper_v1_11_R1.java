@@ -19,6 +19,7 @@ import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -35,6 +36,11 @@ public class EntityHelper_v1_11_R1 implements EntityHelper {
     /*
         General Entity Methods
      */
+
+    @Override
+    public Entity getFishHook(PlayerFishEvent event) {
+        return event.getHook();
+    }
 
     @Override
     public void forceInteraction(Player player, Location location) {

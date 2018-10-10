@@ -22,6 +22,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -40,6 +41,11 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     /*
         General Entity Methods
      */
+
+    @Override
+    public Entity getFishHook(PlayerFishEvent event) {
+        return event.getHook();
+    }
 
     @Override
     public void forceInteraction(Player player, Location location) {

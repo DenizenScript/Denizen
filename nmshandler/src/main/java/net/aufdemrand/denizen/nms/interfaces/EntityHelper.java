@@ -10,12 +10,15 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
 public interface EntityHelper {
+
+    Entity getFishHook(PlayerFishEvent event);
 
     void forceInteraction(Player player, Location location);
 

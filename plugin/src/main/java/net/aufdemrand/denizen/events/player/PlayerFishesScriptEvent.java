@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -138,7 +139,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        Entity hookEntity = event.getHook();
+        Entity hookEntity = NMSHandler.getInstance().getEntityHelper().getFishHook(event);
         dEntity.rememberEntity(hookEntity);
         hook = new dEntity(hookEntity);
         state = new Element(event.getState().toString());
