@@ -65,6 +65,9 @@ public class PlayEffectCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(dLocation.class)) {
+                if (arg.matchesOnePrefix("at")) {
+                    scriptEntry.addObject("no_offset", new Element(true));
+                }
 
                 scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
             }
@@ -213,6 +216,8 @@ public class PlayEffectCommand extends AbstractCommand {
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
         Element qty = scriptEntry.getElement("qty");
+        Element no_offset = scriptEntry.getElement("no_offset");
+        boolean should_offset = no_offset == null || !no_offset.asBoolean();
         dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
@@ -225,12 +230,15 @@ public class PlayEffectCommand extends AbstractCommand {
                     radius.debug() +
                     data.debug() +
                     qty.debug() +
-                    offset.debug());
+                    offset.debug() +
+                    (should_offset ? aH.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
 
         for (dLocation location : locations) {
-            // Slightly increase the location's Y so effects don't seem to come out of the ground
-            location = new dLocation(location.clone().add(0, 1, 0));
+            if (should_offset) {
+                // Slightly increase the location's Y so effects don't seem to come out of the ground
+                location = new dLocation(location.clone().add(0, 1, 0));
+            }
 
             // Play the Bukkit effect the number of times specified
             if (effect != null) {

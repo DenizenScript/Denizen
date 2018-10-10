@@ -2741,7 +2741,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name PlayEffect
-        // @Syntax playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
+        // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
@@ -2757,23 +2757,28 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Everyone will see the particle effects unless a target has been specified.
         // See <@link language Particle Effects> for a list of valid effect names.
         //
+        // Version change note: The original PlayEffect command raised all location inputs 1 block-height upward to avoid effects playing underground when played at eg a player's location.
+        // This was found to cause too much confusion, so it is no longer on by default. However, it will still happen for older commands.
+        // The distinction is in whether you include the (now expected to use) "at:" prefix on your location argument.
+        // If you do not have this prefix, the system will assume your command is older, and will apply the 1-block height offset.
+        //
         // @Tags
         // None
         //
         // @Usage
         // Use to create a fake explosion.
-        // - playeffect <player.location> effect:EXPLOSION_HUGE visibility:500 quantity:10 offset:2.0
+        // - playeffect effect:EXPLOSION_HUGE at:<player.location> visibility:500 quantity:10 offset:2.0
         //
         // @Usage
         // Use to play a cloud effect.
-        // - playeffect <player.location.add[0,5,0]> effect:CLOUD quantity:20 data:1 offset:0.0
+        // - playeffect effect:CLOUD at:<player.location.add[0,5,0]> quantity:20 data:1 offset:0.0
         //
         // @Usage
         // Use to play some effects at spawn.
-        // - playeffect <w@world.spawn_location> effect:FIREWORKS_SPARK visibility:100 quantity:375 data:0 offset:50.0
+        // - playeffect effect:FIREWORKS_SPARK at:<w@world.spawn_location> visibility:100 quantity:375 data:0 offset:50.0
         // -->
         registerCoreMember(PlayEffectCommand.class,
-                "PLAYEFFECT", "playeffect [<location>|...] [effect:<name>] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
+                "PLAYEFFECT", "playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (qty:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)", 2);
 
 
         // <--[command]
