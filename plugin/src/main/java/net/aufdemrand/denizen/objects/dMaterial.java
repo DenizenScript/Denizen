@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.properties.Property;
@@ -638,15 +639,15 @@ public class dMaterial implements dObject, Adjustable {
         }
         Material m = Material.getMaterial(string);
         if (m != null) {
-            if (!nope && index >= 0) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            if (context.debug && index >= 0) {
+                dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
             }
             return getMaterialFrom(m, data);
         }
         dMaterial mat = all_dMaterials.get(string);
         if (mat != null) {
-            if (!nope && index >= 0) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            if (context.debug && index >= 0) {
+                dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
             }
             if (data == 0) {
                 return mat;
@@ -655,8 +656,9 @@ public class dMaterial implements dObject, Adjustable {
         }
         int matid = aH.getIntegerFrom(string);
         if (matid != 0) {
-            if (!nope) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            // It's always an error (except in the 'matches' call) to use a material ID number instead of a name.
+            if (context != noDebugContext) {
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
             }
             m = getLegacyMaterial(matid);
             if (m != null) {
@@ -691,9 +693,7 @@ public class dMaterial implements dObject, Adjustable {
         return null;
     }
 
-    // :( boolean for technicality, can be fixed
-    // by making matches() method better.
-    public static boolean nope = false;
+    public static TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
 
     /**
      * Determine whether a string is a valid material.
@@ -706,14 +706,9 @@ public class dMaterial implements dObject, Adjustable {
         if (arg.startsWith("m@")) {
             return true;
         }
-        // TODO: Make this better. Probably creating some unnecessary
-        // objects by doing this :(
-        nope = true;
-        if (valueOf(arg) != null) {
-            nope = false;
+        if (valueOf(arg, noDebugContext) != null) {
             return true;
         }
-        nope = false;
         return false;
     }
 
@@ -919,7 +914,7 @@ public class dMaterial implements dObject, Adjustable {
         registerTag("id", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use material names instead.");
                 return new Element(((dMaterial) object).material.getId())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -928,7 +923,9 @@ public class dMaterial implements dObject, Adjustable {
         registerTag("data", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                if (attribute.context == null || attribute.context.debug) {
+                    dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
+                }
                 return new Element(((dMaterial) object).getData())
                         .getAttribute(attribute.fulfill(1));
             }
