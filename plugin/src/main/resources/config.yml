@@ -126,7 +126,8 @@ Commands:
         # Set to 'false' if you're worried about security.
         Allow saving outside folder: false
   Webget:
-        # Whether to allow scripts to read arbitrary data from the web, which can also enable tracking of your private server data.
+        # Whether to allow scripts to read arbitrary data from the web, which can also potentially enable tracking of your private server data.
+        # Generally this is safe, but set to 'false' if you want very strict security.
         Allow: true
   General:
         # NEVER EVER ENABLE ANY OF THESE.
