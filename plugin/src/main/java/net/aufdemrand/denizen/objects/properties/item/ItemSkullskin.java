@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
@@ -67,7 +68,7 @@ public class ItemSkullskin implements Property {
 
         if (attribute.startsWith("skin")) {
             String skin = getPropertyString();
-            if (item.getItemStack().getDurability() == 3 && skin != null) {
+            if (skin != null) {
                 attribute = attribute.fulfill(1);
                 if (attribute.startsWith("full")) {
                     return new Element(skin).getAttribute(attribute.fulfill(1));
@@ -75,7 +76,7 @@ public class ItemSkullskin implements Property {
                 return new Element(CoreUtilities.split(skin, '|').get(0)).getAttribute(attribute);
             }
             else {
-                dB.echoError("This skull_item does not have a skin set!");
+                dB.echoError("This skull item does not have a skin set!");
             }
         }
 
@@ -89,7 +90,7 @@ public class ItemSkullskin implements Property {
         // (Only for human 'skull_item's)
         // -->
         if (attribute.startsWith("has_skin")) {
-            return new Element(item.getItemStack().getDurability() == 3 && getPropertyString() != null)
+            return new Element(getPropertyString() != null)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -97,10 +98,13 @@ public class ItemSkullskin implements Property {
         return null;
     }
 
+    public boolean isCorrectDurability() {
+        return NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) || item.getItemStack().getDurability() == 3;
+    }
 
     @Override
     public String getPropertyString() {
-        if (item.getItemStack().getDurability() == 3) {
+        if (isCorrectDurability()) {
             PlayerProfile playerProfile = NMSHandler.getInstance().getItemHelper().getSkullSkin(item.getItemStack());
             if (playerProfile != null) {
                 String name = playerProfile.getName();
@@ -136,7 +140,7 @@ public class ItemSkullskin implements Property {
         // <i@item.has_skin>
         // -->
         if (mechanism.matches("skull_skin")) {
-            if (item.getItemStack().getDurability() != 3) {
+            if (!isCorrectDurability()) {
                 item.getItemStack().setDurability((short) 3);
             }
             dList list = mechanism.getValue().asType(dList.class);
