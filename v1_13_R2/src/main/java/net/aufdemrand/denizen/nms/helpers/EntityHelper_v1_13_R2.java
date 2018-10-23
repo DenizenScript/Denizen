@@ -757,8 +757,8 @@ public class EntityHelper_v1_13_R2 implements EntityHelper {
     @Override
     public BoundingBox getBoundingBox(Entity entity) {
         AxisAlignedBB boundingBox = ((CraftEntity) entity).getHandle().getBoundingBox();
-        Vector position = new Vector(boundingBox.a, boundingBox.b, boundingBox.c);
-        Vector size = new Vector(boundingBox.d, boundingBox.e, boundingBox.f);
+        Vector position = new Vector(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+        Vector size = new Vector(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ);
         return new BoundingBox(position, size);
     }
 
