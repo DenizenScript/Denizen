@@ -9,7 +9,6 @@ import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
 import java.util.Map;
@@ -110,8 +109,7 @@ public class AdvancementHelper_v1_12_R1 implements AdvancementHelper {
         Advancement parent = advancement.parent != null
                 ? AdvancementDataWorld.REGISTRY.advancements.get(asMinecraftKey(advancement.parent))
                 : null;
-        ItemStack bukkitIcon = new ItemStack(advancement.iconMaterial, 1, (short)0, advancement.iconData);
-        AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(bukkitIcon),
+        AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(advancement.icon),
                 new ChatComponentText(advancement.title), new ChatComponentText(advancement.description),
                 asMinecraftKey(advancement.background), AdvancementFrameType.valueOf(advancement.frame.name()),
                 advancement.toast, advancement.announceToChat, advancement.hidden);

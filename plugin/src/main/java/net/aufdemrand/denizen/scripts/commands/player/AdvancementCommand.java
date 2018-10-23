@@ -3,7 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.player;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.AdvancementHelper;
 import net.aufdemrand.denizen.nms.util.Advancement;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
@@ -57,8 +58,8 @@ public class AdvancementCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
-                    && arg.matchesArgumentType(dMaterial.class)) {
-                scriptEntry.addObject("icon", arg.asType(dMaterial.class));
+                    && arg.matchesArgumentType(dItem.class)) {
+                scriptEntry.addObject("icon", arg.asType(dItem.class));
             }
             else if (!scriptEntry.hasObject("title")
                     && arg.matchesPrefix("title", "text", "t")) {
@@ -111,7 +112,7 @@ public class AdvancementCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an ID!");
         }
 
-        scriptEntry.defaultObject("icon", dMaterial.AIR);
+        scriptEntry.defaultObject("icon", new dItem(Material.AIR));
         scriptEntry.defaultObject("title", new Element(""));
         scriptEntry.defaultObject("description", new Element(""));
         scriptEntry.defaultObject("background", new Element("minecraft:textures/gui/advancements/backgrounds/stone.png"));
@@ -133,7 +134,7 @@ public class AdvancementCommand extends AbstractCommand {
         Element delete = scriptEntry.getElement("delete");
         dList grant = scriptEntry.getdObject("grant");
         dList revoke = scriptEntry.getdObject("revoke");
-        dMaterial icon = scriptEntry.getdObject("icon");
+        dItem icon = scriptEntry.getdObject("icon");
         Element title = scriptEntry.getElement("title");
         Element description = scriptEntry.getElement("description");
         Element background = scriptEntry.getElement("background");
@@ -180,7 +181,7 @@ public class AdvancementCommand extends AbstractCommand {
             }
 
             final Advancement advancement = new Advancement(false, key, parentKey,
-                    icon.getMaterial(), icon.getData(), title.asString(), description.asString(),
+                    icon.getItemStack(), title.asString(), description.asString(),
                     backgroundKey, Advancement.Frame.valueOf(frame.asString().toUpperCase()),
                     toast.asBoolean(), announce.asBoolean(), hidden.asBoolean(), x.asFloat(), y.asFloat());
 

@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.AdvancementHelper;
 import net.aufdemrand.denizen.nms.util.Advancement;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
@@ -36,8 +37,8 @@ public class ToastCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")
-                    && arg.matchesArgumentType(dMaterial.class)) {
-                scriptEntry.addObject("icon", arg.asType(dMaterial.class));
+                    && arg.matchesArgumentType(dItem.class)) {
+                scriptEntry.addObject("icon", arg.asType(dItem.class));
             }
             else if (!scriptEntry.hasObject("frame")
                     && arg.matchesPrefix("frame", "f")
@@ -66,7 +67,7 @@ public class ToastCommand extends AbstractCommand {
             }
         }
 
-        scriptEntry.defaultObject("icon", dMaterial.AIR);
+        scriptEntry.defaultObject("icon", new dItem(Material.AIR));
         scriptEntry.defaultObject("frame", new Element("TASK"));
 
     }
@@ -78,7 +79,7 @@ public class ToastCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         Element text = scriptEntry.getElement("text");
         Element frame = scriptEntry.getElement("frame");
-        dMaterial icon = scriptEntry.getdObject("icon");
+        dItem icon = scriptEntry.getdObject("icon");
         final List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
@@ -87,7 +88,7 @@ public class ToastCommand extends AbstractCommand {
 
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(DenizenAPI.getCurrentInstance(), UUID.randomUUID().toString()), null,
-                icon.getMaterial(), icon.getData(), text.asString(), "", DEFAULT_BACKGROUND,
+                icon.getItemStack(), text.asString(), "", DEFAULT_BACKGROUND,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
 
         final AdvancementHelper advancementHelper = NMSHandler.getInstance().getAdvancementHelper();

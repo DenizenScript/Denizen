@@ -122,7 +122,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Advancement
-        // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<material>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
+        // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
         // @Required 1
         // @Stable stable
         // @Short Controls a custom advancement.
@@ -168,7 +168,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
             registerCoreMember(AdvancementCommand.class,
-                    "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<material>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
+                    "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
         }
 
         // <--[command]
@@ -4149,7 +4149,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Toast
-        // @Syntax toast [<text>] (targets:<player>|...) (icon:<material>) (frame:<name>)
+        // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:<name>)
         // @Required 1
         // @Stable stable
         // @Short Shows the player a custom advancement toast.
@@ -4180,7 +4180,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
             registerCoreMember(ToastCommand.class,
-                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<material>) (frame:<name>)", 1);
+                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:<name>)", 1);
         }
 
         // <--[command]
