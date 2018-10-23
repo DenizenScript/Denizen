@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.nms.util;
 
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 
 public class Advancement {
 
@@ -10,8 +10,7 @@ public class Advancement {
     public boolean temporary;
     public NamespacedKey key;
     public NamespacedKey parent;
-    public Material iconMaterial;
-    public byte iconData;
+    public ItemStack icon;
     public String title;
     public String description;
     public NamespacedKey background;
@@ -25,14 +24,13 @@ public class Advancement {
 
     public boolean registered;
 
-    public Advancement(boolean temporary, NamespacedKey key, NamespacedKey parent, Material iconMaterial,
-                       byte iconData, String title, String description, NamespacedKey background, Frame frame,
+    public Advancement(boolean temporary, NamespacedKey key, NamespacedKey parent, ItemStack icon,
+                       String title, String description, NamespacedKey background, Frame frame,
                        boolean toast, boolean announceToChat, boolean hidden, float xOffset, float yOffset) {
         this.temporary = temporary;
         this.key = key;
         this.parent = parent;
-        this.iconMaterial = iconMaterial;
-        this.iconData = iconData;
+        this.icon = icon;
         this.title = title;
         this.description = description;
         this.background = background;
