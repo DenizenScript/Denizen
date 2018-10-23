@@ -83,6 +83,8 @@ public abstract class NMSHandler {
 
     public abstract double[] getRecentTps();
 
+    public abstract AdvancementHelper getAdvancementHelper();
+
     public abstract AnimationHelper getAnimationHelper();
 
     public abstract BlockHelper getBlockHelper();

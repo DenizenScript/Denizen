@@ -60,6 +60,11 @@ public class Handler_v1_10_R1 extends NMSHandler {
     }
 
     @Override
+    public AdvancementHelper getAdvancementHelper() {
+        return null;
+    }
+
+    @Override
     public AnimationHelper getAnimationHelper() {
         return animationHelper;
     }

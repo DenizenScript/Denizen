@@ -122,39 +122,53 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Advancement
-        // @Syntax advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)
+        // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<material>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
         // @Required 1
-        // @Stable unstable
-        // @Short Awards the player with a custom Advancement.
-        // @Author Mergu
+        // @Stable stable
+        // @Short Controls a custom advancement.
+        // @Author Morphan1
         // @Group player
         //
         // @Description
-        // Awards the player with a custom Advancement. If no target is specified it will default to the attached
-        // player. The description argument changes the text displayed on hovering over the chat announcement.
-        // The icon argument changes the icon displayed in the toast pop-up notification. The frame argument
-        // changes the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK. Include the
-        // announce argument to announce the advancement to chat, and hide_toast to disable the pop-up notification.
+        // Controls custom Minecraft player advancements. You should generally create advancements manually on server start.
+        // Currently, the ID argument may only refer to advancements added through this command.
+        // The default action is to create and register a new advancement.
+        // You may also delete an existing advancement, in which case do not provide any further arguments.
+        // You may grant or revoke an advancement for a list of players, in which case do not provide any further arguments.
+        // The parent argument sets the root advancement in the advancements menu, in the format "namespace:key".
+        // If no namespace is specified, the parent is assumed to have been created through this command.
+        // The icon argument sets the icon displayed in toasts and the advancements menu.
+        // The title argument sets the title that will show on toasts and in the advancements menu.
+        // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
+        // The background argument sets the image to use if the advancement goes to a new tab.
+        // If the background is unspecified, defaults to "minecraft:textures/gui/advancements/backgrounds/stone.png".
+        // The frame argument sets the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
+        // The toast argument sets whether the advancement should display a toast message when a player completes it. Default is true.
+        // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
+        // The hidden argument sets whether the advancement should be hidden until it is completed.
+        // The x and y arguments are offsets based on the size of an advancement icon in the menu. They are required for custom tabs to look reasonable.
+        //
+        // WARNING: Failure to re-create advancements on every server start may result in loss of data.
         //
         // @Tags
         // None
         //
         // @Usage
-        // Welcomes the player with an advancement.
-        // - advancement "Welcome <player.name>!"
+        // Creates a new advancement that has a potato icon.
+        // - advancement "id:hello_world" "icon:baked_potato" "title:Hello World" "description:You said hello to the world."
         //
         // @Usage
-        // Sends the player an advancement with a custom description & icon, announced to chat.
-        // - advancement "Diggy Diggy Hole" "d:<player.name> dug a hole!" icon:iron_spade announce
+        // Creates a new advancement with the parent "hello_world" and a CHALLENGE frame. Hidden until it is completed.
+        // - advancement "id:hello_universe" "parent:hello_world" "icon:ender_pearl" "title:Hello Universe" "description:You said hello to the UNIVERSE." "frame:challenge" "hidden:true" "x:1"
         //
         // @Usage
-        // Sends the player a "Challenge Complete!" type advancement.
-        // - advancement "You finished a challenge!" frame:challenge icon:diamond
+        // Grants the "hello_world" advancement to the current player.
+        // - advancement "id:hello_world" "grant:<player>"
         //
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
             registerCoreMember(AdvancementCommand.class,
-                    "ADVANCEMENT", "advancement [<text>] (targets:<player>|...) (description:<text>) (icon:<material>) (frame:<name>) (announce) (hide_toast)", 1);
+                    "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<material>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
         }
 
         // <--[command]
@@ -4132,6 +4146,42 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         registerCoreMember(TitleCommand.class,
                 "TITLE", "title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)", 1);
+
+        // <--[command]
+        // @Name Toast
+        // @Syntax toast [<text>] (targets:<player>|...) (icon:<material>) (frame:<name>)
+        // @Required 1
+        // @Stable stable
+        // @Short Shows the player a custom advancement toast.
+        // @Author Mergu
+        // @Group player
+        //
+        // @Description
+        // Displays a client-side custom advancement "toast" notification popup to the player(s).
+        // If no target is specified it will default to the attached player.
+        // The icon argument changes the icon displayed in the toast pop-up notification.
+        // The frame argument changes the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
+        //
+        // @Tags
+        // None
+        //
+        // @Usage
+        // Welcomes the player with an advancement toast.
+        // - toast "Welcome <player.name>!"
+        //
+        // @Usage
+        // Sends the player an advancement toast with a custom icon.
+        // - toast "Diggy Diggy Hole" icon:iron_spade
+        //
+        // @Usage
+        // Sends the player a "Challenge Complete!" type advancement toast.
+        // - toast "You finished a challenge!" frame:challenge icon:diamond
+        //
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            registerCoreMember(ToastCommand.class,
+                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<material>) (frame:<name>)", 1);
+        }
 
         // <--[command]
         // @Name Trait

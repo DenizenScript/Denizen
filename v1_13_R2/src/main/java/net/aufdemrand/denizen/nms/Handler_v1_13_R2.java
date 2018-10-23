@@ -37,6 +37,7 @@ import java.util.UUID;
 
 public class Handler_v1_13_R2 extends NMSHandler {
 
+    private final AdvancementHelper advancementHelper = new AdvancementHelper_v1_13_R2();
     private final AnimationHelper animationHelper = new AnimationHelper_v1_13_R2();
     private final BlockHelper blockHelper = new BlockHelper_v1_13_R2();
     private final ChunkHelper chunkHelper = new ChunkHelper_v1_13_R2();
@@ -60,6 +61,11 @@ public class Handler_v1_13_R2 extends NMSHandler {
     @Override
     public double[] getRecentTps() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps;
+    }
+
+    @Override
+    public AdvancementHelper getAdvancementHelper() {
+        return advancementHelper;
     }
 
     @Override
