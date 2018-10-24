@@ -11,6 +11,8 @@ import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.minecraft.server.v1_8_R3.GameProfileSerializer;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,8 +25,13 @@ import java.util.UUID;
 public class ItemHelper_v1_8_R3 implements ItemHelper {
 
     @Override
-    public String getVanillaName(ItemStack itemStack) {
-        return CraftItemStack.asNMSCopy(itemStack).save(new NBTTagCompound()).getString("id");
+    public String getInternalNameFromMaterial(Material material) {
+        return CraftItemStack.asNMSCopy(new ItemStack(material)).save(new NBTTagCompound()).getString("id");
+    }
+
+    @Override
+    public Material getMaterialFromInternalName(String internalName) {
+        return Bukkit.getUnsafe().getMaterialFromInternalName(internalName);
     }
 
     @Override

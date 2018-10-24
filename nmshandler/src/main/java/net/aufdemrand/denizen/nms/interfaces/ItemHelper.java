@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.nms.util.EntityAttributeModifier;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -12,7 +13,9 @@ import java.util.Map;
 
 public interface ItemHelper {
 
-    String getVanillaName(ItemStack itemStack);
+    String getInternalNameFromMaterial(Material material);
+
+    Material getMaterialFromInternalName(String internalName);
 
     String getJsonString(ItemStack itemStack);
 

@@ -9,8 +9,10 @@ import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
 import net.aufdemrand.denizen.nms.util.EntityAttributeModifier;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.minecraft.server.v1_13_R2.GameProfileSerializer;
 import net.minecraft.server.v1_13_R2.NBTTagCompound;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,8 +25,14 @@ import java.util.UUID;
 public class ItemHelper_v1_13_R2 implements ItemHelper {
 
     @Override
-    public String getVanillaName(ItemStack itemStack) {
-        return CraftItemStack.asNMSCopy(itemStack).save(new NBTTagCompound()).getString("id");
+    public String getInternalNameFromMaterial(Material material) {
+        // In 1.13+ Material names match their internal name
+        return "minecraft:" + CoreUtilities.toLowerCase(material.name());
+    }
+
+    @Override
+    public Material getMaterialFromInternalName(String internalName) {
+        return Material.matchMaterial(internalName);
     }
 
     @Override
