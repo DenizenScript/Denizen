@@ -12,7 +12,6 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
@@ -797,15 +796,22 @@ public class dMaterial implements dObject, Adjustable {
     }
 
     public boolean isStructure() {
-        try {
-            TreeType.valueOf(material.toString());
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
+                && material == Material.CHORUS_PLANT) {
             return true;
         }
-        catch (Exception e) {
-            // TODO: 1.13 - ??? are these meant to be legacy fallbacks or what
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                && (material == Material.RED_MUSHROOM_BLOCK || material == Material.BROWN_MUSHROOM_BLOCK)) {
+            return true;
+        }
+        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+            if (material == Material.RED_MUSHROOM || material == Material.BROWN_MUSHROOM) {
+                return true;
+            }
             String name = material.name();
             return name.equals("SAPLING") || name.equals("HUGE_MUSHROOM_1") || name.equals("HUGE_MUSHROOM_2");
         }
+        return false;
     }
 
     String prefix = "material";
