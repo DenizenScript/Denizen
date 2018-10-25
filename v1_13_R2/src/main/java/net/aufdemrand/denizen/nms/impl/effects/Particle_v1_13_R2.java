@@ -2,7 +2,10 @@ package net.aufdemrand.denizen.nms.impl.effects;
 
 import net.aufdemrand.denizen.nms.interfaces.Particle;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_13_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 import org.bukkit.util.Vector;
 
 public class Particle_v1_13_R2 implements Particle {
@@ -20,7 +23,13 @@ public class Particle_v1_13_R2 implements Particle {
 
     @Override
     public <T> void playFor(Player player, Location location, int count, Vector offset, double extra, T data) {
-        player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra, data);
+        if (data instanceof MaterialData) {
+            player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra,
+                    CraftBlockData.fromData(CraftMagicNumbers.getBlock((MaterialData) data)));
+        }
+        else {
+            player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra, data);
+        }
     }
 
     @Override

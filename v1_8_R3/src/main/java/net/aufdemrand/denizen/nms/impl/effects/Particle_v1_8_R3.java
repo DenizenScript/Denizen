@@ -34,9 +34,12 @@ public class Particle_v1_8_R3 implements Particle {
         else if (data instanceof MaterialData) {
             dataArray = new int[]{((MaterialData) data).getItemTypeId() + (((MaterialData) data).getData() << 12)};
         }
+        else {
+            dataArray = new int[0];
+        }
         PacketHelper_v1_8_R3.sendPacket(player, new PacketPlayOutWorldParticles(particle, true,
                 (float) location.getX(), (float) location.getY(), (float) location.getZ(),
-                (float) offset.getX(), (float) offset.getY(), (float) offset.getZ(), (float) extra, count));
+                (float) offset.getX(), (float) offset.getY(), (float) offset.getZ(), (float) extra, count, dataArray));
     }
 
     @Override
