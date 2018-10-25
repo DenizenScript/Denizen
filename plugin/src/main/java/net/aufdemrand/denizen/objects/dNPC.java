@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
@@ -20,8 +19,6 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
-import net.citizensnpcs.api.astar.pathfinder.FlyingBlockExaminer;
-import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -1380,34 +1377,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // -->
         if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
             getLookCloseTrait().lookClose(value.asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object dNPC
-        // @name set_examiner
-        // @input Element
-        // @description
-        // Sets the NPC's block examiner
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("set_examiner")) {
-
-            if (mechanism.getValue().toString().equalsIgnoreCase("default")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new MinecraftBlockExaminer());
-
-            }
-            else if (mechanism.getValue().toString().equalsIgnoreCase("fly")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new FlyingBlockExaminer());
-
-            }
-            else if (mechanism.getValue().toString().equalsIgnoreCase("path")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new PathBlockExaminer(this, null));
-            }
-
         }
 
         // <--[mechanism]
