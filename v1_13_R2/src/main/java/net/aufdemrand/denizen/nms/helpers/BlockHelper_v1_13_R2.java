@@ -10,12 +10,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.minecraft.server.v1_13_R2.Blocks;
-import net.minecraft.server.v1_13_R2.Item;
-import net.minecraft.server.v1_13_R2.ItemBlock;
-import net.minecraft.server.v1_13_R2.ItemStack;
-import net.minecraft.server.v1_13_R2.TileEntity;
-import net.minecraft.server.v1_13_R2.TileEntitySkull;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -129,6 +124,9 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
     }
 
     private static net.minecraft.server.v1_13_R2.Block getBlockFrom(Material material) {
+        if (material == Material.FLOWER_POT) {
+            return Blocks.FLOWER_POT;
+        }
         ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
         if (is == null) {
             return null;
