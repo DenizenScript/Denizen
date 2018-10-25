@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -291,11 +290,10 @@ public class Utilities {
 
             Block block = signBlock.getRelative(blockFace);
 
-            if ((block.getType() != Material.AIR)
-                    // TODO: 1.13 - better method?
-                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? block.getType() != Material.SIGN
-                    : block.getType() != Material.valueOf("SIGN_POST"))
-                    && block.getType() != Material.WALL_SIGN) {
+            Material material = block.getType();
+            if (material != Material.AIR
+                    && material != MaterialCompat.SIGN
+                    && material != Material.WALL_SIGN) {
 
                 return blockFace.getOppositeFace();
             }
@@ -329,11 +327,10 @@ public class Utilities {
 
             Block block = signState.getBlock().getRelative(blockFace);
 
-            if ((block.getType() != Material.AIR)
-                    // TODO: 1.13 - better method?
-                    && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? block.getType() != Material.SIGN
-                    : block.getType() != Material.valueOf("SIGN_POST"))
-                    && block.getType() != Material.WALL_SIGN) {
+            Material material = block.getType();
+            if (material != Material.AIR
+                    && material != MaterialCompat.SIGN
+                    && material != Material.WALL_SIGN) {
 
                 ((org.bukkit.material.Sign) signState.getData())
                         .setFacingDirection(blockFace.getOppositeFace());
@@ -385,57 +382,6 @@ public class Utilities {
         }
 
         return true;
-    }
-
-    public static boolean isBannerOrShield(Material material) {
-
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.SHIELD) {
-            return true;
-        }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            switch (material) {
-                case BLACK_BANNER:
-                case BLUE_BANNER:
-                case BROWN_BANNER:
-                case CYAN_BANNER:
-                case GRAY_BANNER:
-                case GREEN_BANNER:
-                case LIME_BANNER:
-                case LIGHT_BLUE_BANNER:
-                case LIGHT_GRAY_BANNER:
-                case MAGENTA_BANNER:
-                case ORANGE_BANNER:
-                case PINK_BANNER:
-                case PURPLE_BANNER:
-                case RED_BANNER:
-                case WHITE_BANNER:
-                case YELLOW_BANNER:
-                case BLACK_WALL_BANNER:
-                case BLUE_WALL_BANNER:
-                case BROWN_WALL_BANNER:
-                case CYAN_WALL_BANNER:
-                case GRAY_WALL_BANNER:
-                case GREEN_WALL_BANNER:
-                case LIME_WALL_BANNER:
-                case LIGHT_BLUE_WALL_BANNER:
-                case LIGHT_GRAY_WALL_BANNER:
-                case MAGENTA_WALL_BANNER:
-                case ORANGE_WALL_BANNER:
-                case PINK_WALL_BANNER:
-                case PURPLE_WALL_BANNER:
-                case RED_WALL_BANNER:
-                case WHITE_WALL_BANNER:
-                case YELLOW_WALL_BANNER:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-        else {
-            return material == Material.valueOf("BANNER")
-                    || material == Material.valueOf("WALL_BANNER")
-                    || material == Material.valueOf("STANDING_BANNER");
-        }
     }
 
 

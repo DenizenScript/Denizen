@@ -1,17 +1,15 @@
 package net.aufdemrand.denizen.events.entity;
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FireworkExplodeEvent;
@@ -88,9 +86,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("item")) {
-            // TODO: 1.13 - better method?
-            Material firework = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
-            ItemStack itemStack = new ItemStack(firework);
+            ItemStack itemStack = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
             itemStack.setItemMeta(event.getEntity().getFireworkMeta());
             return new dItem(itemStack);
         }

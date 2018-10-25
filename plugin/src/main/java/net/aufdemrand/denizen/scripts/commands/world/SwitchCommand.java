@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -115,22 +116,8 @@ public class SwitchCommand extends AbstractCommand {
         }
         //return (b.getData() & 0x8) > 0;
         Material type = b.getType();
-        // TODO: 1.13
-        Material ironDoor;
-        Material oakDoor;
-        Material oakTrapDoor;
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            ironDoor = Material.IRON_DOOR;
-            oakDoor = Material.OAK_DOOR;
-            oakTrapDoor = Material.OAK_TRAPDOOR;
-        }
-        else {
-            ironDoor = Material.valueOf("IRON_DOOR_BLOCK");
-            oakDoor = Material.valueOf("WOODEN_DOOR");
-            oakTrapDoor = Material.valueOf("TRAP_DOOR");
-        }
-        if (type == ironDoor
-                || type == oakDoor
+        if (type == MaterialCompat.IRON_DOOR
+                || type == MaterialCompat.OAK_DOOR
                 || type == Material.DARK_OAK_DOOR
                 || type == Material.BIRCH_DOOR
                 || type == Material.ACACIA_DOOR
@@ -143,7 +130,7 @@ public class SwitchCommand extends AbstractCommand {
             }
             return (location.getBlock().getData() & 0x4) > 0;
         }
-        else if ((type == oakTrapDoor
+        else if ((type == MaterialCompat.OAK_TRAPDOOR
                 || type == Material.IRON_TRAPDOOR)
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
                 && (type == Material.DARK_OAK_TRAPDOOR
@@ -195,16 +182,15 @@ public class SwitchCommand extends AbstractCommand {
             }
             else {
                 try {
-                    Material ironDoor = Material.valueOf("IRON_DOOR_BLOCK");
-                    if (interactLocation.getBlock().getType() == ironDoor) {
+                    if (interactLocation.getBlock().getType() == MaterialCompat.IRON_DOOR) {
                         Location block;
-                        if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == ironDoor) {
+                        if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == MaterialCompat.IRON_DOOR) {
                             block = interactLocation.clone().add(0, -1, 0);
                         }
                         else {
                             block = interactLocation;
                         }
-                        BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(ironDoor, (byte) (block.getBlock().getData() ^ 4));
+                        BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(MaterialCompat.IRON_DOOR, (byte) (block.getBlock().getData() ^ 4));
                         blockData.setBlock(block.getBlock(), false);
                     }
                     else {

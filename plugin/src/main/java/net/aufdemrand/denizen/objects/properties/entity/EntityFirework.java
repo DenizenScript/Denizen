@@ -1,15 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
@@ -46,9 +44,7 @@ public class EntityFirework implements Property {
 
     @Override
     public String getPropertyString() {
-        // TODO: 1.13 - better method?
-        Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
-        ItemStack item = new ItemStack(material);
+        ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
         item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
         return new dItem(item).identify();
     }
@@ -78,9 +74,7 @@ public class EntityFirework implements Property {
         // If the entity is a firework, returns the firework item used to launch it.
         // -->
         if (attribute.startsWith("firework_item")) {
-            // TODO: 1.13 - better method?
-            Material material = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FIREWORK_ROCKET : Material.valueOf("FIREWORK");
-            ItemStack item = new ItemStack(material);
+            ItemStack item = new ItemStack(MaterialCompat.FIREWORK_ROCKET);
             item.setItemMeta(((Firework) firework.getBukkitEntity()).getFireworkMeta());
             return new dItem(item).getAttribute(attribute.fulfill(1));
         }

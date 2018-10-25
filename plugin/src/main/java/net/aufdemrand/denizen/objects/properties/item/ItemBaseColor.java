@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -20,8 +20,7 @@ public class ItemBaseColor implements Property {
     public static boolean describes(dObject item) {
         if (item instanceof dItem) {
             Material material = ((dItem) item).getItemStack().getType();
-            // TODO: 1.13 - better method?
-            return Utilities.isBannerOrShield(material);
+            return MaterialCompat.isBannerOrShield(material);
         }
         return false;
     }

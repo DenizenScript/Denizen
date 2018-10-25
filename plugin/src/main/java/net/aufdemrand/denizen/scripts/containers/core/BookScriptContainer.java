@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -73,8 +72,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("SIGNED")) {
             if (getString("SIGNED").equalsIgnoreCase("false")) {
-                // TODO: 1.13 - better method?
-                book.getItemStack().setType(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.WRITABLE_BOOK : Material.valueOf("BOOK_AND_QUILL"));
+                book.getItemStack().setType(MaterialCompat.WRITABLE_BOOK);
             }
         }
 

@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.commands.world.SwitchCommand;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -2043,10 +2044,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the name a command block is set to.
         // -->
-        if (attribute.startsWith("command_block_name")
-                // TODO: 1.13 - is there a better way?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
-                : getBlock().getType() == Material.valueOf("COMMAND"))) {
+        if (attribute.startsWith("command_block_name") && getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
             return new Element(((CommandBlock) getBlock().getState()).getName())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2058,10 +2056,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the command a command block is set to.
         // -->
-        if (attribute.startsWith("command_block")
-                // TODO: 1.13 - is there a better way?
-                && (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
-                : getBlock().getType() == Material.valueOf("COMMAND"))) {
+        if (attribute.startsWith("command_block") && getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
             return new Element(((CommandBlock) getBlock().getState()).getCommand())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2300,9 +2295,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block_name>
         // -->
         if (mechanism.matches("command_block_name")) {
-            // TODO: 1.13 - is there a better way?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
-                    : getBlock().getType() == Material.valueOf("COMMAND")) {
+            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setName(value.asString());
                 block.update();
@@ -2319,9 +2312,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block>
         // -->
         if (mechanism.matches("command_block")) {
-            // TODO: 1.13 - is there a better way?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? getBlock().getType() == Material.COMMAND_BLOCK
-                    : getBlock().getType() == Material.valueOf("COMMAND")) {
+            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
@@ -2338,10 +2329,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.furnace_burn_time>
         // -->
         if (mechanism.matches("furnace_burn_time")) {
-            Material material = getBlock().getType();
-            if (material == Material.FURNACE
-                    // TODO: 1.13 - is there a better way?
-                    || (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && material == Material.valueOf("BURNING_FURNACE"))) {
+            if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setBurnTime((short) value.asInt());
                 furnace.update();
@@ -2358,10 +2346,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.furnace_cook_time>
         // -->
         if (mechanism.matches("furnace_cook_time")) {
-            Material material = getBlock().getType();
-            if (material == Material.FURNACE
-                    // TODO: 1.13 - is there a better way?
-                    || (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && material == Material.valueOf("BURNING_FURNACE"))) {
+            if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setCookTime((short) value.asInt());
                 furnace.update();

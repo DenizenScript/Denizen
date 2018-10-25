@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -14,7 +13,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -81,15 +79,9 @@ public class HeadCommand extends AbstractCommand {
 
         // Create head item with chosen skin, or item/skin
         if (skin != null) {
-            // TODO: 1.13 - does this work?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                item = new ItemStack(Material.PLAYER_HEAD, 1);
-            }
-            else {
-                item = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (byte) 3);
-            }
+            item = MaterialCompat.createPlayerHead();
             ItemMeta itemMeta = item.getItemMeta();
-            ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", ""));
+            ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", "")); // TODO: 1.12 and up - switch to setOwningPlayer?
             item.setItemMeta(itemMeta);
 
         }

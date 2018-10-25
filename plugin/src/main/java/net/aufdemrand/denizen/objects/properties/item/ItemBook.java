@@ -1,10 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
@@ -17,9 +20,7 @@ public class ItemBook implements Property {
 
     public static boolean describes(dObject item) {
         Material material = ((dItem) item).getItemStack().getType();
-        // TODO: 1.13 - better method?
-        return (material == Material.WRITTEN_BOOK || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? material == Material.WRITABLE_BOOK
-                : material == Material.valueOf("BOOK_AND_QUILL")));
+        return (material == Material.WRITTEN_BOOK || material == MaterialCompat.WRITABLE_BOOK);
     }
 
     public static ItemBook getFrom(dObject _item) {

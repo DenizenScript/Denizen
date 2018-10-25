@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -919,25 +920,13 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
                             material = dMaterial.valueOf(data1).getMaterial();
 
-                            // TODO: 1.13
-                            Material netherPortal;
-                            Material endPortal;
-                            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                                netherPortal = Material.NETHER_PORTAL;
-                                endPortal = Material.END_PORTAL;
-                            }
-                            else {
-                                netherPortal = Material.valueOf("PORTAL");
-                                endPortal = Material.valueOf("ENDER_PORTAL");
-                            }
-
                             // If we did not get a block with "RANDOM", or we got
                             // air or portals, keep trying
                             while (data1.equalsIgnoreCase("RANDOM") &&
                                     ((!material.isBlock()) ||
                                             material == Material.AIR ||
-                                            material == netherPortal ||
-                                            material == endPortal)) {
+                                            material == MaterialCompat.NETHER_PORTAL ||
+                                            material == MaterialCompat.END_PORTAL)) {
 
                                 material = dMaterial.valueOf(data1).getMaterial();
                             }

@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.utilities.packets;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +12,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +31,6 @@ public class ItemChangeMessage implements Listener {
         // If the player is holding air, force a light gray stained glass pane,
         // which is probably the least intrusive
         if (item == null || item.getType() == Material.AIR) {
-            // TODO: better method?
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-            }
-            else {
-                item = new MaterialData(Material.valueOf("STAINED_GLASS_PANE"), DyeColor.GRAY.getDyeData()).toItemStack();
-            }
         }
         else {
             item = item.clone();
