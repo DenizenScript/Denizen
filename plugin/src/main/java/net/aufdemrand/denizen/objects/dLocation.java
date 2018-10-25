@@ -759,11 +759,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns the flower pot contents at the location.
+        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
         // -->
-        if (attribute.startsWith("flowerpot_contents") && getBlock().getType() == Material.FLOWER_POT) {
-            MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
-            return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("flowerpot_contents")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+            }
+            else if (getBlock().getType() == Material.FLOWER_POT) {
+                MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
+                return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            return null;
         }
 
 
@@ -2267,13 +2274,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @input dMaterial
         // @description
         // Sets the contents of a flower pot.
+        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
         // NOTE: Flowerpot contents will not update client-side until players refresh the chunk.
         // Refresh a chunk manually with mechanism: refresh_chunk_sections for dChunk objects
         // @tags
         // <l@location.flowerpot_contents>
         // -->
         if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(dMaterial.class)) {
-            if (getBlock().getType() == Material.FLOWER_POT) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+            }
+            else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = value.asType(dMaterial.class).getMaterialData();
                 NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
             }

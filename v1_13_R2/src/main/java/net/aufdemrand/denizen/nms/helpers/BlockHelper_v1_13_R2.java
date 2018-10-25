@@ -18,7 +18,6 @@ import net.minecraft.server.v1_13_R2.TileEntity;
 import net.minecraft.server.v1_13_R2.TileEntitySkull;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.FlowerPot;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockState;
@@ -57,14 +56,12 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
 
     @Override
     public MaterialData getFlowerpotContents(Block block) {
-        return ((FlowerPot) block.getState()).getContents();
+        throw new UnsupportedOperationException("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
     }
 
     @Override
     public void setFlowerpotContents(Block block, MaterialData data) {
-        FlowerPot flowerPot = (FlowerPot) block.getState();
-        flowerPot.setContents(data);
-        flowerPot.update();
+        throw new UnsupportedOperationException("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
     }
 
     @Override
