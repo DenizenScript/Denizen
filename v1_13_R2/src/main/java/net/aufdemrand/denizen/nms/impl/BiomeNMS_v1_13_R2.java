@@ -97,7 +97,7 @@ public class BiomeNMS_v1_13_R2 extends BiomeNMS {
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
             // TODO: check if this works
             try {
-                String n = EntityTypes.getName(meta.b).b();
+                String n = EntityTypes.getName(meta.b).getKey();
                 EntityType et = EntityType.fromName(n);
                 if (et == null) {
                     et = EntityType.valueOf(n.toUpperCase(Locale.ENGLISH));
