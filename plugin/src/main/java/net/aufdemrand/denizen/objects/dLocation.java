@@ -2236,7 +2236,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("skull_skin")) {
             final BlockState blockState = getBlock().getState();
-            if (blockState instanceof Skull) {
+            Material material = getBlock().getType();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                    && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
+                dB.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
+            }
+            else if (blockState instanceof Skull) {
                 dList list = mechanism.getValue().asType(dList.class);
                 String idString = list.get(0);
                 String texture = null;

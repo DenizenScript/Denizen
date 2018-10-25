@@ -79,12 +79,6 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
                     new Property("textures", playerProfile.getTexture(), playerProfile.getTextureSignature()));
         }
         TileEntitySkull tileEntity = getTE((CraftSkull) skull);
-        net.minecraft.server.v1_13_R2.Block block = tileEntity.getBlock().getBlock();
-        if (block != Blocks.PLAYER_HEAD && block != Blocks.PLAYER_WALL_HEAD) {
-            // TODO: 1.13 - force block change?
-            //tileEntity.setSkullType(SkullType.PLAYER.ordinal());
-            return;
-        }
         tileEntity.setGameProfile(gameProfile);
         skull.getBlock().getState().update();
     }
