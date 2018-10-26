@@ -12,9 +12,12 @@ import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.minecraft.server.v1_10_R1.GameProfileSerializer;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,5 +151,10 @@ public class ItemHelper_v1_10_R1 implements ItemHelper {
             }
         }
         return addNbtData(itemStack, "AttributeModifiers", new ListTag(CompoundTag.class, modifierList));
+    }
+
+    @Override
+    public PotionEffect getPotionEffect(PotionEffectType type, int duration, int amplifier, boolean ambient, boolean particles, Color color, boolean icon) {
+        return new PotionEffect(type, duration, amplifier, ambient, particles, color);
     }
 }
