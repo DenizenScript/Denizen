@@ -439,7 +439,17 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(colors.length()));
+        }
+        return ret;
+    }
+
+    private final static String colorsLimited = "0123456789abcdefklmnor";
+
+    public static String generateRandomColorsWithDots(int count) {
+        String ret = "";
+        for (int i = 0; i < count; i++) {
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colorsLimited.charAt(CoreUtilities.getRandom().nextInt(colorsLimited.length())) + ".";
         }
         return ret;
     }
