@@ -1724,7 +1724,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (to:<inventory>) (slot:<#>)
+        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
@@ -1737,6 +1737,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Specifying a slot will give the player the item to that slot.
         // If an item is already in that slot, the item will not be given
         // unless they are exactly the same items, then it will stack.
+        // Specifying "unlimit_stack_size" will allow an item to stack up to 64. This is useful for stacking items
+        // with a max stack size that is less than 64 (for example, most weapon and armor items have a stack size
+        // of 1).
         // If an economy is registered, specifying money instead of a item will give money to the player's economy.
         // TODO: Document Command Details
         //
@@ -1760,7 +1763,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - give WATCH slot:5
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (to:<inventory>) (slot:<#>)", 1);
+                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)", 1);
 
 
         // <--[command]
