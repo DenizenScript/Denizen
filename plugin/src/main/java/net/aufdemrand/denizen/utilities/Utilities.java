@@ -444,7 +444,7 @@ public class Utilities {
         return ret;
     }
 
-    private final static String colorsLimited = "0123456789abcdefklmnor";
+    private final static String colorsLimited = "0123456789abcdef";
 
     public static String generateRandomColorsWithDots(int count) {
         String ret = "";
