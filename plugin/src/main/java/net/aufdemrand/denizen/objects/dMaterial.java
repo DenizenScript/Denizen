@@ -87,37 +87,6 @@ public class dMaterial implements dObject, Adjustable {
         CYAN_BED, PURPLE_BED, BLUE_BED, BROWN_BED, GREEN_BED, RED_BED, BLACK_BED
     }
 
-    private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID;
-
-    static {
-        MATERIAL_BY_LEGACY_ID = new HashMap<Integer, Material>();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
-            for (Material material : map.values()) {
-                if (material.isLegacy()) {
-                    MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
-                }
-            }
-        }
-        else {
-            for (Material material : Material.values()) {
-                MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
-            }
-        }
-    }
-
-    @Deprecated
-    public static Material getLegacyMaterial(int id) {
-        return MATERIAL_BY_LEGACY_ID.get(id);
-    }
-
-    public static dMaterial getMaterialPre1_13(String material, int data, String name) {
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
-            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
-        }
-        return null;
-    }
-
     // Colored Wool
     public final static dMaterial WHITE_WOOL = getMaterialPre1_13("WOOL", 0, "WHITE_WOOL");
     public final static dMaterial ORANGE_WOOL = getMaterialPre1_13("WOOL", 1, "ORANGE_WOOL");
@@ -399,7 +368,6 @@ public class dMaterial implements dObject, Adjustable {
     public final static dMaterial CREEPER_SKULL = getMaterialPre1_13("SKULL_ITEM", 4, "CREEPER_SKULL");
 
     // Monster Eggs
-    // TODO: I will add rest of eggs (I needed this one quick for a project)
     public final static dMaterial SKELETON_EGG = getMaterialPre1_13("MONSTER_EGG", 51, "SKELETON_EGG");
 
     // Fish
@@ -446,13 +414,7 @@ public class dMaterial implements dObject, Adjustable {
     public final static dMaterial RED_BED = getMaterialPre1_13("BED", 14, "RED_BED");
     public final static dMaterial BLACK_BED = getMaterialPre1_13("BED", 15, "BLACK_BED");
 
-    // Version checks for version-specific materials
-    public static dMaterial getMaterial1_12(String material, int data, String name) {
-        if (NMSHandler.getVersion() == NMSVersion.v1_12_R1) {
-            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
-        }
-        return null;
-    }
+    // -- Version Specific --
 
     // Concrete
     public final static dMaterial WHITE_CONCRETE = getMaterial1_12("CONCRETE", 0, "WHITE_CONCRETE");
@@ -489,6 +451,45 @@ public class dMaterial implements dObject, Adjustable {
     public final static dMaterial GREEN_CONCRETE_POWDER = getMaterial1_12("CONCRETE_POWDER", 13, "GREEN_CONCRETE_POWDER");
     public final static dMaterial RED_CONCRETE_POWDER = getMaterial1_12("CONCRETE_POWDER", 14, "RED_CONCRETE_POWDER");
     public final static dMaterial BLACK_CONCRETE_POWDER = getMaterial1_12("CONCRETE_POWDER", 15, "BLACK_CONCRETE_POWDER");
+
+    // Version checks for version-specific materials
+    public static dMaterial getMaterial1_12(String material, int data, String name) {
+        if (NMSHandler.getVersion() == NMSVersion.v1_12_R1) {
+            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
+        }
+        return null;
+    }
+
+    private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID;
+
+    static {
+        MATERIAL_BY_LEGACY_ID = new HashMap<Integer, Material>();
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
+            for (Material material : map.values()) {
+                if (material.isLegacy()) {
+                    MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
+                }
+            }
+        }
+        else {
+            for (Material material : Material.values()) {
+                MATERIAL_BY_LEGACY_ID.put(material.getId(), material);
+            }
+        }
+    }
+
+    @Deprecated
+    public static Material getLegacyMaterial(int id) {
+        return MATERIAL_BY_LEGACY_ID.get(id);
+    }
+
+    public static dMaterial getMaterialPre1_13(String material, int data, String name) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+            return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
+        }
+        return null;
+    }
 
     // TODO: The following would be walls of useless materials, make properties for these instead of custom mats
     // Step rotations [rotation=(north/west/south/east)(up/down)] for each of the step blocks
