@@ -12,4 +12,6 @@ public interface AdvancementHelper {
     void grant(Advancement advancement, Player player);
 
     void revoke(Advancement advancement, Player player);
+
+    void update(Player player);
 }

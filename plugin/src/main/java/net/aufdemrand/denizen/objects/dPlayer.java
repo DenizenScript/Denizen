@@ -3102,6 +3102,17 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name update_advancements
+        // @input None
+        // @description
+        // Updates the player's client-side advancements to match their server data.
+        // -->
+        if (mechanism.matches("update_advancements") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            NMSHandler.getInstance().getAdvancementHelper().update(getPlayerEntity());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name name
         // @input Element
         // @description

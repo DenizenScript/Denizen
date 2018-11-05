@@ -104,6 +104,19 @@ public class AdvancementHelper_v1_12_R1 implements AdvancementHelper {
         }
     }
 
+    @Override
+    public void update(Player player) {
+        EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        nmsPlayer.playerConnection.sendPacket(new PacketPlayOutAdvancements(true,
+                Collections.emptySet(),
+                Collections.emptySet(),
+                Collections.emptyMap()));
+        AdvancementDataPlayer data = nmsPlayer.getAdvancementData();
+        data.c(); // save progress
+        data.b(); // clear progress
+        data.b(nmsPlayer); // load progress and update client
+    }
+
     private static Advancement asNMSCopy(net.aufdemrand.denizen.nms.util.Advancement advancement) {
         MinecraftKey key = asMinecraftKey(advancement.key);
         Advancement parent = advancement.parent != null
