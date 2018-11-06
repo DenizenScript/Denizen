@@ -144,7 +144,8 @@ public class EntityFramed implements Property {
         // @input dItem(|Element)
         // @description
         // Sets the entity's framed item and optionally the rotation as well.
-        // Valid rotations: NONE, CLOCKWISE, FLIPPED, COUNTER_CLOCKWISE
+        // Valid rotations: NONE, CLOCKWISE_45, CLOCKWISE, CLOCKWISE_135,
+        // FLIPPED, FLIPPED_45, COUNTER_CLOCKWISE, COUNTER_CLOCKWISE_45
         // For example: framed:i@diamond_sword|clockwise
         // @tags
         // <e@entity.is_frame>
