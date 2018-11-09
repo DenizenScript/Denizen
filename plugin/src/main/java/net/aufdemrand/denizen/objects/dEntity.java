@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
@@ -2843,17 +2844,25 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object dEntity
         // @name attach_to
-        // @input dEntity
+        // @input dEntity(|dLocation)
         // @description
         // Attaches this entity's client-visible motion to another entity.
+        // Optionally, specify an offset vector as well.
+        // Note that because this is client-visible motion, it does not take effect server-side. You may wish to occasionally teleport the entity to its attachment.
+        // Tracking may be a bit off with a large (8 blocks is large in this context) offset on a rotating entity.
         // Run with no value to disable attachment.
         // -->
         if (mechanism.matches("attach_to")) {
             if (mechanism.hasValue()) {
-                NMSHandler.getInstance().forceAttachMove(entity, mechanism.getValue().asType(dEntity.class).getBukkitEntity());
+                dList list = mechanism.getValue().asType(dList.class);
+                Vector offset = null;
+                if (list.size() > 1) {
+                    offset = dLocation.valueOf(list.get(1)).toVector();
+                }
+                NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset);
             }
             else {
-                NMSHandler.getInstance().forceAttachMove(entity, null);
+                NMSHandler.getInstance().forceAttachMove(entity, null, null);
             }
         }
 
