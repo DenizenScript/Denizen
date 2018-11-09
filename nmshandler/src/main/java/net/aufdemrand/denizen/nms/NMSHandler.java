@@ -116,7 +116,28 @@ public abstract class NMSHandler {
 
     public abstract int getPort();
 
-    public void forceAttachMove(Entity a, Entity b, Vector offset) {
+    public static Vector fixOffset(Vector offset, double yaw, double pitch) {
+        yaw = Math.toRadians(yaw);
+        pitch = Math.toRadians(pitch);
+        Vector offsetPatched = offset.clone();
+        // x rotation
+        double cosPitch = Math.cos(pitch);
+        double sinPitch = Math.sin(pitch);
+        double y1 = (offsetPatched.getY() * cosPitch) - (offsetPatched.getZ() * sinPitch);
+        double z1 = (offsetPatched.getY() * sinPitch) + (offsetPatched.getZ() * cosPitch);
+        offsetPatched.setY(y1);
+        offsetPatched.setZ(z1);
+        // y rotation
+        double cosYaw = Math.cos(yaw);
+        double sinYaw = Math.sin(yaw);
+        double x2 = (offsetPatched.getX() * cosYaw) + (offsetPatched.getZ() * sinYaw);
+        double z2 = (offsetPatched.getX() * -sinYaw) + (offsetPatched.getZ() * cosYaw);
+        offsetPatched.setX(x2);
+        offsetPatched.setZ(z2);
+        return offsetPatched;
+    }
+
+    public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
         throw new RuntimeException("Unsupported forceAttachMove!");
     }
 }

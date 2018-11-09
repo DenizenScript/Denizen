@@ -2844,10 +2844,11 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object dEntity
         // @name attach_to
-        // @input dEntity(|dLocation)
+        // @input dEntity(|dLocation(|Element(Boolean)))
         // @description
         // Attaches this entity's client-visible motion to another entity.
         // Optionally, specify an offset vector as well.
+        // Optionally specify a boolean indicating whether offset should match the target entity's rotation (defaults to true).
         // Note that because this is client-visible motion, it does not take effect server-side. You may wish to occasionally teleport the entity to its attachment.
         // Tracking may be a bit off with a large (8 blocks is large in this context) offset on a rotating entity.
         // Run with no value to disable attachment.
@@ -2856,13 +2857,17 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             if (mechanism.hasValue()) {
                 dList list = mechanism.getValue().asType(dList.class);
                 Vector offset = null;
+                boolean rotateWith = true;
                 if (list.size() > 1) {
                     offset = dLocation.valueOf(list.get(1)).toVector();
+                    if (list.size() > 2) {
+                        rotateWith = new Element(list.get(2)).asBoolean();
+                    }
                 }
-                NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset);
+                NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
             }
             else {
-                NMSHandler.getInstance().forceAttachMove(entity, null, null);
+                NMSHandler.getInstance().forceAttachMove(entity, null, null, false);
             }
         }
 
