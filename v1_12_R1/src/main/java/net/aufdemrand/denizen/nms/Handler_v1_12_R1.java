@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -226,7 +227,7 @@ public class Handler_v1_12_R1 extends NMSHandler {
     public HashMap<UUID, UUID> attachmentsA = new HashMap<UUID, UUID>(); // Key follows value
     public HashMap<UUID, UUID> attachments2 = new HashMap<UUID, UUID>(); // Value follows key
     public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
-    public HashMap<UUID, Vector> attachmentRotations = new HashMap<>();
+    public HashSet<UUID> attachmentRotations = new HashSet<>();
     public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
 
     @Override
@@ -244,7 +245,7 @@ public class Handler_v1_12_R1 extends NMSHandler {
         attachments2.put(b.getUniqueId(), a.getUniqueId());
         attachmentOffsets.put(a.getUniqueId(), offset);
         if (matchRotation) {
-            attachmentRotations.put(a.getUniqueId(), new Vector((((CraftEntity) b).getHandle()).pitch, (((CraftEntity) b).getHandle()).yaw, 0));
+            attachmentRotations.add(a.getUniqueId());
         }
     }
 }

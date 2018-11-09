@@ -157,13 +157,13 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                             ENTITY_ID_PACKENT.setInt(pNew, target.getEntityId());
                             Vector offset = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentOffsets.get(att);
                             if (offset != null && (packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMove || packet instanceof PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook)) {
-                                Vector rotationBasis = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentRotations.get(att);
+                                boolean rotationBasis = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentRotations.contains(att);
                                 Vector goalPosition;
-                                if (rotationBasis == null) {
+                                if (!rotationBasis) {
                                     goalPosition = new Vector(e.locX, e.locY, e.locZ).add(offset);
                                 }
                                 else {
-                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, rotationBasis.getY() - e.yaw, rotationBasis.getX() - e.pitch));
+                                    goalPosition = new Vector(e.locX, e.locY, e.locZ).add(NMSHandler.fixOffset(offset, -e.yaw, e.pitch));
                                 }
                                 Vector oldPos = ((Handler_v1_13_R2) NMSHandler.getInstance()).visiblePositions.get(target.getUniqueId());
                                 if (oldPos == null) {
@@ -246,13 +246,13 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
                             Vector offset = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentOffsets.get(att);
                             Vector resultPos = new Vector(POS_X_PACKTELENT.getDouble(pNew), POS_Y_PACKTELENT.getDouble(pNew), POS_Z_PACKTELENT.getDouble(pNew));
                             if (offset != null) {
-                                Vector rotationBasis = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentRotations.get(att);
+                                boolean rotationBasis = ((Handler_v1_13_R2) NMSHandler.getInstance()).attachmentRotations.contains(att);
                                 Vector goalOffset;
-                                if (rotationBasis == null) {
+                                if (!rotationBasis) {
                                     goalOffset = offset;
                                 }
                                 else {
-                                    goalOffset = NMSHandler.fixOffset(offset, rotationBasis.getY() - e.yaw, rotationBasis.getX() - e.pitch);
+                                    goalOffset = NMSHandler.fixOffset(offset, -e.yaw, e.pitch);
                                 }
                                 POS_X_PACKTELENT.setDouble(pNew, POS_X_PACKTELENT.getDouble(pNew) + goalOffset.getX());
                                 POS_Y_PACKTELENT.setDouble(pNew, POS_Y_PACKTELENT.getDouble(pNew) + goalOffset.getY());
