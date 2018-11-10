@@ -391,6 +391,21 @@ public class dWorld implements dObject, Adjustable {
             }
         });
 
+        // <-- [tag]
+        // @attribute <w@world.world_type>
+        // @returns Element
+        // @description
+        // Returns the world type of the world.
+        // Can return any enum from: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
+        // -->
+        registerTag("world_type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(((dWorld) object).getWorld().getWorldType().getName())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
 
         /////////////////////
         //   IDENTIFICATION ATTRIBUTES
