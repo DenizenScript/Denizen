@@ -62,7 +62,7 @@ public class ItemPotion implements Property {
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
                 + "," + meta.getBasePotionData().isExtended()
-                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify().replace(",", "&comma") : "")
         );
         for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
@@ -329,7 +329,7 @@ public class ItemPotion implements Property {
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
             if (d1.length > 3) {
                 if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                    meta.setColor(dColor.valueOf(d1[3]).getColor());
+                    meta.setColor(dColor.valueOf(d1[3].replace("&comma", ",")).getColor());
                 }
                 else {
                     dB.echoError("Potion effect color is not supported before Minecraft version 1.11.");
