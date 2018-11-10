@@ -15,6 +15,10 @@ import java.util.List;
 
 public interface PacketHelper {
 
+    void resetWorldBorder(Player player);
+
+    void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime);
+
     void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly);
 
     void setFieldOfView(Player player, float fov);

@@ -4410,7 +4410,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name WorldBorder
-        // @Syntax worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
+        // @Syntax worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (curr_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
         // @Required 2
         // @Stable stable
         // @Short Modifies a world border.
@@ -4418,7 +4418,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // Modifies the world border of a specified world.
+        // Modifies the world border of a specified world or a list of players.
         // Optionally, you can specify a duration with the size to change
         // the size over the course of the duration.
         //
@@ -4438,9 +4438,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to update a world border's center, and then the size over the course of 10 seconds.
         // - worldborder <def[world]> center:<def[world].spawn_location> size:100 duration:10s
+        //
+        // @Usage
+        // Use to show a client-side world border to the attached player.
+        // - worldborder <player> center:<player.location> size:10
         // -->
         registerCoreMember(WorldBorderCommand.class,
-                "WORLDBORDER", "worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>)", 2);
+                "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (curr_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
 
 
         // <--[command]
