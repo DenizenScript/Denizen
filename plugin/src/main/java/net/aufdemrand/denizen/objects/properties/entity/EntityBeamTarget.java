@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.Location;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.EntityType;
 
@@ -68,9 +69,9 @@ public class EntityBeamTarget implements Property {
         // Returns the target location of the ender crystal's beam, if any.
         // -->
         if (attribute.startsWith("beam_target")) {
-            if (((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget() != null) {
-                return new dLocation(((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget())
-                        .getAttribute(attribute.fulfill(1));
+            Location beamTarget = ((EnderCrystal) dentity.getBukkitEntity()).getBeamTarget();
+            if (beamTarget != null) {
+                return new dLocation(beamTarget).getAttribute(attribute.fulfill(1));
             }
         }
 
