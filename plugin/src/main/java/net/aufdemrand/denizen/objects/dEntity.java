@@ -3243,7 +3243,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object dEntity
         // @name no_damage_duration
-        // @input Element(Boolean)
+        // @input Duration
         // @description
         // Sets the duration in which the entity will take no damage.
         // @tags
@@ -3257,7 +3257,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[mechanism]
         // @object dEntity
         // @name max_no_damage_duration
-        // @input Element(Boolean)
+        // @input Duration
         // @description
         // Sets the maximum duration in which the entity will take no damage.
         // @tags

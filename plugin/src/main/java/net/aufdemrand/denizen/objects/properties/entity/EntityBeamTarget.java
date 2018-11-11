@@ -83,7 +83,7 @@ public class EntityBeamTarget implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name beam_target
-        // @input Element(Boolean)
+        // @input dLocation
         // @description
         // Sets a new target location for the ender crystal's beam.
         // Provide no input to remove the beam.

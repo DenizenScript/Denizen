@@ -34,10 +34,6 @@ public class EntitySpell implements Property {
 
     dEntity dentity;
 
-    public void setSpell(Spellcaster.Spell spell) {
-        ((Spellcaster) dentity.getBukkitEntity()).setSpell(spell);
-    }
-
     /////////
     // Property Methods
     ///////
@@ -86,15 +82,15 @@ public class EntitySpell implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name spell
-        // @input Element(Boolean)
+        // @input Element
         // @description
-        // Sets the spell the entity should cast.
+        // Sets the spell the entity should cast. Valid spells are: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Spellcaster.Spell.html>
         // @tags
         // <e@entity.spell>
         // -->
 
         if (mechanism.matches("spell") && mechanism.requireEnum(false, Spellcaster.Spell.values())) {
-            setSpell(Spellcaster.Spell.valueOf(mechanism.getValue().asString().toUpperCase()));
+            ((Spellcaster) dentity.getBukkitEntity()).setSpell(Spellcaster.Spell.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
     }
 }
