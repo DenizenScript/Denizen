@@ -2,6 +2,8 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenAliasHelpTopic;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
@@ -17,6 +19,7 @@ import org.bukkit.help.HelpTopic;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -86,6 +89,24 @@ public class CommandScriptHelper implements Listener {
             dB.echoError("Command scripts will not function!");
             //dB.echoError(e);
             hasCommandInformation = false;
+        }
+    }
+
+    /**
+     * In 1.13+, commands are also sent to players client-side via packets.
+     * We need to sync them for tab completion to work.
+     */
+    public static void syncDenizenCommands() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            try {
+                final Server server = DenizenAPI.getCurrentInstance().getServer();
+                final Method syncMethod = server.getClass().getDeclaredMethod("syncCommands");
+                syncMethod.setAccessible(true);
+                syncMethod.invoke(server);
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to synchronize server commands.");
+            }
         }
     }
 
