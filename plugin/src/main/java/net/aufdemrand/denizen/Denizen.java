@@ -902,6 +902,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 try {
                     DenizenCore.loadScripts();
 
+                    // Synchronize any script commands added while loading scripts.
+                    CommandScriptHelper.syncDenizenCommands();
+
                     // Load the saves.yml into memory
                     reloadSaves();
 

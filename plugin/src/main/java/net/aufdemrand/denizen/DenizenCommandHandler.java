@@ -3,6 +3,7 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.scripts.containers.core.CommandScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptVersionChecker;
@@ -319,6 +320,7 @@ public class DenizenCommandHandler {
             DenizenCore.reloadScripts();
             denizen.notableManager().reloadNotables();
             denizen.reloadSaves();
+            CommandScriptHelper.syncDenizenCommands();
             Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
@@ -351,6 +353,7 @@ public class DenizenCommandHandler {
             }
             else if (args.getString(1).equalsIgnoreCase("scripts")) {
                 DenizenCore.reloadScripts();
+                CommandScriptHelper.syncDenizenCommands();
                 Messaging.send(sender, "Denizen/scripts/... reloaded from disk to memory.");
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
