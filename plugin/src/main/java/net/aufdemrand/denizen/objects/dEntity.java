@@ -3232,6 +3232,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @input Element(Boolean)
         // @description
         // Sets whether the entity is collidable.
+        // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
         // @tags
         // <e@entity.is_collidable>
         // -->
