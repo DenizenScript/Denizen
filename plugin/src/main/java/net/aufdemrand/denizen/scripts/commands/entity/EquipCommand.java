@@ -103,8 +103,10 @@ public class EquipCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
-                aH.debugObj("equipment", equipment.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
+                    aH.debugObj("equipment", equipment.toString()));
+        }
 
         for (dEntity entity : entities) {
 

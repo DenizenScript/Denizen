@@ -55,8 +55,12 @@ public class LightCommand extends AbstractCommand {
         Element reset = scriptEntry.getElement("reset");
         Duration duration = scriptEntry.getdObject("duration");
 
-        dB.report(scriptEntry, getName(), location.debug() + reset.debug()
-                + (light != null ? light.debug() : "") + (duration != null ? duration.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), location.debug() + reset.debug()
+                    + (light != null ? light.debug() : "") + (duration != null ? duration.debug() : ""));
+
+        }
 
         if (location.getY() < 0 || location.getY() > 255) {
             dB.echoError(scriptEntry.getResidingQueue(), "Invalid light location!");

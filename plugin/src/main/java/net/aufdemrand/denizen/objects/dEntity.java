@@ -10,7 +10,9 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -40,7 +42,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class dEntity implements dObject, Adjustable {
+public class dEntity implements dObject, Adjustable, EntityFormObject {
 
 
     /////////////////////
@@ -114,6 +116,20 @@ public class dEntity implements dObject, Adjustable {
     //    OBJECT FETCHER
     ////////////////
 
+    public static dEntity getEntityFor(dObject object, TagContext context) {
+        if (object instanceof dEntity) {
+            return (dEntity) object;
+        }
+        else if (object instanceof dPlayer && ((dPlayer) object).isOnline()) {
+            return new dEntity(((dPlayer) object).getPlayerEntity());
+        }
+        else if (object instanceof dNPC) {
+            return new dEntity((dNPC) object);
+        }
+        else {
+            return valueOf(object.toString(), context);
+        }
+    }
 
     public static dEntity valueOf(String string) {
         return valueOf(string, null);
@@ -506,6 +522,11 @@ public class dEntity implements dObject, Adjustable {
         return baseID.substring(0, 2) + "." + baseID;
     }
 
+    @Override
+    public dEntity getDenizenEntity() {
+        return this;
+    }
+
     /**
      * Get the dObject that most accurately describes this entity,
      * useful for automatically saving dEntities to contexts as
@@ -514,7 +535,7 @@ public class dEntity implements dObject, Adjustable {
      * @return The dObject
      */
 
-    public dObject getDenizenObject() {
+    public EntityFormObject getDenizenObject() {
 
         if (entity == null && npc == null) {
             return null;
@@ -842,7 +863,6 @@ public class dEntity implements dObject, Adjustable {
 
     public void spawnAt(Location location) {
         // If the entity is already spawned, teleport it.
-
         if (isCitizensNPC()) {
             if (getDenizenNPC().getCitizen().isSpawned()) {
                 getDenizenNPC().getCitizen().teleport(location, TeleportCause.PLUGIN);
@@ -855,6 +875,9 @@ public class dEntity implements dObject, Adjustable {
         }
         else if (entity != null && isUnique()) {
             entity.teleport(location);
+            if (entity.getWorld().equals(location.getWorld())) { // Force the teleport through (for things like mounts)
+                NMSHandler.getInstance().getEntityHelper().teleport(entity, location.toVector());
+            }
         }
         else {
             if (entity_type != null) {
@@ -903,8 +926,8 @@ public class dEntity implements dObject, Adjustable {
                             while (data1.equalsIgnoreCase("RANDOM") &&
                                     ((!material.isBlock()) ||
                                             material == Material.AIR ||
-                                            material == Material.PORTAL ||
-                                            material == Material.ENDER_PORTAL)) {
+                                            material == MaterialCompat.NETHER_PORTAL ||
+                                            material == MaterialCompat.END_PORTAL)) {
 
                                 material = dMaterial.valueOf(data1).getMaterial();
                             }
@@ -2821,17 +2844,30 @@ public class dEntity implements dObject, Adjustable {
         // <--[mechanism]
         // @object dEntity
         // @name attach_to
-        // @input dEntity
+        // @input dEntity(|dLocation(|Element(Boolean)))
         // @description
         // Attaches this entity's client-visible motion to another entity.
+        // Optionally, specify an offset vector as well.
+        // Optionally specify a boolean indicating whether offset should match the target entity's rotation (defaults to true).
+        // Note that because this is client-visible motion, it does not take effect server-side. You may wish to occasionally teleport the entity to its attachment.
+        // Tracking may be a bit off with a large (8 blocks is large in this context) offset on a rotating entity.
         // Run with no value to disable attachment.
         // -->
         if (mechanism.matches("attach_to")) {
             if (mechanism.hasValue()) {
-                NMSHandler.getInstance().forceAttachMove(entity, mechanism.getValue().asType(dEntity.class).getBukkitEntity());
+                dList list = mechanism.getValue().asType(dList.class);
+                Vector offset = null;
+                boolean rotateWith = true;
+                if (list.size() > 1) {
+                    offset = dLocation.valueOf(list.get(1)).toVector();
+                    if (list.size() > 2) {
+                        rotateWith = new Element(list.get(2)).asBoolean();
+                    }
+                }
+                NMSHandler.getInstance().forceAttachMove(entity, dEntity.valueOf(list.get(0)).getBukkitEntity(), offset, rotateWith);
             }
             else {
-                NMSHandler.getInstance().forceAttachMove(entity, null);
+                NMSHandler.getInstance().forceAttachMove(entity, null, null, false);
             }
         }
 

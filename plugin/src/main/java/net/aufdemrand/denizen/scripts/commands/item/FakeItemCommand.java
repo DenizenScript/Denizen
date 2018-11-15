@@ -81,8 +81,12 @@ public class FakeItemCommand extends AbstractCommand {
         final List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
         final Element player_only = scriptEntry.getElement("player_only");
 
-        dB.report(scriptEntry, getName(), aH.debugList("items", items) + elSlot.debug() + duration.debug()
-                + aH.debugList("players", players) + player_only.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugList("items", items) + elSlot.debug() + duration.debug()
+                    + aH.debugList("players", players) + player_only.debug());
+
+        }
 
         int slot = elSlot.asInt() - 1;
         final boolean playerOnly = player_only.asBoolean();

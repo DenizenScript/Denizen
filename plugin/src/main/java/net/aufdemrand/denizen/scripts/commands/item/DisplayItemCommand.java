@@ -60,10 +60,14 @@ public class DisplayItemCommand extends AbstractCommand {
         Duration duration = (Duration) scriptEntry.getObject("duration");
         dLocation location = (dLocation) scriptEntry.getObject("location");
 
-        dB.report(scriptEntry, getName(),
-                item.debug()
-                        + duration.debug()
-                        + location.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    item.debug()
+                            + duration.debug()
+                            + location.debug());
+
+        }
 
         // Drop the item
         final Item dropped = location.getWorld()

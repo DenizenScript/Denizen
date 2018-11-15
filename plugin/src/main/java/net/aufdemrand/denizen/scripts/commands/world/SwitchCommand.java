@@ -2,8 +2,11 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -19,7 +22,9 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -68,9 +73,11 @@ public class SwitchCommand extends AbstractCommand {
 
         final Player player = ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity() : null;
         // Switch the Block
-        dB.report(scriptEntry, getName(), interactLocations.debug()
-                + aH.debugObj("duration", duration + "t")
-                + aH.debugObj("switchstate", switchState.name()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), interactLocations.debug()
+                    + aH.debugObj("duration", duration + "t")
+                    + aH.debugObj("switchstate", switchState.name()));
+        }
 
         for (final dLocation interactLocation : interactLocations.filter(dLocation.class)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
@@ -98,10 +105,49 @@ public class SwitchCommand extends AbstractCommand {
 
     }
 
+    public static boolean switchState(Block b) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (b.getBlockData() instanceof Openable) {
+                return ((Openable) b.getBlockData()).isOpen();
+            }
+            else if (b.getBlockData() instanceof Powerable) {
+                return ((Powerable) b.getBlockData()).isPowered(); // TODO: is this valid for levers?
+            }
+        }
+        //return (b.getData() & 0x8) > 0;
+        Material type = b.getType();
+        if (type == MaterialCompat.IRON_DOOR
+                || type == MaterialCompat.OAK_DOOR
+                || type == Material.DARK_OAK_DOOR
+                || type == Material.BIRCH_DOOR
+                || type == Material.ACACIA_DOOR
+                || type == Material.JUNGLE_DOOR
+                || type == Material.SPRUCE_DOOR) {
+            Location location = b.getLocation();
+            int data = b.getData();
+            if (data >= 8) {
+                location = b.getLocation().clone().add(0, -1, 0);
+            }
+            return (location.getBlock().getData() & 0x4) > 0;
+        }
+        else if ((type == MaterialCompat.OAK_TRAPDOOR
+                || type == Material.IRON_TRAPDOOR)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                && (type == Material.DARK_OAK_TRAPDOOR
+                || type == Material.BIRCH_TRAPDOOR
+                || type == Material.ACACIA_TRAPDOOR
+                || type == Material.JUNGLE_TRAPDOOR
+                || type == Material.SPRUCE_TRAPDOOR))) {
+            return (b.getData() & 0x4) > 0;
+        }
+        else {
+            return (b.getData() & 0x8) > 0;
+        }
+    }
+
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, Player player) {
-        World world = interactLocation.getWorld();
-        boolean currentState = (interactLocation.getBlock().getData() & 0x8) > 0;
+        boolean currentState = switchState(interactLocation.getBlock());
         String state = switchState.toString();
 
         // Try for a linked player
@@ -126,28 +172,40 @@ public class SwitchCommand extends AbstractCommand {
                 (state.equals("OFF") && currentState) ||
                 state.equals("TOGGLE")) {
 
-            try {
-                if (interactLocation.getBlock().getType() == Material.IRON_DOOR_BLOCK) {
-                    Location block;
-                    if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == Material.IRON_DOOR_BLOCK) {
-                        block = interactLocation.clone().add(0, -1, 0);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                if (interactLocation.getBlock().getBlockData() instanceof Openable) {
+                    ((Openable) interactLocation.getBlock().getBlockData()).setOpen(!currentState);
+                }
+                if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
+                    ((Powerable) interactLocation.getBlock().getBlockData()).setPowered(!currentState);
+                }
+            }
+            else {
+                try {
+                    if (interactLocation.getBlock().getType() == MaterialCompat.IRON_DOOR) {
+                        Location block;
+                        if (interactLocation.clone().add(0, -1, 0).getBlock().getType() == MaterialCompat.IRON_DOOR) {
+                            block = interactLocation.clone().add(0, -1, 0);
+                        }
+                        else {
+                            block = interactLocation;
+                        }
+                        BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(MaterialCompat.IRON_DOOR, (byte) (block.getBlock().getData() ^ 4));
+                        blockData.setBlock(block.getBlock(), false);
                     }
                     else {
-                        block = interactLocation;
+                        NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);
                     }
-                    block.getBlock().setData((byte) (block.getBlock().getData() ^ 4));
-                }
-                else {
-                    NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);
-                }
 
-                dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
-                        ((interactLocation.getBlock().getData() & 0x8) > 0 ? "ON" : "OFF"));
+                }
+                catch (NullPointerException e) {
+                    dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
+                    return;
+                }
+            }
 
-            }
-            catch (NullPointerException e) {
-                dB.echoError("Cannot switch " + interactLocation.getBlock().getType().toString() + "!");
-            }
+            dB.echoDebug(scriptEntry, "Switched " + interactLocation.getBlock().getType().toString() + "! Current state now: " +
+                    (switchState(interactLocation.getBlock()) ? "ON" : "OFF"));
         }
     }
 }

@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -99,11 +100,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         Material changedType = event.getChangedType();
-        if (changedType == Material.REDSTONE_WIRE
-                || changedType == Material.DIODE_BLOCK_OFF
-                || changedType == Material.DIODE_BLOCK_ON
-                || changedType == Material.REDSTONE_COMPARATOR_OFF
-                || changedType == Material.REDSTONE_COMPARATOR_ON) {
+        if (changedType == Material.REDSTONE_WIRE || MaterialCompat.isComparator(changedType)
+                || MaterialCompat.isRepeater(changedType)) {
             return;
         }
         location = new dLocation(event.getBlock().getLocation());

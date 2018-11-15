@@ -94,10 +94,12 @@ public class ExecuteCommand extends AbstractCommand {
         Element silent = scriptEntry.getElement("silent");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                type.debug()
-                        + cmd.debug()
-                        + silent.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    type.debug()
+                            + cmd.debug()
+                            + silent.debug());
+        }
 
         String command = cmd.asString();
 

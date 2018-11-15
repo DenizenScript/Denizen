@@ -122,15 +122,19 @@ public class TakeCommand extends AbstractCommand {
             items = (List<dItem>) items_object;
         }
 
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Type", type.name())
-                        + qty.debug()
-                        + (inventory != null ? inventory.debug() : "")
-                        + (displayname != null ? displayname.debug() : "")
-                        + (scriptitem != null ? scriptitem.debug() : "")
-                        + aH.debugObj("Items", items)
-                        + (slot != null ? slot.debug() : "")
-                        + (titleAuthor != null ? titleAuthor.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("Type", type.name())
+                            + qty.debug()
+                            + (inventory != null ? inventory.debug() : "")
+                            + (displayname != null ? displayname.debug() : "")
+                            + (scriptitem != null ? scriptitem.debug() : "")
+                            + aH.debugObj("Items", items)
+                            + (slot != null ? slot.debug() : "")
+                            + (titleAuthor != null ? titleAuthor.debug() : ""));
+
+        }
 
         switch (type) {
 
@@ -141,7 +145,7 @@ public class TakeCommand extends AbstractCommand {
             case ITEMINHAND:
                 int inHandAmt = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = (int) qty.asDouble();
-                ItemStack newHandItem = new ItemStack(0);
+                ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
                     ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);

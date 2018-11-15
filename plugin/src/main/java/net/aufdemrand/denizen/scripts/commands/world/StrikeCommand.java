@@ -47,9 +47,11 @@ public class StrikeCommand extends AbstractCommand {
         Boolean damage = scriptEntry.getElement("damage").asBoolean();
 
         // Debugger
-        dB.report(scriptEntry, getName(),
-                location.debug()
-                        + aH.debugObj("Damageable", String.valueOf(damage)));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    location.debug()
+                            + aH.debugObj("Damageable", String.valueOf(damage)));
+        }
 
         // Play the sound
         if (damage) {

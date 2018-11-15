@@ -22,8 +22,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,6 +41,11 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     /*
         General Entity Methods
      */
+
+    @Override
+    public Entity getFishHook(PlayerFishEvent event) {
+        return event.getHook();
+    }
 
     @Override
     public void forceInteraction(Player player, Location location) {
@@ -145,7 +150,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().o();
+        ((EntityInsentient) nmsEntity).getNavigation().p();
     }
 
     @Override
@@ -246,7 +251,7 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.o();
+                    followerNavigation.p();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             }
@@ -742,6 +747,11 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, vector.getX(), vector.getY(), vector.getZ());
+    }
+
+    @Override
+    public void teleport(Entity entity, Vector vector) {
+        ((CraftEntity) entity).getHandle().setPosition(vector.getX(), vector.getY(), vector.getZ());
     }
 
     @Override

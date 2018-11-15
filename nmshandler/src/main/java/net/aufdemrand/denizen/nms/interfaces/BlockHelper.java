@@ -9,6 +9,8 @@ import org.bukkit.material.MaterialData;
 
 public interface BlockHelper {
 
+    int idFor(Material mat);
+
     MaterialData getFlowerpotContents(Block block);
 
     void setFlowerpotContents(Block block, MaterialData data);
@@ -21,11 +23,17 @@ public interface BlockHelper {
 
     void setNbtData(Block block, CompoundTag compoundTag);
 
-    BlockData getBlockData(short id, byte data);
+    BlockData getBlockData(Material material, byte data);
 
     BlockData getBlockData(Block block);
 
     BlockData getBlockData(String compressedString);
+
+    boolean hasBlock(Material material);
+
+    boolean setBlockResistance(Material material, float resistance);
+
+    float getBlockResistance(Material material);
 
     boolean isSafeBlock(Material material);
 }

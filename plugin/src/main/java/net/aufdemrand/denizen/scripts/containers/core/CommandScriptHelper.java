@@ -2,11 +2,14 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenAliasHelpTopic;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizen.utilities.DenizenCommandHelpTopic;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -17,6 +20,7 @@ import org.bukkit.help.HelpTopic;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,17 +36,27 @@ public class CommandScriptHelper implements Listener {
 
     public CommandScriptHelper() {
         try {
-            final Server server = DenizenAPI.getCurrentInstance().getServer();
+            Server server = Bukkit.getServer();
 
             server.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
 
             // Get the CommandMap for the server
-            final Field commandMapField = server.getClass().getDeclaredField("commandMap");
+            Field commandMapField = server.getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
             CommandMap commandMap = (CommandMap) commandMapField.get(server);
 
             // Get the knownCommands for the server's CommandMap
-            final Field knownCommandsField = commandMap.getClass().getDeclaredField("knownCommands");
+            Field kcf = null;
+            Class commandMapClass = commandMap.getClass();
+            while (kcf == null && commandMapClass != Object.class) {
+                try {
+                    kcf = commandMapClass.getDeclaredField("knownCommands");
+                }
+                catch (NoSuchFieldException e) {
+                    commandMapClass = commandMapClass.getSuperclass();
+                }
+            }
+            final Field knownCommandsField = kcf;
             knownCommandsField.setAccessible(true);
             knownCommands = (Map<String, Command>) knownCommandsField.get(commandMap);
 
@@ -76,6 +90,37 @@ public class CommandScriptHelper implements Listener {
             dB.echoError("Command scripts will not function!");
             //dB.echoError(e);
             hasCommandInformation = false;
+        }
+    }
+
+    public static final Method syncCommandsMethod;
+
+    static {
+        Method syncMethod = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            try {
+                syncMethod = Bukkit.getServer().getClass().getDeclaredMethod("syncCommands");
+                syncMethod.setAccessible(true);
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to load helper to synchronize server commands.");
+            }
+        }
+        syncCommandsMethod = syncMethod;
+    }
+
+    /**
+     * In 1.13+, commands are also sent to players client-side via packets.
+     * We need to sync them for tab completion to work.
+     */
+    public static void syncDenizenCommands() {
+        if (syncCommandsMethod != null) {
+            try {
+                syncCommandsMethod.invoke(Bukkit.getServer());
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to synchronize server commands.");
+            }
         }
     }
 

@@ -69,9 +69,11 @@ public class TimeCommand extends AbstractCommand {
         Type type = Type.valueOf(type_element.asString().toUpperCase());
 
         // Report to dB
-        dB.report(scriptEntry, getName(), type_element.debug()
-                + value.debug()
-                + world.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), type_element.debug()
+                    + value.debug()
+                    + world.debug());
+        }
 
         if (type.equals(Type.GLOBAL)) {
             world.getWorld().setTime(value.getTicks());

@@ -63,7 +63,7 @@ public class dColor implements dObject {
             dB.echoError("Security exception getting color field!");
         }
         catch (NoSuchFieldException e1) {
-            dB.echoError("No such color field!");
+            dB.echoError("No such color field '" + string + "'!");
         }
 
         if (colorField != null) {

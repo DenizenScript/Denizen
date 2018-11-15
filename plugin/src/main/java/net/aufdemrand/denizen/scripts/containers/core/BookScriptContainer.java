@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -71,7 +72,7 @@ public class BookScriptContainer extends ScriptContainer {
 
         if (contains("SIGNED")) {
             if (getString("SIGNED").equalsIgnoreCase("false")) {
-                book.getItemStack().setType(Material.BOOK_AND_QUILL);
+                book.getItemStack().setType(MaterialCompat.WRITABLE_BOOK);
             }
         }
 

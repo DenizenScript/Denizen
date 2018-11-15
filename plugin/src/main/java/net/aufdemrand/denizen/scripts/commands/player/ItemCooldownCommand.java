@@ -55,7 +55,11 @@ public class ItemCooldownCommand extends AbstractCommand {
             return;
         }
 
-        dB.report(scriptEntry, getName(), aH.debugList("materials", materials) + duration.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugList("materials", materials) + duration.debug());
+
+        }
 
         for (dMaterial mat : materials) {
             player.getPlayerEntity().setCooldown(mat.getMaterial(), duration.getTicksAsInt());

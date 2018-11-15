@@ -32,6 +32,23 @@ import java.util.List;
  */
 public class Utilities {
 
+    public static boolean canReadFile(File f) {
+        if (Settings.allowStupids()) {
+            return true;
+        }
+        try {
+            if (!Settings.allowStrangeYAMLSaves() &&
+                    !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
+                return false;
+            }
+            return true;
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+            return false;
+        }
+    }
+
     public static boolean isSafeFile(File f) {
         if (Settings.allowStupids()) {
             return true;
@@ -40,6 +57,10 @@ public class Utilities {
             String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
             if (dB.verbose) {
                 dB.log("Checking file : " + lown);
+            }
+            if (!Settings.allowStrangeYAMLSaves() &&
+                    !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
+                return false;
             }
             if (lown.contains("denizen/config.yml")) {
                 return false;
@@ -269,9 +290,10 @@ public class Utilities {
 
             Block block = signBlock.getRelative(blockFace);
 
-            if ((block.getType() != Material.AIR)
-                    && block.getType() != Material.SIGN_POST
-                    && block.getType() != Material.WALL_SIGN) {
+            Material material = block.getType();
+            if (material != Material.AIR
+                    && material != MaterialCompat.SIGN
+                    && material != Material.WALL_SIGN) {
 
                 return blockFace.getOppositeFace();
             }
@@ -305,9 +327,10 @@ public class Utilities {
 
             Block block = signState.getBlock().getRelative(blockFace);
 
-            if ((block.getType() != Material.AIR)
-                    && block.getType() != Material.SIGN_POST
-                    && block.getType() != Material.WALL_SIGN) {
+            Material material = block.getType();
+            if (material != Material.AIR
+                    && material != MaterialCompat.SIGN
+                    && material != Material.WALL_SIGN) {
 
                 ((org.bukkit.material.Sign) signState.getData())
                         .setFacingDirection(blockFace.getOppositeFace());
@@ -416,7 +439,17 @@ public class Utilities {
     public static String generateRandomColors(int count) {
         String ret = "";
         for (int i = 0; i < count; i++) {
-            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(34));
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colors.charAt(CoreUtilities.getRandom().nextInt(colors.length()));
+        }
+        return ret;
+    }
+
+    private final static String colorsLimited = "0123456789abcdef";
+
+    public static String generateRandomColorsWithDots(int count) {
+        String ret = "";
+        for (int i = 0; i < count; i++) {
+            ret += String.valueOf(ChatColor.COLOR_CHAR) + colorsLimited.charAt(CoreUtilities.getRandom().nextInt(colorsLimited.length())) + ".";
         }
         return ret;
     }

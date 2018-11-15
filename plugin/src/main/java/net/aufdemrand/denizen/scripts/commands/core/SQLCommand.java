@@ -105,12 +105,16 @@ public class SQLCommand extends AbstractCommand implements Holdable {
         final Element sqlID = scriptEntry.getElement("sqlid");
         final Element query = scriptEntry.getElement("query");
 
-        dB.report(scriptEntry, getName(), sqlID.debug()
-                + action.debug()
-                + (server != null ? server.debug() : "")
-                + (username != null ? username.debug() : "")
-                + (password != null ? aH.debugObj("password", "NotLogged") : "")
-                + (query != null ? query.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), sqlID.debug()
+                    + action.debug()
+                    + (server != null ? server.debug() : "")
+                    + (username != null ? username.debug() : "")
+                    + (password != null ? aH.debugObj("password", "NotLogged") : "")
+                    + (query != null ? query.debug() : ""));
+
+        }
 
         if (!action.asString().equalsIgnoreCase("connect") &&
                 (!action.asString().equalsIgnoreCase("query") || !scriptEntry.shouldWaitFor())) {

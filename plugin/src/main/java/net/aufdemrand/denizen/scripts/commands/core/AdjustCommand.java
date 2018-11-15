@@ -52,10 +52,14 @@ public class AdjustCommand extends AbstractCommand {
 
         dList objects = scriptEntry.getdObject("object");
 
-        dB.report(scriptEntry, getName(),
-                objects.debug()
-                        + mechanism.debug()
-                        + (value == null ? "" : value.debug()));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    objects.debug()
+                            + mechanism.debug()
+                            + (value == null ? "" : value.debug()));
+
+        }
 
         dList result = new dList();
 

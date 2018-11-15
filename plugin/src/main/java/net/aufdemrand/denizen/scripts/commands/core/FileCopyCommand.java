@@ -56,7 +56,11 @@ public class FileCopyCommand extends AbstractCommand {
         Element destination = scriptEntry.getElement("destination");
         Element overwrite = scriptEntry.getElement("overwrite");
 
-        dB.report(scriptEntry, getName(), origin.debug() + destination.debug() + overwrite.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), origin.debug() + destination.debug() + overwrite.debug());
+
+        }
 
         if (!Settings.allowFilecopy()) {
             dB.echoError(scriptEntry.getResidingQueue(), "File copy disabled by server administrator.");
@@ -68,7 +72,7 @@ public class FileCopyCommand extends AbstractCommand {
         File d = new File(DenizenAPI.getCurrentInstance().getDataFolder(), destination.asString());
         boolean ow = overwrite.asBoolean();
         boolean dexists = d.exists();
-        boolean disdir = d.isDirectory();
+        boolean disdir = d.isDirectory() || destination.asString().endsWith("/");
 
         if (!o.exists()) {
             dB.echoError(scriptEntry.getResidingQueue(), "File copy failed, origin does not exist!");
@@ -92,6 +96,9 @@ public class FileCopyCommand extends AbstractCommand {
         try {
             if (dexists && !disdir) {
                 d.delete();
+            }
+            if (disdir && !dexists) {
+                d.mkdirs();
             }
             if (o.isDirectory()) {
                 FileUtils.copyDirectory(o, d);

@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.scripts.commands.world.SchematicCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -88,7 +89,7 @@ public class CuboidBlockSet implements BlockSet {
                     long y = ((index.theInt - z) % ((long) (y_length * z_height))) / ((long) z_height);
                     long x = (index.theInt - y - z) / ((long) (y_length * z_height));
                     if (!noAir || blocks.get((int) index.theInt).getMaterial() != Material.AIR) {
-                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock());
+                        blocks.get((int) index.theInt).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
                     }
                     index.theInt++;
                     if (System.currentTimeMillis() - start > 50) {
@@ -114,7 +115,7 @@ public class CuboidBlockSet implements BlockSet {
             for (int y = 0; y < y_length; y++) {
                 for (int z = 0; z < z_height; z++) {
                     if (!noAir || blocks.get(index).getMaterial() != Material.AIR) {
-                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock());
+                        blocks.get(index).setBlock(loc.clone().add(x - center_x, y - center_y, z - center_z).getBlock(), false);
                     }
                     index++;
                 }
@@ -293,7 +294,8 @@ public class CuboidBlockSet implements BlockSet {
                     for (int z = 0; z < length; z++) {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
-                        BlockData block = NMSHandler.getInstance().getBlockHelper().getBlockData(blocks[index], blockData[index]);
+                        // TODO: 1.13 - move away from legacy IDs somehow?
+                        BlockData block = NMSHandler.getInstance().getBlockHelper().getBlockData(dMaterial.getLegacyMaterial(blocks[index]), blockData[index]);
                         if (tileEntitiesMap.containsKey(pt)) {
                             CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
                             block.setCompoundTag(otag);
@@ -349,15 +351,16 @@ public class CuboidBlockSet implements BlockSet {
                         int index = (int) (y * (x_width) * (z_height) + z * (x_width) + x);
                         BlockData bd = this.blocks.get(indexer);//blockAt(x, y, z);
                         indexer++;
-                        if (bd.getMaterial().getId() > 255) {
+                        int matId = NMSHandler.getInstance().getBlockHelper().idFor(bd.getMaterial());
+                        if (matId > 255) {
                             if (addBlocks == null) {
                                 addBlocks = new byte[(blocks.length >> 1) + 1];
                             }
                             addBlocks[index >> 1] = (byte) (((index & 1) == 0) ?
-                                    addBlocks[index >> 1] & 0xF0 | (bd.getMaterial().getId() >> 8) & 0xF
-                                    : addBlocks[index >> 1] & 0xF | ((bd.getMaterial().getId() >> 8) & 0xF) << 4);
+                                    addBlocks[index >> 1] & 0xF0 | (matId >> 8) & 0xF
+                                    : addBlocks[index >> 1] & 0xF | ((matId >> 8) & 0xF) << 4);
                         }
-                        blocks[index] = (byte) bd.getMaterial().getId();
+                        blocks[index] = (byte) matId;
                         blockData[index] = bd.getData();
 
                         CompoundTag rawTag = bd.getCompoundTag();

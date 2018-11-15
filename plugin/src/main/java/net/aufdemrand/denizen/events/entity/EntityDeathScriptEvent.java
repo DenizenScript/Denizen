@@ -17,6 +17,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -215,7 +216,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         return super.getContext(name);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onEntityDeath(EntityDeathEvent event) {
 
         LivingEntity livingEntity = event.getEntity();
@@ -244,7 +245,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 }
             }
             else if (livingEntity.getKiller() != null) {
-            	damager = new dPlayer(livingEntity.getKiller());
+                damager = new dEntity(livingEntity.getKiller()).getDenizenObject();
             }
 
         }

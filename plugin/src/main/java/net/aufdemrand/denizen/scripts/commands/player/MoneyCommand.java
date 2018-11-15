@@ -65,7 +65,11 @@ public class MoneyCommand extends AbstractCommand {
         Element quantity = scriptEntry.getElement("quantity");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
-        dB.report(scriptEntry, getName(), aH.debugList("Player(s)", players) + action.debug() + quantity.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugList("Player(s)", players) + action.debug() + quantity.debug());
+
+        }
         Economy eco = Depends.economy;
         double amt = quantity.asDouble();
         switch (Action.valueOf(action.asString().toUpperCase())) {

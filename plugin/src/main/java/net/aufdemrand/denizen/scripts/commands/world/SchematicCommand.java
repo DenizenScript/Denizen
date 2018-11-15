@@ -125,14 +125,18 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
         dLocation location = scriptEntry.getdObject("location");
         dCuboid cuboid = scriptEntry.getdObject("cuboid");
 
-        dB.report(scriptEntry, getName(), type.debug()
-                + name.debug()
-                + (location != null ? location.debug() : "")
-                + (filename != null ? filename.debug() : "")
-                + (cuboid != null ? cuboid.debug() : "")
-                + (angle != null ? angle.debug() : "")
-                + (noair != null ? noair.debug() : "")
-                + (delayed != null ? delayed.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), type.debug()
+                    + name.debug()
+                    + (location != null ? location.debug() : "")
+                    + (filename != null ? filename.debug() : "")
+                    + (cuboid != null ? cuboid.debug() : "")
+                    + (angle != null ? angle.debug() : "")
+                    + (noair != null ? noair.debug() : "")
+                    + (delayed != null ? delayed.debug() : ""));
+
+        }
 
         CuboidBlockSet set;
         Type ttype = Type.valueOf(type.asString());

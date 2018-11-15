@@ -111,12 +111,14 @@ public class DropCommand extends AbstractCommand {
 
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                action.debug() + location.debug() + qty.debug()
-                        + (items != null ? aH.debugList("items", items) : "")
-                        + (entity != null ? entity.debug() : "")
-                        + (speed != null ? speed.debug() : "")
-                        + (delay != null ? delay.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    action.debug() + location.debug() + qty.debug()
+                            + (items != null ? aH.debugList("items", items) : "")
+                            + (entity != null ? entity.debug() : "")
+                            + (speed != null ? speed.debug() : "")
+                            + (delay != null ? delay.debug() : ""));
+        }
 
         dList entityList = new dList();
 

@@ -64,8 +64,10 @@ public class FailCommand extends AbstractCommand {
         dPlayer player = (dPlayer) scriptEntry.getObject("player");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                player.debug() + script.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    player.debug() + script.debug());
+        }
 
         dB.echoError(scriptEntry.getResidingQueue(), "The Fail command is outdated, use flags intead!");
 

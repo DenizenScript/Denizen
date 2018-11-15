@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -160,7 +161,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
                         projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
                 while (bi.hasNext()) {
                     block = bi.next();
-                    if (block.getTypeId() != 0) {
+                    if (block.getType() == Material.AIR) {
                         break;
                     }
                 }

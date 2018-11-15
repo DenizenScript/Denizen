@@ -2,16 +2,25 @@ package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.ItemHelper;
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.*;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public class ItemPotion implements Property {
 
@@ -53,7 +62,7 @@ public class ItemPotion implements Property {
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
                 + "," + meta.getBasePotionData().isExtended()
-                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify().replace(",", "&comma") : "")
         );
         for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
@@ -99,7 +108,7 @@ public class ItemPotion implements Property {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
             return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
-                    + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+                    + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
             ).getAttribute(attribute.fulfill(1));
         }
 
@@ -186,10 +195,31 @@ public class ItemPotion implements Property {
                 // @group properties
                 // @description
                 // Returns the potion effect's color.
+                // NOTE: Not supported as of Minecraft version 1.13.
                 // -->
                 if (attribute.startsWith("color")) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                        dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
+                        return null;
+                    }
+                    else if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                        dB.echoError("Custom effects with the color option are not supported before Minecraft version 1.9.");
+                        return null;
+                    }
                     return new dColor(meta.getCustomEffects().get(potN).getColor())
                             .getAttribute(attribute.fulfill(1));
+                }
+
+                // <--[tag]
+                // @attribute <i@item.potion_effect[<#>].icon>
+                // @returns Element(Boolean)
+                // @mechanism dItem.potion_effects
+                // @group properties
+                // @description
+                // Returns the potion effect shows an icon.
+                // -->
+                if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    return new Element(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
                 }
 
                 // <--[tag]
@@ -277,8 +307,9 @@ public class ItemPotion implements Property {
         // @input dList
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Color)|...
-        // For example: SPEED,true,false|SPEED,2,200,false,true,red
+        // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Icon)|...
+        // For example: SPEED,true,false|SPEED,2,200,false,true,true
+        // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
         // @tags
         // <i@item.potion_effect[<#>]>
         // <i@item.potion_effect[<#>].type>
@@ -287,6 +318,7 @@ public class ItemPotion implements Property {
         // <i@item.potion_effect[<#>].is_ambient>
         // <i@item.potion_effect[<#>].has_particles>
         // <i@item.potion_effect[<#>].color>
+        // <i@item.potion_effect[<#>].icon>
         // -->
         if (mechanism.matches("potion_effects")) {
             dList data = mechanism.getValue().asType(dList.class);
@@ -296,14 +328,46 @@ public class ItemPotion implements Property {
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
             if (d1.length > 3) {
-                meta.setColor(dColor.valueOf(d1[3]).getColor());
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                    meta.setColor(dColor.valueOf(d1[3].replace("&comma", ",")).getColor());
+                }
+                else {
+                    dB.echoError("Potion effect color is not supported before Minecraft version 1.11.");
+                }
             }
             meta.clearCustomEffects();
+            ItemHelper itemHelper = NMSHandler.getInstance().getItemHelper();
             for (int i = 1; i < data.size(); i++) {
                 String[] d2 = data.get(i).split(",");
-                meta.addCustomEffect(new PotionEffect(PotionEffectType.getByName(d2[0].toUpperCase()),
-                        new Element(d2[2]).asInt(), new Element(d2[1]).asInt(), new Element(d2[3]).asBoolean(),
-                        new Element(d2[4]).asBoolean(), d2.length > 5 ? dColor.valueOf(d2[5].replace("&comma", ",")).getColor() : null), false);
+                PotionEffectType type = PotionEffectType.getByName(d2[0].toUpperCase());
+                // NOTE: amplifier and duration are swapped around in the input format
+                // as compared to the PotionEffect constructor!
+                int duration = new Element(d2[2]).asInt();
+                int amplifier = new Element(d2[1]).asInt();
+                boolean ambient = new Element(d2[3]).asBoolean();
+                boolean particles = new Element(d2[4]).asBoolean();
+                Color color = null;
+                boolean icon = false;
+                if (d2.length > 5) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                            Element check = new Element(d2[5]);
+                            if (check.isBoolean()) {
+                                icon = check.asBoolean();
+                            }
+                            else {
+                                dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
+                            }
+                        }
+                        else {
+                            String check = d2[5].replace("&comma", ",");
+                            if (dColor.matches(check)) {
+                                color = dColor.valueOf(check).getColor();
+                            }
+                        }
+                    }
+                }
+                meta.addCustomEffect(itemHelper.getPotionEffect(type, duration, amplifier, ambient, particles, color, icon), false);
             }
             item.getItemStack().setItemMeta(meta);
         }

@@ -3,11 +3,14 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.scripts.commands.world.SwitchCommand;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -67,19 +70,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     public static String getSaved(dLocation location) {
         for (dLocation saved : NotableManager.getAllType(dLocation.class)) {
-            if (saved.getBlockX() != location.getBlockX()) {
+            if (saved.getBlockX() != location.getX()) {
                 continue;
             }
-            if (saved.getBlockY() != location.getBlockY()) {
+            if (saved.getBlockY() != location.getY()) {
                 continue;
             }
-            if (saved.getBlockZ() != location.getBlockZ()) {
+            if (saved.getBlockZ() != location.getZ()) {
                 continue;
             }
-            if (!saved.getWorld().getName().equals(location.getWorld().getName())) {
-                continue;
+            if ((saved.getWorld() == null && location.getWorld() == null)
+                    || (saved.getWorld() != null && location.getWorld() != null && saved.getWorld().getName().equals(location.getWorld().getName()))) {
+                return NotableManager.getSavedId(saved);
             }
-            return NotableManager.getSavedId(saved);
         }
         return null;
     }
@@ -659,28 +662,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // To change this, see <@link command Switch>
         // -->
         if (attribute.startsWith("switched")) {
-            Material type = getBlock().getType();
-            if (type == Material.IRON_DOOR_BLOCK
-                    || type == Material.WOODEN_DOOR
-                    || type == Material.DARK_OAK_DOOR
-                    || type == Material.BIRCH_DOOR
-                    || type == Material.ACACIA_DOOR
-                    || type == Material.JUNGLE_DOOR
-                    || type == Material.SPRUCE_DOOR) {
-                Location location = this;
-                int data = getBlock().getData();
-                if (data >= 8) {
-                    location = clone().add(0, -1, 0);
-                }
-                return new Element((location.getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
-            }
-            else if (type == Material.TRAP_DOOR
-                    || type == Material.IRON_TRAPDOOR) {
-                return new Element((getBlock().getData() & 0x4) > 0).getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return new Element((getBlock().getData() & 0x8) > 0).getAttribute(attribute.fulfill(1));
-            }
+            return new Element(SwitchCommand.switchState(getBlock()))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -777,11 +760,18 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns Element
         // @description
         // Returns the flower pot contents at the location.
+        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
         // -->
-        if (attribute.startsWith("flowerpot_contents") && getBlock().getType() == Material.FLOWER_POT) {
-            MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
-            return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("flowerpot_contents")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+            }
+            else if (getBlock().getType() == Material.FLOWER_POT) {
+                MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
+                return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            return null;
         }
 
 
@@ -1099,7 +1089,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int attributePos = 1;
 
                 // <--[tag]
-                // @attribute <location.facing[<entity>/<location>].degrees[X]>
+                // @attribute <l@location.facing[<entity>/<location>].degrees[<#>]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the location's yaw is facing another
@@ -2054,8 +2044,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the name a command block is set to.
         // -->
-        if (attribute.startsWith("command_block_name")
-                && getBlock().getType() == Material.COMMAND) {
+        if (attribute.startsWith("command_block_name") && getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
             return new Element(((CommandBlock) getBlock().getState()).getName())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2067,8 +2056,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the command a command block is set to.
         // -->
-        if (attribute.startsWith("command_block")
-                && getBlock().getType() == Material.COMMAND) {
+        if (attribute.startsWith("command_block") && getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
             return new Element(((CommandBlock) getBlock().getState()).getCommand())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2135,6 +2123,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
         Element value = mechanism.getValue();
 
+        if (mechanism.matches("data") && mechanism.hasValue()) {
+            dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
+            blockData.setBlock(getBlock(), false);
+        }
+
         // <--[mechanism]
         // @object dLocation
         // @name block_type
@@ -2147,7 +2141,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
             dMaterial mat = value.asType(dMaterial.class);
             byte data = mat.hasData() ? mat.getData() : 0;
-            getBlock().setTypeIdAndData(mat.getMaterial().getId(), data, false);
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(mat.getMaterial(), data);
+            blockData.setBlock(getBlock(), false);
         }
 
         // <--[mechanism]
@@ -2241,7 +2236,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("skull_skin")) {
             final BlockState blockState = getBlock().getState();
-            if (blockState instanceof Skull) {
+            Material material = getBlock().getType();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                    && material != Material.PLAYER_HEAD && material != Material.PLAYER_WALL_HEAD) {
+                dB.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
+            }
+            else if (blockState instanceof Skull) {
                 dList list = mechanism.getValue().asType(dList.class);
                 String idString = list.get(0);
                 String texture = null;
@@ -2274,13 +2274,17 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @input dMaterial
         // @description
         // Sets the contents of a flower pot.
+        // NOTE: Replaced by materials (such as POTTED_CACTUS) in 1.13 and above.
         // NOTE: Flowerpot contents will not update client-side until players refresh the chunk.
         // Refresh a chunk manually with mechanism: refresh_chunk_sections for dChunk objects
         // @tags
         // <l@location.flowerpot_contents>
         // -->
         if (mechanism.matches("flowerpot_contents") && mechanism.requireObject(dMaterial.class)) {
-            if (getBlock().getType() == Material.FLOWER_POT) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
+            }
+            else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData data = value.asType(dMaterial.class).getMaterialData();
                 NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
@@ -2296,7 +2300,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block_name>
         // -->
         if (mechanism.matches("command_block_name")) {
-            if (getBlock().getType() == Material.COMMAND) {
+            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setName(value.asString());
                 block.update();
@@ -2313,7 +2317,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.command_block>
         // -->
         if (mechanism.matches("command_block")) {
-            if (getBlock().getType() == Material.COMMAND) {
+            if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
@@ -2330,8 +2334,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.furnace_burn_time>
         // -->
         if (mechanism.matches("furnace_burn_time")) {
-            Material material = getBlock().getType();
-            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+            if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setBurnTime((short) value.asInt());
                 furnace.update();
@@ -2348,8 +2351,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.furnace_cook_time>
         // -->
         if (mechanism.matches("furnace_cook_time")) {
-            Material material = getBlock().getType();
-            if (material == Material.FURNACE || material == Material.BURNING_FURNACE) {
+            if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
                 furnace.setCookTime((short) value.asInt());
                 furnace.update();
@@ -2416,19 +2418,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             Skull sk = (Skull) getBlock().getState();
             sk.setRotation(getSkullBlockFace(value.asInt() - 1));
             sk.update();
-        }
-
-        // <--[mechanism]
-        // @object dLocation
-        // @name data
-        // @input Element(Number)
-        // @description
-        // Sets the data-value of a block.
-        // @tags
-        // <l@location.material.data>
-        // -->
-        if (mechanism.matches("data") && mechanism.hasValue()) {
-            getBlock().setData((byte) value.asInt());
         }
 
         // <--[mechanism]

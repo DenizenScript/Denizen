@@ -1,8 +1,10 @@
 name: Denizen
 authors: ['aufdemrand', 'mcmonkey', 'Morphan1']
-version: ${project.version} (build ${BUILD_NUMBER})
+version: ${project.version} (build ${BUILD_NUMBER}-${BUILD_CLASS})
 main: net.aufdemrand.denizen.Denizen
 softdepend: [Citizens, Vault]
+
+api-version: 1.13
 
 commands:
   denizen:
@@ -61,4 +63,4 @@ permissions:
       denizen.npc.assign: true
       denizen.npc.constants: true
       denizen.npc.pushable: true
-      
+

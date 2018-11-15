@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.WorldHelper;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEllipsoid;
@@ -142,16 +143,20 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
         final List<dMaterial> materialList = materials.filter(dMaterial.class);
 
-        dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
-                + materials.debug()
-                + physics.debug()
-                + radiusElement.debug()
-                + heightElement.debug()
-                + depthElement.debug()
-                + natural.debug()
-                + delayed.debug()
-                + (script != null ? script.debug() : "")
-                + (percents != null ? percents.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), (locations == null ? location_list.debug() : aH.debugList("locations", locations))
+                    + materials.debug()
+                    + physics.debug()
+                    + radiusElement.debug()
+                    + heightElement.debug()
+                    + depthElement.debug()
+                    + natural.debug()
+                    + delayed.debug()
+                    + (script != null ? script.debug() : "")
+                    + (percents != null ? percents.debug() : ""));
+
+        }
 
         final boolean doPhysics = physics.asBoolean();
         final boolean isNatural = natural.asBoolean();
@@ -343,7 +348,9 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             location.getBlock().breakNaturally();
         }
         else {
-            location.getBlock().setTypeIdAndData(material.getMaterial().getId(), material.getMaterialData().getData(), physics);
+            // TODO: 1.13 - confirm this works
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(material.getMaterial(), material.getData());
+            blockData.setBlock(location.getBlock(), physics);
         }
     }
 

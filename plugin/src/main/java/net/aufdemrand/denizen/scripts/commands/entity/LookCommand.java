@@ -64,8 +64,12 @@ public class LookCommand extends AbstractCommand {
         final List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final Duration duration = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(scriptEntry, getName(), loc.debug() +
-                aH.debugObj("entities", entities.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), loc.debug() +
+                    aH.debugObj("entities", entities.toString()));
+
+        }
 
         for (dEntity entity : entities) {
             if (entity.isSpawned()) {

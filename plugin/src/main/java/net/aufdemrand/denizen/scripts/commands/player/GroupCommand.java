@@ -62,7 +62,9 @@ public class GroupCommand extends AbstractCommand {
         Element group = scriptEntry.getElement("group");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), action.debug() + (world != null ? world.debug() : "") + group.debug());
+        }
 
         World bukkitWorld = null;
         if (world != null) {

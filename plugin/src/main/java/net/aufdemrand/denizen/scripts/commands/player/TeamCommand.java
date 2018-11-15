@@ -83,13 +83,17 @@ public class TeamCommand extends AbstractCommand {
         Element prefix = scriptEntry.getElement("prefix");
         Element suffix = scriptEntry.getElement("suffix");
 
-        dB.report(scriptEntry, getName(),
-                id.debug() +
-                        name.debug() +
-                        (add != null ? add.debug() : "") +
-                        (remove != null ? remove.debug() : "") +
-                        (prefix != null ? prefix.debug() : "") +
-                        (suffix != null ? suffix.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    id.debug() +
+                            name.debug() +
+                            (add != null ? add.debug() : "") +
+                            (remove != null ? remove.debug() : "") +
+                            (prefix != null ? prefix.debug() : "") +
+                            (suffix != null ? suffix.debug() : ""));
+
+        }
 
         Scoreboard board;
 

@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
-import net.aufdemrand.denizencore.scripts.commands.core.Comparable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.ChatColor;
 
@@ -34,11 +33,11 @@ public class BukkitElementProperties implements Property {
         this.element = element;
     }
 
-    public static final String[] handledAttribs = new String[] {
+    public static final String[] handledAttribs = new String[]{
             "aschunk", "as_chunk", "ascolor", "as_color", "ascuboid", "as_cuboid", "asentity", "as_entity",
             "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
             "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",
-            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash" };
+            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash"};
 
     Element element;
 

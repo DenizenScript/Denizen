@@ -4,7 +4,7 @@
     <parent>
         <artifactId>denizen-parent</artifactId>
         <groupId>net.aufdemrand</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -66,6 +66,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizen-v1_13_R2</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens</artifactId>
             <version>${citizens.version}</version>
@@ -75,7 +81,7 @@
         <dependency>
             <groupId>net.aufdemrand</groupId>
             <artifactId>denizencore</artifactId>
-            <version>1.15</version>
+            <version>${dcore.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -126,7 +132,6 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package install</defaultGoal>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
@@ -149,7 +154,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -186,8 +191,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
+                <version>3.1.0</version>
                 <configuration>
+                    <finalName>Denizen-${DENIZEN_VERSION}-b${BUILD_NUMBER}-${BUILD_CLASS}</finalName>
                     <outputDirectory>../target</outputDirectory>
                     <archive>
                         <manifest>
@@ -201,10 +207,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument></compilerArgument>
                 </configuration>
             </plugin>

@@ -78,10 +78,12 @@ public class NarrateCommand extends AbstractCommand {
         FormatScriptContainer format = (FormatScriptContainer) scriptEntry.getObject("format");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("Narrating", text)
-                        + aH.debugList("Targets", targets)
-                        + (format != null ? aH.debugObj("Format", format.getName()) : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("Narrating", text)
+                            + aH.debugList("Targets", targets)
+                            + (format != null ? aH.debugObj("Format", format.getName()) : ""));
+        }
 
         if (targets == null) {
             Bukkit.getServer().getConsoleSender().sendMessage(format != null ? format.getFormattedText(scriptEntry) : text);

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -75,10 +76,11 @@ public class LeashCommand extends AbstractCommand {
         }
         else if (holderObject instanceof dLocation) {
             holderLoc = ((dLocation) scriptEntry.getObject("holder"));
-            if (holderLoc.getBlock().getType() == Material.FENCE || holderLoc.getBlock().getType() == Material.NETHER_FENCE
-                    || holderLoc.getBlock().getType() == Material.ACACIA_FENCE || holderLoc.getBlock().getType() == Material.BIRCH_FENCE
-                    || holderLoc.getBlock().getType() == Material.JUNGLE_FENCE || holderLoc.getBlock().getType() == Material.DARK_OAK_FENCE
-                    || holderLoc.getBlock().getType() == Material.SPRUCE_FENCE) {
+            Material material = holderLoc.getBlock().getType();
+            if (material == MaterialCompat.OAK_FENCE || material == MaterialCompat.NETHER_FENCE
+                    || material == Material.ACACIA_FENCE || material == Material.BIRCH_FENCE
+                    || material == Material.JUNGLE_FENCE || material == Material.DARK_OAK_FENCE
+                    || material == Material.SPRUCE_FENCE) {
                 Holder = holderLoc.getWorld().spawn(holderLoc, LeashHitch.class);
             }
             else {
@@ -89,9 +91,11 @@ public class LeashCommand extends AbstractCommand {
         Boolean cancel = scriptEntry.hasObject("cancel");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
-                aH.debugObj("entities", entities.toString()) +
-                (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (cancel ? aH.debugObj("cancel", cancel) : "") +
+                    aH.debugObj("entities", entities.toString()) +
+                    (holder != null ? aH.debugObj("holder", holder) : aH.debugObj("holder", holderLoc)));
+        }
 
         // Go through all the entities and leash/unleash them
         for (dEntity entity : entities) {

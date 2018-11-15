@@ -165,7 +165,7 @@ public class NPCTags implements Listener {
     public void navBegin(NavigationBeginEvent event) {
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        // Do world script event 'On NPC Completes Navigation'
+        // Do world script event 'On NPC Begins Navigation'
         if (NPCNavigationSmartEvent.IsActive()) {
             OldEventManager.doEvents(Arrays.asList
                     ("npc begins navigation"), new BukkitScriptEntryData(null, npc), null);

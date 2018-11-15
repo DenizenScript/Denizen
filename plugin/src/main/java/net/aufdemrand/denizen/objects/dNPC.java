@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
-import net.aufdemrand.denizen.npc.examiners.PathBlockExaminer;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.scripts.commands.npc.EngageCommand;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
@@ -20,8 +19,6 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.ai.Navigator;
 import net.citizensnpcs.api.ai.TeleportStuckAction;
-import net.citizensnpcs.api.astar.pathfinder.FlyingBlockExaminer;
-import net.citizensnpcs.api.astar.pathfinder.MinecraftBlockExaminer;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.Trait;
@@ -50,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class dNPC implements dObject, Adjustable, InventoryHolder {
+public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObject {
 
     public static dNPC mirrorCitizensNPC(NPC npc) {
         if (dNPCRegistry._isRegistered(npc)) {
@@ -151,6 +148,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
     public NPC getCitizen() {
+        if (npcid < 0) {
+            return null;
+        }
         NPC npc = CitizensAPI.getNPCRegistry().getById(npcid);
         if (npc == null) {
             //dB.echoError(new RuntimeException("StackTraceOutput"));
@@ -189,6 +189,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
     }
 
 
+    @Override
     public dEntity getDenizenEntity() {
         try {
             return new dEntity(getCitizen().getEntity());
@@ -1380,34 +1381,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
 
         // <--[mechanism]
         // @object dNPC
-        // @name set_examiner
-        // @input Element
-        // @description
-        // Sets the NPC's block examiner
-        // @tags
-        // TODO
-        // -->
-        if (mechanism.matches("set_examiner")) {
-
-            if (mechanism.getValue().toString().equalsIgnoreCase("default")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new MinecraftBlockExaminer());
-
-            }
-            else if (mechanism.getValue().toString().equalsIgnoreCase("fly")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new FlyingBlockExaminer());
-
-            }
-            else if (mechanism.getValue().toString().equalsIgnoreCase("path")) {
-                getNavigator().getLocalParameters().clearExaminers();
-                getNavigator().getLocalParameters().examiner(new PathBlockExaminer(this, null));
-            }
-
-        }
-
-        // <--[mechanism]
-        // @object dNPC
         // @name teleport_on_stuck
         // @input Element(Boolean)
         // @description
@@ -1435,6 +1408,25 @@ public class dNPC implements dObject, Adjustable, InventoryHolder {
         // -->
         if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name clear_waypoints
+        // @input None
+        // @description
+        // Clears all waypoint locations in the NPC's path.
+        // @tags
+        // TODO
+        // -->
+        if (mechanism.matches("clear_waypoints")) {
+            if (!getCitizen().hasTrait(Waypoints.class)) {
+                getCitizen().addTrait(Waypoints.class);
+            }
+            Waypoints wp = getCitizen().getTrait(Waypoints.class);
+            if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
+                ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
+            }
         }
 
         // <--[mechanism]

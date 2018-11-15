@@ -1,8 +1,13 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
+import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
@@ -14,11 +19,8 @@ import java.util.ArrayList;
 public class ItemBook implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem
-                && (
-                ((dItem) item).getItemStack().getType().equals(Material.WRITTEN_BOOK)
-                        || ((dItem) item).getItemStack().getType().equals(Material.BOOK_AND_QUILL)
-        );
+        Material material = ((dItem) item).getItemStack().getType();
+        return (material == Material.WRITTEN_BOOK || material == MaterialCompat.WRITABLE_BOOK);
     }
 
     public static ItemBook getFrom(dObject _item) {

@@ -150,6 +150,9 @@ public class FlagCommand extends AbstractCommand implements Listener {
                 else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("action", FlagManager.Action.SPLIT);
                 }
+                else if (flagArgs[1].equals("!|")) {
+                    scriptEntry.addObject("action", FlagManager.Action.SPLIT_NEW);
+                }
                 else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("action", FlagManager.Action.INCREASE);
                 }
@@ -215,11 +218,13 @@ public class FlagCommand extends AbstractCommand implements Listener {
         }
 
         // Send information to debugger
-        dB.report(scriptEntry, getName(),
-                name.debug() + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
-                        + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
-                        + (duration != null ? duration.debug() : "")
-                        + flag_target.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    name.debug() + (index > 0 ? aH.debugObj("Index", String.valueOf(index)) : "")
+                            + aH.debugUniqueObj("Action/Value", action.toString(), (value != null ? value.asString() : "null"))
+                            + (duration != null ? duration.debug() : "")
+                            + flag_target.debug());
+        }
 
         Flag flag;
 

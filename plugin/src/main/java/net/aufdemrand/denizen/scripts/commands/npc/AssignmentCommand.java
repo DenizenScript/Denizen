@@ -61,7 +61,9 @@ public class AssignmentCommand extends AbstractCommand {
         dScript script = scriptEntry.getdObject("script");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("action", scriptEntry.getObject("action")) + (script != null ? script.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("action", scriptEntry.getObject("action")) + (script != null ? script.debug() : ""));
+        }
 
         // Perform desired action
         if (scriptEntry.getObject("action").equals(Action.SET)) {

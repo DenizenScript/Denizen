@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
@@ -248,10 +247,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         (denizenPlayer, npc, false, null, false, null));
                 Matcher matcher = triggerPattern.matcher(triggerText);
                 while (matcher.find()) {
-                    if (!script.checkSpecificTriggerScriptRequirementsFor(ChatTrigger.class,
-                            denizenPlayer, npc, entry.getKey())) {
-                        continue;
-                    }
                     // TODO: script arg?
                     String keyword = TagManager.tag(matcher.group().replace("/", ""), new BukkitTagContext
                             (denizenPlayer, npc, false, null, false, null));

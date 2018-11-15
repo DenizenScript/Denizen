@@ -80,11 +80,13 @@ public class SpawnCommand extends AbstractCommand {
         boolean persistent = scriptEntry.hasObject("persistent");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
-                location.debug() +
-                (spread != null ? spread.debug() : "") +
-                (target != null ? target.debug() : "") +
-                (persistent ? aH.debugObj("persistent", "true") : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), aH.debugObj("entities", entities.toString()) +
+                    location.debug() +
+                    (spread != null ? spread.debug() : "") +
+                    (target != null ? target.debug() : "") +
+                    (persistent ? aH.debugObj("persistent", "true") : ""));
+        }
 
         // Keep a dList of entities that can be called using <entry[name].spawned_entities>
         // later in the script queue

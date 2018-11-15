@@ -100,8 +100,12 @@ public class StatisticCommand extends AbstractCommand {
         dMaterial material = scriptEntry.getdObject("material");
         dEntity entity = scriptEntry.getdObject("entity");
 
-        dB.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
-                + (material != null ? material.debug() : entity != null ? entity.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), action.debug() + statistic.debug() + amount.debug() + players.debug()
+                    + (material != null ? material.debug() : entity != null ? entity.debug() : ""));
+
+        }
 
         Action act = Action.valueOf(action.asString().toUpperCase());
         Statistic stat = Statistic.valueOf(statistic.asString().toUpperCase());

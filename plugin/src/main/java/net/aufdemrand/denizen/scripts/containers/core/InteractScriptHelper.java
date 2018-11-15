@@ -98,30 +98,15 @@ public class InteractScriptHelper {
                 InteractScriptContainer interactScript = ScriptRegistry.getScriptContainer(name);
 
                 if (interactScript != null) {
-                    // Check requirements of the script
-                    if (interactScript.checkBaseRequirements(player, npc)) {
-                        if (dB.shouldDebug(interactScript)) {
-                            dB.echoApproval("'" + entry + "' meets requirements.");
-                        }
-
-                        // Meets requirements, but we need to check cool down, too.
-                        if (CooldownCommand.checkCooldown(player, interactScript.getName())) {
-                            interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
-                        }
-                        else {
-                            if (dB.shouldDebug(interactScript)) {
-                                dB.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
-                            }
-                        }
-
+                    // Check script cooldown
+                    if (CooldownCommand.checkCooldown(player, interactScript.getName())) {
+                        interactableScripts.add(new PriorityPair(priority, entry.split(" ", 2)[1]));
                     }
                     else {
-                        // Does not meet requirements, alert the console!
                         if (dB.shouldDebug(interactScript)) {
-                            dB.log("'" + entry + "' does not meet requirements.");
+                            dB.log(ChatColor.GOLD + " ...but, isn't cooled down, yet! Skipping.");
                         }
                     }
-
                 }
                 else {
                     // Alert the console

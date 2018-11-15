@@ -65,11 +65,13 @@ public class ExplodeCommand extends AbstractCommand {
         Boolean fire = scriptEntry.hasObject("fire");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                (aH.debugObj("location", location.toString()) +
-                        aH.debugObj("power", power) +
-                        aH.debugObj("breakblocks", breakblocks) +
-                        aH.debugObj("fire", fire)));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    (aH.debugObj("location", location.toString()) +
+                            aH.debugObj("power", power) +
+                            aH.debugObj("breakblocks", breakblocks) +
+                            aH.debugObj("fire", fire)));
+        }
 
         location.getWorld().createExplosion
                 (location.getX(), location.getY(), location.getZ(),

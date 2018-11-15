@@ -99,14 +99,18 @@ public class WorldBorderCommand extends AbstractCommand {
         Duration warningtime = scriptEntry.getdObject("warningtime");
         Element reset = scriptEntry.getdObject("reset");
 
-        dB.report(scriptEntry, getName(), world.debug()
-                + (center != null ? center.debug() : "")
-                + (size != null ? size.debug() : "")
-                + (damage != null ? damage.debug() : "")
-                + (damagebuffer != null ? damagebuffer.debug() : "")
-                + (warningdistance != null ? warningdistance.debug() : "")
-                + (warningtime != null ? warningtime.debug() : "")
-                + duration.debug() + reset.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), world.debug()
+                    + (center != null ? center.debug() : "")
+                    + (size != null ? size.debug() : "")
+                    + (damage != null ? damage.debug() : "")
+                    + (damagebuffer != null ? damagebuffer.debug() : "")
+                    + (warningdistance != null ? warningdistance.debug() : "")
+                    + (warningtime != null ? warningtime.debug() : "")
+                    + duration.debug() + reset.debug());
+
+        }
 
         WorldBorder worldborder = world.getWorld().getWorldBorder();
 

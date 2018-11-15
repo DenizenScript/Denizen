@@ -51,10 +51,14 @@ public class TraitCommand extends AbstractCommand {
         Element traitName = scriptEntry.getElement("trait");
         NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
 
-        dB.report(scriptEntry, getName(),
-                traitName.debug() +
-                        toggle.debug() +
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    traitName.debug() +
+                            toggle.debug() +
+                            ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
+
+        }
 
         Class<? extends Trait> trait = CitizensAPI.getTraitFactory().getTraitClass(traitName.asString());
 

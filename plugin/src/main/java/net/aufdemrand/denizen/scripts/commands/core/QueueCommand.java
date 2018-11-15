@@ -65,9 +65,11 @@ public class QueueCommand extends AbstractCommand {
         Duration delay = (Duration) scriptEntry.getObject("delay");
 
         // Debugger
-        dB.report(scriptEntry, getName(), queue.debug()
-                + aH.debugObj("Action", action.toString())
-                + (action == Action.DELAY ? delay.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), queue.debug()
+                    + aH.debugObj("Action", action.toString())
+                    + (action == Action.DELAY ? delay.debug() : ""));
+        }
 
         switch (action) {
 

@@ -8,9 +8,9 @@ import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_12_R1;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.minecraft.server.v1_12_R1.TileEntity;
-import net.minecraft.server.v1_12_R1.TileEntitySkull;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
@@ -19,12 +19,18 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockEntityState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_12_R1.block.CraftSkull;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class BlockHelper_v1_12_R1 implements BlockHelper {
+
+    @Override
+    public int idFor(Material mat) {
+        return mat.getId();
+    }
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {
@@ -98,8 +104,8 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
     }
 
     @Override
-    public BlockData getBlockData(short id, byte data) {
-        return new BlockData_v1_12_R1(id, data);
+    public BlockData getBlockData(Material material, byte data) {
+        return new BlockData_v1_12_R1(material, data);
     }
 
     @Override
@@ -110,6 +116,48 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
     @Override
     public BlockData getBlockData(String compressedString) {
         return BlockData_v1_12_R1.fromCompressedString(compressedString);
+    }
+
+    private static net.minecraft.server.v1_12_R1.Block getBlockFrom(Material material) {
+        if (material == Material.FLOWER_POT_ITEM || material == Material.FLOWER_POT) {
+            return Blocks.FLOWER_POT;
+        }
+        ItemStack is = CraftItemStack.asNMSCopy(new org.bukkit.inventory.ItemStack(material));
+        if (is == null) {
+            return null;
+        }
+        Item item = is.getItem();
+        if (item instanceof ItemBed) {
+            return Blocks.BED;
+        }
+        if (!(item instanceof ItemBlock)) {
+            return null;
+        }
+        return ((ItemBlock) item).getBlock();
+    }
+
+    @Override
+    public boolean hasBlock(Material material) {
+        return getBlockFrom(material) != null;
+    }
+
+    @Override
+    public boolean setBlockResistance(Material material, float resistance) {
+        net.minecraft.server.v1_12_R1.Block block = getBlockFrom(material);
+        if (block == null) {
+            return false;
+        }
+        ReflectionHelper.setFieldValue(net.minecraft.server.v1_12_R1.Block.class, "durability", block, resistance);
+        return true;
+    }
+
+    @Override
+    public float getBlockResistance(Material material) {
+        net.minecraft.server.v1_12_R1.Block block = getBlockFrom(material);
+        if (block == null) {
+            return 0;
+        }
+        return ReflectionHelper.getFieldValue(net.minecraft.server.v1_12_R1.Block.class, "durability", block);
     }
 
     @Override

@@ -49,7 +49,9 @@ public class EngageCommand extends AbstractCommand {
         dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
         // Report to dB
-        dB.report(scriptEntry, getName(), npc.debug() + duration.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), npc.debug() + duration.debug());
+        }
 
         if (duration.getSecondsAsInt() > 0) {
             setEngaged(npc.getCitizen(), duration.getSecondsAsInt());

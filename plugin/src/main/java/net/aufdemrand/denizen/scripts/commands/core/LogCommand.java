@@ -65,8 +65,12 @@ public class LogCommand extends AbstractCommand {
         Element fileName = scriptEntry.getElement("file");
         Element typeElement = scriptEntry.getElement("type");
 
-        dB.report(scriptEntry, getName(),
-                message.debug() + fileName.debug() + typeElement.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    message.debug() + fileName.debug() + typeElement.debug());
+
+        }
 
         Type type = Type.valueOf(typeElement.asString().toUpperCase());
 

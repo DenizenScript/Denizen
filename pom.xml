@@ -6,14 +6,17 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <craftbukkit.version>1.12-R0.1-SNAPSHOT</craftbukkit.version>
+        <craftbukkit.version>1.13.2-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
-        <citizens.version>2.0.22-SNAPSHOT</citizens.version>
+        <citizens.version>2.0.24-SNAPSHOT</citizens.version>
+        <dcore.version>1.20</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
+        <BUILD_CLASS>CUSTOM</BUILD_CLASS>
+        <DENIZEN_VERSION>1.0.3</DENIZEN_VERSION>
     </properties>
 
     <modules>
@@ -23,6 +26,7 @@
         <module>v1_10_R1</module>
         <module>v1_11_R1</module>
         <module>v1_12_R1</module>
+        <module>v1_13_R2</module>
         <module>plugin</module>
     </modules>
 
@@ -49,14 +53,15 @@
     </scm>
 
     <build>
+        <defaultGoal>clean package install</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.8.0</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArgument></compilerArgument>
                 </configuration>
             </plugin>

@@ -219,14 +219,14 @@ public class dNPCRegistry implements Listener {
      */
     @EventHandler
     public void despawn(NPCDespawnEvent event) {
-        dNPC npc = getDenizen(event.getNPC().getId());
+        dNPC npc = getDenizen(event.getNPC());
 
         // Do world script event 'On NPC Despawns'
-        if (npc != null) {
+        if (npc != null && npc.isValid()) {
             OldEventManager.doEvents(Arrays.asList("npc despawns"), new BukkitScriptEntryData(null, npc), null);
         }
 
-        if (npc != null) {
+        if (npc != null && npc.isValid()) {
             npc.action("despawn", null);
         }
     }

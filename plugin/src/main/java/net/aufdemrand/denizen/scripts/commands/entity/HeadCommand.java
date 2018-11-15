@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -12,7 +13,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.trait.trait.Equipment;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -69,17 +69,19 @@ public class HeadCommand extends AbstractCommand {
         dMaterial material = scriptEntry.getdObject("material");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("entities", entities.toString()) +
-                        (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("entities", entities.toString()) +
+                            (skin != null ? skin.debug() : "") + (material != null ? material.debug() : ""));
+        }
 
         ItemStack item = null;
 
         // Create head item with chosen skin, or item/skin
         if (skin != null) {
-            item = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
+            item = MaterialCompat.createPlayerHead();
             ItemMeta itemMeta = item.getItemMeta();
-            ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", ""));
+            ((SkullMeta) itemMeta).setOwner(skin.asString().replaceAll("[pP]@", "")); // TODO: 1.12 and up - switch to setOwningPlayer?
             item.setItemMeta(itemMeta);
 
         }

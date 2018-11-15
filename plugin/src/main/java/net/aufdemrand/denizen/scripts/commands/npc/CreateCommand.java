@@ -64,8 +64,12 @@ public class CreateCommand extends AbstractCommand {
         dLocation loc = (dLocation) scriptEntry.getObject("spawn_location");
         dList traits = (dList) scriptEntry.getObject("traits");
 
-        dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
-                + (traits != null ? traits.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), name.debug() + type.debug() + (loc != null ? loc.debug() : "")
+                    + (traits != null ? traits.debug() : ""));
+
+        }
 
         dNPC created;
         if (!type.isGeneric() && type.isCitizensNPC()) {

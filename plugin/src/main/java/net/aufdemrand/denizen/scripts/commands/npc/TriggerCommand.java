@@ -70,11 +70,15 @@ public class TriggerCommand extends AbstractCommand {
         Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
         dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
-        dB.report(scriptEntry, getName(),
-                trigger.debug() + toggle.debug() +
-                        (radius != null ? radius.debug() : "") +
-                        (cooldown != null ? cooldown.debug() : "") +
-                        npc.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    trigger.debug() + toggle.debug() +
+                            (radius != null ? radius.debug() : "") +
+                            (cooldown != null ? cooldown.debug() : "") +
+                            npc.debug());
+
+        }
 
         // Add trigger trait
         if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {

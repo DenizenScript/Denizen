@@ -77,7 +77,7 @@ import java.util.*;
 // # Inside the loop, check if the player's flag 'completed' contains in it an element named 'beginners tutorial'.
 // # If it does, increment the server flag 'completes_counter' by one, and give it 10 seconds to live.
 // - foreach <server.list_players> {
-//     - if <%value%.flag[completed].as_list> contains 'beginners tutorial'
+//     - if <def[value].flag[completed].as_list> contains 'beginners tutorial'
 //       flag server completes_counter:++ duration:10s
 //   }
 // # Now show the number of players who had the element in their 'completed' flag.
@@ -91,7 +91,7 @@ import java.util.*;
 // <code>
 // - flag <npc> friends:->:<player>
 // - foreach <npc.flag[friends].as_list> {
-//     - chat t:%value% 'You are my friend!'
+//     - chat t:<def[value]> 'You are my friend!'
 //   }
 // </code>
 //
@@ -112,7 +112,7 @@ public class FlagManager {
     // Valid flag actions
     public static enum Action {
         SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY,
-        DIVIDE, INSERT, REMOVE, SPLIT, DELETE
+        DIVIDE, INSERT, REMOVE, SPLIT, SPLIT_NEW, DELETE
     }
 
 
@@ -486,18 +486,34 @@ public class FlagManager {
         public int split(Object obj) {
             checkExpired();
             dList split = dList.valueOf(obj.toString());
-
             if (split.size() > 0) {
                 for (String val : split) {
                     if (val.length() > 0) {
                         value.values.add(val);
                     }
                 }
-
                 save();
                 rebuild();
             }
+            return size();
+        }
 
+        public int splitNew(Object obj) {
+            checkExpired();
+            dList split = dList.valueOf(obj.toString());
+            if (split.size() > 0) {
+                value.values.clear();
+                for (String val : split) {
+                    if (val.length() > 0) {
+                        value.values.add(val);
+                    }
+                }
+                save();
+                rebuild();
+            }
+            else {
+                clear();
+            }
             return size();
         }
 
@@ -882,8 +898,13 @@ public class FlagManager {
                     split(val);
                     break;
 
+                case SPLIT_NEW:
+                    splitNew(val);
+                    break;
+
                 case DELETE:
                     clear();
+                    break;
             }
         }
 

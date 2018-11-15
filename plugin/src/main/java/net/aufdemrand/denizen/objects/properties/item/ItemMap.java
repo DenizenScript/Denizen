@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -7,12 +9,15 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.MapMeta;
 
 public class ItemMap implements Property {
 
+    public static Material MAP_MATERIAL = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? Material.FILLED_MAP : Material.MAP;
+
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.MAP);
+                && (((dItem) item).getItemStack().getType() == MAP_MATERIAL);
     }
 
     public static ItemMap getFrom(dObject _item) {
@@ -47,17 +52,33 @@ public class ItemMap implements Property {
         // Returns the ID number of the map item's map.
         // -->
         if (attribute.startsWith("map")) {
-            return new Element(item.getItemStack().getDurability())
+            return new Element(getMapId())
                     .getAttribute(attribute.fulfill(1));
         }
 
         return null;
     }
 
+    public int getMapId() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+            return map.getMapId();
+        }
+        return item.getItemStack().getDurability();
+    }
+
+    public void setMapId(int id) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+            map.setMapId(id);
+            item.getItemStack().setItemMeta(map);
+        }
+        item.getItemStack().setDurability((short) (id));
+    }
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(item.getItemStack().getDurability());
+        return String.valueOf(getMapId());
     }
 
     @Override
@@ -79,7 +100,7 @@ public class ItemMap implements Property {
         // -->
 
         if (mechanism.matches("map") && mechanism.requireInteger()) {
-            item.getItemStack().setDurability((short) (mechanism.getValue().asInt()));
+            setMapId(mechanism.getValue().asInt());
         }
     }
 }

@@ -180,7 +180,11 @@ public class SidebarCommand extends AbstractCommand {
                     players.debug();
         }
 
-        dB.report(scriptEntry, getName(), debug);
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), debug);
+
+        }
 
         switch (Action.valueOf(action.asString())) {
 

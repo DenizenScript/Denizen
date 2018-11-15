@@ -43,8 +43,12 @@ public class SitCommand extends AbstractCommand {
             return;
         }
 
-        dB.report(scriptEntry, getName(), aH.debugObj("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC())
-                + (location != null ? location.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), aH.debugObj("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC())
+                    + (location != null ? location.debug() : ""));
+
+        }
 
         if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
             ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(true);

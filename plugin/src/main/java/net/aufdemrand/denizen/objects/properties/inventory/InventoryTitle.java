@@ -37,7 +37,7 @@ public class InventoryTitle implements Property {
             String title = inventory.getInventory().getTitle();
             if (title != null) {
                 if (inventory.isUnique()) {
-                    return title.substring(0, title.length() - 6);
+                    return title.substring(0, title.length() - dInventory.inventoryNameNotableRequired);
                 }
                 else if (!title.startsWith("container.")) {
                     return title;

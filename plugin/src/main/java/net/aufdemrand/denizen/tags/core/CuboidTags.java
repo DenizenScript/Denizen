@@ -6,7 +6,6 @@ import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
-import org.bukkit.event.Listener;
 
 
 public class CuboidTags {

@@ -48,32 +48,35 @@ public class ItemAttributeNBT implements Property {
 
         // <--[tag]
         // @attribute <i@item.nbt_attributes>
-        // @returns Element(Boolean)
+        // @returns dList
         // @group properties
         // @mechanism dItem.nbt_attributes
         // @description
         // Returns the NBT attribute data (as matches the mechanism input), if any.
         // -->
         if (attribute.startsWith("nbt_attributes")) {
-            String prop = getPropertyString();
-            if (prop != null) {
-                return new Element(prop).getAttribute(attribute.fulfill(1));
-            }
+            return getList().getAttribute(attribute.fulfill(1));
         }
 
         return null;
     }
 
-
-    @Override
-    public String getPropertyString() {
+    public dList getList() {
         ItemStack itemStack = item.getItemStack();
         List<CustomNBT.AttributeReturn> nbtKeys = CustomNBT.getAttributes(itemStack);
-        if (nbtKeys != null && !nbtKeys.isEmpty()) {
-            dList list = new dList();
+        dList list = new dList();
+        if (nbtKeys != null) {
             for (CustomNBT.AttributeReturn atr : nbtKeys) {
                 list.add(EscapeTags.Escape(atr.attr) + "/" + EscapeTags.Escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
             }
+        }
+        return list;
+    }
+
+    @Override
+    public String getPropertyString() {
+        dList list = getList();
+        if (!list.isEmpty()) {
             return list.identify();
         }
         return null;
@@ -105,7 +108,7 @@ public class ItemAttributeNBT implements Property {
             }
             dList list = mechanism.getValue().asType(dList.class);
             ItemStack itemStack = item.getItemStack();
-            itemStack = CustomNBT.clearAttributes(itemStack);
+            itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_ATTRIBUTES);
             for (String string : list) {
                 String[] split = string.split("/");
                 String attribute = EscapeTags.unEscape(split[0]);

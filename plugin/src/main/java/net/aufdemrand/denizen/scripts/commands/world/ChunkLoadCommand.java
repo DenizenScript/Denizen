@@ -88,10 +88,14 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         dLocation chunkloc = (dLocation) scriptEntry.getObject("location");
         Duration length = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(scriptEntry, getName(),
-                action.debug()
-                        + chunkloc.debug()
-                        + length.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    action.debug()
+                            + chunkloc.debug()
+                            + length.debug());
+
+        }
 
         Chunk chunk = chunkloc.getChunk();
         String chunkString = chunk.getX() + ", " + chunk.getZ();

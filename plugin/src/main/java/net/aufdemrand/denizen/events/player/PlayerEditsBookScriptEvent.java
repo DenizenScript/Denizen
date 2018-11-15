@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -14,7 +15,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEditBookEvent;
@@ -95,7 +95,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
             if (script.getContainer() instanceof BookScriptContainer) {
                 dItem dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
-                if (dBook.getMaterial().getMaterial() == Material.BOOK_AND_QUILL) {
+                if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
                     signing = Element.FALSE;
                 }
             }

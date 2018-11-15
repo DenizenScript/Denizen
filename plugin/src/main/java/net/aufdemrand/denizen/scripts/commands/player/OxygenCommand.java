@@ -57,7 +57,11 @@ public class OxygenCommand extends AbstractCommand {
         Element mode = scriptEntry.getElement("mode");
         Element amount = scriptEntry.getElement("amount");
 
-        dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), type.debug() + mode.debug() + amount.debug());
+
+        }
 
         dPlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer();
 

@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
 import net.aufdemrand.denizen.nms.interfaces.Effect;
 import net.aufdemrand.denizen.nms.interfaces.Particle;
+import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -16,7 +18,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -33,9 +34,9 @@ import java.util.List;
 // All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
 //
 // Effects:
-// - iconcrack_[id],[data] (item break effect - examples: iconcrack_7, iconcrack_17,3)
-// - blockcrack_[id] (block break effect)
-// - blockdust_[id] (block break effect)
+// - iconcrack_[item] (item break effect - examples: iconcrack_stone, iconcrack_grass)
+// - blockcrack_[material] (block break effect - examples: blockcrack_stone, blockcrack_grass)
+// - blockdust_[material] (block break effect - examples: blockdust_stone, blockdust_grass)
 // - ANVIL_BREAK, ANVIL_LAND, ANVIL_USE, BARRIER, BAT_TAKEOFF, BLAZE_SHOOT, BOW_FIRE, BREWING_STAND_BREW,
 //   CHORUS_FLOWER_DEATH, CHORUS_FLOWER_GROW, CLICK1, CLICK2, CLOUD, COLOURED_DUST, CRIT, CRIT_MAGIC, DAMAGE_INDICATOR,
 //   DOOR_CLOSE, DOOR_TOGGLE, DRAGON_BREATH, DRIP_LAVA, DRIP_WATER, ENCHANTMENT_TABLE, END_GATEWAY_SPAWN, END_ROD,
@@ -68,6 +69,9 @@ public class PlayEffectCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(dLocation.class)) {
+                if (arg.matchesOnePrefix("at")) {
+                    scriptEntry.addObject("no_offset", new Element(true));
+                }
 
                 scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
             }
@@ -91,47 +95,35 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 else if (arg.startsWith("iconcrack_")) {
-                    // Allow iconcrack_[id],[data] for item break effects (ex: iconcrack_1)
+                    // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
-                    String[] split = shrunk.split(",");
-                    Element typeId = new Element(split[0]);
-                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-                        scriptEntry.addObject("iconcrack", typeId);
+                    dItem item = dItem.valueOf(shrunk);
+                    if (item != null) {
+                        scriptEntry.addObject("iconcrack", item);
                     }
                     else {
-                        dB.echoError("Invalid iconcrack_[id]. Must be a valid Material ID, besides 0.");
+                        dB.echoError("Invalid iconcrack_[item]. Must be a valid dItem!");
                     }
-                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-                    scriptEntry.addObject("iconcrack_data", dataId);
-                    scriptEntry.addObject("iconcrack_type", new Element("iconcrack"));
                 }
                 else if (arg.startsWith("blockcrack_")) {
                     String shrunk = arg.getValue().substring("blockcrack_".length());
-                    String[] split = shrunk.split(",");
-                    Element typeId = new Element(split[0]);
-                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-                        scriptEntry.addObject("iconcrack", typeId);
+                    dMaterial material = dMaterial.valueOf(shrunk);
+                    if (material != null) {
+                        scriptEntry.addObject("blockcrack", material);
                     }
                     else {
-                        dB.echoError("Invalid blockcrack_[id]. Must be a valid Material ID, besides 0.");
+                        dB.echoError("Invalid blockcrack_[item]. Must be a valid dMaterial!");
                     }
-                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-                    scriptEntry.addObject("iconcrack_data", dataId);
-                    scriptEntry.addObject("iconcrack_type", new Element("blockcrack"));
                 }
                 else if (arg.startsWith("blockdust_")) {
                     String shrunk = arg.getValue().substring("blockdust_".length());
-                    String[] split = shrunk.split(",");
-                    Element typeId = new Element(split[0]);
-                    if (typeId.isInt() && typeId.asInt() > 0 && Material.getMaterial(typeId.asInt()) != null) {
-                        scriptEntry.addObject("iconcrack", typeId);
+                    dMaterial material = dMaterial.valueOf(shrunk);
+                    if (material != null) {
+                        scriptEntry.addObject("blockdust", material);
                     }
                     else {
-                        dB.echoError("Invalid blockdust_[id]. Must be a valid Material ID, besides 0.");
+                        dB.echoError("Invalid blockdust_[item]. Must be a valid dMaterial!");
                     }
-                    Element dataId = new Element(split.length <= 1 ? "0" : split[1]);
-                    scriptEntry.addObject("iconcrack_data", dataId);
-                    scriptEntry.addObject("iconcrack_type", new Element("blockdust"));
                 }
                 else if (particleHelper.hasEffect(arg.getValue())) {
                     scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
@@ -192,7 +184,9 @@ public class PlayEffectCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("effect") &&
                 !scriptEntry.hasObject("particleeffect") &&
-                !scriptEntry.hasObject("iconcrack")) {
+                !scriptEntry.hasObject("iconcrack") &&
+                !scriptEntry.hasObject("blockcrack") &&
+                !scriptEntry.hasObject("blockdust")) {
             throw new InvalidArgumentsException("Missing effect argument!");
         }
 
@@ -209,28 +203,37 @@ public class PlayEffectCommand extends AbstractCommand {
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         Effect effect = (Effect) scriptEntry.getObject("effect");
         Particle particleEffect = (Particle) scriptEntry.getObject("particleeffect");
-        Element iconcrack = scriptEntry.getElement("iconcrack");
-        Element iconcrack_data = scriptEntry.getElement("iconcrack_data");
-        Element iconcrack_type = scriptEntry.getElement("iconcrack_type");
+        dItem iconcrack = scriptEntry.getdObject("iconcrack");
+        dMaterial blockcrack = scriptEntry.getdObject("blockcrack");
+        dMaterial blockdust = scriptEntry.getdObject("blockdust");
         Element radius = scriptEntry.getElement("radius");
         Element data = scriptEntry.getElement("data");
         Element qty = scriptEntry.getElement("qty");
+        Element no_offset = scriptEntry.getElement("no_offset");
+        boolean should_offset = no_offset == null || !no_offset.asBoolean();
         dLocation offset = scriptEntry.getdObject("offset");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
-                particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
-                        iconcrack_type.debug() + iconcrack.debug() + (iconcrack_data != null ? iconcrack_data.debug() : "")) +
-                aH.debugObj("locations", locations.toString()) +
-                (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
-                radius.debug() +
-                data.debug() +
-                qty.debug() +
-                offset.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), (effect != null ? aH.debugObj("effect", effect.getName()) :
+                    particleEffect != null ? aH.debugObj("special effect", particleEffect.getName()) :
+                            (iconcrack != null ? iconcrack.debug()
+                                    : blockcrack != null ? blockcrack.debug()
+                                    : blockdust.debug())) +
+                    aH.debugObj("locations", locations.toString()) +
+                    (targets != null ? aH.debugObj("targets", targets.toString()) : "") +
+                    radius.debug() +
+                    data.debug() +
+                    qty.debug() +
+                    offset.debug() +
+                    (should_offset ? aH.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
+        }
 
         for (dLocation location : locations) {
-            // Slightly increase the location's Y so effects don't seem to come out of the ground
-            location = new dLocation(location.clone().add(0, 1, 0));
+            if (should_offset) {
+                // Slightly increase the location's Y so effects don't seem to come out of the ground
+                location = new dLocation(location.clone().add(0, 1, 0));
+            }
 
             // Play the Bukkit effect the number of times specified
             if (effect != null) {
@@ -292,23 +295,23 @@ public class PlayEffectCommand extends AbstractCommand {
                         }
                     }
                 }
-                // TODO: better this all
-                if (iconcrack_type.asString().equalsIgnoreCase("iconcrack")) {
-                    ItemStack itemStack = new ItemStack(iconcrack.asInt(), 1, (short) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+
+                if (iconcrack != null) {
+                    ItemStack itemStack = iconcrack.getItemStack();
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("ITEM_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), itemStack);
                     }
                 }
-                else if (iconcrack_type.asString().equalsIgnoreCase("blockcrack")) {
-                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                else if (blockcrack != null) {
+                    MaterialData materialData = blockcrack.getMaterialData();
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_CRACK");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);
                     }
                 }
                 else { // blockdust
-                    MaterialData materialData = new MaterialData(iconcrack.asInt(), (byte) (iconcrack_data != null ? iconcrack_data.asInt() : 0));
+                    MaterialData materialData = blockdust.getMaterialData();
                     Particle particle = NMSHandler.getInstance().getParticleHelper().getParticle("BLOCK_DUST");
                     for (Player player : players) {
                         particle.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), materialData);

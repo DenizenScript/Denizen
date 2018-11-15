@@ -50,7 +50,11 @@ public class NBTCommand extends AbstractCommand {
         Element key = scriptEntry.getElement("key");
         Element value = scriptEntry.getElement("value");
 
-        dB.report(scriptEntry, getName(), item.debug() + key.debug() + value.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), item.debug() + key.debug() + value.debug());
+
+        }
 
         ItemStack itemStack = item.getItemStack();
 

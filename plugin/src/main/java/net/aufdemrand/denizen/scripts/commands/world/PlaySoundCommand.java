@@ -81,13 +81,17 @@ public class PlaySoundCommand extends AbstractCommand {
         Element pitch = scriptEntry.getElement("pitch");
         Element custom = scriptEntry.getElement("custom");
 
-        dB.report(scriptEntry, getName(),
-                (locations != null ? aH.debugObj("locations", locations.toString()) : "") +
-                        (players != null ? aH.debugObj("entities", players.toString()) : "") +
-                        sound.debug() +
-                        volume.debug() +
-                        pitch.debug() +
-                        custom.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    (locations != null ? aH.debugObj("locations", locations.toString()) : "") +
+                            (players != null ? aH.debugObj("entities", players.toString()) : "") +
+                            sound.debug() +
+                            volume.debug() +
+                            pitch.debug() +
+                            custom.debug());
+
+        }
 
         try {
             if (locations != null) {

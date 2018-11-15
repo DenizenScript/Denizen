@@ -95,13 +95,15 @@ public class FireworkCommand extends AbstractCommand {
         List<dColor> fade = (List<dColor>) scriptEntry.getObject("fade");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), location.debug() +
-                type.debug() +
-                power.debug() +
-                (flicker ? aH.debugObj("flicker", flicker) : "") +
-                (trail ? aH.debugObj("trail", trail) : "") +
-                aH.debugObj("primary colors", primary.toString()) +
-                (fade != null ? aH.debugObj("fade colors", fade.toString()) : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), location.debug() +
+                    type.debug() +
+                    power.debug() +
+                    (flicker ? aH.debugObj("flicker", flicker) : "") +
+                    (trail ? aH.debugObj("trail", trail) : "") +
+                    aH.debugObj("primary colors", primary.toString()) +
+                    (fade != null ? aH.debugObj("fade colors", fade.toString()) : ""));
+        }
 
         Firework firework = location.getWorld().spawn(location, Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();

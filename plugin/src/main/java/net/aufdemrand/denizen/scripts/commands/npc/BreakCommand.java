@@ -86,7 +86,11 @@ public class BreakCommand extends AbstractCommand implements Holdable {
         context.put("location", location);
         context.put("material", material);
 
-        dB.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), location.debug() + npc.debug() + radius.debug());
+
+        }
 
         final ScriptEntry se = scriptEntry;
         BlockBreaker.BlockBreakerConfiguration config = new BlockBreaker.BlockBreakerConfiguration();

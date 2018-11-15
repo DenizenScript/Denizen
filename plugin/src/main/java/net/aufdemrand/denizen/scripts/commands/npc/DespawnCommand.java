@@ -50,8 +50,10 @@ public class DespawnCommand extends AbstractCommand {
         List<dNPC> npcs = (List<dNPC>) scriptEntry.getObject("npcs");
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                aH.debugObj("NPCs", npcs.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    aH.debugObj("NPCs", npcs.toString()));
+        }
 
         for (dNPC npc : npcs) {
             if (npc.isSpawned()) {

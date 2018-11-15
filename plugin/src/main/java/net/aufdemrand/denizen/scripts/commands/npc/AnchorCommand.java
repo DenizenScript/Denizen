@@ -70,10 +70,12 @@ public class AnchorCommand extends AbstractCommand {
         dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
 
         // Report to dB
-        dB.report(scriptEntry, getName(),
-                npc.debug() + action.name() + id.debug()
-                        + (location != null ? location.debug() : "")
-                        + (range != null ? range.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(),
+                    npc.debug() + action.name() + id.debug()
+                            + (location != null ? location.debug() : "")
+                            + (range != null ? range.debug() : ""));
+        }
 
         if (!npc.getCitizen().hasTrait(Anchors.class)) {
             npc.getCitizen().addTrait(Anchors.class);

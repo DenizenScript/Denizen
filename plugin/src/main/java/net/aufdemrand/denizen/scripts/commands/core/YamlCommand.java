@@ -16,8 +16,6 @@ import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
-import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -215,15 +213,19 @@ public class YamlCommand extends AbstractCommand {
 
         YamlConfiguration yamlConfiguration;
 
-        dB.report(scriptEntry, getName(),
-                idElement.debug()
-                        + actionElement.debug()
-                        + (filename != null ? filename.debug() : "")
-                        + (yaml_action != null ? aH.debugObj("yaml_action", yaml_action.name()) : "")
-                        + (key != null ? key.debug() : "")
-                        + (value != null ? value.debug() : "")
-                        + (split != null ? split.debug() : "")
-                        + fixFormatting.debug());
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(),
+                    idElement.debug()
+                            + actionElement.debug()
+                            + (filename != null ? filename.debug() : "")
+                            + (yaml_action != null ? aH.debugObj("yaml_action", yaml_action.name()) : "")
+                            + (key != null ? key.debug() : "")
+                            + (value != null ? value.debug() : "")
+                            + (split != null ? split.debug() : "")
+                            + fixFormatting.debug());
+
+        }
 
         // Do action
         Action action = Action.valueOf(actionElement.asString().toUpperCase());

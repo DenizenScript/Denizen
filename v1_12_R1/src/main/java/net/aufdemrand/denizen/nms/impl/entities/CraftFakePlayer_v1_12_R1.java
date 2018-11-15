@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.impl.entities;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -9,8 +10,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CraftFakePlayer_v1_12_R1 extends CraftPlayer implements FakePlayer {
 
@@ -54,12 +55,12 @@ public class CraftFakePlayer_v1_12_R1 extends CraftPlayer implements FakePlayer 
     }
 
     @Override
-    public Block getTargetBlock(HashSet<Byte> hashSet, int i) {
+    public Block getTargetBlock(Set<Material> hashSet, int i) {
         return null;
     }
 
     @Override
-    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> hashSet, int i) {
+    public List<Block> getLastTwoTargetBlocks(Set<Material> hashSet, int i) {
         return null;
     }
 }

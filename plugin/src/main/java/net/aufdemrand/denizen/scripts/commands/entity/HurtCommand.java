@@ -87,10 +87,14 @@ public class HurtCommand extends AbstractCommand {
         Element amountElement = scriptEntry.getElement("amount");
         Element cause = scriptEntry.getElement("cause");
 
-        dB.report(scriptEntry, getName(), amountElement.debug()
-                + aH.debugList("entities", entities)
-                + (cause == null ? "" : cause.debug())
-                + (source == null ? "" : source.debug()));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), amountElement.debug()
+                    + aH.debugList("entities", entities)
+                    + (cause == null ? "" : cause.debug())
+                    + (source == null ? "" : source.debug()));
+
+        }
 
         double amount = amountElement.asDouble();
         for (dEntity entity : entities) {

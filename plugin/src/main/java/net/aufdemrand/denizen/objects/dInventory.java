@@ -105,6 +105,10 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public String notableColors = null;
 
+    // in 1.13, we use "&1.&2.&3.", below that we can just use "&1&2&3"
+    public static int inventoryNameNotableRequired = NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? 9 : 6;
+    public static int inventoryNameNotableMax = 32 - inventoryNameNotableRequired;
+
     public void makeUnique(String id) {
         String title = inventory.getTitle();
         if (title == null || title.startsWith("container.")) {
@@ -112,8 +116,8 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         // You can only have 32 characters in an inventory title... So let's make sure we have at least 3 colors...
         // which brings notable inventory title lengths down to 26... TODO: document this/fix if possible in later version
-        if (title.length() > 26) {
-            title = title.substring(0, title.charAt(25) == '§' ? 25 : 26);
+        if (title.length() > inventoryNameNotableMax) {
+            title = title.substring(0, title.charAt(inventoryNameNotableMax - 1) == '§' ? (inventoryNameNotableMax - 1) : inventoryNameNotableMax);
         }
         String colors;
         int x = 0;
@@ -123,7 +127,12 @@ public class dInventory implements dObject, Notable, Adjustable {
                 dB.echoError("Inventory note failed - too many notes already!");
                 return;
             }
-            colors = Utilities.generateRandomColors(3);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                colors = Utilities.generateRandomColorsWithDots(3);
+            }
+            else {
+                colors = Utilities.generateRandomColors(3);
+            }
             if (!InventoryScriptHelper.notableInventories.containsKey(title + colors)) {
                 notableColors = colors;
                 ItemStack[] contents = inventory.getContents();

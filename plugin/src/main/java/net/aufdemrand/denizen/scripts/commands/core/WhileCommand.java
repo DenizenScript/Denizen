@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
@@ -11,7 +10,6 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.BracedCommand;
 import net.aufdemrand.denizencore.scripts.commands.core.IfCommand;
-import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 
 import java.util.ArrayList;
@@ -74,7 +72,9 @@ public class WhileCommand extends BracedCommand {
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), stop.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), stop.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -102,7 +102,9 @@ public class WhileCommand extends BracedCommand {
         }
         else if (next != null && next.asBoolean()) {
             // Report to dB
-            dB.report(scriptEntry, getName(), next.debug());
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), next.debug());
+            }
             boolean hasnext = false;
             for (int i = 0; i < scriptEntry.getResidingQueue().getQueueSize(); i++) {
                 ScriptEntry entry = scriptEntry.getResidingQueue().getEntry(i);
@@ -190,7 +192,9 @@ public class WhileCommand extends BracedCommand {
             boolean run = new IfCommand.ArgComparer().compare(comparisons, scriptEntry);
 
             // Report to dB
-            dB.report(scriptEntry, getName(), aH.debugObj("run_first_loop", run));
+            if (scriptEntry.dbCallShouldDebug()) {
+                dB.report(scriptEntry, getName(), aH.debugObj("run_first_loop", run));
+            }
 
             if (!run) {
                 return;

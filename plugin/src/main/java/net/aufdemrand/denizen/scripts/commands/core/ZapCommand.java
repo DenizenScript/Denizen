@@ -73,10 +73,14 @@ public class ZapCommand extends AbstractCommand implements Listener {
         final dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
-        dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() + script.debug()
-                + (scriptEntry.hasObject("step")
-                ? scriptEntry.getElement("step").debug() : aH.debugObj("step", "++ (inc)"))
-                + (duration != null ? duration.debug() : ""));
+        if (scriptEntry.dbCallShouldDebug()) {
+
+            dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() + script.debug()
+                    + (scriptEntry.hasObject("step")
+                    ? scriptEntry.getElement("step").debug() : aH.debugObj("step", "++ (inc)"))
+                    + (duration != null ? duration.debug() : ""));
+
+        }
 
         String step = scriptEntry.hasObject("step") ? scriptEntry.getElement("step").asString() : null;
 

@@ -71,7 +71,7 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
             npc.data().setPersistent("removefromplayerlist", false);
             NMS.addOrRemoveFromPlayerList(ent, false);
         }
-        else if (ent.getType() == EntityType.ARMOR_STAND) {
+        if (ent.getType() == EntityType.ARMOR_STAND) {
             ((ArmorStand) ent).setVisible(false);
             if (npc != null) {
                 npc.getTrait(ArmorStandTrait.class).setVisible(false);

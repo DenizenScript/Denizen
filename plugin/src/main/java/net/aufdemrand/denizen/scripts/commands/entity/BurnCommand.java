@@ -54,8 +54,10 @@ public class BurnCommand extends AbstractCommand {
         Duration duration = (Duration) scriptEntry.getObject("duration");
 
         // Report to dB
-        dB.report(scriptEntry, getName(), duration.debug() +
-                aH.debugObj("entities", entities.toString()));
+        if (scriptEntry.dbCallShouldDebug()) {
+            dB.report(scriptEntry, getName(), duration.debug() +
+                    aH.debugObj("entities", entities.toString()));
+        }
 
         // Go through all the entities and set them on fire
         for (dEntity entity : entities) {
