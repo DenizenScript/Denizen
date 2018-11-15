@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -8,9 +10,12 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.WorldBorder;
+
+import java.util.List;
 
 public class WorldBorderCommand extends AbstractCommand {
 
@@ -39,6 +44,11 @@ public class WorldBorderCommand extends AbstractCommand {
                     && arg.matchesPrefix("size")) {
                 scriptEntry.addObject("size", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("current_size")
+                    && arg.matchesPrimitive(aH.PrimitiveType.Double)
+                    && arg.matchesPrefix("current_size")) {
+                scriptEntry.addObject("current_size", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
                     && arg.matchesPrefix("duration")) {
@@ -58,6 +68,10 @@ public class WorldBorderCommand extends AbstractCommand {
                     && arg.matchesArgumentType(dWorld.class)) {
                 scriptEntry.addObject("world", arg.asType(dWorld.class));
             }
+            else if (!scriptEntry.hasObject("players")
+                    && arg.matchesArgumentList(dPlayer.class)) {
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+            }
             else if (!scriptEntry.hasObject("reset")
                     && arg.matches("reset")) {
                 scriptEntry.addObject("reset", new Element("true"));
@@ -69,8 +83,8 @@ public class WorldBorderCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("world")) {
-            throw new InvalidArgumentsException("Must specify a world!");
+        if (!scriptEntry.hasObject("world") && !scriptEntry.hasObject("players") ) {
+            throw new InvalidArgumentsException("Must specify a world or players!");
         }
 
         if (!scriptEntry.hasObject("center") && !scriptEntry.hasObject("size")
@@ -90,8 +104,10 @@ public class WorldBorderCommand extends AbstractCommand {
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
         dWorld world = (dWorld) scriptEntry.getObject("world");
+        List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
         dLocation center = (dLocation) scriptEntry.getObject("center");
         Element size = scriptEntry.getElement("size");
+        Element currSize = scriptEntry.getElement("current_size");
         Element damage = scriptEntry.getElement("damage");
         Element damagebuffer = scriptEntry.getElement("damagebuffer");
         Duration duration = scriptEntry.getdObject("duration");
@@ -101,15 +117,41 @@ public class WorldBorderCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), world.debug()
+            dB.report(scriptEntry, getName(), (world != null ? world.debug() : "")
+                    + (players != null ? aH.debugList("Player(s)", players) : "")
                     + (center != null ? center.debug() : "")
                     + (size != null ? size.debug() : "")
+                    + (currSize != null ? currSize.debug() : "")
                     + (damage != null ? damage.debug() : "")
                     + (damagebuffer != null ? damagebuffer.debug() : "")
                     + (warningdistance != null ? warningdistance.debug() : "")
                     + (warningtime != null ? warningtime.debug() : "")
                     + duration.debug() + reset.debug());
 
+        }
+
+        // Handle client-side world borders
+        if (players != null) {
+            if (reset.asBoolean()) {
+                for (dPlayer player : players) {
+                    NMSHandler.getInstance().getPacketHelper().resetWorldBorder(player.getPlayerEntity());
+                }
+                return;
+            }
+
+            WorldBorder wb;
+            for (dPlayer player : players) {
+                wb = player.getWorld().getWorldBorder();
+                NMSHandler.getInstance().getPacketHelper().setWorldBorder(
+                        player.getPlayerEntity(),
+                        (center != null ? center : wb.getCenter()),
+                        (size != null ? size.asDouble() : wb.getSize()),
+                        (currSize != null ? currSize.asDouble() : wb.getSize()),
+                        duration.getMillis(),
+                        (warningdistance != null ? warningdistance.asInt() : wb.getWarningDistance()),
+                        (warningtime != null ? warningtime.getSecondsAsInt() : wb.getWarningTime()));
+            }
+            return;
         }
 
         WorldBorder worldborder = world.getWorld().getWorldBorder();
@@ -124,6 +166,9 @@ public class WorldBorderCommand extends AbstractCommand {
         }
 
         if (size != null) {
+            if (currSize != null) {
+                worldborder.setSize(currSize.asDouble());
+            }
             worldborder.setSize(size.asDouble(), duration.getSecondsAsInt());
         }
 

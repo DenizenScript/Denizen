@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
-import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
@@ -34,6 +33,31 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PacketHelper_v1_13_R2 implements PacketHelper {
+
+    @Override
+    public void resetWorldBorder(Player player) {
+        WorldBorder wb = ((CraftWorld) player.getWorld()).getHandle().getWorldBorder();
+        sendPacket(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+    }
+
+    @Override
+    public void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime) {
+        WorldBorder wb = new WorldBorder();
+
+        wb.world = ((CraftWorld) player.getWorld()).getHandle();
+        wb.setCenter(center.getX(), center.getZ());
+        wb.setWarningDistance(warningDistance);
+        wb.setWarningTime(warningTime);
+
+        if (time > 0) {
+            wb.transitionSizeBetween(currSize, size, time);
+        }
+        else {
+            wb.setSize(size);
+        }
+
+        sendPacket(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));
+    }
 
     @Override
     public void setSlot(Player player, int slot, ItemStack itemStack, boolean playerOnly) {
