@@ -44,10 +44,10 @@ public class WorldBorderCommand extends AbstractCommand {
                     && arg.matchesPrefix("size")) {
                 scriptEntry.addObject("size", arg.asElement());
             }
-            else if (!scriptEntry.hasObject("curr_size")
+            else if (!scriptEntry.hasObject("current_size")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
-                    && arg.matchesPrefix("curr_size")) {
-                scriptEntry.addObject("curr_size", arg.asElement());
+                    && arg.matchesPrefix("current_size")) {
+                scriptEntry.addObject("current_size", arg.asElement());
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)
@@ -107,7 +107,7 @@ public class WorldBorderCommand extends AbstractCommand {
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
         dLocation center = (dLocation) scriptEntry.getObject("center");
         Element size = scriptEntry.getElement("size");
-        Element currSize = scriptEntry.getElement("curr_size");
+        Element currSize = scriptEntry.getElement("current_size");
         Element damage = scriptEntry.getElement("damage");
         Element damagebuffer = scriptEntry.getElement("damagebuffer");
         Duration duration = scriptEntry.getdObject("duration");
