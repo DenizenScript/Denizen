@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.utilities.DenizenAliasHelpTopic;
 import net.aufdemrand.denizen.utilities.DenizenCommand;
 import net.aufdemrand.denizen.utilities.DenizenCommandHelpTopic;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -35,12 +36,12 @@ public class CommandScriptHelper implements Listener {
 
     public CommandScriptHelper() {
         try {
-            final Server server = DenizenAPI.getCurrentInstance().getServer();
+            Server server = Bukkit.getServer();
 
             server.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
 
             // Get the CommandMap for the server
-            final Field commandMapField = server.getClass().getDeclaredField("commandMap");
+            Field commandMapField = server.getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);
             CommandMap commandMap = (CommandMap) commandMapField.get(server);
 
@@ -92,17 +93,30 @@ public class CommandScriptHelper implements Listener {
         }
     }
 
+    public static final Method syncCommandsMethod;
+
+    static {
+        Method syncMethod = null;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            try {
+                syncMethod = Bukkit.getServer().getClass().getDeclaredMethod("syncCommands");
+                syncMethod.setAccessible(true);
+            }
+            catch (Exception e) {
+                dB.echoError("Failed to load helper to synchronize server commands.");
+            }
+        }
+        syncCommandsMethod = syncMethod;
+    }
+
     /**
      * In 1.13+, commands are also sent to players client-side via packets.
      * We need to sync them for tab completion to work.
      */
     public static void syncDenizenCommands() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+        if (syncCommandsMethod != null) {
             try {
-                final Server server = DenizenAPI.getCurrentInstance().getServer();
-                final Method syncMethod = server.getClass().getDeclaredMethod("syncCommands");
-                syncMethod.setAccessible(true);
-                syncMethod.invoke(server);
+                syncCommandsMethod.invoke(Bukkit.getServer());
             }
             catch (Exception e) {
                 dB.echoError("Failed to synchronize server commands.");
