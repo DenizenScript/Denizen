@@ -741,13 +741,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.drops>
+        // @attribute <l@location.drops[(<item>)]>
         // @returns dList(dItem)
         // @description
         // Returns what items the block at the location would drop if broken naturally.
+        // Optionally specifier a breaker item.
         // -->
         if (attribute.startsWith("drops")) {
-            Collection<ItemStack> its = getBlock().getDrops();
+            Collection<ItemStack> its;
+            if (attribute.hasContext(1)) {
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                its = getBlock().getDrops(item.getItemStack());
+            }
+            else {
+                its = getBlock().getDrops();
+            }
             dList list = new dList();
             for (ItemStack it : its) {
                 list.add(new dItem(it).identify());
