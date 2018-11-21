@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.CuboidBlockSet;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -178,6 +179,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 try {
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                    if (!Utilities.canReadFile(f)) {
+                        dB.echoError("Server config denies reading files in that location.");
+                        return;
+                    }
                     if (!f.exists()) {
                         dB.echoError("Schematic file " + fname + " does not exist. Are you sure it's in " + directory + "/plugins/Denizen/schematics/?");
                         return;
@@ -282,6 +287,10 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
+                    if (!Utilities.isSafeFile(f)) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
+                        return;
+                    }
                     f.getParentFile().mkdirs();
                     // TODO: Make me waitable!
                     FileOutputStream fs = new FileOutputStream(f);

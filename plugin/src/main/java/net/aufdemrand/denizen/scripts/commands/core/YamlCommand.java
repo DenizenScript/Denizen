@@ -235,6 +235,10 @@ public class YamlCommand extends AbstractCommand {
 
             case LOAD:
                 File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString());
+                if (!Utilities.canReadFile(file)) {
+                    dB.echoError("Server config denies reading files in that location.");
+                    return;
+                }
                 if (!file.exists()) {
                     dB.echoError("File cannot be found!");
                     return;

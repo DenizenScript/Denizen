@@ -62,6 +62,9 @@ public class MapImage extends MapObject {
         if (actualFile == null) {
             String file = fileTag;
             actualFile = DenizenMapManager.getActualFile(file);
+            if (actualFile == null) {
+                return;
+            }
             imageIcon = new ImageIcon(actualFile);
             image = imageIcon.getImage();
             if (width == 0) {

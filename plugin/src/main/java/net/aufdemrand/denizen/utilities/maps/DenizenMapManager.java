@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.maps;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -182,7 +183,11 @@ public class DenizenMapManager {
     public static String getActualFile(String file) {
         String fileLower = CoreUtilities.toLowerCase(file);
         if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
-            return new File(imagesFolder, file).getPath();
+            File f = new File(imagesFolder, file).getPath();
+            if (!Utilities.canReadFile(f)) {
+                dB.echoError("Server config denies reading files in that location.");
+                return null;
+            }
         }
         else {
             try {
