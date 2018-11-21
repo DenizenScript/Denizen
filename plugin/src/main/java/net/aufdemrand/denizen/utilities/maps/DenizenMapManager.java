@@ -183,11 +183,12 @@ public class DenizenMapManager {
     public static String getActualFile(String file) {
         String fileLower = CoreUtilities.toLowerCase(file);
         if (!fileLower.startsWith("http://") && !fileLower.startsWith("https://")) {
-            File f = new File(imagesFolder, file).getPath();
+            File f = new File(imagesFolder, file);
             if (!Utilities.canReadFile(f)) {
                 dB.echoError("Server config denies reading files in that location.");
                 return null;
             }
+            return f.getPath();
         }
         else {
             try {
