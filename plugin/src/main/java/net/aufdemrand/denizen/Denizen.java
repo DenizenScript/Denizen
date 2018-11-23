@@ -806,6 +806,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
             PropertyParser.registerProperty(EntityArms.class, dEntity.class);
             PropertyParser.registerProperty(EntityBasePlate.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                PropertyParser.registerProperty(EntityBeamTarget.class, dEntity.class);
+            }
             PropertyParser.registerProperty(EntityBoundingBox.class, dEntity.class);
             PropertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
             PropertyParser.registerProperty(EntityColor.class, dEntity.class);
@@ -821,6 +824,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityHealth.class, dEntity.class);
             PropertyParser.registerProperty(EntityInfected.class, dEntity.class);
             PropertyParser.registerProperty(EntityInventory.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                PropertyParser.registerProperty(EntityIsShowingBottom.class, dEntity.class);
+            }
             PropertyParser.registerProperty(EntityItem.class, dEntity.class);
             PropertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
             PropertyParser.registerProperty(EntityKnockback.class, dEntity.class);
@@ -836,6 +842,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntitySize.class, dEntity.class);
             PropertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
             PropertyParser.registerProperty(EntitySpeed.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+                PropertyParser.registerProperty(EntitySpell.class, dEntity.class);
+            }
             PropertyParser.registerProperty(EntityTame.class, dEntity.class);
             PropertyParser.registerProperty(EntityVisible.class, dEntity.class);
 

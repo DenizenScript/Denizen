@@ -3,16 +3,21 @@ package net.aufdemrand.denizen.events.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityCombustByBlockEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 
 public class EntityCombustsScriptEvent extends BukkitScriptEvent implements Listener {
@@ -31,6 +36,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     // @Context
     // <context.entity> returns the entity that caught fire.
     // <context.duration> returns the length of the burn.
+    // <context.source> returns the dEntity or dLocation that caused the fire, if any. NOTE: Currently, if the source is a dLocation, the tag will return a null. It is expected that this will be fixed by Spigot in the future.
+    // <context.source_type> returns the type of the source, which can be: ENTITY, LOCATION, NONE.
     //
     // @Determine
     // Element(Number) set the length of duration.
@@ -107,6 +114,26 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
         }
         else if (name.equals("duration")) {
             return new Duration(burntime);
+        }
+        else if (name.equals("source")) {
+            if (event instanceof EntityCombustByEntityEvent) {
+                return new dEntity(((EntityCombustByEntityEvent) event).getCombuster());
+            }
+            else if (event instanceof EntityCombustByBlockEvent) {
+                Block combuster = ((EntityCombustByBlockEvent) event).getCombuster();
+                if (combuster != null) {
+                    return new dLocation(combuster.getLocation());
+                }
+            }
+        }
+        else if (name.equals("source_type")) {
+            if (event instanceof EntityCombustByEntityEvent) {
+                return new Element("ENTITY");
+            }
+            else if (event instanceof EntityCombustByBlockEvent) {
+                return new Element("LOCATION");
+            }
+            return new Element("NONE");
         }
         return super.getContext(name);
     }
