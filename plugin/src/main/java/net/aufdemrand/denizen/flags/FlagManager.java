@@ -217,6 +217,30 @@ public class FlagManager {
         return section != null ? _filterExpirations(section.getValues(true).keySet()) : null;
     }
 
+    public void shrinkGlobalFlags(Collection<String> set) {
+        for (String str : new HashSet<>(set)) {
+            if (!serverHasFlag(str)) {
+                set.remove(str);
+            }
+        }
+    }
+
+    public void shrinkPlayerFlags(dPlayer player, Collection<String> set) {
+        for (String str : new HashSet<>(set)) {
+            if (!playerHasFlag(player, str)) {
+                set.remove(str);
+            }
+        }
+    }
+
+    public void shrinkEntityFlags(dEntity entity, Collection<String> set) {
+        for (String str : new HashSet<>(set)) {
+            if (!entityHasFlag(entity, str)) {
+                set.remove(str);
+            }
+        }
+    }
+
     /**
      * Returns a list of flag names currently attached to the server.
      */

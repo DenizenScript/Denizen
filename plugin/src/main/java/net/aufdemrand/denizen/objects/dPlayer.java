@@ -798,6 +798,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         }
                     }
                 }
+                DenizenAPI.getCurrentInstance().flagManager().shrinkPlayerFlags(this, searchFlags);
+            }
+            else {
+                DenizenAPI.getCurrentInstance().flagManager().shrinkPlayerFlags(this, allFlags);
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));

@@ -284,6 +284,10 @@ public class ServerTags {
                         }
                     }
                 }
+                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(searchFlags);
+            }
+            else {
+                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(allFlags);
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));
