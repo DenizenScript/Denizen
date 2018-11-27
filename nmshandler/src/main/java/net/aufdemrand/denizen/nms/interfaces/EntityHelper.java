@@ -113,7 +113,13 @@ public interface EntityHelper {
      */
     Location eyeTrace(LivingEntity from, double range);
 
-    Location faceLocation(Location from, Location at);
+    default Location faceLocation(Location from, Location at) {
+        Vector direction = from.toVector().subtract(at.toVector()).normalize();
+        Location newLocation = from.clone();
+        newLocation.setYaw(180 - (float) Math.toDegrees(Math.atan2(direction.getX(), direction.getZ())));
+        newLocation.setPitch(90 - (float) Math.toDegrees(Math.acos(direction.getY())));
+        return newLocation;
+    }
 
     /**
      * Changes an entity's yaw and pitch to make it face a location.
@@ -130,6 +136,17 @@ public interface EntityHelper {
      * @param target The Entity it should be looking at.
      */
     void faceEntity(Entity entity, Entity target);
+
+    default boolean isFacingLocation(Location from, Location at, float yawLimitDegrees, float pitchLimitDegrees) {
+        Vector direction = from.toVector().subtract(at.toVector()).normalize();
+        float pitch = 90 - (float) Math.toDegrees(Math.acos(direction.getY()));
+        if (from.getPitch() > pitch + pitchLimitDegrees
+                || from.getPitch() < pitch - pitchLimitDegrees) {
+            return false;
+        }
+
+        return isFacingLocation(from, at, yawLimitDegrees);
+    }
 
     /**
      * Checks if a Location's yaw is facing another Location.

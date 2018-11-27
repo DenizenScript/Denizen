@@ -502,15 +502,6 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
     }
 
     @Override
-    public Location faceLocation(Location from, Location at) {
-        Vector direction = from.toVector().subtract(at.toVector()).normalize();
-        Location newLocation = from.clone();
-        newLocation.setYaw(180 - (float) Math.toDegrees(Math.atan2(direction.getX(), direction.getZ())));
-        newLocation.setPitch(90 - (float) Math.toDegrees(Math.acos(direction.getY())));
-        return newLocation;
-    }
-
-    @Override
     public void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) {
             return;

@@ -1097,18 +1097,37 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int attributePos = 1;
 
                 // <--[tag]
-                // @attribute <l@location.facing[<entity>/<location>].degrees[<#>]>
+                // @attribute <l@location.facing[<entity>/<location>].degrees[<#>(,<#>)]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the location's yaw is facing another
                 // entity or location, within a specified degree range.
+                // Optionally specify a pitch limit as well.
                 // -->
                 if (attribute.getAttribute(2).startsWith("degrees") &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-
-                    degrees = attribute.getIntContext(2);
-                    attributePos++;
+                        attribute.hasContext(2)) {
+                    String context = attribute.getContext(2);
+                    if (context.contains(",")) {
+                        String yaw = context.substring(0, context.indexOf(','));
+                        String pitch = context.substring(context.indexOf(',') + 1);
+                        degrees = aH.getIntegerFrom(yaw);
+                        int pitchDegrees = aH.getIntegerFrom(pitch);
+                        if (dLocation.matches(attribute.getContext(1))) {
+                            return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                                    (this, dLocation.valueOf(attribute.getContext(1)), degrees, pitchDegrees))
+                                    .getAttribute(attribute.fulfill(attributePos));
+                        }
+                        else if (dEntity.matches(attribute.getContext(1))) {
+                            return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                                    (this, dEntity.valueOf(attribute.getContext(1))
+                                            .getBukkitEntity().getLocation(), degrees, pitchDegrees))
+                                    .getAttribute(attribute.fulfill(attributePos));
+                        }
+                    }
+                    else {
+                        degrees = attribute.getIntContext(2);
+                        attributePos++;
+                    }
                 }
 
                 if (dLocation.matches(attribute.getContext(1))) {
