@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.material.MaterialData;
 
@@ -596,6 +597,13 @@ public class dMaterial implements dObject, Adjustable {
         }
         if (material.isBlock()) {
             material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+        }
+        // Forcible upvert.
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (material.isLegacy()) {
+                material = Bukkit.getUnsafe().fromLegacy(material);
+            }
+            return new dMaterial(material);
         }
         return new dMaterial(material, data);
     }
