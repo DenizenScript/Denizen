@@ -146,7 +146,14 @@ public interface EntityHelper {
      *                    we check if it is facing.
      * @return Returns a boolean.
      */
-    boolean isFacingLocation(Location from, Location at, float degreeLimit);
+    default boolean isFacingLocation(Location from, Location at, float degreeLimit) {
+        double currentYaw = normalizeYaw(from.getYaw());
+        double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
+                from.toVector()).normalize()));
+        return (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
+                Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
+                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
+    }
 
     /**
      * Checks if an Entity is facing a Location.
@@ -158,7 +165,9 @@ public interface EntityHelper {
      *                    is facing.
      * @return Returns a boolean.
      */
-    boolean isFacingLocation(Entity from, Location at, float degreeLimit);
+    default boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
+        return isFacingLocation(from.getLocation(), at, degreeLimit);
+    }
 
     /**
      * Checks if an Entity is facing another Entity.
@@ -170,7 +179,9 @@ public interface EntityHelper {
      *                    is facing.
      * @return Returns a boolean.
      */
-    boolean isFacingEntity(Entity from, Entity at, float degreeLimit);
+    default boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
+        return isFacingLocation(from.getLocation(), at.getLocation(), degreeLimit);
+    }
 
     /**
      * Normalizes Mincraft's yaws (which can be negative or can exceed 360)
@@ -179,7 +190,13 @@ public interface EntityHelper {
      * @param yaw The original yaw.
      * @return The normalized yaw.
      */
-    float normalizeYaw(float yaw);
+    default float normalizeYaw(float yaw) {
+        yaw = yaw % 360;
+        if (yaw < 0) {
+            yaw += 360.0;
+        }
+        return yaw;
+    }
 
     /**
      * Converts a vector to a yaw.
@@ -189,7 +206,26 @@ public interface EntityHelper {
      * @param vector The vector you want to get a yaw from.
      * @return The yaw.
      */
-    float getYaw(Vector vector);
+    default float getYaw(Vector vector) {
+        double dx = vector.getX();
+        double dz = vector.getZ();
+        double yaw = 0;
+        // Set yaw
+        if (dx != 0) {
+            // Set yaw start value based on dx
+            if (dx < 0) {
+                yaw = 1.5 * Math.PI;
+            }
+            else {
+                yaw = 0.5 * Math.PI;
+            }
+            yaw -= Math.atan(dz / dx);
+        }
+        else if (dz < 0) {
+            yaw = Math.PI;
+        }
+        return (float) (-yaw * 180 / Math.PI);
+    }
 
     /**
      * Converts a yaw to a cardinal direction name.
@@ -197,7 +233,40 @@ public interface EntityHelper {
      * @param yaw The yaw you want to get a cardinal direction from.
      * @return The name of the cardinal direction as a String.
      */
-    String getCardinal(float yaw);
+    default String getCardinal(float yaw) {
+        yaw = normalizeYaw(yaw);
+        // Compare yaws, return closest direction.
+        if (0 <= yaw && yaw < 22.5) {
+            return "south";
+        }
+        else if (22.5 <= yaw && yaw < 67.5) {
+            return "southwest";
+        }
+        else if (67.5 <= yaw && yaw < 112.5) {
+            return "west";
+        }
+        else if (112.5 <= yaw && yaw < 157.5) {
+            return "northwest";
+        }
+        else if (157.5 <= yaw && yaw < 202.5) {
+            return "north";
+        }
+        else if (202.5 <= yaw && yaw < 247.5) {
+            return "northeast";
+        }
+        else if (247.5 <= yaw && yaw < 292.5) {
+            return "east";
+        }
+        else if (292.5 <= yaw && yaw < 337.5) {
+            return "southeast";
+        }
+        else if (337.5 <= yaw && yaw < 360.0) {
+            return "south";
+        }
+        else {
+            return null;
+        }
+    }
 
     void move(Entity entity, Vector vector);
 
