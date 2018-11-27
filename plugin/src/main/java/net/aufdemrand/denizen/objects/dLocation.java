@@ -808,6 +808,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                if (profile == null) {
+                    return null;
+                }
                 String n = profile.getName();
                 if (n == null) {
                     n = ((Skull) blockState).getOwningPlayer().getName();
@@ -827,6 +830,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                if (profile == null) {
+                    return null;
+                }
                 String name = profile.getName();
                 UUID uuid = profile.getUniqueId();
                 String texture = profile.getTexture();
