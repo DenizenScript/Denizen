@@ -145,6 +145,7 @@ public class EntityEquipment implements Property {
         // @group inventory
         // @description
         // Returns a dList containing the entity's equipment.
+        // Output list is boots|leggings|chestplate|helmet
         // -->
         else if (attribute.startsWith("equipment")) {
             return entity.getEquipment().getAttribute(attribute.fulfill(1));
@@ -162,6 +163,7 @@ public class EntityEquipment implements Property {
         // @input dList(dItem)
         // @description
         // Sets the entity's worn equipment.
+        // Input list is boots|leggings|chestplate|helmet
         // @tags
         // <e@entity.equipment>
         // -->
