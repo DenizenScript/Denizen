@@ -1271,9 +1271,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Experience
         // @Syntax experience [{set}/give/take] (level) [<#>]
         // @Required 2
-        // @Stable stable
+        // @Stable unstable
         // @Short Gives or takes experience points to the player.
-        // @Author aufdemrand
+        // @Author aufdemrand, mcmonkey
         // @Group player
         //
         // @Description
