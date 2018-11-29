@@ -17,7 +17,7 @@ import org.bukkit.event.entity.LingeringPotionSplashEvent;
 
 public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: Fix Event (Maybe spigot)
+    // <--[event]
     // @Events
     // lingering potion splash (in <area>)
     // lingering <item> splashes (in <area>)
@@ -35,7 +35,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     // <context.radius> returns the radius of the effect cloud.
     // <context.duration> returns the lingering duration of the effect cloud.
     //
-    // -- >
+    // -->
 
     public LingeringPotionSplashScriptEvent() {
         instance = this;
