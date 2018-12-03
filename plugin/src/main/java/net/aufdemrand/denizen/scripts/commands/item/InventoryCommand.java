@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -84,8 +85,7 @@ public class InventoryCommand extends AbstractCommand {
 
             // Check for specified slot number
             else if (!scriptEntry.hasObject("slot")
-                    && arg.matchesPrefix("slot, s")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("slot, s")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
             else {
@@ -98,7 +98,9 @@ public class InventoryCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
         }
 
-        scriptEntry.defaultObject("slot", new Element(1)).defaultObject("destination",
+        scriptEntry.defaultObject("slot", new Element(1));
+
+        scriptEntry.defaultObject("destination",
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
                         new AbstractMap.SimpleEntry<Integer, dInventory>(0,
                                 ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory()) : null);
@@ -121,13 +123,17 @@ public class InventoryCommand extends AbstractCommand {
         Element slot = scriptEntry.getElement("slot");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             dB.report(scriptEntry, getName(),
                     aH.debugObj("actions", actions.toString())
                             + (destination.debug())
                             + (origin != null ? origin.debug() : "")
                             + slot.debug());
+        }
 
+        int slotId = SlotHelper.nameToIndex(slot.asString());
+        if (slotId == -1) {
+            dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+            return;
         }
 
         for (String action : actions) {
@@ -188,7 +194,7 @@ public class InventoryCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.add(slot.asInt() - 1, origin.getContents());
+                    destination.add(slotId, origin.getContents());
                     break;
 
                 // Remove origin's contents from destination
@@ -206,7 +212,7 @@ public class InventoryCommand extends AbstractCommand {
                         dB.echoError(scriptEntry.getResidingQueue(), "Missing origin argument!");
                         return;
                     }
-                    destination.setSlots(slot.asInt() - 1, origin.getContents(), originentry.getKey());
+                    destination.setSlots(slotId, origin.getContents(), originentry.getKey());
                     break;
 
                 // Keep only items from the origin's contents in the

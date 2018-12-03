@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -31,8 +32,7 @@ public class FakeItemCommand extends AbstractCommand {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("slot")
-                    && arg.matchesPrefix("slot")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
             else if (!scriptEntry.hasObject("duration")
@@ -88,7 +88,11 @@ public class FakeItemCommand extends AbstractCommand {
 
         }
 
-        int slot = elSlot.asInt() - 1;
+        int slot = SlotHelper.nameToIndex(elSlot.asString());
+        if (slot == -1) {
+            dB.echoError(scriptEntry.getResidingQueue(), "The input '" + elSlot.asString() + "' is not a valid slot!");
+            return;
+        }
         final boolean playerOnly = player_only.asBoolean();
 
         final PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();

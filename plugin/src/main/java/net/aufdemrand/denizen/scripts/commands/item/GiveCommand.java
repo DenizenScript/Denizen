@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -62,8 +63,7 @@ public class GiveCommand extends AbstractCommand {
                 scriptEntry.addObject("inventory", arg.asType(dInventory.class));
             }
             else if (!scriptEntry.hasObject("slot")
-                    && arg.matchesPrefix("slot")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
             else {
@@ -155,8 +155,13 @@ public class GiveCommand extends AbstractCommand {
                     if (engrave.asBoolean()) {
                         is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), CustomNBT.KEY_DENIZEN);
                     }
+                    int slotId = SlotHelper.nameToIndex(slot.asString());
+                    if (slotId == -1) {
+                        dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+                        return;
+                    }
 
-                    List<ItemStack> leftovers = inventory.addWithLeftovers(slot.asInt() - 1, limited, is);
+                    List<ItemStack> leftovers = inventory.addWithLeftovers(slotId, limited, is);
 
                     if (!leftovers.isEmpty()) {
                         dB.echoDebug(scriptEntry, "The inventory didn't have enough space, the rest of the items have been placed on the floor.");

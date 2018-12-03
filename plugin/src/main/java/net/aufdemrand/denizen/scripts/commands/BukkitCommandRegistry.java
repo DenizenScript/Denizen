@@ -112,10 +112,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - adjust e@1000 'custom_name:ANGRY!'
         //
         // @Usage
-        // Use as part of the steps to modify the item a player is holding
+        // Use as part of the steps to modify the item a player is holding (adjust the item, then swap the new item into the original inventory)
         // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
-        // - take iteminhand
-        // - give <entry[myitem].result>
+        // - inventory set slot:<player.item_in_hand.slot> d:<player.inventory> o:<entry[myitem].result>
         // -->
         registerCoreMember(AdjustCommand.class,
                 "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
@@ -1374,7 +1373,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name FakeItem
-        // @Syntax fakeitem [<item>|...] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
         // @Stable stable
         // @Short Show a fake item in a player's inventory.
@@ -1392,14 +1391,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to show a clientside-only pumpkin on the player's head.
-        // - fakeitem i@pumpkin slot:40
+        // - fakeitem i@pumpkin slot:head
         //
         // @Usage
         // Use to show a fake book in the player's hand for 1 tick.
         // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
         // -->
         registerCoreMember(FakeItemCommand.class,
-                "FAKEITEM", "fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
+                "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
 
 
         // <--[command]
@@ -1724,7 +1723,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)
+        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
@@ -1763,7 +1762,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - give WATCH slot:5
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)", 1);
+                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
 
 
         // <--[command]
@@ -1993,7 +1992,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -2044,7 +2043,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
 
 
         // <--[command]
@@ -3983,7 +3982,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (quantity:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/<item>|...] (quantity:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -4015,7 +4014,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - take emerald quantity:5
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Team
