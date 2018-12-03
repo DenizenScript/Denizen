@@ -103,20 +103,9 @@ public class SlotHelper {
         if (name.endsWith("s")) {
             name = name.substring(0, name.length() - 1);
         }
-        if (name.equals("boot") || name.equals("feet")) {
-            return BOOTS;
-        }
-        if (name.equals("legging") || name.equals("leg")) {
-            return LEGGINGS;
-        }
-        if (name.equals("chestplate") || name.equals("chest")) {
-            return CHESTPLATE;
-        }
-        if (name.equals("helmet") || name.equals("head")) {
-            return HELMET;
-        }
-        if (name.equals("offhand")) {
-            return OFFHAND;
+        Integer matched = nameIndexMap.get(name);
+        if (matched != null) {
+            return matched;
         }
         if (aH.matchesInteger(name)) {
             return aH.getIntegerFrom(name) - 1;
