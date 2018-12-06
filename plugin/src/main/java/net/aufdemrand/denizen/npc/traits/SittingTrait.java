@@ -131,7 +131,6 @@ public class SittingTrait extends Trait implements Listener {
         npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         sitInternal();
-        chairLocation = location.clone();
     }
 
     /**
@@ -141,6 +140,7 @@ public class SittingTrait extends Trait implements Listener {
      */
     public void sit(Location location) {
         sitInternal(location.clone().add(0, 0.5, 0));
+        chairLocation = location.clone();
     }
 
     // <--[action]
