@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
 import net.aufdemrand.denizen.utilities.midi.NoteBlockReceiver;
@@ -95,6 +96,11 @@ public class MidiCommand extends AbstractCommand implements Holdable {
 
         boolean cancel = scriptEntry.hasObject("cancel");
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;
+
+        if (!cancel && !Utilities.canReadFile(file)) {
+            dB.echoError("Server config denies reading files in that location.");
+            return;
+        }
 
         if (!cancel && !file.exists()) {
             dB.echoError(scriptEntry.getResidingQueue(), "Invalid file " + scriptEntry.getElement("file").asString());

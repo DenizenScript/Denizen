@@ -24,9 +24,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     // @group Events
     // @description
     // Possible damage causes
-    // BLOCK_EXPLOSION, CONTACT, CUSTOM, DROWNING, ENTITY_ATTACK, ENTITY_EXPLOSION,
-    // FALL, FALLING_BLOCK, FIRE, FIRE_TICK, LAVA, LIGHTNING, MAGIC, MELTING, POISON,
-    // PROJECTILE, STARVATION, SUFFOCATION, SUICIDE, THORNS, VOID, WITHER.
+    // See list in Spigot source here: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html>
     // -->
 
     // <--[event]

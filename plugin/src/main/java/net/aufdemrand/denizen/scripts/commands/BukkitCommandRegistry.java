@@ -112,10 +112,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - adjust e@1000 'custom_name:ANGRY!'
         //
         // @Usage
-        // Use as part of the steps to modify the item a player is holding
+        // Use as part of the steps to modify the item a player is holding (adjust the item, then swap the new item into the original inventory)
         // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
-        // - take iteminhand
-        // - give <entry[myitem].result>
+        // - inventory set slot:<player.item_in_hand.slot> d:<player.inventory> o:<entry[myitem].result>
         // -->
         registerCoreMember(AdjustCommand.class,
                 "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
@@ -1271,9 +1270,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Experience
         // @Syntax experience [{set}/give/take] (level) [<#>]
         // @Required 2
-        // @Stable stable
+        // @Stable unstable
         // @Short Gives or takes experience points to the player.
-        // @Author aufdemrand
+        // @Author aufdemrand, mcmonkey
         // @Group player
         //
         // @Description
@@ -1374,7 +1373,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name FakeItem
-        // @Syntax fakeitem [<item>|...] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)
+        // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
         // @Stable stable
         // @Short Show a fake item in a player's inventory.
@@ -1392,14 +1391,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to show a clientside-only pumpkin on the player's head.
-        // - fakeitem i@pumpkin slot:40
+        // - fakeitem i@pumpkin slot:head
         //
         // @Usage
         // Use to show a fake book in the player's hand for 1 tick.
         // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
         // -->
         registerCoreMember(FakeItemCommand.class,
-                "FAKEITEM", "fakeitem [<item>] [slot:<#>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
+                "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
 
 
         // <--[command]
@@ -1724,7 +1723,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Give
-        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)
+        // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
         // @Required 1
         // @Stable stable
         // @Short Gives the player an item, xp, or money.
@@ -1763,7 +1762,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - give WATCH slot:5
         // -->
         registerCoreMember(GiveCommand.class,
-                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<#>)", 1);
+                "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
 
 
         // <--[command]
@@ -1993,7 +1992,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -2044,7 +2043,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<#>)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
 
 
         // <--[command]
@@ -3983,7 +3982,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Take
-        // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (quantity:<#>) (from:<inventory>)
+        // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/<item>|...] (quantity:<#>) (from:<inventory>)
         // @Required 1
         // @Stable stable
         // @Short Takes an item from the player.
@@ -4015,7 +4014,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - take emerald quantity:5
         // -->
         registerCoreMember(TakeCommand.class,
-                "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<#>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
+                "TAKE", "take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/<item>|...] (qty:<#>) (from:<inventory>)", 1);
 
         // <--[command]
         // @Name Team
@@ -4410,7 +4409,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name WorldBorder
-        // @Syntax worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
+        // @Syntax worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
         // @Required 2
         // @Stable stable
         // @Short Modifies a world border.
@@ -4418,9 +4417,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Group world
         //
         // @Description
-        // Modifies the world border of a specified world.
-        // Optionally, you can specify a duration with the size to change
-        // the size over the course of the duration.
+        // Modifies the world border of a specified world or a list of players.
+        // NOTE: Modifying player world borders is client-side and will reset on death, relog, or other actions.
+        // Options are:
+        // center: Sets the center of the world border.
+        // size: Sets the new size of the world border.
+        // current_size: Sets the initial size of the world border when resizing it over a duration.
+        // damage: Sets the amount of damage a player takes when outside the world border buffer radius.
+        // damagebuffer: Sets the radius a player may safely be outside the world border before taking damage.
+        // warningdistance: Causes the screen to be tinted red when the player is within the specified radius from the world border.
+        // warningtime: Causes the screen to be tinted red when a contracting world border will reach the player within the specified time.
+        // duration: Causes the world border to grow or shrink from its current size to its new size over the specified duration.
+        // reset: Resets the world border to its vanilla defaults for a world, or to the current world border for players.
         //
         // @Tags
         // <l@location.is_within_border>
@@ -4438,9 +4446,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to update a world border's center, and then the size over the course of 10 seconds.
         // - worldborder <def[world]> center:<def[world].spawn_location> size:100 duration:10s
+        //
+        // @Usage
+        // Use to show a client-side world border to the attached player.
+        // - worldborder <player> center:<player.location> size:10
         // -->
         registerCoreMember(WorldBorderCommand.class,
-                "WORLDBORDER", "worldborder [<world>] (center:<location>) (size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>)", 2);
+                "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
 
 
         // <--[command]

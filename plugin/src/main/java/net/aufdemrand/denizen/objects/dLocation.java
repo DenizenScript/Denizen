@@ -741,13 +741,21 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.drops>
+        // @attribute <l@location.drops[(<item>)]>
         // @returns dList(dItem)
         // @description
         // Returns what items the block at the location would drop if broken naturally.
+        // Optionally specifier a breaker item.
         // -->
         if (attribute.startsWith("drops")) {
-            Collection<ItemStack> its = getBlock().getDrops();
+            Collection<ItemStack> its;
+            if (attribute.hasContext(1)) {
+                dItem item = dItem.valueOf(attribute.getContext(1));
+                its = getBlock().getDrops(item.getItemStack());
+            }
+            else {
+                its = getBlock().getDrops();
+            }
             dList list = new dList();
             for (ItemStack it : its) {
                 list.add(new dItem(it).identify());
@@ -800,6 +808,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                if (profile == null) {
+                    return null;
+                }
                 String n = profile.getName();
                 if (n == null) {
                     n = ((Skull) blockState).getOwningPlayer().getName();
@@ -819,6 +830,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             BlockState blockState = getBlock().getState();
             if (blockState instanceof Skull) {
                 PlayerProfile profile = NMSHandler.getInstance().getBlockHelper().getPlayerProfile((Skull) blockState);
+                if (profile == null) {
+                    return null;
+                }
                 String name = profile.getName();
                 UUID uuid = profile.getUniqueId();
                 String texture = profile.getTexture();
@@ -1089,18 +1103,37 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int attributePos = 1;
 
                 // <--[tag]
-                // @attribute <l@location.facing[<entity>/<location>].degrees[<#>]>
+                // @attribute <l@location.facing[<entity>/<location>].degrees[<#>(,<#>)]>
                 // @returns Element(Boolean)
                 // @description
                 // Returns whether the location's yaw is facing another
                 // entity or location, within a specified degree range.
+                // Optionally specify a pitch limit as well.
                 // -->
                 if (attribute.getAttribute(2).startsWith("degrees") &&
-                        attribute.hasContext(2) &&
-                        aH.matchesInteger(attribute.getContext(2))) {
-
-                    degrees = attribute.getIntContext(2);
-                    attributePos++;
+                        attribute.hasContext(2)) {
+                    String context = attribute.getContext(2);
+                    if (context.contains(",")) {
+                        String yaw = context.substring(0, context.indexOf(','));
+                        String pitch = context.substring(context.indexOf(',') + 1);
+                        degrees = aH.getIntegerFrom(yaw);
+                        int pitchDegrees = aH.getIntegerFrom(pitch);
+                        if (dLocation.matches(attribute.getContext(1))) {
+                            return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                                    (this, dLocation.valueOf(attribute.getContext(1)), degrees, pitchDegrees))
+                                    .getAttribute(attribute.fulfill(attributePos));
+                        }
+                        else if (dEntity.matches(attribute.getContext(1))) {
+                            return new Element(NMSHandler.getInstance().getEntityHelper().isFacingLocation
+                                    (this, dEntity.valueOf(attribute.getContext(1))
+                                            .getBukkitEntity().getLocation(), degrees, pitchDegrees))
+                                    .getAttribute(attribute.fulfill(attributePos));
+                        }
+                    }
+                    else {
+                        degrees = attribute.getIntContext(2);
+                        attributePos++;
+                    }
                 }
 
                 if (dLocation.matches(attribute.getContext(1))) {

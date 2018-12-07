@@ -72,13 +72,13 @@ public class CompoundTag_v1_13_R2 extends CompoundTag {
         for (String key : tag.getKeys()) {
             NBTBase base = tag.get(key);
             if (base instanceof NBTTagInt) {
-                tags.put(key, new IntTag(((NBTTagInt) base).e()));
+                tags.put(key, new IntTag(((NBTTagInt) base).asInt()));
             }
             else if (base instanceof NBTTagByte) {
-                tags.put(key, new ByteTag(((NBTTagByte) base).g()));
+                tags.put(key, new ByteTag(((NBTTagByte) base).asByte()));
             }
             else if (base instanceof NBTTagFloat) {
-                tags.put(key, new FloatTag(((NBTTagFloat) base).i()));
+                tags.put(key, new FloatTag(((NBTTagFloat) base).asFloat()));
             }
             else if (base instanceof NBTTagDouble) {
                 tags.put(key, new DoubleTag(((NBTTagDouble) base).asDouble()));
@@ -96,13 +96,13 @@ public class CompoundTag_v1_13_R2 extends CompoundTag {
                 tags.put(key, new EndTag());
             }
             else if (base instanceof NBTTagLong) {
-                tags.put(key, new LongTag(((NBTTagLong) base).d()));
+                tags.put(key, new LongTag(((NBTTagLong) base).asLong()));
             }
             else if (base instanceof NBTTagShort) {
-                tags.put(key, new ShortTag(((NBTTagShort) base).f()));
+                tags.put(key, new ShortTag(((NBTTagShort) base).asShort()));
             }
             else if (base instanceof NBTTagString) {
-                tags.put(key, new StringTag(((NBTTagString) base).b_()));
+                tags.put(key, new StringTag(((NBTTagString) base).asString()));
             }
             else if (base instanceof NBTTagList) {
                 NBTTagList list = (NBTTagList) base;

@@ -74,13 +74,15 @@ public class FileCopyCommand extends AbstractCommand {
         boolean dexists = d.exists();
         boolean disdir = d.isDirectory() || destination.asString().endsWith("/");
 
+        if (!Utilities.canReadFile(o)) {
+            dB.echoError("Server config denies reading files in that location.");
+            return;
+        }
         if (!o.exists()) {
             dB.echoError(scriptEntry.getResidingQueue(), "File copy failed, origin does not exist!");
             scriptEntry.addObject("success", new Element("false"));
             return;
         }
-
-        // TODO: Origin is within safe directory path?
 
         if (!Utilities.isSafeFile(d)) {
             dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files to there!");

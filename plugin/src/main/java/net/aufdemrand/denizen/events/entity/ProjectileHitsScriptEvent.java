@@ -39,6 +39,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // <context.location> returns the dLocation of the block that was hit.
     //
     // -->
+
     // <--[event]
     // @Events
     // entity shoots block (in <area>)

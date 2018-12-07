@@ -1513,6 +1513,10 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                         }
                     }
                 }
+                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(this, searchFlags);
+            }
+            else {
+                DenizenAPI.getCurrentInstance().flagManager().shrinkEntityFlags(this, allFlags);
             }
             return searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1));
@@ -2110,6 +2114,19 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
+        // @attribute <e@entity.is_collidable>
+        // @returns Element(Boolean)
+        // @mechanism collidable
+        // @group attributes
+        // @description
+        // Returns whether the entity is collidable.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("is_collidable")) {
+            return new Element(getLivingEntity().isCollidable())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <e@entity.killer>
         // @returns dPlayer
         // @group attributes
@@ -2149,12 +2166,25 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <e@entity.last_damage.duration>
         // @returns Duration
+        // @mechanism dEntity.no_damage_duration
         // @group attributes
         // @description
         // Returns the duration of the last damage taken by the entity.
         // -->
         if (attribute.startsWith("last_damage.duration")) {
             return new Duration((long) getLivingEntity().getNoDamageTicks())
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.last_damage.max_duration>
+        // @returns Duration
+        // @mechanism dEntity.max_no_damage_duration
+        // @group attributes
+        // @description
+        // Returns the maximum duration of the last damage taken by the entity.
+        if (attribute.startsWith("last_damage.max_duration")) {
+            return new Duration((long) getLivingEntity().getMaximumNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
         }
 
@@ -2248,6 +2278,31 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("gliding")) {
             return new Element(getLivingEntity().isGliding())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.swimming>
+        // @returns Element(Boolean)
+        // @mechanism dEntity.swimming
+        // @group attributes
+        // @description
+        // Returns whether this entity is swimming.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("swimming")) {
+            return new Element(getLivingEntity().isSwimming())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_using_riptide>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether this entity is using the Riptide enchantment.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("is_using_riptide")) {
+            return new Element(getLivingEntity().isRiptiding())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -3191,6 +3246,49 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object dEntity
+        // @name collidable
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is collidable.
+        // NOTE: To disable collision between two entities, set this mechanism to false on both entities.
+        // @tags
+        // <e@entity.is_collidable>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("collidable")
+                && mechanism.requireBoolean()) {
+            getLivingEntity().setCollidable(value.asBoolean());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name no_damage_duration
+        // @input Duration
+        // @description
+        // Sets the duration in which the entity will take no damage.
+        // @tags
+        // <e@entity.last_damage.duration>
+        // <e@entity.last_damage.max_duration>
+        // -->
+        if (mechanism.matches("no_damage_duration") && mechanism.requireObject(Duration.class)) {
+            getLivingEntity().setNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name max_no_damage_duration
+        // @input Duration
+        // @description
+        // Sets the maximum duration in which the entity will take no damage.
+        // @tags
+        // <e@entity.last_damage.duration>
+        // <e@entity.last_damage.max_duration>
+        // -->
+        if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(Duration.class)) {
+            getLivingEntity().setMaximumNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+        }
+
+        // <--[mechanism]
+        // @object dEntity
         // @name velocity
         // @input dLocation
         // @description
@@ -3594,6 +3692,20 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("hide_from_players")) {
             NMSHandler.getInstance().getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name swimming
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the entity is swimming.
+        // @tags
+        // <e@entity.swimming>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && mechanism.matches("swimming")
+                && mechanism.requireBoolean()) {
+            getLivingEntity().setSwimming(value.asBoolean());
         }
 
         // Iterate through this object's properties' mechanisms

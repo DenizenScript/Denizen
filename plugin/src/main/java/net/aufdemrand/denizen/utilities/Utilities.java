@@ -49,6 +49,22 @@ public class Utilities {
         }
     }
 
+    public static boolean isFileCanonicalStringSafe(String lown) {
+        if (lown.contains("denizen/config.yml")) {
+            return false;
+        }
+        if (lown.contains("denizen/scripts/")) {
+            return false;
+        }
+        if (lown.endsWith(".jar") || lown.endsWith(".java")) {
+            return false;
+        }
+        if (lown.endsWith("plugins/")) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isSafeFile(File f) {
         if (Settings.allowStupids()) {
             return true;
@@ -62,16 +78,7 @@ public class Utilities {
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
-            if (lown.contains("denizen/config.yml")) {
-                return false;
-            }
-            if (lown.contains("denizen/scripts/")) {
-                return false;
-            }
-            if (lown.endsWith(".jar") || lown.endsWith(".java")) {
-                return false;
-            }
-            return true;
+            return isFileCanonicalStringSafe(lown) && isFileCanonicalStringSafe(lown + "/");
         }
         catch (Exception ex) {
             dB.echoError(ex);

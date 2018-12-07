@@ -117,12 +117,7 @@ public class SittingTrait extends Trait implements Listener {
         sitting = false;
     }
 
-    /**
-     * Makes the NPC sit at the specified location
-     *
-     * @param location where to sit
-     */
-    public void sit(Location location) {
+    public void sitInternal(Location location) {
         DenizenAPI.getDenizenNPC(npc).action("sit", null);
 
         if (npc.getEntity().getType() != EntityType.PLAYER) {
@@ -133,10 +128,18 @@ public class SittingTrait extends Trait implements Listener {
          * Teleport NPC to the location before
          * sending the sit packet to the clients.
          */
-        // TODO: Make this work better.
-        npc.teleport(location.clone().add(0, 0.5, 0), PlayerTeleportEvent.TeleportCause.PLUGIN);
+        npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
 
         sitInternal();
+    }
+
+    /**
+     * Makes the NPC sit at the specified location
+     *
+     * @param location where to sit
+     */
+    public void sit(Location location) {
+        sitInternal(location.clone().add(0, 0.5, 0));
         chairLocation = location.clone();
     }
 

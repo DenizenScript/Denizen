@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -59,8 +60,7 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("slot")
                     && !scriptEntry.hasObject("type")
-                    && arg.matchesPrefix("slot")
-                    && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
+                    && arg.matchesPrefix("slot")) {
                 scriptEntry.addObject("type", Type.SLOT);
                 scriptEntry.addObject("slot", arg.asElement());
             }
@@ -235,7 +235,12 @@ public class TakeCommand extends AbstractCommand {
                 break;
 
             case SLOT:
-                inventory.setSlots(slot.asInt() - 1, new ItemStack(Material.AIR));
+                int slotId = SlotHelper.nameToIndex(slot.asString());
+                if (slotId == -1) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
+                    return;
+                }
+                inventory.setSlots(slotId, new ItemStack(Material.AIR));
                 break;
 
             case BYCOVER:

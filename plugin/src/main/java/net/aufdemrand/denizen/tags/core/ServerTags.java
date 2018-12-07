@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.ScriptEvent;
@@ -128,6 +129,21 @@ public class ServerTags {
             return;
         }
         Attribute attribute = event.getAttributes().fulfill(1);
+
+        // <--[tag]
+        // @attribute <server.slot_id[<slot>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the slot ID number for an input slot (see <@link language Slot Inputs>).
+        // -->
+        if (attribute.startsWith("slot_id")
+                && attribute.hasContext(1)) {
+            int slotId = SlotHelper.nameToIndex(attribute.getContext(1));
+            if (slotId != -1) {
+                event.setReplaced(new Element(slotId).getAttribute(attribute.fulfill(1)));
+            }
+            return;
+        }
 
         // <--[tag]
         // @attribute <server.object_is_valid[<object>]>
@@ -284,6 +300,10 @@ public class ServerTags {
                         }
                     }
                 }
+                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(searchFlags);
+            }
+            else {
+                DenizenAPI.getCurrentInstance().flagManager().shrinkGlobalFlags(allFlags);
             }
             event.setReplaced(searchFlags == null ? allFlags.getAttribute(attribute.fulfill(1))
                     : searchFlags.getAttribute(attribute.fulfill(1)));

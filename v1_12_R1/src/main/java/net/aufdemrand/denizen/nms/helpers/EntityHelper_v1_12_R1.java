@@ -633,15 +633,6 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     }
 
     @Override
-    public Location faceLocation(Location from, Location at) {
-        Vector direction = from.toVector().subtract(at.toVector()).normalize();
-        Location newLocation = from.clone();
-        newLocation.setYaw(180 - (float) Math.toDegrees(Math.atan2(direction.getX(), direction.getZ())));
-        newLocation.setPitch(90 - (float) Math.toDegrees(Math.acos(direction.getY())));
-        return newLocation;
-    }
-
-    @Override
     public void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) {
             return;
@@ -655,93 +646,6 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
     @Override
     public void faceEntity(Entity entity, Entity target) {
         faceLocation(entity, target.getLocation());
-    }
-
-    @Override
-    public boolean isFacingLocation(Location from, Location at, float degreeLimit) {
-        double currentYaw = normalizeYaw(from.getYaw());
-        double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
-                from.toVector()).normalize()));
-        return (Math.abs(requiredYaw - currentYaw) < degreeLimit ||
-                Math.abs(requiredYaw + 360 - currentYaw) < degreeLimit ||
-                Math.abs(currentYaw + 360 - requiredYaw) < degreeLimit);
-    }
-
-    @Override
-    public boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
-        return isFacingLocation(from.getLocation(), at, degreeLimit);
-    }
-
-    @Override
-    public boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
-        return isFacingLocation(from.getLocation(), at.getLocation(), degreeLimit);
-    }
-
-    @Override
-    public float normalizeYaw(float yaw) {
-        yaw = yaw % 360;
-        if (yaw < 0) {
-            yaw += 360.0;
-        }
-        return yaw;
-    }
-
-    @Override
-    public float getYaw(Vector vector) {
-        double dx = vector.getX();
-        double dz = vector.getZ();
-        double yaw = 0;
-        // Set yaw
-        if (dx != 0) {
-            // Set yaw start value based on dx
-            if (dx < 0) {
-                yaw = 1.5 * Math.PI;
-            }
-            else {
-                yaw = 0.5 * Math.PI;
-            }
-            yaw -= Math.atan(dz / dx);
-        }
-        else if (dz < 0) {
-            yaw = Math.PI;
-        }
-        return (float) (-yaw * 180 / Math.PI);
-    }
-
-    @Override
-    public String getCardinal(float yaw) {
-        yaw = normalizeYaw(yaw);
-        // Compare yaws, return closest direction.
-        if (0 <= yaw && yaw < 22.5) {
-            return "south";
-        }
-        else if (22.5 <= yaw && yaw < 67.5) {
-            return "southwest";
-        }
-        else if (67.5 <= yaw && yaw < 112.5) {
-            return "west";
-        }
-        else if (112.5 <= yaw && yaw < 157.5) {
-            return "northwest";
-        }
-        else if (157.5 <= yaw && yaw < 202.5) {
-            return "north";
-        }
-        else if (202.5 <= yaw && yaw < 247.5) {
-            return "northeast";
-        }
-        else if (247.5 <= yaw && yaw < 292.5) {
-            return "east";
-        }
-        else if (292.5 <= yaw && yaw < 337.5) {
-            return "southeast";
-        }
-        else if (337.5 <= yaw && yaw < 360.0) {
-            return "south";
-        }
-        else {
-            return null;
-        }
     }
 
     @Override
