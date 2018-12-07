@@ -23,7 +23,7 @@ import java.util.*;
 
 public class DenizenMapManager {
 
-    private final static Map<Short, DenizenMapRenderer> mapRenderers = new HashMap<Short, DenizenMapRenderer>();
+    private final static Map<Integer, DenizenMapRenderer> mapRenderers = new HashMap<>();
     private final static Map<String, String> downloadedByUrl = new HashMap<String, String>();
     private final static File imagesFolder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "images");
     private final static File imageDownloads = new File(imagesFolder, "downloaded");
@@ -34,8 +34,8 @@ public class DenizenMapManager {
     private static YamlConfiguration mapsConfig;
 
     public static void reloadMaps() {
-        Map<Short, List<MapRenderer>> oldMapRenderers = new HashMap<Short, List<MapRenderer>>();
-        for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
+        Map<Integer, List<MapRenderer>> oldMapRenderers = new HashMap<>();
+        for (Map.Entry<Integer, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
             DenizenMapRenderer renderer = entry.getValue();
             oldMapRenderers.put(entry.getKey(), renderer.getOldRenderers());
             renderer.deactivate();
@@ -48,8 +48,8 @@ public class DenizenMapManager {
             return;
         }
         for (String key : mapsSection.getKeys(false)) {
-            short mapId = Short.valueOf(key);
-            MapView mapView = Bukkit.getServer().getMap(mapId);
+            int mapId = Integer.valueOf(key);
+            MapView mapView = Bukkit.getServer().getMap((short) mapId); // TODO: ??? (deprecated short method)
             if (mapView == null) {
                 dB.echoError("Map #" + key + " does not exist. Has it been removed? Deleting from maps.yml...");
                 mapsSection.set(key, null);
@@ -69,7 +69,7 @@ public class DenizenMapManager {
             DenizenMapRenderer renderer = new DenizenMapRenderer(oldRenderers,
                     mapsSection.getBoolean(key + ".auto update", false));
             renderer.displayOriginal = mapsSection.getBoolean(key + ".original", true);
-            List<String> objects = new ArrayList<String>(objectsData.getKeys(false));
+            List<String> objects = new ArrayList<>(objectsData.getKeys(false));
             Collections.sort(objects, new NaturalOrderComparator());
             for (String objectKey : objects) {
                 String type = objectsData.getString(objectKey + ".type").toUpperCase();
@@ -107,10 +107,10 @@ public class DenizenMapManager {
             mapView.addRenderer(renderer);
             mapRenderers.put(mapId, renderer);
         }
-        for (Map.Entry<Short, List<MapRenderer>> entry : oldMapRenderers.entrySet()) {
-            short id = entry.getKey();
+        for (Map.Entry<Integer, List<MapRenderer>> entry : oldMapRenderers.entrySet()) {
+            int id = entry.getKey();
             if (!mapRenderers.containsKey(id)) {
-                MapView mapView = Bukkit.getServer().getMap(id);
+                MapView mapView = Bukkit.getServer().getMap((short) id); // TODO: ??? (deprecated short method)
                 if (mapView != null) {
                     for (MapRenderer renderer : entry.getValue()) {
                         mapView.addRenderer(renderer);
@@ -129,7 +129,7 @@ public class DenizenMapManager {
     }
 
     public static void saveMaps() {
-        for (Map.Entry<Short, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
+        for (Map.Entry<Integer, DenizenMapRenderer> entry : mapRenderers.entrySet()) {
             if (entry.getValue().isActive()) {
                 mapsConfig.set("MAPS." + entry.getKey(), entry.getValue().getSaveData());
             }
@@ -155,7 +155,7 @@ public class DenizenMapManager {
     }
 
     public static DenizenMapRenderer getDenizenRenderer(MapView map) {
-        short mapId = map.getId();
+        int mapId = map.getId();
         DenizenMapRenderer dmr;
         if (!mapRenderers.containsKey(mapId)) {
             dmr = new DenizenMapRenderer(map.getRenderers(), false);

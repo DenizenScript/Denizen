@@ -88,8 +88,8 @@ public class EntityItemProjectile_v1_13_R2 extends EntityItem implements IProjec
         }
 
         if (movingobjectposition != null) {
-            if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(movingobjectposition.a()).getBlock() == Blocks.NETHER_PORTAL) {
-                this.e(movingobjectposition.a());
+            if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(movingobjectposition.getBlockPosition()).getBlock() == Blocks.NETHER_PORTAL) {
+                this.e(movingobjectposition.getBlockPosition());
             }
             else {
                 this.a(movingobjectposition);
