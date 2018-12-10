@@ -87,14 +87,14 @@ public class SwitchCommand extends AbstractCommand {
                 // If this block already had a delayed task, cancel it.
                 if (taskMap.containsKey(interactLocation)) {
                     try {
-                        DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(taskMap.get(interactLocation));
+                        Bukkit.getScheduler().cancelTask(taskMap.get(interactLocation));
                     }
                     catch (Exception e) {
                     }
                 }
                 dB.log("Setting delayed task 'SWITCH' for " + interactLocation.identify());
                 // Store new delayed task ID, for checking against, then schedule new delayed task.
-                taskMap.put(interactLocation, DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
+                taskMap.put(interactLocation, Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                         new Runnable() {
                             public void run() {
                                 switchBlock(scriptEntry, interactLocation, SwitchState.TOGGLE, player);
@@ -148,36 +148,21 @@ public class SwitchCommand extends AbstractCommand {
     // Break off this portion of the code from execute() so it can be used in both execute and the delayed runnable
     public void switchBlock(ScriptEntry scriptEntry, Location interactLocation, SwitchState switchState, Player player) {
         boolean currentState = switchState(interactLocation.getBlock());
-        String state = switchState.toString();
 
-        // Try for a linked player
-        if (player == null && Bukkit.getOnlinePlayers().size() > 0) {
-            // If there's none, link any player
-            if (Bukkit.getOnlinePlayers().size() > 0) {
-                player = (Player) Bukkit.getOnlinePlayers().toArray()[0];
-            }
-            else if (Depends.citizens != null) {
-                // If there are no players, link any Human NPC
-                for (NPC npc : CitizensAPI.getNPCRegistry()) {
-                    if (npc.isSpawned() && npc.getEntity() instanceof Player) {
-                        player = (Player) npc.getEntity();
-                        break;
-                    }
-                }
-                // TODO: backup if no human NPC available? (Fake EntityPlayer instance?)
-            }
-        }
-
-        if ((state.equals("ON") && !currentState) ||
-                (state.equals("OFF") && currentState) ||
-                state.equals("TOGGLE")) {
+        if ((switchState.equals(SwitchState.ON) && !currentState) ||
+                (switchState.equals(SwitchState.OFF) && currentState) ||
+                switchState.equals(SwitchState.TOGGLE)) {
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 if (interactLocation.getBlock().getBlockData() instanceof Openable) {
-                    ((Openable) interactLocation.getBlock().getBlockData()).setOpen(!currentState);
+                    Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
+                    newState.setOpen(!currentState);
+                    interactLocation.getBlock().setBlockData(newState);
                 }
-                if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
-                    ((Powerable) interactLocation.getBlock().getBlockData()).setPowered(!currentState);
+                else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
+                    Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
+                    newState.setPowered(!currentState);
+                    interactLocation.getBlock().setBlockData(newState);
                 }
             }
             else {
@@ -194,6 +179,23 @@ public class SwitchCommand extends AbstractCommand {
                         blockData.setBlock(block.getBlock(), false);
                     }
                     else {
+                        // Try for a linked player
+                        if (player == null && Bukkit.getOnlinePlayers().size() > 0) {
+                            // If there's none, link any player
+                            if (Bukkit.getOnlinePlayers().size() > 0) {
+                                player = (Player) Bukkit.getOnlinePlayers().toArray()[0];
+                            }
+                            else if (Depends.citizens != null) {
+                                // If there are no players, link any Human NPC
+                                for (NPC npc : CitizensAPI.getNPCRegistry()) {
+                                    if (npc.isSpawned() && npc.getEntity() instanceof Player) {
+                                        player = (Player) npc.getEntity();
+                                        break;
+                                    }
+                                }
+                                // TODO: backup if no human NPC available? (Fake EntityPlayer instance?)
+                            }
+                        }
                         NMSHandler.getInstance().getEntityHelper().forceInteraction(player, interactLocation);
                     }
 
