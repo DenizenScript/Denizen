@@ -157,12 +157,12 @@ public class SwitchCommand extends AbstractCommand {
                 if (interactLocation.getBlock().getBlockData() instanceof Openable) {
                     Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
                     newState.setOpen(!currentState);
-                    interactLocation.getBlock().setBlockData(newState);
+                    interactLocation.getBlock().setBlockData(newState, true);
                 }
                 else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
                     Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
                     newState.setPowered(!currentState);
-                    interactLocation.getBlock().setBlockData(newState);
+                    interactLocation.getBlock().setBlockData(newState, true);
                 }
             }
             else {
