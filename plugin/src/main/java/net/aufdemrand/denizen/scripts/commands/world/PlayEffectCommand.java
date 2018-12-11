@@ -5,10 +5,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
 import net.aufdemrand.denizen.nms.interfaces.Effect;
 import net.aufdemrand.denizen.nms.interfaces.Particle;
-import net.aufdemrand.denizen.objects.dItem;
-import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dMaterial;
-import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -141,6 +138,10 @@ public class PlayEffectCommand extends AbstractCommand {
 
                 scriptEntry.addObject("data", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("special_data")
+                    && arg.matchesOnePrefix("special_data")) {
+                scriptEntry.addObject("special_data", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("qty")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && arg.matchesPrefix("qty", "q", "quantity")) {
@@ -212,6 +213,7 @@ public class PlayEffectCommand extends AbstractCommand {
         Element no_offset = scriptEntry.getElement("no_offset");
         boolean should_offset = no_offset == null || !no_offset.asBoolean();
         dLocation offset = scriptEntry.getdObject("offset");
+        Element special_data = scriptEntry.getElement("special_data");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
@@ -226,6 +228,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     data.debug() +
                     qty.debug() +
                     offset.debug() +
+                    (special_data != null ? special_data.debug() : "") +
                     (should_offset ? aH.debugObj("note", "Location will be offset 1 block-height upward (see documentation)") : ""));
         }
 
@@ -273,7 +276,31 @@ public class PlayEffectCommand extends AbstractCommand {
                     }
                 }
                 for (Player player : players) {
-                    particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat());
+                    Class clazz = particleEffect.neededData();
+                    if (clazz == null) {
+                        particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat());
+                    }
+                    else {
+                        Object dataObject = null;
+                        if (special_data == null) {
+                            dB.echoError(scriptEntry.getResidingQueue(), "Missing required special data for particle: " + particleEffect.getName());
+                        }
+                        else if (clazz == org.bukkit.Particle.DustOptions.class) {
+                            dList dataList = dList.valueOf(special_data.asString());
+                            if (dataList.size() != 2) {
+                                dB.echoError(scriptEntry.getResidingQueue(), "DustOptions special_data must have 2 list entries for particle: " + particleEffect.getName());
+                            }
+                            else {
+                                float size = aH.getFloatFrom(dataList.get(0));
+                                dColor color = dColor.valueOf(dataList.get(1));
+                                dataObject = new org.bukkit.Particle.DustOptions(color.getColor(), size);
+                            }
+                        }
+                        else {
+                            dB.echoError(scriptEntry.getResidingQueue(), "Unknown particle data type: " + clazz.getCanonicalName() + " for particle: " + particleEffect.getName());
+                        }
+                        particleEffect.playFor(player, location, qty.asInt(), offset.toVector(), data.asFloat(), dataObject);
+                    }
                 }
             }
 
