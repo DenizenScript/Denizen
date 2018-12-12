@@ -643,6 +643,15 @@ public class dMaterial implements dObject, Adjustable {
             string = string.substring(0, index);
         }
         Material m = Material.getMaterial(string);
+        if (m == null && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            m = Material.getMaterial(string, true);
+            if (m != null) {
+                m = Bukkit.getUnsafe().fromLegacy(m);
+                if (context == null || context.debug) {
+                    dB.log("'" + string + "' is a legacy (pre-1.13) material name. It is now '" + m.name() + "'.");
+                }
+            }
+        }
         if (m != null) {
             if ((context == null || context.debug) && index >= 0) {
                 dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
