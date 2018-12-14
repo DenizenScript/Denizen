@@ -72,8 +72,8 @@ public class AbstractListenerPlayIn_v1_13_R2 extends PlayerConnection {
     }
 
     @Override
-    public void Y_() {
-        oldListener.Y_();
+    public void tick() {
+        oldListener.tick();
     }
 
     @Override

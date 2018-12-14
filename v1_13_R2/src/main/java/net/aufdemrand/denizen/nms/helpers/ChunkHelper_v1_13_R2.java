@@ -20,7 +20,7 @@ public class ChunkHelper_v1_13_R2 implements ChunkHelper {
         if (playerChunk == null) {
             return;
         }
-        for (EntityPlayer player : playerChunk.c) {
+        for (EntityPlayer player : playerChunk.players) {
             player.playerConnection.sendPacket(lowPacket);
             player.playerConnection.sendPacket(highPacket);
         }
