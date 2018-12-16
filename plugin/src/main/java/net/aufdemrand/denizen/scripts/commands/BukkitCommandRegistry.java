@@ -3275,7 +3275,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Player and npc are not carried over to the new queue if not specified.
         //
         // @Tags
-        // <entry[saveName].created_queue>
+        // <entry[saveName].created_queue> returns the queue that was started by the run command.
         //
         // @Usage
         // Use to run a new queue instant
