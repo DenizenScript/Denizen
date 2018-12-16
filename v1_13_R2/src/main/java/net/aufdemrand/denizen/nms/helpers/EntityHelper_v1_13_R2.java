@@ -531,7 +531,7 @@ public class EntityHelper_v1_13_R2 implements EntityHelper {
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.server.v1_13_R2.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((EntityLiving) handle).aO;
+        return ((EntityLiving) handle).aR;
     }
 
     @Override
@@ -547,11 +547,11 @@ public class EntityHelper_v1_13_R2 implements EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aO = yaw;
+                livingHandle.aR = yaw;
                 if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aN = yaw;
+                    livingHandle.aQ = yaw;
                 }
-                livingHandle.aP = yaw;
+                livingHandle.aS = yaw;
             }
             handle.pitch = pitch;
         }
