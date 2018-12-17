@@ -13,4 +13,8 @@ public interface Particle {
     boolean isVisible();
 
     String getName();
+
+    default Class neededData() {
+        return null;
+    }
 }

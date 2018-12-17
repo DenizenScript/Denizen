@@ -73,7 +73,7 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
     }
 
     @Override
-    protected void a(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet packet) throws Exception { // TODO: Check mapping update. Previously overrode 'a', and channelRead0 was overriden separately.
         if (oldManager.channel.isOpen()) {
             try {
                 packet.a(this.packetListener);
@@ -400,11 +400,6 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
     @Override
     public void handleDisconnection() {
         oldManager.handleDisconnection();
-    }
-
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelhandlercontext, Packet object) throws Exception {
-        this.a(channelhandlercontext, object);
     }
 
     @Override

@@ -202,7 +202,7 @@ public class Handler_v1_13_R2 extends NMSHandler {
 
     @Override
     public int getPort() {
-        return ((CraftServer) Bukkit.getServer()).getServer().F();
+        return ((CraftServer) Bukkit.getServer()).getServer().getPort();
     }
 
     @Override

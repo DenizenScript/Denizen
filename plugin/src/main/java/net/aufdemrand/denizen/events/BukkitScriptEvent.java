@@ -12,6 +12,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
@@ -100,6 +101,23 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
+    private static final String ASTERISK_QUOTED = Pattern.quote("*");
+
+    public String regexHandle(String input) {
+        if (input.startsWith("regex:")) {
+            return input.substring("regex:".length());
+        }
+        if (input.contains("*")) {
+            return Pattern.quote(input).replace(ASTERISK_QUOTED, "(.*)");
+        }
+        return null;
+    }
+
+    public boolean equalityCheck(String input, String compared, String regexed) {
+        input = CoreUtilities.toLowerCase(input);
+        return input.equals(compared) || (regexed != null && input.matches(regexed));
+    }
+
     public boolean tryItem(dItem item, String comparedto) {
         if (comparedto == null || comparedto.isEmpty() || item == null) {
             return false;
@@ -121,22 +139,26 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
+        String regexd = regexHandle(comparedto);
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
-        if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
+        if (equalityCheck(item.identifyNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(item.identifyMaterialNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(item.identifyMaterialNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(item.identifySimpleNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(item.identifySimpleNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(item.identifyNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(item.identifyNoIdentifier(), comparedto, regexd)) {
             return true;
         }
         item.setDurability((short) 0);
-        return CoreUtilities.toLowerCase(item.identifyMaterialNoIdentifier()).equals(comparedto);
+        if (equalityCheck(item.identifyMaterialNoIdentifier(), comparedto, regexd)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean tryMaterial(dMaterial mat, String comparedto) {
@@ -156,16 +178,17 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
-        if (CoreUtilities.toLowerCase(mat.realName()).equals(comparedto)) {
+        String regexd = regexHandle(comparedto);
+        if (equalityCheck(mat.realName(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(mat.identifyNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(mat.identifyNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(mat.identifySimpleNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(mat.identifySimpleNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (CoreUtilities.toLowerCase(mat.identifyFullNoIdentifier()).equals(comparedto)) {
+        else if (equalityCheck(mat.identifyFullNoIdentifier(), comparedto, regexd)) {
             return true;
         }
         return false;
@@ -195,10 +218,11 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (comparedto.equals("hanging")) {
             return bEntity instanceof Hanging;
         }
-        else if (entity.getEntityScript() != null && comparedto.equals(CoreUtilities.toLowerCase(entity.getEntityScript()))) {
+        String regexd = regexHandle(comparedto);
+        if (entity.getEntityScript() != null && equalityCheck(entity.getEntityScript(), comparedto, regexd)) {
             return true;
         }
-        else if (comparedto.equals(entity.getEntityType().getLowercaseName())) {
+        else if (equalityCheck(entity.getEntityType().getLowercaseName(), comparedto, regexd)) {
             return true;
         }
         return false;

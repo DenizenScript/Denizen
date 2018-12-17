@@ -146,7 +146,7 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         blocks = new dList();
         blockSet = false;
         for (Block block : event.blockList()) {
-            blocks.add(new dLocation(block.getLocation()).identifySimple());
+            blocks.add(new dLocation(block.getLocation()).identify());
         }
         cancelled = event.isCancelled();
         this.event = event;

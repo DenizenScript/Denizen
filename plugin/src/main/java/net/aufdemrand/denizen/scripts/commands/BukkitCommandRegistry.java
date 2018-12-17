@@ -2757,7 +2757,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name PlayEffect
-        // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
+        // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
         // @Required 2
         // @Stable stable
         // @Short Plays a visible or audible effect at the location.
@@ -2777,6 +2777,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This was found to cause too much confusion, so it is no longer on by default. However, it will still happen for older commands.
         // The distinction is in whether you include the (now expected to use) "at:" prefix on your location argument.
         // If you do not have this prefix, the system will assume your command is older, and will apply the 1-block height offset.
+        //
+        // Some particles will require input to the "special_data" argument. The data input is unique per particle.
+        // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid dColor object.
         //
         // @Tags
         // None
@@ -3272,7 +3275,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Player and npc are not carried over to the new queue if not specified.
         //
         // @Tags
-        // <entry[saveName].created_queue>
+        // <entry[saveName].created_queue> returns the queue that was started by the run command.
         //
         // @Usage
         // Use to run a new queue instant

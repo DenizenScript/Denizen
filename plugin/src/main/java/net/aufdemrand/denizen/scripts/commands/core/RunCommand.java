@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
@@ -230,7 +231,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
         // Set any delay
         if (scriptEntry.hasObject("delay")) {
-            queue.delayUntil(System.currentTimeMillis() + ((Duration) scriptEntry.getObject("delay")).getMillis());
+            queue.delayUntil(DenizenCore.serverTimeMillis + ((Duration) scriptEntry.getObject("delay")).getMillis());
         }
 
         // Set any definitions

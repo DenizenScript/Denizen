@@ -17,6 +17,15 @@ public class Particle_v1_13_R2 implements Particle {
     }
 
     @Override
+    public Class neededData() {
+        Class clazz = particle.getDataType();
+        if (clazz == Void.class) {
+            return null;
+        }
+        return clazz;
+    }
+
+    @Override
     public void playFor(Player player, Location location, int count, Vector offset, double extra) {
         player.spawnParticle(particle, location, count, offset.getX(), offset.getY(), offset.getZ(), extra);
     }
