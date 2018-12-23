@@ -394,10 +394,6 @@ public class ItemPotion implements Property {
                     dB.echoError("Invalid potion effect type '" + data[0] + "'");
                     return;
                 }
-                if (type == null) {
-                    dB.echoError("Invalid potion effect type '" + data[0] + "'");
-                    return;
-                }
                 if (!data1.isInt()) {
                     dB.echoError("Cannot apply effect '" + data[0] + "': '" + data[1] + "' is not a valid integer!");
                     return;

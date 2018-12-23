@@ -96,6 +96,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         else {
             for (NPC test : CitizensAPI.getNPCRegistry()) {
                 if (test.getName().equalsIgnoreCase(string)) {
+                    if (context == null || context.debug) {
+                        dB.echoError("Warning: loading NPC by name - use the ID instead! NPC named '" + test.getName() + "' has ID: " + test.getId());
+                    }
                     return new dNPC(test);
                 }
             }
