@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
@@ -225,12 +226,17 @@ public class dItem implements dObject, Notable, Adjustable {
 
     @Deprecated
     public dItem(int itemId) {
-        this(new ItemStack(dMaterial.getLegacyMaterial(itemId)));
+        this(MaterialCompat.updateItem(itemId));
+    }
+
+    private static ItemStack fixQty(ItemStack item, int qty) {
+        item.setAmount(qty);
+        return item;
     }
 
     @Deprecated
     public dItem(int itemId, int qty) {
-        this(new ItemStack(dMaterial.getLegacyMaterial(itemId), qty));
+        this(fixQty(MaterialCompat.updateItem(itemId), qty));
     }
 
     public dItem(Material material, int qty) {
