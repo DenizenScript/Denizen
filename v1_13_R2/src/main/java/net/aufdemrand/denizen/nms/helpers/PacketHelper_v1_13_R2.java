@@ -221,8 +221,8 @@ public class PacketHelper_v1_13_R2 implements PacketHelper {
 
     @Override
     public boolean showSignEditor(Player player, Location location) {
-        TileEntity tileEntity = ((CraftWorld) location.getWorld()).getTileEntityAt(location.getBlockX(),
-                location.getBlockY(), location.getBlockZ());
+        TileEntity tileEntity = ((CraftWorld) location.getWorld()).getHandle().getTileEntity(new BlockPosition(location.getBlockX(),
+                location.getBlockY(), location.getBlockZ()));
         if (tileEntity instanceof TileEntitySign) {
             TileEntitySign sign = (TileEntitySign) tileEntity;
             // Prevent client crashing by sending current state of the sign

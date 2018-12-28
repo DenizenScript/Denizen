@@ -87,6 +87,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -337,11 +338,22 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void onEnable() {
         if (!NMSHandler.initialize(this)) {
             getLogger().warning("-------------------------------------");
-            getLogger().warning("Denizen is not compatible with this Spigot version! Deactivating Denizen!");
+            getLogger().warning("This build of Denizen is not compatible with this Spigot version! Deactivating Denizen!");
             getLogger().warning("-------------------------------------");
             getServer().getPluginManager().disablePlugin(this);
             startedSuccessful = false;
             return;
+        }
+
+        String mappingsCode = NMSHandler.getInstance().getNmsMappingsCode();
+        if (mappingsCode != null) {
+            if (!CraftMagicNumbers.MAPPINGS_VERSION.equals(mappingsCode)) {
+                getLogger().warning("-------------------------------------");
+                getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
+                        + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
+                        + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
+                getLogger().warning("-------------------------------------");
+            }
         }
 
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) { // TODO: 1.12 update

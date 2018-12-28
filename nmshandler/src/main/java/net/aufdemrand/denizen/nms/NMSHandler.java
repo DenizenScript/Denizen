@@ -68,6 +68,10 @@ public abstract class NMSHandler {
         return javaPlugin;
     }
 
+    public String getNmsMappingsCode() {
+        return null;
+    }
+
     public abstract Sidebar createSidebar(Player player);
 
     public abstract BlockLight createBlockLight(Location location, int lightLevel, long ticks);

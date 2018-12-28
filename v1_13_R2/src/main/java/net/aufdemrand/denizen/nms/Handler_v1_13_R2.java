@@ -57,6 +57,11 @@ public class Handler_v1_13_R2 extends NMSHandler {
     private final ProfileEditor profileEditor = new ProfileEditor_v1_13_R2();
 
     @Override
+    public String getNmsMappingsCode() {
+        return "00ed8e5c39debc3ed194ad7c5645cc45";
+    }
+
+    @Override
     public Thread getMainThread() {
         return ((CraftServer) Bukkit.getServer()).getServer().primaryThread;
     }
