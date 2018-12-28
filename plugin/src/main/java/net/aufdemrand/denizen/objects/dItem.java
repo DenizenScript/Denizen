@@ -143,7 +143,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
                 if (aH.matchesInteger(material)) {
                     if (!nope) {
-                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
                     }
                     stack = new dItem(Integer.valueOf(material));
                 }
