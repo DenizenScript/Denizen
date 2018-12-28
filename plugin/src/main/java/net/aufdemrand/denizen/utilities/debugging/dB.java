@@ -265,7 +265,8 @@ public class dB {
             return;
         }
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
-                (script != null ? " in script '" + script.getName() + "'" : "") + "! "
+                (script != null ? " in script '" + script.getName() + "'" : "")
+                + (source != null ? " in queue '" + source.id + "'" : "") + "! "
                 + ChatColor.WHITE + trimMessage(message));
         if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
             depthCorrectError++;
