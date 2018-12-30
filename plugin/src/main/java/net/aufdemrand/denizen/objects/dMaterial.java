@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
@@ -740,6 +741,13 @@ public class dMaterial implements dObject, Adjustable {
             dMaterial parsed = valueOf(object.toString());
             return equals(parsed);
         }
+    }
+
+    public boolean matchesBlock(Block b) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return getMaterial() == b.getType();
+        }
+        return matchesMaterialData(b.getType().getNewData(b.getData()));
     }
 
 
