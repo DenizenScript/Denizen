@@ -26,6 +26,9 @@ import net.minecraft.server.v1_13_R2.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
@@ -252,5 +255,35 @@ public class Handler_v1_13_R2 extends NMSHandler {
         if (matchRotation) {
             attachmentRotations.add(a.getUniqueId());
         }
+    }
+
+    @Override
+    public Boolean getSwitchState(Block b) {
+        if (b.getBlockData() instanceof Openable) {
+            return ((Openable) b.getBlockData()).isOpen();
+        }
+        else if (b.getBlockData() instanceof Powerable) {
+            return ((Powerable) b.getBlockData()).isPowered();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean setSwitchState(Location interactLocation, boolean state) {
+        if (interactLocation.getBlock().getBlockData() instanceof Openable) {
+            Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
+            newState.setOpen(state);
+            interactLocation.getBlock().setBlockData(newState, true);
+            interactLocation.getBlock().getState().update(true, true);
+            return true;
+        }
+        else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
+            Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
+            newState.setPowered(state);
+            interactLocation.getBlock().setBlockData(newState, true);
+            interactLocation.getBlock().getState().update(true, true);
+            return true;
+        }
+        return false;
     }
 }

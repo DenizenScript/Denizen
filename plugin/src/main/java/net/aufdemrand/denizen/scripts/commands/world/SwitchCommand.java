@@ -23,8 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.Openable;
-import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -106,13 +104,9 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     public static boolean switchState(Block b) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            if (b.getBlockData() instanceof Openable) {
-                return ((Openable) b.getBlockData()).isOpen();
-            }
-            else if (b.getBlockData() instanceof Powerable) {
-                return ((Powerable) b.getBlockData()).isPowered(); // TODO: is this valid for levers?
-            }
+        Boolean switchState = NMSHandler.getInstance().getSwitchState(b);
+        if (switchState != null) {
+            return switchState;
         }
         //return (b.getData() & 0x8) > 0;
         Material type = b.getType();
@@ -154,18 +148,7 @@ public class SwitchCommand extends AbstractCommand {
                 switchState.equals(SwitchState.TOGGLE)) {
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                if (interactLocation.getBlock().getBlockData() instanceof Openable) {
-                    Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
-                    newState.setOpen(!currentState);
-                    interactLocation.getBlock().setBlockData(newState, true);
-                    interactLocation.getBlock().getState().update(true, true);
-                }
-                else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
-                    Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
-                    newState.setPowered(!currentState);
-                    interactLocation.getBlock().setBlockData(newState, true);
-                    interactLocation.getBlock().getState().update(true, true);
-                }
+                NMSHandler.getInstance().setSwitchState(interactLocation, !currentState);
             }
             else {
                 try {
