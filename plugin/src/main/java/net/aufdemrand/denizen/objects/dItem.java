@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
@@ -244,7 +245,12 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public dItem(dMaterial material, int qty) {
-        this(new ItemStack(material.getMaterial(), qty, (short) 0, material.getData()));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            this.item = new ItemStack(material.getMaterial(), qty);
+        }
+        else {
+            this.item = new ItemStack(material.getMaterial(), qty, (short) 0, material.getData());
+        }
     }
 
     public dItem(ItemStack item) {
