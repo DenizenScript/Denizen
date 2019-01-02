@@ -19,11 +19,13 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -250,6 +252,15 @@ public class dItem implements dObject, Notable, Adjustable {
         }
         else {
             this.item = new ItemStack(material.getMaterial(), qty, (short) 0, material.getData());
+        }
+    }
+
+    public dItem(MaterialData data) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && item.getType().isLegacy()) {
+            this.item = new ItemStack(Bukkit.getUnsafe().fromLegacy(data));
+        }
+        else {
+            this.item = data.toItemStack();
         }
     }
 

@@ -44,7 +44,7 @@ public class EntityItem implements Property {
         }
         else {
             return new dItem(((Enderman) item.getBukkitEntity())
-                    .getCarriedMaterial().toItemStack());
+                    .getCarriedMaterial());
         }
     }
 
