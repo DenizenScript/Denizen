@@ -253,15 +253,16 @@ public class YamlCommand extends AbstractCommand {
                     fis.close();
                 }
                 catch (Exception e) {
-                    dB.echoError(e);
+                    dB.echoError("Failed to load yaml file: " + e);
                     return;
                 }
                 if (yamls.containsKey(id)) {
                     yamls.remove(id);
                 }
-                if (yamlConfiguration != null) {
-                    yamls.put(id, yamlConfiguration);
+                if (yamlConfiguration == null) {
+                    yamlConfiguration = new YamlConfiguration();
                 }
+                yamls.put(id, yamlConfiguration);
                 break;
 
             case UNLOAD:
