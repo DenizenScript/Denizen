@@ -867,7 +867,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return "m@" + forcedIdentityLow;
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return "m@" + CoreUtilities.toLowerCase(material.name());
@@ -877,7 +877,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return "m@" + CoreUtilities.toLowerCase(material.name());
@@ -895,7 +895,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name());
@@ -912,7 +912,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name());
