@@ -347,7 +347,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         String mappingsCode = NMSHandler.getInstance().getNmsMappingsCode();
         if (mappingsCode != null) {
-            if (!CraftMagicNumbers.MAPPINGS_VERSION.equals(mappingsCode)) {
+            if (!((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals(mappingsCode)) {
                 getLogger().warning("-------------------------------------");
                 getLogger().warning("This build of Denizen was built for a different Spigot revision! This may potentially cause issues."
                         + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
