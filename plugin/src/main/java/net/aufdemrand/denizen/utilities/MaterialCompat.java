@@ -2,8 +2,11 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.objects.dMaterial;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 public class MaterialCompat {
@@ -107,6 +110,23 @@ public class MaterialCompat {
         else {
             return new ItemStack(SKULL_ITEM, 1, (byte) 3);
         }
+    }
+
+    public static ItemStack updateItem(int oldMat) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            Material mat = Bukkit.getUnsafe().fromLegacy(dMaterial.getLegacyMaterial(oldMat));
+            return new ItemStack(mat);
+        }
+        return new ItemStack(dMaterial.getLegacyMaterial(oldMat));
+    }
+
+    public static ItemStack updateItem(int oldMat, byte bit) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            BlockData blockDat = Bukkit.getUnsafe().fromLegacy(dMaterial.getLegacyMaterial(oldMat), bit);
+            Material mat = blockDat.getMaterial();
+            return new ItemStack(mat);
+        }
+        return new ItemStack(dMaterial.getLegacyMaterial(oldMat), bit);
     }
 
     public static boolean isBannerOrShield(Material material) {

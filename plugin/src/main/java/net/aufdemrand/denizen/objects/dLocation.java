@@ -1409,9 +1409,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                                 Location l = getBlock().getLocation().clone().add(x, y, z);
                                 if (!materials.isEmpty()) {
                                     for (dMaterial material : materials) {
-                                        if (material.matchesMaterialData(getBlock()
-                                                .getLocation().clone().add(x, y, z).getBlock().getType().getNewData(getBlock()
-                                                        .getLocation().clone().add(x, y, z).getBlock().getData()))) {
+                                        if (material.matchesBlock(getBlock().getLocation().clone().add(x, y, z).getBlock())) {
                                             if (l.clone().add(0, 1, 0).getBlock().getType() == Material.AIR
                                                     && l.clone().add(0, 2, 0).getBlock().getType() == Material.AIR
                                                     && l.getBlock().getType() != Material.AIR) {

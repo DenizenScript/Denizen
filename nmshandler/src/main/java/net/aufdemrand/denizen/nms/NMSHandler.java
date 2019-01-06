@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,6 +67,10 @@ public abstract class NMSHandler {
 
     public static JavaPlugin getJavaPlugin() {
         return javaPlugin;
+    }
+
+    public String getNmsMappingsCode() {
+        return null;
     }
 
     public abstract Sidebar createSidebar(Player player);
@@ -139,5 +144,13 @@ public abstract class NMSHandler {
 
     public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
         throw new RuntimeException("Unsupported forceAttachMove!");
+    }
+
+    public Boolean getSwitchState(Block b) {
+        return null;
+    }
+
+    public boolean setSwitchState(Location interactLocation, boolean state) {
+        return false;
     }
 }

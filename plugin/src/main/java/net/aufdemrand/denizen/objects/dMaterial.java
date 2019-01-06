@@ -13,6 +13,7 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
@@ -742,6 +743,13 @@ public class dMaterial implements dObject, Adjustable {
         }
     }
 
+    public boolean matchesBlock(Block b) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return getMaterial() == b.getType();
+        }
+        return matchesMaterialData(b.getType().getNewData(b.getData()));
+    }
+
 
     ///////////////
     //   Constructors
@@ -859,7 +867,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return "m@" + forcedIdentityLow;
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return "m@" + CoreUtilities.toLowerCase(material.name());
@@ -869,7 +877,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return "m@" + CoreUtilities.toLowerCase(material.name());
@@ -887,7 +895,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow;
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name());
@@ -904,7 +912,7 @@ public class dMaterial implements dObject, Adjustable {
         if (forcedIdentity != null) {
             return forcedIdentityLow + (getData() != null ? "," + getData() : "");
         }
-        if (getData() != null && getData() > 0) {
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
         return CoreUtilities.toLowerCase(material.name());

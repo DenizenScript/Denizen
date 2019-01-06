@@ -139,6 +139,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Match as a player name
         if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
+            if (announce) {
+                dB.echoError("Warning: loading player by name - use the UUID instead (or use tag server.match_player)! Player named '" + player.getName() + "' has UUID: " + player.getUniqueId());
+            }
             return new dPlayer(player);
         }
 

@@ -1,12 +1,14 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
@@ -17,11 +19,13 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -143,7 +147,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
                 if (aH.matchesInteger(material)) {
                     if (!nope) {
-                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
+                        dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release. For item input of '" + string + "'.");
                     }
                     stack = new dItem(Integer.valueOf(material));
                 }
@@ -225,12 +229,17 @@ public class dItem implements dObject, Notable, Adjustable {
 
     @Deprecated
     public dItem(int itemId) {
-        this(new ItemStack(dMaterial.getLegacyMaterial(itemId)));
+        this(MaterialCompat.updateItem(itemId));
+    }
+
+    private static ItemStack fixQty(ItemStack item, int qty) {
+        item.setAmount(qty);
+        return item;
     }
 
     @Deprecated
     public dItem(int itemId, int qty) {
-        this(new ItemStack(dMaterial.getLegacyMaterial(itemId), qty));
+        this(fixQty(MaterialCompat.updateItem(itemId), qty));
     }
 
     public dItem(Material material, int qty) {
@@ -238,7 +247,21 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public dItem(dMaterial material, int qty) {
-        this(new ItemStack(material.getMaterial(), qty, (short) 0, material.getData()));
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            this.item = new ItemStack(material.getMaterial(), qty);
+        }
+        else {
+            this.item = new ItemStack(material.getMaterial(), qty, (short) 0, material.getData());
+        }
+    }
+
+    public dItem(MaterialData data) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && item.getType().isLegacy()) {
+            this.item = new ItemStack(Bukkit.getUnsafe().fromLegacy(data));
+        }
+        else {
+            this.item = data.toItemStack();
+        }
     }
 
     public dItem(ItemStack item) {
@@ -530,7 +553,7 @@ public class dItem implements dObject, Notable, Adjustable {
         }
 
         // Else, return the material name
-        else if ((item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
+        else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
         return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
