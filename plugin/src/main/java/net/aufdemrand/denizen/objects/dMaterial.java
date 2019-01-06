@@ -717,10 +717,6 @@ public class dMaterial implements dObject, Adjustable {
      * @return true if matched, otherwise false
      */
     public static boolean matches(String arg) {
-        arg = arg.toUpperCase();
-        if (arg.startsWith("m@")) {
-            return true;
-        }
         if (valueOf(arg, noDebugContext) != null) {
             return true;
         }
