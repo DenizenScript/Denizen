@@ -74,7 +74,9 @@ public class PlayEffectCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("particleeffect") &&
-                    !scriptEntry.hasObject("iconcrack")) {
+                    !scriptEntry.hasObject("iconcrack") &&
+                    !scriptEntry.hasObject("blockcrack") &&
+                    !scriptEntry.hasObject("blockdust")) {
 
                 if (particleHelper.hasParticle(arg.getValue())) {
                     scriptEntry.addObject("particleeffect", particleHelper.getParticle(arg.getValue()));
