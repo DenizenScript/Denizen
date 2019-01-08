@@ -4243,30 +4243,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
 
         // <--[command]
-        // @Name Viewer
-        // @Syntax viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
-        // @Required 1
-        // @Deprecated Unused.
-        // @Stable unstable
-        // @Short Creates a sign that auto-updates with information.
-        // @Author Morphan1
-        // @Group world
-        //
-        // @Description
-        // Creates a sign that auto-updates with information about a player, including their location, score, and
-        // whether they're logged in or not.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Create a sign that shows the location of a player on a wall.
-        // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
-        // -->
-        registerCoreMember(ViewerCommand.class,
-                "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
-
-        // <--[command]
         // @Name Vulnerable
         // @Syntax vulnerable (state:{true}/false/toggle)
         // @Required 0
