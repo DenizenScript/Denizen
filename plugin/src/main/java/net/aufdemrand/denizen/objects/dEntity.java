@@ -2355,7 +2355,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
         if (attribute.startsWith("is_mob")) {
-            if (!isPlayer() && !isNPC()) {
+            if (!isPlayer() && !isNPC() && getBukkitEntity() instanceof LivingEntity) {
                 return Element.TRUE.getAttribute(attribute.fulfill(1));
             }
             else {
