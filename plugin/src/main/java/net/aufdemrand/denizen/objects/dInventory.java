@@ -1775,11 +1775,11 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (!contains.isEmpty()) {
                 for (dItem item : contains) {
                     if (containsItem(item, qty)) {
-                        return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                        return new Element(true).getAttribute(attribute.fulfill(attribs));
                     }
                 }
             }
-            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+            return new Element(false).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]
@@ -1811,12 +1811,12 @@ public class dInventory implements dObject, Notable, Adjustable {
             if (contains.size() == list.size()) {
                 for (dItem item : contains) {
                     if (!containsItem(item, qty)) {
-                        return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+                        return new Element(false).getAttribute(attribute.fulfill(attribs));
                     }
                 }
-                return Element.TRUE.getAttribute(attribute.fulfill(attribs));
+                return new Element(true).getAttribute(attribute.fulfill(attribs));
             }
-            return Element.FALSE.getAttribute(attribute.fulfill(attribs));
+            return new Element(false).getAttribute(attribute.fulfill(attribs));
         }
 
         // <--[tag]

@@ -1136,18 +1136,14 @@ public class dMaterial implements dObject, Adjustable {
         // @description
         // Returns true if the material is a variety of the specified material.
         // Example: <m@red_wool.is_made_of[m@wool]> will return true.
+        // Invalid for 1.13+ servers.
         // -->
         registerTag("is_made_of", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dMaterial compared = dMaterial.valueOf(attribute.getContext(1));
-                if (compared == null) {
-                    return Element.FALSE.getAttribute(attribute.fulfill(1));
-                }
-                else {
-                    return new Element(((dMaterial) object).material == compared.getMaterial())
-                            .getAttribute(attribute.fulfill(1));
-                }
+                return new Element(compared != null && ((dMaterial) object).material == compared.getMaterial())
+                        .getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1157,6 +1153,7 @@ public class dMaterial implements dObject, Adjustable {
         // @description
         // Returns the bukkit Material enum value. For example: <m@birch_sapling.bukkit_enum>
         // will return 'sapling'
+        // Unneeded for 1.13+ servers.
         // -->
         registerTag("bukkit_enum", new TagRunnable() {
             @Override

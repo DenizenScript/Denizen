@@ -452,7 +452,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // Defined in dEntity
         if (attribute.startsWith("is_npc")) {
-            return Element.TRUE.getAttribute(attribute.fulfill(1));
+            return new Element(true).getAttribute(attribute.fulfill(1));
         }
 
         // Defined in dEntity
@@ -549,7 +549,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         if (attribute.startsWith("has_trigger")
                 && attribute.hasContext(1)) {
             if (!getCitizen().hasTrait(TriggerTrait.class)) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
+                return new Element(false).getAttribute(attribute.fulfill(1));
             }
             TriggerTrait trait = getCitizen().getTrait(TriggerTrait.class);
             return new Element(trait.hasTrigger(attribute.getContext(1)))
@@ -873,7 +873,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
                 lookclose = lookclose.substring(10, lookclose.length() - 1);
                 return new Element(Boolean.valueOf(lookclose)).getAttribute(attribute.fulfill(1));
             }
-            return Element.FALSE.getAttribute(attribute.fulfill(1));
+            return new Element(false).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]

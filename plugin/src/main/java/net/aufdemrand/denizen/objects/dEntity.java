@@ -2061,14 +2061,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the entity is leashed.
         // -->
         if (attribute.startsWith("leashed") || attribute.startsWith("is_leashed")) {
-            if (isLivingEntity()) {
-                return new Element(getLivingEntity().isLeashed())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return new Element(isLivingEntity() && getLivingEntity().isLeashed())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2103,14 +2097,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the entity will not be removed completely when far away from players.
         // -->
         if (attribute.startsWith("persistent") || attribute.startsWith("is_persistent")) {
-            if (isLivingEntity()) {
-                return new Element(!getLivingEntity().getRemoveWhenFarAway())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return Element.FALSE
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return new Element(isLivingEntity() && !getLivingEntity().getRemoveWhenFarAway())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2355,12 +2343,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the entity is a mob (Not a player or NPC).
         // -->
         if (attribute.startsWith("is_mob")) {
-            if (!isPlayer() && !isNPC() && getBukkitEntity() instanceof LivingEntity) {
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
+            return new Element(!isPlayer() && !isNPC() && isLivingEntity())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -2695,10 +2679,10 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
                     for (PotionEffect effect : helper.getCustomEffects()) {
                         if (effect.getType().equals(effectType)) {
-                            return Element.TRUE.getAttribute(attribute.fulfill(1));
+                            return new Element(true).getAttribute(attribute.fulfill(1));
                         }
                     }
-                    return Element.FALSE.getAttribute(attribute.fulfill(1));
+                    return new Element(false).getAttribute(attribute.fulfill(1));
                 }
 
                 return new Element(helper.hasCustomEffects())

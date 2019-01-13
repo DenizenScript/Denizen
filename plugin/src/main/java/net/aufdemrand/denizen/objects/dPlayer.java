@@ -630,7 +630,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // Defined in dEntity
         if (attribute.startsWith("is_player")) {
-            return Element.TRUE.getAttribute(attribute.fulfill(1));
+            return new Element(true).getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -646,7 +646,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
-            return Element.TRUE.getAttribute(attribute.fulfill(2));
+            return new Element(true).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -1230,10 +1230,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
             if (ban == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
+                return new Element(false).getAttribute(attribute.fulfill(1));
             }
             else if (ban.getExpiration() == null) {
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
+                return new Element(true).getAttribute(attribute.fulfill(1));
             }
             return new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1));
         }
@@ -1780,11 +1780,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("has_finished")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
-            if (script == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
-
-            return new Element(FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
+            return new Element(script != null && FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1796,11 +1792,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("has_failed")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
-            if (script == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
-
-            return new Element(FailCommand.getScriptFails(getName(), script.getName()) > 0)
+            return new Element(script != null && FailCommand.getScriptFails(getName(), script.getName()) > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
