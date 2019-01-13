@@ -534,6 +534,9 @@ public class dMaterial implements dObject, Adjustable {
 
     // Called on startup
     public static void _initialize() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return;
+        }
         for (dMaterials material : dMaterials.values()) {
             try {
                 Field field = dMaterial.class.getField(material.name());
