@@ -465,6 +465,9 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     public dMaterial getMaterial() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return dMaterial.getMaterialFrom(getItemStack().getType());
+        }
         return dMaterial.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
     }
 
@@ -583,16 +586,12 @@ public class dItem implements dObject, Notable, Adjustable {
         return "i@" + identifyMaterial().replace("m@", "");
     }
 
-
-    // Special-case that essentially fetches the material of the items and uses its 'identify()' method
     public String identifyMaterial() {
-        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimple();
+        return getMaterial().identifySimple();
     }
 
-
-    // Special-case that essentially fetches the material of the items and uses its 'identify()' method
     public String identifyMaterialNoIdentifier() {
-        return dMaterial.getMaterialFrom(item.getType(), item.getData().getData()).identifySimpleNoIdentifier();
+        return getMaterial().identifySimpleNoIdentifier();
     }
 
     public String identifyNoIdentifier() {

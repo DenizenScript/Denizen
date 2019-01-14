@@ -599,8 +599,11 @@ public class dMaterial implements dObject, Adjustable {
                 return material_varieties.get(material).get(data);
             }
         }
-        if (material.isBlock()) {
-            material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+        if (data != 0 && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            // upvert old data valued materials
+            if (material.isBlock()) {
+                material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+            }
         }
         // Forcible upvert.
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
