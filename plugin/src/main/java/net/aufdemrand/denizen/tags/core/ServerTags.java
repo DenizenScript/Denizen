@@ -499,7 +499,9 @@ public class ServerTags {
             File f = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(f)) {
-                    dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    }
                     return;
                 }
             }
@@ -521,11 +523,15 @@ public class ServerTags {
             File folder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), attribute.getContext(1));
             try {
                 if (!Utilities.canReadFile(folder)) {
-                    dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("Invalid path specified. Invalid paths have been denied by the server administrator.");
+                    }
                     return;
                 }
                 if (!folder.exists() || !folder.isDirectory()) {
-                    dB.echoError("Invalid path specified. No directory exists at that path.");
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("Invalid path specified. No directory exists at that path.");
+                    }
                     return;
                 }
             }
