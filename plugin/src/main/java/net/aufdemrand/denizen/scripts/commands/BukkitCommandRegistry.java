@@ -4451,6 +4451,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // When loading a script, optionally add 'fix_formatting' to run the file through
         // Denizen's built in script preparser to correct common YAML errors,
         // such as tabs instead of spaces or comments inside braced blocks.
+        // Use holdable syntax ("- ~yaml load:...") with load or savefile actions to avoid locking up the server during file IO.
         //
         // @Tags
         // <yaml[<idname>].contains[<path>]>

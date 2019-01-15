@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
@@ -16,13 +17,14 @@ import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
-public class YamlCommand extends AbstractCommand {
+public class YamlCommand extends AbstractCommand implements Holdable {
 
     @Override
     public void onEnable() {
@@ -231,38 +233,66 @@ public class YamlCommand extends AbstractCommand {
         Action action = Action.valueOf(actionElement.asString().toUpperCase());
         String id = idElement.asString().toUpperCase();
 
+        if (action != Action.LOAD && action != Action.SAVE && scriptEntry.shouldWaitFor()) {
+            scriptEntry.setFinished(true);
+        }
         switch (action) {
 
             case LOAD:
                 File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), filename.asString());
                 if (!Utilities.canReadFile(file)) {
                     dB.echoError("Server config denies reading files in that location.");
+                    scriptEntry.setFinished(true);
                     return;
                 }
                 if (!file.exists()) {
                     dB.echoError("File cannot be found!");
+                    scriptEntry.setFinished(true);
                     return;
                 }
-                try {
-                    FileInputStream fis = new FileInputStream(file);
-                    String str = ScriptHelper.convertStreamToString(fis);
-                    if (fixFormatting.asBoolean()) {
-                        str = ScriptHelper.ClearComments("", str, false);
+                YamlConfiguration[] runnableConfigs = new YamlConfiguration[1];
+                BukkitRunnable onLoadCompleted = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (yamls.containsKey(id)) {
+                            yamls.remove(id);
+                        }
+                        yamls.put(id, runnableConfigs[0]);
+                        scriptEntry.setFinished(true);
                     }
-                    yamlConfiguration = YamlConfiguration.load(str);
-                    fis.close();
+                };
+                BukkitRunnable loadRunnable = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            FileInputStream fis = new FileInputStream(file);
+                            String str = ScriptHelper.convertStreamToString(fis);
+                            if (fixFormatting.asBoolean()) {
+                                str = ScriptHelper.ClearComments("", str, false);
+                            }
+                            runnableConfigs[0] = YamlConfiguration.load(str);
+                            fis.close();
+                            if (runnableConfigs[0] == null) {
+                                runnableConfigs[0] = new YamlConfiguration();
+                            }
+                            if (scriptEntry.shouldWaitFor()) {
+                                onLoadCompleted.runTask(DenizenAPI.getCurrentInstance());
+                            }
+                            else {
+                                onLoadCompleted.run();
+                            }
+                        }
+                        catch (Exception e) {
+                            dB.echoError("Failed to load yaml file: " + e);
+                        }
+                    }
+                };
+                if (scriptEntry.shouldWaitFor()) {
+                    loadRunnable.runTaskAsynchronously(DenizenAPI.getCurrentInstance());
                 }
-                catch (Exception e) {
-                    dB.echoError("Failed to load yaml file: " + e);
-                    return;
+                else {
+                    loadRunnable.run();
                 }
-                if (yamls.containsKey(id)) {
-                    yamls.remove(id);
-                }
-                if (yamlConfiguration == null) {
-                    yamlConfiguration = new YamlConfiguration();
-                }
-                yamls.put(id, yamlConfiguration);
                 break;
 
             case UNLOAD:
@@ -283,6 +313,7 @@ public class YamlCommand extends AbstractCommand {
                             String directory = URLDecoder.decode(System.getProperty("user.dir"));
                             if (!fileObj.getCanonicalPath().startsWith(directory)) {
                                 dB.echoError("Outside-the-main-folder YAML saves disabled by administrator.");
+                                scriptEntry.setFinished(true);
                                 return;
                             }
                         }
@@ -291,13 +322,32 @@ public class YamlCommand extends AbstractCommand {
                         fileObj.getParentFile().mkdirs();
                         if (!Utilities.isSafeFile(fileObj)) {
                             dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
+                            scriptEntry.setFinished(true);
                             return;
                         }
-                        FileWriter fw = new FileWriter(fileObj.getAbsoluteFile());
-                        BufferedWriter writer = new BufferedWriter(fw);
-                        writer.write(yamls.get(id).saveToString());
-                        writer.close();
-                        fw.close();
+                        String outp = yamls.get(id).saveToString();
+                        BukkitRunnable saveRunnable = new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    FileWriter fw = new FileWriter(fileObj.getAbsoluteFile());
+                                    BufferedWriter writer = new BufferedWriter(fw);
+                                    writer.write(outp);
+                                    writer.close();
+                                    fw.close();
+                                }
+                                catch (IOException e) {
+                                    dB.echoError(e);
+                                }
+                                scriptEntry.setFinished(true);
+                            }
+                        };
+                        if (scriptEntry.shouldWaitFor()) {
+                            saveRunnable.runTaskAsynchronously(DenizenAPI.getCurrentInstance());
+                        }
+                        else {
+                            saveRunnable.run();
+                        }
                     }
                     catch (IOException e) {
                         dB.echoError(e);
@@ -305,6 +355,7 @@ public class YamlCommand extends AbstractCommand {
                 }
                 else {
                     dB.echoError("Unknown YAML ID '" + id + "'");
+                    scriptEntry.setFinished(true);
                 }
                 break;
 
