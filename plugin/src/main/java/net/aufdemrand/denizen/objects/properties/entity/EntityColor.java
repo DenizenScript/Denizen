@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects.properties.entity;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.ParrotHelper;
 import net.aufdemrand.denizen.utilities.entity.RabbitType;
 import net.aufdemrand.denizencore.objects.Element;
@@ -28,6 +29,7 @@ public class EntityColor implements Property {
                 type == EntityType.WOLF ||
                 type == EntityType.OCELOT ||
                 type == EntityType.RABBIT ||
+                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT);
     }
 
@@ -70,6 +72,9 @@ public class EntityColor implements Property {
         }
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
+        }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) {
+            return ((Llama) colored.getBukkitEntity()).getColor().name();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
             return ParrotHelper.parrotColor(colored);
@@ -145,12 +150,13 @@ public class EntityColor implements Property {
         // @group properties
         // @description
         // If the entity can have a color, returns the entity's color.
-        // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, and Parrot type entities can have a color.
+        // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, Llama, and Parrot type entities can have a color.
         // For horses, the output is COLOR|STYLE(|VARIANT), see <@link language horse types>.
         //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
+        // For llamas, the types are CREAMY, WHITE, BROWN, and GRAY.
         // -->
         if (attribute.startsWith("color")) {
             return new Element(CoreUtilities.toLowerCase(getColor()))
@@ -214,16 +220,23 @@ public class EntityColor implements Property {
                 ((Ocelot) colored.getBukkitEntity())
                         .setCatType(Ocelot.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (type == EntityType.RABBIT) {
-                if (mechanism.getValue().matchesEnum(RabbitType.values())) {
-                    ((Rabbit) colored.getBukkitEntity()).setRabbitType(RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()).getType());
-                }
-                else if (mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
-                    ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
-                }
+            else if (type == EntityType.RABBIT
+                    && mechanism.getValue().matchesEnum(RabbitType.values())) {
+                ((Rabbit) colored.getBukkitEntity()).setRabbitType(RabbitType.valueOf(mechanism.getValue().asString().toUpperCase()).getType());
+            }
+            else if (type == EntityType.RABBIT
+                    && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
+                ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
+            }
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA
+                    && mechanism.getValue().matchesEnum(Llama.Color.values())) {
+                ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
                 ParrotHelper.setParrotColor(colored, mechanism);
+            }
+            else {
+                dB.echoError("Could not apply color '" + mechanism.getValue().toString() + "' to entity of type " + type.name() + ".");
             }
 
         }
