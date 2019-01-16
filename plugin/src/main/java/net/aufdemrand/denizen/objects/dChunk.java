@@ -406,11 +406,11 @@ public class dChunk implements dObject, Adjustable {
                 int x = heightMap[0];
                 for (int i : heightMap) {
                     if (Math.abs(x - i) > tolerance) {
-                        return Element.FALSE.getAttribute(attribute.fulfill(1));
+                        return new Element(false).getAttribute(attribute.fulfill(1));
                     }
                 }
 
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
+                return new Element(true).getAttribute(attribute.fulfill(1));
             }
         });
 

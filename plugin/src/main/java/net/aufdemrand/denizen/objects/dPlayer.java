@@ -630,7 +630,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // Defined in dEntity
         if (attribute.startsWith("is_player")) {
-            return Element.TRUE.getAttribute(attribute.fulfill(1));
+            return new Element(true).getAttribute(attribute.fulfill(1));
         }
 
         /////////////////////
@@ -646,7 +646,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("debug.log")) {
             dB.log(debug());
-            return Element.TRUE.getAttribute(attribute.fulfill(2));
+            return new Element(true).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -1225,15 +1225,14 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @returns Element(Boolean)
         // @description
         // Returns whether the player is banned.
-        // @mechanism dPlayer.is_banned
         // -->
         if (attribute.startsWith("is_banned")) {
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
             if (ban == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
+                return new Element(false).getAttribute(attribute.fulfill(1));
             }
             else if (ban.getExpiration() == null) {
-                return Element.TRUE.getAttribute(attribute.fulfill(1));
+                return new Element(true).getAttribute(attribute.fulfill(1));
             }
             return new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1));
         }
@@ -1327,12 +1326,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("ban_info")) {
             attribute.fulfill(1);
             BanEntry ban = Bukkit.getBanList(BanList.Type.NAME).getBanEntry(getName());
-            if (ban == null) {
+            if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
                 return null;
             }
-            else if (ban.getExpiration() != null && ban.getExpiration().before(new Date())) {
-                return null;
-            }
+
             // <--[tag]
             // @attribute <p@player.ban_info.expiration>
             // @returns Duration
@@ -1344,6 +1341,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 return new Duration(ban.getExpiration().getTime() / 50)
                         .getAttribute(attribute.fulfill(1));
             }
+
             // <--[tag]
             // @attribute <p@player.ban_info.reason>
             // @returns Element
@@ -1354,6 +1352,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 return new Element(ban.getReason())
                         .getAttribute(attribute.fulfill(1));
             }
+
             // <--[tag]
             // @attribute <p@player.ban_info.created>
             // @returns Duration
@@ -1364,6 +1363,18 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 return new Duration(ban.getCreated().getTime() / 50)
                         .getAttribute(attribute.fulfill(1));
             }
+
+            // <--[tag]
+            // @attribute <p@player.ban_info.source>
+            // @returns Element
+            // @description
+            // Returns the source of the player's ban, if they are banned.
+            // -->
+            else if (attribute.startsWith("source")) {
+                return new Element(ban.getSource())
+                        .getAttribute(attribute.fulfill(1));
+            }
+
             return null;
         }
 
@@ -1780,11 +1791,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("has_finished")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
-            if (script == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
-
-            return new Element(FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
+            return new Element(script != null && FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1796,11 +1803,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("has_failed")) {
             dScript script = dScript.valueOf(attribute.getContext(1));
-            if (script == null) {
-                return Element.FALSE.getAttribute(attribute.fulfill(1));
-            }
-
-            return new Element(FailCommand.getScriptFails(getName(), script.getName()) > 0)
+            return new Element(script != null && FailCommand.getScriptFails(getName(), script.getName()) > 0)
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -3188,28 +3191,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("is_op") && mechanism.requireBoolean()) {
             getOfflinePlayer().setOp(mechanism.getValue().asBoolean());
-        }
-
-        // <--[mechanism]
-        // @object dPlayer
-        // @name is_banned
-        // @input Element(Boolean)
-        // @description
-        // Set whether the player is banned or not.
-        // @tags
-        // <p@player.is_banned>
-        // <p@player.ban_info.expiration>
-        // <p@player.ban_info.reason>
-        // <p@player.ban_info.created>
-        // -->
-        if (mechanism.matches("is_banned") && mechanism.requireBoolean()) {
-            /*if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) {
-                getOfflinePlayer().setBanned(mechanism.getValue().asBoolean());
-            }
-            else {
-                // TODO
-            }*/
-            // TODO: !!!
         }
 
         // <--[mechanism]

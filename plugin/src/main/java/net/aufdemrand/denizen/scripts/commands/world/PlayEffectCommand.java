@@ -71,13 +71,17 @@ public class PlayEffectCommand extends AbstractCommand {
                 }
 
                 scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
+                continue;
             }
             else if (!scriptEntry.hasObject("effect") &&
                     !scriptEntry.hasObject("particleeffect") &&
-                    !scriptEntry.hasObject("iconcrack")) {
+                    !scriptEntry.hasObject("iconcrack") &&
+                    !scriptEntry.hasObject("blockcrack") &&
+                    !scriptEntry.hasObject("blockdust")) {
 
                 if (particleHelper.hasParticle(arg.getValue())) {
                     scriptEntry.addObject("particleeffect", particleHelper.getParticle(arg.getValue()));
+                    continue;
                 }
                 else if (arg.matches("random")) {
                     // Get another effect if "RANDOM" is used
@@ -90,6 +94,7 @@ public class PlayEffectCommand extends AbstractCommand {
                         List<Effect> visual = particleHelper.getVisualEffects();
                         scriptEntry.addObject("effect", visual.get(CoreUtilities.getRandom().nextInt(visual.size())));
                     }
+                    continue;
                 }
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
@@ -101,6 +106,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     else {
                         dB.echoError("Invalid iconcrack_[item]. Must be a valid dItem!");
                     }
+                    continue;
                 }
                 else if (arg.startsWith("blockcrack_")) {
                     String shrunk = arg.getValue().substring("blockcrack_".length());
@@ -111,6 +117,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     else {
                         dB.echoError("Invalid blockcrack_[item]. Must be a valid dMaterial!");
                     }
+                    continue;
                 }
                 else if (arg.startsWith("blockdust_")) {
                     String shrunk = arg.getValue().substring("blockdust_".length());
@@ -121,12 +128,14 @@ public class PlayEffectCommand extends AbstractCommand {
                     else {
                         dB.echoError("Invalid blockdust_[item]. Must be a valid dMaterial!");
                     }
+                    continue;
                 }
                 else if (particleHelper.hasEffect(arg.getValue())) {
                     scriptEntry.addObject("effect", particleHelper.getEffect(arg.getValue()));
+                    continue;
                 }
             }
-            else if (!scriptEntry.hasObject("radius")
+            if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
                     && arg.matchesPrefix("visibility", "v", "radius", "r")) {
 

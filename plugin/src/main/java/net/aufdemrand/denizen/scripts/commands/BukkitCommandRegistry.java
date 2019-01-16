@@ -453,25 +453,34 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Ban
-        // @Syntax ban ({add}/remove) [<player>|...] (reason:<text>) (duration:<duration>)
+        // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)
         // @Required 1
         // @Stable stable
-        // @Short Ban or un-ban a player or list of players.
-        // @Author Fortifier42
+        // @Short Ban or un-ban players or ip addresses.
+        // @Author Fortifier42, Mergu
         // @Group server
         //
         // @Description
-        // Add or remove bans from the server, with optional arguments for a reason and duration of a temporary
-        // ban. By default will ban the specified player(s), and kick them from the server. You can set a reason for
-        // which the player(s) will be banned, along with a duration (if you wish to temporarily ban them). If a
-        // reason is not specified, it will default to "Banned.".  If a duration for the ban if not specified, they
-        // will be banned permanently.
+        // Add or remove player or ip address bans from the server. Banning a player will also kick them from the server.
+        // You may optionally specify both a list of players and list of addresses.
+        // Options are:
+        // reason: Sets the ban reason. Defaults to "Banned.".
+        // duration: Sets the duration of the temporary ban. This will be a permanent ban if not specified.
+        // source: Sets the source of the ban. Defaults to "(Unknown)".
         //
         // @Tags
         // <p@player.is_banned>
         // <p@player.ban_info.reason>
         // <p@player.ban_info.expiration>
         // <p@player.ban_info.created>
+        // <p@player.ban_info.source>
+        // <server.is_banned[<address>]>
+        // <server.ban_info[<address>].expiration>
+        // <server.ban_info[<address>].reason>
+        // <server.ban_info[<address>].created>
+        // <server.ban_info[<address>].source>
+        // <server.list_banned_addresses>
+        // <server.list_banned_players>
         //
         // @Usage
         // Use to ban a player.
@@ -486,11 +495,27 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes." duration:10m
         //
         // @Usage
+        // Use to ban a player with a source.
+        // - ban p@Mergu "reason:Grew too many potatoes." source:<player.name>
+        //
+        // @Usage
+        // Use to ban an ip address.
+        // - ban addresses:127.0.0.1
+        //
+        // @Usage
+        // Use to temporarily ip ban all online players.
+        // - ban addresses:<server.list_online_players.parse[ip]> duration:5m
+        //
+        // @Usage
         // Use to unban a list of players.
         // - ban remove p@mcmonkey4eva|p@Morphan1
+        //
+        // @Usage
+        // Use to unban an ip address.
+        // - ban remove addresses:127.0.0.1
         // -->
         registerCoreMember(BanCommand.class,
-                "BAN", "ban ({add}/remove) [<player>|...] (reason:<text>) (duration:<duration>)", 1);
+                "BAN", "ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)", 1);
 
 
         // <--[command]
@@ -4243,30 +4268,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
                 "TRIGGER", "trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)", 1);
 
         // <--[command]
-        // @Name Viewer
-        // @Syntax viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)
-        // @Required 1
-        // @Deprecated Unused.
-        // @Stable unstable
-        // @Short Creates a sign that auto-updates with information.
-        // @Author Morphan1
-        // @Group world
-        //
-        // @Description
-        // Creates a sign that auto-updates with information about a player, including their location, score, and
-        // whether they're logged in or not.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Create a sign that shows the location of a player on a wall.
-        // - viewer player:ThatGuy create 113,76,-302,world id:PlayerLoc1 type:wall_sign display:location
-        // -->
-        registerCoreMember(ViewerCommand.class,
-                "VIEWER", "viewer ({create <location>}/modify/remove) [id:<name>] (type:{sign_post}/wall_sign) (display:{location}/score/logged_in) (direction:n/e/w/s)", 2);
-
-        // <--[command]
         // @Name Vulnerable
         // @Syntax vulnerable (state:{true}/false/toggle)
         // @Required 0
@@ -4475,6 +4476,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // When loading a script, optionally add 'fix_formatting' to run the file through
         // Denizen's built in script preparser to correct common YAML errors,
         // such as tabs instead of spaces or comments inside braced blocks.
+        // Use holdable syntax ("- ~yaml load:...") with load or savefile actions to avoid locking up the server during file IO.
         //
         // @Tags
         // <yaml[<idname>].contains[<path>]>

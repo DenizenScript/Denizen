@@ -31,6 +31,9 @@ public class BanCommand extends AbstractCommand {
                     || arg.matchesEnum(Actions.values()))) {
                 scriptEntry.addObject("action", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("addresses") && arg.matchesPrefix("addresses", "address")) {
+                scriptEntry.addObject("addresses", arg.asType(dList.class));
+            }
             else if (!scriptEntry.hasObject("targets") && (arg.matchesPrefix("targets", "target")
                     || arg.matchesArgumentList(dPlayer.class))) {
                 scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
@@ -42,67 +45,87 @@ public class BanCommand extends AbstractCommand {
                     || arg.matchesArgumentType(Duration.class))) {
                 scriptEntry.addObject("duration", arg.asType(Duration.class));
             }
+            else if (!scriptEntry.hasObject("source") && arg.matchesPrefix("source")) {
+                scriptEntry.addObject("source", arg.asElement());
+            }
             else {
                 arg.reportUnhandled();
             }
         }
 
         scriptEntry.defaultObject("action", new Element("add"))
-                .defaultObject("reason", new Element("Banned."));
+                .defaultObject("reason", new Element("Banned."))
+                .defaultObject("source", new Element("(Unknown)"));
 
         if (Actions.valueOf(scriptEntry.getObject("action").toString().toUpperCase()) == null) {
             throw new IllegalArgumentException("Invalid action specified.");
         }
 
-        if (!scriptEntry.hasObject("targets") || ((List<dPlayer>) scriptEntry.getObject("targets")).isEmpty()) {
-            throw new IllegalArgumentException("Must specify a valid target!");
+        if ((!scriptEntry.hasObject("targets") || ((List<dPlayer>) scriptEntry.getObject("targets")).isEmpty())
+                && (!scriptEntry.hasObject("addresses") || ((List<Element>) scriptEntry.getObject("addresses")).isEmpty())) {
+            throw new IllegalArgumentException("Must specify a valid target or address!");
         }
 
     }
 
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
-
         Element action = scriptEntry.getElement("action");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
+        dList addresses = (dList) scriptEntry.getObject("addresses");
         Element reason = scriptEntry.getElement("reason");
         Duration duration = scriptEntry.getdObject("duration");
-        Date expiration = null;
+        Element source = scriptEntry.getElement("source");
 
+        Date expiration = null;
         if (duration != null && duration.getTicks() != 0) {
             expiration = new Date(new Duration(System.currentTimeMillis() / 50 + duration.getTicks()).getTicks() * 50);
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             dB.report(scriptEntry, getName(),
                     action.debug() +
-                            aH.debugObj("targets", targets) +
+                            (targets != null ? aH.debugObj("targets", targets) : "") +
+                            (addresses != null ? addresses.debug() : "") +
                             reason.debug() +
-                            (duration != null ? duration.debug() : ""));
-
+                            (duration != null ? duration.debug() : "") +
+                            source.debug());
         }
 
         Actions banAction = Actions.valueOf(action.toString().toUpperCase());
 
         switch (banAction) {
             case ADD:
-                for (dPlayer player : targets) {
-                    if (player.isValid()) {
-                        Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), reason.toString(), expiration, null);
-                        if (player.isOnline()) {
-                            player.getPlayerEntity().kickPlayer(reason.toString());
+                if (targets != null) {
+                    for (dPlayer player : targets) {
+                        if (player.isValid()) {
+                            Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), reason.toString(), expiration, source.toString());
+                            if (player.isOnline()) {
+                                player.getPlayerEntity().kickPlayer(reason.toString());
+                            }
                         }
+                    }
+                }
+                if (addresses != null) {
+                    for (String address : addresses) {
+                        Bukkit.getBanList(BanList.Type.IP).addBan(address, reason.toString(), expiration, source.toString());
                     }
                 }
                 break;
 
             case REMOVE:
-                for (dPlayer player : targets) {
-                    if (player.isValid()) {
-                        if (player.getOfflinePlayer().isBanned()) {
-                            Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());
+                if (targets != null) {
+                    for (dPlayer player : targets) {
+                        if (player.isValid()) {
+                            if (player.getOfflinePlayer().isBanned()) {
+                                Bukkit.getBanList(BanList.Type.NAME).pardon(player.getName());
+                            }
                         }
+                    }
+                }
+                if (addresses != null) {
+                    for (String address : addresses) {
+                        Bukkit.getBanList(BanList.Type.IP).pardon(address);
                     }
                 }
                 break;

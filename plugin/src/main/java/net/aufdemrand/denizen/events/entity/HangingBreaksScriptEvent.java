@@ -101,8 +101,8 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
-                entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
+        return new BukkitScriptEntryData(entity != null && entity.isPlayer() ? dEntity.getPlayerFrom(event.getEntity()) : null,
+                entity != null && entity.isCitizensNPC() ? dEntity.getNPCFrom(event.getEntity()) : null);
     }
 
     @Override

@@ -34,6 +34,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
+import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -518,6 +519,23 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         /////////////////
 
         // <--[tag]
+        // @attribute <l@location.block_facing>
+        // @returns dLocation
+        // @description
+        // Returns the relative location vector of where this block is facing.
+        // Only works for block types that have directionality (such as signs, chests, stairs, etc.).
+        // This can return for example "1,0,0" to mean the block is facing towards the positive X axis.
+        // You can use <some_block_location.add[<some_block_location.block_facing>]> to get the block directly in front of this block (based on its facing direction).
+        // -->
+        if (attribute.matches("block_facing")) {
+            if (getBlock().getBlockData() instanceof Directional) {
+                Vector facing = ((Directional) getBlock().getBlockData()).getFacing().getDirection();
+                return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.above>
         // @returns dLocation
         // @description
@@ -546,7 +564,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the location of the block this location is on,
         // i.e. returns a location without decimals or direction.
         // -->
-        if (attribute.startsWith("block")) {
+        if (attribute.matches("block")) {
             return new dLocation(getWorld(), getBlockX(), getBlockY(), getBlockZ())
                     .getAttribute(attribute.fulfill(1));
         }

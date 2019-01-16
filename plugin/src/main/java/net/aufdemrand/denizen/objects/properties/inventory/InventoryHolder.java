@@ -15,6 +15,8 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
 
 public class InventoryHolder implements Property {
 
@@ -90,6 +92,14 @@ public class InventoryHolder implements Property {
         }
         else if (inventory.getIdType().equals("workbench")) {
             inventory.setInventory(player.getBukkitWorkbench(), player);
+        }
+        else if (inventory.getIdType().equals("crafting")) {
+            Inventory opened = player.getPlayerEntity().getOpenInventory().getTopInventory();
+            if (opened instanceof CraftingInventory) {
+                inventory.setInventory(opened, player);
+            }
+            inventory.setIdType("player");
+            inventory.setInventory(player.getBukkitInventory(), player);
         }
         else {
             inventory.setInventory(player.getBukkitInventory(), player);
