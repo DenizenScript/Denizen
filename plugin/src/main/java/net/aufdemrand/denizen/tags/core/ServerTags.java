@@ -44,6 +44,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -1052,6 +1053,95 @@ public class ServerTags {
                 banned.add(dPlayer.mirrorBukkitPlayer(player).identify());
             }
             event.setReplaced(banned.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_banned_addresses>
+        // @returns dList
+        // @description
+        // Returns a list of all banned ip addresses.
+        // -->
+        if (attribute.startsWith("list_banned_addresses")) {
+            dList list = new dList();
+            list.addAll(Bukkit.getIPBans());
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.is_banned[<address>]>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the given ip address is banned.
+        // -->
+        if (attribute.startsWith("is_banned") && attribute.hasContext(1)) {
+            // BanList contains an isBanned method that doesn't check expiration time
+            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getContext(1));
+
+            if (ban == null) {
+                event.setReplaced(new Element(false).getAttribute(attribute.fulfill(1)));
+            } else if (ban.getExpiration() == null) {
+                event.setReplaced(new Element(true).getAttribute(attribute.fulfill(1)));
+            } else {
+                event.setReplaced(new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1)));
+            }
+
+            return;
+        }
+
+        if (attribute.startsWith("ban_info") && attribute.hasContext(1)) {
+            BanEntry ban = Bukkit.getBanList(BanList.Type.IP).getBanEntry(attribute.getContext(1));
+            attribute.fulfill(1);
+            if (ban == null || (ban.getExpiration() != null && ban.getExpiration().before(new Date()))) {
+                return;
+            }
+
+            // <--[tag]
+            // @attribute <server.ban_info[<address>].expiration>
+            // @returns Duration
+            // @description
+            // Returns the expiration of the ip address's ban, if it is banned.
+            // Potentially can be null.
+            // -->
+            if (attribute.startsWith("expiration") && ban.getExpiration() != null) {
+                event.setReplaced(new Duration(ban.getExpiration().getTime() / 50)
+                        .getAttribute(attribute.fulfill(1)));
+            }
+
+            // <--[tag]
+            // @attribute <server.ban_info[<address>].reason>
+            // @returns Element
+            // @description
+            // Returns the reason for the ip address's ban, if it is banned.
+            // -->
+            else if (attribute.startsWith("reason")) {
+                event.setReplaced(new Element(ban.getReason())
+                        .getAttribute(attribute.fulfill(1)));
+            }
+
+            // <--[tag]
+            // @attribute <server.ban_info[<address>].created>
+            // @returns Duration
+            // @description
+            // Returns when the ip address's ban was created, if it is banned.
+            // -->
+            else if (attribute.startsWith("created")) {
+                event.setReplaced(new Duration(ban.getCreated().getTime() / 50)
+                        .getAttribute(attribute.fulfill(1)));
+            }
+
+            // <--[tag]
+            // @attribute <server.ban_info[<address>].source>
+            // @returns Element
+            // @description
+            // Returns the source of the ip address's ban, if it is banned.
+            // -->
+            else if (attribute.startsWith("source")) {
+                event.setReplaced(new Element(ban.getSource())
+                        .getAttribute(attribute.fulfill(1)));
+            }
+
             return;
         }
 
