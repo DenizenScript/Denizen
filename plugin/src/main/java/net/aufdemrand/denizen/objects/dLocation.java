@@ -2167,6 +2167,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         dB.echoError("Cannot apply properties to a location!");
     }
 
+    public static BlockFace faceFor(Vector vec) {
+        for (BlockFace face : BlockFace.values()) {
+            if (face.getDirection().distanceSquared(vec) < 0.01) { // floating-point safe check
+                return face;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void adjust(Mechanism mechanism) {
 
@@ -2176,6 +2185,28 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
             BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
             blockData.setBlock(getBlock(), false);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name block_facing
+        // @input dLocation
+        // @description
+        // Sets the facing direction of the block, as a vector.
+        // @tags
+        // <l@location.block_facing>
+        // -->
+        if (mechanism.matches("block_facing") && mechanism.requireObject(dLocation.class)) {
+            dLocation faceVec = value.asType(dLocation.class);
+            if (getBlock().getBlockData() instanceof Directional) {
+                Directional dir = (Directional) getBlock().getBlockData();
+                BlockFace newFace = faceFor(faceVec.toVector());
+                if (newFace == null) {
+                    dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
+                }
+                dir.setFacing(newFace);
+                getBlock().setBlockData(dir);
+            }
         }
 
         // <--[mechanism]
