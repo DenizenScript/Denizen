@@ -28,6 +28,7 @@ import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -530,6 +531,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.matches("block_facing")) {
             if (getBlock().getBlockData() instanceof Directional) {
                 Vector facing = ((Directional) getBlock().getBlockData()).getFacing().getDirection();
+                return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
+                        .getAttribute(attribute.fulfill(1));
+            }
+            else if (getBlock().getBlockData() instanceof Rotatable) {
+                Vector facing = ((Rotatable) getBlock().getBlockData()).getRotation().getDirection();
                 return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -2205,6 +2211,15 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                     dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
                 }
                 dir.setFacing(newFace);
+                getBlock().setBlockData(dir);
+            }
+            else if (getBlock().getBlockData() instanceof Rotatable) {
+                Rotatable dir = (Rotatable) getBlock().getBlockData();
+                BlockFace newFace = faceFor(faceVec.toVector());
+                if (newFace == null) {
+                    dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
+                }
+                dir.setRotation(newFace);
                 getBlock().setBlockData(dir);
             }
         }
