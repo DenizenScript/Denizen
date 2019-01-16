@@ -98,8 +98,10 @@ public class InventoryHolder implements Property {
             if (opened instanceof CraftingInventory) {
                 inventory.setInventory(opened, player);
             }
-            inventory.setIdType("player");
-            inventory.setInventory(player.getBukkitInventory(), player);
+            else {
+                inventory.setIdType("player");
+                inventory.setInventory(player.getBukkitInventory(), player);
+            }
         }
         else {
             inventory.setInventory(player.getBukkitInventory(), player);
