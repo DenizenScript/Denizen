@@ -32,12 +32,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.HorseInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.*;
@@ -88,7 +83,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public final static int maxSlots = 54;
 
     // All of the inventory id types we use
-    public final static String[] idTypes = {"npc", "player", "enderchest", "workbench", "entity", "location", "generic"};
+    public final static String[] idTypes = {"npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"};
 
 
     /////////////////////
@@ -244,6 +239,16 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (type.equals("npc")) {
                 if (dNPC.matches(holder)) {
                     return dNPC.valueOf(holder).getDenizenInventory();
+                }
+            }
+            else if (type.equals("crafting")) {
+                if (dPlayer.matches(holder)) {
+                    dPlayer holderPlayer = dPlayer.valueOf(holder);
+                    Inventory opened = holderPlayer.getPlayerEntity().getOpenInventory().getTopInventory();
+                    if (opened instanceof CraftingInventory) {
+                        return new dInventory(opened);
+                    }
+                    return dPlayer.valueOf(holder).getInventory();
                 }
             }
             else if (type.equals("player")) {
@@ -580,8 +585,7 @@ public class dInventory implements dObject, Notable, Adjustable {
                     return;
                 }
                 if (inventory.getType() == InventoryType.CRAFTING) {
-                    idType = "player";
-                    inventory = ((Player) holder).getInventory();
+                    idType = "crafting";
                 }
                 if (inventory.getType() == InventoryType.ENDER_CHEST) {
                     idType = "enderchest";
@@ -643,6 +647,13 @@ public class dInventory implements dObject, Notable, Adjustable {
         idType = type;
         idHolder = holder;
         return this;
+    }
+
+    /**
+     * Generally shouldn't be used.
+     */
+    public void setIdType(String type) {
+        idType = type;
     }
 
     public String getIdType() {
