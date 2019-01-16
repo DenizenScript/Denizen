@@ -579,6 +579,10 @@ public class dInventory implements dObject, Notable, Adjustable {
                     idHolder = (dNPC.fromEntity((Player) holder)).identify();
                     return;
                 }
+                if (inventory.getType() == InventoryType.CRAFTING) {
+                    idType = "player";
+                    inventory = ((Player) holder).getInventory();
+                }
                 if (inventory.getType() == InventoryType.ENDER_CHEST) {
                     idType = "enderchest";
                 }
