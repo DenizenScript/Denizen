@@ -2158,6 +2158,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
+        // <--[tag]
+        // @attribute <l@location.custom_name>
+        // @returns Element
+        // @mechanism custom_name
+        // @description
+        // Returns the custom name of this block.
+        // Only works for nameable blocks, such as chests and dispensers.
+        // -->
+        if (attribute.startsWith("custom_name")) {
+            if (getBlock().getState() instanceof Nameable) {
+                return new Element(((Nameable) getBlock().getState()).getCustomName()).getAttribute(attribute.fulfill(1));
+            }
+        }
+
         // Iterate through this object's properties' attributes
         for (Property property : PropertyParser.getProperties(this)) {
             String returned = property.getAttribute(attribute);
@@ -2416,6 +2430,28 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name custom_name
+        // @input Element
+        // @description
+        // Sets the custom name of the block.
+        // Use no value to reset the block's name.
+        // @tags
+        // <l@location.custom_name>
+        // -->
+        if (mechanism.matches("custom_name")) {
+            if (getBlock().getState() instanceof Nameable) {
+                String title = mechanism.getValue().asString();
+                if (!mechanism.hasValue()) {
+                    title = null;
+                }
+                BlockState state = getBlock().getState();
+                ((Nameable) state).setCustomName(title);
+                state.update(true);
             }
         }
 
