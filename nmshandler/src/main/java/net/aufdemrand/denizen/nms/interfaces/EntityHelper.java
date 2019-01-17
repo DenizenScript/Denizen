@@ -18,6 +18,10 @@ import java.util.UUID;
 
 public interface EntityHelper {
 
+    int getBodyArrows(Entity entity);
+
+    void setBodyArrows(Entity entity, int numArrows);
+
     Entity getFishHook(PlayerFishEvent event);
 
     void forceInteraction(Player player, Location location);

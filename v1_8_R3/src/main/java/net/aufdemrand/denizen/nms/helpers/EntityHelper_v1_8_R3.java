@@ -39,6 +39,18 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
      */
 
     @Override
+    public int getBodyArrows(Entity entity) {
+        // https://wiki.vg/Entity_metadata#Living
+        return ((CraftEntity) entity).getHandle().getDataWatcher().getByte(9);
+    }
+
+    @Override
+    public void setBodyArrows(Entity entity, int numArrows) {
+        // https://wiki.vg/Entity_metadata#Living
+        ((CraftEntity) entity).getHandle().getDataWatcher().watch(9, (byte) numArrows);
+    }
+
+    @Override
     public Entity getFishHook(PlayerFishEvent event) {
         return event.getHook();
     }
