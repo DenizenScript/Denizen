@@ -56,6 +56,7 @@ public class EntityRiptide implements Property {
         // <--[tag]
         // @attribute <e@entity.is_using_riptide>
         // @returns Element(Boolean)
+        // @mechanism dEntity.is_using_riptide
         // @group properties
         // @description
         // Returns whether this entity is using the Riptide enchantment.
@@ -77,6 +78,8 @@ public class EntityRiptide implements Property {
         // @input Element(Boolean)
         // @description
         // Sets whether this entity is using the Riptide enchantment.
+        // @tags
+        // <e@entity.is_using_riptide>
         // -->
         if (mechanism.matches("is_using_riptide") && mechanism.requireBoolean()) {
             NMSHandler.getInstance().getEntityHelper().setRiptide(entity.getBukkitEntity(), mechanism.getValue().asBoolean());

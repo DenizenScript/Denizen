@@ -89,6 +89,8 @@ public class EntityBodyArrows implements Property {
         // @description
         // Sets the number of arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
+        // @tags
+        // <e@entity.body_arrows>
         // -->
         if (mechanism.matches("body_arrows") && mechanism.requireInteger()) {
             setBodyArrows(mechanism.getValue().asInt());
@@ -101,6 +103,8 @@ public class EntityBodyArrows implements Property {
         // @description
         // Clears all arrows stuck in the entity's body.
         // Note: Body arrows will only be visible for players or player-type npcs.
+        // @tags
+        // <e@entity.body_arrows>
         // -->
         if (mechanism.matches("clear_body_arrows")) {
             setBodyArrows(0);
