@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
@@ -27,8 +28,6 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.block.banner.PatternType;
-import org.bukkit.block.data.Directional;
-import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -529,13 +528,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // You can use <some_block_location.add[<some_block_location.block_facing>]> to get the block directly in front of this block (based on its facing direction).
         // -->
         if (attribute.matches("block_facing")) {
-            if (getBlock().getBlockData() instanceof Directional) {
-                Vector facing = ((Directional) getBlock().getBlockData()).getFacing().getDirection();
-                return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else if (getBlock().getBlockData() instanceof Rotatable) {
-                Vector facing = ((Rotatable) getBlock().getBlockData()).getRotation().getDirection();
+            Vector facing = DirectionalBlocksHelper.getFacing(getBlock());
+            if (facing != null) {
                 return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -2173,15 +2167,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         dB.echoError("Cannot apply properties to a location!");
     }
 
-    public static BlockFace faceFor(Vector vec) {
-        for (BlockFace face : BlockFace.values()) {
-            if (face.getDirection().distanceSquared(vec) < 0.01) { // floating-point safe check
-                return face;
-            }
-        }
-        return null;
-    }
-
     @Override
     public void adjust(Mechanism mechanism) {
 
@@ -2204,24 +2189,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("block_facing") && mechanism.requireObject(dLocation.class)) {
             dLocation faceVec = value.asType(dLocation.class);
-            if (getBlock().getBlockData() instanceof Directional) {
-                Directional dir = (Directional) getBlock().getBlockData();
-                BlockFace newFace = faceFor(faceVec.toVector());
-                if (newFace == null) {
-                    dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
-                }
-                dir.setFacing(newFace);
-                getBlock().setBlockData(dir);
-            }
-            else if (getBlock().getBlockData() instanceof Rotatable) {
-                Rotatable dir = (Rotatable) getBlock().getBlockData();
-                BlockFace newFace = faceFor(faceVec.toVector());
-                if (newFace == null) {
-                    dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
-                }
-                dir.setRotation(newFace);
-                getBlock().setBlockData(dir);
-            }
+            DirectionalBlocksHelper.setFacing(getBlock(), faceVec.toVector());
         }
 
         // <--[mechanism]
