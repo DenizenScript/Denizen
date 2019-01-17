@@ -18,6 +18,8 @@ import java.util.UUID;
 
 public interface EntityHelper {
 
+    void setRiptide(Entity entity, boolean state);
+
     int getBodyArrows(Entity entity);
 
     void setBodyArrows(Entity entity, int numArrows);

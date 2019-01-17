@@ -2283,18 +2283,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
-        // @attribute <e@entity.is_using_riptide>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns whether this entity is using the Riptide enchantment.
-        // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("is_using_riptide")) {
-            return new Element(getLivingEntity().isRiptiding())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
         // @attribute <e@entity.glowing>
         // @returns Element(Boolean)
         // @mechanism dEntity.glowing
