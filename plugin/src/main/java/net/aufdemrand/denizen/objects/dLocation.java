@@ -2148,7 +2148,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 face = ((Attachable) data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
-                return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
+                return new dLocation(getBlock().getRelative(face).getLocation())
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -2162,7 +2163,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("custom_name")) {
             if (getBlock().getState() instanceof Nameable) {
-                return new Element(((Nameable) getBlock().getState()).getCustomName()).getAttribute(attribute.fulfill(1));
+                return new Element(((Nameable) getBlock().getState()).getCustomName())
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -2413,9 +2415,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("custom_name")) {
             if (getBlock().getState() instanceof Nameable) {
-                String title = mechanism.getValue().asString();
-                if (!mechanism.hasValue()) {
-                    title = null;
+                String title = null;
+                if (mechanism.hasValue()) {
+                    title = mechanism.getValue().asString();
                 }
                 BlockState state = getBlock().getState();
                 ((Nameable) state).setCustomName(title);
