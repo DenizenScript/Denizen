@@ -26,7 +26,6 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Nameable;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -432,16 +431,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public void setTitle(String title) {
-        if (title == null) {
-            return;
-        }
-        if (getIdType().equals("location")) {
-            dLocation location = dLocation.valueOf(getIdHolder());
-            if (location.getBlock().getBlockData() instanceof Nameable) {
-                ((Nameable) location.getBlock().getBlockData()).setCustomName(title);
-            }
-        }
-        if (!(getIdType().equals("generic") || getIdType().equals("script"))) {
+        if (!(getIdType().equals("generic") || getIdType().equals("script")) || title == null) {
             return;
         }
         if (inventory != null && inventory.getTitle().equals(title)) {

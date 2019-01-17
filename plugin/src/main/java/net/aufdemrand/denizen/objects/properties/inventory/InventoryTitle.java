@@ -100,12 +100,11 @@ public class InventoryTitle implements Property {
         // @name title
         // @input Element
         // @description
-        // Sets the title of the inventory. (Only works for "generic" and "location" inventories.)
+        // Sets the title of the inventory. (Only works for "generic" inventories.)
         // @tags
         // <in@inventory.title>
         // -->
-        if (mechanism.matches("title")
-                && (inventory.getIdType().equals("generic") || inventory.getIdType().equals("location"))) {
+        if (mechanism.matches("title") && inventory.getIdType().equals("generic")) {
             inventory.setTitle(mechanism.getValue().asString());
         }
 
