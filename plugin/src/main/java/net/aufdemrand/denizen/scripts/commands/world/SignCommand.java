@@ -1,10 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -62,6 +64,19 @@ public class SignCommand extends AbstractCommand {
         scriptEntry.defaultObject("type", new Element(Type.AUTOMATIC.name()));
     }
 
+    public void setWallSign(Block sign, BlockFace bf) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            sign.setType(Material.WALL_SIGN, false);
+            DirectionalBlocksHelper.setFace(sign, bf);
+        }
+        else {
+            org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+            sgntmp.setFacingDirection(bf);
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+            blockData.setBlock(sign, false);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
@@ -85,20 +100,14 @@ public class SignCommand extends AbstractCommand {
                 || (sign.getType() != Material.WALL_SIGN
                 && sign.getType() != MaterialCompat.SIGN)) {
             if (type == Type.WALL_SIGN) {
+                BlockFace bf;
                 if (direction != null) {
-                    BlockFace bf = Utilities.chooseSignRotation(direction);
-                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
-                    sgntmp.setFacingDirection(bf);
-                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
-                    blockData.setBlock(sign, false);
+                    bf = Utilities.chooseSignRotation(direction);
                 }
                 else {
-                    BlockFace bf = Utilities.chooseSignRotation(sign);
-                    org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
-                    sgntmp.setFacingDirection(bf);
-                    BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
-                    blockData.setBlock(sign, false);
+                    bf = Utilities.chooseSignRotation(sign);
                 }
+                setWallSign(sign, bf);
             }
             else {
                 sign.setType(MaterialCompat.SIGN, false);
@@ -114,10 +123,7 @@ public class SignCommand extends AbstractCommand {
             }
             else {
                 BlockFace bf = Utilities.chooseSignRotation(sign);
-                org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
-                sgntmp.setFacingDirection(bf);
-                BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
-                blockData.setBlock(sign, false);
+                setWallSign(sign, bf);
             }
         }
         BlockState signState = sign.getState();

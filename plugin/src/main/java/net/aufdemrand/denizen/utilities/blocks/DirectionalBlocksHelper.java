@@ -9,12 +9,20 @@ import org.bukkit.util.Vector;
 
 public class DirectionalBlocksHelper {
 
-    public static Vector getFacing(Block b) {
+    public static BlockFace getFace(Block b) {
         if (b.getBlockData() instanceof Directional) {
-            return ((Directional) b.getBlockData()).getFacing().getDirection();
+            return ((Directional) b.getBlockData()).getFacing();
         }
         else if (b.getBlockData() instanceof Rotatable) {
-            return ((Rotatable) b.getBlockData()).getRotation().getDirection();
+            return ((Rotatable) b.getBlockData()).getRotation();
+        }
+        return null;
+    }
+
+    public static Vector getFacing(Block b) {
+        BlockFace face = getFace(b);
+        if (face != null) {
+            return face.getDirection();
         }
         return null;
     }
@@ -28,24 +36,25 @@ public class DirectionalBlocksHelper {
         return null;
     }
 
-    public static void setFacing(Block b, Vector faceVec) {
+    public static void setFace(Block b, BlockFace face) {
         if (b.getBlockData() instanceof Directional) {
             Directional dir = (Directional) b.getBlockData();
-            BlockFace newFace = faceFor(faceVec);
-            if (newFace == null) {
-                dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
-            }
-            dir.setFacing(newFace);
+            dir.setFacing(face);
             b.setBlockData(dir);
         }
         else if (b.getBlockData() instanceof Rotatable) {
             Rotatable dir = (Rotatable) b.getBlockData();
-            BlockFace newFace = faceFor(faceVec);
-            if (newFace == null) {
-                dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
-            }
-            dir.setRotation(newFace);
+            dir.setRotation(face);
             b.setBlockData(dir);
         }
+    }
+
+    public static void setFacing(Block b, Vector faceVec) {
+        BlockFace newFace = faceFor(faceVec);
+        if (newFace == null) {
+            dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
+            return;
+        }
+        setFace(b, newFace);
     }
 }
