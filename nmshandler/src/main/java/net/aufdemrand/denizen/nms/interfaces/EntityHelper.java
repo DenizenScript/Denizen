@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.interfaces;
 
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -18,7 +19,9 @@ import java.util.UUID;
 
 public interface EntityHelper {
 
-    void setRiptide(Entity entity, boolean state);
+    default void setRiptide(Entity entity, boolean state) {
+        dB.echoError("Riptide control not available on this server version.");
+    }
 
     int getBodyArrows(Entity entity);
 

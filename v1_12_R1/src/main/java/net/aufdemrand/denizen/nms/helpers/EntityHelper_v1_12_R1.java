@@ -43,11 +43,6 @@ public class EntityHelper_v1_12_R1 implements EntityHelper {
      */
 
     @Override
-    public void setRiptide(Entity entity, boolean state) {
-        // Intentionally empty
-    }
-
-    @Override
     public int getBodyArrows(Entity entity) {
         // https://wiki.vg/Entity_metadata#Living
         return ((CraftEntity) entity).getHandle().getDataWatcher().get(
