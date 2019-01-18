@@ -864,11 +864,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 // along with the permanently cached texture property.
                 // -->
                 if (attribute.startsWith("full")) {
-                    return new Element((uuid != null ? uuid : name != null ? name : null)
+                    return new Element((uuid != null ? uuid : name)
                             + (texture != null ? "|" + texture : ""))
                             .getAttribute(attribute.fulfill(1));
                 }
-                return new Element(uuid != null ? uuid.toString() : name != null ? name : null).getAttribute(attribute);
+                return new Element(uuid != null ? uuid.toString() : name).getAttribute(attribute);
             }
             else {
                 return null;

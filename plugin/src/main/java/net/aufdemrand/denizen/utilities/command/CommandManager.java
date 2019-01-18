@@ -485,7 +485,7 @@ public class CommandManager {
     private static String capitalize(Object string) {
         String capitalize = string.toString();
         return capitalize.length() == 0 ? "" : Character.toUpperCase(capitalize.charAt(0))
-                + capitalize.substring(1, capitalize.length());
+                + capitalize.substring(1);
     }
 
     private static String format(Command command, String alias) {
@@ -508,9 +508,9 @@ public class CommandManager {
             return n;
         }
 
-        int p[] = new int[n + 1]; // 'previous' cost array, horizontally
-        int d[] = new int[n + 1]; // cost array, horizontally
-        int _d[]; // placeholder to assist in swapping p and d
+        int[] p = new int[n + 1]; // 'previous' cost array, horizontally
+        int[] d = new int[n + 1]; // cost array, horizontally
+        int[] _d; // placeholder to assist in swapping p and d
 
         // indexes into strings s and t
         int i; // iterates through s

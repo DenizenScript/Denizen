@@ -137,7 +137,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         dB.echoError("Inventory size can't be 0. Assuming default of inventory type...");
                     }
                     if (size % 9 != 0) {
-                        size = (int) Math.ceil(size / 9) * 9;
+                        size = (int) Math.ceil(size / 9.0) * 9;
                         dB.echoError("Inventory size must be a multiple of 9! Rounding up to " + size + "...");
                     }
                     if (size < 0) {
@@ -194,7 +194,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                     }
                 }
                 if (inventory == null) {
-                    size = finalItems.length % 9 == 0 ? finalItems.length : Math.round(finalItems.length / 9) * 9;
+                    size = finalItems.length % 9 == 0 ? finalItems.length : (int) (Math.ceil(finalItems.length / 9.0) * 9);
                     inventory = new dInventory(size == 0 ? 9 : size,
                             contains("TITLE") ? TagManager.tag(getString("TITLE"), context) : "Chest");
                 }

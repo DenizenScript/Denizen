@@ -743,7 +743,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public void setContents(dList list) {
         int size;
         if (inventory == null) {
-            size = (int) Math.ceil(list.size() / 9) * 9;
+            size = (int) Math.ceil(list.size() / 9.0) * 9;
             if (size == 0) {
                 size = 9;
             }

@@ -45,7 +45,7 @@ public class EntityHealth implements Property {
 
     @Override
     public String getPropertyString() {
-        return String.valueOf(entity.getLivingEntity().getHealth() + "/" + entity.getLivingEntity().getMaxHealth());
+        return entity.getLivingEntity().getHealth() + "/" + entity.getLivingEntity().getMaxHealth();
     }
 
     @Override

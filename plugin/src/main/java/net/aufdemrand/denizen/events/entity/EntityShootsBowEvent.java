@@ -113,9 +113,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             cancelled = true;
 
             // Get the list of entities
-            Object list = dList.valueOf(determination).filter(dEntity.class);
-            @SuppressWarnings("unchecked")
-            List<dEntity> newProjectiles = (List<dEntity>) list;
+            List<dEntity> newProjectiles = dList.valueOf(determination).filter(dEntity.class);
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
                 newProjectile.spawnAt(entity.getEyeLocation()

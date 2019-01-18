@@ -304,14 +304,13 @@ public class dItem implements dObject, Notable, Adjustable {
         return comparesTo(item.getItemStack());
     }
 
-    public int comparesTo(ItemStack item) {
+    public int comparesTo(ItemStack compared_to) {
         if (item == null) {
             return -1;
         }
 
         int determination = 0;
         ItemStack compared = getItemStack();
-        ItemStack compared_to = item;
 
         // Will return -1 if these are not the same
         // Material IDs

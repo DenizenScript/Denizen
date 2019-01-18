@@ -15,6 +15,8 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.util.Anchor;
 
+import java.util.Arrays;
+
 public class AnchorCommand extends AbstractCommand {
 
     private enum Action {ADD, REMOVE, ASSUME, WALKTO, WALKNEAR}
@@ -53,7 +55,7 @@ public class AnchorCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("action")) {
-            throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Action.values()); // TODO: Fix output (array stringifier)
+            throw new InvalidArgumentsException("Must specify an 'Anchor Action'. Valid: " + Arrays.asList(Action.values()));
         }
 
     }

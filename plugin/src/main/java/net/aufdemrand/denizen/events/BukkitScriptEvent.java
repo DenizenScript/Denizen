@@ -13,7 +13,6 @@ import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {

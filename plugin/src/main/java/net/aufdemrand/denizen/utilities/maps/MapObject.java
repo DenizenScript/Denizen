@@ -43,13 +43,12 @@ public abstract class MapObject {
         int x = (int) aH.getDoubleFrom(tag(xTag, player));
         currentX.put(uuid, x);
         //}
-        int tx = x;
         if (worldCoordinates && lastMap != null) {
-            float f = (float) (tx - lastMap.getCenterX()) / (1 << (lastMap.getScale().getValue()));
+            float f = (float) (x - lastMap.getCenterX()) / (1 << (lastMap.getScale().getValue()));
             int bx = ((int) ((f * 2.0F) + 0.5D));
             return (bx < -127 ? -127 : (bx > 127 ? 127 : bx));
         }
-        return tx;
+        return x;
     }
 
     public int getY(dPlayer player, UUID uuid) {
@@ -57,13 +56,12 @@ public abstract class MapObject {
         int y = (int) aH.getDoubleFrom(tag(yTag, player));
         currentY.put(uuid, y);
         //}
-        int ty = y;
         if (worldCoordinates && lastMap != null) {
-            float f1 = (float) (ty - lastMap.getCenterZ()) / (1 << (lastMap.getScale().getValue()));
+            float f1 = (float) (y - lastMap.getCenterZ()) / (1 << (lastMap.getScale().getValue()));
             int by = ((int) ((f1 * 2.0F) + 0.5D));
             return (by < -127 ? -127 : (by > 127 ? 127 : by));
         }
-        return ty;
+        return y;
     }
 
     public boolean isVisibleTo(dPlayer player, UUID uuid) {
