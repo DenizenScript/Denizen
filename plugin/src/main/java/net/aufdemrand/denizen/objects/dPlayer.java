@@ -1157,6 +1157,18 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         }
 
         // <--[tag]
+        // @attribute <p@player.absorption_health>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the player's absorption health.
+        // @mechanism dPlayer.absorption_health
+        // -->
+        if (attribute.startsWith("absorption_health")) {
+            return new Element(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
         // @attribute <p@player.health.is_scaled>
         // @returns Element(Boolean)
         // @description
@@ -2311,6 +2323,30 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // TODO: Player achievement tags.
         if (mechanism.matches("award_achievement") && mechanism.requireEnum(false, Achievement.values())) {
             getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name absorption_health
+        // @input Element(Decimal)
+        // @description
+        // Sets the player's absorption health.
+        // @tags
+        // <p@player.absorption_health>
+        // -->
+        if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
+            NMSHandler.getInstance().getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_absorption_health
+        // @input Element(Decimal)
+        // @description
+        // Shows the player fake absorption health that persists on damage.
+        // -->
+        if (mechanism.matches("fake_absorption_health") && mechanism.requireFloat()) {
+            NMSHandler.getInstance().getPacketHelper().setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
