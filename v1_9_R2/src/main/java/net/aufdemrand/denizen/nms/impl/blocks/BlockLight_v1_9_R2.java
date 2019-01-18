@@ -79,6 +79,7 @@ public class BlockLight_v1_9_R2 extends BlockLight {
         if (!worlds.contains(craftWorld.getUID())) {
             IWorldAccess access = getIWorldAccess(craftWorld);
             worldServer.addIWorldAccess(access);
+            worlds.add(craftWorld.getUID());
         }
         this.position = new BlockPosition(block.getX(), block.getY(), block.getZ());
     }
