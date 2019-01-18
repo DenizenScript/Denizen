@@ -43,9 +43,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return true;
         }
 
-        String it = path.eventArgsLower[index + 1];
+        String it = path.eventArgLowerAt(index + 1);
         if (it.equals("notable")) {
-            String subit = path.eventArgsLower[index + 2];
+            String subit = path.eventArgLowerAt(index + 2);
             if (subit.equals("cuboid")) {
                 return dCuboid.getNotableCuboidsContaining(location).size() > 0;
             }
