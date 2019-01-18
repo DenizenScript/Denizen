@@ -45,8 +45,8 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), location);
+    public boolean matches(ScriptPath path) {
+        return runInCheck(path, location);
     }
 
     @Override

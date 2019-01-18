@@ -51,13 +51,14 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String entityName = CoreUtilities.getXthArg(2, lower);
         if (!tryEntity(entity, entityName)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        return runInCheck(path, entity.getLocation());
     }
 
     @Override

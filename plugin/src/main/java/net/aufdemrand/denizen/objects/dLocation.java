@@ -13,6 +13,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
@@ -34,7 +35,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
-import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -528,8 +528,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // You can use <some_block_location.add[<some_block_location.block_facing>]> to get the block directly in front of this block (based on its facing direction).
         // -->
         if (attribute.matches("block_facing")) {
-            if (getBlock().getBlockData() instanceof Directional) {
-                Vector facing = ((Directional) getBlock().getBlockData()).getFacing().getDirection();
+            Vector facing = DirectionalBlocksHelper.getFacing(getBlock());
+            if (facing != null) {
                 return new dLocation(getWorld(), facing.getX(), facing.getY(), facing.getZ())
                         .getAttribute(attribute.fulfill(1));
             }
@@ -864,11 +864,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 // along with the permanently cached texture property.
                 // -->
                 if (attribute.startsWith("full")) {
-                    return new Element((uuid != null ? uuid : name != null ? name : null)
+                    return new Element((uuid != null ? uuid : name)
                             + (texture != null ? "|" + texture : ""))
                             .getAttribute(attribute.fulfill(1));
                 }
-                return new Element(uuid != null ? uuid.toString() : name != null ? name : null).getAttribute(attribute);
+                return new Element(uuid != null ? uuid.toString() : name).getAttribute(attribute);
             }
             else {
                 return null;
@@ -2148,7 +2148,23 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 face = ((Attachable) data).getAttachedFace();
             }
             if (face != BlockFace.SELF) {
-                return new dLocation(getBlock().getRelative(face).getLocation()).getAttribute(attribute.fulfill(1));
+                return new dLocation(getBlock().getRelative(face).getLocation())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.custom_name>
+        // @returns Element
+        // @mechanism custom_name
+        // @description
+        // Returns the custom name of this block.
+        // Only works for nameable blocks, such as chests and dispensers.
+        // -->
+        if (attribute.startsWith("custom_name")) {
+            if (getBlock().getState() instanceof Nameable) {
+                return new Element(((Nameable) getBlock().getState()).getCustomName())
+                        .getAttribute(attribute.fulfill(1));
             }
         }
 
@@ -2176,6 +2192,20 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
             BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
             blockData.setBlock(getBlock(), false);
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name block_facing
+        // @input dLocation
+        // @description
+        // Sets the facing direction of the block, as a vector.
+        // @tags
+        // <l@location.block_facing>
+        // -->
+        if (mechanism.matches("block_facing") && mechanism.requireObject(dLocation.class)) {
+            dLocation faceVec = value.asType(dLocation.class);
+            DirectionalBlocksHelper.setFacing(getBlock(), faceVec.toVector());
         }
 
         // <--[mechanism]
@@ -2370,6 +2400,28 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 CommandBlock block = ((CommandBlock) getBlock().getState());
                 block.setCommand(value.asString());
                 block.update();
+            }
+        }
+
+        // <--[mechanism]
+        // @object dLocation
+        // @name custom_name
+        // @input Element
+        // @description
+        // Sets the custom name of the block.
+        // Use no value to reset the block's name.
+        // @tags
+        // <l@location.custom_name>
+        // -->
+        if (mechanism.matches("custom_name")) {
+            if (getBlock().getState() instanceof Nameable) {
+                String title = null;
+                if (mechanism.hasValue()) {
+                    title = mechanism.getValue().asString();
+                }
+                BlockState state = getBlock().getState();
+                ((Nameable) state).setCustomName(title);
+                state.update(true);
             }
         }
 

@@ -70,8 +70,9 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String attacker = CoreUtilities.getXthArg(0, lower);
         String item = CoreUtilities.getXthArg(2, lower);
 
@@ -83,7 +84,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 
@@ -112,9 +113,7 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
             cancelled = true;
 
             // Get the list of entities
-            Object list = dList.valueOf(determination).filter(dEntity.class);
-            @SuppressWarnings("unchecked")
-            List<dEntity> newProjectiles = (List<dEntity>) list;
+            List<dEntity> newProjectiles = dList.valueOf(determination).filter(dEntity.class);
             // Go through all the entities, spawning/teleporting them
             for (dEntity newProjectile : newProjectiles) {
                 newProjectile.spawnAt(entity.getEyeLocation()

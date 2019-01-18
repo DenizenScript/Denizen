@@ -66,8 +66,9 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String mat = CoreUtilities.getXthArg(2, lower);
         if (!mat.equals("sign")
@@ -76,7 +77,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 
@@ -100,7 +101,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.length() > 0 && !determination.equalsIgnoreCase("cancelled")) {
+        if (determination.length() > 0 && !isDefaultDetermination(determination)) {
             new_text = dList.valueOf(determination);
             return true;
         }

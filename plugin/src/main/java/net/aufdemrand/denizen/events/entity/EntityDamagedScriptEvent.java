@@ -89,8 +89,9 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
         String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) :
                 CoreUtilities.getXthArg(2, lower).equals("by") ? CoreUtilities.getXthArg(3, lower) : "";
@@ -113,11 +114,11 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 
-        if (!runWithCheck(scriptContainer, s, lower, held)) {
+        if (!runWithCheck(path, held)) {
             return false;
         }
 

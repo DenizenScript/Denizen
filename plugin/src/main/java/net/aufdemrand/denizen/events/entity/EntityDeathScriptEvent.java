@@ -93,15 +93,16 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String target = CoreUtilities.getXthArg(0, lower);
 
         if (!tryEntity(entity, target)) {
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 
@@ -170,12 +171,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 }
             }
         }
-        else if (determination.equalsIgnoreCase("cancelled")) {
-            cancelled = true;
-        }
 
         // String containing new Death Message
-        else if (event instanceof PlayerDeathEvent) {
+        else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determination)) {
             message = new Element(determination);
         }
         else {
@@ -295,7 +293,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             if (message != null) {
                 subEvent.setDeathMessage(message.asString());
             }
-            if (cancelled) {
+            if (cancelled) { // Hacked-in player-only cancellation tool to cancel messages
                 subEvent.setDeathMessage(null);
             }
         }

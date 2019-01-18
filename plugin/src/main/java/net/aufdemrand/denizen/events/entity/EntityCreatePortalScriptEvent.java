@@ -50,14 +50,15 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

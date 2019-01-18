@@ -3327,29 +3327,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name RunTask
-        // @Deprecated This has been replaced by the 'run' and 'inject' commands.
-        // @Syntax runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
-        // @Required 1
-        // @Stable unstable
-        // @Short Runs a task script.
-        // @Author aufdemrand
-        // @Group core
-        //
-        // @Description
-        // DEPRECATED.
-        //
-        // @Tags
-        // DEPRECATED.
-        //
-        // @Usage
-        // DO NOT USE.
-        // -->
-        registerCoreMember(RuntaskCommand.class,
-                "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
-
-
-        // <--[command]
         // @Name Schematic
         // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
         // @Group World
@@ -4461,7 +4438,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
         // @Stable stable
         // @Short Edits a YAML configuration file.
@@ -4513,7 +4490,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - yaml id:myfile set my.key[2]:hello
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

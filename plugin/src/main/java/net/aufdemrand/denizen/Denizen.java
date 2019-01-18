@@ -600,6 +600,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
             ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
+                ScriptEvent.registerScriptEvent(new EntityBreedScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new EntityChangesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityCreatePortalScriptEvent());
@@ -624,6 +627,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
             }
             ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
+            ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
@@ -698,6 +702,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
             }
             ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
@@ -821,6 +828,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
                 PropertyParser.registerProperty(EntityBeamTarget.class, dEntity.class);
             }
+            PropertyParser.registerProperty(EntityBodyArrows.class, dEntity.class);
             PropertyParser.registerProperty(EntityBoundingBox.class, dEntity.class);
             PropertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
             PropertyParser.registerProperty(EntityColor.class, dEntity.class);
@@ -847,6 +855,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityPotion.class, dEntity.class);
             PropertyParser.registerProperty(EntityPowered.class, dEntity.class);
             PropertyParser.registerProperty(EntityProfession.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                PropertyParser.registerProperty(EntityRiptide.class, dEntity.class);
+            }
             PropertyParser.registerProperty(EntityRotation.class, dEntity.class);
             PropertyParser.registerProperty(EntitySmall.class, dEntity.class);
             PropertyParser.registerProperty(EntitySilent.class, dEntity.class);

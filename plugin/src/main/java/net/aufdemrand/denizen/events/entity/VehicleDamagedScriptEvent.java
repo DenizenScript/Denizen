@@ -72,8 +72,9 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
         String veh = cmd.equals("damaged") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
         String ent = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) : "";
@@ -85,7 +86,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+        if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
 

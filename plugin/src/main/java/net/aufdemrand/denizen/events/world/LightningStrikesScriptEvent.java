@@ -48,8 +48,8 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), location);
+    public boolean matches(ScriptPath path) {
+        return runInCheck(path, location);
     }
 
     @Override

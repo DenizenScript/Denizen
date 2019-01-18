@@ -65,8 +65,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String eItem = CoreUtilities.getXthArg(0, lower);
 
         if (!tryItem(result, eItem)) {
@@ -147,7 +148,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         resultChanged = false;
         cancelled = false;
         fire();
-        if (cancelled) {
+        if (cancelled) { // Hacked-in cancellation helper
             inventory.setResult(null);
         }
         else if (resultChanged) {

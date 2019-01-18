@@ -60,14 +60,15 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String iItem = CoreUtilities.getXthArg(1, lower);
         if (!tryItem(item, iItem)) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return true;
@@ -122,12 +123,13 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         damage = new Element(event.getDamage());
         location = new dLocation(event.getPlayer().getLocation());
         cancelled = event.isCancelled();
+        boolean wasCancelled = cancelled;
         this.event = event;
         fire();
         event.setCancelled(cancelled);
         event.setDamage(damage.asInt());
         final Player p = event.getPlayer();
-        if (cancelled) {
+        if (cancelled && !wasCancelled) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {

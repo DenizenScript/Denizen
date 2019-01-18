@@ -46,7 +46,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         return yamls.get(id.toUpperCase());
     }
 
-    public static enum Action {LOAD, UNLOAD, CREATE, WRITE, SAVE, SET}
+    public static enum Action {LOAD, LOADTEXT, UNLOAD, CREATE, WRITE, SAVE, SET}
 
     public static enum YAML_Action {
         SET_VALUE, INCREASE, DECREASE, MULTIPLY,
@@ -63,6 +63,11 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                     arg.matchesPrefix("LOAD")) {
                 scriptEntry.addObject("action", new Element("LOAD"));
                 scriptEntry.addObject("filename", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("action") &&
+                    arg.matchesPrefix("LOADTEXT")) {
+                scriptEntry.addObject("action", new Element("LOADTEXT"));
+                scriptEntry.addObject("raw_text", arg.asElement());
             }
             else if (!scriptEntry.hasObject("action") &&
                     arg.matchesPrefix("SAVEFILE", "FILESAVE")) {
@@ -205,6 +210,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
     public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
 
         Element filename = scriptEntry.getElement("filename");
+        Element rawText = scriptEntry.getElement("raw_text");
         Element key = scriptEntry.getElement("key");
         dObject value = scriptEntry.getdObject("value");
         Element split = scriptEntry.getElement("split");
@@ -225,6 +231,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                             + (key != null ? key.debug() : "")
                             + (value != null ? value.debug() : "")
                             + (split != null ? split.debug() : "")
+                            + (rawText != null ? rawText.debug() : "")
                             + fixFormatting.debug());
 
         }
@@ -293,6 +300,19 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 else {
                     loadRunnable.run();
                 }
+                break;
+
+            case LOADTEXT:
+                String str = rawText.asString();
+                if (fixFormatting.asBoolean()) {
+                    str = ScriptHelper.ClearComments("", str, false);
+                }
+                YamlConfiguration config = YamlConfiguration.load(str);
+                if (yamls.containsKey(id)) {
+                    yamls.remove(id);
+                }
+                yamls.put(id, config);
+                scriptEntry.setFinished(true);
                 break;
 
             case UNLOAD:
@@ -696,13 +716,24 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
         // <--[tag]
         // @attribute <yaml[<id>].to_json>
-        // @returns dList
+        // @returns Element
         // @description
         // Converts the YAML container to a JSON array.
         // -->
         if (attribute.startsWith("to_json")) {
             JSONObject jsobj = new JSONObject(getYaml(id).getMap());
             event.setReplaced(new Element(jsobj.toString()).getAttribute(attribute.fulfill(1)));
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <yaml[<id>].to_text>
+        // @returns Element
+        // @description
+        // Converts the YAML container to raw YAML text.
+        // -->
+        if (attribute.startsWith("to_text")) {
+            event.setReplaced(new Element(getYaml(id).saveToString()).getAttribute(attribute.fulfill(1)));
             return;
         }
     }

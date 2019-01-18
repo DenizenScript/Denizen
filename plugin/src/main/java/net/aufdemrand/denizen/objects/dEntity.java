@@ -10,7 +10,6 @@ import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
-import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
@@ -2279,18 +2278,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("swimming")) {
             return new Element(getLivingEntity().isSwimming())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.is_using_riptide>
-        // @returns Element(Boolean)
-        // @group attributes
-        // @description
-        // Returns whether this entity is using the Riptide enchantment.
-        // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && attribute.startsWith("is_using_riptide")) {
-            return new Element(getLivingEntity().isRiptiding())
                     .getAttribute(attribute.fulfill(1));
         }
 

@@ -23,14 +23,14 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player stands on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
+    // @Cancellable true
+    //
     // @Triggers when a player stands on a pressure plate, tripwire, or redstone ore.
     // @Context
     // <context.location> returns the dLocation the player is interacting with.
     // <context.material> returns the dMaterial the player is interacting with.
     //
     // @Determine
-    // "CANCELLED" to stop the interaction from happening.
-    // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
     //
     // -->
 
@@ -50,8 +50,9 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String mat = CoreUtilities.getXthArg(3, lower);
         if (mat.length() > 0
@@ -60,7 +61,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
 

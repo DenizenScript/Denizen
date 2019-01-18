@@ -47,8 +47,9 @@ public class ChunkLoadScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         return lower.equals("chunk loads for the first time")
                 || lower.equals("chunk loads for the first time in " +
                 CoreUtilities.toLowerCase(world.getName()));

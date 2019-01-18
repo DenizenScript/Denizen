@@ -101,11 +101,13 @@ public class ResetCommand extends AbstractCommand {
 
                 switch (type) {
                     case FAIL:
-                        FailCommand.resetFails(resettable.getName(), script.getName());
+                        FailCommand.class.toString(); // TODO: Remove references to FAIL command.
+                        dB.echoError("The 'FAIL' command is deprecated. Use flags instead!");
                         return;
 
                     case FINISH:
-                        FinishCommand.resetFinishes(resettable.getName(), script.getName());
+                        FinishCommand.class.toString(); // TODO: Remove references to FINISH command.
+                        dB.echoError("The 'FINISH' command is deprecated. Use flags instead!");
                         return;
 
                     case PLAYER_COOLDOWN:

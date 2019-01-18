@@ -50,8 +50,9 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String mat = CoreUtilities.getXthArg(0, lower);
         if (!tryMaterial(material, mat)) {
             return false;
@@ -59,7 +60,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
         if (material.isStructure()) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
     }
 
     @Override

@@ -76,12 +76,23 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    private boolean runUsingCheck(ScriptContainer scriptContainer, String s, String lower) {
-        int index = CoreUtilities.split(lower, ' ').indexOf("using");
-        String using = index >= 0 ? CoreUtilities.getXthArg(index + 1, lower) : "hand";
+    private boolean runUsingCheck(ScriptPath path) {
+        int index;
+        for (index = 0; index < path.eventArgsLower.length; index++) {
+            if (path.eventArgsLower[index].equals("using")) {
+                break;
+            }
+        }
+        String using;
+        if (index >= path.eventArgsLower.length) {
+            using = "hand";
+        }
+        else {
+            using = path.eventArgsLower[index + 1];
+        }
 
         if (!using.equals("hand") && !using.equals("off_hand") && !using.equals("either_hand")) {
-            dB.echoError("Invalid USING hand in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+            dB.echoError("Invalid USING hand in " + getName() + " for '" + path.event + "' in " + path.container.getName());
             return false;
         }
         if (!using.equals("either_hand") && !using.equalsIgnoreCase(hand.identify())) {
@@ -90,21 +101,26 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return true;
     }
 
-    @Override
-    public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
-        int index = CoreUtilities.split(lower, ' ').indexOf("with");
-        if (index == -1) {
+    public boolean nonSwitchWithCheck(ScriptPath path, dItem held) {
+        int index;
+        for (index = 0; index < path.eventArgsLower.length; index++) {
+            if (path.eventArgsLower[index].equals("with")) {
+                break;
+            }
+        }
+        if (index >= path.eventArgsLower.length) {
+            // No 'with ...' specified
             return true;
         }
 
-        String with = CoreUtilities.getXthArg(index + 1, lower);
+        String with = path.eventArgsLower[index + 1];
         if (with != null) {
             if (with.equals("item")) {
                 return true;
             }
             dItem it = dItem.valueOf(with);
             if (it == null) {
-                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+                dB.echoError("Invalid WITH item in " + getName() + " for '" + path.event + "' in " + path.container.getName());
                 return false;
             }
             if (held == null || !tryItem(held, with)) {
@@ -130,8 +146,9 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     private static final List<String> withHelpList = Arrays.asList("with", "using", "in");
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         int index = CoreUtilities.split(lower, ' ').indexOf("clicks") + 1;
 
         if (index == 3
@@ -147,16 +164,16 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getItem()))) {
+        if (!nonSwitchWithCheck(path, new dItem(event.getItem()))) {
             return false;
         }
 
-        if (!runUsingCheck(scriptContainer, s, lower)) {
+        if (!runUsingCheck(path)) {
             return false;
         }
 
-        if (location != null ? !runInCheck(scriptContainer, s, lower, location)
-                : !runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (location != null ? !runInCheck(path, location)
+                : !runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
 

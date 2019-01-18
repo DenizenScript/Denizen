@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -47,8 +48,9 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
         if (cmd.equals("starts") && !state) {
             return false;
@@ -57,7 +59,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override
@@ -82,7 +84,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override

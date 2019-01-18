@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -49,13 +50,14 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String iCheck = CoreUtilities.getXthArg(2, lower);
         if (!tryItem(item, iCheck)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override
@@ -80,7 +82,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -98,8 +100,9 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         }
         item = new dItem(event.getBrokenItem());
         this.event = event;
+        cancelled = false;
         fire();
-        if (cancelled) {
+        if (cancelled) { // Hacked-in cancellation helper
             final Player player = event.getPlayer();
             final ItemStack itemstack = event.getBrokenItem();
             itemstack.setAmount(itemstack.getAmount() + 1);

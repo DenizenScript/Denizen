@@ -1787,24 +1787,22 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @attribute <p@player.has_finished[<script>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the player has finished the specified script.
+        // Returns whether the player has finished the specified script. DEPRECATED: Use flags instead!
         // -->
         if (attribute.startsWith("has_finished")) {
-            dScript script = dScript.valueOf(attribute.getContext(1));
-            return new Element(script != null && FinishCommand.getScriptCompletes(getName(), script.getName()) > 0)
-                    .getAttribute(attribute.fulfill(1));
+            FinishCommand.class.toString(); // TODO: Remove references to FINISH command.
+            dB.echoError("The 'FINISH' command is deprecated. Use flags instead!");
         }
 
         // <--[tag]
         // @attribute <p@player.has_failed[<script>]>
         // @returns Element(Boolean)
         // @description
-        // Returns whether the player has failed the specified script.
+        // Returns whether the player has failed the specified script. DEPRECATED: Use flags instead!
         // -->
         if (attribute.startsWith("has_failed")) {
-            dScript script = dScript.valueOf(attribute.getContext(1));
-            return new Element(script != null && FailCommand.getScriptFails(getName(), script.getName()) > 0)
-                    .getAttribute(attribute.fulfill(1));
+            FailCommand.class.toString(); // TODO: Remove references to FAIL command.
+            dB.echoError("The 'FAIL' command is deprecated. Use flags instead!");
         }
 
         /////////////////////

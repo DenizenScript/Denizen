@@ -279,7 +279,7 @@ public class SidebarCommand extends AbstractCommand {
                             for (String line : value) {
                                 for (int i = 0; i < current.size(); i++) {
                                     if (current.get(i).equalsIgnoreCase(line)) {
-                                        current.remove(i);
+                                        current.remove(i--);
                                     }
                                 }
                             }

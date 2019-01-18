@@ -63,8 +63,9 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String entName = CoreUtilities.getXthArg(0, lower);
 
         if (!tryEntity(entity, entName)) {
@@ -78,7 +79,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (CoreUtilities.xthArgEquals(3, lower, "into")) {
             String mat2 = CoreUtilities.getXthArg(4, lower);
             if (mat2.isEmpty()) {
-                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + path.container.getName());
                 return false;
             }
             else if (!tryMaterial(new_material, mat2)) {
@@ -86,7 +87,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

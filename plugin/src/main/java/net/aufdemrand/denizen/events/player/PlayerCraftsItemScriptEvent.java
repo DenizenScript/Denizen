@@ -62,8 +62,9 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String eItem = CoreUtilities.getXthArg(2, lower);
 
         if (!tryItem(result, eItem)) {
@@ -143,7 +144,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         this.resultChanged = false;
         this.cancelled = false;
         fire();
-        if (cancelled) {
+        if (cancelled) { // This event has a weird cancellation handler
             event.setCancelled(true);
         }
         else if (resultChanged) {

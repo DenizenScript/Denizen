@@ -76,8 +76,8 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        return runInCheck(scriptContainer, s, CoreUtilities.toLowerCase(s), player.getLocation());
+    public boolean matches(ScriptPath path) {
+        return runInCheck(path, player.getLocation());
     }
 
     @Override
@@ -138,7 +138,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 recipients.add(player.getPlayerEntity());
             }
         }
-        else if (!lower.startsWith("cancelled")) {
+        else if (!isDefaultDetermination(determination)) {
             message = new Element(determination);
         }
         else {

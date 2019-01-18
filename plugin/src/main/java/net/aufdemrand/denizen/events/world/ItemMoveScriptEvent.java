@@ -59,8 +59,9 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String iCheck = CoreUtilities.getXthArg(0, lower);
         String oCheck = CoreUtilities.getXthArg(3, lower);
         String dCheck = CoreUtilities.getXthArg(5, lower);

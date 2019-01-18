@@ -64,8 +64,9 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String struct = CoreUtilities.getXthArg(0, lower);
         if (!struct.equals("structure") && !struct.equals("plant") &&
                 !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
@@ -77,7 +78,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         else if (CoreUtilities.getXthArg(2, lower).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
     }
 
     @Override

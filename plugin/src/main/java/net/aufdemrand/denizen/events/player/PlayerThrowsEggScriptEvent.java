@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
@@ -55,8 +56,9 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         if (CoreUtilities.getXthArg(2, lower).equals("hatching") && !is_hatching) {
             return false;
         }
@@ -64,7 +66,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, egg.getLocation());
+        return runInCheck(path, egg.getLocation());
     }
 
     @Override
@@ -90,16 +92,12 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             type = dEntity.valueOf(determination).getBukkitEntityType();
             return true;
         }
-        if (lower.equals("cancelled")) {
-            is_hatching = false;
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override
@@ -125,7 +123,11 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         egg = new dEntity(event.getEgg());
         type = event.getHatchingType();
         this.event = event;
+        cancelled = false;
         fire();
+        if (cancelled) {
+            is_hatching = false;
+        }
         dEntity.forgetEntity(eggEntity);
         event.setHatching(is_hatching);
         event.setHatchingType(type);

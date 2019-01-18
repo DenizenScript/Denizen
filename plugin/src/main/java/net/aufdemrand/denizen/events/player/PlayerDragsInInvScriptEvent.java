@@ -65,8 +65,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String arg2 = CoreUtilities.getXthArg(2, lower);
         String arg3 = CoreUtilities.getXthArg(3, lower);
@@ -85,7 +86,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         if (!arg2.equals("in") && !tryItem(item, arg2)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation(), "in_area");
+        return runInCheck(path, entity.getLocation(), "in_area");
     }
 
     @Override
@@ -105,9 +106,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (CoreUtilities.toLowerCase(determination).equals("cancelled")) {
-            manual_cancelled = true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -151,10 +149,10 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             raw_slots.add(String.valueOf(raw_slot + 1));
         }
         cancelled = event.isCancelled();
-        manual_cancelled = false;
+        boolean wasCancelled = cancelled;
         this.event = event;
         fire();
-        if (cancelled && manual_cancelled) {
+        if (cancelled && !wasCancelled) {
             final InventoryHolder holder = inventory.getHolder();
             new BukkitRunnable() {
                 @Override

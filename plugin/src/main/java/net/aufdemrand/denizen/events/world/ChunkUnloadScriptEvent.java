@@ -49,8 +49,9 @@ public class ChunkUnloadScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         return (lower.startsWith("chunk unloads") && !lower.contains(" in "))
                 || lower.startsWith("chunk unloads in " + CoreUtilities.toLowerCase(world.getName()));
     }

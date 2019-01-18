@@ -57,8 +57,9 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String arg1 = CoreUtilities.getXthArg(0, lower);
         String arg2 = CoreUtilities.getXthArg(1, lower);
         String tamed = arg2.equals("jumps") ? arg1 : arg2;
@@ -71,7 +72,7 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

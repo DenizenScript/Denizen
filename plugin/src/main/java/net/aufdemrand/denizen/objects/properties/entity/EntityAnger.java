@@ -61,7 +61,7 @@ public class EntityAnger implements Property {
 
         // <--[tag]
         // @attribute <e@entity.anger>
-        // @returns Element(Integer)
+        // @returns Element(Number)
         // @mechanism dEntity.anger
         // @group properties
         // @description

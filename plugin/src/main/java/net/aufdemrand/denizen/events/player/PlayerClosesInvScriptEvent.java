@@ -50,8 +50,9 @@ public class PlayerClosesInvScriptEvent extends ScriptEvent implements Listener 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String entName = CoreUtilities.getXthArg(0, lower);
         if (entName.equals("player") && !entity.isPlayer()) {
             return false;

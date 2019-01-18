@@ -57,8 +57,9 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
 
         String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
@@ -66,7 +67,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 
@@ -90,7 +91,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (!CoreUtilities.toLowerCase(determination).equals("cancelled")) {
+        if (!isDefaultDetermination(determination)) {
             try {
                 color = DyeColor.valueOf(determination.toUpperCase());
                 return true;

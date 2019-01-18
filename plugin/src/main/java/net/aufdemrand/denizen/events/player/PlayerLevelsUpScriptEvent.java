@@ -50,8 +50,9 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 0; index < data.size(); index++) {
             if (data.get(index).equals("from")) {
@@ -66,7 +67,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, player.getLocation())) {
+        if (!runInCheck(path, player.getLocation())) {
             return false;
         }
 

@@ -2,11 +2,13 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
+import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
@@ -350,15 +352,33 @@ public class Utilities {
     //
     public static void setSignRotation(BlockState signState, String direction) {
 
-        BlockFace[] blockFaces = {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
+        direction = CoreUtilities.toLowerCase(direction);
 
-        for (BlockFace blockFace : blockFaces) {
-            if (blockFace.name().startsWith(direction.toUpperCase().substring(0, 1))) {
-                ((org.bukkit.material.Sign) signState.getData())
-                        .setFacingDirection(blockFace);
-            }
+        BlockFace bf;
+
+        if (direction.startsWith("n")) {
+            bf = BlockFace.NORTH;
         }
-        signState.update();
+        else if (direction.startsWith("e")) {
+            bf = BlockFace.EAST;
+        }
+        else if (direction.startsWith("s")) {
+            bf = BlockFace.SOUTH;
+        }
+        else if (direction.startsWith("w")) {
+            bf = BlockFace.WEST;
+        }
+        else {
+            return;
+        }
+
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            DirectionalBlocksHelper.setFace(signState.getBlock(), bf);
+        }
+        else {
+            ((org.bukkit.material.Sign) signState.getData()).setFacingDirection(bf);
+            signState.update();
+        }
     }
 
 

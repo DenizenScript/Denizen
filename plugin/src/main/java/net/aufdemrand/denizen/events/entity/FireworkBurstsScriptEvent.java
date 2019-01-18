@@ -49,9 +49,10 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
         return true;

@@ -82,8 +82,9 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
         String arg0 = CoreUtilities.getXthArg(0, lower);
         String arg2 = CoreUtilities.getXthArg(2, lower);
@@ -107,7 +108,7 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

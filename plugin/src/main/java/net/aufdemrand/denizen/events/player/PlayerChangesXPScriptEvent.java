@@ -52,9 +52,10 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
-        if (!runInCheck(scriptContainer, s, lower, player.getLocation())) {
+    public boolean matches(ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
+        if (!runInCheck(path, player.getLocation())) {
             return false;
         }
 
@@ -83,10 +84,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
             amount = aH.getIntegerFrom(determination);
             return true;
         }
-        if (lower.equals("cancelled")) {
-            amount = 0;
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -111,7 +108,11 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         amount = event.getAmount();
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
+        cancelled = false;
         fire();
+        if (cancelled) {
+            amount = 0;
+        }
         event.setAmount(amount);
     }
 }

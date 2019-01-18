@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizen.utilities.entity.LlamaHelper;
 import net.aufdemrand.denizen.utilities.entity.ParrotHelper;
 import net.aufdemrand.denizen.utilities.entity.RabbitType;
 import net.aufdemrand.denizencore.objects.Element;
@@ -74,7 +75,7 @@ public class EntityColor implements Property {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) {
-            return ((Llama) colored.getBukkitEntity()).getColor().name();
+            return LlamaHelper.llamaColorName(colored);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
             return ParrotHelper.parrotColor(colored);
@@ -228,9 +229,8 @@ public class EntityColor implements Property {
                     && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA
-                    && mechanism.getValue().matchesEnum(Llama.Color.values())) {
-                ((Llama) colored.getBukkitEntity()).setColor(Llama.Color.valueOf(mechanism.getValue().asString().toUpperCase()));
+            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) {
+                LlamaHelper.setLlamaColor(colored, mechanism.getValue().asString());
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
                 ParrotHelper.setParrotColor(colored, mechanism);
