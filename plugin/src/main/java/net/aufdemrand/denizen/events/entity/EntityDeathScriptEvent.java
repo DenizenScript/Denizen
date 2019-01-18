@@ -295,7 +295,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             if (message != null) {
                 subEvent.setDeathMessage(message.asString());
             }
-            if (cancelled) {
+            if (cancelled) { // Hacked-in player-only cancellation tool to cancel messages
                 subEvent.setDeathMessage(null);
             }
         }
