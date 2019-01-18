@@ -74,7 +74,7 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, from)) {
+        if (!runInCheck(path, from)) {
             return false;
         }
 

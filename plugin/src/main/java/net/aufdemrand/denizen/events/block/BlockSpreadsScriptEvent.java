@@ -54,7 +54,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         String s = path.event;
         String lower = path.eventLower;
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

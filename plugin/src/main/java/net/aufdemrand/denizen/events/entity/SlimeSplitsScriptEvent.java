@@ -67,7 +67,7 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

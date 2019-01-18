@@ -67,7 +67,7 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, player.getLocation())) {
+        if (!runInCheck(path, player.getLocation())) {
             return false;
         }
 

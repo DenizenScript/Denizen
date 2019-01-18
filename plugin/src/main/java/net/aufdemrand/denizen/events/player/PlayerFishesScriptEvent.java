@@ -83,7 +83,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, hook.getLocation())) {
+        if (!runInCheck(path, hook.getLocation())) {
             return false;
         }
 

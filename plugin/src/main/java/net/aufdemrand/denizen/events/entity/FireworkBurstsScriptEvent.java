@@ -52,7 +52,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
         return true;

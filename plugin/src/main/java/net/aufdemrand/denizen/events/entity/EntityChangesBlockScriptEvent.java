@@ -87,7 +87,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
             }
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

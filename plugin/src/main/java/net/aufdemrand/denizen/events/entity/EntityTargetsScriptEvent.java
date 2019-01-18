@@ -74,7 +74,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

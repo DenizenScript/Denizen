@@ -73,7 +73,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (!tryMaterial(material, mat)) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {

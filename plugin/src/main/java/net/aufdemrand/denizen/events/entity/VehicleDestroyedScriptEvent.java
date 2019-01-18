@@ -72,7 +72,7 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+        if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
 

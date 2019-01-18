@@ -72,7 +72,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

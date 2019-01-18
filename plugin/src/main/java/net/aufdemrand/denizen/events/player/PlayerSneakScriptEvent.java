@@ -59,7 +59,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
 

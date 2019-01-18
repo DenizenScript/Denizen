@@ -60,7 +60,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override

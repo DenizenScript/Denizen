@@ -58,7 +58,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         if (rCheck.length() > 0 && !rCheck.equals(CoreUtilities.toLowerCase(reason.asString()))) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, dLocation.valueOf(blocks.get(0)));
+        return runInCheck(path, dLocation.valueOf(blocks.get(0)));
     }
 
     @Override

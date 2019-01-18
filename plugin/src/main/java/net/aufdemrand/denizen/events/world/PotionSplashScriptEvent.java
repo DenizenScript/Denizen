@@ -59,7 +59,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
         String s = path.event;
         String lower = path.eventLower;
         String iTest = CoreUtilities.getXthArg(0, lower);
-        return tryItem(potion, iTest) && runInCheck(scriptContainer, s, lower, location);
+        return tryItem(potion, iTest) && runInCheck(path, location);
     }
 
     @Override

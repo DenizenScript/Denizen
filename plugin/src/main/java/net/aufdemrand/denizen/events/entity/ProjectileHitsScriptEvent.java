@@ -94,7 +94,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return true;

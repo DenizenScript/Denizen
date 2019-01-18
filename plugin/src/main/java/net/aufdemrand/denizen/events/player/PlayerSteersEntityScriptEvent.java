@@ -58,7 +58,7 @@ public class PlayerSteersEntityScriptEvent extends BukkitScriptEvent {
         if (!tryEntity(entity, entityName)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        return runInCheck(path, entity.getLocation());
     }
 
     @Override

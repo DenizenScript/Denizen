@@ -66,7 +66,7 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
         if (!tryItem(item, iItem)) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return true;

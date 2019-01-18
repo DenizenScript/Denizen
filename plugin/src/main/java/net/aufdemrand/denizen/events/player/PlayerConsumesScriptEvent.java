@@ -55,7 +55,7 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
         String s = path.event;
         String lower = path.eventLower;
         String iCheck = CoreUtilities.getXthArg(2, lower);
-        return tryItem(item, iCheck) && runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return tryItem(item, iCheck) && runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override

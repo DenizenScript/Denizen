@@ -78,7 +78,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         else if (CoreUtilities.getXthArg(2, lower).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
     }
 
     @Override

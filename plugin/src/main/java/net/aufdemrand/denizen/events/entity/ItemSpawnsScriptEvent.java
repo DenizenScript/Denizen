@@ -67,7 +67,7 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

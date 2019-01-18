@@ -64,7 +64,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
 
     }
 

@@ -59,7 +59,7 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, entity.getLocation())) {
+        if (!runInCheck(path, entity.getLocation())) {
             return false;
         }
 

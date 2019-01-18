@@ -66,7 +66,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

@@ -63,7 +63,7 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
         if (!tryEntity(entity, CoreUtilities.getXthArg(4, lower))) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
         if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {

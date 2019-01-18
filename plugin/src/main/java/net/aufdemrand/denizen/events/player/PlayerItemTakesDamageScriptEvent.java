@@ -68,7 +68,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         if (!tryItem(item, iItem)) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return true;

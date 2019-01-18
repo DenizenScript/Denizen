@@ -59,7 +59,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
     }
 
     @Override

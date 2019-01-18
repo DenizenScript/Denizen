@@ -74,7 +74,7 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+        if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
 

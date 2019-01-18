@@ -57,7 +57,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         String lower = path.eventLower;
         String itemTest = CoreUtilities.getXthArg(2, lower);
 
-        return tryItem(item, itemTest) && runInCheck(scriptContainer, s, lower, location);
+        return tryItem(item, itemTest) && runInCheck(path, location);
     }
 
     @Override

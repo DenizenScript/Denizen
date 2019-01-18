@@ -61,7 +61,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
         if (!iCheck.equals("item") && !tryItem(item, iCheck)) {
             return false;
         }
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
         return true;

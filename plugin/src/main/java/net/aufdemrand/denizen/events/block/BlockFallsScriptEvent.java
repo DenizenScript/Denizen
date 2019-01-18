@@ -54,7 +54,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
     public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

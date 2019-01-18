@@ -70,7 +70,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
         if (!tryItem(item, iTest)) {
             return false;
         }
-        if (runInCheck(scriptContainer, s, lower, location)) {
+        if (runInCheck(path, location)) {
             return false;
         }
         return true;

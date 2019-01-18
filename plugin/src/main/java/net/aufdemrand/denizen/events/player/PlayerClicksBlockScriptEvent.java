@@ -156,8 +156,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (location != null ? !runInCheck(scriptContainer, s, lower, location)
-                : !runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation())) {
+        if (location != null ? !runInCheck(path, location)
+                : !runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
 

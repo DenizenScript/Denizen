@@ -65,7 +65,7 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, vehicle.getLocation())) {
+        if (!runInCheck(path, vehicle.getLocation())) {
             return false;
         }
 

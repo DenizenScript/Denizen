@@ -64,7 +64,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
         String lower = path.eventLower;
         String mat = CoreUtilities.getXthArg(0, lower);
         return (mat.equals("piston") || tryMaterial(material, mat))
-                && runInCheck(scriptContainer, s, lower, location);
+                && runInCheck(path, location);
     }
 
     @Override

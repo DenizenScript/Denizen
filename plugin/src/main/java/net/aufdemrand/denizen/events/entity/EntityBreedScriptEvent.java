@@ -72,7 +72,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, entity.getLocation());
+        return runInCheck(path, entity.getLocation());
     }
 
     @Override

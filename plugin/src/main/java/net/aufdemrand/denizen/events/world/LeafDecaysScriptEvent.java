@@ -52,7 +52,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
         String lower = path.eventLower;
         String mat = CoreUtilities.getXthArg(0, lower);
         return (mat.equals("leaves") || (tryMaterial(material, mat)))
-                && runInCheck(scriptContainer, s, lower, location);
+                && runInCheck(path, location);
     }
 
     @Override

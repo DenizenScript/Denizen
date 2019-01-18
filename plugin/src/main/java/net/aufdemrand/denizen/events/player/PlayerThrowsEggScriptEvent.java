@@ -66,7 +66,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             return false;
         }
 
-        return runInCheck(scriptContainer, s, lower, egg.getLocation());
+        return runInCheck(path, egg.getLocation());
     }
 
     @Override

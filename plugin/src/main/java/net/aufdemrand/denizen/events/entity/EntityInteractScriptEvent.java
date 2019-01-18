@@ -68,7 +68,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

@@ -47,7 +47,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
-        if (!runInCheck(scriptContainer, s, lower, event.getFrom())) {
+        if (!runInCheck(path, event.getFrom())) {
             return false;
         }
         return true;

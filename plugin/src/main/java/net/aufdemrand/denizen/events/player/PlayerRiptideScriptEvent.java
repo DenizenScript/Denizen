@@ -49,7 +49,7 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override

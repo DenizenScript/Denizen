@@ -57,7 +57,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         if (!tryItem(item, iCheck)) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, event.getPlayer().getLocation());
+        return runInCheck(path, event.getPlayer().getLocation());
     }
 
     @Override

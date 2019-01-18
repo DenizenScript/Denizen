@@ -63,7 +63,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

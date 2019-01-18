@@ -67,7 +67,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

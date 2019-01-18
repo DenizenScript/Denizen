@@ -62,7 +62,7 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
         String lower = path.eventLower;
         String iTest = CoreUtilities.getXthArg(2, lower);
         return (iTest.equals("bucket") || tryItem(item, iTest))
-                && runInCheck(scriptContainer, s, lower, location);
+                && runInCheck(path, location);
     }
 
     @Override

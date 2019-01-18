@@ -60,7 +60,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
         if (material.isStructure()) {
             return false;
         }
-        return runInCheck(scriptContainer, s, lower, location);
+        return runInCheck(path, location);
     }
 
     @Override

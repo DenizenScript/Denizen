@@ -55,8 +55,8 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         String lower = path.eventLower;
         String mat = CoreUtilities.getXthArg(0, lower);
         return (mat.equals("liquid") || tryMaterial(material, mat))
-                && (runInCheck(scriptContainer, s, lower, location)
-                || runInCheck(scriptContainer, s, lower, destination));
+                && (runInCheck(path, location)
+                || runInCheck(path, destination));
     }
 
     @Override

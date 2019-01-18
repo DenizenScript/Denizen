@@ -62,7 +62,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        if (!runInCheck(scriptContainer, s, lower, location)) {
+        if (!runInCheck(path, location)) {
             return false;
         }
 

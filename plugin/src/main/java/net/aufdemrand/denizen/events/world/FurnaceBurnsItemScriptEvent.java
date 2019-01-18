@@ -56,7 +56,7 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         String lower = path.eventLower;
         String iTest = CoreUtilities.getXthArg(2, lower);
         return tryItem(item, iTest)
-                && runInCheck(scriptContainer, s, lower, location);
+                && runInCheck(path, location);
     }
 
     @Override
