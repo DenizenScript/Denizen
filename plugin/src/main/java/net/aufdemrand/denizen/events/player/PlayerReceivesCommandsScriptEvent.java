@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -69,7 +70,8 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (determination.length() > 0 && !determination.equalsIgnoreCase("cancelled")) {
+        String lower = CoreUtilities.toLowerCase(determination);
+        if (determination.length() > 0 && !lower.startsWith("cancelled")) {
             commands.clear();
             commands.addAll(dList.valueOf(determination));
             return true;
@@ -79,7 +81,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override
