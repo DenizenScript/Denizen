@@ -63,8 +63,9 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String entName = CoreUtilities.getXthArg(0, lower);
 
         if (!tryEntity(entity, entName)) {

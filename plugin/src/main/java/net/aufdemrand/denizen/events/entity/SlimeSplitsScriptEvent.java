@@ -51,8 +51,9 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String counts = CoreUtilities.getXthArg(3, lower);
 
         if (CoreUtilities.xthArgEquals(2, lower, "into") && !counts.isEmpty()) {

@@ -55,8 +55,9 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String mat = CoreUtilities.getXthArg(3, lower);
         dMaterial material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());

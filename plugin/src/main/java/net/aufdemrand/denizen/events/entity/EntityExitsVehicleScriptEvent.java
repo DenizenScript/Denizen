@@ -53,8 +53,9 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))
                 || !tryEntity(vehicle, CoreUtilities.getXthArg(2, lower))) {

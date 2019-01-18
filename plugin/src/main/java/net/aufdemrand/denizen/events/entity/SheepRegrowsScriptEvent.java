@@ -45,8 +45,9 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         if (!runInCheck(scriptContainer, s, lower, location)) {
             return false;

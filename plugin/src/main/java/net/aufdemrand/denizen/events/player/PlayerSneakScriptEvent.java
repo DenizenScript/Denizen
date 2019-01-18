@@ -48,8 +48,9 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String cmd = CoreUtilities.getXthArg(1, lower);
         if (cmd.equals("starts") && !state) {
             return false;

@@ -52,8 +52,9 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         if (!runInCheck(scriptContainer, s, lower, player.getLocation())) {
             return false;
         }

@@ -48,8 +48,9 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         List<String> data = CoreUtilities.split(lower, ' ');
         for (int index = 3; index < data.size(); index++) {

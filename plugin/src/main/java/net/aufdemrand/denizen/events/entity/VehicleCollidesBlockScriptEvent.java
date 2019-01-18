@@ -51,8 +51,9 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
             return false;

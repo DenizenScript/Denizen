@@ -65,8 +65,9 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
         String eItem = CoreUtilities.getXthArg(0, lower);
 
         if (!tryItem(result, eItem)) {

@@ -60,8 +60,9 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String iItem = CoreUtilities.getXthArg(1, lower);
         if (!tryItem(item, iItem)) {

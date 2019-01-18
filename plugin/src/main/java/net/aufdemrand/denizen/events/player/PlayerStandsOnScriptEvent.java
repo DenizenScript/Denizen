@@ -50,8 +50,9 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
-        String lower = CoreUtilities.toLowerCase(s);
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+        String s = path.event;
+        String lower = path.eventLower;
 
         String mat = CoreUtilities.getXthArg(3, lower);
         if (mat.length() > 0
