@@ -44,6 +44,32 @@ public class AdjustCommand extends AbstractCommand {
     }
 
 
+    public void adjust(dObject object, Element mechanism, Element value, ScriptEntry entry) {
+        String objectString = object.toString();
+        if (objectString.equalsIgnoreCase("server")) {
+            ServerTags.adjustServer(new Mechanism(mechanism, value));
+            return;
+        }
+        else if (objectString.equalsIgnoreCase("system")) {
+            UtilTags.adjustSystem(new Mechanism(mechanism, value));
+            return;
+        }
+        if (object instanceof Element) {
+            object = ObjectFetcher.pickObjectFor(objectString, entry.entryData.getTagContext());
+            if (object instanceof Element) {
+                dB.echoError("Unable to determine what object to adjust (missing object notation?), for: " + objectString);
+                return;
+            }
+        }
+        // Make sure this object is Adjustable
+        if (!(object instanceof Adjustable)) {
+            dB.echoError("'" + objectString + "' is not an adjustable object type.");
+            return;
+        }
+        ((Adjustable) object).adjust(new Mechanism(mechanism, value));
+    }
+
+
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
 
@@ -53,59 +79,20 @@ public class AdjustCommand extends AbstractCommand {
         dList objects = scriptEntry.getdObject("object");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             dB.report(scriptEntry, getName(),
                     objects.debug()
                             + mechanism.debug()
                             + (value == null ? "" : value.debug()));
-
         }
 
         dList result = new dList();
 
-        for (String object : objects) {
-            if (object.equalsIgnoreCase("server")) {
-                ServerTags.adjustServer(new Mechanism(mechanism, value));
-                continue;
-            }
-            else if (object.equalsIgnoreCase("system")) {
-                UtilTags.adjustSystem(new Mechanism(mechanism, value));
-                continue;
-            }
-
-            Class object_class = ObjectFetcher.getObjectClass(object.split("@")[0]);
-
-            if (object_class == null) {
-                dB.echoError("Unfetchable object found '" + object + "'!");
-                return;
-            }
-
-            dObject fetched;
-
-            // Check to make sure this is a valid constructor by checking the 'matches' static method
-            if (!ObjectFetcher.checkMatch(object_class, object)) {
-                throw new CommandExecutionException('\'' + object + "' is returning null.");
-            }
-
-            // Get the object with the 'valueOf' static method
-            fetched = ObjectFetcher.getObjectFrom(object_class, object);
-
-            // Make sure this object is Adjustable
-            if (fetched == null || !(fetched instanceof Adjustable)) {
-                dB.echoError("'" + object + "' is not adjustable.");
-                return;
-            }
-
-            // Do the adjustment!
-            ((Adjustable) fetched).adjust(new Mechanism(mechanism, value));
-
-            // Add it to the entry for later access
+        for (dObject object : objects.objectForms) {
+            adjust(object, mechanism, value, scriptEntry);
             if (objects.size() == 1) {
-                scriptEntry.addObject("result", fetched);
+                scriptEntry.addObject("result", object);
             }
-            result.add(fetched.identify());
-
-            // :)
+            result.addObject(object);
         }
 
         scriptEntry.addObject("result_list", result);

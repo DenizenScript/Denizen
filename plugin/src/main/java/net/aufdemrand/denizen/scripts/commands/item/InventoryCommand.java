@@ -11,10 +11,12 @@ import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -53,17 +55,21 @@ public class InventoryCommand extends AbstractCommand {
     //
     // -->
 
-    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE}
+    private enum Action {OPEN, CLOSE, COPY, MOVE, SWAP, ADD, REMOVE, SET, KEEP, EXCLUDE, FILL, CLEAR, UPDATE, ADJUST}
 
     @SuppressWarnings("unchecked")
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        boolean isAdjust = false;
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             // Check for a dList of actions
-            if (arg.matchesEnumList(Action.values())) {
+            if (!scriptEntry.hasObject("actions")
+                    && arg.matchesEnumList(Action.values())) {
                 scriptEntry.addObject("actions", arg.asType(dList.class).filter(Action.values()));
+                isAdjust = arg.toString().equalsIgnoreCase("adjust");
             }
 
             // Check for an origin, which can be a dInventory, dEntity, dLocation
@@ -88,6 +94,18 @@ public class InventoryCommand extends AbstractCommand {
                     && arg.matchesPrefix("slot, s")) {
                 scriptEntry.addObject("slot", arg.asElement());
             }
+
+            else if (!scriptEntry.hasObject("mechanism")
+                    && isAdjust) {
+                if (arg.hasPrefix()) {
+                    scriptEntry.addObject("mechanism", new Element(arg.getPrefix().getValue()));
+                    scriptEntry.addObject("mechanism_value", arg.asElement());
+                }
+                else {
+                    scriptEntry.addObject("mechanism", arg.asElement());
+                }
+            }
+
             else {
                 arg.reportUnhandled();
             }
@@ -96,6 +114,14 @@ public class InventoryCommand extends AbstractCommand {
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("actions")) {
             throw new InvalidArgumentsException("Must specify an Inventory action!");
+        }
+
+        if (isAdjust && !scriptEntry.hasObject("mechanism")) {
+            throw new InvalidArgumentsException("Inventory adjust must have a mechanism!");
+        }
+
+        if (isAdjust && !scriptEntry.hasObject("slot")) {
+            throw new InvalidArgumentsException("Inventory adjust must have an explicit slot!");
         }
 
         scriptEntry.defaultObject("slot", new Element(1));
@@ -121,12 +147,16 @@ public class InventoryCommand extends AbstractCommand {
         AbstractMap.SimpleEntry<Integer, dInventory> destinationentry = (AbstractMap.SimpleEntry<Integer, dInventory>) scriptEntry.getObject("destination");
         dInventory destination = destinationentry.getValue();
         Element slot = scriptEntry.getElement("slot");
+        Element mechanism = scriptEntry.getElement("mechanism");
+        Element mechanismValue = scriptEntry.getElement("mechanism_value");
 
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
                     aH.debugObj("actions", actions.toString())
                             + (destination.debug())
                             + (origin != null ? origin.debug() : "")
+                            + (mechanism != null ? mechanism.debug() : "")
+                            + (mechanismValue != null ? mechanismValue.debug() : "")
                             + slot.debug());
         }
 
@@ -257,6 +287,11 @@ public class InventoryCommand extends AbstractCommand {
                     }
                     break;
 
+                case ADJUST:
+                    dItem toAdjust = new dItem(destination.getInventory().getItem(slotId));
+                    toAdjust.adjust(new Mechanism(mechanism, mechanismValue));
+                    destination.getInventory().setItem(slotId, toAdjust.getItemStack());
+                    break;
             }
         }
     }

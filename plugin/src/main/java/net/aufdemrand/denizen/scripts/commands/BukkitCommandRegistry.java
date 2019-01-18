@@ -103,6 +103,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // interface to deal with those adjustments. To easily accomplish this, use this command with a valid object
         // mechanism, and sometimes accompanying value.
         //
+        // To adjust an item, use <@link command inventory>, as '- inventory adjust slot:<#> <mechanism>:<value>'.
+        //
         // @Tags
         // <entry[saveName].result> returns the adjusted object.
         // <entry[saveName].result_list> returns a dList of adjusted objects.
@@ -110,11 +112,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to set a custom display name on an entity.
         // - adjust e@1000 'custom_name:ANGRY!'
-        //
-        // @Usage
-        // Use as part of the steps to modify the item a player is holding (adjust the item, then swap the new item into the original inventory)
-        // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
-        // - inventory set slot:<player.item_in_hand.slot> d:<player.inventory> o:<entry[myitem].result>
         // -->
         registerCoreMember(AdjustCommand.class,
                 "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
@@ -2017,7 +2014,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
         // @Required 1
         // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
@@ -2066,9 +2063,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to swap two players' inventories.
         // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
+        //
+        // @Usage
+        // Use to adjust a specific item in the player's inventory.
+        // - inventory adjust slot:5 "lore:Item modified!"
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
 
 
         // <--[command]
