@@ -14,6 +14,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityBreedEvent;
@@ -33,7 +34,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     //
     // @Context
     // <context.breeder> returns the dEntity responsible for breeding, if it exists.
-    // <context.child> returns the child dEntity. The returned entity will not be spawned within the world, so most operations are invalid until the event fires.
+    // <context.child> returns the child dEntity.
     // <context.mother> returns the parent dEntity creating the child. The child will spawn at the mother's location.
     // <context.father> returns the other parent dEntity.
     // <context.item> returns the dItem used to initiate breeding, if it exists.
@@ -124,7 +125,8 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     @EventHandler
     public void onEntityBreeds(EntityBreedEvent event) {
-        entity = new dEntity(event.getEntity());
+        Entity entity = event.getEntity();
+        this.entity = new dEntity(entity);
         breeder = new dEntity(event.getBreeder());
         father = new dEntity(event.getFather());
         mother = new dEntity(event.getMother());
@@ -132,7 +134,9 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         experience = event.getExperience();
         cancelled = event.isCancelled();
         this.event = event;
+        dEntity.rememberEntity(entity);
         fire();
+        dEntity.forgetEntity(entity);
         event.setCancelled(cancelled);
         event.setExperience(experience);
 
