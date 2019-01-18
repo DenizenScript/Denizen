@@ -23,14 +23,14 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     //
     // @Regex ^on player stands on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
+    // @Cancellable true
+    //
     // @Triggers when a player stands on a pressure plate, tripwire, or redstone ore.
     // @Context
     // <context.location> returns the dLocation the player is interacting with.
     // <context.material> returns the dMaterial the player is interacting with.
     //
     // @Determine
-    // "CANCELLED" to stop the interaction from happening.
-    // "CANCELLED:FALSE" to uncancel the event. Some plugins may have this cancelled by default.
     //
     // -->
 

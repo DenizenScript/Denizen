@@ -91,10 +91,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
             type = dEntity.valueOf(determination).getBukkitEntityType();
             return true;
         }
-        if (lower.equals("cancelled")) {
-            is_hatching = false;
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -126,7 +122,11 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         egg = new dEntity(event.getEgg());
         type = event.getHatchingType();
         this.event = event;
+        cancelled = false;
         fire();
+        if (cancelled) {
+            is_hatching = false;
+        }
         dEntity.forgetEntity(eggEntity);
         event.setHatching(is_hatching);
         event.setHatchingType(type);

@@ -90,7 +90,7 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (!CoreUtilities.toLowerCase(determination).equals("cancelled")) {
+        if (!isDefaultDetermination(determination)) {
             try {
                 color = DyeColor.valueOf(determination.toUpperCase());
                 return true;

@@ -71,7 +71,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
-        if (determination.length() > 0 && !lower.startsWith("cancelled")) {
+        if (determination.length() > 0 && !isDefaultDetermination(determination)) {
             commands.clear();
             commands.addAll(dList.valueOf(determination));
             return true;

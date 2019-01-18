@@ -105,9 +105,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
-        if (CoreUtilities.toLowerCase(determination).equals("cancelled")) {
-            manual_cancelled = true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -151,10 +148,10 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             raw_slots.add(String.valueOf(raw_slot + 1));
         }
         cancelled = event.isCancelled();
-        manual_cancelled = false;
+        boolean wasCancelled = cancelled;
         this.event = event;
         fire();
-        if (cancelled && manual_cancelled) {
+        if (cancelled && !wasCancelled) {
             final InventoryHolder holder = inventory.getHolder();
             new BukkitRunnable() {
                 @Override

@@ -83,10 +83,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
             amount = aH.getIntegerFrom(determination);
             return true;
         }
-        if (lower.equals("cancelled")) {
-            amount = 0;
-            return true;
-        }
         return super.applyDetermination(container, determination);
     }
 
@@ -111,7 +107,11 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         amount = event.getAmount();
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
+        cancelled = false;
         fire();
+        if (cancelled) {
+            amount = 0;
+        }
         event.setAmount(amount);
     }
 }

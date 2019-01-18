@@ -170,12 +170,9 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
                 }
             }
         }
-        else if (determination.equalsIgnoreCase("cancelled")) {
-            cancelled = true;
-        }
 
         // String containing new Death Message
-        else if (event instanceof PlayerDeathEvent) {
+        else if (event instanceof PlayerDeathEvent && !isDefaultDetermination(determination)) {
             message = new Element(determination);
         }
         else {
