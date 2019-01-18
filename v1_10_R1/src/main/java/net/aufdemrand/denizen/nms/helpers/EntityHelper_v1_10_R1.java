@@ -40,15 +40,13 @@ public class EntityHelper_v1_10_R1 implements EntityHelper {
     @Override
     public int getBodyArrows(Entity entity) {
         // https://wiki.vg/Entity_metadata#Living
-        return ((CraftEntity) entity).getHandle().getDataWatcher().get(
-                new DataWatcherObject<>(10, DataWatcherRegistry.b));
+        return ((CraftEntity) entity).getHandle().getDataWatcher().get(DataWatcherRegistry.b.a(10));
     }
 
     @Override
     public void setBodyArrows(Entity entity, int numArrows) {
         // https://wiki.vg/Entity_metadata#Living
-        ((CraftEntity) entity).getHandle().getDataWatcher().set(
-                new DataWatcherObject<>(10, DataWatcherRegistry.b), numArrows);
+        ((CraftEntity) entity).getHandle().getDataWatcher().set(DataWatcherRegistry.b.a(10), numArrows);
     }
 
     @Override

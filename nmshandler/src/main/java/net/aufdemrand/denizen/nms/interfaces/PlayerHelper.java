@@ -9,6 +9,10 @@ import java.util.UUID;
 
 public interface PlayerHelper {
 
+    float getAbsorption(Player player);
+
+    void setAbsorption(Player player, float value);
+
     boolean hasChunkLoaded(Player player, Chunk chunk);
 
     int getPing(Player player);

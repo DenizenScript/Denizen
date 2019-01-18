@@ -4,10 +4,7 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
-import net.minecraft.server.v1_13_R2.MinecraftServer;
-import net.minecraft.server.v1_13_R2.OpList;
-import net.minecraft.server.v1_13_R2.OpListEntry;
-import net.minecraft.server.v1_13_R2.PacketPlayOutGameStateChange;
+import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -27,6 +24,16 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerHelper_v1_13_R2 implements PlayerHelper {
+
+    @Override
+    public float getAbsorption(Player player) {
+        return ((CraftPlayer) player).getHandle().getDataWatcher().get(DataWatcherRegistry.c.a(11));
+    }
+
+    @Override
+    public void setAbsorption(Player player, float value) {
+        ((CraftPlayer) player).getHandle().getDataWatcher().set(DataWatcherRegistry.c.a(11), value);
+    }
 
     @Override
     public boolean hasChunkLoaded(Player player, Chunk chunk) {
