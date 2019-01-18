@@ -1165,7 +1165,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("absorption_health")) {
             return new Element(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
-                    .getAttribute(attribute.fulfill(2));
+                    .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
