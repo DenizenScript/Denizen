@@ -16,28 +16,35 @@ import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
+    @Deprecated
     public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location) {
         return runInCheck(scriptContainer, s, lower, location, "in");
     }
 
+    @Deprecated
     public boolean runInCheck(ScriptContainer scriptContainer, String s, String lower, Location location, String innote) {
-        List<String> data = CoreUtilities.split(lower, ' ');
+        return runInCheck(new ScriptPath(scriptContainer, s), location, innote);
+    }
 
+    public boolean runInCheck(ScriptPath path, Location location) {
+        return runInCheck(path, location, "in");
+    }
+
+    public boolean runInCheck(ScriptPath path, Location location, String innote) {
         int index;
-
-        for (index = 0; index < data.size(); index++) {
-            if (data.get(index).equals(innote)) {
+        for (index = 0; index < path.eventArgsLower.length; index++) {
+            if (path.eventArgsLower[index].equals(innote)) {
                 break;
             }
         }
-        if (index >= data.size()) {
+        if (index >= path.eventArgsLower.length) {
             // No 'in ...' specified
             return true;
         }
 
-        String it = CoreUtilities.getXthArg(index + 1, lower);
+        String it = path.eventArgsLower[index + 1];
         if (it.equals("notable")) {
-            String subit = CoreUtilities.getXthArg(index + 2, lower);
+            String subit = path.eventArgsLower[index + 2];
             if (subit.equals("cuboid")) {
                 return dCuboid.getNotableCuboidsContaining(location).size() > 0;
             }
@@ -45,7 +52,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
             }
             else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
                 return false;
             }
         }
@@ -61,7 +68,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return ellipsoid.contains(location);
         }
         else {
-            dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in ???'): '" + s + "' for " + scriptContainer.getName());
+            dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in ???'): '" + path.event + "' for " + path.container.getName());
             return false;
         }
     }
