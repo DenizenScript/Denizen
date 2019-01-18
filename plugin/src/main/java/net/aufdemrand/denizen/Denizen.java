@@ -698,6 +698,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
             }
             ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
+            }
             ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {

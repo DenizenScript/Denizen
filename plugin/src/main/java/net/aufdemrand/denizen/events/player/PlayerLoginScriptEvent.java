@@ -85,7 +85,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(dEntity.isPlayer(event.getPlayer()) ? dEntity.getPlayerFrom(event.getPlayer()) : null, null);
+        return new BukkitScriptEntryData(new dPlayer(event.getPlayer()), null);
     }
 
     @Override
