@@ -49,7 +49,7 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, String s) {
+    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
         return true;
     }
 
