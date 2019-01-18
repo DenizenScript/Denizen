@@ -122,12 +122,13 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         damage = new Element(event.getDamage());
         location = new dLocation(event.getPlayer().getLocation());
         cancelled = event.isCancelled();
+        boolean wasCancelled = cancelled;
         this.event = event;
         fire();
         event.setCancelled(cancelled);
         event.setDamage(damage.asInt());
         final Player p = event.getPlayer();
-        if (cancelled) {
+        if (cancelled && !wasCancelled) {
             Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
                 @Override
                 public void run() {

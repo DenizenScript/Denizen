@@ -147,7 +147,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         resultChanged = false;
         cancelled = false;
         fire();
-        if (cancelled) {
+        if (cancelled) { // Hacked-in cancellation helper
             inventory.setResult(null);
         }
         else if (resultChanged) {

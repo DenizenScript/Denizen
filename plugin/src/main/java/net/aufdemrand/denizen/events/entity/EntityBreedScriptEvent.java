@@ -41,7 +41,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     // <context.experience> returns the amount of experience granted by breeding.
     //
     // @Determine
-    // Element(Integer) to set the amount of experience granted by breeding.
+    // Element(Number) to set the amount of experience granted by breeding.
     //
     // -->
 
@@ -133,6 +133,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         item  = new dItem(event.getBredWith());
         experience = event.getExperience();
         cancelled = event.isCancelled();
+        boolean wasCancelled = cancelled;
         this.event = event;
         dEntity.rememberEntity(entity);
         fire();
@@ -141,7 +142,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         event.setExperience(experience);
 
         // Prevent entities from continuing to breed with each other
-        if (cancelled) {
+        if (cancelled && !wasCancelled) {
             NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) father.getLivingEntity(), false);
             NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) mother.getLivingEntity(), false);
         }

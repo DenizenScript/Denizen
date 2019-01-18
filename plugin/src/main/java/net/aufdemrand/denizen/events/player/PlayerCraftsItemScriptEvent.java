@@ -143,7 +143,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         this.resultChanged = false;
         this.cancelled = false;
         fire();
-        if (cancelled) {
+        if (cancelled) { // This event has a weird cancellation handler
             event.setCancelled(true);
         }
         else if (resultChanged) {
