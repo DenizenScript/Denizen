@@ -3327,29 +3327,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name RunTask
-        // @Deprecated This has been replaced by the 'run' and 'inject' commands.
-        // @Syntax runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)
-        // @Required 1
-        // @Stable unstable
-        // @Short Runs a task script.
-        // @Author aufdemrand
-        // @Group core
-        //
-        // @Description
-        // DEPRECATED.
-        //
-        // @Tags
-        // DEPRECATED.
-        //
-        // @Usage
-        // DO NOT USE.
-        // -->
-        registerCoreMember(RuntaskCommand.class,
-                "RUNTASK", "runtask [<name>] (instantly) (queue(:<name>)) (delay:<#>) (define:<element>|...)", 1);
-
-
-        // <--[command]
         // @Name Schematic
         // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
         // @Group World
