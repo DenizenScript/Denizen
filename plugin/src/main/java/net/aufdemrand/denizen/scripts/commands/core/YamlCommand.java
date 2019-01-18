@@ -64,7 +64,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 scriptEntry.addObject("action", new Element("LOAD"));
                 scriptEntry.addObject("filename", arg.asElement());
             }
-            if (!scriptEntry.hasObject("action") &&
+            else if (!scriptEntry.hasObject("action") &&
                     arg.matchesPrefix("LOADTEXT")) {
                 scriptEntry.addObject("action", new Element("LOADTEXT"));
                 scriptEntry.addObject("raw_text", arg.asElement());
