@@ -50,8 +50,11 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        return cmd.equals("spawns");
+        String arg = CoreUtilities.getXthArg(2, lower);
+        if (arg.length() > 0 && !arg.equals("in")) {
+            return false;
+        }
+        return CoreUtilities.xthArgEquals(1, lower, "spawns");
     }
 
     @Override
