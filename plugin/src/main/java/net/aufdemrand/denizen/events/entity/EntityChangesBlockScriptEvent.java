@@ -79,7 +79,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         if (CoreUtilities.xthArgEquals(3, lower, "into")) {
             String mat2 = CoreUtilities.getXthArg(4, lower);
             if (mat2.isEmpty()) {
-                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + scriptContainer.getName());
+                dB.echoError("Invalid event material [" + getName() + "]: '" + s + "' for " + path.container.getName());
                 return false;
             }
             else if (!tryMaterial(new_material, mat2)) {
