@@ -1,9 +1,11 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -90,15 +92,22 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return loc.getBlock().equals(location.getBlock());
     }
 
+    @Deprecated
     public boolean runWithCheck(ScriptContainer scriptContainer, String s, String lower, dItem held) {
-        String with = getSwitch(lower, "with");
+        return runWithCheck(new ScriptPath(scriptContainer, s), held);
+    }
+
+    public static TagContext noDebugTagContext = new BukkitTagContext(null, null, false, null, false, null);
+
+    public boolean runWithCheck(ScriptPath path, dItem held) {
+        String with = path.switches.get("with");
         if (with != null) {
             if (with.equals("item")) {
                 return true;
             }
-            dItem it = dItem.valueOf(with);
+            dItem it = dItem.valueOf(with, noDebugTagContext);
             if (it == null) {
-                dB.echoError("Invalid WITH item in " + getName() + " for '" + s + "' in " + scriptContainer.getName());
+                dB.echoError("Invalid WITH item in " + getName() + " for '" + path.event + "' in " + path.container.getName());
                 return false;
             }
             if (held == null || !tryItem(held, with)) {

@@ -66,7 +66,7 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getPlayer().getItemInHand()))) {
+        if (!runWithCheck(path, new dItem(event.getPlayer().getItemInHand()))) {
             return false;
         }
         // Deprecated in favor of with: format

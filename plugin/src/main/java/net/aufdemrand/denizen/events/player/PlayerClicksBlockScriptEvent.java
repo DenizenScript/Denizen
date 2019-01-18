@@ -148,7 +148,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        if (!runWithCheck(scriptContainer, s, lower, new dItem(event.getItem()))) {
+        if (!runWithCheck(path, new dItem(event.getItem()))) {
             return false;
         }
 

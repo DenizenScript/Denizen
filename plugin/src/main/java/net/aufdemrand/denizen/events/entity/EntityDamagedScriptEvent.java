@@ -118,7 +118,7 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        if (!runWithCheck(scriptContainer, s, lower, held)) {
+        if (!runWithCheck(path, held)) {
             return false;
         }
 
