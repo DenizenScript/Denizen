@@ -48,7 +48,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         return runInCheck(scriptContainer, s, lower, to) || runInCheck(scriptContainer, s, lower, from);

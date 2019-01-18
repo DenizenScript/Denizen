@@ -53,7 +53,7 @@ public class ItemScrollScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         return true;
     }
 

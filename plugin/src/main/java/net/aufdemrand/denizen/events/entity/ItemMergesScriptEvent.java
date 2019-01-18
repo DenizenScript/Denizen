@@ -57,7 +57,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         String item_test = CoreUtilities.getXthArg(0, lower);

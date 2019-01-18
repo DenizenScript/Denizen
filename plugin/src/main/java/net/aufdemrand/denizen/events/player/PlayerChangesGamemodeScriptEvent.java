@@ -46,7 +46,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         String mode = CoreUtilities.getXthArg(4, lower);

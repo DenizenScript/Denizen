@@ -63,7 +63,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         String iTest = CoreUtilities.getXthArg(1, s);

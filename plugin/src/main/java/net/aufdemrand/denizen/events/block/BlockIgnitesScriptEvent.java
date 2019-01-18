@@ -56,7 +56,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         if (!runInCheck(scriptContainer, s, lower, location)) {

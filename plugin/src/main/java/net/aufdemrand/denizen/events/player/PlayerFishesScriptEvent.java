@@ -57,7 +57,7 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         String fish = CoreUtilities.getXthArg(2, lower);

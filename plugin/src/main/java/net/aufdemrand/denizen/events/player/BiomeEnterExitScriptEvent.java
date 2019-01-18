@@ -62,7 +62,7 @@ public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         String biome_test = lower.substring(lower.lastIndexOf(' ') + 1);

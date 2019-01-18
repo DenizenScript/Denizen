@@ -61,7 +61,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
 

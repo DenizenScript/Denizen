@@ -130,7 +130,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     private static final List<String> withHelpList = Arrays.asList("with", "using", "in");
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         int index = CoreUtilities.split(lower, ' ').indexOf("clicks") + 1;

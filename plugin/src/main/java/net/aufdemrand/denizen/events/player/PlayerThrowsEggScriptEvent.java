@@ -56,7 +56,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         String s = path.event;
         String lower = path.eventLower;
         if (CoreUtilities.getXthArg(2, lower).equals("hatching") && !is_hatching) {

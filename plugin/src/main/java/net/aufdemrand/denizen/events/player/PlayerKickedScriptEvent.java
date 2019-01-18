@@ -52,7 +52,7 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         return true;
     }
 

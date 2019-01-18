@@ -42,7 +42,7 @@ public class ResourcePackStatusScriptEvent extends ScriptEvent {
     }
 
     @Override
-    public boolean matches(ScriptContainer scriptContainer, ScriptPath path) {
+    public boolean matches(ScriptPath path) {
         return true;
     }
 
