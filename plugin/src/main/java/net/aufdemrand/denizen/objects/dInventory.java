@@ -1327,7 +1327,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         // <--[tag]
         // @attribute <in@inventory.empty_slots>
-        // @returns Element(Integer)
+        // @returns Element(Number)
         // @description
         // Returns the number of empty slots in an inventory.
         // -->

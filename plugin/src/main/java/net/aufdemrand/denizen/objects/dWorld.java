@@ -956,7 +956,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name ambient_spawn_limit
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the limit for number of ambient mobs that can spawn in a chunk in this world.
         // @tags
@@ -970,7 +970,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name animal_spawn_limit
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the limit for number of animals that can spawn in a chunk in this world.
         // @tags
@@ -1075,7 +1075,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name full_time
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the in-game time on the server.
         // @tags
@@ -1101,7 +1101,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name monster_spawn_limit
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the limit for number of monsters that can spawn in a chunk in this world.
         // @tags
@@ -1206,7 +1206,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name time
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the relative in-game time on the server.
         // @tags
@@ -1233,7 +1233,7 @@ public class dWorld implements dObject, Adjustable {
         // <--[mechanism]
         // @object dWorld
         // @name water_animal_spawn_limit
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
         // Sets the limit for number of water animals that can spawn in a chunk in this world.
         // @tags
