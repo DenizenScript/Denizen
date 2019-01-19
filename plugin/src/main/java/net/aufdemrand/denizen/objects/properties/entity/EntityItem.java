@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -113,8 +114,8 @@ public class EntityItem implements Property {
                         .asType(dItem.class).getItemStack());
             }
             else {
-                ((Enderman) item.getBukkitEntity()).setCarriedMaterial(
-                        mechanism.getValue().asType(dItem.class).getItemStack().getData());
+                NMSHandler.getInstance().getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
+                        mechanism.getValue().asType(dItem.class).getItemStack());
             }
         }
     }

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftAnimals;
@@ -42,6 +43,11 @@ public class EntityHelper_v1_13_R2 implements EntityHelper {
     /*
         General Entity Methods
      */
+
+    @Override
+    public void setCarriedItem(Enderman entity, ItemStack item) {
+        entity.setCarriedBlock(Bukkit.createBlockData(item.getType()));
+    }
 
     @Override
     public void setRiptide(Entity entity, boolean state) {

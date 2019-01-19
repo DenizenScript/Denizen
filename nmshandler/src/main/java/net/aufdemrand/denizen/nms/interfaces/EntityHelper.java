@@ -6,11 +6,7 @@ import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -21,6 +17,10 @@ public interface EntityHelper {
 
     default void setRiptide(Entity entity, boolean state) {
         dB.echoError("Riptide control not available on this server version.");
+    }
+
+    default void setCarriedItem(Enderman entity, ItemStack item) {
+        entity.setCarriedMaterial(item.getData());
     }
 
     int getBodyArrows(Entity entity);
