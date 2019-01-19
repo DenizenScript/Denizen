@@ -154,7 +154,7 @@ public class dItem implements dObject, Notable, Adjustable {
                 else {
                     dMaterial mat = dMaterial.valueOf(material);
                     stack = new dItem(mat.getMaterial());
-                    if (mat.hasData()) {
+                    if (mat.hasData() && NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
                         stack.setDurability(mat.getData());
                     }
                 }
