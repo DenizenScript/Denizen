@@ -44,29 +44,30 @@ public class AdjustCommand extends AbstractCommand {
     }
 
 
-    public void adjust(dObject object, Element mechanism, Element value, ScriptEntry entry) {
+    public dObject adjust(dObject object, Element mechanism, Element value, ScriptEntry entry) {
         String objectString = object.toString();
         if (objectString.equalsIgnoreCase("server")) {
             ServerTags.adjustServer(new Mechanism(mechanism, value));
-            return;
+            return object;
         }
         else if (objectString.equalsIgnoreCase("system")) {
             UtilTags.adjustSystem(new Mechanism(mechanism, value));
-            return;
+            return object;
         }
         if (object instanceof Element) {
             object = ObjectFetcher.pickObjectFor(objectString, entry.entryData.getTagContext());
             if (object instanceof Element) {
                 dB.echoError("Unable to determine what object to adjust (missing object notation?), for: " + objectString);
-                return;
+                return object;
             }
         }
         // Make sure this object is Adjustable
         if (!(object instanceof Adjustable)) {
             dB.echoError("'" + objectString + "' is not an adjustable object type.");
-            return;
+            return object;
         }
         ((Adjustable) object).adjust(new Mechanism(mechanism, value));
+        return object;
     }
 
 
@@ -88,7 +89,7 @@ public class AdjustCommand extends AbstractCommand {
         dList result = new dList();
 
         for (dObject object : objects.objectForms) {
-            adjust(object, mechanism, value, scriptEntry);
+            object = adjust(object, mechanism, value, scriptEntry);
             if (objects.size() == 1) {
                 scriptEntry.addObject("result", object);
             }
