@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -181,17 +182,27 @@ public class ItemEnchantments implements Property {
         // @name remove_enchantments
         // @input None
         // @description
-        // Removes all the item's enchantments.
+        // Removes the specified enchantments from the item (as a list of enchantment names).
+        // Give no value input to remove all enchantments.
         // @tags
         // <i@item.enchantments>
         // <i@item.enchantments.levels>
         // <i@item.enchantments.with_levels>
         // -->
         if (mechanism.matches("remove_enchantments")) {
+            HashSet<String> names = null;
+            if (mechanism.hasValue()) {
+                names = new HashSet<>();
+                for (String ench : mechanism.getValue().asType(dList.class)) {
+                    names.add(CoreUtilities.toLowerCase(ench));
+                }
+            }
             if (item.getItemStack().getType() == Material.ENCHANTED_BOOK) {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) item.getItemStack().getItemMeta();
                 for (Enchantment ench : meta.getStoredEnchants().keySet()) {
-                    meta.removeStoredEnchant(ench);
+                    if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName()))) {
+                        meta.removeStoredEnchant(ench);
+                    }
                 }
                 item.getItemStack().setItemMeta(meta);
             }
