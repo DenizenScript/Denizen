@@ -1652,7 +1652,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (entity instanceof Merchant) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
 
             Merchant merchant = (Merchant) entity;
 

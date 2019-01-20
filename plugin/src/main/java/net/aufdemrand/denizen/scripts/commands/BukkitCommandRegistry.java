@@ -2719,8 +2719,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to force a player to trade with a villager.
         // - opentrades <def[villager_entity]>
         // -->
-        registerCoreMember(OpenTradesCommand.class,
-                "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            registerCoreMember(OpenTradesCommand.class,
+                    "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
+        }
 
 
         // <--[command]

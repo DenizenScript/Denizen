@@ -1559,7 +1559,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
 
             MerchantInventory merchantInventory = (MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory();
 

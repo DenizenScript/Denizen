@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dTrade;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -15,8 +17,9 @@ import java.util.ArrayList;
 public class EntityTrades implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity &&
-                ((dEntity) entity).getBukkitEntity() instanceof Merchant;
+        return entity instanceof dEntity
+                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                && ((dEntity) entity).getBukkitEntity() instanceof Merchant;
     }
 
     public static EntityTrades getFrom(dObject entity) {
