@@ -109,6 +109,5 @@ public class OpenTradesCommand extends AbstractCommand {
                 dB.echoError("Tried to make a nonexistent or offline player view a virtual trading inventory!");
             }
         }
-
     }
 }

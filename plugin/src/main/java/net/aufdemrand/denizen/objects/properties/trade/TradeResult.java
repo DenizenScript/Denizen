@@ -48,7 +48,7 @@ public class TradeResult implements Property {
         // <--[tag]
         // @attribute <trade@trade.result>
         // @returns dItem
-        // @mechanism dTradeRecipe.result
+        // @mechanism dTrade.result
         // @description
         // Returns what the trade will give the player.
         // -->

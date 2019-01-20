@@ -2709,11 +2709,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to open an unusable trade.
-        // - opentrades <trade@trade>
+        // - opentrades trade@trade
         //
         // @Usage
         // Use to open a list of trades with an optional title.
-        // - opentrades <trade@trade[result=i@stone;inputs=li@i@stone;max_uses=9999]> "title:Useless Trades"
+        // - opentrades trade@trade[result=i@stone;inputs=li@i@stone;max_uses=9999]|trade@trade[result=i@barrier] "title:Useless Trades"
         //
         // @Usage
         // Use to force a player to trade with a villager.
