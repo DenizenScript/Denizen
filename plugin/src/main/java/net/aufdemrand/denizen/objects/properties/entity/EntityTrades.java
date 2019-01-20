@@ -18,7 +18,6 @@ public class EntityTrades implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity
-                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
                 && ((dEntity) entity).getBukkitEntity() instanceof Merchant;
     }
 
