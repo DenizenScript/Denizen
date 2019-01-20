@@ -1,8 +1,5 @@
 package net.aufdemrand.denizen.scripts.containers.core;
 
-import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -181,21 +178,6 @@ public class ItemScriptContainer extends ScriptContainer {
             ItemMeta meta = stack.getItemStack().getItemMeta();
             List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
 
-            // Set Id of the first, invisible lore
-            boolean hideLore = false;
-            boolean pureNbtId = false;
-            if (contains("NO_ID")) {
-                hideLore = Boolean.valueOf(getString("NO_ID"));
-            }
-            if (!hideLore) {
-                if (!Settings.packetInterception()) {
-                    lore.add(0, hash);
-                }
-                else {
-                    pureNbtId = true;
-                }
-            }
-
             // Set Display Name
             if (contains("DISPLAY NAME")) {
                 String displayName = TagManager.tag(getString("DISPLAY NAME"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
@@ -265,9 +247,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 stack = book.writeBookTo(stack, player, npc);
             }
 
-            if (pureNbtId) {
-                stack.setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(stack.getItemStack(), "Denizen Item Script", new StringTag(hash)));
-            }
+            stack.setItemScript(this);
         }
         catch (Exception e) {
             dB.echoError("Woah! An exception has been called with this item script!");

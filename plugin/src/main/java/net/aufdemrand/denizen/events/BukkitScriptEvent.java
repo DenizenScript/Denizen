@@ -157,16 +157,13 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         String regexd = regexHandle(comparedto);
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
-        if (equalityCheck(item.identifyNoIdentifier(), comparedto, regexd)) {
+        if (equalityCheck(item.identify().substring("i@".length()), comparedto, regexd)) {
             return true;
         }
         else if (equalityCheck(item.identifyMaterialNoIdentifier(), comparedto, regexd)) {
             return true;
         }
-        else if (equalityCheck(item.identifySimpleNoIdentifier(), comparedto, regexd)) {
-            return true;
-        }
-        else if (equalityCheck(item.identifyNoIdentifier(), comparedto, regexd)) {
+        else if (equalityCheck(item.identifySimple().substring("i@".length()), comparedto, regexd)) {
             return true;
         }
         item.setDurability((short) 0);

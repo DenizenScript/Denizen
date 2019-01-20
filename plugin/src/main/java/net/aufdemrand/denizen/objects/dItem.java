@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.objects;
 
+import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
@@ -25,9 +27,12 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -463,6 +468,22 @@ public class dItem implements dObject, Notable, Adjustable {
         }
     }
 
+    public void setItemScript(ItemScriptContainer script) {
+        if (script.contains("NO_ID") && Boolean.valueOf(script.getString("NO_ID"))) {
+            return;
+        }
+        if (Settings.packetInterception()) {
+            setItemStack(NMSHandler.getInstance().getItemHelper().addNbtData(getItemStack(), "Denizen Item Script", new StringTag(script.getHashID())));
+        }
+        else {
+            ItemMeta meta = item.getItemMeta();
+            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+            lore.add(0, script.getHashID());
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+    }
+
     public dMaterial getMaterial() {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             return dMaterial.getMaterialFrom(getItemStack().getType());
@@ -549,11 +570,6 @@ public class dItem implements dObject, Notable, Adjustable {
             return "i@" + NotableManager.getSavedId(this) + PropertyParser.getPropertiesString(this);
         }
 
-        // If not a saved item, but is a custom item, return the script id
-        else if (isItemscript()) {
-            return "i@" + getScriptName() + PropertyParser.getPropertiesString(this);
-        }
-
         // Else, return the material name
         else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
@@ -593,56 +609,8 @@ public class dItem implements dObject, Notable, Adjustable {
         return getMaterial().identifySimpleNoIdentifier();
     }
 
-    public String identifyNoIdentifier() {
-
-        if (item == null) {
-            return "null";
-        }
-
-        if (item.getType() != Material.AIR) {
-
-            // If saved item, return that
-            if (isUnique()) {
-                return NotableManager.getSavedId(this) + (item.getAmount() == 1 ? "" : "[quantity=" + item.getAmount() + "]");
-            }
-
-            // If not a saved item, but is a custom item, return the script id
-            else if (isItemscript()) {
-                return getScriptName() + (item.getAmount() == 1 ? "" : "[quantity=" + item.getAmount() + "]");
-            }
-        }
-
-        // Else, return the material name
-        if (item.getDurability() >= 16 || item.getDurability() < 0) {
-            return getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
-        }
-        return getMaterial().identifyNoIdentifier() + PropertyParser.getPropertiesString(this);
-    }
-
-    public String identifySimpleNoIdentifier() {
-        if (item == null) {
-            return "null";
-        }
-
-        if (item.getType() != Material.AIR) {
-
-            // If saved item, return that
-            if (isUnique()) {
-                return NotableManager.getSavedId(this);
-            }
-
-            // If not a saved item, but is a custom item, return the script id
-            else if (isItemscript()) {
-                return getScriptName();
-            }
-        }
-
-        // Else, return the material name
-        return identifyMaterialNoIdentifier();
-    }
-
     public String getFullString() {
-        return "i@" + (isItemscript() ? getScriptName() : getMaterial().realName()) + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
+        return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -900,57 +868,6 @@ public class dItem implements dObject, Notable, Adjustable {
                     return null;
                 }
                 return new Element(notname).getAttribute(attribute.fulfill(1));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <i@item.has_script>
-        // @returns Element(Boolean)
-        // @group scripts
-        // @description
-        // Returns whether the item was created by an item script.
-        // -->
-        registerTag("has_script", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).isItemscript())
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-
-        // <--[tag]
-        // @attribute <i@item.scriptname>
-        // @returns Element
-        // @group scripts
-        // @description
-        // Returns the script name of the item if it was created by an item script.
-        // -->
-        registerTag("scriptname", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                if (((dItem) object).isItemscript()) {
-                    return new Element(((dItem) object).getScriptName())
-                            .getAttribute(attribute.fulfill(1));
-                }
-                return null;
-            }
-        });
-
-        // <--[tag]
-        // @attribute <i@item.script>
-        // @returns dScript
-        // @group scripts
-        // @description
-        // Returns the script of the item if it was created by an item script.
-        // -->
-        registerTag("script", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                if (((dItem) object).isItemscript()) {
-                    return new dScript(((dItem) object).getScriptName())
-                            .getAttribute(attribute.fulfill(1));
-                }
-                return null;
             }
         });
 
