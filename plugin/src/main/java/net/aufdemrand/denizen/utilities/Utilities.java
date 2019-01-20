@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
@@ -33,6 +34,8 @@ import java.util.List;
  * This class has utility methods for various tasks.
  */
 public class Utilities {
+
+    public static final TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
 
     public static boolean canReadFile(File f) {
         if (Settings.allowStupids()) {
