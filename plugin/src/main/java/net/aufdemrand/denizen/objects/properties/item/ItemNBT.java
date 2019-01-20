@@ -126,6 +126,36 @@ public class ItemNBT implements Property {
 
         // <--[mechanism]
         // @object dItem
+        // @name remove_nbt
+        // @input dList
+        // @description
+        // Removes the Denizen NBT keys specified, or all Denizen NBT if no value is given.
+        // @tags
+        // <i@item.has_nbt[<key>]>
+        // <i@item.nbt_keys>
+        // <i@item.nbt[<key>]>
+        // -->
+        if (mechanism.matches("remove_nbt")) {
+            if (item.getMaterial().getMaterial() == Material.AIR) {
+                dB.echoError("Cannot apply NBT to AIR!");
+                return;
+            }
+            ItemStack itemStack = item.getItemStack();
+            List<String> list;
+            if (mechanism.hasValue()) {
+                list = mechanism.getValue().asType(dList.class);
+            }
+            else {
+                list = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
+            }
+            for (String string : list) {
+                itemStack = CustomNBT.removeCustomNBT(itemStack, string, CustomNBT.KEY_DENIZEN);
+            }
+            item.setItemStack(itemStack);
+        }
+
+        // <--[mechanism]
+        // @object dItem
         // @name nbt
         // @input dList
         // @description
