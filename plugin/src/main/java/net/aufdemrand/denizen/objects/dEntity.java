@@ -28,9 +28,7 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.potion.*;
 import org.bukkit.util.Vector;
 
@@ -731,6 +729,18 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     public dInventory getInventory() {
         return hasInventory() ? isCitizensNPC() ? getDenizenNPC().getDenizenInventory()
                 : dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
+    }
+
+    public dList getTradeRecipes() {
+        if (entity instanceof Merchant) {
+            Merchant merchant = (Merchant) entity;
+            ArrayList<dTrade> recipes = new ArrayList<>();
+            for (MerchantRecipe recipe : merchant.getRecipes()) {
+                recipes.add(new dTrade(recipe));
+            }
+            return new dList(recipes);
+        }
+        return null;
     }
 
     public String getName() {
@@ -1640,6 +1650,33 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 attribute.startsWith("iteminoffhand")) {
             return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        if (entity instanceof Merchant) {
+
+            Merchant merchant = (Merchant) entity;
+
+            // <--[tag]
+            // @attribute <e@entity.is_trading>
+            // @returns Element(Boolean)
+            // @description
+            // Returns whether the villager entity is trading.
+            // -->
+            if (attribute.startsWith("is_trading")) {
+                return new Element(merchant.isTrading()).getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
+            // @attribute <e@entity.trading_with>
+            // @returns dPlayer
+            // @description
+            // Returns the player who is trading with the villager entity, or null if it is not trading.
+            // -->
+            if (attribute.startsWith("trading_with")) {
+                if (merchant.getTrader() != null) {
+                    return new dEntity(merchant.getTrader()).getAttribute(attribute.fulfill(1));
+                }
+            }
         }
 
 

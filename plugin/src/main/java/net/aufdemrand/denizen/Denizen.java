@@ -31,6 +31,7 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
 import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
+import net.aufdemrand.denizen.objects.properties.trade.*;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
@@ -227,6 +228,11 @@ import java.util.logging.Logger;
 // |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data
 // |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' dMaterials
 // |   m@random - fetches a random material
+//
+// + ----- dTrade -----+
+// | object notation: trade@    can reference unique objects: no      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   trade@trade - represents a generic, customizable merchant trade to be used with merchant trade properties (See <@link language Merchant Trades>)
 //
 // + ----- dList -------+
 // | object notation: li@  can reference unique objects: yes  can be notable: no
@@ -771,6 +777,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
+            ObjectFetcher.registerWithObjectFetcher(dTrade.class);     // trade@
             ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
             dWorld.registerTags(); // TODO: Automate this once all classes have tag registries
 
@@ -850,6 +857,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 PropertyParser.registerProperty(EntitySpell.class, dEntity.class);
             }
             PropertyParser.registerProperty(EntityTame.class, dEntity.class);
+            PropertyParser.registerProperty(EntityTrades.class, dEntity.class);
             PropertyParser.registerProperty(EntityVisible.class, dEntity.class);
 
             // register core dInventory properties
@@ -891,6 +899,13 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 PropertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
             }
             PropertyParser.registerProperty(ItemUnbreakable.class, dItem.class);
+
+            // register core dTrade properties
+            PropertyParser.registerProperty(TradeHasXp.class, dTrade.class);
+            PropertyParser.registerProperty(TradeInputs.class, dTrade.class);
+            PropertyParser.registerProperty(TradeMaxUses.class, dTrade.class);
+            PropertyParser.registerProperty(TradeResult.class, dTrade.class);
+            PropertyParser.registerProperty(TradeUses.class, dTrade.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1659,6 +1674,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
         else if (comparedto.equalsIgnoreCase("cuboid")) {
             outcome = dCuboid.matches(comparable);
+        }
+        else if (comparedto.equalsIgnoreCase("trade")) {
+            outcome = dTrade.matches(comparable);
         }
         else {
             dB.echoError("Invalid 'matches' type '" + comparedto + "'!");
