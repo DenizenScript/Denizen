@@ -231,7 +231,6 @@ import java.util.logging.Logger;
 //
 // + ----- dTrade -----+
 // | object notation: trade@    can reference unique objects: no      can be notable: no
-// | constructors: ( <>'s represent non-static information and are not literal)
 // |   trade@trade - represents a generic, customizable merchant trade to be used with merchant trade properties (See <@link language Merchant Trades>)
 //
 // + ----- dList -------+
