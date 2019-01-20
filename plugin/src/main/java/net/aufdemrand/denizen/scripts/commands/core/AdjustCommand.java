@@ -66,7 +66,7 @@ public class AdjustCommand extends AbstractCommand {
             dB.echoError("'" + objectString + "' is not an adjustable object type.");
             return object;
         }
-        ((Adjustable) object).adjust(new Mechanism(mechanism, value));
+        ((Adjustable) object).safeAdjust(new Mechanism(mechanism, value, entry.entryData.getTagContext()));
         return object;
     }
 

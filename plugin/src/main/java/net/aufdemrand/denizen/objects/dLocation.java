@@ -19,8 +19,6 @@ import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
@@ -2168,12 +2166,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -2538,8 +2533,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

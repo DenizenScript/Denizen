@@ -16,7 +16,6 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.AbstractMap;
 import java.util.List;
@@ -289,7 +288,7 @@ public class InventoryCommand extends AbstractCommand {
 
                 case ADJUST:
                     dItem toAdjust = new dItem(destination.getInventory().getItem(slotId));
-                    toAdjust.adjust(new Mechanism(mechanism, mechanismValue));
+                    toAdjust.safeAdjust(new Mechanism(mechanism, mechanismValue, scriptEntry.entryData.getTagContext()));
                     destination.getInventory().setItem(slotId, toAdjust.getItemStack());
                     break;
             }

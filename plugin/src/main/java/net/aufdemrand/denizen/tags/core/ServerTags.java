@@ -1444,9 +1444,5 @@ public class ServerTags {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");
             Bukkit.shutdown();
         }
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
     }
 }

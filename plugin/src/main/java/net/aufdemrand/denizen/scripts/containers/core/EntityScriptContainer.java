@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
@@ -74,12 +75,12 @@ public class EntityScriptContainer extends ScriptContainer {
                 throw new Exception("Missing entity_type argument!");
             }
 
+            TagContext context = new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this));
             Set<StringHolder> strings = getConfigurationSection("").getKeys(false);
             for (StringHolder string : strings) {
                 if (!string.low.equals("entity_type") && !string.low.equals("type") && !string.low.equals("debug") && !string.low.equals("custom")) {
-                    String value = TagManager.tag((getString(string.low, "")), new BukkitTagContext
-                            (player, npc, false, null, shouldDebug(), new dScript(this)));
-                    entity.adjust(new Mechanism(new Element(string.low), new Element(value)));
+                    String value = TagManager.tag((getString(string.low, "")), context);
+                    entity.safeAdjust(new Mechanism(new Element(string.low), new Element(value), context));
                 }
             }
 

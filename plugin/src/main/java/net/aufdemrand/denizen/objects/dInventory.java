@@ -17,7 +17,6 @@ import net.aufdemrand.denizencore.objects.aH.Argument;
 import net.aufdemrand.denizencore.objects.aH.PrimitiveType;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -2129,12 +2128,9 @@ public class dInventory implements dObject, Notable, Adjustable {
             return new Element("Inventory").getAttribute(attribute.fulfill(1));
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -2157,27 +2153,20 @@ public class dInventory implements dObject, Notable, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
-        if (inventory instanceof CraftingInventory) {
-            CraftingInventory craftingInventory = (CraftingInventory) inventory;
-
-            // <--[mechanism]
-            // @object dInventory
-            // @name matrix
-            // @input dList(dItem)
-            // @description
-            // Sets the items in the matrix slots of this crafting inventory.
-            // @tags
-            // <in@inventory.matrix>
-            // -->
-            if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
+        // <--[mechanism]
+        // @object dInventory
+        // @name matrix
+        // @input dList(dItem)
+        // @description
+        // Sets the items in the matrix slots of this crafting inventory.
+        // @tags
+        // <in@inventory.matrix>
+        // -->
+        if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
+            if (inventory instanceof CraftingInventory) {
+                CraftingInventory craftingInventory = (CraftingInventory) inventory;
                 List<dItem> items = mechanism.getValue().asType(dList.class).filter(dItem.class);
                 ItemStack[] itemStacks = new ItemStack[9];
                 for (int i = 0; i < 9 && i < items.size(); i++) {
@@ -2186,25 +2175,29 @@ public class dInventory implements dObject, Notable, Adjustable {
                 craftingInventory.setMatrix(itemStacks);
                 ((Player) inventory.getHolder()).updateInventory();
             }
-
-            // <--[mechanism]
-            // @object dInventory
-            // @name result
-            // @input dItem
-            // @description
-            // Sets the item in the result slot of this crafting inventory.
-            // @tags
-            // <in@inventory.result>
-            // -->
-            if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
-                craftingInventory.setResult(mechanism.getValue().asType(dItem.class).getItemStack());
-                ((Player) inventory.getHolder()).updateInventory();
+            else {
+                dB.echoError("Inventory is not a crafting inventory, cannot set matrix.");
             }
         }
 
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
+        // <--[mechanism]
+        // @object dInventory
+        // @name result
+        // @input dItem
+        // @description
+        // Sets the item in the result slot of this crafting inventory.
+        // @tags
+        // <in@inventory.result>
+        // -->
+        if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
+            if (inventory instanceof CraftingInventory) {
+                CraftingInventory craftingInventory = (CraftingInventory) inventory;
+                craftingInventory.setResult(mechanism.getValue().asType(dItem.class).getItemStack());
+                ((Player) inventory.getHolder()).updateInventory();
+            }
+            else {
+                dB.echoError("Inventory is not a crafting inventory, cannot set result.");
+            }
         }
-
     }
 }

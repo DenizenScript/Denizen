@@ -33,7 +33,7 @@ public class BukkitElementProperties implements Property {
         this.element = element;
     }
 
-    public static final String[] handledAttribs = new String[]{
+    public static final String[] handledTags = new String[]{
             "aschunk", "as_chunk", "ascolor", "as_color", "ascuboid", "as_cuboid", "asentity", "as_entity",
             "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
             "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",

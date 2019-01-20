@@ -787,30 +787,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dMaterial._initialize();
 
             // register properties that add Bukkit code to core objects
-            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
-                @Override
-                public Property get(dObject o) {
-                    return BukkitScriptProperties.getFrom(o);
-                }
-            }, dScript.class, "cooled_down", "requirements", "cooldown", "step");
-            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
-                @Override
-                public Property get(dObject o) {
-                    return BukkitQueueProperties.getFrom(o);
-                }
-            }, ScriptQueue.class, "npc", "player");
-            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
-                @Override
-                public Property get(dObject o) {
-                    return BukkitElementProperties.getFrom(o);
-                }
-            }, Element.class, BukkitElementProperties.handledAttribs);
-            PropertyParser.registerProperty(new PropertyParser.PropertyGetter() {
-                @Override
-                public Property get(dObject o) {
-                    return BukkitListProperties.getFrom(o);
-                }
-            }, dList.class, "formatted", "expiration");
+            PropertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
+            PropertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
+            PropertyParser.registerProperty(BukkitElementProperties.class, Element.class);
+            PropertyParser.registerProperty(BukkitListProperties.class, dList.class);
 
             // register core dEntity properties
             PropertyParser.registerProperty(EntityAge.class, dEntity.class);
