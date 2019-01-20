@@ -26,6 +26,12 @@ public class BukkitScriptProperties implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "cooled_down", "cooldown", "step"
+    };
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
 
     private BukkitScriptProperties(dScript script) {
         this.script = script;

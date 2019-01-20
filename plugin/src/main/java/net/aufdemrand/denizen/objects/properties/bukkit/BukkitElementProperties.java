@@ -37,7 +37,11 @@ public class BukkitElementProperties implements Property {
             "aschunk", "as_chunk", "ascolor", "as_color", "ascuboid", "as_cuboid", "asentity", "as_entity",
             "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
             "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",
-            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash"};
+            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash"
+    };
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
 
     Element element;
 
