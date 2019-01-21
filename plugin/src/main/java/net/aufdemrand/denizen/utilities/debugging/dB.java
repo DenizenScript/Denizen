@@ -172,6 +172,9 @@ public class dB {
             return;
         }
         echo(ChatColor.LIGHT_PURPLE + " " + ChatColor.WHITE + trimMessage(message), caller);
+        if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && caller != null) {
+            echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
+        }
     }
 
 
