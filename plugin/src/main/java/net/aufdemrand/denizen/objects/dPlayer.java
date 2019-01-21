@@ -2042,7 +2042,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
+                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
                 try {
                     if (obj instanceof dMaterial) {
                         return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
