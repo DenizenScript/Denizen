@@ -28,10 +28,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
@@ -1561,6 +1558,38 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             return dInventory.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <p@player.selected_trade_index>
+        // @returns Element(Number)
+        // @description
+        // Returns the index of the trade the player is currently viewing, if any.
+        // -->
+        if (attribute.startsWith("selected_trade_index")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+                return new Element(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
+                        .getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // This is almost completely broke and only works if the player has placed items in the trade slots.
+        // [tag]
+        // @attribute <p@player.selected_trade>
+        // @returns dTrade
+        // @description
+        // Returns the trade the player is currently viewing, if any.
+        //
+        /*
+        if (attribute.startsWith("selected_trade")) {
+            Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && playerInventory instanceof MerchantInventory
+                    && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
+                return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
+            }
+        }
+        */
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>

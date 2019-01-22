@@ -28,9 +28,7 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.potion.*;
 import org.bukkit.util.Vector;
 
@@ -1640,6 +1638,32 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 attribute.startsWith("iteminoffhand")) {
             return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_trading>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the villager entity is trading.
+        // -->
+        if (attribute.startsWith("is_trading")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
+                return new Element(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.trading_with>
+        // @returns dPlayer
+        // @description
+        // Returns the player who is trading with the villager entity, or null if it is not trading.
+        // -->
+        if (attribute.startsWith("trading_with")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && entity instanceof Merchant
+                    && ((Merchant) entity).getTrader() != null) {
+                return new dEntity(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
+            }
         }
 
 
