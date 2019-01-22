@@ -1580,14 +1580,16 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns the trade the player is currently viewing, if any.
         //
+        /*
         if (attribute.startsWith("selected_trade")) {
             Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
                     && playerInventory instanceof MerchantInventory
                     && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
-                    return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
+                return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
             }
         }
+        */
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>
