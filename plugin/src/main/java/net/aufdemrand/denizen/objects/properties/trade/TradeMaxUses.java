@@ -20,6 +20,14 @@ public class TradeMaxUses implements Property {
         return new TradeMaxUses((dTrade) recipe);
     }
 
+    public static final String[] handledTags = new String[]{
+            "max_uses"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "max_uses"
+    };
+
     private dTrade recipe;
 
     public TradeMaxUses(dTrade recipe) {

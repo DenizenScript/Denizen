@@ -26,6 +26,14 @@ public class TradeInputs implements Property {
         return new TradeInputs((dTrade) recipe);
     }
 
+    public static final String[] handledTags = new String[]{
+            "inputs"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "inputs"
+    };
+
     private dTrade recipe;
 
     public TradeInputs(dTrade recipe) {
@@ -84,14 +92,14 @@ public class TradeInputs implements Property {
         // -->
         if (mechanism.matches("inputs")) {
             List<ItemStack> ingredients = new ArrayList<>();
-            dList list = mechanism.getValue().asType(dList.class);
+            List<dItem> list = mechanism.getValue().asType(dList.class).filter(dItem.class);
 
-            if (!mechanism.hasValue() || list.filter(dItem.class).isEmpty()) {
+            if (!mechanism.hasValue() || list.isEmpty()) {
                 recipe.getRecipe().setIngredients(ingredients);
                 return;
             }
 
-            for (dItem item : list.filter(dItem.class)) {
+            for (dItem item : list) {
                 ingredients.add(item.getItemStack());
             }
 

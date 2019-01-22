@@ -731,18 +731,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 : dInventory.mirrorBukkitInventory(getBukkitInventory()) : null;
     }
 
-    public dList getTradeRecipes() {
-        if (entity instanceof Merchant) {
-            Merchant merchant = (Merchant) entity;
-            ArrayList<dTrade> recipes = new ArrayList<>();
-            for (MerchantRecipe recipe : merchant.getRecipes()) {
-                recipes.add(new dTrade(recipe));
-            }
-            return new dList(recipes);
-        }
-        return null;
-    }
-
     public String getName() {
         if (isCitizensNPC()) {
             return getDenizenNPC().getCitizen().getName();
@@ -1652,30 +1640,30 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
-
-            Merchant merchant = (Merchant) entity;
-
-            // <--[tag]
-            // @attribute <e@entity.is_trading>
-            // @returns Element(Boolean)
-            // @description
-            // Returns whether the villager entity is trading.
-            // -->
-            if (attribute.startsWith("is_trading")) {
-                return new Element(merchant.isTrading()).getAttribute(attribute.fulfill(1));
+        // <--[tag]
+        // @attribute <e@entity.is_trading>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the villager entity is trading.
+        // -->
+        if (attribute.startsWith("is_trading")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
+                return new Element(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
             }
+        }
 
-            // <--[tag]
-            // @attribute <e@entity.trading_with>
-            // @returns dPlayer
-            // @description
-            // Returns the player who is trading with the villager entity, or null if it is not trading.
-            // -->
-            if (attribute.startsWith("trading_with")) {
-                if (merchant.getTrader() != null) {
-                    return new dEntity(merchant.getTrader()).getAttribute(attribute.fulfill(1));
-                }
+        // <--[tag]
+        // @attribute <e@entity.trading_with>
+        // @returns dPlayer
+        // @description
+        // Returns the player who is trading with the villager entity, or null if it is not trading.
+        // -->
+        if (attribute.startsWith("trading_with")) {
+            Merchant merchant = (Merchant) entity;
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && entity instanceof Merchant
+                    && merchant.getTrader() != null) {
+                return new dEntity(merchant.getTrader()).getAttribute(attribute.fulfill(1));
             }
         }
 

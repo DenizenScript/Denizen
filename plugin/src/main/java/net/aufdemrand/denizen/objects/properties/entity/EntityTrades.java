@@ -26,6 +26,25 @@ public class EntityTrades implements Property {
         return new EntityTrades((dEntity) entity);
     }
 
+    public static final String[] handledTags = new String[]{
+            "trades"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "trades"
+    };
+
+    public dList getTradeRecipes() {
+        if (entity.getBukkitEntity() instanceof Merchant) {
+            ArrayList<dTrade> recipes = new ArrayList<>();
+            for (MerchantRecipe recipe : ((Merchant) entity.getBukkitEntity()).getRecipes()) {
+                recipes.add(new dTrade(recipe));
+            }
+            return new dList(recipes);
+        }
+        return null;
+    }
+
     private dEntity entity;
 
     public EntityTrades(dEntity entity) {
@@ -36,7 +55,7 @@ public class EntityTrades implements Property {
         if (((Merchant) entity.getBukkitEntity()).getRecipes() == null) {
             return null;
         }
-        return entity.getTradeRecipes().identify();
+        return getTradeRecipes().identify();
     }
 
     public String getPropertyId() {
@@ -56,7 +75,7 @@ public class EntityTrades implements Property {
         // Returns a list of the Villager's trade recipes.
         // -->
         if (attribute.startsWith("trades")) {
-            return entity.getTradeRecipes().getAttribute(attribute.fulfill(1));
+            return getTradeRecipes().getAttribute(attribute.fulfill(1));
         }
 
         return null;

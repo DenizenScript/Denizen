@@ -141,11 +141,9 @@ public class dTrade implements dObject, Adjustable {
             return null;
         }
 
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -156,12 +154,7 @@ public class dTrade implements dObject, Adjustable {
     }
 
     public void adjust(Mechanism mechanism) {
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         if (!mechanism.fulfilled()) {
             mechanism.reportInvalid();

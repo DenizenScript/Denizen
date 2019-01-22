@@ -6,7 +6,6 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
@@ -22,6 +21,14 @@ public class TradeResult implements Property {
         }
         return new TradeResult((dTrade) recipe);
     }
+
+    public static final String[] handledTags = new String[]{
+            "result"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "result"
+    };
 
     private dTrade recipe;
 

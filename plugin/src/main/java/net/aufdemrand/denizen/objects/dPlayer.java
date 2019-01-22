@@ -1559,32 +1559,33 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
-                && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
-
-            MerchantInventory merchantInventory = (MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory();
-
-            // <--[tag]
-            // @attribute <p@player.selected_trade_index>
-            // @returns Element(Number)
-            // @description
-            // Returns the index of the trade the player is currently viewing, if any.
-            // -->
-            if (attribute.startsWith("selected_trade_index")) {
-                return new Element(merchantInventory.getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
+        // <--[tag]
+        // @attribute <p@player.selected_trade_index>
+        // @returns Element(Number)
+        // @description
+        // Returns the index of the trade the player is currently viewing, if any.
+        // -->
+        if (attribute.startsWith("selected_trade_index")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+                return new Element(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
+                        .getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
             }
+        }
 
-            // This is almost completely broke and only works if the player has placed items in the trade slots.
-            // [tag]
-            // @attribute <p@player.selected_trade>
-            // @returns dTrade
-            // @description
-            // Returns the trade the player is currently viewing, if any.
-            //
-            if (attribute.startsWith("selected_trade")) {
-                if (merchantInventory.getSelectedRecipe() != null) {
-                    return new dTrade(merchantInventory.getSelectedRecipe()).getAttribute(attribute.fulfill(1));
-                }
+        // This is almost completely broke and only works if the player has placed items in the trade slots.
+        // [tag]
+        // @attribute <p@player.selected_trade>
+        // @returns dTrade
+        // @description
+        // Returns the trade the player is currently viewing, if any.
+        //
+        if (attribute.startsWith("selected_trade")) {
+            Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && playerInventory instanceof MerchantInventory
+                    && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
+                    return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
             }
         }
 
