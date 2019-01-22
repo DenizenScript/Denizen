@@ -1659,11 +1659,10 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns the player who is trading with the villager entity, or null if it is not trading.
         // -->
         if (attribute.startsWith("trading_with")) {
-            Merchant merchant = (Merchant) entity;
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
                     && entity instanceof Merchant
-                    && merchant.getTrader() != null) {
-                return new dEntity(merchant.getTrader()).getAttribute(attribute.fulfill(1));
+                    && ((Merchant) entity).getTrader() != null) {
+                return new dEntity(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
             }
         }
 
