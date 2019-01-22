@@ -24,6 +24,15 @@ public class EntityPowered implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "powered"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "powered"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

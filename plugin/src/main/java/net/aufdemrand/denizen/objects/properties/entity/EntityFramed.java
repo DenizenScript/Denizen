@@ -31,6 +31,14 @@ public class EntityFramed implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "framed_item_rotation", "framed_item", "has_framed_item"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "framed"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

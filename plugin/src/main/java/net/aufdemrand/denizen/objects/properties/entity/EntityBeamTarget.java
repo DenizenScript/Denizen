@@ -25,6 +25,15 @@ public class EntityBeamTarget implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "beam_target"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "beam_target"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

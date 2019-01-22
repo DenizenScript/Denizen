@@ -22,6 +22,15 @@ public class EntityInvulnerable implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "invulnerable"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "invulnerable"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

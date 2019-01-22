@@ -24,6 +24,15 @@ public class EntityChestCarrier implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "carries_chest"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "carries_chest"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

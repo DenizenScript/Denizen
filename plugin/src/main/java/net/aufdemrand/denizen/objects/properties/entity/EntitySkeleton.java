@@ -26,6 +26,15 @@ public class EntitySkeleton implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "skeleton_type"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "skeleton"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

@@ -36,6 +36,15 @@ public class EntityPotionEffects implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "list_effects", "has_effect"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "potion_effects"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

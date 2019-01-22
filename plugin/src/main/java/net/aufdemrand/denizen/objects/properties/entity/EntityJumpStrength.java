@@ -26,6 +26,14 @@ public class EntityJumpStrength implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "jump_strength"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "jump_strength"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

@@ -32,6 +32,15 @@ public class EntityBoundingBox implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "bounding_box"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "bounding_box"
+    };
+
+
     private static Set<UUID> modifiedBoxes = new HashSet<UUID>();
 
     public static void remove(UUID uuid) {

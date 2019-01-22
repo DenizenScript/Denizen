@@ -24,6 +24,15 @@ public class EntityCritical implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "critical"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "critical"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

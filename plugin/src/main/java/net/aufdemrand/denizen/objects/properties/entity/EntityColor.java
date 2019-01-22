@@ -43,6 +43,14 @@ public class EntityColor implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "color"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "color"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

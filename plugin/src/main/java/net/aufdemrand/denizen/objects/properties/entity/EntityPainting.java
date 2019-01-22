@@ -25,6 +25,15 @@ public class EntityPainting implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "painting_width", "painting_height", "painting"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "painting"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

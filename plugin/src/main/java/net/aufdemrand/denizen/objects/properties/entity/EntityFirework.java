@@ -28,6 +28,15 @@ public class EntityFirework implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "firework_item"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "firework_item", "detonate"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

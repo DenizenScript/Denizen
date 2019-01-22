@@ -25,6 +25,15 @@ public class EntityBoatType implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "boat_type"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "boat_type"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////
