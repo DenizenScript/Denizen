@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
@@ -11,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 
 public class dTrade implements dObject, Adjustable {
@@ -68,7 +69,7 @@ public class dTrade implements dObject, Adjustable {
         string = CoreUtilities.toLowerCase(string).replace("trade@", "");
         if (string.toLowerCase().matches("trade")) {
             MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.AIR), 0);
-            recipe.addIngredient(new ItemStack(Material.AIR));
+            recipe.setIngredients(new ArrayList<>(Arrays.asList(new ItemStack(Material.AIR))));
             return new dTrade(recipe);
         }
         return null;
