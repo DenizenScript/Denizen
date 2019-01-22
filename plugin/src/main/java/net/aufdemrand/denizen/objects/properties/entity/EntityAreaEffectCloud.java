@@ -33,6 +33,17 @@ public class EntityAreaEffectCloud implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "base_potion", "particle", "duration", "radius", "reapplication_delay", "wait_time",
+            "has_custom_effect", "source", "custom_effects"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "clear_custom_effects", "remove_custom_effect", "custom_effects", "particle_color",
+            "base_potion", "duration", "duration_on_use", "particle", "radius", "radius_on_use",
+            "radius_per_tick", "reapplication_delay", "source", "wait_time"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

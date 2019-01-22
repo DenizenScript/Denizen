@@ -27,6 +27,15 @@ public class EntitySitting implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "sitting"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "sitting"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

@@ -26,6 +26,15 @@ public class EntityAngry implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "angry"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "angry"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

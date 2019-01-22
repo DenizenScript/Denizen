@@ -25,6 +25,14 @@ public class EntitySmall implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "is_small"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "is_small"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

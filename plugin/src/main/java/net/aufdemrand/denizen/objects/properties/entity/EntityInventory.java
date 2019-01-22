@@ -27,6 +27,14 @@ public class EntityInventory implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "inventory"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "inventory_contents"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

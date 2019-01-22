@@ -30,6 +30,15 @@ public class EntityDisabledSlots implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "disabled_slots"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "disabled_slots_raw", "disabled_slots"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

@@ -24,6 +24,15 @@ public class EntityMarker implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "marker"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "marker"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

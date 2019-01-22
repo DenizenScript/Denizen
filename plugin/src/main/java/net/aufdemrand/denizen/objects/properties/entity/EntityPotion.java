@@ -29,6 +29,14 @@ public class EntityPotion implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "potion"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "potion"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

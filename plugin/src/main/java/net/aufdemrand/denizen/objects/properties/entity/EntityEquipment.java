@@ -27,6 +27,14 @@ public class EntityEquipment implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "equipment"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "equipment"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

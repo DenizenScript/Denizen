@@ -29,6 +29,14 @@ public class EntityTame implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "is_tamed", "get_owner"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "tame", "owner"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

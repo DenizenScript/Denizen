@@ -31,6 +31,14 @@ public class EntityArmorPose implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "armor_pose_list", "armor_pose"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "armor_pose"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

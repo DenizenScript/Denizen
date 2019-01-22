@@ -28,6 +28,14 @@ public class EntityVisible implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "visible"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "visible"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

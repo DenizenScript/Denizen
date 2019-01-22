@@ -29,6 +29,14 @@ public class EntitySize implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "size"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "size"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

@@ -29,6 +29,15 @@ public class EntityItem implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "item"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "item"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////
