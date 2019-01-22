@@ -155,9 +155,5 @@ public class dTrade implements dObject, Adjustable {
 
     public void adjust(Mechanism mechanism) {
         CoreUtilities.autoPropertyMechanism(this, mechanism);
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
     }
 }
