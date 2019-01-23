@@ -82,10 +82,8 @@ public class FakeItemCommand extends AbstractCommand {
         final Element player_only = scriptEntry.getElement("player_only");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             dB.report(scriptEntry, getName(), aH.debugList("items", items) + elSlot.debug() + duration.debug()
                     + aH.debugList("players", players) + player_only.debug());
-
         }
 
         int slot = SlotHelper.nameToIndex(elSlot.asString());
@@ -117,8 +115,8 @@ public class FakeItemCommand extends AbstractCommand {
                     public void run() {
                         for (dPlayer player : players) {
                             Player ent = player.getPlayerEntity();
-                            ItemStack original = ent.getOpenInventory().getItem(translateSlot(ent, slotSnapshot, playerOnly));
-                            packetHelper.setSlot(ent, slotSnapshot, original, playerOnly);
+                            ItemStack original = ent.getOpenInventory().getItem(slotSnapshot);
+                            packetHelper.setSlot(ent, translateSlot(ent, slotSnapshot, playerOnly), original, playerOnly);
                         }
                     }
                 }, (float) duration.getSeconds()));
@@ -127,6 +125,7 @@ public class FakeItemCommand extends AbstractCommand {
     }
 
     static int translateSlot(Player player, int slot, boolean player_only) {
+        // This is (probably?) a server-slot-order to network-slot-order translation
         if (slot < 0) {
             return 0;
         }
@@ -144,6 +143,6 @@ public class FakeItemCommand extends AbstractCommand {
         if (slot > total) {
             return total;
         }
-        return (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9))));
+        return (int) (slot + (total - 9) - (9 * (2 * Math.floor(slot / 9.0))));
     }
 }
