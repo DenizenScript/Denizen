@@ -144,7 +144,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
         }
 
-        if (!scriptEntry.hasObject("script") && !scriptEntry.hasObject("local")) {
+        if (!scriptEntry.hasObject("script") && (!scriptEntry.hasObject("local") || scriptEntry.getScript() == null)) {
             throw new InvalidArgumentsException("Must define a SCRIPT to be run.");
         }
 
