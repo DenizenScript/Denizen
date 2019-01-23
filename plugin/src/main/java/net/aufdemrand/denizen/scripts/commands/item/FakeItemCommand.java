@@ -115,8 +115,9 @@ public class FakeItemCommand extends AbstractCommand {
                     public void run() {
                         for (dPlayer player : players) {
                             Player ent = player.getPlayerEntity();
-                            ItemStack original = ent.getOpenInventory().getItem(slotSnapshot);
-                            packetHelper.setSlot(ent, translateSlot(ent, slotSnapshot, playerOnly), original, playerOnly);
+                            int translated = translateSlot(ent, slotSnapshot, playerOnly);
+                            ItemStack original = ent.getOpenInventory().getItem(translated);
+                            packetHelper.setSlot(ent, translated, original, playerOnly);
                         }
                     }
                 }, (float) duration.getSeconds()));
@@ -125,7 +126,7 @@ public class FakeItemCommand extends AbstractCommand {
     }
 
     static int translateSlot(Player player, int slot, boolean player_only) {
-        // This is (probably?) a server-slot-order to network-slot-order translation
+        // This is (probably?) a translation from standard player inventory slots to ones that work with the full crafting inventory system
         if (slot < 0) {
             return 0;
         }
