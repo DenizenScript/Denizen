@@ -24,6 +24,14 @@ public class ItemApple implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "apple_enchanted"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "apple_enchanted"
+    };
+
 
     private ItemApple(dItem _item) {
         item = _item;

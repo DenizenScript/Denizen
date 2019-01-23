@@ -37,6 +37,15 @@ public class ItemColor implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "color", "dye_color"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "color", "dye_color", "dye"
+    };
+
+
     private ItemColor(dItem _item) {
         item = _item;
     }

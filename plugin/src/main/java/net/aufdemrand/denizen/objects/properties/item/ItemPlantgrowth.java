@@ -37,6 +37,14 @@ public class ItemPlantgrowth implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "plant_growth"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "plant_growth"
+    };
+
 
     private ItemPlantgrowth(dItem _item) {
         item = _item;

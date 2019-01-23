@@ -41,6 +41,14 @@ public class ItemPatterns implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "patterns"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "patterns"
+    };
+
 
     private ItemPatterns(dItem item) {
         this.item = item;

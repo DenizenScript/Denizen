@@ -32,6 +32,15 @@ public class ItemSkullskin implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "skin", "has_skin"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "skull_skin"
+    };
+
+
 
     private ItemSkullskin(dItem _item) {
         item = _item;

@@ -24,6 +24,15 @@ public class ItemUnbreakable implements Property {
         return new ItemUnbreakable((dItem) object);
     }
 
+    public static final String[] handledTags = new String[]{
+            "unbreakable"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "unbreakable"
+    };
+
+
     private ItemUnbreakable(dItem item) {
         this.item = item;
     }

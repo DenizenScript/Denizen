@@ -31,6 +31,15 @@ public class ItemLore implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "lore", "has_lore"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "lore"
+    };
+
+
     public boolean hasLore() {
         return item.getItemStack().hasItemMeta()
                 && (item.getItemStack().getItemMeta().hasLore());

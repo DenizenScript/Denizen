@@ -25,6 +25,15 @@ public class ItemDisplayname implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "display", "has_display"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "display_name"
+    };
+
+
     private ItemDisplayname(dItem _item) {
         item = _item;
     }

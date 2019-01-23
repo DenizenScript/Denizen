@@ -23,6 +23,15 @@ public class ItemScript implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "has_script", "scriptname", "script"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "script"
+    };
+
+
     private ItemScript(dItem _item) {
         item = _item;
     }

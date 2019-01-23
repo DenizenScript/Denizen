@@ -29,6 +29,15 @@ public class ItemNBT implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "has_nbt", "nbt_keys", "nbt"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "remove_nbt", "nbt"
+    };
+
+
     private ItemNBT(dItem item) {
         this.item = item;
     }
