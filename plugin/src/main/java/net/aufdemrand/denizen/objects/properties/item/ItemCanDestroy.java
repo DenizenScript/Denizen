@@ -30,6 +30,15 @@ public class ItemCanDestroy implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "can_destroy"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "can_destroy"
+    };
+
+
     private ItemCanDestroy(dItem item) {
         this.item = item;
     }

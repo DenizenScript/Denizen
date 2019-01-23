@@ -23,6 +23,14 @@ public class ItemDurability implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "durability", "max_durability"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "durability"
+    };
+
 
     private ItemDurability(dItem _item) {
         item = _item;

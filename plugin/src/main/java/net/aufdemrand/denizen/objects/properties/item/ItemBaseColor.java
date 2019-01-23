@@ -34,6 +34,14 @@ public class ItemBaseColor implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "base_color"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "base_color"
+    };
+
 
     private ItemBaseColor(dItem item) {
         this.item = item;

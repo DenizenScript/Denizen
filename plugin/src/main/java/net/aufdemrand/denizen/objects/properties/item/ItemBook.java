@@ -32,6 +32,14 @@ public class ItemBook implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "book"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "book"
+    };
+
 
     private ItemBook(dItem _item) {
         item = _item;

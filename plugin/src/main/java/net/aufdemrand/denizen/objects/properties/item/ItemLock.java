@@ -28,6 +28,15 @@ public class ItemLock implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "lock", "is_locked"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "lock"
+    };
+
+
     private String getItemLock() {
         return ((Lockable) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLock();
     }

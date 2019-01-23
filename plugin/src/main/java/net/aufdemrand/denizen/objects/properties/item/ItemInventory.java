@@ -29,6 +29,15 @@ public class ItemInventory implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "inventory"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "inventory"
+    };
+
+
     private dInventory getItemInventory() {
         return dInventory.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }

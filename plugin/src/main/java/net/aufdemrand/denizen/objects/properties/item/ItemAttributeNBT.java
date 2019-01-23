@@ -33,6 +33,14 @@ public class ItemAttributeNBT implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "nbt_attributes"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "nbt_attributes"
+    };
+
     private ItemAttributeNBT(dItem item) {
         this.item = item;
     }

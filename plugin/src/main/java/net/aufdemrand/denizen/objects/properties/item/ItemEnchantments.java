@@ -31,6 +31,14 @@ public class ItemEnchantments implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "is_enchanted", "enchantments"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "remove_enchantments", "enchantments"
+    };
+
 
     private ItemEnchantments(dItem _item) {
         item = _item;

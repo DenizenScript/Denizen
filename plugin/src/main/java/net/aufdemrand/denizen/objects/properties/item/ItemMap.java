@@ -29,6 +29,14 @@ public class ItemMap implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "map"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "map"
+    };
+
 
     private ItemMap(dItem _item) {
         item = _item;

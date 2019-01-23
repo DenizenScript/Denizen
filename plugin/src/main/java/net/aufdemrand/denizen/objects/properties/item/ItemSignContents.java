@@ -31,6 +31,15 @@ public class ItemSignContents implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "sign_contents"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "sign_contents"
+    };
+
+
     private dList getSignContents() {
         return new dList(Arrays.asList(((Sign) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getLines()));
     }

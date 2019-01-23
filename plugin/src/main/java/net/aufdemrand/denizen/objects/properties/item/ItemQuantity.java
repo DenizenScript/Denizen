@@ -23,6 +23,14 @@ public class ItemQuantity implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "quantity", "qty", "max_stack"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "quantity"
+    };
+
 
     private ItemQuantity(dItem _item) {
         item = _item;

@@ -30,6 +30,15 @@ public class ItemCanPlaceOn implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "can_place_on"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "can_place_on"
+    };
+
+
     private ItemCanPlaceOn(dItem item) {
         this.item = item;
     }

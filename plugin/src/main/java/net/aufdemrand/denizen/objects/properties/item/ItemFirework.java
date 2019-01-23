@@ -34,6 +34,14 @@ public class ItemFirework implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[]{
+            "firework"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "firework"
+    };
+
 
     private ItemFirework(dItem _item) {
         item = _item;
