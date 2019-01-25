@@ -216,7 +216,9 @@ public class ItemEnchantments implements Property {
             }
             else {
                 for (Enchantment ench : item.getItemStack().getEnchantments().keySet()) {
-                    item.getItemStack().removeEnchantment(ench);
+                    if (names == null || names.contains(CoreUtilities.toLowerCase(ench.getName()))) {
+                        item.getItemStack().removeEnchantment(ench);
+                    }
                 }
             }
         }
