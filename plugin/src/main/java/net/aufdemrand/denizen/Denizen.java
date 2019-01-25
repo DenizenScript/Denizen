@@ -70,6 +70,7 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.scripts.commands.core.AdjustCommand;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagContext;
@@ -563,6 +564,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
+            AdjustCommand.specialAdjustables.put("server", ServerTags::adjustServer);
+
             tagManager().registerCoreTags();
 
             new CuboidTags(this);
