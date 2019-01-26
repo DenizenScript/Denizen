@@ -37,11 +37,7 @@ import net.aufdemrand.denizen.scripts.containers.core.*;
 import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.MetricsLite;
-import net.aufdemrand.denizen.utilities.RuntimeCompiler;
-import net.aufdemrand.denizen.utilities.ScoreboardHelper;
-import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
@@ -404,12 +400,20 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(e);
         }
 
+        // mcstats.org
         try {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         }
         catch (Exception e) {
             dB.echoError(e);
+        }
+        // bstats.org
+        try {
+            BStatsMetricsLite metrics = new BStatsMetricsLite(this);
+        }
+        catch (Throwable e) {
+            e.printStackTrace();
         }
 
         try {
