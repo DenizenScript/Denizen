@@ -118,7 +118,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             block.setType(Material.AIR);
 
             for (dItem newItem : dList.valueOf(determination).filter(dItem.class)) {
-                block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), newItem.getItemStack()); // Drop each item
+                block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }
         else {
