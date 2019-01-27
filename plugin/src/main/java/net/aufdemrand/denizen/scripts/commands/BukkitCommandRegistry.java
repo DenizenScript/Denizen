@@ -317,6 +317,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // can also utilize a format script with the 'format' argument. See the format script-container
         // for more information.
         //
+        // Note that the default announce mode (that shows for all players) relies on the Bukkit broadcast
+        // system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
+        //
         // @Tags
         // None
         //
@@ -517,7 +520,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - repeat 10:
         //   - blockcrack l@12,43,20,world progress:<def[value]> stack
         // -->
-        registerCoreMember(BlockCrack.class,
+        registerCoreMember(BlockCrackCommand.class,
                 "BLOCKCRACK", "blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)", 2);
 
 
