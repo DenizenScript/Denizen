@@ -2137,6 +2137,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <p@player.weather>
         // @returns Element
+        // @mechanism dPlayer.weather
         // @description
         // Returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if
