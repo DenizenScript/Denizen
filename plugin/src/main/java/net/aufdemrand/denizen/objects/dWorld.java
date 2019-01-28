@@ -717,6 +717,7 @@ public class dWorld implements dObject, Adjustable {
         // @returns Element(Boolean)
         // @description
         // Returns whether there is currently a storm in this world.
+        // ie, whether it is raining. To check for thunder, use <@link tag w@world.thundering>.
         // -->
         registerTag("has_storm", new TagRunnable() {
             @Override
