@@ -45,6 +45,10 @@ public class ToastCommand extends AbstractCommand {
                     && arg.matchesEnum(Advancement.Frame.values())) {
                 scriptEntry.addObject("frame", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("background")
+                    && arg.matchesOnePrefix("background")) {
+                scriptEntry.addObject("background", arg.asElement());
+            }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(arg.raw_value));
             }
@@ -69,26 +73,35 @@ public class ToastCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("icon", new dItem(Material.AIR));
         scriptEntry.defaultObject("frame", new Element("TASK"));
-
+        scriptEntry.defaultObject("background", new Element("textures/gui/advancements/backgrounds/adventure.png"));
     }
-
-    private static final NamespacedKey DEFAULT_BACKGROUND = NamespacedKey.minecraft("textures/gui/advancements/backgrounds/adventure.png");
 
     @SuppressWarnings("unchecked")
     @Override
     public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
         Element text = scriptEntry.getElement("text");
         Element frame = scriptEntry.getElement("frame");
+        Element background = scriptEntry.getElement("background");
         dItem icon = scriptEntry.getdObject("icon");
         final List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
 
         if (scriptEntry.dbCallShouldDebug()) {
-            dB.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug() + aH.debugList("targets", targets));
+            dB.report(scriptEntry, name, text.debug() + frame.debug() + icon.debug()
+                    + background.debug() + aH.debugList("targets", targets));
+        }
+
+        NamespacedKey backgroundKey;
+        int index = background.asString().indexOf(':');
+        if (index == -1) {
+            backgroundKey = NamespacedKey.minecraft(background.asString());
+        }
+        else {
+            backgroundKey = new NamespacedKey(background.asString().substring(0, index), background.asString().substring(index + 1));
         }
 
         final Advancement advancement = new Advancement(true,
                 new NamespacedKey(DenizenAPI.getCurrentInstance(), UUID.randomUUID().toString()), null,
-                icon.getItemStack(), text.asString(), "", DEFAULT_BACKGROUND,
+                icon.getItemStack(), text.asString(), "", backgroundKey,
                 Advancement.Frame.valueOf(frame.asString().toUpperCase()), true, false, true, 0, 0);
 
         final AdvancementHelper advancementHelper = NMSHandler.getInstance().getAdvancementHelper();
