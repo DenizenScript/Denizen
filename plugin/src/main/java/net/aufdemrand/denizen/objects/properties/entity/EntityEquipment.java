@@ -179,7 +179,7 @@ public class EntityEquipment implements Property {
             dList list = dList.valueOf(mechanism.getValue().asString());
             ItemStack[] stacks = new ItemStack[list.size()];
             for (int i = 0; i < list.size(); i++) {
-                stacks[i] = dItem.valueOf(list.get(i)).getItemStack();
+                stacks[i] = dItem.valueOf(list.get(i), mechanism.context).getItemStack();
             }
             entity.getLivingEntity().getEquipment().setArmorContents(stacks);
         }

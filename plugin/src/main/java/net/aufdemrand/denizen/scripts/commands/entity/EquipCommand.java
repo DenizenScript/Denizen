@@ -41,36 +41,36 @@ public class EquipCommand extends AbstractCommand {
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("head", "helmet")) {
-                equipment.put("head", dItem.valueOf(arg.getValue()));
+                equipment.put("head", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("chest", "chestplate")) {
-                equipment.put("chest", dItem.valueOf(arg.getValue()));
+                equipment.put("chest", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("legs", "leggings")) {
-                equipment.put("legs", dItem.valueOf(arg.getValue()));
+                equipment.put("legs", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("boots", "feet")) {
-                equipment.put("boots", dItem.valueOf(arg.getValue()));
+                equipment.put("boots", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("saddle")) {
-                equipment.put("saddle", dItem.valueOf(arg.getValue()));
+                equipment.put("saddle", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("horse_armor", "horse_armour")) {
-                equipment.put("horse_armor", dItem.valueOf(arg.getValue()));
+                equipment.put("horse_armor", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matchesArgumentType(dItem.class)
                     && arg.matchesPrefix("offhand")) {
-                equipment.put("offhand", dItem.valueOf(arg.getValue()));
+                equipment.put("offhand", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
 
             // Default to item in hand if no prefix is used
             else if (arg.matchesArgumentType(dItem.class)) {
-                equipment.put("hand", dItem.valueOf(arg.getValue()));
+                equipment.put("hand", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
             else if (arg.matches("player") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
                 // Player arg for compatibility with old scripts

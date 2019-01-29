@@ -16,10 +16,12 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -52,7 +54,7 @@ public class dItem implements dObject, Notable, Adjustable {
 
 
     public static dItem valueOf(String string) {
-        return valueOf(string, null);
+        return valueOf(string, null, null);
     }
 
     @Fetchable("i")
@@ -66,6 +68,20 @@ public class dItem implements dObject, Notable, Adjustable {
             nope = false;
             return tmp;
         }
+    }
+
+    public static dItem valueOf(String string, Debuggable debugMe) {
+        nope = debugMe != null && !debugMe.shouldDebug();
+        dItem tmp = valueOf(string, null, null);
+        nope = false;
+        return tmp;
+    }
+
+    public static dItem valueOf(String string, boolean debugMe) {
+        nope = !debugMe;
+        dItem tmp = valueOf(string, null, null);
+        nope = false;
+        return tmp;
     }
 
     /**
@@ -215,7 +231,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // TODO: Make this better. Probably creating some unnecessary
         // objects by doing this :(
         nope = true;
-        if (valueOf(arg) != null) {
+        if (valueOf(arg, null, null) != null) {
             nope = false;
             return true;
         }

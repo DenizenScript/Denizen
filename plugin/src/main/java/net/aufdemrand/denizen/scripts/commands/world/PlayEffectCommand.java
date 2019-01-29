@@ -99,7 +99,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 else if (arg.startsWith("iconcrack_")) {
                     // Allow iconcrack_[item] for item break effects (ex: iconcrack_stone)
                     String shrunk = arg.getValue().substring("iconcrack_".length());
-                    dItem item = dItem.valueOf(shrunk);
+                    dItem item = dItem.valueOf(shrunk, scriptEntry.entryData.getTagContext());
                     if (item != null) {
                         scriptEntry.addObject("iconcrack", item);
                     }

@@ -74,7 +74,7 @@ public class ItemScriptHelper implements Listener {
                 String[] elements = recipeRow.split("\\|", 3);
 
                 for (String element : elements) {
-                    dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                    dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
                     if (ingredient == null) {
                         dB.echoError("Invalid dItem ingredient, recipe will not be registered for item script '"
                                 + container.getName() + "': " + element);
@@ -104,7 +104,7 @@ public class ItemScriptHelper implements Listener {
 
             boolean shouldRegister = true;
             for (String element : dList.valueOf(list)) {
-                dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""));
+                dItem ingredient = dItem.valueOf(element.replaceAll("[iImM]@", ""), container);
                 if (ingredient == null) {
                     dB.echoError("Invalid dItem ingredient, shapeless recipe will not be registered for item script '"
                             + container.getName() + "': " + element);
@@ -120,7 +120,7 @@ public class ItemScriptHelper implements Listener {
 
         for (Map.Entry<ItemScriptContainer, String> entry : furnace_to_register.entrySet()) {
 
-            dItem furnace_item = dItem.valueOf(entry.getValue());
+            dItem furnace_item = dItem.valueOf(entry.getValue(), entry.getKey());
             if (furnace_item == null) {
                 dB.echoError("Invalid item '" + entry.getValue() + "'");
                 continue;
@@ -143,7 +143,7 @@ public class ItemScriptHelper implements Listener {
             ItemScriptContainer isc = getItemScriptContainer(event.getResult());
             String inp = currentFurnaceRecipes.get(isc);
             if (inp != null) {
-                dItem itm = dItem.valueOf(inp);
+                dItem itm = dItem.valueOf(inp, isc);
                 if (itm != null) {
                     itm.setAmount(1);
                     dItem src = new dItem(event.getSource().clone());

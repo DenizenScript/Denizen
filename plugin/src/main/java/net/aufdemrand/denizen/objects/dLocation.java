@@ -766,7 +766,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("drops")) {
             Collection<ItemStack> its;
             if (attribute.hasContext(1)) {
-                dItem item = dItem.valueOf(attribute.getContext(1));
+                dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
                 its = getBlock().getDrops(item.getItemStack());
             }
             else {

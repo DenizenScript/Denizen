@@ -109,13 +109,13 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("result:")) {
             String ditem = determination.substring("result:".length());
-            item = dItem.valueOf(ditem);
+            item = dItem.valueOf(ditem, container);
             itemEdited = true;
             return true;
         }
         else if (CoreUtilities.toLowerCase(determination).startsWith("enchants:")) {
             String ditem = determination.substring("enchants:".length());
-            enchantsRes = dItem.valueOf(ditem);
+            enchantsRes = dItem.valueOf(ditem, container);
             return true;
         }
         else {

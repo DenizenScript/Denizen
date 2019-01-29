@@ -503,7 +503,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             int count = is.getAmount();
             is.setAmount(1);
             // Note: this double-parsing is intentional, as part of a hotfix for a larger issue
-            String newItem = CoreUtilities.toLowerCase(dItem.valueOf(new dItem(is).getFullString()).getFullString());
+            String newItem = CoreUtilities.toLowerCase(dItem.valueOf(new dItem(is).getFullString(), false).getFullString());
             if (myItem.equals(newItem)) {
                 if (count <= amount) {
                     inventory.setItem(i, null);
@@ -1404,7 +1404,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         // -->
         if (attribute.startsWith("include") && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1));
+            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
             if (item == null) {
                 return null;
             }
@@ -1880,7 +1880,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("find.scriptname")
                 && attribute.hasContext(2)
                 && dItem.matches(attribute.getContext(2))) {
-            String scrname = dItem.valueOf(attribute.getContext(2)).getScriptName();
+            String scrname = dItem.valueOf(attribute.getContext(2), attribute.context).getScriptName();
             if (scrname == null) {
                 return null;
             }
@@ -1906,9 +1906,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("find_imperfect")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1),
-                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null,
-                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null);
+            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
@@ -1935,9 +1933,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("find")
                 && attribute.hasContext(1)
                 && dItem.matches(attribute.getContext(1))) {
-            dItem item = dItem.valueOf(attribute.getContext(1),
-                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer() : null,
-                    attribute.getScriptEntry() != null ? ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC() : null);
+            dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
             item.setAmount(1);
             int slot = -1;
             for (int i = 0; i < inventory.getSize(); i++) {
@@ -2003,9 +1999,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("quantity") || attribute.startsWith("qty")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
                 return new Element(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), false))
+                        (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), false))
                         .getAttribute(attribute.fulfill(1));
             }
             else {
@@ -2024,9 +2018,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (attribute.startsWith("stacks")) {
             if (attribute.hasContext(1) && dItem.matches(attribute.getContext(1))) {
                 return new Element(count // TODO: Handle no-script-entry cases
-                        (dItem.valueOf(attribute.getContext(1),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getPlayer(),
-                                ((BukkitScriptEntryData) attribute.getScriptEntry().entryData).getNPC()).getItemStack(), true))
+                        (dItem.valueOf(attribute.getContext(1), attribute.context).getItemStack(), true))
                         .getAttribute(attribute.fulfill(1));
             }
             else {

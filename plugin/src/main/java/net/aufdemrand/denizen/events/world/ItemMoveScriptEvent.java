@@ -100,7 +100,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
-            item = dItem.valueOf(determination);
+            item = dItem.valueOf(determination, container);
             itemSet = true;
             return true;
         }

@@ -167,7 +167,7 @@ public class ItemScriptContainer extends ScriptContainer {
                 if (material.startsWith("m@")) {
                     material = material.substring(2);
                 }
-                stack = dItem.valueOf(material);
+                stack = dItem.valueOf(material, this);
             }
 
             // Make sure we're working with a valid base ItemStack

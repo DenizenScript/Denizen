@@ -112,7 +112,7 @@ public class EntityInventory implements Property {
             inv.clear();
             int i = 0;
             for (String str : list) {
-                inv.setSlots(i, dItem.valueOf(str).getItemStack());
+                inv.setSlots(i, dItem.valueOf(str, mechanism.context).getItemStack());
                 i++;
             }
         }
