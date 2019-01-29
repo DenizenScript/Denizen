@@ -367,7 +367,7 @@ public class FlagManager {
         // server flag cleared
         // server flag <flagname> cleared
         //
-        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //
         // @Triggers when a flag is cleared
         // @Context
@@ -631,7 +631,7 @@ public class FlagManager {
         // entity flag changed
         // entity flag <flagname> changed
         //
-        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //
         // @Triggers when a flag is changed
         // @Context
@@ -730,7 +730,7 @@ public class FlagManager {
         // entity flag expires
         // entity flag <flagname> expires
         //
-        // @Warning This event will fire rapidly and not exactly when you might expect it to fire.
+        // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //
         // @Triggers when a flag expires
         // @Context
