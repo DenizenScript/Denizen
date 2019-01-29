@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.utilities.entity;
 
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
@@ -27,7 +28,7 @@ public class SpawnEntityHelper {
                 dEntity entity = new dEntity(bukkitEntity);
                 for (Mechanism mechanism : new ArrayList<Mechanism>(mechanisms)) {
                     if (dEntity.earlyValidMechanisms.contains(CoreUtilities.toLowerCase(mechanism.getName()))) {
-                        entity.adjust(mechanism);
+                        entity.safeAdjust(new Mechanism(new Element(mechanism.getName()), mechanism.getValue(), mechanism.context));
                         mechanisms.remove(mechanism);
                     }
                 }

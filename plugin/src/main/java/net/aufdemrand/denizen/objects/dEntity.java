@@ -972,7 +972,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
 
             for (Mechanism mechanism : mechanisms) {
-                adjust(mechanism);
+                safeAdjust(new Mechanism(new Element(mechanism.getName()), mechanism.getValue(), mechanism.context));
             }
             mechanisms.clear();
         }
@@ -2511,9 +2511,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     public void applyProperty(Mechanism mechanism) {
         if (isGeneric()) {
             mechanisms.add(mechanism);
-        }
-        else if (rememberedEntities.containsKey(entity.getUniqueId())) {
-            adjust(mechanism);
+            mechanism.fulfill();
         }
         else {
             dB.echoError("Cannot apply properties to an already-spawned entity!");
@@ -2525,6 +2523,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         if (isGeneric()) {
             mechanisms.add(mechanism);
+            mechanism.fulfill();
             return;
         }
 
