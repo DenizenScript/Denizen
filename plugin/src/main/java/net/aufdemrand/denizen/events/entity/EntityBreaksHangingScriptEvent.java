@@ -132,6 +132,12 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
             return hanging;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("location")) {
@@ -146,10 +152,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
         breaker = new dEntity(event.getRemover());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

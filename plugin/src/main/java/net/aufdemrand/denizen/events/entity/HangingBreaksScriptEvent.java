@@ -118,6 +118,12 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
             return hanging;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("location")) { // NOTE: Deprecated
@@ -134,10 +140,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
         if (event instanceof HangingBreakByEntityEvent) {
             entity = new dEntity(((HangingBreakByEntityEvent) event).getRemover());
         }
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

@@ -117,6 +117,12 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
             return location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("reason")) {
@@ -130,10 +136,7 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         Entity entity = event.getEntity();
         this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         reason = new Element(event.getSpawnReason().name());
         cancelled = event.isCancelled();
         this.event = event;

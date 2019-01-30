@@ -109,6 +109,12 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
             return new_location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -125,10 +131,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         location = new dLocation(event.getTo().clone().subtract(0, 1, 0));
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

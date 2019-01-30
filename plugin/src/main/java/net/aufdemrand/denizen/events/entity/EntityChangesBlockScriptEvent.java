@@ -126,6 +126,12 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
             return entity;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("location")) {
@@ -146,10 +152,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         location = new dLocation(event.getBlock().getLocation());
         old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
         new_material = dMaterial.getMaterialFrom(event.getTo());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();
