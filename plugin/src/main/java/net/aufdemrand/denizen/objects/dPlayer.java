@@ -1869,7 +1869,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (chunk == null) {
                 return null;
             }
-            return new Element(hasChunkLoaded(chunk.chunk)).getAttribute(attribute.fulfill(1));
+            return new Element(hasChunkLoaded(chunk.getChunk())).getAttribute(attribute.fulfill(1));
         }
 
 
