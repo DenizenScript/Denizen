@@ -24,7 +24,7 @@ Denizen: Helpful Citizens for Bukkit!
 
 - **Citizens2 (NPC support)**: https://github.com/CitizensDev/Citizens2/
 - **Depenizen (Other plugin support)**: https://github.com/DenizenScript/Depenizen-For-Bukkit
-- **dIRCBot (Adds an IRC bot to Denizen)**: https://github.com/DenizenScript/dIRCBot
+- **dDiscordBot (Adds a Discord bot to Denizen)**: https://github.com/DenizenScript/dDiscordBot
 - **Webizen (Adds a webserver to Denizen)**: https://github.com/DenizenScript/Webizen
 - **DenizenCore (Our core, needed for building)**: https://github.com/DenizenScript/Denizen-Core
 
