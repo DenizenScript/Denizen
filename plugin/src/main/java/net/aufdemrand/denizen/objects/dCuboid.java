@@ -1257,29 +1257,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_chunks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                Set<Chunk> chunks = new HashSet<Chunk>();
+                dList chunks = new dList();
                 dCuboid obj = (dCuboid) object;
                 for (LocationPair pair : obj.pairs) {
                     int minY = pair.low.getBlockY();
-                    Chunk minChunk = pair.low.getChunk();
+                    dChunk minChunk = new dChunk(pair.low);
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16))) {
-                        chunks.add(minChunk);
+                        chunks.addObject(minChunk);
                     }
-                    Chunk maxChunk = pair.high.getChunk();
+                    dChunk maxChunk = new dChunk(pair.high);
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
-                        chunks.add(maxChunk);
+                        chunks.addObject(maxChunk);
                     }
-                    for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
-                        for (int z = minChunk.getZ() + 1; z <= maxChunk.getZ() - 1; z++) {
-                            chunks.add(obj.getWorld().getChunkAt(x, z));
+                    for (int x = minChunk.getX() + 1; x < maxChunk.getX() ; x++) {
+                        for (int z = minChunk.getZ() + 1; z < maxChunk.getZ(); z++) {
+                            chunks.addObject(new dChunk(new dWorld(((dCuboid) object).getWorld()), x, z));
                         }
                     }
                 }
-                dList list = new dList();
-                for (Chunk chunk : chunks) {
-                    list.add(new dChunk(chunk).identify());
-                }
-                return list.getAttribute(attribute.fulfill(1));
+                return chunks.getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1292,21 +1288,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_partial_chunks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                Set<Chunk> chunks = new HashSet<Chunk>();
+                dList chunks = new dList();
                 for (LocationPair pair : ((dCuboid) object).pairs) {
-                    Chunk minChunk = pair.low.getChunk();
-                    Chunk maxChunk = pair.high.getChunk();
+                    dChunk minChunk = new dChunk(pair.low);
+                    dChunk maxChunk = new dChunk(pair.high);
                     for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
                         for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
-                            chunks.add(((dCuboid) object).getWorld().getChunkAt(x, z));
+                            chunks.addObject(new dChunk(new dWorld(((dCuboid) object).getWorld()), x, z));
                         }
                     }
                 }
-                dList list = new dList();
-                for (Chunk chunk : chunks) {
-                    list.add(new dChunk(chunk).identify());
-                }
-                return list.getAttribute(attribute.fulfill(1));
+                return chunks.getAttribute(attribute.fulfill(1));
             }
         });
 
