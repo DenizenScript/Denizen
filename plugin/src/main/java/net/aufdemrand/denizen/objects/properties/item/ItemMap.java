@@ -60,6 +60,9 @@ public class ItemMap implements Property {
         // Returns the ID number of the map item's map.
         // -->
         if (attribute.startsWith("map")) {
+            if (!hasMapId()) {
+                return null;
+            }
             return new Element(getMapId())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -67,9 +70,20 @@ public class ItemMap implements Property {
         return null;
     }
 
+    public boolean hasMapId() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+            return map.hasMapId();
+        }
+        return true;
+    }
+
     public int getMapId() {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             MapMeta map = (MapMeta) item.getItemStack().getItemMeta();
+            if (!map.hasMapId()) {
+                return 0;
+            }
             return map.getMapId();
         }
         return item.getItemStack().getDurability();
@@ -86,6 +100,9 @@ public class ItemMap implements Property {
 
     @Override
     public String getPropertyString() {
+        if (!hasMapId()) {
+            return null;
+        }
         return String.valueOf(getMapId());
     }
 
