@@ -3130,7 +3130,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax remove [<entity>|...] (world:<world>)
         // @Required 1
         // @Stable stable
-        // @Short Despawns an entity or list of entities, including any NPCs.
+        // @Short Despawns an entity or list of entities, permanently removing any NPCs.
         // @Author David Cernat
         // @Group entity
         // @Description
@@ -3146,10 +3146,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.is_spawned>
         //
-        // @Usage // Use to remove the entity the player is looking at.
+        // @Usage
+        // Use to remove the entity the player is looking at.
         // - remove <player.target>
         //
-        // @Usage // Use to remove all nearby entities around the player, excluding the player itself.
+        // @Usage
+        // Use to remove all nearby entities around the player, excluding the player itself.
         // - remove <player.location.find.entities.within[10].exclude[<player>]>
         //
         // @Usage
