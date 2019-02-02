@@ -1397,6 +1397,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.firework_item>
         // <i@item.is_firework>
         // <i@item.firework>
+        // <entry[saveName].launched_firework> returns a dEntity of the firework that was launched.
         //
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location

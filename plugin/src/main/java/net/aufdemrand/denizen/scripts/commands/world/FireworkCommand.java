@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dColor;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -125,5 +126,7 @@ public class FireworkCommand extends AbstractCommand {
 
         fireworkMeta.addEffects(fireworkBuilder.build());
         firework.setFireworkMeta(fireworkMeta);
+
+        scriptEntry.addObject("launched_firework", new dEntity(firework));
     }
 }
