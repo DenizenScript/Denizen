@@ -1366,7 +1366,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
 
         // <--[mechanism]
         // @object dNPC
-        // @name set_lookclose
+        // @name lookclose
         // @input Element(Boolean)
         // @description
         // Sets the NPC's lookclose value.
