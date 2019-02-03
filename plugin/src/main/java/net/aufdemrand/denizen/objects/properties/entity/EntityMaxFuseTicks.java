@@ -49,7 +49,7 @@ public class EntityMaxFuseTicks implements Property {
 
     @Override
     public String getPropertyString() {
-        return entity.getBukkitEntity() instanceof Creeper ? ((Creeper) entity.getBukkitEntity()).getMaxFuseTicks() + "" : null;
+        return ((Creeper) entity.getBukkitEntity()).getMaxFuseTicks() + "";
     }
 
     @Override
@@ -66,13 +66,13 @@ public class EntityMaxFuseTicks implements Property {
 
         // <--[tag]
         // @attribute <e@entity.max_fuse_ticks>
-        // @returns Element(Integer)
+        // @returns Element(Number)
         // @mechanism dEntity.max_fuse_ticks
         // @group properties
         // @description
-        // Returns the number of fuse ticks a creeper will default to when not triggered.
+        // Returns the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
         // -->
-        if (attribute.startsWith("max_fuse_ticks") && entity.getBukkitEntity() instanceof Creeper) {
+        if (attribute.startsWith("max_fuse_ticks")) {
             return new Element(((Creeper) entity.getBukkitEntity()).getMaxFuseTicks())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -86,13 +86,13 @@ public class EntityMaxFuseTicks implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name max_fuse_ticks
-        // @input Element(Integer)
+        // @input Element(Number)
         // @description
-        // Sets the number of fuse ticks a creeper will default to when not triggered
+        // Sets the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed)
         // @tags
         // <e@entity.max_fuse_ticks>
         // -->
-        if (mechanism.matches("max_fuse_ticks") && entity.getBukkitEntity() instanceof Creeper && mechanism.requireInteger()) {
+        if (mechanism.matches("max_fuse_ticks") && mechanism.requireInteger()) {
             ((Creeper) entity.getBukkitEntity()).setMaxFuseTicks(mechanism.getValue().asInt());
         }
 
