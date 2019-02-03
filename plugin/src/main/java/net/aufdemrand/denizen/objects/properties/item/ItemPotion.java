@@ -225,7 +225,7 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns the potion effect shows an icon.
+                // Returns whether the potion effect shows an icon.
                 // -->
                 if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                     return new Element(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
