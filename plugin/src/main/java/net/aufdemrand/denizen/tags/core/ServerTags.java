@@ -108,7 +108,7 @@ public class ServerTags {
     // Returns either the first element, or 'fallback' element depending on
     // the outcome of the condition. First element will show in a result of 'true',
     // otherwise the fallback element will show.
-    // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
+    // Example: '<tern[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
     // -->
     public void ternaryTag(ReplaceableTagEvent event) { // TODO: Core
         if (!event.matches("ternary", "tern", "t")) {
