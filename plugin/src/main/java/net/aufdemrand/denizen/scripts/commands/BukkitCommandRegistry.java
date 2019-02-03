@@ -2248,7 +2248,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Note that all maps have a size of 128x128.
         // The file path is relative to the 'plugins/Denizen/images/' folder.
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
-        // Custom maps do not persist over restarts.
+        // Custom maps will persist over restarts using the 'maps.yml' save file in the Denizen plugins folder.
         //
         // @Tags
         // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
