@@ -1187,6 +1187,7 @@ public class dMaterial implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the material's full identification.
+        // Irrelevant on modern (1.13+) servers.
         // -->
         registerTag("full", new TagRunnable() {
             @Override

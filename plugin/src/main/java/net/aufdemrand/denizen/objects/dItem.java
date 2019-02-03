@@ -846,6 +846,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // @group conversion
         // @description
         // Returns a full reusable item identification for this item, with extra, generally useless data.
+        // Irrelevant on modern (1.13+) servers.
         // -->
         registerTag("full", new TagRunnable() {
             @Override

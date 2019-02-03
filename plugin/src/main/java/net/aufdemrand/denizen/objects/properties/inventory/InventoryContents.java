@@ -164,6 +164,7 @@ public class InventoryContents implements Property {
             // @mechanism dInventory.contents
             // @description
             // Returns a list of all items in the inventory, with the tag item.full used.
+            // Irrelevant on modern (1.13+) servers.
             // -->
             if (attribute.startsWith("full")) {
                 return getContents(2).getAttribute(attribute.fulfill(1));
