@@ -86,7 +86,7 @@ public class ServerTags {
         if (!event.matches("math", "m")) {
             return;
         }
-        if (event.matches("l")) {
+        if (event.matches("m")) {
             dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
                     "Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
         }
@@ -137,7 +137,7 @@ public class ServerTags {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
         }
-        if (event.matches("l")) {
+        if (event.matches("srv")) {
             dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
                     "Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
         }
