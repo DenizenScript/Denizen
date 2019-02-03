@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
@@ -23,6 +24,11 @@ public class LocationTags {
 
         if (!event.matches("location", "l") || event.replaced()) {
             return;
+        }
+
+        if (event.matches("l")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'location' instead of 'l' as a root tag.");
         }
 
         // Stage the location

@@ -86,6 +86,10 @@ public class ServerTags {
         if (!event.matches("math", "m")) {
             return;
         }
+        if (event.matches("l")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
+        }
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
@@ -110,6 +114,10 @@ public class ServerTags {
         if (!event.matches("ternary", "tern", "t")) {
             return;
         }
+        if (event.matches("t")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'tern' instead of 't' as a root tag.");
+        }
 
         // Fallback if nothing to evaluate
         if (!event.hasNameContext()) {
@@ -128,6 +136,14 @@ public class ServerTags {
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
+        }
+        if (event.matches("l")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
+        }
+        if (event.matches("global")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Using 'global' as a base tag is a deprecated alternate name. Please use 'server' instead.");
         }
         Attribute attribute = event.getAttributes().fulfill(1);
 
