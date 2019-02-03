@@ -43,7 +43,7 @@ public class EntitySpeed implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "speed"
     };
 

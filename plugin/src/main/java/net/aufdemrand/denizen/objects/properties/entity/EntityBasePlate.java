@@ -24,7 +24,7 @@ public class EntityBasePlate implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "base_plate"
     };
 

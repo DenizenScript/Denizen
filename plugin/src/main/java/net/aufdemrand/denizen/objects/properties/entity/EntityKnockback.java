@@ -24,7 +24,7 @@ public class EntityKnockback implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "knockback"
     };
 

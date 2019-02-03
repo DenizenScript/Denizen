@@ -29,7 +29,7 @@ public class BukkitListProperties implements Property {
         this.list = list;
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "expiration", "formatted"
     };
 

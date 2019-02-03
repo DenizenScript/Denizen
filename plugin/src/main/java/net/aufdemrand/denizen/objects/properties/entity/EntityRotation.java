@@ -31,7 +31,7 @@ public class EntityRotation implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "rotation"
     };
 

@@ -26,7 +26,7 @@ public class EntityTrades implements Property {
         return new EntityTrades((dEntity) entity);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "trades"
     };
 

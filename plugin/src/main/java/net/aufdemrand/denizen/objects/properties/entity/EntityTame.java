@@ -29,7 +29,7 @@ public class EntityTame implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "is_tamed", "get_owner"
     };
 

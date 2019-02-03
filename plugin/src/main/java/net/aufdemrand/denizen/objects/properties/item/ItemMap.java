@@ -29,7 +29,7 @@ public class ItemMap implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "map"
     };
 

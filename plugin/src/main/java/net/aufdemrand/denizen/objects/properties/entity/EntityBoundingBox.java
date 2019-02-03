@@ -32,7 +32,7 @@ public class EntityBoundingBox implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "bounding_box"
     };
 

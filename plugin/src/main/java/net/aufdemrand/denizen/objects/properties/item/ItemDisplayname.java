@@ -25,7 +25,7 @@ public class ItemDisplayname implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "display", "has_display"
     };
 

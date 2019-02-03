@@ -20,7 +20,7 @@ public class EntityCustomName implements Property {
         return new EntityCustomName((dEntity) entity);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "custom_name_visible", "custom_name"
     };
 

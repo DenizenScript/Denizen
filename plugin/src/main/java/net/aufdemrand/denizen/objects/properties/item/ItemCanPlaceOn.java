@@ -30,7 +30,7 @@ public class ItemCanPlaceOn implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "can_place_on"
     };
 

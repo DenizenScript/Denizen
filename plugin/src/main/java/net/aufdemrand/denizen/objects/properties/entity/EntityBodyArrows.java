@@ -22,7 +22,7 @@ public class EntityBodyArrows implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "body_arrows"
     };
 

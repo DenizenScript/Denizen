@@ -29,7 +29,7 @@ public class EntityItem implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "item"
     };
 

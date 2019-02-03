@@ -33,7 +33,7 @@ public class EntityAreaEffectCloud implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "base_potion", "particle", "duration", "radius", "reapplication_delay", "wait_time",
             "has_custom_effect", "source", "custom_effects"
     };

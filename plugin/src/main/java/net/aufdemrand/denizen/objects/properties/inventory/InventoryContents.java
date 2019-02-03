@@ -25,7 +25,7 @@ public class InventoryContents implements Property {
         return new InventoryContents((dInventory) inventory);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "list_contents"
     };
 

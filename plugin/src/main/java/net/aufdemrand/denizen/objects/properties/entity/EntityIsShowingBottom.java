@@ -24,7 +24,7 @@ public class EntityIsShowingBottom implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "is_showing_bottom"
     };
 

@@ -20,7 +20,7 @@ public class TradeHasXp implements Property {
         return new TradeHasXp((dTrade) recipe);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "has_xp"
     };
 

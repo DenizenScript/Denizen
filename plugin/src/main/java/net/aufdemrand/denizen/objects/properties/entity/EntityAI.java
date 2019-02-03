@@ -24,7 +24,7 @@ public class EntityAI implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "has_ai"
     };
 

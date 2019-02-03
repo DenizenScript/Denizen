@@ -28,7 +28,7 @@ public class EntityFirework implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "firework_item"
     };
 

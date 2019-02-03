@@ -23,7 +23,7 @@ public class EntitySilent implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "silent"
     };
 

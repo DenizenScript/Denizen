@@ -31,7 +31,7 @@ public class ItemSignContents implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "sign_contents"
     };
 

@@ -27,7 +27,7 @@ public class ItemFlags implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "flags"
     };
 

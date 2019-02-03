@@ -30,7 +30,7 @@ public class ItemCanDestroy implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "can_destroy"
     };
 

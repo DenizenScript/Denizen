@@ -42,7 +42,7 @@ public class ItemPotion implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "potion_base", "has_potion_effect", "potion_effect"
     };
 

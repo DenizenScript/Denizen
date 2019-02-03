@@ -23,7 +23,7 @@ public class EntityArmorBonus implements Property {
         return new EntityArmorBonus((dEntity) entity);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "armor_bonus"
     };
 

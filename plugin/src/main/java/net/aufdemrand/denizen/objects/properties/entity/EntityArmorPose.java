@@ -31,7 +31,7 @@ public class EntityArmorPose implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "armor_pose_list", "armor_pose"
     };
 

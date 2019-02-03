@@ -21,7 +21,7 @@ public class InventoryTitle implements Property {
         return new InventoryTitle((dInventory) inventory);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "title"
     };
 

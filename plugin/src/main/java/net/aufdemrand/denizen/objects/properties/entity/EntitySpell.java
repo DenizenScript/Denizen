@@ -23,7 +23,7 @@ public class EntitySpell implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "spell"
     };
 

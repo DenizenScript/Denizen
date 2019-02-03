@@ -22,7 +22,7 @@ public class TradeResult implements Property {
         return new TradeResult((dTrade) recipe);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "result"
     };
 

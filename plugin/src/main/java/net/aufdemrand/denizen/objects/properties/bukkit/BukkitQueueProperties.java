@@ -25,7 +25,7 @@ public class BukkitQueueProperties implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "player", "npc"
     };
 

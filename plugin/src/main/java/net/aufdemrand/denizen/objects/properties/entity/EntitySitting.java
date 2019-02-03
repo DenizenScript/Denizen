@@ -27,7 +27,7 @@ public class EntitySitting implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "sitting"
     };
 

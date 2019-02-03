@@ -153,7 +153,7 @@ public class WhileCommand extends BracedCommand {
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("WHILE", new String[]{"\0CALLBACK"},
+                        callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                         callbackEntry.copyFrom(scriptEntry);
                     }
@@ -208,7 +208,7 @@ public class WhileCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("WHILE", new String[]{"\0CALLBACK"},
+                callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                 callbackEntry.copyFrom(scriptEntry);
             }

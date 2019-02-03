@@ -21,7 +21,7 @@ public class InventorySize implements Property {
         return new InventorySize((dInventory) inventory);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "size"
     };
 

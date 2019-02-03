@@ -27,7 +27,7 @@ public class ItemApple implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "apple_enchanted"
     };
 

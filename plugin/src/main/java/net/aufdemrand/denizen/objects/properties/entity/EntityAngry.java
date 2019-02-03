@@ -26,7 +26,7 @@ public class EntityAngry implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "angry"
     };
 

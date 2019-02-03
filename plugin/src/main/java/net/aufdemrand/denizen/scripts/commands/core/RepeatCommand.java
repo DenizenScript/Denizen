@@ -144,7 +144,7 @@ public class RepeatCommand extends BracedCommand {
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("REPEAT", new String[]{"\0CALLBACK"},
+                        callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK"},
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                         callbackEntry.copyFrom(scriptEntry);
                     }
@@ -197,7 +197,7 @@ public class RepeatCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("REPEAT", new String[]{"\0CALLBACK"},
+                callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK"},
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                 callbackEntry.copyFrom(scriptEntry);
             }

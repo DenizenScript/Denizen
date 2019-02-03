@@ -28,7 +28,7 @@ public class ItemLock implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "lock", "is_locked"
     };
 

@@ -25,7 +25,7 @@ public class EntityBeamTarget implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "beam_target"
     };
 

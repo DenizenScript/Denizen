@@ -31,7 +31,7 @@ public class ItemEnchantments implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "is_enchanted", "enchantments"
     };
 

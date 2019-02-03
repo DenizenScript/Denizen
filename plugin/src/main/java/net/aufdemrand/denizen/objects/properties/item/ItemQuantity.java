@@ -23,7 +23,7 @@ public class ItemQuantity implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "quantity", "qty", "max_stack"
     };
 

@@ -20,7 +20,7 @@ public class TradeUses implements Property {
         return new TradeUses((dTrade) recipe);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "uses"
     };
 

@@ -32,7 +32,7 @@ public class InventoryHolder implements Property {
         return new InventoryHolder((dInventory) inventory);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "id_holder"
     };
 

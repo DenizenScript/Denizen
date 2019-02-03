@@ -24,7 +24,7 @@ public class EntityElder implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "elder"
     };
 

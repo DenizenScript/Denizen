@@ -29,7 +29,7 @@ public class ItemNBT implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "has_nbt", "nbt_keys", "nbt"
     };
 

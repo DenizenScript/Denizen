@@ -26,7 +26,7 @@ public class TradeInputs implements Property {
         return new TradeInputs((dTrade) recipe);
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "inputs"
     };
 
