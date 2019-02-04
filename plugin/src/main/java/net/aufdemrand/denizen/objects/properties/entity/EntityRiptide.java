@@ -22,7 +22,7 @@ public class EntityRiptide implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[] {
+    public static final String[] handledTags = new String[]{
             "is_using_riptide"
     };
 
