@@ -24,7 +24,7 @@ public class EntityMaxFuseTicks implements Property {
         }
     }
 
-    public static final String[] handledTags = new String[]{
+    public static final String[] handledTags = new String[] {
             "max_fuse_ticks"
     };
 
@@ -49,7 +49,7 @@ public class EntityMaxFuseTicks implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Creeper) entity.getBukkitEntity()).getMaxFuseTicks() + "";
+        return String.valueOf(((Creeper) entity.getBukkitEntity()).getMaxFuseTicks());
     }
 
     @Override
@@ -88,7 +88,7 @@ public class EntityMaxFuseTicks implements Property {
         // @name max_fuse_ticks
         // @input Element(Number)
         // @description
-        // Sets the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed)
+        // Sets the default number of ticks until the creeper explodes when primed (NOT the time remaining if already primed).
         // @tags
         // <e@entity.max_fuse_ticks>
         // -->
