@@ -2458,7 +2458,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @returns Element(Number)
         // @group properties
         // @description
-        // Returns the number of ticks until the explosion of the entity.
+        // Returns the number of ticks until the explosion of the primed TNT.
         // -->
         if (attribute.startsWith("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed) {
             return new Element(((TNTPrimed) getBukkitEntity()).getFuseTicks())
