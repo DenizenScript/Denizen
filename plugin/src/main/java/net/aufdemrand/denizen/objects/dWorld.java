@@ -600,7 +600,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.ticks_per_animal_spawn>
         // @returns Duration
         // @description
-        // Returns the world's ticks per animal spawn value.
+        // Returns the world's ticks per animal spawn mechanism.getValue().
         // -->
         registerTag("ticks_per_animal_spawn", new TagRunnable() {
             @Override
@@ -614,7 +614,7 @@ public class dWorld implements dObject, Adjustable {
         // @attribute <w@world.ticks_per_monster_spawn>
         // @returns Duration
         // @description
-        // Returns the world's ticks per monster spawn value.
+        // Returns the world's ticks per monster spawn mechanism.getValue().
         // -->
         registerTag("ticks_per_monster_spawn", new TagRunnable() {
             @Override
@@ -947,8 +947,6 @@ public class dWorld implements dObject, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object dWorld
         // @name ambient_spawn_limit
@@ -960,7 +958,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("ambient_spawn_limit")
                 && mechanism.requireInteger()) {
-            getWorld().setAmbientSpawnLimit(value.asInt());
+            getWorld().setAmbientSpawnLimit(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -974,7 +972,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("animal_spawn_limit")
                 && mechanism.requireInteger()) {
-            getWorld().setAnimalSpawnLimit(value.asInt());
+            getWorld().setAnimalSpawnLimit(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -988,7 +986,7 @@ public class dWorld implements dObject, Adjustable {
         // -->
         if (mechanism.matches("auto_save")
                 && mechanism.requireBoolean()) {
-            getWorld().setAutoSave(value.asBoolean());
+            getWorld().setAutoSave(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1002,13 +1000,13 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.difficulty>
         // -->
         if (mechanism.matches("difficulty") && mechanism.requireEnum(true, Difficulty.values())) {
-            String upper = value.asString().toUpperCase();
+            String upper = mechanism.getValue().asString().toUpperCase();
             Difficulty diff;
             if (upper.matches("(PEACEFUL|EASY|NORMAL|HARD)")) {
                 diff = Difficulty.valueOf(upper);
             }
             else {
-                diff = Difficulty.getByValue(value.asInt());
+                diff = Difficulty.getByValue(mechanism.getValue().asInt());
             }
             if (diff != null) {
                 getWorld().setDifficulty(diff);
@@ -1078,7 +1076,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.time.full>
         // -->
         if (mechanism.matches("full_time") && mechanism.requireInteger()) {
-            getWorld().setFullTime(value.asInt());
+            getWorld().setFullTime(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -1091,7 +1089,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.time.full>
         // -->
         if (mechanism.matches("keep_spawn") && mechanism.requireBoolean()) {
-            getWorld().setKeepSpawnInMemory(value.asBoolean());
+            getWorld().setKeepSpawnInMemory(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1104,7 +1102,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.monster_spawn_limit>
         // -->
         if (mechanism.matches("monster_spawn_limit") && mechanism.requireInteger()) {
-            getWorld().setMonsterSpawnLimit(value.asInt());
+            getWorld().setMonsterSpawnLimit(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -1117,7 +1115,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.allows_pvp>
         // -->
         if (mechanism.matches("allow_pvp") && mechanism.requireBoolean()) {
-            getWorld().setPVP(value.asBoolean());
+            getWorld().setPVP(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1130,7 +1128,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.spawn_location>
         // -->
         if (mechanism.matches("spawn_location") && mechanism.requireObject(dLocation.class)) {
-            dLocation loc = value.asType(dLocation.class);
+            dLocation loc = mechanism.valueAsType(dLocation.class);
             getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
 
@@ -1144,7 +1142,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.has_storm>
         // -->
         if (mechanism.matches("storming") && mechanism.requireBoolean()) {
-            getWorld().setStorm(value.asBoolean());
+            getWorld().setStorm(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1157,7 +1155,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.thunder_duration>
         // -->
         if (mechanism.matches("thunder_duration") && mechanism.requireObject(Duration.class)) {
-            getWorld().setThunderDuration(value.asType(Duration.class).getTicksAsInt());
+            getWorld().setThunderDuration(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1170,7 +1168,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.thundering>
         // -->
         if (mechanism.matches("thundering") && mechanism.requireBoolean()) {
-            getWorld().setThundering(value.asBoolean());
+            getWorld().setThundering(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1183,7 +1181,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.ticks_per_animal_spawns>
         // -->
         if (mechanism.matches("ticks_per_animal_spawns") && mechanism.requireObject(Duration.class)) {
-            getWorld().setTicksPerAnimalSpawns(value.asType(Duration.class).getTicksAsInt());
+            getWorld().setTicksPerAnimalSpawns(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1196,7 +1194,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.ticks_per_monster_spawns>
         // -->
         if (mechanism.matches("ticks_per_monster_spawns") && mechanism.requireObject(Duration.class)) {
-            getWorld().setTicksPerMonsterSpawns(value.asType(Duration.class).getTicksAsInt());
+            getWorld().setTicksPerMonsterSpawns(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -1209,7 +1207,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.time>
         // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
-            getWorld().setTime(value.asInt());
+            getWorld().setTime(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -1236,7 +1234,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.water_animal_spawn_limit>
         // -->
         if (mechanism.matches("water_animal_spawn_limit") && mechanism.requireInteger()) {
-            getWorld().setWaterAnimalSpawnLimit(value.asInt());
+            getWorld().setWaterAnimalSpawnLimit(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -1249,7 +1247,7 @@ public class dWorld implements dObject, Adjustable {
         // <w@world.weather_duration>
         // -->
         if (mechanism.matches("weather_duration") && mechanism.requireObject(Duration.class)) {
-            getWorld().setWeatherDuration(value.asType(Duration.class).getTicksAsInt());
+            getWorld().setWeatherDuration(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

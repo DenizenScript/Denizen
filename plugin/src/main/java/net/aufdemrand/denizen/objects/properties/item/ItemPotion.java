@@ -330,7 +330,7 @@ public class ItemPotion implements Property {
         // <i@item.potion_effect[<#>].icon>
         // -->
         if (mechanism.matches("potion_effects")) {
-            dList data = mechanism.getValue().asType(dList.class);
+            dList data = mechanism.valueAsType(dList.class);
             String[] d1 = data.get(0).split(",");
             PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),

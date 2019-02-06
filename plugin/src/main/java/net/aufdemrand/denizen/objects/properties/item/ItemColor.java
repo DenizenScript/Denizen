@@ -122,7 +122,7 @@ public class ItemColor implements Property {
         // -->
         if ((mechanism.matches("dye") || mechanism.matches("dye_color")
                 || mechanism.matches("color")) && (mechanism.requireObject(dColor.class))) {
-            dColor color = mechanism.getValue().asType(dColor.class);
+            dColor color = mechanism.valueAsType(dColor.class);
             Material mat = item.getItemStack().getType();
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
                     && (mat == Material.POTION

@@ -95,7 +95,7 @@ public class ItemInventory implements Property {
         // <i@item.inventory>
         // -->
         if (mechanism.matches("inventory") && mechanism.requireObject(dInventory.class)) {
-            dInventory inventory = mechanism.getValue().asType(dInventory.class);
+            dInventory inventory = mechanism.valueAsType(dInventory.class);
             if (inventory == null || inventory.getInventory() == null) {
                 return;
             }

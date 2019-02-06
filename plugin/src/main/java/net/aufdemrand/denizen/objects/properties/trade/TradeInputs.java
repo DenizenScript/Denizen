@@ -92,7 +92,7 @@ public class TradeInputs implements Property {
         // -->
         if (mechanism.matches("inputs")) {
             List<ItemStack> ingredients = new ArrayList<>();
-            List<dItem> list = mechanism.getValue().asType(dList.class).filter(dItem.class);
+            List<dItem> list = mechanism.valueAsType(dList.class).filter(dItem.class);
 
             if (!mechanism.hasValue() || list.isEmpty()) {
                 recipe.getRecipe().setIngredients(ingredients);

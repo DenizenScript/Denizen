@@ -199,7 +199,7 @@ public class EntityColor implements Property {
             EntityType type = colored.getBukkitEntityType();
 
             if (type == EntityType.HORSE) {
-                dList horse_info = mechanism.getValue().asType(dList.class);
+                dList horse_info = mechanism.valueAsType(dList.class);
                 if (horse_info.size() > 0 && new Element(horse_info.get(0)).matchesEnum(Horse.Color.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setColor(Horse.Color.valueOf(horse_info.get(0).toUpperCase()));

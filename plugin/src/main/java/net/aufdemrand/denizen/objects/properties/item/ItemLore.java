@@ -143,7 +143,7 @@ public class ItemLore implements Property {
 
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
-            dList lore = mechanism.getValue().asType(dList.class);
+            dList lore = mechanism.valueAsType(dList.class);
             if (item.isItemscript()) {
                 if (!Settings.packetInterception()) {
                     lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));

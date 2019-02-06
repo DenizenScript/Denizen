@@ -169,7 +169,7 @@ public class EntityDisabledSlots implements Property {
                 return;
             }
 
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
 
             for (String string : list) {

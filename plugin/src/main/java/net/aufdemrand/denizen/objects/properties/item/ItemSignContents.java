@@ -108,7 +108,7 @@ public class ItemSignContents implements Property {
             for (int i = 0; i < 4; i++) {
                 sign.setLine(i, "");
             }
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             if (list.size() > 4) {
                 dB.echoError("Sign can only hold four lines!");
             }

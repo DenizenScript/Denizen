@@ -438,7 +438,7 @@ public class EntityAreaEffectCloud implements Property {
         // <e@entity.custom_effects>
         // -->
         if (mechanism.matches("custom_effects")) {
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             getHelper().clearEffects();
 
             for (String item : list) {

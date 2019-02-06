@@ -147,7 +147,7 @@ public class ItemPatterns implements Property {
 
         if (mechanism.matches("patterns")) {
             List<Pattern> patterns = new ArrayList<Pattern>();
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             List<String> split;
             for (String string : list) {
                 try {

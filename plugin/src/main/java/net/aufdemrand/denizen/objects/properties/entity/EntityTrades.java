@@ -94,7 +94,7 @@ public class EntityTrades implements Property {
         // -->
         if (mechanism.matches("trades")) {
             ArrayList<MerchantRecipe> recipes = new ArrayList<>();
-            for (dTrade recipe : mechanism.getValue().asType(dList.class).filter(dTrade.class)) {
+            for (dTrade recipe : mechanism.valueAsType(dList.class).filter(dTrade.class)) {
                 recipes.add(recipe.getRecipe());
             }
             ((Merchant) entity.getBukkitEntity()).setRecipes(recipes);

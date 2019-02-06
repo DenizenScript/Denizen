@@ -162,13 +162,13 @@ public class EntityFramed implements Property {
         // -->
 
         if (mechanism.matches("framed")) {
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             if (list.size() == 0) {
                 dB.echoError("Missing value for 'framed' mechanism!");
                 return;
             }
             if (new Element(list.get(0)).matchesType(dItem.class)) {
-                setItem(new Element(list.get(0)).asType(dItem.class));
+                setItem(new Element(list.get(0)).asType(dItem.class, mechanism.context));
             }
             else {
                 dB.echoError("Invalid item '" + list.get(0) + "'");

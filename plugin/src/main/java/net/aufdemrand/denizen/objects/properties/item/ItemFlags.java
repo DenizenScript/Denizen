@@ -111,7 +111,7 @@ public class ItemFlags implements Property {
         if (mechanism.matches("flags")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
             meta.removeItemFlags(ItemFlag.values());
-            dList new_flags = mechanism.getValue().asType(dList.class);
+            dList new_flags = mechanism.valueAsType(dList.class);
             for (String str : new_flags) {
                 meta.addItemFlags(ItemFlag.valueOf(str.toUpperCase()));
             }

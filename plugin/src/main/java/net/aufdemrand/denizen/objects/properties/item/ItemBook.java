@@ -211,7 +211,7 @@ public class ItemBook implements Property {
 
         if (mechanism.matches("book")) {
             BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
-            dList data = mechanism.getValue().asType(dList.class);
+            dList data = mechanism.valueAsType(dList.class);
             if (data.size() < 2) {
                 dB.echoError("Invalid book input!");
             }

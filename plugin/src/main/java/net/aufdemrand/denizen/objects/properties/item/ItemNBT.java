@@ -152,7 +152,7 @@ public class ItemNBT implements Property {
             ItemStack itemStack = item.getItemStack();
             List<String> list;
             if (mechanism.hasValue()) {
-                list = mechanism.getValue().asType(dList.class);
+                list = mechanism.valueAsType(dList.class);
             }
             else {
                 list = CustomNBT.listNBT(itemStack, CustomNBT.KEY_DENIZEN);
@@ -179,7 +179,7 @@ public class ItemNBT implements Property {
                 dB.echoError("Cannot apply NBT to AIR!");
                 return;
             }
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
                 String[] split = string.split("/", 2);

@@ -78,7 +78,7 @@ public class TradeResult implements Property {
         // <trade@trade.result>
         // -->
         if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
-            ItemStack item = mechanism.getValue().asType(dItem.class).getItemStack();
+            ItemStack item = mechanism.valueAsType(dItem.class).getItemStack();
             MerchantRecipe oldRecipe = recipe.getRecipe();
 
             MerchantRecipe newRecipe = new MerchantRecipe(item, oldRecipe.getUses(), oldRecipe.getMaxUses(), oldRecipe.hasExperienceReward());

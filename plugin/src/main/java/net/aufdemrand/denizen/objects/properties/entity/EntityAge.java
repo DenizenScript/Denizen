@@ -228,7 +228,7 @@ public class EntityAge implements Property {
         // -->
 
         if (mechanism.matches("age")) {
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             if (list.size() == 0) {
                 dB.echoError("Missing value for 'age' mechanism!");
                 return;

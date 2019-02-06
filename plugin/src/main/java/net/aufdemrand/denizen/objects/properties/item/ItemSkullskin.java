@@ -152,7 +152,7 @@ public class ItemSkullskin implements Property {
             if (!isCorrectDurability()) {
                 item.getItemStack().setDurability((short) 3);
             }
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             String idString = list.get(0);
             String texture = null;
             if (list.size() > 1) {

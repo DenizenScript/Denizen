@@ -2537,8 +2537,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             return;
         }
 
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object dEntity
         // @name item_in_hand
@@ -2550,7 +2548,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2564,7 +2562,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2581,7 +2579,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("attach_to")) {
             if (mechanism.hasValue()) {
-                dList list = mechanism.getValue().asType(dList.class);
+                dList list = mechanism.valueAsType(dList.class);
                 Vector offset = null;
                 boolean rotateWith = true;
                 if (list.size() > 1) {
@@ -2608,7 +2606,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.shooter>
         // -->
         if (mechanism.matches("shooter")) {
-            setShooter(value.asType(dEntity.class));
+            setShooter(mechanism.valueAsType(dEntity.class));
         }
 
         // <--[mechanism]
@@ -2622,7 +2620,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.can_pickup_items>
         // -->
         if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean()) {
-            getLivingEntity().setCanPickupItems(value.asBoolean());
+            getLivingEntity().setCanPickupItems(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2635,7 +2633,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fall_distance>
         // -->
         if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
-            entity.setFallDistance(value.asFloat());
+            entity.setFallDistance(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2647,7 +2645,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fallingblock_drop_item") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
-            ((FallingBlock) entity).setDropItem(value.asBoolean());
+            ((FallingBlock) entity).setDropItem(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2659,7 +2657,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fallingblock_hurt_entities") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
-            ((FallingBlock) entity).setHurtEntities(value.asBoolean());
+            ((FallingBlock) entity).setHurtEntities(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2672,7 +2670,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fire_time>
         // -->
         if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class)) {
-            entity.setFireTicks(value.asType(Duration.class).getTicksAsInt());
+            entity.setFireTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2687,7 +2685,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.leash_holder>
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class)) {
-            getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
+            getLivingEntity().setLeashHolder(mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2715,7 +2713,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.can_breed>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), value.asBoolean());
+            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2730,7 +2728,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : value.asType(dList.class).filter(dEntity.class)) {
+            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
@@ -2748,7 +2746,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.empty>
         // -->
         if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class)) {
-            entity.setPassenger(value.asType(dEntity.class).getBukkitEntity());
+            entity.setPassenger(mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2761,7 +2759,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.time_lived>
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class)) {
-            entity.setTicksLived(value.asType(Duration.class).getTicksAsInt());
+            entity.setTicksLived(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2776,7 +2774,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.oxygen.max>
         // -->
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
-            getLivingEntity().setRemainingAir(value.asInt());
+            getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -2854,7 +2852,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 && mechanism.matches("left_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(mechanism.valueAsType(dEntity.class).getBukkitEntity());
                 }
             }
             else {
@@ -2879,7 +2877,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 && mechanism.matches("right_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(mechanism.valueAsType(dEntity.class).getBukkitEntity());
                 }
             }
             else {
@@ -2898,7 +2896,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.remove_when_far>
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
-            getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+            getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2912,7 +2910,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("sheared") && mechanism.requireBoolean()
                 && getBukkitEntity() instanceof Sheep) {
-            ((Sheep) getBukkitEntity()).setSheared(value.asBoolean());
+            ((Sheep) getBukkitEntity()).setSheared(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2927,7 +2925,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("collidable")
                 && mechanism.requireBoolean()) {
-            getLivingEntity().setCollidable(value.asBoolean());
+            getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2941,7 +2939,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.max_duration>
         // -->
         if (mechanism.matches("no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+            getLivingEntity().setNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2955,7 +2953,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.max_duration>
         // -->
         if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setMaximumNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+            getLivingEntity().setMaximumNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2968,7 +2966,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.velocity>
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
-            setVelocity(value.asType(dLocation.class).toVector());
+            setVelocity(mechanism.valueAsType(dLocation.class).toVector());
         }
 
         // <--[mechanism]
@@ -2979,7 +2977,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Forces an entity to move in the direction of the velocity specified.
         // -->
         if (mechanism.matches("move") && mechanism.requireObject(dLocation.class)) {
-            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), value.asType(dLocation.class).toVector());
+            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(dLocation.class).toVector());
         }
 
         // <--[mechanism]
@@ -2992,7 +2990,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
-            dLocation interactLocation = value.asType(dLocation.class);
+            dLocation interactLocation = mechanism.valueAsType(dLocation.class);
             NMSHandler.getInstance().getEntityHelper().forceInteraction(getPlayer(), interactLocation);
         }
 
@@ -3020,7 +3018,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
                 getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
-            ((Item) getBukkitEntity()).setPickupDelay(value.asType(Duration.class).getTicksAsInt());
+            ((Item) getBukkitEntity()).setPickupDelay(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3033,7 +3031,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.gliding>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("gliding") && mechanism.requireBoolean()) {
-            getLivingEntity().setGliding(value.asBoolean());
+            getLivingEntity().setGliding(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3046,9 +3044,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.glowing>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("glowing") && mechanism.requireBoolean()) {
-            getBukkitEntity().setGlowing(value.asBoolean());
+            getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, mechanism.getValue().asBoolean());
             }
         }
 
@@ -3063,7 +3061,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("dragon_phase")) {
             EnderDragon ed = (EnderDragon) getLivingEntity();
-            ed.setPhase(EnderDragon.Phase.valueOf(value.asString().toUpperCase()));
+            ed.setPhase(EnderDragon.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
@@ -3076,7 +3074,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.experience>
         // -->
         if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
-            ((ExperienceOrb) getBukkitEntity()).setExperience(value.asInt());
+            ((ExperienceOrb) getBukkitEntity()).setExperience(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -3089,7 +3087,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fuse_ticks>
         // -->
         if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
-            ((TNTPrimed) getBukkitEntity()).setFuseTicks(value.asInt());
+            ((TNTPrimed) getBukkitEntity()).setFuseTicks(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -3125,7 +3123,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && mechanism.matches("swimming")
                 && mechanism.requireBoolean()) {
-            getLivingEntity().setSwimming(value.asBoolean());
+            getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
         }
 
         CoreUtilities.autoPropertyMechanism(this, mechanism);

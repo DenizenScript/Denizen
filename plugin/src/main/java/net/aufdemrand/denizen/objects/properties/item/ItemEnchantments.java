@@ -201,7 +201,7 @@ public class ItemEnchantments implements Property {
             HashSet<String> names = null;
             if (mechanism.hasValue()) {
                 names = new HashSet<>();
-                for (String ench : mechanism.getValue().asType(dList.class)) {
+                for (String ench : mechanism.valueAsType(dList.class)) {
                     names.add(CoreUtilities.toLowerCase(ench));
                 }
             }
@@ -236,7 +236,7 @@ public class ItemEnchantments implements Property {
         // -->
 
         if (mechanism.matches("enchantments")) {
-            for (String enchant : mechanism.getValue().asType(dList.class)) {
+            for (String enchant : mechanism.valueAsType(dList.class)) {
                 if (!enchant.contains(",")) {
                     dB.echoError("Invalid enchantment format, use name,level|...");
                 }

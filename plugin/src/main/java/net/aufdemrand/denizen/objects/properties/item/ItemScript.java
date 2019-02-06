@@ -109,7 +109,7 @@ public class ItemScript implements Property {
         // Undocumented as meant for internal usage.
 
         if (mechanism.matches("script") && mechanism.requireObject(dScript.class)) {
-            dScript script = mechanism.getValue().asType(dScript.class);
+            dScript script = mechanism.valueAsType(dScript.class);
             if (script.getContainer() instanceof ItemScriptContainer) {
                 item.setItemScript((ItemScriptContainer) script.getContainer());
             }

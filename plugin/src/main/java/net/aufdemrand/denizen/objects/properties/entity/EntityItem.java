@@ -120,11 +120,11 @@ public class EntityItem implements Property {
         if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
             if (item.getBukkitEntity() instanceof Item) {
                 ((Item) item.getBukkitEntity()).setItemStack(mechanism.getValue()
-                        .asType(dItem.class).getItemStack());
+                        .asType(dItem.class, mechanism.context).getItemStack());
             }
             else {
                 NMSHandler.getInstance().getEntityHelper().setCarriedItem((Enderman) item.getBukkitEntity(),
-                        mechanism.getValue().asType(dItem.class).getItemStack());
+                        mechanism.valueAsType(dItem.class).getItemStack());
             }
         }
     }

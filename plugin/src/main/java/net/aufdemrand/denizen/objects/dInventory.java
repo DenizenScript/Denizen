@@ -2159,7 +2159,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                List<dItem> items = mechanism.getValue().asType(dList.class).filter(dItem.class);
+                List<dItem> items = mechanism.valueAsType(dList.class).filter(dItem.class);
                 ItemStack[] itemStacks = new ItemStack[9];
                 for (int i = 0; i < 9 && i < items.size(); i++) {
                     itemStacks[i] = items.get(i).getItemStack();
@@ -2184,7 +2184,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (mechanism.matches("result") && mechanism.requireObject(dItem.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                craftingInventory.setResult(mechanism.getValue().asType(dItem.class).getItemStack());
+                craftingInventory.setResult(mechanism.valueAsType(dItem.class).getItemStack());
                 ((Player) inventory.getHolder()).updateInventory();
             }
             else {

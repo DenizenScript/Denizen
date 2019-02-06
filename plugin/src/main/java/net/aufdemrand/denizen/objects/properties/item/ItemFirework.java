@@ -129,7 +129,7 @@ public class ItemFirework implements Property {
         // -->
 
         if (mechanism.matches("firework")) {
-            dList fireworks = mechanism.getValue().asType(dList.class);
+            dList fireworks = mechanism.valueAsType(dList.class);
             ItemMeta meta = item.getItemStack().getItemMeta();
             for (String effect : fireworks) {
                 String[] data = effect.split(",");
