@@ -69,8 +69,8 @@ public abstract class NMSHandler {
         return javaPlugin;
     }
 
-    public String getNmsMappingsCode() {
-        return null;
+    public boolean isCorrectMappingsCode() {
+        return true;
     }
 
     public abstract Sidebar createSidebar(Player player);
