@@ -60,6 +60,11 @@ public class Handler_v1_13_R2 extends NMSHandler {
     private final ProfileEditor profileEditor = new ProfileEditor_v1_13_R2();
 
     @Override
+    public void disableAsyncCatcher() {
+        org.spigotmc.AsyncCatcher.enabled = false;
+    }
+
+    @Override
     public boolean isCorrectMappingsCode() {
         return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("00ed8e5c39debc3ed194ad7c5645cc45");
     }

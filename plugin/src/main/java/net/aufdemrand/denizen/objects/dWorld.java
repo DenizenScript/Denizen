@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -8,7 +9,6 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -1044,7 +1044,7 @@ public class dWorld implements dObject, Adjustable {
             File folder = new File(getWorld().getName());
             Bukkit.getServer().unloadWorld(getWorld(), false);
             try {
-                FileUtils.deleteDirectory(folder);
+                Utilities.deleteDirectory(folder);
             }
             catch (Exception ex) {
                 dB.echoError(ex);

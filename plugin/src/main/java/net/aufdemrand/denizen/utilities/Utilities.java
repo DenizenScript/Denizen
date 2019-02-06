@@ -26,6 +26,11 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +41,38 @@ import java.util.List;
 public class Utilities {
 
     public static final TagContext noDebugContext = new BukkitTagContext(null, null, false, null, false, null);
+
+    public static void deleteDirectory(File directory) throws IOException {
+        Files.walkFileTree(directory.toPath(),
+                new SimpleFileVisitor<Path>() {
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+    }
+
+    public static void copyDirectory(File source, File destination) throws IOException {
+        copyDirectory(source.toPath(), destination.toPath());
+    }
+
+    public static void copyDirectory(Path source, Path destination) throws IOException {
+        Files.walk(source).forEach(file -> {
+            try {
+                Files.copy(file, destination.resolve(source.relativize(file)));
+            }
+            catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
 
     public static boolean canReadFile(File f) {
         if (Settings.allowStupids()) {

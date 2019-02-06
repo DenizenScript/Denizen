@@ -358,10 +358,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            org.spigotmc.AsyncCatcher.enabled = false;
+            NMSHandler.getInstance().disableAsyncCatcher();
         }
-        catch (Throwable e) {
-            dB.echoError("Running not-Spigot?!");
+        catch (Throwable ex) {
+            dB.echoError("Running not-Spigot?! AsyncCatcher disable failed!");
+            dB.echoError(ex);
         }
 
         try {
@@ -1707,7 +1708,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void preTagExecute() {
         try {
-            org.spigotmc.AsyncCatcher.enabled = false;
+            NMSHandler.getInstance().disableAsyncCatcher();
         }
         catch (Throwable e) {
             dB.echoError("Running not-Spigot?!");
