@@ -83,8 +83,6 @@ public class EntityBoatType implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object dEntity
         // @name boat_type
@@ -97,7 +95,7 @@ public class EntityBoatType implements Property {
         // -->
 
         if (mechanism.matches("boat_type")) {
-            TreeSpecies type = TreeSpecies.valueOf(value.asString().toUpperCase());
+            TreeSpecies type = TreeSpecies.valueOf(mechanism.getValue().asString().toUpperCase());
             if (type != null) {
                 ((Boat) entity.getBukkitEntity()).setWoodType(type);
             }

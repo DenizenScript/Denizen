@@ -1302,8 +1302,6 @@ public class ServerTags {
     }
 
     public static void adjustServer(Mechanism mechanism) {
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object server
         // @name delete_file
@@ -1319,7 +1317,7 @@ public class ServerTags {
                 dB.echoError("File deletion disabled by administrator.");
                 return;
             }
-            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
+            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), mechanism.getValue().asString());
             if (!Utilities.isSafeFile(file)) {
                 dB.echoError("Cannot delete that file (unsafe path).");
                 return;

@@ -1394,14 +1394,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         // TODO: Better mechanisms!
 
         if (mechanism.matches("outset")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -1416,8 +1414,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("expand")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -1433,8 +1431,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("set_location")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);

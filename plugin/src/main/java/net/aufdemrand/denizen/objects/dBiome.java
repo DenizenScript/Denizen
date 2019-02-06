@@ -283,8 +283,6 @@ public class dBiome implements dObject, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object dBiome
         // @name humidity
@@ -297,7 +295,7 @@ public class dBiome implements dObject, Adjustable {
         // <b@biome.humidity>
         // -->
         if (mechanism.matches("humidity") && mechanism.requireFloat()) {
-            biome.setHumidity(value.asFloat());
+            biome.setHumidity(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -313,7 +311,7 @@ public class dBiome implements dObject, Adjustable {
         // <b@biome.temperature>
         // -->
         if (mechanism.matches("temperature") && mechanism.requireFloat()) {
-            biome.setTemperature(value.asFloat());
+            biome.setTemperature(mechanism.getValue().asFloat());
         }
 
     }
