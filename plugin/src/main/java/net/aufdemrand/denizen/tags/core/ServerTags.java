@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -39,6 +40,7 @@ import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.sql.Connection;
@@ -160,6 +162,46 @@ public class ServerTags {
                 event.setReplaced(new Element(slotId).getAttribute(attribute.fulfill(1)));
             }
             return;
+        }
+
+        if (attribute.startsWith("scoreboard")) {
+            Scoreboard board;
+            String name = "main";
+            if (attribute.hasContext(1)) {
+                name = attribute.getContext(1);
+                board = ScoreboardHelper.getScoreboard(name);
+            }
+            else {
+                board = ScoreboardHelper.getMain();
+            }
+            // <--[tag]
+            // @attribute <server.scoreboard[<board>].exists>
+            // @returns dList
+            // @description
+            // Returns whether a given scoreboard exists on the server.
+            // -->
+            if (attribute.startsWith("exists")) {
+                event.setReplaced(new Element(board != null).getAttribute(attribute.fulfill(2)));
+                return;
+            }
+            if (board == null) {
+                if (!attribute.hasAlternative()) {
+                    dB.echoError("Scoreboard '" + name + "' does not exist.");
+                }
+                return;
+            }
+            // <--[tag]
+            // @attribute <server.scoreboard[(<board>)].team_members[<team>]>
+            // @returns dList
+            // @description
+            // Returns a list of all members of a scoreboard team. Generally returns as a list of names or text entries.
+            // Members are not necessarily written in any given format and are not guaranteed to validly fit any requirements.
+            // Optionally, specify which scoreboard to use.
+            // -->
+            if (attribute.startsWith("team_members") && attribute.hasContext(2)) {
+                event.setReplacedObject(new dList(board.getEntries()).getObjectAttribute(attribute.fulfill(2)));
+                return;
+            }
         }
 
         // <--[tag]

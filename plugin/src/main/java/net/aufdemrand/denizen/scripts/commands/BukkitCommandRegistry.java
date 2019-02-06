@@ -3329,7 +3329,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
         //
         // @Tags
-        // None
+        // <server.scoreboard[(<board>)].exists>
+        // <server.scoreboard[(<board>)].team_members[<team>]>
         //
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
@@ -3849,7 +3850,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
         //
         // @Tags
-        // None
+        // <server.scoreboard[(<board>)].team_members[<team>]>
         //
         // @Usage
         // Use to add a player to a team.
