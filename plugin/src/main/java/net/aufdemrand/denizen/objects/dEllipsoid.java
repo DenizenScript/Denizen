@@ -4,8 +4,6 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -294,12 +292,10 @@ public class dEllipsoid implements dObject, Notable {
             }
             return tr.run(attribute, this);
         }
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);

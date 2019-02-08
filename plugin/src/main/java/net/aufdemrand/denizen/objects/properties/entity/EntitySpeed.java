@@ -43,6 +43,14 @@ public class EntitySpeed implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "speed"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "speed"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

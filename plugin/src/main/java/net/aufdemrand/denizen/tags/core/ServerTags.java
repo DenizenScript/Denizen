@@ -16,6 +16,7 @@ import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -39,6 +40,7 @@ import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.sql.Connection;
@@ -86,6 +88,10 @@ public class ServerTags {
         if (!event.matches("math", "m")) {
             return;
         }
+        if (event.matches("m")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
+        }
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
@@ -104,11 +110,15 @@ public class ServerTags {
     // Returns either the first element, or 'fallback' element depending on
     // the outcome of the condition. First element will show in a result of 'true',
     // otherwise the fallback element will show.
-    // Example: '<t[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
+    // Example: '<tern[<player.is_spawned>]:Player is spawned! || Player is not spawned!>'
     // -->
     public void ternaryTag(ReplaceableTagEvent event) { // TODO: Core
         if (!event.matches("ternary", "tern", "t")) {
             return;
+        }
+        if (event.matches("t")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'tern' instead of 't' as a root tag.");
         }
 
         // Fallback if nothing to evaluate
@@ -129,6 +139,14 @@ public class ServerTags {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
         }
+        if (event.matches("srv")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
+        }
+        if (event.matches("global")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Using 'global' as a base tag is a deprecated alternate name. Please use 'server' instead.");
+        }
         Attribute attribute = event.getAttributes().fulfill(1);
 
         // <--[tag]
@@ -144,6 +162,46 @@ public class ServerTags {
                 event.setReplaced(new Element(slotId).getAttribute(attribute.fulfill(1)));
             }
             return;
+        }
+
+        if (attribute.startsWith("scoreboard")) {
+            Scoreboard board;
+            String name = "main";
+            if (attribute.hasContext(1)) {
+                name = attribute.getContext(1);
+                board = ScoreboardHelper.getScoreboard(name);
+            }
+            else {
+                board = ScoreboardHelper.getMain();
+            }
+            // <--[tag]
+            // @attribute <server.scoreboard[<board>].exists>
+            // @returns dList
+            // @description
+            // Returns whether a given scoreboard exists on the server.
+            // -->
+            if (attribute.startsWith("exists")) {
+                event.setReplaced(new Element(board != null).getAttribute(attribute.fulfill(2)));
+                return;
+            }
+            if (board == null) {
+                if (!attribute.hasAlternative()) {
+                    dB.echoError("Scoreboard '" + name + "' does not exist.");
+                }
+                return;
+            }
+            // <--[tag]
+            // @attribute <server.scoreboard[(<board>)].team_members[<team>]>
+            // @returns dList
+            // @description
+            // Returns a list of all members of a scoreboard team. Generally returns as a list of names or text entries.
+            // Members are not necessarily written in any given format and are not guaranteed to validly fit any requirements.
+            // Optionally, specify which scoreboard to use.
+            // -->
+            if (attribute.startsWith("team_members") && attribute.hasContext(2)) {
+                event.setReplacedObject(new dList(board.getEntries()).getObjectAttribute(attribute.fulfill(2)));
+                return;
+            }
         }
 
         // <--[tag]
@@ -1286,8 +1344,6 @@ public class ServerTags {
     }
 
     public static void adjustServer(Mechanism mechanism) {
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object server
         // @name delete_file
@@ -1303,7 +1359,7 @@ public class ServerTags {
                 dB.echoError("File deletion disabled by administrator.");
                 return;
             }
-            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), value.asString());
+            File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), mechanism.getValue().asString());
             if (!Utilities.isSafeFile(file)) {
                 dB.echoError("Cannot delete that file (unsafe path).");
                 return;
@@ -1443,10 +1499,6 @@ public class ServerTags {
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server shutdown by a Denizen script, see config to prevent this!");
             Bukkit.shutdown();
-        }
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
         }
     }
 }

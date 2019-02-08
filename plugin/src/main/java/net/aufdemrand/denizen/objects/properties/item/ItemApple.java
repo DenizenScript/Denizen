@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.item;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -12,7 +14,8 @@ public class ItemApple implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && (((dItem) item).getItemStack().getType() == Material.GOLDEN_APPLE);
+                && ((((dItem) item).getItemStack().getType() == Material.GOLDEN_APPLE)
+                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && ((dItem) item).getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE));
     }
 
     public static ItemApple getFrom(dObject _item) {
@@ -23,6 +26,14 @@ public class ItemApple implements Property {
             return new ItemApple((dItem) _item);
         }
     }
+
+    public static final String[] handledTags = new String[] {
+            "apple_enchanted"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "apple_enchanted"
+    };
 
 
     private ItemApple(dItem _item) {
@@ -45,8 +56,13 @@ public class ItemApple implements Property {
         // @mechanism dItem.apple_enchanted
         // @description
         // Returns whether a golden apple item is enchanted.
+        // NOTE: In 1.13+, enchanted golden apples are now a separate Material type, making this tag no longer required.
         // -->
         if (attribute.startsWith("apple_enchanted")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                return new Element(item.getItemStack().getType() == Material.ENCHANTED_GOLDEN_APPLE)
+                        .getAttribute(attribute.fulfill(1));
+            }
             return new Element(item.getItemStack().getDurability() == 1)
                     .getAttribute(attribute.fulfill(1));
         }
@@ -57,6 +73,9 @@ public class ItemApple implements Property {
 
     @Override
     public String getPropertyString() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return null;
+        }
         if (item.getItemStack().getDurability() == 1) {
             return "true";
         }
@@ -79,11 +98,15 @@ public class ItemApple implements Property {
         // @input Element(Boolean)
         // @description
         // Changes whether a golden apple is enchanted.
+        // NOTE: In 1.13+, enchanted golden apples are now a separate Material type, making this mechanism no longer required.
         // @tags
         // <i@item.apple_enchanted>
         // -->
 
         if (mechanism.matches("apple_enchanted") && mechanism.requireBoolean()) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                item.getItemStack().setType(mechanism.getValue().asBoolean() ? Material.ENCHANTED_GOLDEN_APPLE : Material.GOLDEN_APPLE);
+            }
             item.getItemStack().setDurability((short) (mechanism.getValue().asBoolean() ? 1 : 0));
         }
     }

@@ -12,8 +12,14 @@ import org.bukkit.ChatColor;
 public class TextTags {
 
     public TextTags(Denizen denizen) {
-        TagManager.registerTagEvents(this);
-        // TODO: register handlers for other events
+        TagManager.registerTagHandler(new TagRunnable.RootForm() {
+            @Override
+            public void run(ReplaceableTagEvent event) {
+                specialCharacterTags(event);
+            }
+        }, "&auml", "&Auml", "&ouml", "&Ouml", "&uuml", "&Uuml", "&nl", "&amp", "&cm", "&ss", "&sq", "&sp", "&nbsp",
+                "&dq", "&co", "&sc", "&rb", "&lb", "&rc", "&lc", "&ns", "&pc", "&pipe",
+                "&ds", "&lt", "&gt", "&bs", "&at", "&dot", "&hrt", "&chr");
         for (ChatColor color : ChatColor.values()) {
             final String nameVal = CoreUtilities.toLowerCase(color.name());
             final String codeVal = "&" + String.valueOf(color.getChar());

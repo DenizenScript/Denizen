@@ -25,6 +25,13 @@ public class InventoryContents implements Property {
         return new InventoryContents((dInventory) inventory);
     }
 
+    public static final String[] handledTags = new String[] {
+            "list_contents"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "contents"
+    };
 
     ///////////////////
     // Instance Fields and Methods
@@ -157,6 +164,7 @@ public class InventoryContents implements Property {
             // @mechanism dInventory.contents
             // @description
             // Returns a list of all items in the inventory, with the tag item.full used.
+            // Irrelevant on modern (1.13+) servers.
             // -->
             if (attribute.startsWith("full")) {
                 return getContents(2).getAttribute(attribute.fulfill(1));
@@ -219,7 +227,7 @@ public class InventoryContents implements Property {
         // <in@inventory.list_contents.with_lore[<lore>].simple>
         // -->
         if (mechanism.matches("contents") && inventory.getIdType().equals("generic")) {
-            inventory.setContents(mechanism.getValue().asType(dList.class));
+            inventory.setContents(mechanism.valueAsType(dList.class));
         }
 
     }

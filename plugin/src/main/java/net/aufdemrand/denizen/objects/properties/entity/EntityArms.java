@@ -24,6 +24,15 @@ public class EntityArms implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "arms"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "arms"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

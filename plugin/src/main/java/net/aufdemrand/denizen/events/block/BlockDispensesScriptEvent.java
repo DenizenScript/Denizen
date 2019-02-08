@@ -105,7 +105,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             }
         }
         else if (dItem.matches(determination)) {
-            dItem it = dItem.valueOf(determination);
+            dItem it = dItem.valueOf(determination, container);
             if (it == null) {
                 dB.echoError("[" + getName() + "] Invalid item!");
             }

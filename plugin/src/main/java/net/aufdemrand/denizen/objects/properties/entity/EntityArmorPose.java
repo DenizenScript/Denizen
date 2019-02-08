@@ -31,6 +31,14 @@ public class EntityArmorPose implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "armor_pose_list", "armor_pose"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "armor_pose"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods
@@ -136,7 +144,7 @@ public class EntityArmorPose implements Property {
         // -->
         if (mechanism.matches("armor_pose")) {
             ArmorStand armorStand = (ArmorStand) entity.getBukkitEntity();
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             Iterator<String> iterator = list.iterator();
             while (iterator.hasNext()) {
                 String name = iterator.next();

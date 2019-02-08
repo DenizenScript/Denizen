@@ -144,7 +144,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
                                 (dplayer, npc, false, null, false, null));
                         // Check if the item specified in the specified id's 'trigger:' key
                         // matches the item that the player is holding.
-                        if (dItem.valueOf(entry_value).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
+                        if (dItem.valueOf(entry_value, script).comparesTo(dplayer.getPlayerEntity().getItemInHand()) >= 0) {
                             id = entry.getKey();
                         }
                     }

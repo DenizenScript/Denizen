@@ -30,6 +30,15 @@ public class ItemCanDestroy implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "can_destroy"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "can_destroy"
+    };
+
+
     private ItemCanDestroy(dItem item) {
         this.item = item;
     }
@@ -107,7 +116,7 @@ public class ItemCanDestroy implements Property {
             ItemStack itemStack = item.getItemStack();
 
             if (mechanism.hasValue()) {
-                List<Material> materials = mechanism.getValue().asType(dList.class).filter(dMaterial.class)
+                List<Material> materials = mechanism.valueAsType(dList.class).filter(dMaterial.class)
                         .stream().map(dMaterial::getMaterial).collect(Collectors.toList());
                 itemStack = CustomNBT.setNBTMaterials(itemStack, CustomNBT.KEY_CAN_DESTROY, materials);
             }

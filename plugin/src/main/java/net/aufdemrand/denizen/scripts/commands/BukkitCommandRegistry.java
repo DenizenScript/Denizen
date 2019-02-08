@@ -24,9 +24,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Action
         // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
         // @Required 1
-        // @Stable unstable
         // @Short Manually fires an NPC action.
-        // @Author mcmonkey
         // @Group npc
         //
         // @Description
@@ -59,9 +57,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ActionBar
         // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
         // @Required 1
-        // @Stable stable
         // @Short Sends a message to a player's action bar.
-        // @Author Fortifier42
         // @group player
         //
         // @Description
@@ -89,43 +85,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name Adjust
-        // @Syntax adjust [<dObject>|...] [<mechanism>](:<value>)
-        // @Required 2
-        // @Stable stable
-        // @Short Adjusts a dObjects mechanism.
-        // @Author aufdemrand
-        // @Group core
-        // @Video /denizen/vids/Properties%20and%20Mechanisms
-        //
-        // @Description
-        // Many dObjects contains options and properties that need to be adjusted. Denizen employs a mechanism
-        // interface to deal with those adjustments. To easily accomplish this, use this command with a valid object
-        // mechanism, and sometimes accompanying value.
-        //
-        // @Tags
-        // <entry[saveName].result> returns the adjusted object.
-        // <entry[saveName].result_list> returns a dList of adjusted objects.
-        //
-        // @Usage
-        // Use to set a custom display name on an entity.
-        // - adjust e@1000 'custom_name:ANGRY!'
-        //
-        // @Usage
-        // Use as part of the steps to modify the item a player is holding (adjust the item, then swap the new item into the original inventory)
-        // - adjust <player.item_in_hand> "lore:Advanced Item" save:myitem
-        // - inventory set slot:<player.item_in_hand.slot> d:<player.inventory> o:<entry[myitem].result>
-        // -->
-        registerCoreMember(AdjustCommand.class,
-                "ADJUST", "adjust [<dObject>|...] [<mechanism>](:<value>)", 2);
-
-        // <--[command]
         // @Name Advancement
         // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
         // @Required 1
-        // @Stable stable
         // @Short Controls a custom advancement.
-        // @Author Morphan1
         // @Group player
         //
         // @Description
@@ -174,9 +137,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Age
         // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)
         // @Required 1
-        // @Stable stable
         // @Short Sets the ages of a list of entities, optionally locking them in those ages.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -211,9 +172,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Anchor
         // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
         // @Required 2
-        // @Stable stable
         // @Short Controls an NPC's Anchor Trait.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -250,9 +209,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Animate
         // @Syntax animate [<entity>|...] [animation:<name>]
         // @Required 2
-        // @Stable stable
         // @Short Makes a list of entities perform a certain animation.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -291,9 +248,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name AnimateChest
         // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
         // @Required 1
-        // @Stable unstable
         // @Short Makes a chest appear to open or close.
-        // @Author Jeebiss, mcmonkey
         // @Group world
         //
         // @Description
@@ -334,9 +289,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Announce
         // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
         // @Required 1
-        // @Stable stable
         // @Short Announces a message for everyone online to read.
-        // @Author aufdemrand
         // @Group server
         //
         // @Description
@@ -347,6 +300,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // use the 'to_console' argument to make it so it only shows in the server console. Announce
         // can also utilize a format script with the 'format' argument. See the format script-container
         // for more information.
+        //
+        // Note that the default announce mode (that shows for all players) relies on the Bukkit broadcast
+        // system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
         //
         // @Tags
         // None
@@ -375,9 +331,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Assignment
         // @Syntax assignment [set/remove] (script:<name>)
         // @Required 1
-        // @Stable unstable
         // @Short Changes an NPC's assignment.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -412,9 +366,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Attack
         // @Syntax attack (<entity>|...) (target:<entity>/cancel)
         // @Required 0
-        // @Stable stable
         // @Short Makes an entity, or list of entities, attack a target.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -455,9 +407,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Ban
         // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)
         // @Required 1
-        // @Stable stable
         // @Short Ban or un-ban players or ip addresses.
-        // @Author Fortifier42, Mergu
         // @Group server
         //
         // @Description
@@ -522,9 +472,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name BlockCrack
         // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)
         // @Required 2
-        // @Stable stable
         // @Short Shows the player(s) a block cracking animation.
-        // @Author Morphan1
         // @Group world
         //
         // @Description
@@ -548,7 +496,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - repeat 10:
         //   - blockcrack l@12,43,20,world progress:<def[value]> stack
         // -->
-        registerCoreMember(BlockCrack.class,
+        registerCoreMember(BlockCrackCommand.class,
                 "BLOCKCRACK", "blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)", 2);
 
 
@@ -556,9 +504,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Break
         // @Syntax break [<location>] (<npc>) (radius:<#.#>)
         // @Required 1
-        // @Stable unstable
         // @Short Makes an NPC walk over and break a block.
-        // @Author aufdemrand
         // @Group world
         //
         // @Description
@@ -593,9 +539,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name BossBar
         // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
         // @Required 1
-        // @Stable stable
         // @Short Shows players a boss bar.
-        // @Author Morphan1
         // @Group server
         //
         // @Description
@@ -641,9 +585,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Burn
         // @Syntax burn [<entity>|...] (duration:<value>)
         // @Required 1
-        // @Stable stable
         // @Short Sets a list of entities on fire.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -672,9 +614,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Cast
         // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)
         // @Required 1
-        // @Stable Stable
         // @Short Casts a potion effect to a list of entities.
-        // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Group entity
         //
         // @Description
@@ -711,9 +651,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Chat
         // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
-        // @Stable stable
         // @Short Causes an NPC/NPCs to send a chat message to nearby players.
-        // @Author aufdemrand
         // @Group player
         //
         // @Description
@@ -764,9 +702,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ChunkLoad
         // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
         // @Required 1
-        // @Stable stable
         // @Short Keeps a chunk actively loaded and allowing NPC activity.
-        // @Author spaceemotion, mcmonkey
         // @Group world
         //
         // @Description
@@ -802,9 +738,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Compass
         // @Syntax compass [<location>/reset]
         // @Required 1
-        // @Stable stable
         // @Short Redirects the player's compass to target the given location.
-        // @Author mcmonkey
         // @Group player
         //
         // @Description
@@ -840,9 +774,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Cooldown
         // @Syntax cooldown [<duration>] (global) (s:<script>)
         // @Required 1
-        // @Stable stable
         // @Short Temporarily disables a script-container from meeting requirements.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -880,9 +812,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name CopyBlock
         // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
         // @Required 1
-        // @Stable unstable
         // @Short Copies a block or cuboid to another location, keeping metadata when possible.
-        // @Author aufdemrand, David Cernat
         // @Group world
         //
         // @Description
@@ -909,9 +839,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Create
         // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
         // @Required 1
-        // @Stable experimental
         // @Short Creates a new NPC, and optionally spawns it at a location.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -941,9 +869,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name CreateWorld
         // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)
         // @Required 1
-        // @Stable unstable
         // @Short Creates a new world, or loads an existing world.
-        // @Author aufdemrand, mcmonkey
         // @Group world
         //
         // @Description
@@ -980,9 +906,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Despawn
         // @Syntax despawn (<npc>|...)
         // @Required 0
-        // @Stable stable
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
-        // @Author mcmonkey
         // @Group npc
         //
         // @Description
@@ -1011,9 +935,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Disengage
         // @Syntax disengage
         // @Required 0
-        // @Stable stable
         // @Short Enables an NPCs triggers that have been temporarily disabled by the engage command.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -1052,9 +974,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name DisplayItem
         // @Syntax displayitem [<item>] [<location>] (duration:<value>)
         // @Required 2
-        // @Stable unstable
         // @Short Makes a non-touchable item spawn for players to view.
-        // @Author aufdemrand, mcmonkey
         // @Group item
         //
         // @Description
@@ -1090,9 +1010,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Drop
         // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
         // @Required 1
-        // @Stable stable
         // @Short Drops an item, entity, or experience orb on a location.
-        // @Author aufdemrand
         // @Group world
         //
         // @Description
@@ -1133,9 +1051,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Engage
         // @Syntax engage (<duration>)
         // @Required 0
-        // @Stable stable
         // @Short Temporarily disables an NPCs toggled interact script-container triggers.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -1184,9 +1100,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Equip
         // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
         // @Required 1
-        // @Stable stable
         // @Short Equips items and armor on a list of entities.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -1229,9 +1143,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Event
         // @Syntax event [<event name>|...] (context:<name>|<object>|...)
         // @Required 1
-        // @Stable unstable
         // @Short Manually fires a world event.
-        // @Author mcmonkey
         // @Group core
         //
         // @Description
@@ -1267,9 +1179,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Execute
         // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)
         // @Required 2
-        // @Stable stable
         // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
-        // @Author aufdemrand
         // @Group server
         //
         // @Description
@@ -1295,9 +1205,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Experience
         // @Syntax experience [{set}/give/take] (level) [<#>]
         // @Required 2
-        // @Stable unstable
         // @Short Gives or takes experience points to the player.
-        // @Author aufdemrand, mcmonkey
         // @Group player
         //
         // @Description
@@ -1337,9 +1245,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Explode
         // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks)
         // @Required 0
-        // @Stable stable
         // @Short Causes an explosion at the location.
-        // @Author Alain Blanquet
         // @Group world
         //
         // @Description
@@ -1378,10 +1284,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Fail
         // @Syntax fail (script:<name>)
         // @Required 0
-        // @Stable stable
         // @Deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having failed.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -1400,9 +1304,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name FakeItem
         // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
-        // @Stable stable
         // @Short Show a fake item in a player's inventory.
-        // @Author Morphan1
         // @Group item
         //
         // @Description
@@ -1430,9 +1332,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Feed
         // @Syntax feed (amount:<#>) (target:<entity>)
         // @Required 0
-        // @Stable unstable
         // @Short Feed the player or npc.
-        // @Author aufdemrand, Jeebiss
         // @Group entity
         //
         // @Description
@@ -1461,10 +1361,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Finish
         // @Syntax finish (script:<name>)
         // @Required 0
-        // @Stable stable
         // @Deprecated This command is outdated, use flags instead!
         // @Short Marks a script as having been completed successfully.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -1484,9 +1382,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Firework
         // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
         // @Required 0
-        // @Stable stable
         // @Short Launches a firework with specific coloring
-        // @Author David Cernat
         // @Group world
         //
         // @Description
@@ -1501,6 +1397,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.firework_item>
         // <i@item.is_firework>
         // <i@item.firework>
+        // <entry[saveName].launched_firework> returns a dEntity of the firework that was launched.
         //
         // @Usage
         // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
@@ -1526,9 +1423,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Fish
         // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
         // @Required 1
-        // @Stable stable
         // @Short Causes an NPC to begin fishing around a specified location.
-        // @Author Jeebiss, Morphan1
         // @Group npc
         //
         // @Description
@@ -1558,9 +1453,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Flag
         // @Syntax flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
         // @Required 1
-        // @Stable stable
         // @Short Sets or modifies a flag on the player, NPC, entity, or server.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -1646,9 +1539,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Fly
         // @Syntax fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)
         // @Required 1
-        // @Stable stable
         // @Short Make an entity fly where its controller is looking or fly to waypoints.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -1670,9 +1561,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name FileCopy
         // @Syntax filecopy [origin:<origin>] [destination:<destination>] (overwrite)
         // @Required 2
-        // @Stable stable
         // @Short Copies a file from one location to another.
-        // @Author mcmonkey
         // @Group core
         //
         // @Description
@@ -1697,9 +1586,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Follow
         // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
         // @Required 0
-        // @Stable stable
         // @Short Causes a list of entities to follow a target.
-        // @Author aufdemrand, Morphan1
         // @Group entity
         //
         // @Description
@@ -1722,9 +1609,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Gamerule
         // @Syntax gamerule [<world>] [<rule>] [<value>]
         // @Required 3
-        // @Stable unstable
         // @Short Sets a gamerule on the world.
-        // @Author Jeebiss
         // @Group item
         //
         // @Description
@@ -1750,9 +1635,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Give
         // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
         // @Required 1
-        // @Stable stable
         // @Short Gives the player an item, xp, or money.
-        // @Author Jeebiss
         // @Group item
         //
         // @Description
@@ -1794,9 +1677,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Glow
         // @Syntax glow [<entity>|...] (<should glow>)
         // @Required 1
-        // @Stable unstable
         // @Short Makes the linked player see the chosen entities as glowing.
-        // @Author mcmonkey
         // @Group player
         //
         // @Description
@@ -1826,9 +1707,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Group
         // @Syntax group [add/remove/set] [<group>] (<world>)
         // @Required 2
-        // @Stable stable
         // @Short Adds a player to, removes a player from, or sets a player's permissions group.
-        // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
         //
@@ -1866,9 +1745,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Head
         // @Syntax head (<entity>|...) [skin:<player_name>]
         // @Required 1
-        // @Stable stable
         // @Short Makes players or NPCs wear a specific player's head.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -1899,9 +1776,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Heal
         // @Syntax heal (<#.#>) ({player}/<entity>|...)
         // @Required 0
-        // @Stable stable
         // @Short Heals the player or list of entities.
-        // @Author aufdemrand, Jeebiss, Morphan1, mcmonkey
         // @Group entity
         //
         // @Description
@@ -1931,9 +1806,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Health
         // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)
         // @Required 1
-        // @Stable stable
         // @Short Changes the target's maximum health.
-        // @Author mcmonkey
         // @Group entity
         //
         // @Description
@@ -1974,9 +1847,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Hurt
         // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
         // @Required 0
-        // @Stable stable
         // @Short Hurts the player or a list of entities.
-        // @Author aufdemrand, Jeebiss, morphan1, mcmonkey
         // @Group entity
         //
         // @Description
@@ -2017,11 +1888,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Inventory
-        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
+        // @Syntax inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)
         // @Required 1
-        // @Stable stable
         // @Short Edits the inventory of a player, NPC, or chest.
-        // @Author David Cernat, Morphan1
         // @Group item
         //
         // @Description
@@ -2066,19 +1935,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to swap two players' inventories.
         // - inventory swap d:in@player[holder=p@mcmonkey4eva] o:<p@fullwall.inventory>
+        //
+        // @Usage
+        // Use to adjust a specific item in the player's inventory.
+        // - inventory adjust slot:5 "lore:Item modified!"
         // -->
         registerCoreMember(InventoryCommand.class,
-                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
+                "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
 
 
         // <--[command]
         // @Name Inject
         // @Syntax inject (locally) [<script>] (path:<name>) (instantly)
         // @Required 1
-        // @Stable stable
         // @Short Runs a script in the current ScriptQueue.
         // @Video /denizen/vids/Run%20And%20Inject
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -2102,9 +1973,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Invisible
         // @Syntax invisible [<entity>] (state:true/false/toggle)
         // @Required 1
-        // @Stable unstable
         // @Short Makes an NPC or entity go invisible
-        // @Author aufdemrand, mcmonkey
         // @Group entity
         //
         // @Description
@@ -2134,9 +2003,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ItemCooldown
         // @Syntax itemcooldown [<material>|...] (duration:<duration>)
         // @Required 1
-        // @Stable stable
         // @Short Places a cooldown on a material in a player's inventory.
-        // @Author Mergu
         // @Group player
         //
         // @Description
@@ -2163,9 +2030,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name kick
         // @Syntax kick [<player>|...] (reason:<text>)
         // @Required 1
-        // @Stable stable
         // @Short Kicks a player from the server.
-        // @Author Fortifier42
         // @Group player
         //
         // @Description
@@ -2195,9 +2060,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Leash
         // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)
         // @Required 1
-        // @Stable stable
         // @Short Sticks a leash on target entity, held by a fence or another entity.
-        // @Author Alain Blanquet, mcmonkey
         // @Group entity
         //
         // @Description
@@ -2232,9 +2095,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Light
         // @Syntax light [<location>] [<#>/reset] (duration:<duration>)
         // @Required 2
-        // @Stable stable
         // @Short Creates a light source at the location with a specified brightness.
-        // @Author Morphan1
         // @Group world
         //
         // @Description
@@ -2264,9 +2125,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Log
         // @Syntax log [<text>] (type:{info}/severe/warning/fine/finer/finest/none/clear) [file:<name>]
         // @Required 2
-        // @Stable stable
         // @Short Logs some debugging info to a file.
-        // @Author SpaceEmotion, mcmonkey
         // @Group core
         //
         // @Description
@@ -2317,9 +2176,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Look
         // @Syntax look (<entity>|...) [<location>] (duration:<duration>)
         // @Required 1
-        // @Stable stable
         // @Short Causes the NPC or other entity to look at a target location.
-        // @Author aufdemrand, mcmonkey
         // @Group entity
         //
         // @Description
@@ -2347,9 +2204,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name LookClose
         // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
         // @Required 0
-        // @Stable stable
         // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens2.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -2382,9 +2237,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Map
         // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
         // @Required 2
-        // @Stable stable
         // @Short Modifies a new or existing map by adding images or text.
-        // @Author Morphan1
         // @Group item
         //
         // @Description
@@ -2395,7 +2248,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Note that all maps have a size of 128x128.
         // The file path is relative to the 'plugins/Denizen/images/' folder.
         // Use escaping to let the image and text arguments have tags based on the player viewing the map.
-        // Custom maps do not persist over restarts.
+        // Custom maps will persist over restarts using the 'maps.yml' save file in the Denizen plugins folder.
         //
         // @Tags
         // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
@@ -2419,9 +2272,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Midi
         // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)
         // @Required 1
-        // @Stable stable
         // @Short Plays a midi file at a given location or to a list of players using note block sounds.
-        // @Author David Cernat
         // @Group world
         //
         // @Description
@@ -2456,9 +2307,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Money
         // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)
         // @Required 1
-        // @Stable stable
         // @Short Manage a player's money.
-        // @Author Fortifier42
         // @Group player
         // @Plugin Vault
         //
@@ -2497,9 +2346,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Mount
         // @Syntax mount (cancel) [<entity>|...] (<location>)
         // @Required 0
-        // @Stable stable
         // @Short Mounts one entity onto another.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -2535,9 +2382,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ModifyBlock
         // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
         // @Required 2
-        // @Stable stable
         // @Short Modifies blocks.
-        // @Author Jeebiss, aufdemrand, mcmonkey
         // @Group world
         //
         // @Description
@@ -2583,9 +2428,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Narrate
         // @Syntax narrate [<text>] (targets:<player>|...) (format:<name>)
         // @Required 1
-        // @Stable stable
         // @Short Shows some text to the player.
-        // @Author aufdemrand
         // @Group player
         //
         // @Description
@@ -2612,9 +2455,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name NBT
         // @Syntax nbt [<item>] [<key>:<value>]
         // @Required 2
-        // @Stable experimental
         // @Short Sets the value of an item's NBT key.
-        // @Author Morphan1
         // @Group item
         //
         // @Description
@@ -2647,9 +2488,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Note
         // @Syntax note [<Notable dObject>/remove] [as:<name>]
         // @Required 2
-        // @Stable unstable
         // @Short Adds or removes a notable object.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -2685,12 +2524,48 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
+        // @Name OpenTrades
+        // @Syntax opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)
+        // @Required 1
+        // @Short Opens the specified villager entity's trading inventory or a list of trades.
+        // @Group player
+        //
+        // @Description
+        // Forces a player to open a villager's trading inventory or a virtual trading inventory.
+        // If an entity is specified, only one player can be specified.
+        // Otherwise, if a list of trades is specified, more than one player can be specified.
+        // If the title is not specified, no title will be applied to the virtual trading inventory.
+        // If no player is specified, by default the attached player will be forced to trade.
+        //
+        // @Tags
+        // <p@player.selected_trade_index>
+        // <e@entity.is_trading>
+        // <e@entity.trades>
+        // <e@entity.trading_with>
+        //
+        // @Usage
+        // Use to open an unusable trade.
+        // - opentrades trade@trade
+        //
+        // @Usage
+        // Use to open a list of trades with an optional title.
+        // - opentrades trade@trade[result=i@stone;inputs=li@i@stone;max_uses=9999]|trade@trade[result=i@barrier] "title:Useless Trades"
+        //
+        // @Usage
+        // Use to force a player to trade with a villager.
+        // - opentrades <def[villager_entity]>
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            registerCoreMember(OpenTradesCommand.class,
+                    "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
+        }
+
+
+        // <--[command]
         // @Name Oxygen
         // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
         // @Required 1
-        // @Stable unstable
         // @Short Gives or takes breath from the player.
-        // @Author David Cernat
         // @Group player
         //
         // @Description
@@ -2721,9 +2596,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Pause
         // @Syntax pause [waypoints/activity] (<duration>)
         // @Required 1
-        // @Stable unstable
         // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -2750,9 +2623,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Resume
         // @Syntax resume [waypoints/activity] (<duration>)
         // @Required 1
-        // @Stable unstable
         // @Short Resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -2784,9 +2655,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name PlayEffect
         // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
         // @Required 2
-        // @Stable stable
         // @Short Plays a visible or audible effect at the location.
-        // @Author David Cernat, mcmonkey
         // @Group world
         //
         // @Description
@@ -2829,9 +2698,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name PlaySound
         // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)
         // @Required 2
-        // @Stable stable
         // @Short Plays a sound at the location or to a list of players.
-        // @Author Jeebiss
         // @Group world
         //
         // @Description
@@ -2873,9 +2740,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Permission
         // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)
         // @Required 2
-        // @Stable unstable
         // @Short Gives or takes a permission node to/from the player or group.
-        // @Author GnomeffinWay
         // @Group player
         // @Plugin Vault
         //
@@ -2915,9 +2780,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Pose
         // @Syntax pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)
         // @Required 1
-        // @Stable stable
         // @Short Rotates the player or NPC to match a pose, or adds/removes an NPC's poses.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -2952,9 +2815,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Push
         // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)
         // @Required 1
-        // @Stable stable
         // @Short Pushes entities through the air in a straight line.
-        // @Author David Cernat, mcmonkey
         // @Group entity
         //
         // @Description
@@ -2983,9 +2844,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Pushable
         // @Syntax pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)
         // @Required 0
-        // @Stable stable
         // @Short Edits the pushable trait for NPCs.
-        // @Author Morphan1
         // @Group npc
         //
         // @Description
@@ -3010,9 +2869,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Queue
         // @Syntax queue (<queue>) [clear/stop/pause/resume/delay:<#>]
         // @Required 1
-        // @Stable stable
         // @Short Modifies the current state of a script queue.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -3058,9 +2915,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Random
         // @Syntax random [<#>/<commands>]
         // @Required 0
-        // @Stable stable
         // @Short Selects a random choice from the following script commands.
-        // @Author aufdemrand, morphan1
         // @Group core
         //
         // @Description
@@ -3113,9 +2968,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Remove
         // @Syntax remove [<entity>|...] (world:<world>)
         // @Required 1
-        // @Stable stable
-        // @Short Despawns an entity or list of entities, including any NPCs.
-        // @Author David Cernat
+        // @Short Despawns an entity or list of entities, permanently removing any NPCs.
         // @Group entity
         // @Description
         //  TODO: CUBOID OPTION
@@ -3130,10 +2983,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.is_spawned>
         //
-        // @Usage // Use to remove the entity the player is looking at.
+        // @Usage
+        // Use to remove the entity the player is looking at.
         // - remove <player.target>
         //
-        // @Usage // Use to remove all nearby entities around the player, excluding the player itself.
+        // @Usage
+        // Use to remove all nearby entities around the player, excluding the player itself.
         // - remove <player.location.find.entities.within[10].exclude[<player>]>
         //
         // @Usage
@@ -3148,9 +3003,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Rename
         // @Syntax rename [<name>]
         // @Required 1
-        // @Stable unstable
         // @Short Renames the linked NPC.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -3180,9 +3033,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Repeat
         // @Syntax repeat [stop/next/<amount>] [<commands>]
         // @Required 1
-        // @Stable stable
         // @Short Runs a series of braced commands several times.
-        // @Author morphan1, mcmonkey
         // @Group core
         // @Video /denizen/vids/Loops
         //
@@ -3211,9 +3062,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Reset
         // @Syntax reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
         // @Required 1
-        // @Stable stable
         // @Short Resets various parts of Denizen's saves.yml, including a script's fails, finishes, or cooldowns.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -3233,9 +3082,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Rotate
         // @Syntax rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)
         // @Required 1
-        // @Stable stable
         // @Short Rotates a list of entities.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -3274,10 +3121,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Run
         // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)
         // @Required 1
-        // @Stable stable
         // @Short Runs a script in a new ScriptQueue.
         // @Video /denizen/vids/Run%20And%20Inject
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -3331,9 +3176,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
         // @Group World
         // @Required 2
-        // @Stable unstable
         // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
-        // @Author mcmonkey
         //
         // @Description
         // Creates, loads, pastes, and saves schematics. Schematics are files containing info about
@@ -3384,9 +3227,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Sidebar
         // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
         // @Required 1
-        // @Stable stable
         // @Short Controls clientside-only sidebars.
-        // @Author Morphan1
         // @Group player
         //
         // @Description
@@ -3453,9 +3294,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Scoreboard
         // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
         // @Required 1
-        // @Stable stable
         // @Short Add or removes viewers, objectives and scores from scoreboards.
-        // @Author David Cernat
         // @Group server
         //
         // @Description
@@ -3490,7 +3329,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
         //
         // @Tags
-        // None
+        // <server.scoreboard[(<board>)].exists>
+        // <server.scoreboard[(<board>)].team_members[<team>]>
         //
         // @Usage
         // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
@@ -3598,9 +3438,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Scribe
         // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
         // @Required 1
-        // @Stable stable
         // @Short Writes information to a book from a book-type script or a book item.
-        // @Author Jeebiss, aufdemrand
         // @Group item
         //
         // @Description
@@ -3636,9 +3474,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Shoot
         // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
-        // @Stable stable
         // @Short Shoots an entity through the air, useful for things like firing arrows.
-        // @Author David Cernat, mcmonkey
         // @Group entity
         //
         // @Description
@@ -3672,9 +3508,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ShowFake
         // @Syntax showfake [<material>|.../cancel] [<location>|...] (players:<player>|...) (d:<duration>{10s})
         // @Required 2
-        // @Stable stable
         // @Short Makes the player see a block change that didn't actually happen.
-        // @Author aufdemrand, Morphan1, mcmonkey
         // @Group player
         //
         // @Description
@@ -3713,9 +3547,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Sign
         // @Syntax sign (type:{automatic}/sign_post/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
         // @Required 1
-        // @Stable stable
         // @Short Modifies a sign.
-        // @Author David Cernat, mcmonkey
         // @Group world
         //
         // @Description
@@ -3748,9 +3580,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Sit
         // @Syntax sit (<location>)
         // @Required 0
-        // @Stable unstable
         // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
-        // @Author Jeebiss, mcmonkey
         // @Group npc
         //
         // @Description
@@ -3773,9 +3603,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Spawn
         // @Syntax spawn [<entity>|...] [<location>] (target:<entity>) (persistent)
         // @Required 2
-        // @Stable stable
         // @Short Spawns a list of entities at a certain location.
-        // @Author David Cernat
         // @Group entity
         //
         // @Description
@@ -3809,9 +3637,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name SQL
         // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:true/{false})/query:<query>/update:<update>]
         // @Required 2
-        // @Stable unstable
         // @Short Interacts with a MySQL server.
-        // @Author mcmonkey
         // @Group core
         //
         // @Description
@@ -3873,9 +3699,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Stand
         // @Syntax stand
         // @Required 0
-        // @Stable unstable
         // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
-        // @Author Jeebiss
         // @Group npc
         //
         // @Description
@@ -3900,9 +3724,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Statistic
         // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)
         // @Required 2
-        // @Stable stable
         // @Short Changes the specified statistic value for a player.
-        // @Author Morphan1
         // @Group player
         //
         // @Description
@@ -3926,9 +3748,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Strike
         // @Syntax strike (no_damage) [<location>]
         // @Required 1
-        // @Stable stable
         // @Short Strikes lightning down upon the location.
-        // @Author aufdemrand
         // @Group world
         //
         // @Description
@@ -3955,9 +3775,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Switch
         // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
         // @Required 1
-        // @Stable stable
         // @Short Switches state of the block.
-        // @Author aufdemrand, Jeebiss, David Cernat
         // @Group world
         //
         // @Description
@@ -3989,9 +3807,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Take
         // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/<item>|...] (quantity:<#>) (from:<inventory>)
         // @Required 1
-        // @Stable stable
         // @Short Takes an item from the player.
-        // @Author Jeebiss
         // @Group item
         //
         // @Description
@@ -4025,9 +3841,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Team
         // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)
         // @Required 2
-        // @Stable stable
         // @Short Controls scoreboard teams.
-        // @Author Morphan1
         // @Group player
         //
         // @Description
@@ -4036,7 +3850,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
         //
         // @Tags
-        // None
+        // <server.scoreboard[(<board>)].team_members[<team>]>
         //
         // @Usage
         // Use to add a player to a team.
@@ -4057,9 +3871,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Teleport
         // @Syntax teleport (<entity>|...) [<location>]
         // @Required 1
-        // @Stable stable
         // @Short Teleports the entity(s) to a new location.
-        // @Author David Cernat, aufdemrand
         // @Group entity
         //
         // @Description
@@ -4092,9 +3904,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Time
         // @Syntax time ({global}/player) [<time duration>] (<world>)
         // @Required 1
-        // @Stable stable
         // @Short Changes the current time in the minecraft world.
-        // @Author David Cernat, mcmonkey
         // @Group world
         //
         // @Description
@@ -4129,9 +3939,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Title
         // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)
         // @Required 1
-        // @Stable stable
         // @Short Displays a title to specified players.
-        // @Author Morphan1
         // @Group player
         //
         // @Description
@@ -4156,18 +3964,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Toast
-        // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:<name>)
+        // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)
         // @Required 1
-        // @Stable stable
         // @Short Shows the player a custom advancement toast.
-        // @Author Mergu
         // @Group player
         //
         // @Description
         // Displays a client-side custom advancement "toast" notification popup to the player(s).
         // If no target is specified it will default to the attached player.
         // The icon argument changes the icon displayed in the toast pop-up notification.
-        // The frame argument changes the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
+        // The frame argument changes the type of advancement.
+        // The background texture can be specified as a file path with an optional namespace key prefix.
+        // By default, the background texture is "minecraft:textures/gui/advancements/backgrounds/adventure.png"
         //
         // @Tags
         // None
@@ -4187,16 +3995,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
             registerCoreMember(ToastCommand.class,
-                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:<name>)", 1);
+                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
         }
 
         // <--[command]
         // @Name Trait
         // @Syntax trait (state:true/false/{toggle}) [<trait>]
         // @Required 1
-        // @Stable Stable
         // @Short Adds or removes a trait from an NPC.
-        // @Author Morphan1
         // @Group npc
         //
         // @Description
@@ -4219,9 +4025,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Trigger
         // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
         // @Required 1
-        // @Stable stable
         // @Short Enables or disables a trigger.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -4248,9 +4052,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Vulnerable
         // @Syntax vulnerable (state:{true}/false/toggle)
         // @Required 0
-        // @Stable unstable
         // @Short Sets whether an NPC is vulnerable.
-        // @Author aufdemrand
         // @Group npc
         //
         // @Description
@@ -4277,9 +4079,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Wait
         // @Syntax wait (<duration>) (queue:<name>)
         // @Required 0
-        // @Stable stable
         // @Short Delays a script for a specified amount of time.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description
@@ -4300,9 +4100,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Walk
         // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)
         // @Required 1
-        // @Stable stable
         // @Short Causes an entity or list of entities to walk to another location.
-        // @Author aufdemrand, Morphan1
         // @Group entity
         //
         // @Description
@@ -4324,9 +4122,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Weather
         // @Syntax weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
         // @Required 1
-        // @Stable stable
         // @Short Changes the current weather in the minecraft world.
-        // @Author David Cernat
         // @Group world
         //
         // @Description
@@ -4363,9 +4159,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name While
         // @Syntax while [stop/next/[<value>] (!)(<operator> <value>) (&&/|| ...)] [<commands>]
         // @Required 1
-        // @Stable stable
         // @Short Runs a series of braced commands until the tag returns false.
-        // @Author mcmonkey
         // @Group core
         // @Video /denizen/vids/Loops
         //
@@ -4392,9 +4186,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name WorldBorder
         // @Syntax worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
         // @Required 2
-        // @Stable stable
         // @Short Modifies a world border.
-        // @Author BlackCoyote
         // @Group world
         //
         // @Description
@@ -4440,9 +4232,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Yaml
         // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
-        // @Stable stable
         // @Short Edits a YAML configuration file.
-        // @Author aufdemrand, mcmonkey
         // @Group core
         //
         // @Description
@@ -4496,9 +4286,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Zap
         // @Syntax zap (<script>) [<step>] (<duration>)
         // @Required 0
-        // @Stable stable
         // @Short Changes the current script step.
-        // @Author aufdemrand
         // @Group core
         //
         // @Description

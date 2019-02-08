@@ -24,6 +24,15 @@ public class EntityBasePlate implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "base_plate"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "base_plate"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

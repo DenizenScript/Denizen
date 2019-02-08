@@ -76,6 +76,11 @@ public class PlayerTags implements Listener {
             return;
         }
 
+        if (event.matches("pl")) {
+            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
+                    "Short-named tags are hard to read. Please use 'player' instead of 'pl' as a root tag.");
+        }
+
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
         Attribute attribute = event.getAttributes();
 

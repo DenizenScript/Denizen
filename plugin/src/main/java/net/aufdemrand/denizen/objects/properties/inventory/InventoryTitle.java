@@ -21,6 +21,13 @@ public class InventoryTitle implements Property {
         return new InventoryTitle((dInventory) inventory);
     }
 
+    public static final String[] handledTags = new String[] {
+            "title"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "title"
+    };
 
     ///////////////////
     // Instance Fields and Methods

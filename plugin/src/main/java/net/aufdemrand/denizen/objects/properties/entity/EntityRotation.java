@@ -31,6 +31,14 @@ public class EntityRotation implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "rotation"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "rotation"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

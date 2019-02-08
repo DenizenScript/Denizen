@@ -98,7 +98,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
             return true;
         }
         else if (dItem.matches(determination)) {
-            result = dItem.valueOf(determination);
+            result = dItem.valueOf(determination, container);
             resultChanged = true;
             return true;
         }

@@ -110,6 +110,12 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
             return location;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -120,10 +126,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

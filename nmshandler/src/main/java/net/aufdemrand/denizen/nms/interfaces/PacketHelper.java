@@ -15,6 +15,8 @@ import java.util.List;
 
 public interface PacketHelper {
 
+    void setFakeAbsorption(Player player, float value);
+
     void resetWorldBorder(Player player);
 
     void setWorldBorder(Player player, Location center, double size, double currSize, long time, int warningDistance, int warningTime);

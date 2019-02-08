@@ -23,6 +23,14 @@ public class EntitySilent implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "silent"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "silent"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

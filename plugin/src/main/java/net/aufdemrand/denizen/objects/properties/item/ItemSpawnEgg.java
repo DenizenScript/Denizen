@@ -31,6 +31,14 @@ public class ItemSpawnEgg implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "spawn_id", "spawn_egg_entity", "spawn_type"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "spawn_id", "spawn_egg", "spawn_type"
+    };
+
 
     private ItemSpawnEgg(dItem _item) {
         item = _item;

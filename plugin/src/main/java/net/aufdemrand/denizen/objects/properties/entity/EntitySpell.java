@@ -23,6 +23,15 @@ public class EntitySpell implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "spell"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "spell"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

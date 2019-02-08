@@ -11,8 +11,6 @@ import net.aufdemrand.denizen.tags.core.NPCTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -862,7 +860,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // @attribute <n@npc.lookclose>
         // @returns Element(Boolean)
         // @description
-        // Returns the NPC's "lookclose" value.
+        // Returns the NPC's "lookclose" mechanism.getValue().
         // -->
         if (attribute.startsWith("lookclose")) {
             NPC citizen = getCitizen();
@@ -1076,12 +1074,9 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             return new Element("NPC").getAttribute(attribute.fulfill(1));
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return (getEntity() != null
@@ -1097,8 +1092,6 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         // TODO: For all the mechanism tags, add the @Mechanism link!
 
         // <--[mechanism]
@@ -1111,7 +1104,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.script>
         // -->
         if (mechanism.matches("set_assignment") && mechanism.requireObject(dScript.class)) {
-            getAssignmentTrait().setAssignment(value.asType(dScript.class).getName(), null);
+            getAssignmentTrait().setAssignment(mechanism.valueAsType(dScript.class).getName(), null);
         }
 
         // <--[mechanism]
@@ -1137,7 +1130,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.name.nickname>
         // -->
         if (mechanism.matches("set_nickname")) {
-            getNicknameTrait().setNickname(value.asString());
+            getNicknameTrait().setNickname(mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -1163,7 +1156,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.entity_type>
         // -->
         if (mechanism.matches("set_entity_type") && mechanism.requireObject(dEntity.class)) {
-            getCitizen().setBukkitEntityType(value.asType(dEntity.class).getBukkitEntityType());
+            getCitizen().setBukkitEntityType(mechanism.valueAsType(dEntity.class).getBukkitEntityType());
         }
 
         // <--[mechanism]
@@ -1176,7 +1169,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.name>
         // -->
         if (mechanism.matches("name") || mechanism.matches("set_name")) {
-            getCitizen().setName(value.asString().length() > 64 ? value.asString().substring(0, 64) : value.asString());
+            getCitizen().setName(mechanism.getValue().asString().length() > 64 ? mechanism.getValue().asString().substring(0, 64) : mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -1189,7 +1182,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.owner>
         // -->
         if (mechanism.matches("owner")) {
-            getCitizen().getTrait(Owner.class).setOwner(value.asString());
+            getCitizen().getTrait(Owner.class).setOwner(mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -1198,7 +1191,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // @input Element
         // @description
         // Sets the skin blob of an NPC, in the form of "texture;signature;name".
-        // Call with no value to clear the value.
+        // Call with no value to clear the mechanism.getValue().
         // @tags
         // <n@npc.skin>
         // -->
@@ -1233,7 +1226,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // @input Element
         // @description
         // Sets the skin of an NPC by name.
-        // Call with no value to clear the value.
+        // Call with no value to clear the mechanism.getValue().
         // @tags
         // <n@npc.skin>
         // -->
@@ -1260,7 +1253,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // None
         // -->
         if (mechanism.matches("item_type") && mechanism.requireObject(dItem.class)) {
-            dItem item = mechanism.getValue().asType(dItem.class);
+            dItem item = mechanism.valueAsType(dItem.class);
             Material mat = item.getMaterial().getMaterial();
             int data = item.getMaterial().getData((byte) 0);
             switch (getEntity().getType()) {
@@ -1297,7 +1290,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // -->
         if (mechanism.matches("spawn")) {
             if (mechanism.requireObject("Invalid dLocation specified. Assuming last known NPC location.", dLocation.class)) {
-                getCitizen().spawn(value.asType(dLocation.class));
+                getCitizen().spawn(mechanism.valueAsType(dLocation.class));
             }
             else {
                 getCitizen().spawn(getCitizen().getStoredLocation());
@@ -1366,20 +1359,20 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.is_protected>
         // -->
         if (mechanism.matches("set_protected") && mechanism.requireBoolean()) {
-            getCitizen().setProtected(value.asBoolean());
+            getCitizen().setProtected(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
         // @object dNPC
-        // @name set_lookclose
+        // @name lookclose
         // @input Element(Boolean)
         // @description
-        // Sets the NPC's lookclose value.
+        // Sets the NPC's lookclose mechanism.getValue().
         // @tags
         // <n@npc.lookclose>
         // -->
         if (mechanism.matches("lookclose") && mechanism.requireBoolean()) {
-            getLookCloseTrait().lookClose(value.asBoolean());
+            getLookCloseTrait().lookClose(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -1392,7 +1385,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <n@npc.teleport_on_stuck>
         // -->
         if (mechanism.matches("teleport_on_stuck") && mechanism.requireBoolean()) {
-            if (value.asBoolean()) {
+            if (mechanism.getValue().asBoolean()) {
                 getNavigator().getDefaultParameters().stuckAction(TeleportStuckAction.INSTANCE);
             }
             else {
@@ -1448,25 +1441,16 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             Waypoints wp = getCitizen().getTrait(Waypoints.class);
             if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
                 ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints())
-                        .add(new Waypoint(value.asType(dLocation.class)));
+                        .add(new Waypoint(mechanism.valueAsType(dLocation.class)));
             }
         }
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
             if (isSpawned()) {
                 new dEntity(getEntity()).adjust(mechanism);
-            }
-            else {
-                mechanism.reportInvalid();
             }
         }
     }

@@ -28,6 +28,14 @@ public class EntityHealth implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "health"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "max_health", "health_data", "health"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

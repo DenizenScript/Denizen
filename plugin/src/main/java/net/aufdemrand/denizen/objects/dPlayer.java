@@ -15,8 +15,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -30,10 +28,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
@@ -1119,7 +1114,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Returns the cooldown duration remaining on player's material.
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && attribute.startsWith("item_cooldown")) {
-            dMaterial mat = new Element(attribute.getContext(1)).asType(dMaterial.class);
+            dMaterial mat = new Element(attribute.getContext(1)).asType(dMaterial.class, attribute.context);
             if (mat != null) {
                 return new Duration((long) getPlayerEntity().getCooldown(mat.getMaterial()))
                         .getAttribute(attribute.fulfill(1));
@@ -1153,6 +1148,18 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("has_played_before")) {
             return new Element(true)
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <p@player.absorption_health>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the player's absorption health.
+        // @mechanism dPlayer.absorption_health
+        // -->
+        if (attribute.startsWith("absorption_health")) {
+            return new Element(NMSHandler.getInstance().getPlayerHelper().getAbsorption(getPlayerEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -1532,12 +1539,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Player is required to be online after this point...
         if (!isOnline()) {
 
-            // Iterate through this object's properties' attributes
-            for (Property property : PropertyParser.getProperties(this)) {
-                String returned = property.getAttribute(attribute);
-                if (returned != null) {
-                    return returned;
-                }
+            String returned = CoreUtilities.autoPropertyTag(this, attribute);
+            if (returned != null) {
+                return returned;
             }
 
             return new Element(identify()).getAttribute(attribute);
@@ -1554,6 +1558,38 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             return dInventory.mirrorBukkitInventory(getPlayerEntity().getOpenInventory().getTopInventory())
                     .getAttribute(attribute.fulfill(1));
         }
+
+        // <--[tag]
+        // @attribute <p@player.selected_trade_index>
+        // @returns Element(Number)
+        // @description
+        // Returns the index of the trade the player is currently viewing, if any.
+        // -->
+        if (attribute.startsWith("selected_trade_index")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+                return new Element(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
+                        .getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // This is almost completely broke and only works if the player has placed items in the trade slots.
+        // [tag]
+        // @attribute <p@player.selected_trade>
+        // @returns dTrade
+        // @description
+        // Returns the trade the player is currently viewing, if any.
+        //
+        /*
+        if (attribute.startsWith("selected_trade")) {
+            Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && playerInventory instanceof MerchantInventory
+                    && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
+                return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
+            }
+        }
+        */
 
         // <--[tag]
         // @attribute <p@player.item_on_cursor>
@@ -1833,7 +1869,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (chunk == null) {
                 return null;
             }
-            return new Element(hasChunkLoaded(chunk.chunk)).getAttribute(attribute.fulfill(1));
+            return new Element(hasChunkLoaded(chunk.getChunk())).getAttribute(attribute.fulfill(1));
         }
 
 
@@ -2035,7 +2071,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // specified qualifier, which can be either an entity or material.
             // -->
             if (attribute.getAttribute(2).startsWith("qualifier")) {
-                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2));
+                dObject obj = ObjectFetcher.pickObjectFor(attribute.getContext(2), attribute.context);
                 try {
                     if (obj instanceof dMaterial) {
                         return new Element(getPlayerEntity().getStatistic(statistic, ((dMaterial) obj).getMaterial()))
@@ -2101,6 +2137,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <p@player.weather>
         // @returns Element
+        // @mechanism dPlayer.weather
         // @description
         // Returns the type of weather the player is experiencing. This will be different
         // from the weather currently in the world that the player is residing in if
@@ -2196,12 +2233,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new dEntity(getPlayerEntity()).getAttribute(attribute);
@@ -2214,8 +2248,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
     @Override
     public void adjust(Mechanism mechanism) {
-
-        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dPlayer
@@ -2239,7 +2271,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("vision")) {
             if (mechanism.hasValue() && mechanism.requireEnum(false, EntityType.values())) {
-                NMSHandler.getInstance().getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(value.asString().toUpperCase()));
+                NMSHandler.getInstance().getPacketHelper().setVision(getPlayerEntity(), EntityType.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
             else {
                 NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), getPlayerEntity());
@@ -2257,7 +2289,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.xp.level>
         // -->
         if (mechanism.matches("level") && mechanism.requireInteger()) {
-            setLevel(value.asInt());
+            setLevel(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -2272,10 +2304,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("item_slot") && mechanism.requireInteger()) {
             if (isOnline()) {
-                getPlayerEntity().getInventory().setHeldItemSlot(value.asInt() - 1);
+                getPlayerEntity().getInventory().setHeldItemSlot(mechanism.getValue().asInt() - 1);
             }
             else {
-                getNBTEditor().setItemInHand(value.asInt() - 1);
+                getNBTEditor().setItemInHand(mechanism.getValue().asInt() - 1);
             }
         }
 
@@ -2290,7 +2322,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.item_on_cursor>
         // -->
         if (mechanism.matches("item_on_cursor") && mechanism.requireObject(dItem.class)) {
-            getPlayerEntity().setItemOnCursor(value.asType(dItem.class).getItemStack());
+            getPlayerEntity().setItemOnCursor(mechanism.valueAsType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2310,7 +2342,31 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         // TODO: Player achievement tags.
         if (mechanism.matches("award_achievement") && mechanism.requireEnum(false, Achievement.values())) {
-            getPlayerEntity().awardAchievement(Achievement.valueOf(value.asString().toUpperCase()));
+            getPlayerEntity().awardAchievement(Achievement.valueOf(mechanism.getValue().asString().toUpperCase()));
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name absorption_health
+        // @input Element(Decimal)
+        // @description
+        // Sets the player's absorption health.
+        // @tags
+        // <p@player.absorption_health>
+        // -->
+        if (mechanism.matches("absorption_health") && mechanism.requireFloat()) {
+            NMSHandler.getInstance().getPlayerHelper().setAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name fake_absorption_health
+        // @input Element(Decimal)
+        // @description
+        // Shows the player fake absorption health that persists on damage.
+        // -->
+        if (mechanism.matches("fake_absorption_health") && mechanism.requireFloat()) {
+            NMSHandler.getInstance().getPacketHelper().setFakeAbsorption(getPlayerEntity(), mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2326,7 +2382,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.health.scale>
         // -->
         if (mechanism.matches("health_scale") && mechanism.requireDouble()) {
-            getPlayerEntity().setHealthScale(value.asDouble());
+            getPlayerEntity().setHealthScale(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
@@ -2334,22 +2390,22 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @name scale_health
         // @input Element(Boolean)
         // @description
-        // Enables or disables the health scale value. Disabling will result in the standard
+        // Enables or disables the health scale mechanism.getValue(). Disabling will result in the standard
         // amount of hearts being shown.
         // @tags
         // <p@player.health.is_scaled>
         // -->
         if (mechanism.matches("scale_health") && mechanism.requireBoolean()) {
-            getPlayerEntity().setHealthScaled(value.asBoolean());
+            getPlayerEntity().setHealthScaled(mechanism.getValue().asBoolean());
         }
 
         // Allow offline editing of health values
         if (mechanism.matches("max_health") && mechanism.requireDouble()) {
-            setMaxHealth(value.asDouble());
+            setMaxHealth(mechanism.getValue().asDouble());
         }
 
         if (mechanism.matches("health") && mechanism.requireDouble()) {
-            setHealth(value.asDouble());
+            setHealth(mechanism.getValue().asDouble());
         }
 
         // <--[mechanism]
@@ -2362,7 +2418,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("resource_pack") || mechanism.matches("texture_pack")) {
-            getPlayerEntity().setResourcePack(value.asString());
+            getPlayerEntity().setResourcePack(mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -2375,7 +2431,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.saturation>
         // -->
         if (mechanism.matches("saturation") && mechanism.requireFloat()) {
-            getPlayerEntity().setSaturation(value.asFloat());
+            getPlayerEntity().setSaturation(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2388,12 +2444,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("send_map") && mechanism.requireInteger()) {
-            MapView map = Bukkit.getServer().getMap((short) value.asInt());
+            MapView map = Bukkit.getServer().getMap((short) mechanism.getValue().asInt());
             if (map != null) {
                 getPlayerEntity().sendMap(map);
             }
             else {
-                dB.echoError("No map found for ID " + value.asInt() + "!");
+                dB.echoError("No map found for ID " + mechanism.getValue().asInt() + "!");
             }
         }
 
@@ -2407,7 +2463,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.food_level>
         // -->
         if (mechanism.matches("food_level") && mechanism.requireInteger()) {
-            setFoodLevel(value.asInt());
+            setFoodLevel(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -2420,7 +2476,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.bed_spawn>
         // -->
         if (mechanism.matches("bed_spawn_location") && mechanism.requireObject(dLocation.class)) {
-            setBedSpawnLocation(value.asType(dLocation.class));
+            setBedSpawnLocation(mechanism.valueAsType(dLocation.class));
         }
 
         // <--[mechanism]
@@ -2433,7 +2489,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.can_fly>
         // -->
         if (mechanism.matches("can_fly") && mechanism.requireBoolean()) {
-            getPlayerEntity().setAllowFlight(value.asBoolean());
+            getPlayerEntity().setAllowFlight(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2446,7 +2502,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.fly_speed>
         // -->
         if (mechanism.matches("fly_speed") && mechanism.requireFloat()) {
-            setFlySpeed(value.asFloat());
+            setFlySpeed(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2459,7 +2515,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.is_flying>
         // -->
         if (mechanism.matches("flying") && mechanism.requireBoolean()) {
-            getPlayerEntity().setFlying(value.asBoolean());
+            getPlayerEntity().setFlying(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2472,7 +2528,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.is_sprinting>
         // -->
         if (mechanism.matches("sprinting") && mechanism.requireBoolean()) {
-            getPlayerEntity().setSprinting(value.asBoolean());
+            getPlayerEntity().setSprinting(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2487,7 +2543,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.gamemode.id>
         // -->
         if (mechanism.matches("gamemode") && mechanism.requireEnum(false, GameMode.values())) {
-            setGameMode(GameMode.valueOf(value.asString().toUpperCase()));
+            setGameMode(GameMode.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
@@ -2515,7 +2571,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.weather>
         // -->
         if (mechanism.matches("weather") && mechanism.requireEnum(false, WeatherType.values())) {
-            getPlayerEntity().setPlayerWeather(WeatherType.valueOf(value.asString().toUpperCase()));
+            getPlayerEntity().setPlayerWeather(WeatherType.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
@@ -2542,7 +2598,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.name.list>
         // -->
         if (mechanism.matches("player_list_name")) {
-            getPlayerEntity().setPlayerListName(value.asString());
+            getPlayerEntity().setPlayerListName(mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -2555,7 +2611,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.name.display>
         // -->
         if (mechanism.matches("display_name")) {
-            getPlayerEntity().setDisplayName(value.asString());
+            getPlayerEntity().setDisplayName(mechanism.getValue().asString());
             return;
         }
 
@@ -2569,7 +2625,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("show_workbench") && mechanism.requireObject(dLocation.class)) {
-            getPlayerEntity().openWorkbench(mechanism.getValue().asType(dLocation.class), true);
+            getPlayerEntity().openWorkbench(mechanism.valueAsType(dLocation.class), true);
             return;
         }
 
@@ -2584,7 +2640,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.location>
         // -->
         if (mechanism.matches("location") && mechanism.requireObject(dLocation.class)) {
-            setLocation(value.asType(dLocation.class));
+            setLocation(mechanism.valueAsType(dLocation.class));
         }
 
         // <--[mechanism]
@@ -2600,7 +2656,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.time>
         // -->
         if (mechanism.matches("time") && mechanism.requireInteger()) {
-            getPlayerEntity().setPlayerTime(value.asInt(), true);
+            getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), true);
         }
 
         // <--[mechanism]
@@ -2618,7 +2674,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("freeze_time")) {
             if (mechanism.requireInteger("Invalid integer specified. Assuming current world time.")) {
-                getPlayerEntity().setPlayerTime(value.asInt(), false);
+                getPlayerEntity().setPlayerTime(mechanism.getValue().asInt(), false);
             }
             else {
                 getPlayerEntity().setPlayerTime(getPlayerEntity().getWorld().getTime(), false);
@@ -2649,7 +2705,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.walk_speed>
         // -->
         if (mechanism.matches("walk_speed") && mechanism.requireFloat()) {
-            getPlayerEntity().setWalkSpeed(value.asFloat());
+            getPlayerEntity().setWalkSpeed(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2662,7 +2718,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.exhaustion>
         // -->
         if (mechanism.matches("exhaustion") && mechanism.requireFloat()) {
-            getPlayerEntity().setExhaustion(value.asFloat());
+            getPlayerEntity().setExhaustion(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2673,7 +2729,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Shows the player a previously hidden entity.
         // -->
         if (mechanism.matches("show_entity") && mechanism.requireObject(dEntity.class)) {
-            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getEntityHelper().unhideEntity(getPlayerEntity(), mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2685,10 +2741,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // whether the entity should be kept in the tab list (players only).
         // -->
         if (mechanism.matches("hide_entity")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
-                    dEntity entity = value.asType(dEntity.class);
+                    dEntity entity = mechanism.valueAsType(dEntity.class);
                     if (!entity.isSpawned()) {
                         dB.echoError("Can't hide the unspawned entity '" + split[0] + "'!");
                     }
@@ -2725,8 +2781,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("show_boss_bar")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
                     NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble() * (1.0 / 200.0));
                 }
@@ -2753,8 +2809,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("fake_experience")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
                         NMSHandler.getInstance().getPacketHelper().showExperience(getPlayerEntity(),
@@ -2791,8 +2847,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("fake_health")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).isFloat()) {
                     if (split.length > 1 && new Element(split[1]).isInt()) {
                         if (split.length > 2 && new Element(split[2]).isFloat()) {
@@ -2832,8 +2888,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // - adjust <player> fake_equipment:<player>|head|i@jack_o_lantern
         // -->
         if (mechanism.matches("fake_equipment")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 3);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 3);
                 if (split.length > 0 && new Element(split[0]).matchesType(dEntity.class)) {
                     String slot = split.length > 1 ? split[1].toUpperCase() : null;
                     if (split.length > 1 && (new Element(slot).matchesEnum(EquipmentSlot.values())
@@ -2846,9 +2902,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                                 slot = "FEET";
                             }
                             NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(),
-                                    new Element(split[0]).asType(dEntity.class).getLivingEntity(),
+                                    new Element(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity(),
                                     EquipmentSlot.valueOf(slot),
-                                    new Element(split[2]).asType(dItem.class).getItemStack());
+                                    new Element(split[2]).asType(dItem.class, mechanism.context).getItemStack());
                         }
                         else if (split.length > 2) {
                             dB.echoError("'" + split[2] + "' is not a valid dItem!");
@@ -2859,7 +2915,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     }
                     else {
                         NMSHandler.getInstance().getPacketHelper().resetEquipment(getPlayerEntity(),
-                                new Element(split[0]).asType(dEntity.class).getLivingEntity());
+                                new Element(split[0]).asType(dEntity.class, mechanism.context).getLivingEntity());
                     }
                 }
                 else {
@@ -2879,7 +2935,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fov_multiplier")) {
             if (mechanism.hasValue() && mechanism.requireFloat()) {
-                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), value.asFloat());
+                NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), mechanism.getValue().asFloat());
             }
             else {
                 NMSHandler.getInstance().getPacketHelper().setFieldOfView(getPlayerEntity(), Float.NaN);
@@ -2895,7 +2951,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // changed names to the specified Element.
         // -->
         if (mechanism.matches("item_message")) {
-            ItemChangeMessage.sendMessage(getPlayerEntity(), value.asString());
+            ItemChangeMessage.sendMessage(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -2931,7 +2987,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // (i.e. - adjust <player> "spectate:<player>")
         // -->
         if (mechanism.matches("spectate") && mechanism.requireObject(dEntity.class)) {
-            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), value.asType(dEntity.class).getBukkitEntity());
+            NMSHandler.getInstance().getPacketHelper().forceSpectate(getPlayerEntity(), mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -2969,7 +3025,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // sign, see <@link command Sign>.
         // -->
         if (mechanism.matches("edit_sign") && mechanism.requireObject(dLocation.class)) {
-            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), value.asType(dLocation.class))) {
+            if (!NMSHandler.getInstance().getPacketHelper().showSignEditor(getPlayerEntity(), mechanism.valueAsType(dLocation.class))) {
                 dB.echoError("Can't edit non-sign materials!");
             }
         }
@@ -2984,8 +3040,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // - adjust <player> tab_list_info:<header>|<footer>
         // -->
         if (mechanism.matches("tab_list_info")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length > 0) {
                     String header = split[0];
                     String footer = "";
@@ -3011,8 +3067,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Shows the player fake lines on a sign.
         // -->
         if (mechanism.matches("sign_update")) {
-            if (!value.asString().isEmpty()) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]", 2);
+            if (!mechanism.getValue().asString().isEmpty()) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (dLocation.matches(split[0]) && split.length > 1) {
                     dList lines = dList.valueOf(split[1]);
                     getPlayerEntity().sendSignChange(dLocation.valueOf(split[0]), lines.toArray(4));
@@ -3037,8 +3093,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // -->
         if (mechanism.matches("banner_update")) {
-            if (value.asString().length() > 0) {
-                String[] split = value.asString().split("[\\|" + dList.internal_escape + "]");
+            if (mechanism.getValue().asString().length() > 0) {
+                String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]");
                 List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
                 if (split.length > 2) {
                     List<String> splitList;
@@ -3089,7 +3145,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
             else {
                 try {
-                    getPlayerEntity().stopSound("", SoundCategory.valueOf(value.asString().toUpperCase()));
+                    getPlayerEntity().stopSound("", SoundCategory.valueOf(mechanism.getValue().asString().toUpperCase()));
                 }
                 catch (Exception e) {
                     dB.echoError("Invalid SoundCategory. Must specify a valid name.");
@@ -3105,7 +3161,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Sends the player text in the action bar.
         // -->
         if (mechanism.matches("action_bar")) {
-            NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(getPlayerEntity(), value.asString());
+            NMSHandler.getInstance().getPacketHelper().sendActionBarMessage(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -3127,12 +3183,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Changes the name on this player's nameplate.
         // -->
         if (mechanism.matches("name")) {
-            String name = value.asString();
+            String name = mechanism.getValue().asString();
             if (name.length() > 16) {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerName(getPlayerEntity(), mechanism.getValue().asString());
             }
         }
 
@@ -3145,12 +3201,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // player name.
         // -->
         if (mechanism.matches("skin")) {
-            String name = value.asString();
+            String name = mechanism.getValue().asString();
             if (name.length() > 16) {
                 dB.echoError("Must specify a name with no more than 16 characters.");
             }
             else {
-                NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), value.asString());
+                NMSHandler.getInstance().getProfileEditor().setPlayerSkin(getPlayerEntity(), mechanism.getValue().asString());
             }
         }
 
@@ -3162,7 +3218,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Changes the skin of the player to the specified blob.
         // -->
         if (mechanism.matches("skin_blob")) {
-            NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), value.asString());
+            NMSHandler.getInstance().getProfileEditor().setPlayerSkinBlob(getPlayerEntity(), mechanism.getValue().asString());
         }
 
         // <--[mechanism]
@@ -3203,7 +3259,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("money") && mechanism.requireDouble() && Depends.economy != null) {
             double bal = Depends.economy.getBalance(getOfflinePlayer());
-            double goal = value.asDouble();
+            double goal = mechanism.getValue().asDouble();
             if (goal > bal) {
                 Depends.economy.depositPlayer(getOfflinePlayer(), goal - bal);
             }
@@ -3223,7 +3279,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // <p@player.chat_prefix>
             // -->
             if (mechanism.matches("chat_prefix")) {
-                Depends.chat.setPlayerPrefix(getPlayerEntity(), value.asString());
+                Depends.chat.setPlayerPrefix(getPlayerEntity(), mechanism.getValue().asString());
             }
 
             // <--[mechanism]
@@ -3236,22 +3292,17 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // <p@player.chat_suffix>
             // -->
             if (mechanism.matches("chat_suffix")) {
-                Depends.chat.setPlayerSuffix(getPlayerEntity(), value.asString());
+                Depends.chat.setPlayerSuffix(getPlayerEntity(), mechanism.getValue().asString());
             }
         }
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
         // Pass along to dEntity mechanism handler if not already handled.
         if (!mechanism.fulfilled()) {
-            Adjustable entity = new dEntity(getPlayerEntity());
-            entity.adjust(mechanism);
+            if (isOnline()) {
+                new dEntity(getPlayerEntity()).adjust(mechanism);
+            }
         }
 
     }

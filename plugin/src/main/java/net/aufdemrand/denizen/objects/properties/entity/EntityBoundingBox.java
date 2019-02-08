@@ -32,6 +32,15 @@ public class EntityBoundingBox implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "bounding_box"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "bounding_box"
+    };
+
+
     private static Set<UUID> modifiedBoxes = new HashSet<UUID>();
 
     public static void remove(UUID uuid) {
@@ -101,7 +110,6 @@ public class EntityBoundingBox implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        Element value = mechanism.getValue();
 
         // <--[mechanism]
         // @object dEntity
@@ -118,7 +126,7 @@ public class EntityBoundingBox implements Property {
                 // TODO: Allow editing NPC boxes properly?
                 return;
             }
-            List<dLocation> locations = value.asType(dList.class).filter(dLocation.class);
+            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
                 NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);

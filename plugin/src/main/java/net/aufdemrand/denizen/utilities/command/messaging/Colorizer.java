@@ -21,10 +21,11 @@ public class Colorizer {
     private static String GROUP = ChatColor.COLOR_CHAR + "$1";
 
     static {
-        String colors = "";
+        String colors = "<([";
         for (ChatColor color : ChatColor.values()) {
             colors += color.getChar();
         }
-        COLOR_MATCHER = Pattern.compile("<([" + colors + "])>", Pattern.CASE_INSENSITIVE);
+        colors += "])>";
+        COLOR_MATCHER = Pattern.compile(colors, Pattern.CASE_INSENSITIVE);
     }
 }

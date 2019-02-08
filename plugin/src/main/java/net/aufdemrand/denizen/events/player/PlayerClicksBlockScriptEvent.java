@@ -88,7 +88,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             using = "hand";
         }
         else {
-            using = path.eventArgsLower[index + 1];
+            using = path.eventArgLowerAt(index + 1);
         }
 
         if (!using.equals("hand") && !using.equals("off_hand") && !using.equals("either_hand")) {
@@ -113,12 +113,12 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return true;
         }
 
-        String with = path.eventArgsLower[index + 1];
+        String with = path.eventArgLowerAt(index + 1);
         if (with != null) {
             if (with.equals("item")) {
                 return true;
             }
-            dItem it = dItem.valueOf(with);
+            dItem it = dItem.valueOf(with, false);
             if (it == null) {
                 dB.echoError("Invalid WITH item in " + getName() + " for '" + path.event + "' in " + path.container.getName());
                 return false;

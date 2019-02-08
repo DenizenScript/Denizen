@@ -99,7 +99,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("item:")) {
-            item = dItem.valueOf(determination.substring("item:".length()));
+            item = dItem.valueOf(determination.substring("item:".length()), container);
             itemChanged = true;
             return true;
         }

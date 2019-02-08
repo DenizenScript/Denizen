@@ -86,7 +86,7 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
-            result_item = dItem.valueOf(determination);
+            result_item = dItem.valueOf(determination, container);
             return true;
         }
         return super.applyDetermination(container, determination);

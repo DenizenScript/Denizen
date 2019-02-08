@@ -37,6 +37,14 @@ public class EntityProfession implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "profession"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "profession"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

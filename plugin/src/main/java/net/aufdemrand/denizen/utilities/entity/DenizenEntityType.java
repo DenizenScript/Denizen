@@ -85,7 +85,7 @@ public class DenizenEntityType {
                 ItemStack itemStack = new ItemStack(Material.STONE);
                 for (Mechanism mechanism : mechanisms) {
                     if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-                        itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
+                        itemStack = mechanism.valueAsType(dItem.class).getItemStack();
                         break;
                     }
                 }
@@ -124,7 +124,7 @@ public class DenizenEntityType {
                         ItemStack itemStack = new ItemStack(Material.STONE);
                         for (Mechanism mechanism : mechanisms) {
                             if (mechanism.matches("item") && mechanism.requireObject(dItem.class)) {
-                                itemStack = mechanism.getValue().asType(dItem.class).getItemStack();
+                                itemStack = mechanism.valueAsType(dItem.class).getItemStack();
                             }
                         }
                         return customEntityHelper.spawnItemProjectile(location, itemStack);

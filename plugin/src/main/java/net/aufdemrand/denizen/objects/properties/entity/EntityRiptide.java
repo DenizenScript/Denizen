@@ -22,6 +22,15 @@ public class EntityRiptide implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "is_using_riptide"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "is_using_riptide"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

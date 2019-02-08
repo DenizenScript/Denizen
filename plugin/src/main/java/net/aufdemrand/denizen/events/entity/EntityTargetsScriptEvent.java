@@ -127,6 +127,12 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return reason;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("target") && target != null) {
@@ -141,10 +147,7 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         reason = new Element(event.getReason().toString());
         target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

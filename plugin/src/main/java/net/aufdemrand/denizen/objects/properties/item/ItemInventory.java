@@ -29,6 +29,15 @@ public class ItemInventory implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "inventory"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "inventory"
+    };
+
+
     private dInventory getItemInventory() {
         return dInventory.mirrorBukkitInventory(((InventoryHolder) ((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()).getInventory());
     }
@@ -86,7 +95,7 @@ public class ItemInventory implements Property {
         // <i@item.inventory>
         // -->
         if (mechanism.matches("inventory") && mechanism.requireObject(dInventory.class)) {
-            dInventory inventory = mechanism.getValue().asType(dInventory.class);
+            dInventory inventory = mechanism.valueAsType(dInventory.class);
             if (inventory == null || inventory.getInventory() == null) {
                 return;
             }

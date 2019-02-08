@@ -35,6 +35,14 @@ public class EntityInfected implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "is_infected"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "is_infected"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

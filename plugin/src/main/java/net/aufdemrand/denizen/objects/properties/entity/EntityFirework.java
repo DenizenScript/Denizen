@@ -28,6 +28,15 @@ public class EntityFirework implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "firework_item"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "firework_item", "detonate"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////
@@ -95,7 +104,7 @@ public class EntityFirework implements Property {
         // <e@entity.firework_item>
         // -->
         if (mechanism.matches("firework_item") && mechanism.requireObject(dItem.class)) {
-            dItem item = mechanism.getValue().asType(dItem.class);
+            dItem item = mechanism.valueAsType(dItem.class);
             if (item != null && item.getItemStack().getItemMeta() instanceof FireworkMeta) {
                 ((Firework) firework.getBukkitEntity()).setFireworkMeta((FireworkMeta) item.getItemStack().getItemMeta());
             }

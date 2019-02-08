@@ -32,6 +32,13 @@ public class InventoryHolder implements Property {
         return new InventoryHolder((dInventory) inventory);
     }
 
+    public static final String[] handledTags = new String[] {
+            "id_holder"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "holder"
+    };
 
     ///////////////////
     // Instance Fields and Methods
@@ -193,21 +200,20 @@ public class InventoryHolder implements Property {
         // <in@inventory.id_holder>
         // -->
         if (mechanism.matches("holder")) {
-            Element value = mechanism.getValue();
-            if (value.matchesEnum(InventoryType.values())) {
-                setHolder(value);
+            if (mechanism.getValue().matchesEnum(InventoryType.values())) {
+                setHolder(mechanism.getValue());
             }
-            else if (value.matchesType(dPlayer.class)) {
-                setHolder(value.asType(dPlayer.class));
+            else if (mechanism.getValue().matchesType(dPlayer.class)) {
+                setHolder(mechanism.valueAsType(dPlayer.class));
             }
-            else if (Depends.citizens != null && value.matchesType(dNPC.class)) {
-                setHolder(value.asType(dNPC.class));
+            else if (Depends.citizens != null && mechanism.getValue().matchesType(dNPC.class)) {
+                setHolder(mechanism.valueAsType(dNPC.class));
             }
-            else if (value.matchesType(dEntity.class)) {
-                setHolder(value.asType(dEntity.class));
+            else if (mechanism.getValue().matchesType(dEntity.class)) {
+                setHolder(mechanism.valueAsType(dEntity.class));
             }
-            else if (value.matchesType(dLocation.class)) {
-                setHolder(value.asType(dLocation.class));
+            else if (mechanism.getValue().matchesType(dLocation.class)) {
+                setHolder(mechanism.valueAsType(dLocation.class));
             }
         }
 

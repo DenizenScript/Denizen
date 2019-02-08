@@ -75,11 +75,11 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("main:")) {
-            event.setMainHandItem(dItem.valueOf(determination.substring("main:".length())).getItemStack());
+            event.setMainHandItem(dItem.valueOf(determination.substring("main:".length()), container).getItemStack());
             return true;
         }
         else if (lower.startsWith("offhand:")) {
-            event.setOffHandItem(dItem.valueOf(determination.substring("offhand:".length())).getItemStack());
+            event.setOffHandItem(dItem.valueOf(determination.substring("offhand:".length()), container).getItemStack());
             return true;
         }
         return super.applyDetermination(container, determination);

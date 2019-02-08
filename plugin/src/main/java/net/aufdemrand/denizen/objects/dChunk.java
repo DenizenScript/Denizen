@@ -5,8 +5,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -16,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -53,8 +52,7 @@ public class dChunk implements dObject, Adjustable {
         String[] parts = string.split(",");
         if (parts.length == 3) {
             try {
-                return new dChunk(dWorld.valueOf(parts[2], context).getWorld()
-                        .getChunkAt(Integer.valueOf(parts[0]), Integer.valueOf(parts[1])));
+                return new dChunk(dWorld.valueOf(parts[2], context), Integer.valueOf(parts[0]), Integer.valueOf(parts[1]));
             }
             catch (Exception e) {
                 if (context == null || context.debug) {
@@ -83,7 +81,18 @@ public class dChunk implements dObject, Adjustable {
         }
     }
 
-    Chunk chunk = null;
+    int chunkX, chunkZ;
+
+    dWorld world;
+
+    Chunk cachedChunk;
+
+    public Chunk getChunk() {
+        if (cachedChunk == null) {
+            cachedChunk = world.getWorld().getChunkAt(chunkX, chunkZ);
+        }
+        return cachedChunk;
+    }
 
     /**
      * dChunk can be constructed with a Chunk
@@ -91,7 +100,15 @@ public class dChunk implements dObject, Adjustable {
      * @param chunk The chunk to use.
      */
     public dChunk(Chunk chunk) {
-        this.chunk = chunk;
+        this.cachedChunk = chunk;
+        chunkX = chunk.getX();
+        chunkZ = chunk.getZ();
+    }
+
+    public dChunk(dWorld world, int x, int z) {
+        this.world = world;
+        chunkX = x;
+        chunkZ = z;
     }
 
     /**
@@ -100,7 +117,9 @@ public class dChunk implements dObject, Adjustable {
      * @param location The location of the chunk.
      */
     public dChunk(Location location) {
-        this(location.getChunk());
+        world = new dWorld(location.getWorld());
+        chunkX = location.getBlockX() >> 4;
+        chunkZ = location.getBlockZ() >> 4;
     }
 
     public dLocation getCenter() {
@@ -108,23 +127,23 @@ public class dChunk implements dObject, Adjustable {
     }
 
     public int getX() {
-        return chunk.getX();
+        return chunkX;
     }
 
     public int getZ() {
-        return chunk.getZ();
+        return chunkZ;
     }
 
     public World getWorld() {
-        return chunk.getWorld();
+        return world.getWorld();
     }
 
     public ChunkSnapshot getSnapshot() {
-        return chunk.getChunkSnapshot();
+        return getChunk().getChunkSnapshot();
     }
 
     public int[] getHeightMap() {
-        return NMSHandler.getInstance().getChunkHelper().getHeightMap(chunk);
+        return NMSHandler.getInstance().getChunkHelper().getHeightMap(getChunk());
     }
 
     String prefix = "Chunk";
@@ -170,6 +189,10 @@ public class dChunk implements dObject, Adjustable {
         return identify();
     }
 
+    public boolean isLoaded() {
+        return world.getWorld().isChunkLoaded(chunkX, chunkZ);
+    }
+
     public static void registerTags() {
 
         // <--[tag]
@@ -190,10 +213,11 @@ public class dChunk implements dObject, Adjustable {
                     dB.echoError("The tag ch@chunk.add[<#>,<#>] requires two values!");
                     return null;
                 }
-                double x = aH.getDoubleFrom(coords.get(0)) * 16;
-                double z = aH.getDoubleFrom(coords.get(1)) * 16;
+                int x = aH.getIntegerFrom(coords.get(0));
+                int z = aH.getIntegerFrom(coords.get(1));
+                dChunk chunk = (dChunk) object;
 
-                return new dChunk(((dChunk) object).getCenter().clone().add(x, 0, z).getChunk())
+                return new dChunk(chunk.world, chunk.chunkX + x, chunk.chunkZ + z)
                         .getAttribute(attribute.fulfill(1));
 
             }
@@ -217,10 +241,11 @@ public class dChunk implements dObject, Adjustable {
                     dB.echoError("The tag ch@chunk.sub[<#>,<#>] requires two values!");
                     return null;
                 }
-                double x = aH.getDoubleFrom(coords.get(0)) * 16;
-                double z = aH.getDoubleFrom(coords.get(1)) * 16;
+                int x = aH.getIntegerFrom(coords.get(0));
+                int z = aH.getIntegerFrom(coords.get(1));
+                dChunk chunk = (dChunk) object;
 
-                return new dChunk(((dChunk) object).getCenter().clone().subtract(x, 0, z).getChunk())
+                return new dChunk(chunk.world, chunk.chunkX - x, chunk.chunkZ - z)
                         .getAttribute(attribute.fulfill(1));
 
             }
@@ -235,7 +260,8 @@ public class dChunk implements dObject, Adjustable {
         registerTag("is_loaded", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(((dChunk) object).chunk.isLoaded()).getAttribute(attribute.fulfill(1));
+                return new Element(((dChunk) object).isLoaded())
+                        .getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -248,7 +274,7 @@ public class dChunk implements dObject, Adjustable {
         registerTag("x", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(((dChunk) object).chunk.getX()).getAttribute(attribute.fulfill(1));
+                return new Element(((dChunk) object).chunkX).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -261,7 +287,7 @@ public class dChunk implements dObject, Adjustable {
         registerTag("z", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(((dChunk) object).chunk.getZ()).getAttribute(attribute.fulfill(1));
+                return new Element(((dChunk) object).chunkZ).getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -274,7 +300,7 @@ public class dChunk implements dObject, Adjustable {
         registerTag("world", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return dWorld.mirrorBukkitWorld(((dChunk) object).chunk.getWorld()).getAttribute(attribute.fulfill(1));
+                return ((dChunk) object).world.getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -304,8 +330,10 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
-                    entities.add(new dEntity(ent).identify());
+                if (((dChunk) object).isLoaded()) {
+                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
+                        entities.addObject(new dEntity(ent).getDenizenObject());
+                    }
                 }
 
                 return entities.getAttribute(attribute.fulfill(1));
@@ -323,9 +351,11 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
-                    if (ent instanceof LivingEntity) {
-                        entities.add(new dEntity(ent).identify());
+                if (((dChunk) object).isLoaded()) {
+                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
+                        if (ent instanceof LivingEntity) {
+                            entities.addObject(new dEntity(ent).getDenizenObject());
+                        }
                     }
                 }
 
@@ -343,9 +373,11 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 dList entities = new dList();
-                for (Entity ent : ((dChunk) object).chunk.getEntities()) {
-                    if (dEntity.isPlayer(ent)) {
-                        entities.add(new dEntity(ent).identify());
+                if (((dChunk) object).isLoaded()) {
+                    for (Entity ent : ((dChunk) object).getChunk().getEntities()) {
+                        if (dEntity.isPlayer(ent)) {
+                            entities.addObject(new dPlayer((Player) ent));
+                        }
                     }
                 }
 
@@ -426,7 +458,7 @@ public class dChunk implements dObject, Adjustable {
                 dList surface_blocks = new dList();
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {
-                        surface_blocks.add(new dLocation(((dChunk) object).chunk.getBlock(x, ((dChunk) object)
+                        surface_blocks.add(new dLocation(((dChunk) object).getChunk().getBlock(x, ((dChunk) object)
                                 .getSnapshot().getHighestBlockYAt(x, z) - 1, z).getLocation()).identify());
                     }
                 }
@@ -496,12 +528,9 @@ public class dChunk implements dObject, Adjustable {
             return tr.run(attribute, this);
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -524,7 +553,7 @@ public class dChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload")) {
-            chunk.unload(true);
+            getChunk().unload(true);
         }
 
         // <--[mechanism]
@@ -537,7 +566,7 @@ public class dChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_safely")) {
-            chunk.unload(true, true);
+            getChunk().unload(true, true);
         }
 
         // <--[mechanism]
@@ -550,7 +579,7 @@ public class dChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("unload_without_saving")) {
-            chunk.unload(false);
+            getChunk().unload(false);
         }
 
         // <--[mechanism]
@@ -563,7 +592,7 @@ public class dChunk implements dObject, Adjustable {
         // <chunk.is_loaded>
         // -->
         if (mechanism.matches("load")) {
-            chunk.load(true);
+            getChunk().load(true);
         }
 
         // <--[mechanism]
@@ -618,19 +647,9 @@ public class dChunk implements dObject, Adjustable {
         // None
         // -->
         if (mechanism.matches("refresh_chunk_sections")) {
-            NMSHandler.getInstance().getChunkHelper().refreshChunkSections(chunk);
+            NMSHandler.getInstance().getChunkHelper().refreshChunkSections(getChunk());
         }
 
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
-
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

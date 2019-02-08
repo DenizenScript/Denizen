@@ -322,21 +322,21 @@ public class BukkitWorldScriptHelper implements Listener {
             if (event.getCursor() != null) {
                 holding = new dItem(event.getCursor());
 
-                final String[] itemStrings = new String[]{
+                final String[] itemStrings = new String[] {
                         item.identifySimple(),
                         item.identifyMaterial()
                 };
-                final String[] inventoryStrings = isNote ? new String[]{
+                final String[] inventoryStrings = isNote ? new String[] {
                         "inventory",
                         "notable",
                         type,
                         inventory.identifySimple()
-                } : new String[]{
+                } : new String[] {
                         "inventory",
                         type,
                         inventory.identifySimple()
                 };
-                final String[] holdingStrings = new String[]{
+                final String[] holdingStrings = new String[] {
                         holding.identifySimple(),
                         holding.identifyMaterial()
                 };

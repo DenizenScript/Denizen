@@ -25,6 +25,12 @@ public class BukkitQueueProperties implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "player", "npc"
+    };
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
 
     private BukkitQueueProperties(ScriptQueue queue) {
         this.queue = queue;

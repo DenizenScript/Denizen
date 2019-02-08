@@ -92,7 +92,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
-            result = dItem.valueOf(determination);
+            result = dItem.valueOf(determination, container);
             resultChanged = true;
             return true;
         }

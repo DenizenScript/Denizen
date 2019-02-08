@@ -24,6 +24,15 @@ public class EntityElder implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "elder"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "elder"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

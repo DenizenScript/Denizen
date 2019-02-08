@@ -28,6 +28,15 @@ public class EntityGravity implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "gravity"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "gravity"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

@@ -120,7 +120,7 @@ public class ClickTrigger extends AbstractTrigger implements Listener {
                             (player, npc, false, null, false, null));
                     // Check if the item specified in the specified id's 'trigger:' key
                     // matches the item that the player is holding.
-                    dItem item = dItem.valueOf(entry_value);
+                    dItem item = dItem.valueOf(entry_value, script);
                     if (item == null) {
                         dB.echoError("Invalid click trigger in script '" + script.getName() + "' (null trigger item)!");
                     }

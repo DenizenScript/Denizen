@@ -10,9 +10,9 @@ import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.nio.file.Files;
 
 public class FileCopyCommand extends AbstractCommand {
 
@@ -103,10 +103,10 @@ public class FileCopyCommand extends AbstractCommand {
                 d.mkdirs();
             }
             if (o.isDirectory()) {
-                FileUtils.copyDirectory(o, d);
+                Utilities.copyDirectory(o, d);
             }
             else {
-                FileUtils.copyFile(o, d);
+                Files.copy(o.toPath(), (disdir ? d.toPath().resolve(o.toPath().getFileName()) : d.toPath()));
             }
             scriptEntry.addObject("success", new Element("true"));
         }

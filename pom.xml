@@ -13,7 +13,7 @@
         <craftbukkit.version>1.13.2-R0.1-SNAPSHOT</craftbukkit.version>
         <json.version>20090211</json.version>
         <citizens.version>2.0.24-SNAPSHOT</citizens.version>
-        <dcore.version>1.20</dcore.version>
+        <dcore.version>1.30</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
         <DENIZEN_VERSION>1.0.3</DENIZEN_VERSION>

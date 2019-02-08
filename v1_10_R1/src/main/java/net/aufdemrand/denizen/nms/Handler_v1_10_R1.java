@@ -50,6 +50,11 @@ public class Handler_v1_10_R1 extends NMSHandler {
     private final ProfileEditor profileEditor = new ProfileEditor_v1_10_R1();
 
     @Override
+    public void disableAsyncCatcher() {
+        org.spigotmc.AsyncCatcher.enabled = false;
+    }
+
+    @Override
     public Thread getMainThread() {
         return ((CraftServer) Bukkit.getServer()).getServer().primaryThread;
     }

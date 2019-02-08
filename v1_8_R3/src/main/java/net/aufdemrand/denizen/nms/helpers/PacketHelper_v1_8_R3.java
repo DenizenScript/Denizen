@@ -34,6 +34,13 @@ import java.util.List;
 public class PacketHelper_v1_8_R3 implements PacketHelper {
 
     @Override
+    public void setFakeAbsorption(Player player, float value) {
+        DataWatcher dw = new DataWatcher(null);
+        dw.a(17, value);
+        sendPacket(player, new PacketPlayOutEntityMetadata(player.getEntityId(), dw, true));
+    }
+
+    @Override
     public void resetWorldBorder(Player player) {
         WorldBorder wb = ((CraftWorld) player.getWorld()).getHandle().getWorldBorder();
         sendPacket(player, new PacketPlayOutWorldBorder(wb, PacketPlayOutWorldBorder.EnumWorldBorderAction.INITIALIZE));

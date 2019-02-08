@@ -24,6 +24,15 @@ public class EntityIsShowingBottom implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "is_showing_bottom"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "is_showing_bottom"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////

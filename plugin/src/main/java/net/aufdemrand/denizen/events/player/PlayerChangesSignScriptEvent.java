@@ -128,6 +128,12 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return old_sign;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -145,10 +151,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         Sign sign = (Sign) state;
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         old_sign = new dList(Arrays.asList(sign.getLines()));
         new_sign = new dList(Arrays.asList(event.getLines()));
         new_text = null;

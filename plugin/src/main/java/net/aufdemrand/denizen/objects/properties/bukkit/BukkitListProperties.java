@@ -29,6 +29,12 @@ public class BukkitListProperties implements Property {
         this.list = list;
     }
 
+    public static final String[] handledTags = new String[] {
+            "expiration", "formatted"
+    };
+
+    public static final String[] handledMechs = new String[] {
+    }; // None
     dList list;
 
     @Override
@@ -89,7 +95,7 @@ public class BukkitListProperties implements Property {
         // Returns a Duration of the time remaining on the flag, if it
         // has an expiration.
         // -->
-        if (list.flag != null && attribute.startsWith("expiration")) {
+        if (attribute.startsWith("expiration") && list.flag != null) {
             return DenizenAPI.getCurrentInstance().getFlag(list.flag).expiration()
                     .getAttribute(attribute.fulfill(1));
         }

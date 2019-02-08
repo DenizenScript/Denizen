@@ -25,6 +25,15 @@ public class EntityBeamTarget implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "beam_target"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "beam_target"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////
@@ -95,7 +104,7 @@ public class EntityBeamTarget implements Property {
         if (mechanism.matches("beam_target")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dLocation.class)) {
-                    ((EnderCrystal) dentity.getBukkitEntity()).setBeamTarget(mechanism.getValue().asType(dLocation.class));
+                    ((EnderCrystal) dentity.getBukkitEntity()).setBeamTarget(mechanism.valueAsType(dLocation.class));
                 }
             }
             else {

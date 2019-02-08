@@ -12,13 +12,11 @@ import net.aufdemrand.denizen.scripts.containers.core.EntityScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.EntityScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
-import net.aufdemrand.denizen.utilities.entity.AreaEffectCloudHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -30,11 +28,8 @@ import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.bukkit.potion.*;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -977,7 +972,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             }
 
             for (Mechanism mechanism : mechanisms) {
-                adjust(mechanism);
+                safeAdjust(new Mechanism(new Element(mechanism.getName()), mechanism.getValue(), mechanism.context));
             }
             mechanisms.clear();
         }
@@ -1643,6 +1638,32 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 attribute.startsWith("iteminoffhand")) {
             return new dItem(NMSHandler.getInstance().getEntityHelper().getItemInOffHand(getLivingEntity()))
                     .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_trading>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the villager entity is trading.
+        // -->
+        if (attribute.startsWith("is_trading")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
+                return new Element(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.trading_with>
+        // @returns dPlayer
+        // @description
+        // Returns the player who is trading with the villager entity, or null if it is not trading.
+        // -->
+        if (attribute.startsWith("trading_with")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
+                    && entity instanceof Merchant
+                    && ((Merchant) entity).getTrader() != null) {
+                return new dEntity(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
+            }
         }
 
 
@@ -2437,7 +2458,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @returns Element(Number)
         // @group properties
         // @description
-        // Returns the number of ticks until the explosion of the entity.
+        // Returns the number of ticks until the explosion of the primed TNT.
         // -->
         if (attribute.startsWith("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed) {
             return new Element(((TNTPrimed) getBukkitEntity()).getFuseTicks())
@@ -2473,329 +2494,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
-        /////////////////////
-        //   AREA EFFECT CLOUD ATTRIBUTES
-        /////////////////
-
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && entity.getType() == EntityType.AREA_EFFECT_CLOUD) {
-
-            AreaEffectCloudHelper helper = new AreaEffectCloudHelper(entity);
-
-            // <--[tag]
-            // @attribute <e@entity.base_potion>
-            // @returns Element
-            // @group properties
-            // @description
-            // Returns the Area Effect Cloud's base potion data.
-            // In the format Type,Upgraded,Extended
-            // -->
-            if (attribute.startsWith("base_potion")) {
-                attribute = attribute.fulfill(1);
-
-                // <--[tag]
-                // @attribute <e@entity.base_potion.type>
-                // @returns Element
-                // @group properties
-                // @description
-                // Returns the Area Effect Cloud's base potion type.
-                // -->
-                if (attribute.startsWith("type")) {
-                    return new Element(helper.getBPName())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.base_potion.is_upgraded>
-                // @returns Element(Boolean)
-                // @group properties
-                // @description
-                // Returns whether the Area Effect Cloud's base potion is upgraded.
-                // -->
-                if (attribute.startsWith("is_upgraded")) {
-                    return new Element(helper.getBPUpgraded())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.base_potion.is_extended>
-                // @returns Element(Boolean)
-                // @group properties
-                // @description
-                // Returns whether the Area Effect Cloud's base potion is extended.
-                // -->
-                if (attribute.startsWith("is_extended")) {
-                    return new Element(helper.getBPExtended())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                return new Element(helper.getBPName() + "," + helper.getBPUpgraded() + "," + helper.getBPExtended())
-                        .getAttribute(attribute);
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.particle>
-            // @returns Element
-            // @group properties
-            // @description
-            // Returns the Area Effect Cloud's particle.
-            // -->
-            if (attribute.startsWith("particle")) {
-                attribute = attribute.fulfill(1);
-
-                // <--[tag]
-                // @attribute <e@entity.particle.color>
-                // @returns dColor
-                // @group properties
-                // @description
-                // Returns the Area Effect Cloud's particle color.
-                // -->
-                if (attribute.startsWith("color")) {
-                    return new dColor(helper.getColor())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                return new Element(helper.getParticle())
-                        .getAttribute(attribute);
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.duration>
-            // @returns Duration
-            // @group properties
-            // @description
-            // Returns the Area Effect Cloud's duration.
-            // -->
-            if (attribute.startsWith("duration")) {
-                attribute = attribute.fulfill(1);
-
-                // <--[tag]
-                // @attribute <e@entity.duration.on_use>
-                // @returns Duration
-                // @group properties
-                // @description
-                // Returns the duration the Area Effect Cloud
-                // will increase by when it applies an effect to an entity.
-                // -->
-                if (attribute.startsWith("on_use")) {
-                    return new Duration(helper.getDurationOnUse())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                return new Duration(helper.getDuration())
-                        .getAttribute(attribute);
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.radius>
-            // @returns Element(Decimal)
-            // @group properties
-            // @description
-            // Returns the Area Effect Cloud's radius.
-            // -->
-            if (attribute.startsWith("radius")) {
-                attribute = attribute.fulfill(1);
-
-                // <--[tag]
-                // @attribute <e@entity.radius.on_use>
-                // @returns Element(Decimal)
-                // @group properties
-                // @description
-                // Returns the amount the Area Effect Cloud's radius
-                // will increase by when it applies an effect to an entity.
-                // -->
-                if (attribute.startsWith("on_use")) {
-                    return new Element(helper.getRadiusOnUse())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.radius.per_tick>
-                // @returns Element(Decimal)
-                // @group properties
-                // @description
-                // Returns the amount the Area Effect Cloud's radius
-                // will increase by every tick.
-                // -->
-                if (attribute.startsWith("per_tick")) {
-                    return new Element(helper.getRadiusPerTick())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                return new Element(helper.getRadius())
-                        .getAttribute(attribute);
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.reapplication_delay>
-            // @returns Duration
-            // @group properties
-            // @description
-            // Returns the duration an entity will be immune
-            // from the Area Effect Cloud's subsequent exposure.
-            // -->
-            if (attribute.startsWith("reapplication_delay")) {
-                return new Duration(helper.getReappDelay())
-                        .getAttribute(attribute.fulfill(1));
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.wait_time>
-            // @returns Duration
-            // @group properties
-            // @description
-            // Returns the duration an entity must be exposed to
-            // the Area Effect Cloud before its effect is applied.
-            // -->
-            if (attribute.startsWith("wait_time")) {
-                return new Duration(helper.getWaitTime())
-                        .getAttribute(attribute.fulfill(1));
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.has_custom_effect[<effect>]>
-            // @returns Element(Boolean)
-            // @group properties
-            // @description
-            // Returns whether the Area Effect Cloud has a specified effect.
-            // If no effect is specified, returns whether it has any custom effect.
-            // -->
-            if (attribute.startsWith("has_custom_effect")) {
-
-                if (attribute.hasContext(1)) {
-                    PotionEffectType effectType = PotionEffectType.getByName(attribute.getContext(1));
-                    for (PotionEffect effect : helper.getCustomEffects()) {
-                        if (effect.getType().equals(effectType)) {
-                            return new Element(true).getAttribute(attribute.fulfill(1));
-                        }
-                    }
-                    return new Element(false).getAttribute(attribute.fulfill(1));
-                }
-
-                return new Element(helper.hasCustomEffects())
-                        .getAttribute(attribute.fulfill(1));
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.source>
-            // @returns dEntity
-            // @group properties
-            // @description
-            // Returns the source of the Area Effect Cloud.
-            // -->
-            if (attribute.startsWith("source")) {
-                ProjectileSource shooter = helper.getSource();
-                if (shooter != null && shooter instanceof LivingEntity) {
-                    return new dEntity((LivingEntity) shooter)
-                            .getAttribute(attribute.fulfill(1));
-                }
-            }
-
-            // <--[tag]
-            // @attribute <e@entity.custom_effects>
-            // @returns dList
-            // @group properties
-            // @description
-            // Returns a dList of the Area Effect Cloud's custom effects
-            // In the form Type,Amplifier,Duration,Ambient,Particles|...
-            // -->
-            if (attribute.startsWith("custom_effects")) {
-                List<PotionEffect> effects = helper.getCustomEffects();
-
-                if (!attribute.hasContext(1)) {
-                    dList list = new dList();
-                    for (PotionEffect effect : effects) {
-                        list.add(effect.getType().getName() + "," +
-                                effect.getAmplifier() + "," +
-                                new Duration((long) effect.getDuration()).identify() + "," +
-                                effect.isAmbient() + "," +
-                                effect.hasParticles());
-                    }
-                    return list.getAttribute(attribute.fulfill(1));
-                }
-
-                int val = attribute.getIntContext(1) - 1;
-                if (val < 0 || val >= effects.size()) {
-                    return null;
-                }
-
-                attribute = attribute.fulfill(1);
-                PotionEffect effect = effects.get(val);
-
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].type>
-                // @returns Element
-                // @group properties
-                // @description
-                // Returns the specified Area Effect Cloud potion effect type.
-                // -->
-                if (attribute.startsWith("type")) {
-                    return new Element(effect.getType().getName())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].amplifier>
-                // @returns Element(Number)
-                // @group properties
-                // @description
-                // Returns the specified Area Effect Cloud potion effect amplifier.
-                // -->
-                if (attribute.startsWith("amplifier")) {
-                    return new Element(effect.getAmplifier())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].duration>
-                // @returns Duration
-                // @group properties
-                // @description
-                // Returns the specified Area Effect Cloud potion effect duration.
-                // -->
-                if (attribute.startsWith("duration")) {
-                    return new Duration((long) effect.getDuration())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].has_particles>
-                // @returns Element(Boolean)
-                // @group properties
-                // @description
-                // Returns whether the specified Area Effect Cloud potion effect has particles.
-                // -->
-                if (attribute.startsWith("has_particles")) {
-                    return new Element(effect.hasParticles())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                // <--[tag]
-                // @attribute <e@entity.custom_effects[<#>].is_ambient>
-                // @returns Element(Boolean)
-                // @group properties
-                // @description
-                // Returns whether the specified Area Effect Cloud potion effect is ambient.
-                // -->
-                if (attribute.startsWith("is_ambient")) {
-                    return new Element(effect.isAmbient())
-                            .getAttribute(attribute.fulfill(1));
-                }
-
-                return new Element(effect.getType().getName() + "," +
-                        effect.getAmplifier() + "," +
-                        new Duration((long) effect.getDuration()).identify() + "," +
-                        effect.isAmbient() + "," +
-                        effect.hasParticles()).getAttribute(attribute);
-            }
-        }
-
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -2810,9 +2511,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     public void applyProperty(Mechanism mechanism) {
         if (isGeneric()) {
             mechanisms.add(mechanism);
-        }
-        else if (rememberedEntities.containsKey(entity.getUniqueId())) {
-            adjust(mechanism);
+            mechanism.fulfill();
         }
         else {
             dB.echoError("Cannot apply properties to an already-spawned entity!");
@@ -2824,6 +2523,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         if (isGeneric()) {
             mechanisms.add(mechanism);
+            mechanism.fulfill();
             return;
         }
 
@@ -2837,8 +2537,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             return;
         }
 
-        Element value = mechanism.getValue();
-
         // <--[mechanism]
         // @object dEntity
         // @name item_in_hand
@@ -2850,7 +2548,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.item_in_hand>
         // -->
         if (mechanism.matches("item_in_hand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2864,7 +2562,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.item_in_offhand>
         // -->
         if (mechanism.matches("item_in_offhand")) {
-            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), value.asType(dItem.class).getItemStack());
+            NMSHandler.getInstance().getEntityHelper().setItemInOffHand(getLivingEntity(), mechanism.valueAsType(dItem.class).getItemStack());
         }
 
         // <--[mechanism]
@@ -2881,7 +2579,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("attach_to")) {
             if (mechanism.hasValue()) {
-                dList list = mechanism.getValue().asType(dList.class);
+                dList list = mechanism.valueAsType(dList.class);
                 Vector offset = null;
                 boolean rotateWith = true;
                 if (list.size() > 1) {
@@ -2908,7 +2606,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.shooter>
         // -->
         if (mechanism.matches("shooter")) {
-            setShooter(value.asType(dEntity.class));
+            setShooter(mechanism.valueAsType(dEntity.class));
         }
 
         // <--[mechanism]
@@ -2922,7 +2620,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.can_pickup_items>
         // -->
         if (mechanism.matches("can_pickup_items") && mechanism.requireBoolean()) {
-            getLivingEntity().setCanPickupItems(value.asBoolean());
+            getLivingEntity().setCanPickupItems(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2935,7 +2633,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fall_distance>
         // -->
         if (mechanism.matches("fall_distance") && mechanism.requireFloat()) {
-            entity.setFallDistance(value.asFloat());
+            entity.setFallDistance(mechanism.getValue().asFloat());
         }
 
         // <--[mechanism]
@@ -2947,7 +2645,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fallingblock_drop_item") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
-            ((FallingBlock) entity).setDropItem(value.asBoolean());
+            ((FallingBlock) entity).setDropItem(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2959,7 +2657,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("fallingblock_hurt_entities") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
-            ((FallingBlock) entity).setHurtEntities(value.asBoolean());
+            ((FallingBlock) entity).setHurtEntities(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -2972,7 +2670,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fire_time>
         // -->
         if (mechanism.matches("fire_time") && mechanism.requireObject(Duration.class)) {
-            entity.setFireTicks(value.asType(Duration.class).getTicksAsInt());
+            entity.setFireTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -2987,7 +2685,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.leash_holder>
         // -->
         if (mechanism.matches("leash_holder") && mechanism.requireObject(dEntity.class)) {
-            getLivingEntity().setLeashHolder(value.asType(dEntity.class).getBukkitEntity());
+            getLivingEntity().setLeashHolder(mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3015,7 +2713,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.can_breed>
         // -->
         if (mechanism.matches("breed") && mechanism.requireBoolean()) {
-            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), value.asBoolean());
+            NMSHandler.getInstance().getEntityHelper().setBreeding((Animals) getLivingEntity(), mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3030,7 +2728,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : value.asType(dList.class).filter(dEntity.class)) {
+            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
@@ -3048,7 +2746,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.empty>
         // -->
         if (mechanism.matches("passenger") && mechanism.requireObject(dEntity.class)) {
-            entity.setPassenger(value.asType(dEntity.class).getBukkitEntity());
+            entity.setPassenger(mechanism.valueAsType(dEntity.class).getBukkitEntity());
         }
 
         // <--[mechanism]
@@ -3061,7 +2759,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.time_lived>
         // -->
         if (mechanism.matches("time_lived") && mechanism.requireObject(Duration.class)) {
-            entity.setTicksLived(value.asType(Duration.class).getTicksAsInt());
+            entity.setTicksLived(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3076,7 +2774,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.oxygen.max>
         // -->
         if (mechanism.matches("remaining_air") && mechanism.requireInteger()) {
-            getLivingEntity().setRemainingAir(value.asInt());
+            getLivingEntity().setRemainingAir(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -3154,7 +2852,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 && mechanism.matches("left_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(value.asType(dEntity.class).getBukkitEntity());
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityLeft(mechanism.valueAsType(dEntity.class).getBukkitEntity());
                 }
             }
             else {
@@ -3179,7 +2877,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
                 && mechanism.matches("right_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
-                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(value.asType(dEntity.class).getBukkitEntity());
+                    ((HumanEntity) getLivingEntity()).setShoulderEntityRight(mechanism.valueAsType(dEntity.class).getBukkitEntity());
                 }
             }
             else {
@@ -3198,7 +2896,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.remove_when_far>
         // -->
         if (mechanism.matches("remove_when_far_away") && mechanism.requireBoolean()) {
-            getLivingEntity().setRemoveWhenFarAway(value.asBoolean());
+            getLivingEntity().setRemoveWhenFarAway(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3212,7 +2910,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("sheared") && mechanism.requireBoolean()
                 && getBukkitEntity() instanceof Sheep) {
-            ((Sheep) getBukkitEntity()).setSheared(value.asBoolean());
+            ((Sheep) getBukkitEntity()).setSheared(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3227,7 +2925,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("collidable")
                 && mechanism.requireBoolean()) {
-            getLivingEntity().setCollidable(value.asBoolean());
+            getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3241,7 +2939,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.max_duration>
         // -->
         if (mechanism.matches("no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+            getLivingEntity().setNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3255,7 +2953,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.last_damage.max_duration>
         // -->
         if (mechanism.matches("max_no_damage_duration") && mechanism.requireObject(Duration.class)) {
-            getLivingEntity().setMaximumNoDamageTicks(value.asType(Duration.class).getTicksAsInt());
+            getLivingEntity().setMaximumNoDamageTicks(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3268,7 +2966,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.velocity>
         // -->
         if (mechanism.matches("velocity") && mechanism.requireObject(dLocation.class)) {
-            setVelocity(value.asType(dLocation.class).toVector());
+            setVelocity(mechanism.valueAsType(dLocation.class).toVector());
         }
 
         // <--[mechanism]
@@ -3279,7 +2977,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Forces an entity to move in the direction of the velocity specified.
         // -->
         if (mechanism.matches("move") && mechanism.requireObject(dLocation.class)) {
-            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), value.asType(dLocation.class).toVector());
+            NMSHandler.getInstance().getEntityHelper().move(getBukkitEntity(), mechanism.valueAsType(dLocation.class).toVector());
         }
 
         // <--[mechanism]
@@ -3292,7 +2990,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // None
         // -->
         if (mechanism.matches("interact_with") && mechanism.requireObject(dLocation.class)) {
-            dLocation interactLocation = value.asType(dLocation.class);
+            dLocation interactLocation = mechanism.valueAsType(dLocation.class);
             NMSHandler.getInstance().getEntityHelper().forceInteraction(getPlayer(), interactLocation);
         }
 
@@ -3320,7 +3018,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if ((mechanism.matches("pickup_delay") || mechanism.matches("pickupdelay")) &&
                 getBukkitEntity() instanceof Item && mechanism.requireObject(Duration.class)) {
-            ((Item) getBukkitEntity()).setPickupDelay(value.asType(Duration.class).getTicksAsInt());
+            ((Item) getBukkitEntity()).setPickupDelay(mechanism.valueAsType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3333,7 +3031,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.gliding>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("gliding") && mechanism.requireBoolean()) {
-            getLivingEntity().setGliding(value.asBoolean());
+            getLivingEntity().setGliding(mechanism.getValue().asBoolean());
         }
 
         // <--[mechanism]
@@ -3346,9 +3044,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.glowing>
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("glowing") && mechanism.requireBoolean()) {
-            getBukkitEntity().setGlowing(value.asBoolean());
+            getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
-                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, value.asBoolean());
+                CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, mechanism.getValue().asBoolean());
             }
         }
 
@@ -3363,7 +3061,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("dragon_phase")) {
             EnderDragon ed = (EnderDragon) getLivingEntity();
-            ed.setPhase(EnderDragon.Phase.valueOf(value.asString().toUpperCase()));
+            ed.setPhase(EnderDragon.Phase.valueOf(mechanism.getValue().asString().toUpperCase()));
         }
 
         // <--[mechanism]
@@ -3376,7 +3074,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.experience>
         // -->
         if (mechanism.matches("experience") && getBukkitEntity() instanceof ExperienceOrb && mechanism.requireInteger()) {
-            ((ExperienceOrb) getBukkitEntity()).setExperience(value.asInt());
+            ((ExperienceOrb) getBukkitEntity()).setExperience(mechanism.getValue().asInt());
         }
 
         // <--[mechanism]
@@ -3389,259 +3087,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.fuse_ticks>
         // -->
         if (mechanism.matches("fuse_ticks") && getBukkitEntity() instanceof TNTPrimed && mechanism.requireInteger()) {
-            ((TNTPrimed) getBukkitEntity()).setFuseTicks(value.asInt());
+            ((TNTPrimed) getBukkitEntity()).setFuseTicks(mechanism.getValue().asInt());
         }
-
-        /////////////////////
-        //   AREA EFFECT CLOUD MECS
-        /////////////////
-
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && entity.getType() == EntityType.AREA_EFFECT_CLOUD) {
-
-            AreaEffectCloudHelper helper = new AreaEffectCloudHelper(entity);
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name clear_custom_effects
-            // @input None
-            // @description
-            // Clears all custom effects from the Area Effect Cloud
-            // @tags
-            // <e@entity.custom_effects>
-            // -->
-            if (mechanism.matches("clear_custom_effects")) {
-                helper.clearEffects();
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name remove_custom_effect
-            // @input Element
-            // @description
-            // Removes the specified custom effect from the Area Effect Cloud
-            // @tags
-            // <e@entity.custom_effects>
-            // -->
-            if (mechanism.matches("remove_custom_effect")) {
-                PotionEffectType type = PotionEffectType.getByName(value.asString().toUpperCase());
-                if (type != null) {
-                    helper.removeEffect(type);
-                }
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name custom_effects
-            // @input dList
-            // @description
-            // Adds a list of custom potion effects to the Area Effect Cloud
-            // In the form Type,Amplifier,Duration(,Ambient,Particles)|...
-            // @tags
-            // <e@entity.custom_effects>
-            // -->
-            if (mechanism.matches("custom_effects")) {
-                dList list = value.asType(dList.class);
-                helper.clearEffects();
-
-                for (String item : list) {
-                    List<String> potionData = CoreUtilities.split(item, ',', 5);
-                    if (potionData.size() >= 3) {
-                        PotionEffectType type = PotionEffectType.getByName(potionData.get(0));
-                        Element amplifier = new Element(potionData.get(1));
-                        Duration duration = Duration.valueOf(potionData.get(2));
-                        Element ambient = new Element((potionData.size() > 3) ? potionData.get(3) : "false");
-                        Element particles = new Element((potionData.size() > 4) ? potionData.get(4) : "true");
-
-                        if (type == null || duration == null || !amplifier.isInt() || !ambient.isBoolean() || !particles.isBoolean()) {
-                            dB.echoError(item + " is not a valid potion effect!");
-                        }
-                        else {
-                            helper.addEffect(
-                                    new PotionEffect(type, duration.getTicksAsInt(), amplifier.asInt(),
-                                            ambient.asBoolean(), particles.asBoolean()), true);
-                        }
-                    }
-                    else {
-                        dB.echoError(item + " is not a valid potion effect!");
-                    }
-                }
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name particle_color
-            // @input dColor
-            // @description
-            // Sets the Area Effect Cloud's particle color.
-            // @tags
-            // <e@entity.particle.color>
-            // -->
-            if (mechanism.matches("particle_color") && mechanism.requireObject(dColor.class)) {
-                helper.setColor(dColor.valueOf(value.asString()).getColor());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name base_potion
-            // @input Element
-            // @description
-            // Sets the Area Effect Cloud's base potion.
-            // In the form: Type,Upgraded,Extended
-            // NOTE: Potion cannot be both upgraded and extended
-            // @tags
-            // <e@entity.base_potion>
-            // <e@entity.base_potion.type>
-            // <e@entity.base_potion.is_upgraded>
-            // <e@entity.base_potion.is_extended>
-            // -->
-            if (mechanism.matches("base_potion")) {
-                List<String> data = CoreUtilities.split(value.asString().toUpperCase(), ',');
-                if (data.size() != 3) {
-                    dB.echoError(value.asString() + " is not a valid base potion!");
-                }
-                else {
-                    try {
-                        PotionType type = PotionType.valueOf(data.get(0));
-                        boolean extended = type.isExtendable() && CoreUtilities.toLowerCase(data.get(1)).equals("true");
-                        boolean upgraded = type.isUpgradeable() && CoreUtilities.toLowerCase(data.get(2)).equals("true");
-                        if (extended && upgraded) {
-                            dB.echoError("Potion cannot be both upgraded and extended");
-                        }
-                        else {
-                            helper.setBP(type, extended, upgraded);
-                        }
-                    }
-                    catch (Exception e) {
-                        dB.echoError(value.asString() + " is not a valid base potion!");
-                    }
-                }
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name duration
-            // @input Duration
-            // @description
-            // Sets the Area Effect Cloud's duration.
-            // @tags
-            // <e@entity.duration>
-            // -->
-            if (mechanism.matches("duration") && mechanism.requireObject(Duration.class)) {
-                helper.setDuration(Duration.valueOf(value.asString()).getTicksAsInt());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name duration_on_use
-            // @input Duration
-            // @description
-            // Sets the duration the Area Effect Cloud
-            // will increase by when it applies an effect to an entity.
-            // @tags
-            // <e@entity.duration.on_use>
-            // -->
-            if (mechanism.matches("duration_on_use") && mechanism.requireObject(Duration.class)) {
-                helper.setDurationOnUse(Duration.valueOf(value.asString()).getTicksAsInt());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name particle
-            // @input Element
-            // @description
-            // Sets the particle of the Area Effect Cloud
-            // @tags
-            // <e@entity.particle>
-            // -->
-            if (mechanism.matches("particle") && mechanism.hasValue()) {
-                helper.setParticle(value.asString().toUpperCase());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name radius
-            // @input Element(Decimal)
-            // @description
-            // Sets the radius of the Area Effect Cloud
-            // @tags
-            // <e@entity.radius>
-            // -->
-            if (mechanism.matches("radius") && mechanism.requireFloat()) {
-                helper.setRadius(value.asFloat());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name radius_on_use
-            // @input Element(Decimal)
-            // @description
-            // Sets the radius the Area Effect Cloud
-            // will increase by when it applies an effect to an entity.
-            // @tags
-            // <e@entity.radius.on_use>
-            // -->
-            if (mechanism.matches("radius_on_use") && mechanism.requireFloat()) {
-                helper.setRadiusOnUse(value.asFloat());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name radius_per_tick
-            // @input Element(Decimal)
-            // @description
-            // Sets the radius the Area Effect Cloud
-            // will increase by every tick.
-            // @tags
-            // <e@entity.radius.per_tick>
-            // -->
-            if (mechanism.matches("radius_per_tick") && mechanism.requireFloat()) {
-                helper.setRadiusPerTick(value.asFloat());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name reapplication_delay
-            // @input Duration
-            // @description
-            // Sets the duration an entity will be immune
-            // from the Area Effect Cloud's subsequent exposure.
-            // @tags
-            // <e@entity.reapplication_delay>
-            // -->
-            if (mechanism.matches("reapplication_delay") && mechanism.requireObject(Duration.class)) {
-                helper.setReappDelay(Duration.valueOf(value.asString()).getTicksAsInt());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name source
-            // @input dEntity
-            // @description
-            // Sets the source of the Area Effect Cloud
-            // @tags
-            // <e@entity.source>
-            // -->
-            if (mechanism.matches("source") && mechanism.requireObject(dEntity.class)) {
-                helper.setSource((ProjectileSource) dEntity.valueOf(value.asString()).getBukkitEntity());
-            }
-
-            // <--[mechanism]
-            // @object dEntity
-            // @name wait_time
-            // @input Duration
-            // @description
-            // Sets the duration an entity must be exposed to
-            // the Area Effect Cloud before its effect is applied.
-            // @tags
-            // <e@entity.wait_time>
-            // -->
-            if (mechanism.matches("wait_time") && mechanism.requireObject(Duration.class)) {
-                helper.setWaitTime(Duration.valueOf(value.asString()).getTicksAsInt());
-            }
-        }
-
-        // END AREA EFFECT CLOUD BLOCK
 
         // <--[mechanism]
         // @object dEntity
@@ -3676,19 +3123,9 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) && mechanism.matches("swimming")
                 && mechanism.requireBoolean()) {
-            getLivingEntity().setSwimming(value.asBoolean());
+            getLivingEntity().setSwimming(mechanism.getValue().asBoolean());
         }
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

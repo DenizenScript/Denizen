@@ -30,4 +30,9 @@ public class BukkitTagContext extends TagContext {
         bsed.scriptEntry = entry;
         return bsed;
     }
+
+    @Override
+    public String toString() {
+        return "Context{player=" + player + ",npc=" + npc +",instant=" + instant + ",entry=" + entry + ",debug=" + debug + ",script=" + script + "}";
+    }
 }

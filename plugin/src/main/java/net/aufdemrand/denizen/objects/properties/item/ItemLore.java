@@ -31,6 +31,15 @@ public class ItemLore implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "lore", "has_lore"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "lore"
+    };
+
+
     public boolean hasLore() {
         return item.getItemStack().hasItemMeta()
                 && (item.getItemStack().getItemMeta().hasLore());
@@ -134,7 +143,7 @@ public class ItemLore implements Property {
 
         if (mechanism.matches("lore")) {
             ItemMeta meta = item.getItemStack().getItemMeta();
-            dList lore = mechanism.getValue().asType(dList.class);
+            dList lore = mechanism.valueAsType(dList.class);
             if (item.isItemscript()) {
                 if (!Settings.packetInterception()) {
                     lore.add(0, ItemScriptHelper.createItemScriptID(item.getScriptName()));

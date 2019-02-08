@@ -29,6 +29,14 @@ public class EntityPotion implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "potion"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "potion"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods
@@ -110,7 +118,7 @@ public class EntityPotion implements Property {
         // <e@entity.potion>
         // -->
         if (mechanism.matches("potion") && mechanism.requireObject(dItem.class)) {
-            setPotion(mechanism.getValue().asType(dItem.class).getItemStack());
+            setPotion(mechanism.valueAsType(dItem.class).getItemStack());
         }
 
     }

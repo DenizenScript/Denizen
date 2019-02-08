@@ -118,7 +118,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             block.setType(Material.AIR);
 
             for (dItem newItem : dList.valueOf(determination).filter(dItem.class)) {
-                block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), newItem.getItemStack()); // Drop each item
+                block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }
         else {
@@ -141,6 +141,12 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             return material;
         }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         else if (name.equals("xp")) {
@@ -156,10 +162,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identifySimple());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         xp = new Element(event.getExpToDrop());
         this.event = event;

@@ -11,8 +11,6 @@ import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -1259,29 +1257,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_chunks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                Set<Chunk> chunks = new HashSet<Chunk>();
+                dList chunks = new dList();
                 dCuboid obj = (dCuboid) object;
                 for (LocationPair pair : obj.pairs) {
                     int minY = pair.low.getBlockY();
-                    Chunk minChunk = pair.low.getChunk();
+                    dChunk minChunk = new dChunk(pair.low);
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), minChunk.getX() * 16, minY, minChunk.getZ() * 16))) {
-                        chunks.add(minChunk);
+                        chunks.addObject(minChunk);
                     }
-                    Chunk maxChunk = pair.high.getChunk();
+                    dChunk maxChunk = new dChunk(pair.high);
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
-                        chunks.add(maxChunk);
+                        chunks.addObject(maxChunk);
                     }
-                    for (int x = minChunk.getX() + 1; x <= maxChunk.getX() - 1; x++) {
-                        for (int z = minChunk.getZ() + 1; z <= maxChunk.getZ() - 1; z++) {
-                            chunks.add(obj.getWorld().getChunkAt(x, z));
+                    for (int x = minChunk.getX() + 1; x < maxChunk.getX() ; x++) {
+                        for (int z = minChunk.getZ() + 1; z < maxChunk.getZ(); z++) {
+                            chunks.addObject(new dChunk(new dWorld(((dCuboid) object).getWorld()), x, z));
                         }
                     }
                 }
-                dList list = new dList();
-                for (Chunk chunk : chunks) {
-                    list.add(new dChunk(chunk).identify());
-                }
-                return list.getAttribute(attribute.fulfill(1));
+                return chunks.getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1294,21 +1288,17 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_partial_chunks", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                Set<Chunk> chunks = new HashSet<Chunk>();
+                dList chunks = new dList();
                 for (LocationPair pair : ((dCuboid) object).pairs) {
-                    Chunk minChunk = pair.low.getChunk();
-                    Chunk maxChunk = pair.high.getChunk();
+                    dChunk minChunk = new dChunk(pair.low);
+                    dChunk maxChunk = new dChunk(pair.high);
                     for (int x = minChunk.getX(); x <= maxChunk.getX(); x++) {
                         for (int z = minChunk.getZ(); z <= maxChunk.getZ(); z++) {
-                            chunks.add(((dCuboid) object).getWorld().getChunkAt(x, z));
+                            chunks.addObject(new dChunk(new dWorld(((dCuboid) object).getWorld()), x, z));
                         }
                     }
                 }
-                dList list = new dList();
-                for (Chunk chunk : chunks) {
-                    list.add(new dChunk(chunk).identify());
-                }
-                return list.getAttribute(attribute.fulfill(1));
+                return chunks.getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -1389,12 +1379,9 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return tr.run(attribute, this);
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -1407,14 +1394,12 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         // TODO: Better mechanisms!
 
         if (mechanism.matches("outset")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -1429,8 +1414,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("expand")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -1446,8 +1431,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
         if (mechanism.matches("set_location")) {
             int mod = 1;
-            if (value != null && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
-                mod = value.asInt();
+            if (mechanism.hasValue() && mechanism.requireInteger("Invalid integer specified. Assuming '1'.")) {
+                mod = mechanism.getValue().asInt();
             }
             for (LocationPair pair : pairs) {
                 pair.low.add(-1 * mod, -1 * mod, -1 * mod);
@@ -1461,17 +1446,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             return;
         }
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
 
     }
 }

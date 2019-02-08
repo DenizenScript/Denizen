@@ -6,8 +6,6 @@ import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -1189,6 +1187,7 @@ public class dMaterial implements dObject, Adjustable {
         // @returns Element
         // @description
         // Returns the material's full identification.
+        // Irrelevant on modern (1.13+) servers.
         // -->
         registerTag("full", new TagRunnable() {
             @Override
@@ -1260,12 +1259,9 @@ public class dMaterial implements dObject, Adjustable {
             return tr.run(attribute, this);
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute.fulfill(0));
@@ -1294,16 +1290,6 @@ public class dMaterial implements dObject, Adjustable {
             }
         }
 
-        // Iterate through this object's properties' mechanisms
-        for (Property property : PropertyParser.getProperties(this)) {
-            property.adjust(mechanism);
-            if (mechanism.fulfilled()) {
-                break;
-            }
-        }
-
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

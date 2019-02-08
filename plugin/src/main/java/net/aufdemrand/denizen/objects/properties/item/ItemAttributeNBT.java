@@ -33,6 +33,14 @@ public class ItemAttributeNBT implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "nbt_attributes"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "nbt_attributes"
+    };
+
     private ItemAttributeNBT(dItem item) {
         this.item = item;
     }
@@ -106,7 +114,7 @@ public class ItemAttributeNBT implements Property {
                 dB.echoError("Cannot apply NBT to AIR!");
                 return;
             }
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             ItemStack itemStack = item.getItemStack();
             itemStack = CustomNBT.clearNBT(itemStack, CustomNBT.KEY_ATTRIBUTES);
             for (String string : list) {

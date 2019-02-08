@@ -164,7 +164,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
             dList drops_list = dList.valueOf(determination);
             drops_list.filter(dItem.class);
             for (String drop : drops_list) {
-                dItem item = dItem.valueOf(drop);
+                dItem item = dItem.valueOf(drop, container);
                 if (item != null) {
                     dropItems.add(item);
                     drops.add(item.identify());

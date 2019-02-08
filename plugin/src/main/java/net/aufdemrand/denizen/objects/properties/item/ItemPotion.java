@@ -42,6 +42,15 @@ public class ItemPotion implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "potion_base", "has_potion_effect", "potion_effect"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "potion_effects"
+    };
+
+
     private ItemPotion(dItem item) {
         this.item = item;
     }
@@ -216,7 +225,7 @@ public class ItemPotion implements Property {
                 // @mechanism dItem.potion_effects
                 // @group properties
                 // @description
-                // Returns the potion effect shows an icon.
+                // Returns whether the potion effect shows an icon.
                 // -->
                 if (attribute.startsWith("icon") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                     return new Element(meta.getCustomEffects().get(potN).hasIcon()).getAttribute(attribute.fulfill(1));
@@ -321,7 +330,7 @@ public class ItemPotion implements Property {
         // <i@item.potion_effect[<#>].icon>
         // -->
         if (mechanism.matches("potion_effects")) {
-            dList data = mechanism.getValue().asType(dList.class);
+            dList data = mechanism.valueAsType(dList.class);
             String[] d1 = data.get(0).split(",");
             PotionMeta meta = (PotionMeta) item.getItemStack().getItemMeta();
             meta.setBasePotionData(new PotionData(PotionType.valueOf(d1[0].toUpperCase()),

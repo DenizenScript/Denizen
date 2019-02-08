@@ -24,6 +24,14 @@ public class EntityAI implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "has_ai"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "has_ai", "toggle_ai"
+    };
+
 
     ///////////////////
     // Instance Fields and Methods

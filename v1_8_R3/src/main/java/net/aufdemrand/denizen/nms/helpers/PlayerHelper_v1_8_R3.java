@@ -22,6 +22,16 @@ import java.util.UUID;
 public class PlayerHelper_v1_8_R3 implements PlayerHelper {
 
     @Override
+    public float getAbsorption(Player player) {
+        return ((CraftPlayer) player).getHandle().getDataWatcher().getFloat(17);
+    }
+
+    @Override
+    public void setAbsorption(Player player, float value) {
+        ((CraftPlayer) player).getHandle().getDataWatcher().watch(17, value);
+    }
+
+    @Override
     public boolean hasChunkLoaded(Player player, Chunk chunk) {
         return ((CraftWorld) chunk.getWorld()).getHandle().getPlayerChunkMap()
                 .a(((CraftPlayer) player).getHandle(), chunk.getX(), chunk.getZ());

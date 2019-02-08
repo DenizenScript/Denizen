@@ -19,8 +19,6 @@ import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
-import net.aufdemrand.denizencore.objects.properties.Property;
-import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
@@ -768,7 +766,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (attribute.startsWith("drops")) {
             Collection<ItemStack> its;
             if (attribute.hasContext(1)) {
-                dItem item = dItem.valueOf(attribute.getContext(1));
+                dItem item = dItem.valueOf(attribute.getContext(1), attribute.context);
                 its = getBlock().getDrops(item.getItemStack());
             }
             else {
@@ -2168,12 +2166,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
-        // Iterate through this object's properties' attributes
-        for (Property property : PropertyParser.getProperties(this)) {
-            String returned = property.getAttribute(attribute);
-            if (returned != null) {
-                return returned;
-            }
+        String returned = CoreUtilities.autoPropertyTag(this, attribute);
+        if (returned != null) {
+            return returned;
         }
 
         return new Element(identify()).getAttribute(attribute);
@@ -2186,11 +2181,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     @Override
     public void adjust(Mechanism mechanism) {
 
-        Element value = mechanism.getValue();
-
         if (mechanism.matches("data") && mechanism.hasValue()) {
             dB.echoError("Material ID and data magic number support is deprecated and WILL be removed in a future release.");
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) value.asInt());
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(getBlock().getType(), (byte) mechanism.getValue().asInt());
             blockData.setBlock(getBlock(), false);
         }
 
@@ -2204,7 +2197,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.block_facing>
         // -->
         if (mechanism.matches("block_facing") && mechanism.requireObject(dLocation.class)) {
-            dLocation faceVec = value.asType(dLocation.class);
+            dLocation faceVec = mechanism.valueAsType(dLocation.class);
             DirectionalBlocksHelper.setFacing(getBlock(), faceVec.toVector());
         }
 
@@ -2218,7 +2211,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.material>
         // -->
         if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
-            dMaterial mat = value.asType(dMaterial.class);
+            dMaterial mat = mechanism.valueAsType(dMaterial.class);
             byte data = mat.hasData() ? mat.getData() : 0;
             BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(mat.getMaterial(), data);
             blockData.setBlock(getBlock(), false);
@@ -2234,7 +2227,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.biome>
         // -->
         if (mechanism.matches("biome") && mechanism.requireObject(dBiome.class)) {
-            value.asType(dBiome.class).getBiome().changeBlockBiome(this);
+            mechanism.valueAsType(dBiome.class).getBiome().changeBlockBiome(this);
         }
 
         // <--[mechanism]
@@ -2249,7 +2242,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("spawner_type") && mechanism.requireObject(dEntity.class)
                 && getBlock().getState() instanceof CreatureSpawner) {
             CreatureSpawner spawner = ((CreatureSpawner) getBlock().getState());
-            spawner.setSpawnedType(value.asType(dEntity.class).getBukkitEntityType());
+            spawner.setSpawnedType(mechanism.valueAsType(dEntity.class).getBukkitEntityType());
             spawner.update();
         }
 
@@ -2289,7 +2282,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             for (int i = 0; i < 4; i++) {
                 state.setLine(i, "");
             }
-            dList list = value.asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             if (list.size() > 4) {
                 dB.echoError("Sign can only hold four lines!");
             }
@@ -2321,7 +2314,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 dB.echoError("As of Minecraft version 1.13 you may only set the skin of a PLAYER_HEAD or PLAYER_WALL_HEAD.");
             }
             else if (blockState instanceof Skull) {
-                dList list = mechanism.getValue().asType(dList.class);
+                dList list = mechanism.valueAsType(dList.class);
                 String idString = list.get(0);
                 String texture = null;
                 if (list.size() > 1) {
@@ -2364,7 +2357,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 dB.echoError("As of Minecraft version 1.13 potted flowers each have their own material, such as POTTED_CACTUS.");
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
-                MaterialData data = value.asType(dMaterial.class).getMaterialData();
+                MaterialData data = mechanism.valueAsType(dMaterial.class).getMaterialData();
                 NMSHandler.getInstance().getBlockHelper().setFlowerpotContents(getBlock(), data);
             }
         }
@@ -2381,7 +2374,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("command_block_name")) {
             if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
-                block.setName(value.asString());
+                block.setName(mechanism.getValue().asString());
                 block.update();
             }
         }
@@ -2398,7 +2391,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("command_block")) {
             if (getBlock().getType() == MaterialCompat.COMMAND_BLOCK) {
                 CommandBlock block = ((CommandBlock) getBlock().getState());
-                block.setCommand(value.asString());
+                block.setCommand(mechanism.getValue().asString());
                 block.update();
             }
         }
@@ -2437,7 +2430,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("furnace_burn_time")) {
             if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
-                furnace.setBurnTime((short) value.asInt());
+                furnace.setBurnTime((short) mechanism.getValue().asInt());
                 furnace.update();
             }
         }
@@ -2454,7 +2447,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         if (mechanism.matches("furnace_cook_time")) {
             if (MaterialCompat.isFurnace(getBlock().getType())) {
                 Furnace furnace = (Furnace) getBlock().getState();
-                furnace.setCookTime((short) value.asInt());
+                furnace.setCookTime((short) mechanism.getValue().asInt());
                 furnace.update();
             }
         }
@@ -2489,7 +2482,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("patterns")) {
             List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
-            dList list = mechanism.getValue().asType(dList.class);
+            dList list = mechanism.valueAsType(dList.class);
             List<String> split;
             for (String string : list) {
                 try {
@@ -2517,7 +2510,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("head_rotation") && mechanism.requireInteger()) {
             Skull sk = (Skull) getBlock().getState();
-            sk.setRotation(getSkullBlockFace(value.asInt() - 1));
+            sk.setRotation(getSkullBlockFace(mechanism.getValue().asInt() - 1));
             sk.update();
         }
 
@@ -2532,14 +2525,12 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // None
         // -->
         if (mechanism.matches("generate_tree") && mechanism.requireEnum(false, TreeType.values())) {
-            boolean generated = getWorld().generateTree(this, TreeType.valueOf(value.asString().toUpperCase()));
+            boolean generated = getWorld().generateTree(this, TreeType.valueOf(mechanism.getValue().asString().toUpperCase()));
             if (!generated) {
                 dB.echoError("Could not generate tree at " + identifySimple() + ". Make sure this location can naturally generate a tree!");
             }
         }
 
-        if (!mechanism.fulfilled()) {
-            mechanism.reportInvalid();
-        }
+        CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.objects.notable;
 
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.ObjectFetcher;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -136,7 +137,7 @@ public class NotableManager {
             }
 
             for (String notable : section.getKeys(false)) {
-                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable));
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable), Utilities.noDebugContext);
                 if (obj != null) {
                     obj.makeUnique(notable.replace("DOT", "."));
                 }

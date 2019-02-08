@@ -118,6 +118,12 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
             return location;
         }
         else if (name.equals("cuboids")) {
+            if (cuboids == null) {
+                cuboids = new dList();
+                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                    cuboids.add(cuboid.identifySimple());
+                }
+            }
             return cuboids;
         }
         return super.getContext(name);
@@ -131,10 +137,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         entity = new dEntity(event.getRightClicked());
         item = new dItem(event.getPlayer().getItemInHand());
         location = new dLocation(event.getRightClicked().getLocation());
-        cuboids = new dList();
-        for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-            cuboids.add(cuboid.identify());
-        }
+        cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;
         fire();

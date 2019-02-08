@@ -537,16 +537,15 @@ public class YamlCommand extends AbstractCommand implements Holdable {
             if (list == null) {
                 list = new ArrayList<String>();
             }
-            if (index > list.size()) {
-                index = list.size() - 1;
-            }
             if (index < 0) {
                 index = 0;
             }
-            if (list.size() == 0) {
-                list.add("");
+            if (index >= list.size()) {
+                list.add(value);
             }
-            list.set(index, value);
+            else {
+                list.set(index, value);
+            }
             yaml.set(key, list);
         }
     }

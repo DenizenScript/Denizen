@@ -22,6 +22,15 @@ public class EntityBodyArrows implements Property {
         }
     }
 
+    public static final String[] handledTags = new String[] {
+            "body_arrows"
+    };
+
+    public static final String[] handledMechs = new String[] {
+            "body_arrows", "clear_body_arrows"
+    };
+
+
     ///////////////////
     // Instance Fields and Methods
     /////////////
