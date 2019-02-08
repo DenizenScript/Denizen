@@ -220,10 +220,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
         // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
         //
-        // All entities also have available Bukkit's entity effect list, which includes:
-        // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
-        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM,
-        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM
+        // All entities also have available Bukkit's entity effect list:
+        // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/EntityEffect.html>
+        //
+        // In addition, Denizen adds a few new entity animations:
+        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING
         //
         // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
         //
