@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.triggers.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.npc.traits.ChatbotTrait;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
@@ -188,19 +187,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 InteractScriptHelper.getCurrentStep(denizenPlayer,
                         script.getName()), ChatTrigger.class)) {
 
-            // If this is a Chatbot, make it chat anything it wants if
-            // it has no chat triggers for this step
-            if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
-                npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
-                if (HyperDebug) {
-                    dB.log("chatbot");
-                }
-                return new ChatContext(false);
-            }
-
             // No chat trigger for this step.. do we chat globally, or to the NPC?
-            else if (!Settings.chatGloballyIfNoChatTriggers()) {
+            if (!Settings.chatGloballyIfNoChatTriggers()) {
                 dB.echoDebug(script, player.getName() + " says to "
                         + npc.getNicknameTrait().getNickname() + ", " + message);
                 return new ChatContext(false);
@@ -315,17 +303,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             return new ChatContext(true);
         }
         else {
-            // If this is a Chatbot, make it chat anything it wants if
-            // none of its chat triggers worked
-            if (npc.getCitizen().hasTrait(ChatbotTrait.class)) {
-                Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
-                npc.getCitizen().getTrait(ChatbotTrait.class).chatTo(player, message);
-                if (HyperDebug) {
-                    dB.log("Chatbot");
-                }
-                return new ChatContext(true);
-            }
-            else if (!Settings.chatGloballyIfFailedChatTriggers()) {
+            if (!Settings.chatGloballyIfFailedChatTriggers()) {
                 Utilities.talkToNPC(message, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
                 if (HyperDebug) {
                     dB.log("Chat globally");

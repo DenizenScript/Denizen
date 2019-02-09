@@ -15,6 +15,7 @@
 
     <!-- Dependencies -->
     <dependencies>
+        <!-- Required APIs -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -22,6 +23,13 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.aufdemrand</groupId>
+            <artifactId>denizencore</artifactId>
+            <version>${dcore.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- NMS Modules -->
         <dependency>
             <groupId>net.aufdemrand</groupId>
             <artifactId>denizen-nmshandler</artifactId>
@@ -64,6 +72,7 @@
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
+        <!-- Basic dependencies -->
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens</artifactId>
@@ -72,16 +81,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.aufdemrand</groupId>
-            <artifactId>denizencore</artifactId>
-            <version>${dcore.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>${json.version}</version>
-            <scope>provided</scope>
+            <version>LATEST</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -89,39 +92,6 @@
             <version>1.5.6</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Removed due to jar space concerns, and minimal realistic need for this dependency anyway. -->
-        <!--
-        <dependency>
-            <groupId>org.abstractmeta</groupId>
-            <artifactId>compilation-toolbox</artifactId>
-            <version>0.3.2-MODIFIED</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.alicebot</groupId>
-            <artifactId>ab</artifactId>
-            <version>0.0.4.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>org.json</artifactId>
-            <version>chargebee-1.0</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jmock</groupId>
-            <artifactId>jmock-junit4</artifactId>
-            <version>2.5.1</version>
-            <scope>test</scope>
-        </dependency>-->
     </dependencies>
 
     <build>
@@ -159,6 +129,12 @@
                             <filters>
                                 <filter>
                                     <artifact>net.aufdemrand:denizencore</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                                <filter>
+                                    <artifact>org.json:json</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>

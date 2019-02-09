@@ -17,28 +17,11 @@ public class Depends {
     public static Permission permissions = null;
     public static Chat chat = null;
 
-    public static boolean hasProgramAB = false;
-
     public void initialize() {
-        hasProgramAB = checkProgramAB();
         setupEconomy();
         setupPermissions();
         setupChat();
         setupCitizens();
-    }
-
-    // Check if Program AB, used for reading Artificial Intelligence Markup
-    // Language 2.0, is included as a dependency at Denizen/lib/Ab.jar
-    private boolean checkProgramAB() {
-
-        try {
-            Class.forName("org.alicebot.ab.Bot");
-        }
-        catch (ClassNotFoundException e) {
-            return false;
-        }
-
-        return true;
     }
 
     private boolean setupEconomy() {

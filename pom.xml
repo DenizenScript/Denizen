@@ -11,7 +11,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <craftbukkit.version>1.13.2-R0.1-SNAPSHOT</craftbukkit.version>
-        <json.version>20090211</json.version>
         <citizens.version>2.0.24-SNAPSHOT</citizens.version>
         <dcore.version>1.30</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
@@ -44,12 +43,12 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.citizensnpcs.co</url>
+        <url>https://ci.citizensnpcs.co</url>
     </ciManagement>
     <scm>
-        <connection>scm:git:git://github.com/aufdemrand/Denizen.git</connection>
-        <developerConnection>scm:git:git:@github.com:aufdemrand/Denizen.git</developerConnection>
-        <url>https://github.com/aufdemrand/Denizen/tree/master/</url>
+        <connection>scm:git:git://github.com/DenizenScript/Denizen-For-Bukkit.git</connection>
+        <developerConnection>scm:git:git:@github.com:DenizenScript/Denizen-For-Bukkit.git</developerConnection>
+        <url>https://github.com/DenizenScript/Denizen-For-Bukkit/tree/dev/</url>
     </scm>
 
     <build>
@@ -68,5 +67,5 @@
         </plugins>
     </build>
 
-    <url>http://wiki.citizensnpcs.co/Denizen</url>
+    <url>https://wiki.citizensnpcs.co/Denizen</url>
 </project>
