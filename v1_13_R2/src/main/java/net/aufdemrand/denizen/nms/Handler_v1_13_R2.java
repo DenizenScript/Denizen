@@ -237,31 +237,6 @@ public class Handler_v1_13_R2 extends NMSHandler {
         return new BiomeNMS_v1_13_R2(biome);
     }
 
-    public HashMap<UUID, UUID> attachmentsA = new HashMap<UUID, UUID>(); // Key follows value
-    public HashMap<UUID, UUID> attachments2 = new HashMap<UUID, UUID>(); // Value follows key
-    public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
-    public HashSet<UUID> attachmentRotations = new HashSet<>();
-    public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
-
-    @Override
-    public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
-        if (attachmentsA.containsKey(a.getUniqueId())) {
-            attachments2.remove(attachmentsA.get(a.getUniqueId()));
-            attachmentsA.remove(a.getUniqueId());
-            attachmentOffsets.remove(a.getUniqueId());
-            attachmentRotations.remove(a.getUniqueId());
-        }
-        if (b == null) {
-            return;
-        }
-        attachmentsA.put(a.getUniqueId(), b.getUniqueId());
-        attachments2.put(b.getUniqueId(), a.getUniqueId());
-        attachmentOffsets.put(a.getUniqueId(), offset);
-        if (matchRotation) {
-            attachmentRotations.add(a.getUniqueId());
-        }
-    }
-
     @Override
     public Boolean getSwitchState(Block b) {
         if (b.getBlockData() instanceof Openable) {
