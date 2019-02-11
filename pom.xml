@@ -35,10 +35,6 @@
             <id>everything</id>
             <url>http://repo.citizensnpcs.co</url>
         </repository>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases/</url>
-        </repository>
     </repositories>
 
     <ciManagement>
