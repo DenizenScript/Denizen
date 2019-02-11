@@ -33,10 +33,7 @@ import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -736,6 +733,18 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         }
 
         // <--[tag]
+        // @attribute <n@npc.is_sneaking>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether the NPC is currently sneaking. Only works for player-type NPCs.
+        // -->
+        if (attribute.startsWith("is_sneaking")
+                && isSpawned() && getEntity() instanceof Player) {
+            return new Element(((Player) getEntity()).isSneaking())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <n@npc.is_engaged>
         // @returns Element(Boolean)
         // @description
@@ -1347,6 +1356,28 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // -->
         if (mechanism.matches("despawn")) {
             getCitizen().despawn(DespawnReason.PLUGIN);
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name set_sneaking
+        // @input Element(Boolean)
+        // @description
+        // Sets whether the NPC is sneaking or not. Only works for player-type NPCs.
+        // @tags
+        // <n@npc.is_sneaking>
+        // -->
+        if (mechanism.matches("set_sneaking") && mechanism.requireBoolean()) {
+            if (!getCitizen().hasTrait(SneakingTrait.class)) {
+                getCitizen().addTrait(SneakingTrait.class);
+            }
+            SneakingTrait trait = getCitizen().getTrait(SneakingTrait.class);
+            if (trait.isSneaking() && !mechanism.getValue().asBoolean()) {
+                trait.sneak();
+            }
+            else if (!trait.isSneaking() && mechanism.getValue().asBoolean()) {
+                trait.stand();
+            }
         }
 
         // <--[mechanism]
