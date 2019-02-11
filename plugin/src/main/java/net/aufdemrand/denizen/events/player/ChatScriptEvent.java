@@ -132,7 +132,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         else if (lower.startsWith("recipients:")) {
             String rec_new = determination.substring(11);
             dList recs = dList.valueOf(rec_new);
-            List<dPlayer> players = recs.filter(dPlayer.class);
+            List<dPlayer> players = recs.filter(dPlayer.class, container);
             recipients.clear();
             for (dPlayer player : players) {
                 recipients.add(player.getPlayerEntity());

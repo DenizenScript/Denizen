@@ -189,7 +189,7 @@ public class SidebarCommand extends AbstractCommand {
         switch (Action.valueOf(action.asString())) {
 
             case ADD:
-                for (dPlayer player : players.filter(dPlayer.class)) {
+                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         dB.echoError("Invalid player!");
                         continue;
@@ -229,7 +229,7 @@ public class SidebarCommand extends AbstractCommand {
                 break;
 
             case REMOVE:
-                for (dPlayer player : players.filter(dPlayer.class)) {
+                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         dB.echoError("Invalid player!");
                         continue;
@@ -299,7 +299,7 @@ public class SidebarCommand extends AbstractCommand {
                 break;
 
             case SET:
-                for (dPlayer player : players.filter(dPlayer.class)) {
+                for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                     if (player == null || !player.isValid()) {
                         dB.echoError("Invalid player!");
                         continue;

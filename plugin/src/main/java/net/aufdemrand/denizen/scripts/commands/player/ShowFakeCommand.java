@@ -114,16 +114,16 @@ public class ShowFakeCommand extends AbstractCommand {
 
         List<dMaterial> mats = null;
         if (!shouldCancel) {
-            mats = material_list.filter(dMaterial.class);
+            mats = material_list.filter(dMaterial.class, scriptEntry);
         }
 
         int i = 0;
-        for (dLocation loc : list.filter(dLocation.class)) {
+        for (dLocation loc : list.filter(dLocation.class, scriptEntry)) {
             if (!shouldCancel) {
-                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class), loc, mats.get(i % mats.size()), duration);
+                FakeBlock.showFakeBlockTo(players.filter(dPlayer.class, scriptEntry), loc, mats.get(i % mats.size()), duration);
             }
             else {
-                FakeBlock.stopShowingTo(players.filter(dPlayer.class), loc);
+                FakeBlock.stopShowingTo(players.filter(dPlayer.class, scriptEntry), loc);
             }
             i++;
         }

@@ -100,7 +100,7 @@ public class FollowCommand extends AbstractCommand {
                             + target.debug());
         }
 
-        for (dEntity entity : entities.filter(dEntity.class)) {
+        for (dEntity entity : entities.filter(dEntity.class, scriptEntry)) {
             if (entity.isCitizensNPC()) {
                 dNPC npc = entity.getDenizenNPC();
                 if (lead != null) {

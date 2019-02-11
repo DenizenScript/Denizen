@@ -141,7 +141,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
             percents = null;
         }
 
-        final List<dMaterial> materialList = materials.filter(dMaterial.class);
+        final List<dMaterial> materialList = materials.filter(dMaterial.class, scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {
 

@@ -194,7 +194,7 @@ public class AdvancementCommand extends AbstractCommand {
         }
         else if (grant != null) {
             Advancement advancement = customRegistered.get(key);
-            for (dPlayer target : grant.filter(dPlayer.class)) {
+            for (dPlayer target : grant.filter(dPlayer.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
                     advancementHelper.grant(advancement, player);
@@ -203,7 +203,7 @@ public class AdvancementCommand extends AbstractCommand {
         }
         else /*if (revoke != null)*/ {
             Advancement advancement = customRegistered.get(key);
-            for (dPlayer target : revoke.filter(dPlayer.class)) {
+            for (dPlayer target : revoke.filter(dPlayer.class, scriptEntry)) {
                 Player player = target.getPlayerEntity();
                 if (player != null) {
                     advancementHelper.revoke(advancement, player);
