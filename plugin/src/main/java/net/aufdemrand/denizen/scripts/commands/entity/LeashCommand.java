@@ -30,7 +30,7 @@ public class LeashCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("holder")
                     && arg.matchesPrefix("holder", "h")) {

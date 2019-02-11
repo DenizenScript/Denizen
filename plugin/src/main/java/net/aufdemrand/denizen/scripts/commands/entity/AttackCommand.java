@@ -37,7 +37,7 @@ public class AttackCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dEntity.class)
                     && !arg.matchesPrefix("target", "t")) {
                 // Entity dList arg
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

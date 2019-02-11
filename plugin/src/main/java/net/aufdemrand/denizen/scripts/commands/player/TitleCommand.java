@@ -43,7 +43,7 @@ public class TitleCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
 
         }

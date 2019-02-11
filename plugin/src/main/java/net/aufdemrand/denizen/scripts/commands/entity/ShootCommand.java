@@ -99,7 +99,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
 
             // Don't document this argument; it is for debug purposes only

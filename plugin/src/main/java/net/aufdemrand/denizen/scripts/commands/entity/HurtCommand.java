@@ -40,7 +40,7 @@ public class HurtCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentType(dList.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
                 specified_targets = true;
             }
             else if (!scriptEntry.hasObject("entities")

@@ -32,7 +32,7 @@ public class DropCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dItem.class)) {
                 // Item arg
                 scriptEntry.addObject("action", new Element(Action.DROP_ITEM.toString()).setPrefix("action"));
-                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class));
+                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("action")
                     && arg.matches("experience", "exp", "xp"))

@@ -70,7 +70,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     scriptEntry.addObject("no_offset", new Element(true));
                 }
 
-                scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class));
+                scriptEntry.addObject("location", arg.asType(dList.class).filter(dLocation.class, scriptEntry));
                 continue;
             }
             else if (!scriptEntry.hasObject("effect") &&
@@ -174,7 +174,7 @@ public class PlayEffectCommand extends AbstractCommand {
                     && arg.matchesArgumentList(dPlayer.class)
                     && arg.matchesPrefix("targets", "target", "t")) {
 
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

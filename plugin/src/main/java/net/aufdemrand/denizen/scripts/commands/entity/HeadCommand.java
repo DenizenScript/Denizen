@@ -43,7 +43,7 @@ public class HeadCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

@@ -31,7 +31,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
             if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (arg.matchesPrefix("progress")
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {

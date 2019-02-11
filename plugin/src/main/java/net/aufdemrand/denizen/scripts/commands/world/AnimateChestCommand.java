@@ -41,7 +41,7 @@ public class AnimateChestCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

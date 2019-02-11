@@ -57,12 +57,12 @@ public class FireworkCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("primary")
                     && arg.matchesPrefix("primary")
                     && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("primary", arg.asType(dList.class).filter(dColor.class));
+                scriptEntry.addObject("primary", arg.asType(dList.class).filter(dColor.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("fade")
                     && arg.matchesPrefix("fade")
                     && arg.matchesArgumentList(dColor.class)) {
-                scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class));
+                scriptEntry.addObject("fade", arg.asType(dList.class).filter(dColor.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
