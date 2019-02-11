@@ -1332,7 +1332,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1)) {
-                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {
@@ -1401,7 +1401,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 List<dMaterial> materials = new ArrayList<dMaterial>();
                 if (attribute.hasContext(1)) {
-                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                    materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 }
                 // Avoid NPE from invalid materials
                 if (materials == null) {

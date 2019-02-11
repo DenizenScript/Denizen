@@ -791,7 +791,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.hasContext(1)) {
-                    return new dList(((dCuboid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                    return new dList(((dCuboid) object).getBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {
@@ -851,7 +851,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 if (attribute.hasContext(1)) {
-                    return new dList(((dCuboid) object).getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class)))
+                    return new dList(((dCuboid) object).getSpawnableBlocks(dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context)))
                             .getAttribute(attribute.fulfill(1));
                 }
                 else {

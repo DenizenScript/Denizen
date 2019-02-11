@@ -126,7 +126,7 @@ public class EntityBoundingBox implements Property {
                 // TODO: Allow editing NPC boxes properly?
                 return;
             }
-            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class);
+            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class, mechanism.context);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
                 NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);

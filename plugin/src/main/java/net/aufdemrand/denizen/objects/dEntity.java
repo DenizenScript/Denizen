@@ -1773,7 +1773,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 for (dMaterial material : ignoreList) {
                     set.add(material.getMaterial());
                 }
@@ -2728,7 +2728,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class)) {
+            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class, mechanism.context)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }
