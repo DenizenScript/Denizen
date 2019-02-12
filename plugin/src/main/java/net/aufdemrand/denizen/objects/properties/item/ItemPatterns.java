@@ -66,25 +66,38 @@ public class ItemPatterns implements Property {
 
     private List<Pattern> getPatterns() {
         ItemMeta itemMeta = item.getItemStack().getItemMeta();
+        if (itemMeta instanceof BannerMeta) {
+            return ((BannerMeta) itemMeta).getPatterns();
+        }
         if (itemMeta instanceof BlockStateMeta) {
             return ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getPatterns();
         }
         else {
-            return ((BannerMeta) itemMeta).getPatterns();
+            // ...???
+            return new ArrayList<>();
         }
     }
 
     private void setPatterns(List<Pattern> patterns) {
         ItemStack itemStack = item.getItemStack();
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta instanceof BlockStateMeta) {
-            Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
-            banner.setPatterns(patterns);
-            banner.update();
-            ((BlockStateMeta) itemMeta).setBlockState(banner);
+        if (itemMeta instanceof BannerMeta) {
+            ((BannerMeta) itemMeta).setPatterns(patterns);
+        }
+        else if (itemMeta instanceof BlockStateMeta) {
+            try {
+                Banner banner = (Banner) ((BlockStateMeta) itemMeta).getBlockState();
+                banner.setPatterns(patterns);
+                banner.update();
+                ((BlockStateMeta) itemMeta).setBlockState(banner);
+            }
+            catch (Exception ex) {
+                dB.echoError("Banner setPatterns failed!");
+                dB.echoError(ex);
+            }
         }
         else {
-            ((BannerMeta) itemMeta).setPatterns(patterns);
+            // ...???
         }
         itemStack.setItemMeta(itemMeta);
     }
@@ -146,7 +159,7 @@ public class ItemPatterns implements Property {
         // -->
 
         if (mechanism.matches("patterns")) {
-            List<Pattern> patterns = new ArrayList<Pattern>();
+            List<Pattern> patterns = new ArrayList<>();
             dList list = mechanism.valueAsType(dList.class);
             List<String> split;
             for (String string : list) {
