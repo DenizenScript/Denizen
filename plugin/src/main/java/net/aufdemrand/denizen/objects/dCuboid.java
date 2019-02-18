@@ -37,7 +37,13 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     // Cloning
     @Override
     public dCuboid clone() throws CloneNotSupportedException {
-        return (dCuboid) super.clone();
+        dCuboid cuboid = (dCuboid) super.clone();
+        cuboid.pairs = new ArrayList<>(pairs.size());
+        for (LocationPair pair : pairs) {
+            cuboid.pairs.add(new LocationPair(pair.point_1.clone(), pair.point_2.clone()));
+        }
+        cuboid.filter = new ArrayList<>(filter);
+        return cuboid;
     }
 
     /////////////////////
@@ -240,10 +246,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     //////////////////
 
     // Location Pairs (low, high) that make up the dCuboid
-    public List<LocationPair> pairs = new ArrayList<LocationPair>();
+    public List<LocationPair> pairs = new ArrayList<>();
 
     // Only put dMaterials in filter.
-    ArrayList<dObject> filter = new ArrayList<dObject>();
+    ArrayList<dObject> filter = new ArrayList<>();
 
     /**
      * Construct the cuboid without adding pairs

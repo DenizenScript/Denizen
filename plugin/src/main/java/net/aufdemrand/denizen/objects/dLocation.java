@@ -44,6 +44,11 @@ import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dObject, Notable, Adjustable {
 
+    @Override
+    public dLocation clone() {
+        return (dLocation) super.clone();
+    }
+
     // This pattern correctly reads both 0.9 and 0.8 notables
     final static Pattern notablePattern =
             Pattern.compile("(\\w+)[;,]((-?\\d+\\.?\\d*,){3,5}.+)",
