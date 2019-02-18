@@ -69,7 +69,7 @@ public class ItemPatterns implements Property {
         if (itemMeta instanceof BannerMeta) {
             return ((BannerMeta) itemMeta).getPatterns();
         }
-        if (itemMeta instanceof BlockStateMeta) {
+        else if (itemMeta instanceof BlockStateMeta) {
             return ((Banner) ((BlockStateMeta) itemMeta).getBlockState()).getPatterns();
         }
         else {

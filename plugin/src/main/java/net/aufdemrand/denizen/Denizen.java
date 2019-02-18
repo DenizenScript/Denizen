@@ -1406,7 +1406,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
-    public void debugTagFill(ScriptEntry entry, String tag, String result) {
+    public void debugTagFill(Debuggable entry, String tag, String result) {
         dB.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
                 + ChatColor.DARK_GRAY + "> with '" + ChatColor.WHITE + result + ChatColor.DARK_GRAY + "'.");
     }
