@@ -418,6 +418,20 @@ public class ServerTags {
         }
 
         // <--[tag]
+        // @attribute <server.list_world_types>
+        // @returns dList
+        // @description
+        // Returns a list of all world types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_world_types")) {
+            dList worldTypes = new dList();
+            for (WorldType world : WorldType.values()) {
+                worldTypes.add(world.toString());
+            }
+            event.setReplaced(worldTypes.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_flags[(regex:)<search>]>
         // @returns dList
         // @description

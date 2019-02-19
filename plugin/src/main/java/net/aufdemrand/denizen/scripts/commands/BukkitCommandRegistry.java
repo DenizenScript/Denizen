@@ -885,6 +885,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Optionally, specify an existing world to copy files from.
         //
         // @Tags
+        // <server.list_world_types>
         // <server.list_worlds>
         //
         // @Usage
