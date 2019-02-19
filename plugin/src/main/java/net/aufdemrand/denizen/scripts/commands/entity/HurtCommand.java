@@ -23,8 +23,6 @@ public class HurtCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        boolean specified_targets = false;
-
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("amount")
@@ -38,16 +36,8 @@ public class HurtCommand extends AbstractCommand {
                 scriptEntry.addObject("source", arg.asType(dEntity.class));
             }
             else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dList.class)) {
-                // Entity arg
+                    && arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
-                specified_targets = true;
-            }
-            else if (!scriptEntry.hasObject("entities")
-                    && arg.matchesArgumentType(dEntity.class)) {
-                // Entity arg
-                scriptEntry.addObject("entities", Arrays.asList(arg.asType(dEntity.class)));
-                specified_targets = true;
             }
             else if (!scriptEntry.hasObject("cause")
                     && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
@@ -62,7 +52,7 @@ public class HurtCommand extends AbstractCommand {
             scriptEntry.addObject("amount", new Element(1.0d));
         }
 
-        if (!specified_targets) {
+        if (!scriptEntry.hasObject("entities")) {
             List<dEntity> entities = new ArrayList<dEntity>();
             if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
@@ -111,18 +101,19 @@ public class HurtCommand extends AbstractCommand {
                 }
             }
             else {
-                EntityDamageEvent ede = source == null ? new EntityDamageEvent(entity.getBukkitEntity(),
-                        EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount) :
-                        new EntityDamageByEntityEvent(source.getBukkitEntity(),
-                                entity.getBukkitEntity(), EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase()), amount);
+                EntityDamageEvent.DamageCause causeEnum = EntityDamageEvent.DamageCause.valueOf(cause.asString().toUpperCase());
+                EntityDamageEvent ede = source == null ? new EntityDamageEvent(entity.getBukkitEntity(), causeEnum, amount) :
+                        new EntityDamageByEntityEvent(source.getBukkitEntity(), entity.getBukkitEntity(), causeEnum, amount);
                 Bukkit.getPluginManager().callEvent(ede);
                 if (!ede.isCancelled()) {
+                    entity.getLivingEntity().setLastDamageCause(ede);
                     if (source == null) {
                         entity.getLivingEntity().damage(ede.getFinalDamage());
                     }
                     else {
                         entity.getLivingEntity().damage(ede.getFinalDamage(), source.getBukkitEntity());
                     }
+                    entity.getLivingEntity().setLastDamageCause(ede);
                 }
             }
         }
