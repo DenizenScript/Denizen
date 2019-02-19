@@ -114,7 +114,7 @@ public class ScribeCommand extends AbstractCommand {
         Inventory inv = player.getInventory();
         int emptySpot = inv.firstEmpty();
         if (emptySpot != -1) {
-            player.getInventory().addItem(book);
+            player.getInventory().addItem(book.clone());
         }
         else {
             player.getWorld().dropItem(player.getLocation(), book);

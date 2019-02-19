@@ -1107,7 +1107,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         for (ItemStack item : items) {
             if (item != null) {
-                inventory.removeItem(item);
+                inventory.removeItem(item.clone());
             }
         }
 
