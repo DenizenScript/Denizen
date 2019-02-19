@@ -633,6 +633,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.has_effect[<effect>]>
+        // <server.list_potion_effects>
         //
         // @Usage
         // Use to cast an effect onto the player for 120 seconds with a power of 3.
@@ -877,10 +878,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
-        // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
-        // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
-        // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
-        // mountain-like terrain).
+        // If a worldtype is not specified it will create a world with a world type of NORMAL.
         // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // Optionally, specify an existing world to copy files from.
         //
@@ -3618,6 +3616,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.is_spawned>
         // <server.entity_is_spawned[<entity>]>
+        // <server.list_entity_types>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
         //
         // @Usage
