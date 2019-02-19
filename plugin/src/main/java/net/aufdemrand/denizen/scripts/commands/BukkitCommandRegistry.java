@@ -1864,6 +1864,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
         // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
         // than using the raw damage input number. See <@link language damage cause> for damage causes.
+        // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
         //
         // @Tags
         // <e@entity.health>

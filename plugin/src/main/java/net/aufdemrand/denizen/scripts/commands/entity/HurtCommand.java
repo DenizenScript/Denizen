@@ -43,6 +43,10 @@ public class HurtCommand extends AbstractCommand {
                     && arg.matchesEnum(EntityDamageEvent.DamageCause.values())) {
                 scriptEntry.addObject("cause", arg.asElement());
             }
+            else if (!scriptEntry.hasObject("source_once")
+                    && arg.matchesOne("source_once")) {
+                scriptEntry.addObject("source_once", new Element(true));
+            }
             else {
                 arg.reportUnhandled();
             }
@@ -76,11 +80,13 @@ public class HurtCommand extends AbstractCommand {
         dEntity source = (dEntity) scriptEntry.getObject("source");
         Element amountElement = scriptEntry.getElement("amount");
         Element cause = scriptEntry.getElement("cause");
+        Element source_once = scriptEntry.getElement("source_once");
 
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(), amountElement.debug()
                     + aH.debugList("entities", entities)
+                    + (source_once == null ? "" : source_once.debug())
                     + (cause == null ? "" : cause.debug())
                     + (source == null ? "" : source.debug()));
 
@@ -107,7 +113,7 @@ public class HurtCommand extends AbstractCommand {
                 Bukkit.getPluginManager().callEvent(ede);
                 if (!ede.isCancelled()) {
                     entity.getLivingEntity().setLastDamageCause(ede);
-                    if (source == null) {
+                    if (source == null || (source_once != null && source_once.asBoolean())) {
                         entity.getLivingEntity().damage(ede.getFinalDamage());
                     }
                     else {
