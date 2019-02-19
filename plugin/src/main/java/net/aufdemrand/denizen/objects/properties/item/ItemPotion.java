@@ -328,6 +328,8 @@ public class ItemPotion implements Property {
         // <i@item.potion_effect[<#>].has_particles>
         // <i@item.potion_effect[<#>].color>
         // <i@item.potion_effect[<#>].icon>
+        // <server.list_potion_types>
+        // <server.list_potion_effects>
         // -->
         if (mechanism.matches("potion_effects")) {
             dList data = mechanism.valueAsType(dList.class);

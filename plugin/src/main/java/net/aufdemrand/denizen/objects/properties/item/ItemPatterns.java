@@ -156,6 +156,7 @@ public class ItemPatterns implements Property {
         // For the list of possible patterns, see <@link url http://bit.ly/1MqRn7T>.
         // @tags
         // <i@item.patterns>
+        // <server.list_patterns>
         // -->
 
         if (mechanism.matches("patterns")) {
