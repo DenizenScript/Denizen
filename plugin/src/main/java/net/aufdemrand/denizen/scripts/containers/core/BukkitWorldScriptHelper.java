@@ -211,7 +211,7 @@ public class BukkitWorldScriptHelper implements Listener {
     // <context.item> returns the dItem the player has clicked on.
     // <context.inventory> returns the dInventory.
     // <context.cursor_item> returns the item the Player is clicking with.
-    // <context.click> returns an Element with the name of the click type.
+    // <context.click> returns an Element with the name of the click type. Click type list: <@link url http://bit.ly/2IjY198>
     // <context.slot_type> returns an Element with the name of the slot type that was clicked.
     // <context.slot> returns an Element with the number of the slot that was clicked.
     // <context.raw_slot> returns an Element with the raw number of the slot that was clicked.

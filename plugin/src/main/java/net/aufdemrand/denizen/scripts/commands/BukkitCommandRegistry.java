@@ -1871,6 +1871,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <e@entity.last_damage.amount>
         // <e@entity.last_damage.cause>
         // <e@entity.last_damage.duration>
+        // <e@entity.last_damage.max_duration>
         //
         // @Usage
         // Use to hurt the player for 1 HP.
@@ -2722,7 +2723,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // For a list of all sounds, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
         //
         // @Tags
-        // None
+        // <server.list_sounds>
         //
         // @Usage
         // Use to play a sound for a player
