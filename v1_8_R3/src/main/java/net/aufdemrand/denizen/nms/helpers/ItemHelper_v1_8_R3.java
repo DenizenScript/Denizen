@@ -106,34 +106,6 @@ public class ItemHelper_v1_8_R3 implements ItemHelper {
     }
 
     @Override
-    public Map<EntityAttribute, List<EntityAttributeModifier>> getAttributeModifiers(ItemStack itemStack) {
-        Map<EntityAttribute, List<EntityAttributeModifier>> modifiers = new HashMap<EntityAttribute, List<EntityAttributeModifier>>();
-        List<Tag> modifierList = getNbtData(itemStack).getList("AttributeModifiers");
-        for (Tag tag : modifierList) {
-            if (!(tag instanceof CompoundTag)) {
-                continue;
-            }
-            CompoundTag modifier = (CompoundTag) tag;
-            EntityAttribute attribute = EntityAttribute.getByName(modifier.getString("AttributeName"));
-            if (attribute == null) {
-                continue;
-            }
-            if (!modifiers.containsKey(attribute)) {
-                modifiers.put(attribute, new ArrayList<EntityAttributeModifier>());
-            }
-            UUID uuid = new UUID(modifier.getLong("UUIDMost"), modifier.getLong("UUIDLeast"));
-            String name = modifier.getString("Name");
-            EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.values()[modifier.getInt("Operation")];
-            if (operation == null) {
-                continue;
-            }
-            double amount = modifier.getDouble("Amount");
-            modifiers.get(attribute).add(new EntityAttributeModifier(uuid, name, operation, amount));
-        }
-        return modifiers;
-    }
-
-    @Override
     public ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers) {
         List<Tag> modifierList = new ArrayList<Tag>(getNbtData(itemStack).getList("AttributeModifiers"));
         for (Map.Entry<EntityAttribute, List<EntityAttributeModifier>> entry : modifiers.entrySet()) {
