@@ -879,6 +879,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
         // If a worldtype is not specified it will create a world with a world type of NORMAL.
+        // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
         // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // Optionally, specify an existing world to copy files from.
         //
