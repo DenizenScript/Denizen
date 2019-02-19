@@ -37,6 +37,7 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -289,17 +290,17 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.list_materials>
+        // @attribute <server.list_biomes>
         // @returns dList
         // @description
-        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // Returns a list of all biomes known to the server (only their Bukkit enum names).
         // -->
-        if (attribute.startsWith("list_materials")) {
-            dList allMats = new dList();
-            for (Material mat : Material.values()) {
-                allMats.add(mat.name());
+        if (attribute.startsWith("list_biomes")) {
+            dList allBiomes = new dList();
+            for (Biome biome : Biome.values()) {
+                allBiomes.add(biome.name());
             }
-            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
+            event.setReplaced(allBiomes.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -328,6 +329,20 @@ public class ServerTags {
                 allEnt.add(entity.name());
             }
             event.setReplaced(allEnt.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_materials>
+        // @returns dList
+        // @description
+        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_materials")) {
+            dList allMats = new dList();
+            for (Material mat : Material.values()) {
+                allMats.add(mat.name());
+            }
+            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -362,7 +377,7 @@ public class ServerTags {
         // @attribute <server.list_potion_effects>
         // @returns dList
         // @description
-        // Returns a list of all potion effects known to the server (only their Bukkit enum names).
+        // Returns a list of all potion effects known to the server.
         // Can be used with <@link command cast>.
         // -->
         if (attribute.startsWith("list_potion_effects")) {
