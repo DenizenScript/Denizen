@@ -2699,7 +2699,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)
+        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
         // @Required 2
         // @Short Plays a sound at the location or to a list of players.
         // @Group world
@@ -2720,7 +2720,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound name to something like 'random.click'
         //
-        // For a list of all sounds, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+        // For a list of all sounds, check <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>
+        //
+        // For a list of all valid sound categories, check <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html>
         //
         // @Tags
         // <server.list_sounds>
@@ -2736,7 +2738,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - playsound <server.list_online_players> sound:ENTITY_PLAYER_LEVELUP volume:0.5 pitch:0.8
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)", 2);
 
 
         // <--[command]

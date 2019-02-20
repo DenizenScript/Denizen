@@ -110,10 +110,10 @@ public class NoteBlockReceiver implements Receiver {
                 dEntity entity = entities.get(i);
                 if (entity.isSpawned()) {
                     if (entity.isPlayer()) {
-                        entity.getPlayer().playSound(entity.getLocation(), instrument, volume, pitch);
+                        NMSHandler.getInstance().getSoundHelper().playSound(entity.getPlayer(), entity.getLocation(), instrument, volume, pitch, "RECORDS");
                     }
                     else {
-                        entity.getWorld().playSound(entity.getLocation(), instrument, volume, pitch);
+                        NMSHandler.getInstance().getSoundHelper().playSound(null, entity.getLocation(), instrument, volume, pitch, "RECORDS");
                     }
                 }
                 else {
