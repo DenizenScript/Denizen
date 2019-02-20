@@ -32,14 +32,9 @@ import org.bukkit.block.data.Powerable;
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 
 public class Handler_v1_13_R2 extends NMSHandler {
 

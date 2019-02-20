@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -359,7 +358,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(ItemStack[] items) {
-        inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9) * 9);
+        inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9.0) * 9);
         setContents(items);
         loadIdentifiers();
     }

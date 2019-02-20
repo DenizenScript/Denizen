@@ -12,7 +12,6 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 

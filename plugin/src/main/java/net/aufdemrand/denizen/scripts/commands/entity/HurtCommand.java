@@ -15,7 +15,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HurtCommand extends AbstractCommand {

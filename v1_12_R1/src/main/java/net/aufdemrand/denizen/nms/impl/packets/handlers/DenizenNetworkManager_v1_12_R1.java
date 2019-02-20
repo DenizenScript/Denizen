@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.aufdemrand.denizen.nms.Handler_v1_12_R1;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_12_R1;
 import net.aufdemrand.denizen.nms.impl.entities.EntityFakePlayer_v1_12_R1;

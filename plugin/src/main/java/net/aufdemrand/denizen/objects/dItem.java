@@ -16,7 +16,6 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
 import net.aufdemrand.denizencore.objects.properties.PropertyParser;
-import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
