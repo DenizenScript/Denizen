@@ -27,12 +27,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-public class EntityHelper_v1_8_R3 implements EntityHelper {
+public class EntityHelper_v1_8_R3 extends EntityHelper {
 
     /*
         General Entity Methods
@@ -318,54 +316,34 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
         Hide Entity
      */
 
-    public static Map<UUID, Set<UUID>> hiddenEntities = new HashMap<UUID, Set<UUID>>();
-
     @Override
-    public void hideEntity(Player player, Entity entity, boolean keepInTabList) {
-        // Use Bukkit API for Player entities
+    public void sendHidePacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
-            player.hidePlayer((Player) entity);
+            ensurePlayerHiding();
+            pl.hidePlayer((Player) entity);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) player;
+        CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
-        UUID playerUUID = player.getUniqueId();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            if (!hiddenEntities.containsKey(playerUUID)) {
-                hiddenEntities.put(playerUUID, new HashSet<UUID>());
-            }
-            Set hidden = hiddenEntities.get(playerUUID);
-            UUID entityUUID = entity.getUniqueId();
-            if (!hidden.contains(entityUUID)) {
-                hidden.add(entityUUID);
-                EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
-                net.minecraft.server.v1_8_R3.Entity other = ((CraftEntity) entity).getHandle();
-                EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
-                if (entry != null) {
-                    entry.clear(entityPlayer);
-                }
+            EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+            net.minecraft.server.v1_8_R3.Entity other = ((CraftEntity) entity).getHandle();
+            EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
+            if (entry != null) {
+                entry.clear(entityPlayer);
             }
         }
     }
 
     @Override
-    public void unhideEntity(Player player, Entity entity) {
-        // Use Bukkit API for Player entities
+    public void sendShowPacket(Player pl, Entity entity) {
         if (entity instanceof Player) {
-            player.showPlayer((Player) entity);
+            pl.showPlayer((Player) entity);
             return;
         }
-        CraftPlayer craftPlayer = (CraftPlayer) player;
+        CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
-        UUID playerUUID = player.getUniqueId();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            UUID entityUUID = entity.getUniqueId();
-            if (hiddenEntities.containsKey(playerUUID)) {
-                Set hidden = hiddenEntities.get(playerUUID);
-                if (hidden.contains(entityUUID)) {
-                    hidden.remove(entityUUID);
-                }
-            }
             EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
             net.minecraft.server.v1_8_R3.Entity other = ((CraftEntity) entity).getHandle();
             EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
@@ -374,16 +352,6 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
                 entry.updatePlayer(entityPlayer);
             }
         }
-    }
-
-    @Override
-    public boolean isHidden(Player player, Entity entity) {
-        if (entity instanceof Player) {
-            return !player.canSee((Player) entity);
-        }
-        UUID uuid = player.getUniqueId();
-        Set<UUID> hiding = hiddenEntities.get(uuid);
-        return hiding != null && hiding.contains(entity.getUniqueId());
     }
 
     @Override
@@ -504,16 +472,6 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
     }
 
     @Override
-    public Location eyeTrace(LivingEntity from, double range) {
-        Location start = from.getEyeLocation();
-        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
-        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI / 180));
-        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
-        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
-        return rayTrace(start, new Vector(nx, -ny, nz), range);
-    }
-
-    @Override
     public void faceLocation(Entity from, Location at) {
         if (from.getWorld() != at.getWorld()) {
             return;
@@ -522,11 +480,6 @@ public class EntityHelper_v1_8_R3 implements EntityHelper {
                 : from.getLocation().getBlock().getLocation().add(0.5, 0.5, 0.5);
         Location rotated = faceLocation(origin, at);
         rotate(from, rotated.getYaw(), rotated.getPitch());
-    }
-
-    @Override
-    public void faceEntity(Entity entity, Entity target) {
-        faceLocation(entity, target.getLocation());
     }
 
     @Override

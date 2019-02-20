@@ -19,7 +19,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
 
 public abstract class NMSHandler {
 
@@ -144,8 +147,32 @@ public abstract class NMSHandler {
         return offsetPatched;
     }
 
+
+    public HashMap<UUID, UUID> attachmentsA = new HashMap<>(); // Key follows value
+    public HashMap<UUID, UUID> attachments2 = new HashMap<>(); // Value follows key
+    public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
+    public HashSet<UUID> attachmentRotations = new HashSet<>();
+    public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
+
     public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
-        throw new RuntimeException("Unsupported forceAttachMove!");
+        if (!getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+            throw new RuntimeException("Unsupported forceAttachMove!");
+        }
+        if (attachmentsA.containsKey(a.getUniqueId())) {
+            attachments2.remove(attachmentsA.get(a.getUniqueId()));
+            attachmentsA.remove(a.getUniqueId());
+            attachmentOffsets.remove(a.getUniqueId());
+            attachmentRotations.remove(a.getUniqueId());
+        }
+        if (b == null) {
+            return;
+        }
+        attachmentsA.put(a.getUniqueId(), b.getUniqueId());
+        attachments2.put(b.getUniqueId(), a.getUniqueId());
+        attachmentOffsets.put(a.getUniqueId(), offset);
+        if (matchRotation) {
+            attachmentRotations.add(a.getUniqueId());
+        }
     }
 
     public Boolean getSwitchState(Block b) {

@@ -35,7 +35,7 @@ public class ActionBarCommand extends AbstractCommand {
             }
             if (arg.matchesPrefix("targets", "target")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("text")) {
                 scriptEntry.addObject("text", new Element(TagManager.cleanOutputFully(arg.raw_value)));

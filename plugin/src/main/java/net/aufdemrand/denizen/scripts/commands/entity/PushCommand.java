@@ -73,7 +73,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
 
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("force_along")
                     && arg.matches("force_along")) {

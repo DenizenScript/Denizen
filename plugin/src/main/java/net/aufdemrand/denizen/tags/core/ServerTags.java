@@ -37,9 +37,15 @@ import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
@@ -284,17 +290,17 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.list_materials>
+        // @attribute <server.list_biomes>
         // @returns dList
         // @description
-        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // Returns a list of all biomes known to the server (only their Bukkit enum names).
         // -->
-        if (attribute.startsWith("list_materials")) {
-            dList allMats = new dList();
-            for (Material mat : Material.values()) {
-                allMats.add(mat.name());
+        if (attribute.startsWith("list_biomes")) {
+            dList allBiomes = new dList();
+            for (Biome biome : Biome.values()) {
+                allBiomes.add(biome.name());
             }
-            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
+            event.setReplaced(allBiomes.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]
@@ -312,6 +318,34 @@ public class ServerTags {
         }
 
         // <--[tag]
+        // @attribute <server.list_entity_types>
+        // @returns dList
+        // @description
+        // Returns a list of all entity types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_entity_types")) {
+            dList allEnt = new dList();
+            for (EntityType entity : EntityType.values()) {
+                allEnt.add(entity.name());
+            }
+            event.setReplaced(allEnt.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_materials>
+        // @returns dList
+        // @description
+        // Returns a list of all materials known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_materials")) {
+            dList allMats = new dList();
+            for (Material mat : Material.values()) {
+                allMats.add(mat.name());
+            }
+            event.setReplaced(allMats.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_sounds>
         // @returns dList
         // @description
@@ -323,6 +357,93 @@ public class ServerTags {
                 sounds.add(s.toString());
             }
             event.setReplaced(sounds.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_patterns>
+        // @returns dList
+        // @description
+        // Returns a list of all banner patterns known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_patterns")) {
+            dList allPatterns = new dList();
+            for (PatternType pat : PatternType.values()) {
+                allPatterns.add(pat.toString());
+            }
+            event.setReplaced(allPatterns.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_potion_effects>
+        // @returns dList
+        // @description
+        // Returns a list of all potion effects known to the server.
+        // Can be used with <@link command cast>.
+        // -->
+        if (attribute.startsWith("list_potion_effects")) {
+            dList statuses = new dList();
+            for (PotionEffectType effect : PotionEffectType.values()) {
+                if (effect != null) {
+                    statuses.add(effect.getName());
+                }
+            }
+            event.setReplaced(statuses.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_potion_types>
+        // @returns dList
+        // @description
+        // Returns a list of all potion types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_potion_types")) {
+            dList potionTypes = new dList();
+            for (PotionType type : PotionType.values()) {
+                potionTypes.add(type.toString());
+            }
+            event.setReplaced(potionTypes.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_tree_types>
+        // @returns dList
+        // @description
+        // Returns a list of all tree types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_tree_types")) {
+            dList allTrees = new dList();
+            for (TreeType tree : TreeType.values()) {
+                allTrees.add(tree.name());
+            }
+            event.setReplaced(allTrees.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_map_cursor_types>
+        // @returns dList
+        // @description
+        // Returns a list of all map cursor types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_map_cursor_types")) {
+            dList mapCursors = new dList();
+            for (MapCursor.Type cursor : MapCursor.Type.values()) {
+                mapCursors.add(cursor.toString());
+            }
+            event.setReplaced(mapCursors.getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.list_world_types>
+        // @returns dList
+        // @description
+        // Returns a list of all world types known to the server (only their Bukkit enum names).
+        // -->
+        if (attribute.startsWith("list_world_types")) {
+            dList worldTypes = new dList();
+            for (WorldType world : WorldType.values()) {
+                worldTypes.add(world.toString());
+            }
+            event.setReplaced(worldTypes.getAttribute(attribute.fulfill(1)));
         }
 
         // <--[tag]

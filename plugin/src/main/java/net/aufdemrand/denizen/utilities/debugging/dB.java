@@ -9,7 +9,9 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.CommandExecuter;
+import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
+import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
@@ -66,6 +68,7 @@ public class dB {
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
     public static boolean debugOverride = false;
+    public static boolean showSources = false;
 
     public static List<String> filter = new ArrayList<String>();
 
@@ -175,20 +178,6 @@ public class dB {
         if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && caller != null) {
             echo(ChatColor.GRAY + "(Verbose) Caller = " + caller, caller);
         }
-    }
-
-
-    // These methods are deprecated. Please instead supply a valid Debuggable reference,
-    // which at this time is either a ScriptQueue, a ScriptEntry, or ScriptContainer.
-    // If none of these are available, using dB.log(...)
-    @Deprecated
-    public static void echoDebug(String message) {
-        echo(message, null);
-    }
-
-    @Deprecated
-    public static void echoDebug(DebugElement de, String message) {
-        echoDebug(null, de, message);
     }
 
     /////////////
@@ -451,7 +440,52 @@ public class dB {
     // Handles checking whether the provided debuggable should submit to the debugger
     private static void echo(String string, Debuggable caller) {
         if (shouldDebug(caller)) {
-            ConsoleSender.sendMessage(string);
+            if (showSources && caller != null) {
+                String callerId;
+                if (caller instanceof ScriptContainer) {
+                    callerId = "Script:" + ((ScriptContainer) caller).getName();
+                }
+                else if (caller instanceof ScriptEntry) {
+                    if (((ScriptEntry) caller).getScript() != null) {
+                        callerId = "Command:" + ((ScriptEntry) caller).getCommandName() + " in Script:" + ((ScriptEntry) caller).getScript().getName();
+                    }
+                    else {
+                        callerId = "Command:" + ((ScriptEntry) caller).getCommandName();
+                    }
+                }
+                else if (caller instanceof ScriptQueue) {
+                    if (((ScriptQueue) caller).script != null) {
+                        callerId = "Queue:" + ((ScriptQueue) caller).id + " running Script:" + ((ScriptQueue) caller).script.getName();
+                    }
+                    else {
+                        callerId = "Queue:" + ((ScriptQueue) caller).id;
+                    }
+                }
+                else if (caller instanceof TagContext) {
+                    if (((TagContext) caller).entry != null) {
+                        ScriptEntry sent = ((TagContext) caller).entry;
+                        if (sent.getScript() != null) {
+                            callerId = "Tag in Command:" + sent.getCommandName() + " in Script:" + sent.getScript().getName();
+                        }
+                        else {
+                            callerId = "Tag in Command:" + sent.getCommandName();
+                        }
+                    }
+                    else if (((TagContext) caller).script != null) {
+                        callerId = "Tag in Script:" + ((TagContext) caller).script.getName();
+                    }
+                    else {
+                        callerId = "Tag:" + caller.toString();
+                    }
+                }
+                else {
+                    callerId = caller.toString();
+                }
+                ConsoleSender.sendMessage(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string);
+            }
+            else {
+                ConsoleSender.sendMessage(string);
+            }
         }
     }
 

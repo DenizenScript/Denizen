@@ -64,8 +64,7 @@ public class MapScriptContainer extends ScriptContainer {
     //
     //     3:
     //       type: cursor
-    //       # Specify a cursor - {RED|GREEN|WHITE|BLUE)_POINTER, WHITE_CROSS, WHITE_CIRCLE, RED_MARKER, SMALL_WHITE_CIRCLE,
-    //       # MANSION, TEMPLE
+    //       # Specify a cursor - <@link tag server.list_map_cursor_types>
     //       cursor: red_marker
     //       # Supported on all objects: x/y positions, and whether to use worldly or map coordinates.
     //       x: 5

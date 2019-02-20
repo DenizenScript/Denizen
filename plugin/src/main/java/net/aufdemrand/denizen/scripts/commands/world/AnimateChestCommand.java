@@ -41,7 +41,7 @@ public class AnimateChestCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();
@@ -96,7 +96,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (dPlayer player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        ent.playSound(location, NMSHandler.getInstance().getSoundHelper().getChestOpen(), 1, 1);
+                        NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
+                                NMSHandler.getInstance().getSoundHelper().getChestOpen(), 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 1);
                 }
@@ -106,7 +107,8 @@ public class AnimateChestCommand extends AbstractCommand {
                 for (dPlayer player : players) {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
-                        ent.playSound(location, NMSHandler.getInstance().getSoundHelper().getChestClose(), 1, 1);
+                        NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
+                                NMSHandler.getInstance().getSoundHelper().getChestClose(), 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 0);
                 }

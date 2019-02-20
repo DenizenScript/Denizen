@@ -43,7 +43,7 @@ public class NarrateCommand extends AbstractCommand {
             // Add players to target list
             else if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
 
             // Use raw_value as to not accidentally strip a value before any :'s.

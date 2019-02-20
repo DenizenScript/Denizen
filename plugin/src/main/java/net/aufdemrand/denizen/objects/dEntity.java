@@ -1773,7 +1773,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
-                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class);
+                List<dMaterial> ignoreList = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 for (dMaterial material : ignoreList) {
                     set.add(material.getMaterial());
                 }
@@ -2191,6 +2191,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @group attributes
         // @description
         // Returns the maximum duration of the last damage taken by the entity.
+        // -->
         if (attribute.startsWith("last_damage.max_duration")) {
             return new Duration((long) getLivingEntity().getMaximumNoDamageTicks())
                     .getAttribute(attribute.fulfill(2));
@@ -2471,9 +2472,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @group properties
         // @description
         // Returns the phase an EnderDragon is currently in.
-        // Valid phases: CIRCLING, STRAFING, FLY_TO_PORTAL, LAND_ON_PORTAL, LEAVE_PORTAL,
-        // BREATH_ATTACK, SEARCH_FOR_BREATH_ATTACK_TARGET, ROAR_BEFORE_ATTACK,
-        // CHARGE_PLAYER, DYING, HOVER.
+        // Valid phases: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EnderDragon.Phase.html>
         // -->
         if (attribute.startsWith("dragon_phase") && getBukkitEntity() instanceof EnderDragon) {
             return new Element(((EnderDragon) getLivingEntity()).getPhase().name())
@@ -2728,7 +2727,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
             entity.eject();
-            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class)) {
+            for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class, mechanism.context)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
                     entity.addPassenger(ent.getBukkitEntity());
                 }

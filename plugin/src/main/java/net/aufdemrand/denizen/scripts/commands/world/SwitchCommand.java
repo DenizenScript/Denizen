@@ -77,7 +77,7 @@ public class SwitchCommand extends AbstractCommand {
                     + aH.debugObj("switchstate", switchState.name()));
         }
 
-        for (final dLocation interactLocation : interactLocations.filter(dLocation.class)) {
+        for (final dLocation interactLocation : interactLocations.filter(dLocation.class, scriptEntry)) {
             switchBlock(scriptEntry, interactLocation, switchState, player);
 
             // If duration set, schedule a delayed task.

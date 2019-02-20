@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.objects;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
@@ -359,7 +358,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     }
 
     public dInventory(ItemStack[] items) {
-        inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9) * 9);
+        inventory = Bukkit.getServer().createInventory(null, (int) Math.ceil(items.length / 9.0) * 9);
         setContents(items);
         loadIdentifiers();
     }
@@ -739,7 +738,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         inventory.setContents(contents);
     }
 
-    public void setContents(dList list) {
+    public void setContents(dList list, TagContext context) {
         int size;
         if (inventory == null) {
             size = (int) Math.ceil(list.size() / 9.0) * 9;
@@ -754,7 +753,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         ItemStack[] contents = new ItemStack[size];
         int filled = 0;
-        for (dItem item : list.filter(dItem.class)) {
+        for (dItem item : list.filter(dItem.class, context)) {
             contents[filled] = item.getItemStack();
             filled++;
         }
@@ -1107,7 +1106,7 @@ public class dInventory implements dObject, Notable, Adjustable {
 
         for (ItemStack item : items) {
             if (item != null) {
-                inventory.removeItem(item);
+                inventory.removeItem(item.clone());
             }
         }
 
@@ -2159,7 +2158,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (mechanism.matches("matrix") && mechanism.requireObject(dList.class)) {
             if (inventory instanceof CraftingInventory) {
                 CraftingInventory craftingInventory = (CraftingInventory) inventory;
-                List<dItem> items = mechanism.valueAsType(dList.class).filter(dItem.class);
+                List<dItem> items = mechanism.valueAsType(dList.class).filter(dItem.class, mechanism.context);
                 ItemStack[] itemStacks = new ItemStack[9];
                 for (int i = 0; i < 9 && i < items.size(); i++) {
                     itemStacks[i] = items.get(i).getItemStack();

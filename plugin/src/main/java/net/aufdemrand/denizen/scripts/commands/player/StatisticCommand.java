@@ -117,17 +117,17 @@ public class StatisticCommand extends AbstractCommand {
                 Material mat = material.getMaterial();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.incrementStatistic(stat, mat, amt);
                         }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.decrementStatistic(stat, mat, amt);
                         }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.setStatistic(stat, mat, amt);
                         }
                         break;
@@ -138,17 +138,17 @@ public class StatisticCommand extends AbstractCommand {
                 EntityType ent = entity.getBukkitEntityType();
                 switch (act) {
                     case ADD:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.incrementStatistic(stat, ent, amt);
                         }
                         break;
                     case TAKE:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.decrementStatistic(stat, ent, amt);
                         }
                         break;
                     case SET:
-                        for (dPlayer player : players.filter(dPlayer.class)) {
+                        for (dPlayer player : players.filter(dPlayer.class, scriptEntry)) {
                             player.setStatistic(stat, ent, amt);
                         }
                         break;

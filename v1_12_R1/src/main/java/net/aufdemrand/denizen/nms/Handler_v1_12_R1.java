@@ -28,14 +28,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.UUID;
 
 public class Handler_v1_12_R1 extends NMSHandler {
 
@@ -226,30 +221,5 @@ public class Handler_v1_12_R1 extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_12_R1(biome);
-    }
-
-    public HashMap<UUID, UUID> attachmentsA = new HashMap<UUID, UUID>(); // Key follows value
-    public HashMap<UUID, UUID> attachments2 = new HashMap<UUID, UUID>(); // Value follows key
-    public HashMap<UUID, Vector> attachmentOffsets = new HashMap<>();
-    public HashSet<UUID> attachmentRotations = new HashSet<>();
-    public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
-
-    @Override
-    public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
-        if (attachmentsA.containsKey(a.getUniqueId())) {
-            attachments2.remove(attachmentsA.get(a.getUniqueId()));
-            attachmentsA.remove(a.getUniqueId());
-            attachmentOffsets.remove(a.getUniqueId());
-            attachmentRotations.remove(a.getUniqueId());
-        }
-        if (b == null) {
-            return;
-        }
-        attachmentsA.put(a.getUniqueId(), b.getUniqueId());
-        attachments2.put(b.getUniqueId(), a.getUniqueId());
-        attachmentOffsets.put(a.getUniqueId(), offset);
-        if (matchRotation) {
-            attachmentRotations.add(a.getUniqueId());
-        }
     }
 }

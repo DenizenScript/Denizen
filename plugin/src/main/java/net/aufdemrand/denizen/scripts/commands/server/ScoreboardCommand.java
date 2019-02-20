@@ -60,7 +60,7 @@ public class ScoreboardCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("viewers")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("viewers", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

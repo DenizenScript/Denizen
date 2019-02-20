@@ -41,7 +41,7 @@ public class GlowCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("glowing")
                     && arg.matchesPrimitive(aH.PrimitiveType.Boolean)) {

@@ -103,12 +103,12 @@ public class ChatCommand extends AbstractCommand {
                 scriptEntry, chatRange.asDouble());
 
         if (!targets.isEmpty()) {
-            for (dEntity ent : targets.filter(dEntity.class)) {
+            for (dEntity ent : targets.filter(dEntity.class, scriptEntry)) {
                 context.addRecipient(ent.getBukkitEntity());
             }
         }
 
-        for (dEntity talker : talkers.filter(dEntity.class)) {
+        for (dEntity talker : talkers.filter(dEntity.class, scriptEntry)) {
 
             Entity entity = talker.getBukkitEntity();
             if (entity != null) {

@@ -3,80 +3,240 @@ package net.aufdemrand.denizen.nms.interfaces;
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.UUID;
+import java.util.*;
 
-public interface EntityHelper {
+public abstract class EntityHelper {
 
-    default void setRiptide(Entity entity, boolean state) {
+    public void setRiptide(Entity entity, boolean state) {
         dB.echoError("Riptide control not available on this server version.");
     }
 
-    default void setCarriedItem(Enderman entity, ItemStack item) {
+    public void setCarriedItem(Enderman entity, ItemStack item) {
         entity.setCarriedMaterial(item.getData());
     }
 
-    int getBodyArrows(Entity entity);
+    public abstract int getBodyArrows(Entity entity);
 
-    void setBodyArrows(Entity entity, int numArrows);
+    public abstract void setBodyArrows(Entity entity, int numArrows);
 
-    Entity getFishHook(PlayerFishEvent event);
+    public abstract Entity getFishHook(PlayerFishEvent event);
 
-    void forceInteraction(Player player, Location location);
+    public abstract void forceInteraction(Player player, Location location);
 
-    Entity getEntity(World world, UUID uuid);
+    public abstract Entity getEntity(World world, UUID uuid);
 
-    boolean isBreeding(Animals entity);
+    public abstract boolean isBreeding(Animals entity);
 
-    void setBreeding(Animals entity, boolean breeding);
+    public abstract void setBreeding(Animals entity, boolean breeding);
 
-    void setTarget(Creature entity, LivingEntity target);
+    public abstract void setTarget(Creature entity, LivingEntity target);
 
-    CompoundTag getNbtData(Entity entity);
+    public abstract CompoundTag getNbtData(Entity entity);
 
-    void setNbtData(Entity entity, CompoundTag compoundTag);
+    public abstract void setNbtData(Entity entity, CompoundTag compoundTag);
 
-    void setSilent(Entity entity, boolean silent);
+    public abstract void setSilent(Entity entity, boolean silent);
 
-    boolean isSilent(Entity entity);
+    public abstract boolean isSilent(Entity entity);
 
-    ItemStack getItemInHand(LivingEntity entity);
+    public abstract ItemStack getItemInHand(LivingEntity entity);
 
-    void setItemInHand(LivingEntity entity, ItemStack itemStack);
+    public abstract void setItemInHand(LivingEntity entity, ItemStack itemStack);
 
-    ItemStack getItemInOffHand(LivingEntity entity);
+    public abstract ItemStack getItemInOffHand(LivingEntity entity);
 
-    void setItemInOffHand(LivingEntity entity, ItemStack itemStack);
+    public abstract void setItemInOffHand(LivingEntity entity, ItemStack itemStack);
 
-    void stopFollowing(Entity follower);
+    public abstract void stopFollowing(Entity follower);
 
-    void stopWalking(Entity entity);
+    public abstract void stopWalking(Entity entity);
 
-    void toggleAI(Entity entity, boolean hasAI);
+    public abstract void toggleAI(Entity entity, boolean hasAI);
 
-    boolean isAIDisabled(Entity entity);
+    public abstract boolean isAIDisabled(Entity entity);
 
-    double getSpeed(Entity entity);
+    public abstract double getSpeed(Entity entity);
 
-    void setSpeed(Entity entity, double speed);
+    public abstract void setSpeed(Entity entity, double speed);
 
-    void follow(final Entity target, final Entity follower, final double speed, final double lead,
+    public abstract void follow(final Entity target, final Entity follower, final double speed, final double lead,
                 final double maxRange, final boolean allowWander);
 
-    void walkTo(final Entity entity, Location location, double speed, final Runnable callback);
+    public abstract void walkTo(final Entity entity, Location location, double speed, final Runnable callback);
 
-    void hideEntity(Player player, Entity entity, boolean keepInTabList);
+    public class EnforcePlayerHides implements Listener {
 
-    void unhideEntity(Player player, Entity entity);
+        public Plugin denizenPlugin;
 
-    boolean isHidden(Player player, Entity entity);
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            for (UUID id : hiddenByDefaultPlayers) {
+                Entity pTarget = Bukkit.getEntity(id);
+                if (pTarget != null && pTarget instanceof Player) {
+                    event.getPlayer().hidePlayer((Player) pTarget);
+                }
+            }
+            final Player pl = event.getPlayer();
+            final Set<UUID> hides = hiddenEntitiesPlEnt.get(pl.getUniqueId());
+            if (hides == null || hides.isEmpty()) {
+                return;
+            }
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (pl.isOnline()) {
+                        for (UUID id : hides) {
+                            Entity ent = Bukkit.getEntity(id);
+                            if (ent != null) {
+                                sendHidePacket(pl, ent);
+                            }
+                        }
+                    }
+                }
+            }.runTaskLater(denizenPlugin, 5);
+        }
+    }
+
+    public void ensurePlayerHiding() {
+        if (EPH == null) {
+            Plugin pl = Bukkit.getPluginManager().getPlugin("Denizen"); // Very lazy way to get the correct plugin instance
+            EPH = new EnforcePlayerHides();
+            EPH.denizenPlugin = pl;
+            Bukkit.getPluginManager().registerEvents(EPH, pl);
+        }
+    }
+
+    public boolean addHide(UUID player, UUID entity) {
+        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
+        if (hidden == null) {
+            hidden = new HashSet<UUID>();
+            hiddenEntitiesEntPl.put(entity, hidden);
+        }
+        if (player.equals(DEFAULT_HIDE)) {
+            for (UUID pl : hidden) {
+                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
+                if (plHid != null) {
+                    plHid.remove(entity);
+                }
+            }
+            hidden.clear();
+        }
+        else {
+            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
+            if (plHid == null) {
+                plHid = new HashSet<UUID>();
+                hiddenEntitiesPlEnt.put(player, plHid);
+            }
+            plHid.add(entity);
+        }
+        return hidden.add(player);
+    }
+
+    public void hideEntity(Player player, Entity entity, boolean keepInTabList) { // TODO: remove or reimplement tablist option somehow?
+        if (player == null) {
+            addHide(DEFAULT_HIDE, entity.getUniqueId());
+            if (entity instanceof Player) {
+                hiddenByDefaultPlayers.add(entity.getUniqueId());
+            }
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                sendHidePacket(pl, entity);
+            }
+            return;
+        }
+        if (isHiddenByDefault(entity)) {
+            removeHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        else {
+            addHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        sendHidePacket(player, entity);
+    }
+
+    public static boolean removeHide(UUID player, UUID entity) {
+        Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
+        if (hidden == null) {
+            return false;
+        }
+        boolean toRet = hidden.remove(player);
+        if (player.equals(DEFAULT_HIDE)) {
+            for (UUID pl : hidden) {
+                Set<UUID> plHid = hiddenEntitiesPlEnt.get(pl);
+                if (plHid != null) {
+                    plHid.remove(entity);
+                }
+            }
+            hidden.clear();
+        }
+        else {
+            Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
+            if (plHid != null) {
+                plHid.remove(entity);
+            }
+        }
+        return toRet;
+    }
+
+    public void unhideEntity(Player player, Entity entity) {
+        if (player == null) {
+            removeHide(DEFAULT_HIDE, entity.getUniqueId());
+            if (entity instanceof Player) {
+                hiddenByDefaultPlayers.remove(entity.getUniqueId());
+            }
+            for (Player pl : Bukkit.getOnlinePlayers()) {
+                sendShowPacket(pl, entity);
+            }
+            return;
+        }
+        if (isHiddenByDefault(entity)) {
+            addHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        else {
+            removeHide(player.getUniqueId(), entity.getUniqueId());
+        }
+        sendShowPacket(player, entity);
+    }
+
+    public static UUID DEFAULT_HIDE = new UUID(0, 0);
+
+    public boolean isHiddenByDefault(Entity ent) { // TODO: Backport?
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(ent.getUniqueId());
+        return hiding != null && hiding.contains(DEFAULT_HIDE);
+    }
+
+    public boolean isHidden(Player player, Entity entity) {
+        if (isHiddenByDefault(entity)) {
+            Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+            return hiding == null || !hiding.contains(player.getUniqueId());
+        }
+        Set<UUID> hiding = hiddenEntitiesEntPl.get(entity.getUniqueId());
+        return hiding != null && hiding.contains(player.getUniqueId());
+    }
+
+    public static Map<UUID, Set<UUID>> hiddenEntitiesEntPl = new HashMap<>();
+
+    public static Map<UUID, Set<UUID>> hiddenEntitiesPlEnt = new HashMap<>();
+
+    public static EnforcePlayerHides EPH = null;
+
+    public static Set<UUID> hiddenByDefaultPlayers = new HashSet<>();
+
+    public abstract void sendHidePacket(Player pl, Entity entity);
+
+    public abstract void sendShowPacket(Player pl, Entity entity);
 
     /**
      * Rotates an entity.
@@ -85,21 +245,21 @@ public interface EntityHelper {
      * @param yaw    The new yaw of the entity.
      * @param pitch  The new pitch of the entity.
      */
-    void rotate(Entity entity, float yaw, float pitch);
+    public abstract void rotate(Entity entity, float yaw, float pitch);
 
-    float getBaseYaw(Entity entity);
+    public abstract float getBaseYaw(Entity entity);
 
     // Taken from C2 NMS class for less dependency on C2
-    void look(Entity entity, float yaw, float pitch);
+    public abstract void look(Entity entity, float yaw, float pitch);
 
-    class MapTraceResult {
+    public static class MapTraceResult {
         public Location hitLocation;
         public BlockFace angle;
     }
 
-    boolean canTrace(World world, Vector start, Vector end);
+    public abstract boolean canTrace(World world, Vector start, Vector end);
 
-    MapTraceResult mapTrace(LivingEntity from, double range);
+    public abstract MapTraceResult mapTrace(LivingEntity from, double range);
 
     /**
      * Gets the precise location in the specified direction.
@@ -109,9 +269,9 @@ public interface EntityHelper {
      * @param range     The maximum distance between the start and end.
      * @return The location, or null if it isn't in range.
      */
-    Location rayTrace(Location start, Vector direction, double range);
+    public abstract Location rayTrace(Location start, Vector direction, double range);
 
-    Location getImpactNormal(Location start, Vector direction, double range);
+    public abstract Location getImpactNormal(Location start, Vector direction, double range);
 
     /**
      * Gets the precise location a LivingEntity is looking at.
@@ -120,9 +280,16 @@ public interface EntityHelper {
      * @param range The maximum distance between the LivingEntity and the location.
      * @return The location, or null if it isn't in range.
      */
-    Location eyeTrace(LivingEntity from, double range);
+    public Location eyeTrace(LivingEntity from, double range) {
+        Location start = from.getEyeLocation();
+        double xzLen = Math.cos((start.getPitch() % 360) * (Math.PI / 180));
+        double nx = xzLen * Math.sin(-start.getYaw() * (Math.PI / 180));
+        double ny = Math.sin(start.getPitch() * (Math.PI / 180));
+        double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
+        return rayTrace(start, new Vector(nx, -ny, nz), range);
+    }
 
-    default Location faceLocation(Location from, Location at) {
+    public Location faceLocation(Location from, Location at) {
         Vector direction = from.toVector().subtract(at.toVector()).normalize();
         Location newLocation = from.clone();
         newLocation.setYaw(180 - (float) Math.toDegrees(Math.atan2(direction.getX(), direction.getZ())));
@@ -136,7 +303,7 @@ public interface EntityHelper {
      * @param from The Entity whose yaw and pitch you want to change.
      * @param at   The Location it should be looking at.
      */
-    void faceLocation(Entity from, Location at);
+    public abstract void faceLocation(Entity from, Location at);
 
     /**
      * Changes an entity's yaw and pitch to make it face another entity.
@@ -144,9 +311,11 @@ public interface EntityHelper {
      * @param entity The Entity whose yaw and pitch you want to change.
      * @param target The Entity it should be looking at.
      */
-    void faceEntity(Entity entity, Entity target);
+    public void faceEntity(Entity entity, Entity target) {
+        faceLocation(entity, target.getLocation());
+    }
 
-    default boolean isFacingLocation(Location from, Location at, float yawLimitDegrees, float pitchLimitDegrees) {
+    public boolean isFacingLocation(Location from, Location at, float yawLimitDegrees, float pitchLimitDegrees) {
         Vector direction = from.toVector().subtract(at.toVector()).normalize();
         float pitch = 90 - (float) Math.toDegrees(Math.acos(direction.getY()));
         if (from.getPitch() > pitch + pitchLimitDegrees
@@ -172,7 +341,7 @@ public interface EntityHelper {
      *                    we check if it is facing.
      * @return Returns a boolean.
      */
-    default boolean isFacingLocation(Location from, Location at, float degreeLimit) {
+    public boolean isFacingLocation(Location from, Location at, float degreeLimit) {
         double currentYaw = normalizeYaw(from.getYaw());
         double requiredYaw = normalizeYaw(getYaw(at.toVector().subtract(
                 from.toVector()).normalize()));
@@ -191,7 +360,7 @@ public interface EntityHelper {
      *                    is facing.
      * @return Returns a boolean.
      */
-    default boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
+    public boolean isFacingLocation(Entity from, Location at, float degreeLimit) {
         return isFacingLocation(from.getLocation(), at, degreeLimit);
     }
 
@@ -205,7 +374,7 @@ public interface EntityHelper {
      *                    is facing.
      * @return Returns a boolean.
      */
-    default boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
+    public boolean isFacingEntity(Entity from, Entity at, float degreeLimit) {
         return isFacingLocation(from.getLocation(), at.getLocation(), degreeLimit);
     }
 
@@ -216,7 +385,7 @@ public interface EntityHelper {
      * @param yaw The original yaw.
      * @return The normalized yaw.
      */
-    default float normalizeYaw(float yaw) {
+    public float normalizeYaw(float yaw) {
         yaw = yaw % 360;
         if (yaw < 0) {
             yaw += 360.0;
@@ -232,7 +401,7 @@ public interface EntityHelper {
      * @param vector The vector you want to get a yaw from.
      * @return The yaw.
      */
-    default float getYaw(Vector vector) {
+    public float getYaw(Vector vector) {
         double dx = vector.getX();
         double dz = vector.getZ();
         double yaw = 0;
@@ -259,7 +428,7 @@ public interface EntityHelper {
      * @param yaw The yaw you want to get a cardinal direction from.
      * @return The name of the cardinal direction as a String.
      */
-    default String getCardinal(float yaw) {
+    public String getCardinal(float yaw) {
         yaw = normalizeYaw(yaw);
         // Compare yaws, return closest direction.
         if (0 <= yaw && yaw < 22.5) {
@@ -294,17 +463,17 @@ public interface EntityHelper {
         }
     }
 
-    void move(Entity entity, Vector vector);
+    public abstract void move(Entity entity, Vector vector);
 
-    void teleport(Entity entity, Vector vector);
+    public abstract void teleport(Entity entity, Vector vector);
 
-    BoundingBox getBoundingBox(Entity entity);
+    public abstract BoundingBox getBoundingBox(Entity entity);
 
-    void setBoundingBox(Entity entity, BoundingBox boundingBox);
+    public abstract void setBoundingBox(Entity entity, BoundingBox boundingBox);
 
-    boolean isChestedHorse(Entity horse);
+    public abstract boolean isChestedHorse(Entity horse);
 
-    boolean isCarryingChest(Entity horse);
+    public abstract boolean isCarryingChest(Entity horse);
 
-    void setCarryingChest(Entity horse, boolean carrying);
+    public abstract void setCarryingChest(Entity horse, boolean carrying);
 }

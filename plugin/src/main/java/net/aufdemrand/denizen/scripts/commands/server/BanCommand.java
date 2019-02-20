@@ -36,7 +36,7 @@ public class BanCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("targets") && (arg.matchesPrefix("targets", "target")
                     || arg.matchesArgumentList(dPlayer.class))) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("reason") && arg.matchesPrefix("reason")) {
                 scriptEntry.addObject("reason", arg.asElement());

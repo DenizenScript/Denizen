@@ -24,7 +24,7 @@ public class DespawnCommand extends AbstractCommand {
 
             if (!scriptEntry.hasObject("npcs")
                     && arg.matchesArgumentList(dNPC.class)) {
-                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class));
+                scriptEntry.addObject("npcs", arg.asType(dList.class).filter(dNPC.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

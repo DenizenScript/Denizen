@@ -31,8 +31,7 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.amount> returns the amount the entity healed.
     // <context.entity> returns the dEntity that healed.
-    // <context.reason> returns the cause of the entity healing. Can be: REGEN, SATIATED, EATING, ENDER_CRYSTAL,
-    // MAGIC, MAGIC_REGEN, WITHER_SPAWN, WITHER, CUSTOM
+    // <context.reason> returns the cause of the entity healing. Can be: <@link url http://bit.ly/2GTtxsf>
     //
     // @Determine
     // Element(Decimal) to set the amount of health the entity receives.

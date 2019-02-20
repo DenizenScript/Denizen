@@ -44,7 +44,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
                     arg.matchesArgumentList(dEntity.class))
 
             {
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class));
+                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&

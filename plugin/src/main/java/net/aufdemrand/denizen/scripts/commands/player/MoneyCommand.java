@@ -36,7 +36,7 @@ public class MoneyCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("players") && arg.matchesPrefix("to", "from", "players", "player") &&
                     arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

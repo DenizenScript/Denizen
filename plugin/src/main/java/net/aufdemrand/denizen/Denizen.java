@@ -538,13 +538,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
             }
 
-            // If Program AB, used for reading Artificial Intelligence Markup Language
-            // 2.0, is included as a dependency at Denizen/lib/Ab.jar, register the
-            // ChatbotTrait
-            if (Depends.hasProgramAB) {
-                CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ChatbotTrait.class).withName("chatbot"));
-            }
-
             // Compile and load Denizen externals
             runtimeCompiler = new RuntimeCompiler(this);
             runtimeCompiler.loader();
@@ -1413,7 +1406,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     }
 
     @Override
-    public void debugTagFill(ScriptEntry entry, String tag, String result) {
+    public void debugTagFill(Debuggable entry, String tag, String result) {
         dB.echoDebug(entry, ChatColor.DARK_GRAY + "Filled tag <" + ChatColor.WHITE + tag
                 + ChatColor.DARK_GRAY + "> with '" + ChatColor.WHITE + result + ChatColor.DARK_GRAY + "'.");
     }

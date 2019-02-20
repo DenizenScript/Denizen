@@ -12,11 +12,10 @@ import net.minecraft.server.v1_13_R2.EntityPlayer;
 import net.minecraft.server.v1_13_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_13_R2.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_13_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_13_R2.PacketPlayOutRespawn;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
@@ -47,14 +46,8 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
                     }
                     else {
                         if (isSkinChanging) {
-                            boolean isFlying = player.isFlying();
-                            PacketHelper_v1_13_R2.sendPacket(player, new PacketPlayOutRespawn(
-                                    entityPlayer.getWorldServer().dimension,
-                                    entityPlayer.getWorld().getDifficulty(),
-                                    entityPlayer.getWorld().worldData.getType(),
-                                    entityPlayer.playerInteractManager.getGameMode()));
-                            player.teleport(player.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-                            player.setFlying(isFlying);
+                            ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(
+                                    entityPlayer, entityPlayer.dimension, true, player.getLocation(), false);
                         }
                         player.updateInventory();
                     }

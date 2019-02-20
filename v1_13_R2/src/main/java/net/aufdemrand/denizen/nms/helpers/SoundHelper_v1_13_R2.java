@@ -1,7 +1,11 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.SoundHelper;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
+import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
+import org.bukkit.entity.Player;
 
 public class SoundHelper_v1_13_R2 implements SoundHelper {
 
@@ -49,5 +53,43 @@ public class SoundHelper_v1_13_R2 implements SoundHelper {
     @Override
     public Sound getChestClose() {
         return Sound.BLOCK_CHEST_CLOSE;
+    }
+
+    @Override
+    public void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
+        SoundCategory categoryEnum = SoundCategory.MASTER;
+        try {
+            if (category != null) {
+                categoryEnum = SoundCategory.valueOf(category);
+            }
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+        }
+        if (player == null) {
+            location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
+        }
+        else {
+            player.playSound(location, sound, categoryEnum, volume, pitch);
+        }
+    }
+
+    @Override
+    public void playSound(Player player, Location location, Sound sound, float volume, float pitch, String category) {
+        SoundCategory categoryEnum = SoundCategory.MASTER;
+        try {
+            if (category != null) {
+                categoryEnum = SoundCategory.valueOf(category);
+            }
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+        }
+        if (player == null) {
+            location.getWorld().playSound(location, sound, categoryEnum, volume, pitch);
+        }
+        else {
+            player.playSound(location, sound, categoryEnum, volume, pitch);
+        }
     }
 }

@@ -116,7 +116,7 @@ public class ItemCanPlaceOn implements Property {
             ItemStack itemStack = item.getItemStack();
 
             if (mechanism.hasValue()) {
-                List<Material> materials = mechanism.valueAsType(dList.class).filter(dMaterial.class)
+                List<Material> materials = mechanism.valueAsType(dList.class).filter(dMaterial.class, mechanism.context)
                         .stream().map(dMaterial::getMaterial).collect(Collectors.toList());
                 itemStack = CustomNBT.setNBTMaterials(itemStack, CustomNBT.KEY_CAN_PLACE_ON, materials);
             }

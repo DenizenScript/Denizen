@@ -42,12 +42,12 @@ public class FakeItemCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("item")
                     && arg.matchesArgumentList(dItem.class)) {
-                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class));
+                scriptEntry.addObject("item", arg.asType(dList.class).filter(dItem.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("players")
                     && arg.matchesArgumentList(dPlayer.class)
                     && arg.matchesPrefix("players")) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("player_only")
                     && arg.matches("player_only")) {

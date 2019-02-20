@@ -117,7 +117,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
             cancelled = true;
             block.setType(Material.AIR);
 
-            for (dItem newItem : dList.valueOf(determination).filter(dItem.class)) {
+            for (dItem newItem : dList.valueOf(determination).filter(dItem.class, container)) {
                 block.getWorld().dropItemNaturally(block.getLocation(), newItem.getItemStack()); // Drop each item
             }
         }

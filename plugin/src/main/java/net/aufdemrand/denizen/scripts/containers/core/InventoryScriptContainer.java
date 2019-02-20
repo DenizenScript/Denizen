@@ -225,7 +225,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                         dList list = dList.valueOf(DetermineCommand.getOutcome(id).get(0));
                         if (list != null) {
                             int x = 0;
-                            for (dItem item : list.filter(dItem.class)) {
+                            for (dItem item : list.filter(dItem.class, this)) {
                                 while (x < filledSlots.length && filledSlots[x]) {
                                     x++;
                                 }

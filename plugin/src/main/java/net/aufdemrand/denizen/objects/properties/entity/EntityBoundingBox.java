@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -126,7 +125,7 @@ public class EntityBoundingBox implements Property {
                 // TODO: Allow editing NPC boxes properly?
                 return;
             }
-            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class);
+            List<dLocation> locations = mechanism.valueAsType(dList.class).filter(dLocation.class, mechanism.context);
             if (locations.size() == 2) {
                 BoundingBox boundingBox = new BoundingBox(locations.get(0).toVector(), locations.get(1).toVector());
                 NMSHandler.getInstance().getEntityHelper().setBoundingBox(entity.getBukkitEntity(), boundingBox);

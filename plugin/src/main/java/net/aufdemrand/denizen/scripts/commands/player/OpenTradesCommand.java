@@ -29,7 +29,7 @@ public class OpenTradesCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
                     && arg.matchesArgumentList(dTrade.class)) {
-                scriptEntry.addObject("trades", arg.asType(dList.class).filter(dTrade.class));
+                scriptEntry.addObject("trades", arg.asType(dList.class).filter(dTrade.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("trades")
                     && !scriptEntry.hasObject("entity")
@@ -41,7 +41,7 @@ public class OpenTradesCommand extends AbstractCommand {
             }
             else if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("players", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else {
                 arg.reportUnhandled();

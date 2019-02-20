@@ -33,7 +33,7 @@ public class ToastCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("targets")
                     && arg.matchesPrefix("target", "targets", "t")
                     && arg.matchesArgumentList(dPlayer.class)) {
-                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class));
+                scriptEntry.addObject("targets", arg.asType(dList.class).filter(dPlayer.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("icon")
                     && arg.matchesPrefix("icon", "i")

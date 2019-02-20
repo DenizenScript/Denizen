@@ -24,7 +24,7 @@ public class ItemCooldownCommand extends AbstractCommand {
             if (!scriptEntry.hasObject("materials")
                     && (arg.matchesArgumentType(dMaterial.class)
                     || arg.matchesArgumentType(dList.class))) {
-                scriptEntry.addObject("materials", arg.asType(dList.class).filter(dMaterial.class));
+                scriptEntry.addObject("materials", arg.asType(dList.class).filter(dMaterial.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("duration")
                     && arg.matchesPrefix("d", "duration")

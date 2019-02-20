@@ -220,10 +220,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
         // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
         //
-        // All entities also have available Bukkit's entity effect list, which includes:
-        // DEATH, FIREWORK_EXPLODE, HURT, IRON_GOLEM_ROSE, SHEEP_EAT, VILLAGER_ANGRY, VILLAGER_HAPPY
-        // VILLAGER_HEART, WITCH_MAGIC, WOLF_HEARTS, WOLF_SHAKE, WOLF_SMOKE, ZOMBIE_TRANSFORM,
-        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM
+        // All entities also have available Bukkit's entity effect list:
+        // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/EntityEffect.html>
+        //
+        // In addition, Denizen adds a few new entity animations:
+        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING
         //
         // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
         //
@@ -632,6 +633,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.has_effect[<effect>]>
+        // <server.list_potion_effects>
         //
         // @Usage
         // Use to cast an effect onto the player for 120 seconds with a power of 3.
@@ -876,14 +878,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
         // TODO: Document Command Details (generator)
         // It accepts a world type which can be specified with 'worldtype:'.
-        // If a worldtype is not specified it will create a world with a worldtype of NORMAL.
-        // Recognised world type are NORMAL (creates a normal world), FLAT (creates a world with flat terrain),
-        // LARGE_BIOMES (creates a normal world with 16x larger biomes) and AMPLIFIED (creates a world with tall
-        // mountain-like terrain).
+        // If a worldtype is not specified it will create a world with a world type of NORMAL.
+        // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
         // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
         // Optionally, specify an existing world to copy files from.
         //
         // @Tags
+        // <server.list_world_types>
         // <server.list_worlds>
         //
         // @Usage
@@ -1863,12 +1864,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
         // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
         // than using the raw damage input number. See <@link language damage cause> for damage causes.
+        // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
         //
         // @Tags
         // <e@entity.health>
         // <e@entity.last_damage.amount>
         // <e@entity.last_damage.cause>
         // <e@entity.last_damage.duration>
+        // <e@entity.last_damage.max_duration>
         //
         // @Usage
         // Use to hurt the player for 1 HP.
@@ -2696,7 +2699,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name PlaySound
-        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)
+        // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
         // @Required 2
         // @Short Plays a sound at the location or to a list of players.
         // @Group world
@@ -2717,10 +2720,12 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound name to something like 'random.click'
         //
-        // For a list of all sounds, check https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html
+        // For a list of all sounds, check <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>
+        //
+        // For a list of all valid sound categories, check <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html>
         //
         // @Tags
-        // None
+        // <server.list_sounds>
         //
         // @Usage
         // Use to play a sound for a player
@@ -2733,7 +2738,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - playsound <server.list_online_players> sound:ENTITY_PLAYER_LEVELUP volume:0.5 pitch:0.8
         // -->
         registerCoreMember(PlaySoundCommand.class,
-                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom)", 2);
+                "PLAYSOUND", "playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)", 2);
 
 
         // <--[command]
@@ -3615,6 +3620,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.is_spawned>
         // <server.entity_is_spawned[<entity>]>
+        // <server.list_entity_types>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
         //
         // @Usage
