@@ -350,13 +350,21 @@ public class dB {
         if (!showDebug) {
             return;
         }
-        Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
-        String callerName = classNameCache.get(caller);
-        if (callerName == null) {
-            classNameCache.put(caller, callerName = caller.getSimpleName());
+        String callerName;
+        try {
+            Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
+            callerName = classNameCache.get(caller);
+            if (callerName == null) {
+                classNameCache.put(caller, callerName = caller.getSimpleName());
+            }
+            callerName = callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName;
+        }
+        catch (Throwable ex) {
+            // Intentionally ignore throwable.
+            callerName = "(Java version unsupported)";
         }
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
-                + (callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName) + "] "
+                + callerName + "] "
                 + ChatColor.WHITE + trimMessage(message));
     }
 

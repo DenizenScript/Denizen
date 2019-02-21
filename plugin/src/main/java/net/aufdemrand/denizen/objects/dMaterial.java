@@ -592,19 +592,17 @@ public class dMaterial implements dObject, Adjustable {
         if (material == Material.AIR) {
             return AIR;
         }
-        if (material_varieties.containsKey(material)) {
-            if (material_varieties.get(material).containsKey(data)) {
-                return material_varieties.get(material).get(data);
-            }
+        if (material_varieties.containsKey(material) && material_varieties.get(material).containsKey(data)) {
+            return material_varieties.get(material).get(data);
         }
-        if (data != 0 && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            // upvert old data valued materials
-            if (material.isBlock()) {
-                material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
-            }
-        }
-        // Forcible upvert.
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (data != 0) {
+                // upvert old data valued materials
+                if (material.isBlock()) {
+                    material = NMSHandler.getInstance().getBlockHelper().getBlockData(material, (byte) data).getMaterial();
+                }
+            }
+            // Forcible upvert from legacy
             if (material.isLegacy()) {
                 material = Bukkit.getUnsafe().fromLegacy(material);
             }
