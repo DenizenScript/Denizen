@@ -346,23 +346,25 @@ public class dB {
 
     private static final Map<Class<?>, String> classNameCache = new WeakHashMap<Class<?>, String>();
 
+    private static class SecurityManagerTrick extends SecurityManager {
+        @Override
+        @SuppressWarnings("rawtypes")
+        protected Class[] getClassContext() {
+            return super.getClassContext();
+        }
+    }
+
     public static void log(String message) {
         if (!showDebug) {
             return;
         }
-        String callerName;
-        try {
-            Class<?> caller = sun.reflect.Reflection.getCallerClass(2);
-            callerName = classNameCache.get(caller);
-            if (callerName == null) {
-                classNameCache.put(caller, callerName = caller.getSimpleName());
-            }
-            callerName = callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName;
+        Class[] classes = new SecurityManagerTrick().getClassContext();
+        Class caller = classes.length > 2 ? classes[2] : dB.class;
+        String callerName = classNameCache.get(caller);
+        if (callerName == null) {
+            classNameCache.put(caller, callerName = caller.getSimpleName());
         }
-        catch (Throwable ex) {
-            // Intentionally ignore throwable.
-            callerName = "(Java version unsupported)";
-        }
+        callerName = callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName;
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + callerName + "] "
                 + ChatColor.WHITE + trimMessage(message));
