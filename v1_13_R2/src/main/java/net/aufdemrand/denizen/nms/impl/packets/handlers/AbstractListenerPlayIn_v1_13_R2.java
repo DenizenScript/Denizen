@@ -1,12 +1,9 @@
 package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
-import net.aufdemrand.denizen.nms.util.DenizenAtomicIntegerFieldUpdater;
 import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Set;
 
 public class AbstractListenerPlayIn_v1_13_R2 extends PlayerConnection {
@@ -16,19 +13,6 @@ public class AbstractListenerPlayIn_v1_13_R2 extends PlayerConnection {
     public AbstractListenerPlayIn_v1_13_R2(NetworkManager networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
         this.oldListener = oldListener;
-        try {
-            Field chatSpamField = PlayerConnection.class.getDeclaredField("chatSpamField");
-            chatSpamField.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(chatSpamField, chatSpamField.getModifiers() & ~Modifier.FINAL);
-            Field chatThrottle = PlayerConnection.class.getDeclaredField("chatThrottle");
-            chatThrottle.setAccessible(true);
-            chatSpamField.set(null, new DenizenAtomicIntegerFieldUpdater<PlayerConnection>(chatThrottle));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
