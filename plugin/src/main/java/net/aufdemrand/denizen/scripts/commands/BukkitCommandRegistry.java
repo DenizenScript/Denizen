@@ -3036,7 +3036,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Repeat
-        // @Syntax repeat [stop/next/<amount>] [<commands>]
+        // @Syntax repeat [stop/next/<amount>] [<commands>] (as:<name>)
         // @Required 1
         // @Short Runs a series of braced commands several times.
         // @Group core
@@ -3045,6 +3045,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Description
         // Loops through a series of braced commands a specified number of times.
         // To get the number of loops so far, you can use <def[value]>.
+        //
+        // Optionally, specify "as:<name>" to change the definition name to something other than "value".
         //
         // To stop a repeat loop, do - repeat stop
         //
@@ -3060,7 +3062,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //   }
         // -->
         registerCoreMember(RepeatCommand.class,
-                "REPEAT", "repeat [stop/next/<amount>] [<commands>]", 1);
+                "REPEAT", "repeat [stop/next/<amount>] [<commands>] (as:<name>)", 1);
 
 
         // <--[command]

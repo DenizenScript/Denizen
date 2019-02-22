@@ -28,39 +28,45 @@ public class RepeatCommand extends BracedCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
+        boolean handled = false;
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
-            if (!scriptEntry.hasObject("qty")
+            if (!handled
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {
                 scriptEntry.addObject("qty", arg.asElement());
-                break;
+                scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
+                handled = true;
             }
-            else if (!scriptEntry.hasObject("stop")
+            else if (!handled
                     && arg.matches("stop")) {
-                scriptEntry.addObject("stop", Element.TRUE);
-                break;
+                scriptEntry.addObject("stop", new Element(true));
+                handled = true;
             }
-            else if (!scriptEntry.hasObject("next")
+            else if (!handled
                     && arg.matches("next")) {
-                scriptEntry.addObject("next", Element.TRUE);
-                break;
+                scriptEntry.addObject("next", new Element(true));
+                handled = true;
             }
-            else if (!scriptEntry.hasObject("callback")
+            else if (!handled
                     && arg.matches("\0CALLBACK")) {
-                scriptEntry.addObject("callback", Element.TRUE);
-                break;
+                scriptEntry.addObject("callback", new Element(true));
+                handled = true;
+            }
+            else if (!scriptEntry.hasObject("as_name")
+                    && arg.matchesOnePrefix("as")) {
+                scriptEntry.addObject("as_name", arg.asElement());
             }
             else {
                 arg.reportUnhandled();
-                break;
             }
         }
 
-        if (!scriptEntry.hasObject("qty") && !scriptEntry.hasObject("stop") && !scriptEntry.hasObject("next") && !scriptEntry.hasObject("callback")) {
+        if (!handled) {
             throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
         }
 
-        scriptEntry.addObject("braces", getBracedCommands(scriptEntry));
+        scriptEntry.defaultObject("as_name", "value");
 
     }
 
@@ -72,6 +78,7 @@ public class RepeatCommand extends BracedCommand {
         Element next = scriptEntry.getElement("next");
         Element callback = scriptEntry.getElement("callback");
         Element quantity = scriptEntry.getElement("qty");
+        Element as_name = scriptEntry.getElement("as_name");
 
         if (stop != null && stop.asBoolean()) {
             // Report to dB
@@ -140,7 +147,7 @@ public class RepeatCommand extends BracedCommand {
                 data.index++;
                 if (data.index <= data.target) {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "Repeat loop " + data.index);
-                    scriptEntry.getResidingQueue().addDefinition("value", String.valueOf(data.index));
+                    scriptEntry.getResidingQueue().addDefinition(as_name.asString(), String.valueOf(data.index));
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
@@ -183,7 +190,7 @@ public class RepeatCommand extends BracedCommand {
 
             // Report to dB
             if (scriptEntry.dbCallShouldDebug()) {
-                dB.report(scriptEntry, getName(), quantity.debug());
+                dB.report(scriptEntry, getName(), quantity.debug() + as_name.debug());
             }
 
             int target = quantity.asInt();
@@ -197,7 +204,7 @@ public class RepeatCommand extends BracedCommand {
             scriptEntry.setData(datum);
             ScriptEntry callbackEntry = null;
             try {
-                callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK"},
+                callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
                         (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                 callbackEntry.copyFrom(scriptEntry);
             }
@@ -206,7 +213,7 @@ public class RepeatCommand extends BracedCommand {
             }
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);
-            scriptEntry.getResidingQueue().addDefinition("value", "1");
+            scriptEntry.getResidingQueue().addDefinition(as_name.asString(), "1");
             for (int i = 0; i < bracedCommandsList.size(); i++) {
                 bracedCommandsList.get(i).setInstant(true);
                 bracedCommandsList.get(i).addObject("reqid", scriptEntry.getObject("reqid"));
