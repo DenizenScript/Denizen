@@ -66,7 +66,7 @@ public class RepeatCommand extends BracedCommand {
             throw new InvalidArgumentsException("Must specify a quantity or 'stop' or 'next'!");
         }
 
-        scriptEntry.defaultObject("as_name", "value");
+        scriptEntry.defaultObject("as_name", new Element("value"));
 
     }
 
@@ -151,7 +151,7 @@ public class RepeatCommand extends BracedCommand {
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
                     ScriptEntry callbackEntry = null;
                     try {
-                        callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK"},
+                        callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
                                 (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
                         callbackEntry.copyFrom(scriptEntry);
                     }
