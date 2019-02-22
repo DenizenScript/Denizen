@@ -204,6 +204,8 @@ public class dB {
     // @Events
     // script generates error
     //
+    // @Regex ^on script generates error$
+    //
     // @Triggers when a script generates an error.
     // @Context
     // <context.message> returns the error message.
@@ -279,6 +281,8 @@ public class dB {
     // <--[event]
     // @Events
     // server generates exception
+    //
+    // @Regex ^on script generates exception$
     //
     // @Triggers when an exception occurs on the server.
     // @Context

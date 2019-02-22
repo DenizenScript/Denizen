@@ -41,7 +41,6 @@ import net.aufdemrand.denizen.utilities.*;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
-import net.aufdemrand.denizen.utilities.debugging.LogInterceptor;
 import net.aufdemrand.denizen.utilities.debugging.StatsRecord;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
@@ -269,15 +268,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
-    public static LogInterceptor logInterceptor;
-
-
     private CommandManager commandManager;
 
     public CommandManager getCommandManager() {
         return commandManager;
     }
-
 
     /*
      * Denizen Registries
@@ -351,10 +346,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                     + " If you are experiencing trouble, update Denizen and Spigot both to latest builds!"
                     + " If this message appears with both Denizen and Spigot fully up-to-date, contact the Denizen team (via GitHub, Spigot, or Discord) to request an update be built.");
             getLogger().warning("-------------------------------------");
-        }
-
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_11_R1)) { // TODO: 1.12 update
-            logInterceptor = new LogInterceptor();
         }
 
         try {
@@ -991,6 +982,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // <--[event]
         // @Events
         // shutdown
+        //
+        // @Regex ^on shutdown$
         //
         // @Warning not all plugins will be loaded and delayed scripts will be dropped.
         //

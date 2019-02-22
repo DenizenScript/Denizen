@@ -1529,30 +1529,6 @@ public class ServerTags {
 
         // <--[mechanism]
         // @object server
-        // @name redirect_bukkit_logging
-        // @input Element(Boolean)
-        // @description
-        // Tells the server to redirect Bukkit-based logging to a world event or not.
-        // Note that this redirects *all console output* not just Denizen output.
-        // Note: don't enable /denizen debug -e while this is active.
-        // @tags
-        // None
-        // -->
-        if (mechanism.matches("redirect_bukkit_logging") && mechanism.hasValue()) {
-            if (!Settings.allowConsoleRedirection()) {
-                dB.echoError("Console redirection disabled by administrator.");
-                return;
-            }
-            /*if (mechanism.getValue().asBoolean()) {
-                Denizen.logInterceptor.redirectOutput();
-            }
-            else {
-                Denizen.logInterceptor.standardOutput();
-            }*/
-        }
-
-        // <--[mechanism]
-        // @object server
         // @name reset_event_stats
         // @input None
         // @description

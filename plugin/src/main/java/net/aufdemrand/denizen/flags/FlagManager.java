@@ -367,6 +367,8 @@ public class FlagManager {
         // server flag cleared
         // server flag <flagname> cleared
         //
+        // @Regex ^on (player |entity |npc |server )flag( [^\s]+)? cleared$
+        //
         // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //
         // @Triggers when a flag is cleared
@@ -631,6 +633,8 @@ public class FlagManager {
         // entity flag changed
         // entity flag <flagname> changed
         //
+        // @Regex ^on (player |entity |npc |server )flag( [^\s]+)? changed$
+        //
         // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //
         // @Triggers when a flag is changed
@@ -729,6 +733,8 @@ public class FlagManager {
         // server flag <flagname> expires
         // entity flag expires
         // entity flag <flagname> expires
+        //
+        // @Regex ^on (player |entity |npc |server )flag( [^\s]+)? expires$
         //
         // @Warning This event will fire rapidly and not exactly when you might expect it to fire. Generally, do not use this event unless you know what you're doing.
         //

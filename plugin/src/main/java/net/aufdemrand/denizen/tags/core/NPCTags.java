@@ -98,6 +98,8 @@ public class NPCTags implements Listener {
     // @Events
     // npc completes navigation
     //
+    // @Regex ^on npc completes navigation$
+    //
     // @Warning This event may fire very rapidly.
     //
     // @Triggers when an NPC finishes navigating.
@@ -140,6 +142,8 @@ public class NPCTags implements Listener {
     // <--[event]
     // @Events
     // npc begins navigation
+    //
+    // @Regex ^on npc begins navigation$
     //
     // @Warning This event may fire very rapidly.
     //
@@ -241,6 +245,8 @@ public class NPCTags implements Listener {
     // <--[event]
     // @Events
     // npc stuck
+    //
+    // @Regex ^on npc stuck$
     //
     // @Triggers when an NPC's navigator is stuck.
     //

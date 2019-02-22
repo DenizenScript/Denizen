@@ -47,6 +47,8 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     // <entity> shoots block (in <area>)
     // <entity> shoots <material> (with <projectile>) (in <area>)
     //
+    // @Regex ^on [^\s]+ shoots [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    //
     // @Triggers when a projectile shot by an entity hits a block.
     //
     // @Context
