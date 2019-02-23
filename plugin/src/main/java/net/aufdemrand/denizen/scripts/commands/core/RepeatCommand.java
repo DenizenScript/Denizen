@@ -57,6 +57,9 @@ public class RepeatCommand extends BracedCommand {
                     && arg.matchesOnePrefix("as")) {
                 scriptEntry.addObject("as_name", arg.asElement());
             }
+            else if (arg.matchesOne("{")) {
+                break;
+            }
             else {
                 arg.reportUnhandled();
             }
