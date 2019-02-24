@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.Position;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -63,7 +62,7 @@ public class MountCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
         dLocation location = (dLocation) scriptEntry.getObject("location");

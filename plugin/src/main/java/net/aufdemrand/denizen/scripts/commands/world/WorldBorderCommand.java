@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -101,7 +100,7 @@ public class WorldBorderCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         dWorld world = (dWorld) scriptEntry.getObject("world");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");

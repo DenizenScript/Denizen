@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -66,7 +65,7 @@ public class CopyBlockCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         dLocation copy_location = (dLocation) scriptEntry.getObject("location");
         dLocation destination = (dLocation) scriptEntry.getObject("destination");

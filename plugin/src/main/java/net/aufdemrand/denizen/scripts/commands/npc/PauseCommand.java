@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -62,7 +61,7 @@ public class PauseCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         pause(dNPC, pauseType, !scriptEntry.getCommandName().equalsIgnoreCase("RESUME"));
 

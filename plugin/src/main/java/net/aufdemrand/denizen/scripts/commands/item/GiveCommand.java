@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -96,7 +95,7 @@ public class GiveCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element engrave = scriptEntry.getElement("engrave");
         Element unlimit_stack_size = scriptEntry.getElement("unlimit_stack_size");

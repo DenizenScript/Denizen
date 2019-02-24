@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -75,7 +73,7 @@ public class RepeatCommand extends BracedCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element stop = scriptEntry.getElement("stop");
         Element next = scriptEntry.getElement("next");
@@ -152,15 +150,9 @@ public class RepeatCommand extends BracedCommand {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "Repeat loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition(as_name.asString(), String.valueOf(data.index));
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
-                    ScriptEntry callbackEntry = null;
-                    try {
-                        callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
-                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
-                        callbackEntry.copyFrom(scriptEntry);
-                    }
-                    catch (ScriptEntryCreationException e) {
-                        dB.echoError(e);
-                    }
+                    ScriptEntry callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
+                            (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
+                    callbackEntry.copyFrom(scriptEntry);
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
                     for (int i = 0; i < bracedCommands.size(); i++) {
@@ -205,15 +197,9 @@ public class RepeatCommand extends BracedCommand {
             datum.target = target;
             datum.index = 1;
             scriptEntry.setData(datum);
-            ScriptEntry callbackEntry = null;
-            try {
-                callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
-                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
-                callbackEntry.copyFrom(scriptEntry);
-            }
-            catch (ScriptEntryCreationException e) {
-                dB.echoError(e);
-            }
+            ScriptEntry callbackEntry = new ScriptEntry("REPEAT", new String[] {"\0CALLBACK", "as:" + as_name.asString()},
+                    (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
+            callbackEntry.copyFrom(scriptEntry);
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);
             scriptEntry.getResidingQueue().addDefinition(as_name.asString(), "1");

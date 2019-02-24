@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.utilities.maps.DenizenMapManager;
 import net.aufdemrand.denizen.utilities.maps.DenizenMapRenderer;
 import net.aufdemrand.denizen.utilities.maps.MapAnimatedImage;
 import net.aufdemrand.denizen.utilities.maps.MapImage;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -101,7 +100,7 @@ public class MapCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element id = scriptEntry.getElement("map-id");
         dWorld create = scriptEntry.getdObject("new");
@@ -132,11 +131,13 @@ public class MapCommand extends AbstractCommand {
         else if (id != null) {
             map = Bukkit.getServer().getMap((short) id.asInt());
             if (map == null) {
-                throw new CommandExecutionException("No map found for ID '" + id.asInt() + "'!");
+                dB.echoError("No map found for ID '" + id.asInt() + "'!");
+                return;
             }
         }
         else {
-            throw new CommandExecutionException("The map command failed somehow! Report this to a developer!");
+            dB.echoError("The map command failed somehow! Report this to a developer!");
+            return;
         }
 
         if (reset.asBoolean()) {

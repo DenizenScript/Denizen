@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.scripts.commands.entity;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -65,7 +64,7 @@ public class AttackCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");

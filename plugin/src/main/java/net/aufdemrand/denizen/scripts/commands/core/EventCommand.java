@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.OldEventManager;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.ObjectFetcher;
 import net.aufdemrand.denizencore.objects.aH;
@@ -44,7 +43,7 @@ public class EventCommand extends AbstractCommand {
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         dList events = (dList) scriptEntry.getObject("events");
         dList context = (dList) scriptEntry.getObject("context");

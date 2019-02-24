@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -51,7 +50,7 @@ public class FileCopyCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
         Element origin = scriptEntry.getElement("origin");
         Element destination = scriptEntry.getElement("destination");
         Element overwrite = scriptEntry.getElement("overwrite");

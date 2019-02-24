@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -75,7 +74,7 @@ public class BreakCommand extends AbstractCommand implements Holdable {
     //
     // -->
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
         final dNPC npc = (dNPC) scriptEntry.getObject("npc");

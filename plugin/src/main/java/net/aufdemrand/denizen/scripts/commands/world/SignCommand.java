@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -79,7 +78,7 @@ public class SignCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         // Get objects
         String direction = scriptEntry.hasObject("direction") ? ((Element) scriptEntry.getObject("direction")).asString() : null;

@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.FakeOfflinePlayer;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -84,7 +83,7 @@ public class ScoreboardCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
         // Get objects
 
         List<dPlayer> viewers = (List<dPlayer>) scriptEntry.getObject("viewers");

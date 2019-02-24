@@ -8,7 +8,6 @@ import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.midi.MidiUtil;
 import net.aufdemrand.denizen.utilities.midi.NoteBlockReceiver;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -92,7 +91,7 @@ public class MidiCommand extends AbstractCommand implements Holdable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         boolean cancel = scriptEntry.hasObject("cancel");
         File file = !cancel ? new File(scriptEntry.getElement("file").asString()) : null;

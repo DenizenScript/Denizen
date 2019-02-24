@@ -317,7 +317,7 @@ public class DenizenCommandHandler {
     /*
      * DENIZEN RELOAD
      */
-    @Command(aliases = {"denizen"}, usage = "reload (saves|notables|config|scripts|externals) (-a)",
+    @Command(aliases = {"denizen"}, usage = "reload (saves|notables|config|scripts) (-a)",
             desc = "Reloads various Denizen files from disk to memory.", modifiers = {"reload"},
             min = 1, max = 3, permission = "denizen.basic", flags = "a")
     public void reload(CommandContext args, CommandSender sender) throws CommandException {
@@ -325,12 +325,11 @@ public class DenizenCommandHandler {
         // Get reload type
         if (args.hasFlag('a')) {
             denizen.reloadConfig();
-            denizen.runtimeCompiler.reload();
             DenizenCore.reloadScripts();
             denizen.notableManager().reloadNotables();
             denizen.reloadSaves();
             CommandScriptHelper.syncDenizenCommands();
-            Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, Denizen/scripts/..., and Denizen/externals/... reloaded from disk to memory.");
+            Messaging.send(sender, "Denizen/saves.yml, Denizen/notables.yml, Denizen/config.yml, and Denizen/scripts/... reloaded from disk to memory.");
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
             }
@@ -376,15 +375,10 @@ public class DenizenCommandHandler {
                 ReloadScriptsScriptEvent.instance.fire();
                 return;
             }
-            else if (args.getString(1).equalsIgnoreCase("externals")) {
-                denizen.runtimeCompiler.reload();
-                Messaging.send(sender, "Denizen/externals/... reloaded from disk to memory.");
-                return;
-            }
         }
 
         Messaging.send(sender, "");
-        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTABLES, CONFIG, SCRIPTS, EXTERNALS");
+        Messaging.send(sender, "<f>Specify which parts to reload. Valid options are: SAVES, NOTABLES, CONFIG, SCRIPTS");
         Messaging.send(sender, "<b>Example: /denizen reload scripts");
         Messaging.send(sender, "<f>Use '-a' to reload all parts.");
         Messaging.send(sender, "");

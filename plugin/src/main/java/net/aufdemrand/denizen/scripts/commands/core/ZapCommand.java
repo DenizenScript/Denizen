@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -68,7 +67,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
     private static Map<String, Integer> durations = new ConcurrentHashMap<String, Integer>(8, 0.9f, 1);
 
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         final dScript script = (dScript) scriptEntry.getObject("script");
         Duration duration = (Duration) scriptEntry.getObject("duration");
@@ -140,14 +139,8 @@ public class ZapCommand extends AbstractCommand implements Listener {
                                 @Override
                                 public void run() {
                                     dB.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
-                                    try {
-                                        durations.remove(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName().toUpperCase());
-                                        execute(scriptEntry);
-                                    }
-                                    catch (CommandExecutionException e) {
-                                        dB.echoError(scriptEntry.getResidingQueue(), "Could not run delayed task!");
-                                        dB.echoError(scriptEntry.getResidingQueue(), e);
-                                    }
+                                    durations.remove(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName().toUpperCase());
+                                    execute(scriptEntry);
                                 }
                             }, delay));
         }

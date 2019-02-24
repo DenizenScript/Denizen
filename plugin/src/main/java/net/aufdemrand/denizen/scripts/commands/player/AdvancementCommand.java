@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -127,7 +126,7 @@ public class AdvancementCommand extends AbstractCommand {
     public static final Map<NamespacedKey, Advancement> customRegistered = new HashMap<NamespacedKey, Advancement>();
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element id = scriptEntry.getElement("id");
         Element parent = scriptEntry.getElement("parent");

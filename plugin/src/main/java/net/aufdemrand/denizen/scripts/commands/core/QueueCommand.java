@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.aH;
@@ -58,7 +57,7 @@ public class QueueCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         ScriptQueue queue = (ScriptQueue) scriptEntry.getObject("queue");
         Action action = (Action) scriptEntry.getObject("action");

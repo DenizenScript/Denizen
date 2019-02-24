@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.player;
 
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -37,7 +36,7 @@ public class KickCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element reason = scriptEntry.getElement("reason");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");

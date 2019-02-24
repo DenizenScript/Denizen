@@ -5,7 +5,6 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -89,7 +88,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         final List<dEntity> entities = new ArrayList<dEntity>((List<dEntity>) scriptEntry.getObject("entities"));
         final Duration duration = (Duration) scriptEntry.getObject("duration");

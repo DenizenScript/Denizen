@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -77,7 +76,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("locations");
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("entities");

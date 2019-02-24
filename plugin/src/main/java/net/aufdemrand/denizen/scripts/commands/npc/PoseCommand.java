@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -68,7 +67,7 @@ public class PoseCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         // Get objects
         TargetType target = (TargetType) scriptEntry.getObject("target");
@@ -98,7 +97,7 @@ public class PoseCommand extends AbstractCommand {
 
             case ASSUME:
                 if (!poses.hasPose(id)) {
-                    throw new CommandExecutionException("Pose \"" + id + "\" doesn't exist for " + npc.toString());
+                    dB.echoError("Pose \"" + id + "\" doesn't exist for " + npc.toString());
                 }
 
                 if (target.name().equals("NPC")) {
@@ -118,13 +117,13 @@ public class PoseCommand extends AbstractCommand {
 
             case ADD:
                 if (!poses.addPose(id, pose_loc)) {
-                    throw new CommandExecutionException(npc.toString() + " already has that pose!");
+                    dB.echoError(npc.toString() + " already has that pose!");
                 }
                 break;
 
             case REMOVE:
                 if (!poses.removePose(id)) {
-                    throw new CommandExecutionException(npc.toString() + " does not have that pose!");
+                    dB.echoError(npc.toString() + " does not have that pose!");
                 }
                 break;
 

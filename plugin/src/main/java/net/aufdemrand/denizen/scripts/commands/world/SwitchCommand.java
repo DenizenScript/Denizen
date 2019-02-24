@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -64,7 +63,7 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
         final dList interactLocations = scriptEntry.getdObject("locations");
         long duration = ((Duration) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());

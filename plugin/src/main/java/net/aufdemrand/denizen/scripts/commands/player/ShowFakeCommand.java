@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -94,7 +93,7 @@ public class ShowFakeCommand extends AbstractCommand {
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Duration duration = scriptEntry.getdObject("duration");
         dList material_list = scriptEntry.getdObject("materials");

@@ -7,7 +7,6 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
@@ -207,7 +206,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
 
     @Override
-    public void execute(final ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(final ScriptEntry scriptEntry) {
 
         Element filename = scriptEntry.getElement("filename");
         Element rawText = scriptEntry.getElement("raw_text");

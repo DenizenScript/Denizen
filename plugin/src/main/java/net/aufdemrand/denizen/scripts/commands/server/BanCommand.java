@@ -2,7 +2,6 @@ package net.aufdemrand.denizen.scripts.commands.server;
 
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -69,7 +68,7 @@ public class BanCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
         Element action = scriptEntry.getElement("action");
         List<dPlayer> targets = (List<dPlayer>) scriptEntry.getObject("targets");
         dList addresses = (dList) scriptEntry.getObject("addresses");

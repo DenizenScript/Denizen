@@ -4,7 +4,6 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -48,7 +47,7 @@ public class LightCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         dLocation location = scriptEntry.getdObject("location");
         Element light = scriptEntry.getElement("light");
@@ -74,7 +73,8 @@ public class LightCommand extends AbstractCommand {
         if (!reset.asBoolean()) {
             int brightness = light.asInt();
             if (brightness < 0 || brightness > 15) {
-                throw new CommandExecutionException("Light brightness must be between 0 and 15, inclusive!");
+                dB.echoError("Light brightness must be between 0 and 15, inclusive!");
+                return;
             }
             NMSHandler.getInstance().createBlockLight(location, brightness, duration == null ? 0 : duration.getTicks());
         }

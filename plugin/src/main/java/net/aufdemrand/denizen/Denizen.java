@@ -51,7 +51,6 @@ import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.DenizenImplementation;
 import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.events.ScriptEvent;
-import net.aufdemrand.denizencore.interfaces.dExternal;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.ObjectFetcher;
 import net.aufdemrand.denizencore.objects.aH;
@@ -320,8 +319,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public Depends depends = new Depends();
 
-    public RuntimeCompiler runtimeCompiler;
-
     private BukkitWorldScriptHelper ws_helper;
 
     public final static long startTime = System.currentTimeMillis();
@@ -528,10 +525,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 // Register Speech AI
                 CitizensAPI.getSpeechFactory().register(DenizenChat.class, "denizen_chat");
             }
-
-            // Compile and load Denizen externals
-            runtimeCompiler = new RuntimeCompiler(this);
-            runtimeCompiler.loader();
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1012,12 +1005,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
         // Save offline player inventories
         InventoryScriptHelper._savePlayerInventories();
-
-        // Unload loaded dExternals
-        for (dExternal external : RuntimeCompiler.loadedExternals) {
-            external.unload();
-        }
-        RuntimeCompiler.loadedExternals.clear();
 
         //Disable core members
         getCommandRegistry().disableCoreMembers();

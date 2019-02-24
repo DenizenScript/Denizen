@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.nms.interfaces.Effect;
 import net.aufdemrand.denizen.nms.interfaces.Particle;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -206,7 +205,7 @@ public class PlayEffectCommand extends AbstractCommand {
     }
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         // Extract objects from ScriptEntry
         List<dLocation> locations = (List<dLocation>) scriptEntry.getObject("location");

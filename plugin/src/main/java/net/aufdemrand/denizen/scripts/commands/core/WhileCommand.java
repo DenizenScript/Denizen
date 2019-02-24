@@ -2,9 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.core;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.utilities.debugging.dB;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
-import net.aufdemrand.denizencore.exceptions.ScriptEntryCreationException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
@@ -64,7 +62,7 @@ public class WhileCommand extends BracedCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         Element stop = scriptEntry.getElement("stop");
         Element next = scriptEntry.getElement("next");
@@ -151,15 +149,9 @@ public class WhileCommand extends BracedCommand {
                     dB.echoDebug(scriptEntry, DebugElement.Header, "While loop " + data.index);
                     scriptEntry.getResidingQueue().addDefinition("loop_index", String.valueOf(data.index));
                     List<ScriptEntry> bracedCommands = BracedCommand.getBracedCommands(scriptEntry.getOwner()).get(0).value;
-                    ScriptEntry callbackEntry = null;
-                    try {
-                        callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
-                                (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
-                        callbackEntry.copyFrom(scriptEntry);
-                    }
-                    catch (ScriptEntryCreationException e) {
-                        dB.echoError(scriptEntry.getResidingQueue(), e);
-                    }
+                    ScriptEntry callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
+                            (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
+                    callbackEntry.copyFrom(scriptEntry);
                     callbackEntry.setOwner(scriptEntry.getOwner());
                     bracedCommands.add(callbackEntry);
                     for (int i = 0; i < bracedCommands.size(); i++) {
@@ -206,15 +198,9 @@ public class WhileCommand extends BracedCommand {
             datum.LastChecked = System.currentTimeMillis();
             datum.instaTicks = 1;
             scriptEntry.setData(datum);
-            ScriptEntry callbackEntry = null;
-            try {
-                callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
-                        (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
-                callbackEntry.copyFrom(scriptEntry);
-            }
-            catch (ScriptEntryCreationException e) {
-                dB.echoError(scriptEntry.getResidingQueue(), e);
-            }
+            ScriptEntry callbackEntry = new ScriptEntry("WHILE", new String[] {"\0CALLBACK"},
+                    (scriptEntry.getScript() != null ? scriptEntry.getScript().getContainer() : null));
+            callbackEntry.copyFrom(scriptEntry);
             callbackEntry.setOwner(scriptEntry);
             bracedCommandsList.add(callbackEntry);
             scriptEntry.getResidingQueue().addDefinition("loop_index", "1");

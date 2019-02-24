@@ -1495,24 +1495,6 @@ public class ServerTags {
             }
         }
 
-        // <--[mechanism]
-        // @object server
-        // @name run_java
-        // @input Element
-        // @description
-        // Executes an arbitrary Java method (input as the text of Java code to run). Warning: EXTREMELY DANGEROUS.
-        // Require config setting 'Commands.Java.Allow Running java'.
-        // @tags
-        // None
-        // -->
-        if (mechanism.matches("run_java") && mechanism.hasValue()) {
-            if (!Settings.allowRunningJava()) {
-                dB.echoError("Java execution disabled by administrator.");
-                return;
-            }
-            DenizenAPI.getCurrentInstance().runtimeCompiler.runString(mechanism.getValue().asString());
-        }
-
         // Deprecated in favor of SYSTEM.redirect_logging (Core)
         if (mechanism.matches("redirect_logging") && mechanism.hasValue()) {
             if (!Settings.allowConsoleRedirection()) {

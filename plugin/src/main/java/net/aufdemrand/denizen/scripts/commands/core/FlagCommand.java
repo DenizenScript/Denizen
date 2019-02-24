@@ -9,7 +9,6 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.exceptions.CommandExecutionException;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.objects.Element;
@@ -195,7 +194,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
 
     @Override
-    public void execute(ScriptEntry scriptEntry) throws CommandExecutionException {
+    public void execute(ScriptEntry scriptEntry) {
 
         dObject flag_target = scriptEntry.getdObject("flag_target");
         Duration duration = (Duration) scriptEntry.getObject("duration");
@@ -242,7 +241,8 @@ public class FlagCommand extends AbstractCommand implements Listener {
             flag = DenizenAPI.getCurrentInstance().flagManager().getEntityFlag((dEntity) flag_target, name.asString());
         }
         else {
-            throw new CommandExecutionException("Could not fetch a flag for this entity: " + flag_target.debug());
+            dB.echoError("Could not fetch a flag for this entity: " + flag_target.debug());
+            return;
         }
 
         // Do the action!
