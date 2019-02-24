@@ -1157,6 +1157,99 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <cu@cuboid.include_x[<number>]>
+        // @returns dCuboid
+        // @description
+        // Expands the first member of the dCuboid to contain the given X value, and returns the expanded cuboid.
+        // -->
+        registerTag("include_x", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.include_x[...] must have a value.");
+                    return null;
+                }
+                try {
+                    double x = aH.getDoubleFrom(attribute.getContext(1));
+                    dCuboid cuboid = ((dCuboid) object).clone();
+                    if (x < cuboid.pairs.get(0).low.getX()) {
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), x, cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
+                    }
+                    if (x > cuboid.pairs.get(0).high.getX()) {
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), x, cuboid.pairs.get(0).high.getY(), cuboid.pairs.get(0).high.getZ());
+                    }
+                    return cuboid.getAttribute(attribute.fulfill(1));
+                }
+                catch (CloneNotSupportedException ex) {
+                    dB.echoError(ex); // This should never happen
+                }
+                return null;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <cu@cuboid.include_y[<number>]>
+        // @returns dCuboid
+        // @description
+        // Expands the first member of the dCuboid to contain the given Y value, and returns the expanded cuboid.
+        // -->
+        registerTag("include_y", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.include_y[...] must have a value.");
+                    return null;
+                }
+                try {
+                    double y = aH.getDoubleFrom(attribute.getContext(1));
+                    dCuboid cuboid = ((dCuboid) object).clone();
+                    if (y < cuboid.pairs.get(0).low.getY()) {
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), y, cuboid.pairs.get(0).low.getZ());
+                    }
+                    if (y > cuboid.pairs.get(0).high.getY()) {
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), y, cuboid.pairs.get(0).high.getZ());
+                    }
+                    return cuboid.getAttribute(attribute.fulfill(1));
+                }
+                catch (CloneNotSupportedException ex) {
+                    dB.echoError(ex); // This should never happen
+                }
+                return null;
+            }
+        });
+
+        // <--[tag]
+        // @attribute <cu@cuboid.include_z[<number>]>
+        // @returns dCuboid
+        // @description
+        // Expands the first member of the dCuboid to contain the given Z value, and returns the expanded cuboid.
+        // -->
+        registerTag("include_z", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.include_z[...] must have a value.");
+                    return null;
+                }
+                try {
+                    double z = aH.getDoubleFrom(attribute.getContext(1));
+                    dCuboid cuboid = ((dCuboid) object).clone();
+                    if (z < cuboid.pairs.get(0).low.getZ()) {
+                        cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), z);
+                    }
+                    if (z > cuboid.pairs.get(0).high.getZ()) {
+                        cuboid.pairs.get(0).high = new dLocation(cuboid.pairs.get(0).high.getWorld(), cuboid.pairs.get(0).high.getX(), cuboid.pairs.get(0).high.getY(), z);
+                    }
+                    return cuboid.getAttribute(attribute.fulfill(1));
+                }
+                catch (CloneNotSupportedException ex) {
+                    dB.echoError(ex); // This should never happen
+                }
+                return null;
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.list_players>
         // @returns dList(dPlayer)
         // @description
