@@ -331,12 +331,13 @@ public class dB {
         }
         else {
             dB.echoError(source, "Internal exception was thrown!");
+            StringBuilder errorMesage = new StringBuilder();
             String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
             boolean first = true;
             while (ex != null) {
-                dB.echoError(source, prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n");
+                errorMesage.append(prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n");
                 for (StackTraceElement ste : ex.getStackTrace()) {
-                    dB.echoError(source, URLEncoder.encode(prefix + ste.toString() + "\n"));
+                    errorMesage.append(prefix + ste.toString() + "\n");
                 }
                 if (ex.getCause() == ex) {
                     break;
@@ -344,6 +345,7 @@ public class dB {
                 ex = ex.getCause();
                 first = false;
             }
+            dB.echoError(source, errorMesage.toString());
         }
         throwErrorEvent = wasThrown;
     }
