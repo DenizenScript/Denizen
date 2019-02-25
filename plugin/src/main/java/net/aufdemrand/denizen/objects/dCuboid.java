@@ -1250,6 +1250,50 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <cu@cuboid.with_min[<location>]>
+        // @returns dCuboid
+        // @description
+        // Changes the first member of the dCuboid to have the given minimum location, and returns the changed cuboid.
+        // If values in the new min are higher than the existing max, the output max will contain the new min values,
+        // and the output min will contain the old max values.
+        // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids max value.
+        // -->
+        registerTag("with_min", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.with_min[...] must have a value.");
+                    return null;
+                }
+                dCuboid cuboid = (dCuboid) object;
+                dLocation location = dLocation.valueOf(attribute.getContext(1));
+                return new dCuboid(location, cuboid.pairs.get(0).high).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <cu@cuboid.with_max[<location>]>
+        // @returns dCuboid
+        // @description
+        // Changes the first member of the dCuboid to have the given maximum location, and returns the changed cuboid.
+        // If values in the new max are lower than the existing min, the output min will contain the new max values,
+        // and the output max will contain the old min values.
+        // Note that this is equivalent to constructing a cuboid with the input value and the original cuboids min value.
+        // -->
+        registerTag("with_max", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.with_max[...] must have a value.");
+                    return null;
+                }
+                dCuboid cuboid = (dCuboid) object;
+                dLocation location = dLocation.valueOf(attribute.getContext(1));
+                return new dCuboid(location, cuboid.pairs.get(0).low).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.list_players>
         // @returns dList(dPlayer)
         // @description
