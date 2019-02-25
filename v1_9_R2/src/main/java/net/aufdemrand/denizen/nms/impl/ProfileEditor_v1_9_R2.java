@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.nms.helpers.PacketHelper_v1_9_R2;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_9_R2.EntityPlayer;
 import net.minecraft.server.v1_9_R2.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_9_R2.PacketPlayOutNamedEntitySpawn;
@@ -79,7 +80,7 @@ public class ProfileEditor_v1_9_R2 extends ProfileEditor {
                 }
             }
             catch (Exception e) {
-                e.printStackTrace();
+                dB.echoError(e);
             }
         }
     }
@@ -105,7 +106,7 @@ public class ProfileEditor_v1_9_R2 extends ProfileEditor {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         playerInfoData_gameProfile = pidGameProfile;
     }

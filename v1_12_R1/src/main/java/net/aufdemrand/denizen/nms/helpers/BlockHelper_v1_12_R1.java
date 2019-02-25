@@ -10,6 +10,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -39,10 +40,10 @@ public class BlockHelper_v1_12_R1 implements BlockHelper {
             return (T) f.get(cbs);
         }
         catch (IllegalAccessException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         return null;
     }

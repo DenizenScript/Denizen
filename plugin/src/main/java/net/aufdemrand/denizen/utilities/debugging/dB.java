@@ -230,8 +230,8 @@ public class dB {
         else if (source != null && source.getLastEntryExecuted() != null && source.getLastEntryExecuted().getScript() != null) {
             script = source.getLastEntryExecuted().getScript();
         }
-        if (ThrowErrorEvent) {
-            ThrowErrorEvent = false;
+        if (throwErrorEvent) {
+            throwErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
             context.put("message", new Element(message));
             if (source != null) {
@@ -248,7 +248,7 @@ public class dB {
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(events,
                     entry != null ? entry.entryData : new BukkitScriptEntryData(null, null), context, true);
-            ThrowErrorEvent = true;
+            throwErrorEvent = true;
             for (String Determination : Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED")) {
                     return;
@@ -276,7 +276,7 @@ public class dB {
 
     static long depthCorrectError = 0;
 
-    private static boolean ThrowErrorEvent = true;
+    private static boolean throwErrorEvent = true;
 
     // <--[event]
     // @Events
@@ -301,8 +301,8 @@ public class dB {
         if (source == null) {
             source = CommandExecuter.currentQueue;
         }
-        if (ThrowErrorEvent) {
-            ThrowErrorEvent = false;
+        if (throwErrorEvent) {
+            throwErrorEvent = false;
             Map<String, dObject> context = new HashMap<String, dObject>();
             Throwable thrown = ex;
             if (ex.getCause() != null) {
@@ -314,7 +314,7 @@ public class dB {
             ScriptEntry entry = (source != null ? source.getLastEntryExecuted() : null);
             List<String> Determinations = OldEventManager.doEvents(Arrays.asList("server generates exception"),
                     entry == null ? new BukkitScriptEntryData(null, null) : entry.entryData, context);
-            ThrowErrorEvent = true;
+            throwErrorEvent = true;
             for (String Determination : Determinations) {
                 if (Determination.equalsIgnoreCase("CANCELLED")) {
                     return;
@@ -324,28 +324,28 @@ public class dB {
         if (!showDebug) {
             return;
         }
+        boolean wasThrown = throwErrorEvent;
+        throwErrorEvent = false;
         if (!showStackTraces) {
             dB.echoError(source, "Exception! Enable '/denizen debug -s' for the nitty-gritty.");
         }
         else {
             dB.echoError(source, "Internal exception was thrown!");
-            ex.printStackTrace();
-            if (dB.record) {
-                String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
-                boolean first = true;
-                while (ex != null) {
-                    dB.Recording.append(URLEncoder.encode(prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n"));
-                    for (StackTraceElement ste : ex.getStackTrace()) {
-                        dB.Recording.append(URLEncoder.encode(prefix + ste.toString() + "\n"));
-                    }
-                    if (ex.getCause() == ex) {
-                        return;
-                    }
-                    ex = ex.getCause();
-                    first = false;
+            String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
+            boolean first = true;
+            while (ex != null) {
+                dB.echoError(source, prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n");
+                for (StackTraceElement ste : ex.getStackTrace()) {
+                    dB.echoError(source, URLEncoder.encode(prefix + ste.toString() + "\n"));
                 }
+                if (ex.getCause() == ex) {
+                    break;
+                }
+                ex = ex.getCause();
+                first = false;
             }
         }
+        throwErrorEvent = wasThrown;
     }
 
     private static final Map<Class<?>, String> classNameCache = new WeakHashMap<Class<?>, String>();

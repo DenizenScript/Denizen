@@ -188,7 +188,7 @@ public class CommandManager {
             }
         }
         catch (Throwable ex) {
-            ex.printStackTrace();
+            dB.echoError(ex);
             if (sender instanceof Player) {
                 Messaging.sendError(sender, "Please report this error: [See console]");
                 Messaging.sendError(sender, ex.getClass().getName() + ": " + ex.getMessage());

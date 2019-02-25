@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.nms.util;
 
+import net.aufdemrand.denizencore.utilities.debugging.dB;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class ReflectionHelper {
             return (T) field.get(object);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
             return null;
         }
     }
@@ -63,7 +65,7 @@ public class ReflectionHelper {
             field.set(object, value);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 

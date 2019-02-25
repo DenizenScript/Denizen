@@ -27,7 +27,7 @@ public class DebugLog extends Logger {
         }
         catch (Exception e) {
             System.out.println("Error creating logger '" + l + "': ");
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 

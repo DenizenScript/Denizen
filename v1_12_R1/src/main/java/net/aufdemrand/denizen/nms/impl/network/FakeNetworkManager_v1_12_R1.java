@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.network;
 
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_12_R1.EnumProtocolDirection;
 import net.minecraft.server.v1_12_R1.NetworkManager;
 
@@ -21,7 +22,7 @@ public class FakeNetworkManager_v1_12_R1 extends NetworkManager {
             addr.setAccessible(true);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         networkChannelField = chan;
         networkAddressField = addr;
@@ -35,7 +36,7 @@ public class FakeNetworkManager_v1_12_R1 extends NetworkManager {
             });
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 }

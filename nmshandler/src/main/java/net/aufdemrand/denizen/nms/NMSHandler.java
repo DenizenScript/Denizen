@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
@@ -52,7 +53,7 @@ public abstract class NMSHandler {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         // Someone made an oopsie and didn't implement this version properly :(
         version = NMSVersion.NOT_SUPPORTED;

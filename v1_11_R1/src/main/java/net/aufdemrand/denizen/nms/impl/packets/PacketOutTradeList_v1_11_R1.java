@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.impl.packets;
 import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutTradeList;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_11_R1.PacketDataSerializer;
 import net.minecraft.server.v1_11_R1.PacketPlayOutCustomPayload;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
@@ -35,7 +36,7 @@ public class PacketOutTradeList_v1_11_R1 implements PacketOutTradeList {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 
@@ -66,7 +67,7 @@ public class PacketOutTradeList_v1_11_R1 implements PacketOutTradeList {
             internal.a(serializer);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 }

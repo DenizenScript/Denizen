@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.nms.interfaces.FakeArrow;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
 import net.aufdemrand.denizen.nms.interfaces.ItemProjectile;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import net.minecraft.server.v1_8_R3.WorldServer;
 import org.bukkit.Bukkit;
@@ -130,7 +131,7 @@ public class CustomEntityHelper_v1_8_R3 implements CustomEntityHelper {
                 hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
             }
             catch (Exception e) {
-                e.printStackTrace();
+                dB.echoError(e);
             }
             if (hash != null) {
                 Team team = scoreboard.getTeam(hash);

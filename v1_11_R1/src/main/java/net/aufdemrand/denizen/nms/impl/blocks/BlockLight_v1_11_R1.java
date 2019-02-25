@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.impl.blocks;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_11_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,7 +40,7 @@ public class BlockLight_v1_11_R1 extends BlockLight {
             dcf.setAccessible(true);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         playerChunkMethod = pcm;
         dirtyCountField = dcf;
@@ -162,7 +163,7 @@ public class BlockLight_v1_11_R1 extends BlockLight {
             return playerChunkMethod.invoke(map, x, z);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         return null;
     }
@@ -175,7 +176,7 @@ public class BlockLight_v1_11_R1 extends BlockLight {
             }
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 

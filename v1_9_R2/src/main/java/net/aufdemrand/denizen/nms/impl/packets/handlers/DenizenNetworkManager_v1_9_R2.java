@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.nms.impl.packets.PacketOutTradeList_v1_9_R2;
 import net.aufdemrand.denizen.nms.impl.packets.PacketOutWindowItems_v1_9_R2;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_9_R2.*;
 import net.minecraft.server.v1_9_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 import org.bukkit.Bukkit;
@@ -245,7 +246,7 @@ public class DenizenNetworkManager_v1_9_R2 extends NetworkManager {
             managerField.setAccessible(true);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         protocolDirectionField = directionField;
         networkManagerField = managerField;
@@ -257,7 +258,7 @@ public class DenizenNetworkManager_v1_9_R2 extends NetworkManager {
             direction = (EnumProtocolDirection) protocolDirectionField.get(networkManager);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
         return direction;
     }
@@ -267,7 +268,7 @@ public class DenizenNetworkManager_v1_9_R2 extends NetworkManager {
             networkManagerField.set(playerConnection, networkManager);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
     }
 }

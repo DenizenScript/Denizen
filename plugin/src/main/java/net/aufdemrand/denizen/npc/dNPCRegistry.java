@@ -137,7 +137,7 @@ public class dNPCRegistry implements Listener {
                 }
             }
             catch (Exception e) {
-                e.printStackTrace();
+                dB.echoError(e);
                 return null;
             }
         }

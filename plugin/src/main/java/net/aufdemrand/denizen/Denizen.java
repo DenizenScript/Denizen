@@ -397,7 +397,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             BStatsMetricsLite metrics = new BStatsMetricsLite(this);
         }
         catch (Throwable e) {
-            e.printStackTrace();
+            dB.echoError(e);
         }
 
         try {
