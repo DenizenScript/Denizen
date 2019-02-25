@@ -820,28 +820,6 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.member[<#>]>
-        // @returns dCuboid
-        // @description
-        // Returns a new dCuboid of a single member of this dCuboid. Just specify an index.
-        // -->
-        registerTag("member", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                int member = attribute.getIntContext(1);
-                if (member < 1) {
-                    member = 1;
-                }
-                if (member > ((dCuboid) object).pairs.size()) {
-                    member = ((dCuboid) object).pairs.size();
-                }
-                return new dCuboid(((dCuboid) object).pairs.get(member - 1).low, ((dCuboid) object).pairs.get(member - 1).high)
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-        registerTag("get_member", registeredTags.get("member"));
-
-        // <--[tag]
         // @attribute <cu@cuboid.spawnable_blocks[<Material>|...]>
         // @returns dList(dLocation)
         // @description
@@ -998,11 +976,86 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.center[<index>]>
+        // @attribute <cu@cuboid.get[<index>]>
+        // @returns dCuboid
+        // @description
+        // Returns a cuboid representing the one component of this cuboid (for cuboids that contain multiple sub-cuboids).
+        // -->
+        registerTag("get", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.get[...] must have a value.");
+                    return null;
+                }
+                else {
+                    int member = attribute.getIntContext(1);
+                    if (member < 1) {
+                        member = 1;
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
+                        member = ((dCuboid) object).pairs.size();
+                    }
+                    LocationPair pair = ((dCuboid) object).pairs.get(member - 1);
+                    return new dCuboid(pair.point_1, pair.point_2).getAttribute(attribute.fulfill(1));
+                }
+            }
+        });
+        registerTag("member", registeredTags.get("get"));
+        registerTag("get_member", registeredTags.get("get"));
+
+        // <--[tag]
+        // @attribute <cu@cuboid.set[<cuboid>].at[<index>]>
+        // @returns dCuboid
+        // @description
+        // Returns a modified copy of this cuboid, with the specific sub-cuboid index changed to hold the input cuboid.
+        // -->
+        registerTag("set", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("The tag cu@cuboid.set[...] must have a value.");
+                    return null;
+                }
+                else {
+                    dCuboid subCuboid = dCuboid.valueOf(attribute.getContext(1));
+                    attribute = attribute.fulfill(1);
+                    if (!attribute.matches("at")) {
+                        attribute.fulfill(1);
+                        dB.echoError("The tag cu@cuboid.set[...] must be followed by an 'at'.");
+                        return null;
+                    }
+                    if (!attribute.hasContext(1)) {
+                        attribute.fulfill(1);
+                        dB.echoError("The tag cu@cuboid.set[...].at[...] must have an 'at' value.");
+                        return null;
+                    }
+                    int member = attribute.getIntContext(1);
+                    if (member < 1) {
+                        member = 1;
+                    }
+                    if (member > ((dCuboid) object).pairs.size()) {
+                        member = ((dCuboid) object).pairs.size();
+                    }
+                    LocationPair pair = ((dCuboid) object).pairs.get(0);
+                    try {
+                        dCuboid cloned = ((dCuboid) object).clone();
+                        cloned.pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
+                        return cloned.getAttribute(attribute.fulfill(1));
+                    }
+                    catch (CloneNotSupportedException ex) {
+                        dB.echoError(ex); // This should never happen
+                        return null;
+                    }
+                }
+            }
+        });
+
+        // <--[tag]
+        // @attribute <cu@cuboid.center>
         // @returns dLocation
         // @description
-        // Returns the center location. If a single-member dCuboid, no index is required.
-        // If wanting the center of a specific member, just specify an index.
+        // Returns the location of the exact center of the cuboid.
         // -->
         registerTag("center", new TagRunnable() {
             @Override
@@ -1030,11 +1083,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.size[<index>]>
+        // @attribute <cu@cuboid.size>
         // @returns dLocation
         // @description
-        // Returns the size of the cuboid. If a single-member dCuboid, no index is required.
-        // If wanting the center of a specific member, just specify an index.
+        // Returns the size of the cuboid.
         // Effectively equivalent to: (max - min) + (1,1,1)
         // -->
         registerTag("size", new TagRunnable() {
@@ -1060,11 +1112,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.max[<index>]>
+        // @attribute <cu@cuboid.max>
         // @returns dLocation
         // @description
-        // Returns the highest-numbered corner location. If a single-member dCuboid, no
-        // index is required. If wanting the max of a specific member, just specify an index.
+        // Returns the highest-numbered (maximum) corner location.
         // -->
         registerTag("max", new TagRunnable() {
             @Override
@@ -1086,11 +1137,10 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <cu@cuboid.min[<index>]>
+        // @attribute <cu@cuboid.min>
         // @returns dLocation
         // @description
-        // Returns the lowest-numbered corner location. If a single-member dCuboid, no
-        // index is required. If wanting the min of a specific member, just specify an index.
+        // Returns the lowest-numbered (minimum) corner location.
         // -->
         registerTag("min", new TagRunnable() {
             @Override

@@ -189,13 +189,13 @@ import java.util.logging.Logger;
 // + ----- dCuboid ------+
 // | object notation: cu@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 2 to 3, ...
+// |   cu@<position_1>|<position_2>|... - fetches a new cuboid encompassing a region from position 1 to 2, from 3 to 4, ...
 // |   cu@<notable_name> - fetches the cuboid that has been noted with the specified ID
 //
 // + ----- dEllipsoid ------+
 // | object notation: ellipsoid@   can reference unique objects: no      can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
-// |   ellipsoid@<x>,<y>,<z>,<world>,<xrad>,<yrad>,<zrad>... - fetches a new ellispoid at the position with the given radius
+// |   ellipsoid@<x>,<y>,<z>,<world>,<xrad>,<yrad>,<zrad> - fetches a new ellispoid at the position with the given radius
 // |   ellipsoid@<notable_name> - fetches the ellipsoid that has been noted with the specified ID
 //
 // + ----- dChunk ------+
