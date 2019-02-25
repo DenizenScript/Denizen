@@ -453,9 +453,9 @@ public class Settings {
                 .getBoolean("Tags.Timeout when silent", false);
     }
 
-    public static int warningRate() {
+    public static long warningRate() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Warning rate", 10000);
+                .getLong("Tags.Warning rate", 10000);
     }
 
     public static boolean packetInterception() {
