@@ -11,6 +11,8 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.core.EscapeTags;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -113,6 +115,19 @@ public class ItemBook implements Property {
                         .getAttribute(attribute.fulfill(1));
             }
 
+            // <--[tag]
+            // @attribute <i@item.book.get_raw_page[<#>]>
+            // @returns Element
+            // @mechanism dItem.book
+            // @group properties
+            // @description
+            // Returns the page specified from the book as an element containing raw JSON.
+            // -->
+            if (attribute.startsWith("get_raw_page") && aH.matchesInteger(attribute.getContext(1))) {
+                return new Element(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
+                        .getAttribute(attribute.fulfill(1));
+            }
+
             // Deprecated in favor of pages.escape_contents
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
@@ -149,7 +164,7 @@ public class ItemBook implements Property {
             // Pre-escaped to prevent issues.
             // See <@link language Property Escaping>
             // -->
-            String output = getPropertyString();
+            String output = getPlainString();
             if (output == null) {
                 output = "null";
             }
@@ -160,6 +175,27 @@ public class ItemBook implements Property {
         return null;
     }
 
+    public String getPlainString() {
+        StringBuilder output = new StringBuilder();
+        BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
+        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
+                && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
+            output.append("author|").append(EscapeTags.escape(bookInfo.getAuthor()))
+                    .append("|title|").append(EscapeTags.escape(bookInfo.getTitle())).append("|");
+        }
+        output.append("pages|");
+        if (bookInfo.hasPages()) {
+            for (String page : bookInfo.getPages()) {
+                output.append(EscapeTags.escape(page)).append("|");
+            }
+        }
+        if (output.length() <= 6) {
+            return null;
+        }
+        else {
+            return output.substring(0, output.length() - 1);
+        }
+    }
 
     @Override
     public String getPropertyString() {
@@ -167,13 +203,13 @@ public class ItemBook implements Property {
         BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
                 && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
-            output.append("author|").append(EscapeTags.Escape(bookInfo.getAuthor()))
-                    .append("|title|").append(EscapeTags.Escape(bookInfo.getTitle())).append("|");
+            output.append("author|").append(EscapeTags.escape(bookInfo.getAuthor()))
+                    .append("|title|").append(EscapeTags.escape(bookInfo.getTitle())).append("|");
         }
-        output.append("pages|");
+        output.append("raw_pages|");
         if (bookInfo.hasPages()) {
-            for (String page : bookInfo.getPages()) {
-                output.append(EscapeTags.Escape(page)).append("|");
+            for (BaseComponent[] page : bookInfo.spigot().getPages()) {
+                output.append(EscapeTags.escape(ComponentSerializer.toString(page))).append("|");
             }
         }
         if (output.length() <= 6) {
@@ -229,15 +265,22 @@ public class ItemBook implements Property {
                         }
                     }
                 }
-                if (!data.get(0).equalsIgnoreCase("pages")) {
-                    dB.echoError("Invalid book input!");
+                if (data.get(0).equalsIgnoreCase("raw_pages")) {
+                    ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+                    for (int i = 1; i < data.size(); i++) {
+                        newPages.add(ComponentSerializer.parse(EscapeTags.unEscape(data.get(i))));
+                    }
+                    meta.spigot().setPages(newPages);
                 }
-                else {
-                    ArrayList<String> newPages = new ArrayList<String>();
+                else if (data.get(0).equalsIgnoreCase("pages")) {
+                    ArrayList<String> newPages = new ArrayList<>();
                     for (int i = 1; i < data.size(); i++) {
                         newPages.add(EscapeTags.unEscape(data.get(i)));
                     }
                     meta.setPages(newPages);
+                }
+                else {
+                    dB.echoError("Invalid book input!");
                 }
                 item.getItemStack().setItemMeta(meta);
             }
