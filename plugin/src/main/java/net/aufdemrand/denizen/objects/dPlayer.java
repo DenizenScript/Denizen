@@ -29,6 +29,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.BlockIterator;
@@ -3014,6 +3015,27 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("open_offhand_book")) {
             NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name show_book
+        // @input dItem
+        // @description
+        // Displays a book to a player.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("show_book")
+                && mechanism.requireObject(dItem.class)) {
+            dItem book = mechanism.valueAsType(dItem.class);
+            if (!book.getItemStack().hasItemMeta() || !(book.getItemStack().getItemMeta() instanceof BookMeta)) {
+                dB.echoError("show_book mechanism must have a book as input.");
+                return;
+            }
+            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+                    EquipmentSlot.OFF_HAND, book.getItemStack());
+            NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
+            NMSHandler.getInstance().getPacketHelper().showEquipment(getPlayerEntity(), getPlayerEntity(),
+                    EquipmentSlot.OFF_HAND, getPlayerEntity().getEquipment().getItemInOffHand());
         }
 
         // <--[mechanism]
