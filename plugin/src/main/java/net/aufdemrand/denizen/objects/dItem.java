@@ -1064,6 +1064,10 @@ public class dItem implements dObject, Notable, Adjustable {
 
 
     public void applyProperty(Mechanism mechanism) {
+        if (NotableManager.isExactSavedObject(this)) {
+            dB.echoError("Cannot apply properties to noted objects.");
+            return;
+        }
         adjust(mechanism);
     }
 

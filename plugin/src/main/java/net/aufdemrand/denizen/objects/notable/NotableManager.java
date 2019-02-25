@@ -55,6 +55,15 @@ public class NotableManager {
     }
 
 
+    public static boolean isExactSavedObject(Notable object) {
+        String id = reverseObjects.get(object);
+        if (id == null) {
+            return false;
+        }
+        // Reference equality
+        return notableObjects.get(id) == object;
+    }
+
     public static Notable getSavedObject(String id) {
         if (notableObjects.containsKey(CoreUtilities.toLowerCase(id))) {
             return notableObjects.get(CoreUtilities.toLowerCase(id));

@@ -2130,6 +2130,10 @@ public class dInventory implements dObject, Notable, Adjustable {
     private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
 
     public void applyProperty(Mechanism mechanism) {
+        if (NotableManager.isExactSavedObject(this)) {
+            dB.echoError("Cannot apply properties to noted objects.");
+            return;
+        }
         if (idType == null) {
             mechanisms.add(mechanism);
         }
