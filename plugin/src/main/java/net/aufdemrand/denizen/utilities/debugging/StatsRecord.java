@@ -28,7 +28,7 @@ public class StatsRecord extends Thread {
             // Get some general info
             StringBuilder sb = new StringBuilder();
             for (VersionScriptContainer cont : VersionScriptContainer.scripts) {
-                sb.append(EscapeTags.Escape(cont.getString("ID"))).append("|");
+                sb.append(EscapeTags.escape(cont.getString("ID"))).append("|");
             }
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pluginstats&plugin_st_players=" + Bukkit.getOnlinePlayers().size()

@@ -87,7 +87,7 @@ public class ItemDisplayname implements Property {
     @Override
     public String getPropertyString() {
         if (hasDisplayName()) {
-            return EscapeTags.Escape(item.getItemStack().getItemMeta().getDisplayName());
+            return EscapeTags.escape(item.getItemStack().getItemMeta().getDisplayName());
         }
         else {
             return null;

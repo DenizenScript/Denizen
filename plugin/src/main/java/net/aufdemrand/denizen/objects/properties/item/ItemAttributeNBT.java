@@ -75,7 +75,7 @@ public class ItemAttributeNBT implements Property {
         dList list = new dList();
         if (nbtKeys != null) {
             for (CustomNBT.AttributeReturn atr : nbtKeys) {
-                list.add(EscapeTags.Escape(atr.attr) + "/" + EscapeTags.Escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
+                list.add(EscapeTags.escape(atr.attr) + "/" + EscapeTags.escape(atr.slot) + "/" + atr.op + "/" + atr.amt);
             }
         }
         return list;

@@ -230,7 +230,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                                     count++;
                                     StringBuilder current = new StringBuilder();
                                     for (int i = 0; i < columns; i++) {
-                                        current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
+                                        current.append(EscapeTags.escape(set.getString(i + 1))).append("/");
                                     }
                                     rows.add(current.toString());
                                 }
@@ -271,7 +271,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                         count++;
                         StringBuilder current = new StringBuilder();
                         for (int i = 0; i < columns; i++) {
-                            current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
+                            current.append(EscapeTags.escape(set.getString(i + 1))).append("/");
                         }
                         rows.add(current.toString());
                     }
@@ -302,7 +302,7 @@ public class SQLCommand extends AbstractCommand implements Holdable {
                 while (set.next()) {
                     StringBuilder current = new StringBuilder();
                     for (int i = 0; i < columns; i++) {
-                        current.append(EscapeTags.Escape(set.getString(i + 1))).append("/");
+                        current.append(EscapeTags.escape(set.getString(i + 1))).append("/");
                     }
                     rows.add(current.toString());
                 }

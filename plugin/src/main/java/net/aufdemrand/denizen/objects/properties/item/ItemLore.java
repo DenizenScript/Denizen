@@ -112,7 +112,7 @@ public class ItemLore implements Property {
             for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
                 if (!itemLore.startsWith(dItem.itemscriptIdentifier)
                         && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {
-                    output.append(EscapeTags.Escape(itemLore)).append("|");
+                    output.append(EscapeTags.escape(itemLore)).append("|");
                 }
             }
             return (output.length() == 0) ? null : output.substring(0, output.length() - 1);

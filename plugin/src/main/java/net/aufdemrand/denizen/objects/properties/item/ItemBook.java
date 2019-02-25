@@ -117,7 +117,7 @@ public class ItemBook implements Property {
             if (attribute.startsWith("pages.escaped")) {
                 StringBuilder output = new StringBuilder();
                 for (String page : bookInfo.getPages()) {
-                    output.append(EscapeTags.Escape(page)).append("|");
+                    output.append(EscapeTags.escape(page)).append("|");
                 }
                 return new dList(output.length() > 0 ?
                         output.substring(0, output.length() - 1) : output.toString())
