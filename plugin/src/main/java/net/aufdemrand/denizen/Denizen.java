@@ -69,6 +69,7 @@ import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
+import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -1018,6 +1019,12 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         saveSaves();
+    }
+
+    @Override
+    public void reloadConfig() {
+        super.reloadConfig();
+        SlowWarning.WARNING_RATE = Settings.warningRate();
     }
 
 

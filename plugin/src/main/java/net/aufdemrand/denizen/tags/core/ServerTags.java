@@ -32,6 +32,7 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
@@ -81,6 +82,8 @@ public class ServerTags {
         }, "server", "svr", "global");
     }
 
+    public SlowWarning mathShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
+
     // <--[tag]
     // @attribute <math:<calculation>>
     // @returns Element(Decimal)
@@ -95,8 +98,7 @@ public class ServerTags {
             return;
         }
         if (event.matches("m")) {
-            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
-                    "Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
+            mathShorthand.warn(event.getScriptEntry());
         }
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
@@ -108,6 +110,7 @@ public class ServerTags {
         }
     }
 
+    public SlowWarning ternShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'tern' instead of 't' as a root tag.");
 
     // <--[tag]
     // @attribute <tern[<condition>]:<element>||<element>>
@@ -123,8 +126,7 @@ public class ServerTags {
             return;
         }
         if (event.matches("t")) {
-            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
-                    "Short-named tags are hard to read. Please use 'tern' instead of 't' as a root tag.");
+            ternShorthand.warn(event.getScriptEntry());
         }
 
         // Fallback if nothing to evaluate
@@ -140,14 +142,15 @@ public class ServerTags {
         }
     }
 
+    public SlowWarning serverShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
+
 
     public void serverTag(ReplaceableTagEvent event) {
         if (!event.matches("server", "svr", "global") || event.replaced()) {
             return;
         }
         if (event.matches("srv")) {
-            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
-                    "Short-named tags are hard to read. Please use 'server' instead of 'svr' as a root tag.");
+            serverShorthand.warn(event.getScriptEntry());
         }
         if (event.matches("global")) {
             dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),

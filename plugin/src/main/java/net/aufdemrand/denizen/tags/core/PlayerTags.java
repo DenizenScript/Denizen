@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -70,6 +71,9 @@ public class PlayerTags implements Listener {
     //  ReplaceableTagEvent handler
     ////////
 
+
+    public SlowWarning playerShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'player' instead of 'pl' as a root tag.");
+
     public void playerTags(ReplaceableTagEvent event) {
 
         if (!event.matches("player", "pl") || event.replaced()) {
@@ -77,8 +81,7 @@ public class PlayerTags implements Listener {
         }
 
         if (event.matches("pl")) {
-            dB.echoError(event.getScriptEntry() == null ? null : event.getScriptEntry().getResidingQueue(),
-                    "Short-named tags are hard to read. Please use 'player' instead of 'pl' as a root tag.");
+            playerShorthand.warn(event.getScriptEntry());
         }
 
         // Build a new attribute out of the raw_tag supplied in the script to be fulfilled

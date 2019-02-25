@@ -453,6 +453,11 @@ public class Settings {
                 .getBoolean("Tags.Timeout when silent", false);
     }
 
+    public static int warningRate() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getInt("Tags.Warning rate", 10000);
+    }
+
     public static boolean packetInterception() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Packets.Interception", true);
