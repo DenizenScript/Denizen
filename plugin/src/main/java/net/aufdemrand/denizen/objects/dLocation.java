@@ -1704,6 +1704,79 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.with_x[<number>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed X value.
+        // -->
+        if (attribute.matches("with_x") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            output.setX(attribute.getDoubleContext(1));
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.with_y[<number>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed Y value.
+        // -->
+        if (attribute.matches("with_y") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            output.setY(attribute.getDoubleContext(1));
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.with_z[<number>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed Z value.
+        // -->
+        if (attribute.matches("with_z") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            output.setZ(attribute.getDoubleContext(1));
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.with_yaw[<number>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed yaw value.
+        // -->
+        if (attribute.matches("with_yaw") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            output.setYaw((float) attribute.getDoubleContext(1));
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.with_pitch[<number>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed pitch value.
+        // -->
+        if (attribute.matches("with_pitch") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            output.setPitch((float) attribute.getDoubleContext(1));
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.with_world[<world>]>
+        // @returns dLocation
+        // @description
+        // Returns a copy of the location with a changed world value.
+        // -->
+        if (attribute.matches("with_world") && attribute.hasContext(1)) {
+            dLocation output = clone();
+            dWorld world = dWorld.valueOf(attribute.getContext(1));
+            output.setWorld(world.getWorld());
+            return output.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
         // @attribute <l@location.notable_name>
         // @returns Element
         // @description

@@ -1170,7 +1170,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return null;
                 }
                 try {
-                    double x = aH.getDoubleFrom(attribute.getContext(1));
+                    double x = attribute.getDoubleContext(1);
                     dCuboid cuboid = ((dCuboid) object).clone();
                     if (x < cuboid.pairs.get(0).low.getX()) {
                         cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), x, cuboid.pairs.get(0).low.getY(), cuboid.pairs.get(0).low.getZ());
@@ -1201,7 +1201,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return null;
                 }
                 try {
-                    double y = aH.getDoubleFrom(attribute.getContext(1));
+                    double y = attribute.getDoubleContext(1);
                     dCuboid cuboid = ((dCuboid) object).clone();
                     if (y < cuboid.pairs.get(0).low.getY()) {
                         cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), y, cuboid.pairs.get(0).low.getZ());
@@ -1232,7 +1232,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     return null;
                 }
                 try {
-                    double z = aH.getDoubleFrom(attribute.getContext(1));
+                    double z = attribute.getDoubleContext(1);
                     dCuboid cuboid = ((dCuboid) object).clone();
                     if (z < cuboid.pairs.get(0).low.getZ()) {
                         cuboid.pairs.get(0).low = new dLocation(cuboid.pairs.get(0).low.getWorld(), cuboid.pairs.get(0).low.getX(), cuboid.pairs.get(0).low.getY(), z);
