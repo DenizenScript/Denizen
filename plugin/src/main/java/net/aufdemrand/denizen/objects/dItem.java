@@ -692,7 +692,7 @@ public class dItem implements dObject, Notable, Adjustable {
                     dB.echoError("i@item.with[...] tag must have an input mechanism list.");
                 }
                 dItem item = new dItem(((dItem) object).getItemStack().clone());
-                List<String> properties = ObjectFetcher.separateProperties(attribute.getContext(1));
+                List<String> properties = ObjectFetcher.separateProperties("[" + attribute.getContext(1) + "]");
                 for (int i = 1; i < properties.size(); i++) {
                     List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
                     if (data.size() != 2) {
