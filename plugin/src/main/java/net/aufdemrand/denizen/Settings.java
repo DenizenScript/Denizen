@@ -228,23 +228,30 @@ public class Settings {
     }
 
     public static boolean allowStupid1() {
+        // Unrestricted file access can cause a lot of problems in itself, and encourage a style of script
+        // writing that is extremely poor and can be done in much more effective and clean ways.
+        // If you believe you need to make use of this config option... strongly consider any possible alternatives.
+        //
+        // Generally, be aware that if you are not completely clear on exactly how these settings work internally in Java,
+        // and what changing them can do, ... you just should not use them.
+        // This is for very highly experienced users only.
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.General.Allow stupid file abuse you moron dont enable this", false);
+                .getBoolean("Commands.General.Allow unrestricted file access", false);
     }
 
     public static boolean allowStupid2() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.General.are you sure", false);
+                .getBoolean("Commands.General.Confirm allowing unrestricted file access", false);
     }
 
     public static boolean allowStupid3() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.General.are you absolutely seriously sure dont enable this", false);
+                .getBoolean("Commands.General.Unrestricted file access is very bad and dangerous are you sure you want that", false);
     }
 
     public static boolean allowStupidx() {
         return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.General.This one dont touch", false);
+                .getBoolean("Commands.General.Don't change this unrestricted file access option though", false);
     }
 
     public static boolean allowFilecopy() {
