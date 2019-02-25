@@ -679,6 +679,34 @@ public class dItem implements dObject, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <i@item.with[<mechanism>=<value>;...]>
+        // @returns dItem
+        // @group properties
+        // @description
+        // Returns a copy of the item with mechanism adjustments applied.
+        // -->
+        registerTag("with", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                if (!attribute.hasContext(1)) {
+                    dB.echoError("i@item.with[...] tag must have an input mechanism list.");
+                }
+                dItem item = new dItem(((dItem) object).getItemStack().clone());
+                List<String> properties = ObjectFetcher.separateProperties(attribute.getContext(1));
+                for (int i = 1; i < properties.size(); i++) {
+                    List<String> data = CoreUtilities.split(properties.get(i), '=', 2);
+                    if (data.size() != 2) {
+                        dB.echoError("Invalid property string '" + properties.get(i) + "'!");
+                    }
+                    else {
+                        item.safeApplyProperty(new Mechanism(new Element(data.get(0)), new Element((data.get(1)).replace('‑', ';')), attribute.context));
+                    }
+                }
+                return item.getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <i@item.repairable>
         // @returns Element(Boolean)
         // @group properties
