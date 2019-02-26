@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.core;
 
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.scripts.containers.core.BukkitWorldScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -12,6 +13,9 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -109,13 +113,15 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     //
     // @Regex ^on( [^\s]+)? command( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
     //
-    // @Triggers when a player or console runs a Bukkit command. This happens before
+    // @Triggers when a player, console, or command block/minecart runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.
     // @Context
     // <context.command> returns the command name as an Element.
     // <context.raw_args> returns any args used as an Element.
     // <context.args> returns a dList of the arguments.
     // <context.server> returns true if the command was run from the console.
+    // <context.command_block_location> returns the command block's location (if the command was run from one).
+    // <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
     // <context.cuboids> DEPRECATED.
     //
     // @Determine
@@ -201,6 +207,14 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
         context.put("server", Element.TRUE);
+
+        CommandSender sender = event.getSender();
+        if (sender instanceof BlockCommandSender) {
+            context.put("command_block_location", new dLocation(((BlockCommandSender) sender).getBlock().getLocation()));
+        }
+        else if (sender instanceof CommandMinecart) {
+            context.put("command_minecart", new dEntity((CommandMinecart) sender));
+        }
 
         String determination = BukkitWorldScriptHelper.doEvents(events, null, null, context);
 
