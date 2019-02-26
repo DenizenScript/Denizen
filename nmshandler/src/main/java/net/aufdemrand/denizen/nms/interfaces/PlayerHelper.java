@@ -13,6 +13,14 @@ public interface PlayerHelper {
 
     void setAbsorption(Player player, float value);
 
+    int ticksPassedDuringCooldown(Player player);
+
+    float getMaxAttackCooldownTicks(Player player);
+
+    float getAttackCooldownPercent(Player player);
+
+    void resetAttackCooldown(Player player);
+
     boolean hasChunkLoaded(Player player, Chunk chunk);
 
     int getPing(Player player);

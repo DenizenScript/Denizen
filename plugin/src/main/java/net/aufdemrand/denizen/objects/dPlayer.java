@@ -22,6 +22,7 @@ import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
@@ -1710,6 +1711,57 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                     .getAttribute(attribute.fulfill(1));
         }
 
+        if (attribute.startsWith("attack_cooldown")) {
+            attribute.fulfill(1);
+
+            if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+                return null;
+            }
+
+            // <--[tag]
+            // @attribute <p@player.attack_cooldown.time_passed>
+            // @returns Duration
+            // @description
+            // Returns the amount of time that passed since the start of the attack cooldown.
+            // -->
+            if (attribute.startsWith("time_passed")) {
+                return new Duration((long) NMSHandler.getInstance().getPlayerHelper()
+                        .ticksPassedDuringCooldown(getPlayerEntity())).getAttribute(attribute.fulfill(1));
+            }
+
+
+            // <--[tag]
+            // @attribute <p@player.attack_cooldown.max_duration>
+            // @returns Duration
+            // @description
+            // Returns the maximum amount of time that can pass before the player's main hand has returned
+            // to its original place after the cooldown has ended.
+            // NOTE: This is slightly inaccurate and may not necessarily match with the actual attack
+            // cooldown progress.
+            // -->
+            else if (attribute.startsWith("max_duration")) {
+                return new Duration((long) NMSHandler.getInstance().getPlayerHelper()
+                        .getMaxAttackCooldownTicks(getPlayerEntity())).getAttribute(attribute.fulfill(1));
+            }
+
+
+            // <--[tag]
+            // @attribute <p@player.attack_cooldown.percent_done>
+            // @returns Element(Number)
+            // @description
+            // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
+            // started, while 100 means that the attack cooldown has finished.
+            // NOTE: This may not match exactly with the clientside attack cooldown indicator.
+            // -->
+            else if (attribute.startsWith("percent_done")) {
+                return new Element(NMSHandler.getInstance().getPlayerHelper()
+                        .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
+            }
+
+            return null;
+        }
+
 
         /////////////////////
         //   CITIZENS ATTRIBUTES
@@ -2416,6 +2468,28 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (mechanism.matches("health") && mechanism.requireDouble()) {
             setHealth(mechanism.getValue().asDouble());
         }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name redo_attack_cooldown
+        // @input None
+        // @description
+        // Forces the player to wait for the full attack cooldown duration for the item in their hand.
+        // NOTE: The clientside attack cooldown indicator will not be updated when you use this mechanism!
+        // @tags
+        // <p@player.attack_cooldown.time_passed>
+        // <p@player.attack_cooldown.max_duration>
+        // <p@player.attack_cooldown.percent_done>
+        // -->
+        if (mechanism.matches("redo_attack_cooldown")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                NMSHandler.getInstance().getPlayerHelper().resetAttackCooldown(getPlayerEntity());
+            }
+            else {
+                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+            }
+        }
+
 
         // <--[mechanism]
         // @object dPlayer

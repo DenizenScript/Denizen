@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -16,6 +18,7 @@ import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +28,8 @@ import java.util.UUID;
 
 public class PlayerHelper_v1_13_R2 implements PlayerHelper {
 
+    public static Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aH");
+
     @Override
     public float getAbsorption(Player player) {
         return ((CraftPlayer) player).getHandle().getDataWatcher().get(DataWatcherRegistry.c.a(11));
@@ -33,6 +38,33 @@ public class PlayerHelper_v1_13_R2 implements PlayerHelper {
     @Override
     public void setAbsorption(Player player, float value) {
         ((CraftPlayer) player).getHandle().getDataWatcher().set(DataWatcherRegistry.c.a(11), value);
+    }
+
+    @Override
+    public int ticksPassedDuringCooldown(Player player) {
+        try {
+            return ATTACK_COOLDOWN_TICKS.getInt(((CraftPlayer) player).getHandle());
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
+        return -1;
+    }
+
+    @Override
+    public float getMaxAttackCooldownTicks(Player player) {
+        return ((CraftPlayer) player).getHandle().dG() + 3;
+    }
+
+    @Override
+    public float getAttackCooldownPercent(Player player) {
+        return ((CraftPlayer) player).getHandle().r(0.5f);
+    }
+
+    @Override
+    public void resetAttackCooldown(Player player) {
+        ((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+
     }
 
     @Override

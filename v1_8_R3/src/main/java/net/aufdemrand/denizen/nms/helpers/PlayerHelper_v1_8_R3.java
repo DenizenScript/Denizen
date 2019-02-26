@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.BossBar_v1_8_R3;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_8_R3;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.OpList;
 import net.minecraft.server.v1_8_R3.OpListEntry;
@@ -29,6 +30,26 @@ public class PlayerHelper_v1_8_R3 implements PlayerHelper {
     @Override
     public void setAbsorption(Player player, float value) {
         ((CraftPlayer) player).getHandle().getDataWatcher().watch(17, value);
+    }
+
+    @Override
+    public int ticksPassedDuringCooldown(Player player) {
+        throw new UnsupportedOperationException("Attack cooldowns don't exist prior to Minecraft 1.9.");
+    }
+
+    @Override
+    public float getAttackCooldownPercent(Player player) {
+        throw new UnsupportedOperationException("Attack cooldowns don't exist prior to Minecraft 1.9.");
+    }
+
+    @Override
+    public float getMaxAttackCooldownTicks(Player player) {
+        throw new UnsupportedOperationException("Attack cooldowns don't exist prior to Minecraft 1.9.");
+    }
+
+    @Override
+    public void resetAttackCooldown(Player player) {
+        dB.echoError("Attack cooldowns don't exist prior to Minecraft 1.9.");
     }
 
     @Override
