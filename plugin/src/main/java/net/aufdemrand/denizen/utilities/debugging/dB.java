@@ -261,7 +261,7 @@ public class dB {
         ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                 (script != null ? " in script '" + script.getName() + "'" : "")
                 + (source != null ? " in queue '" + source.id + "'" : "") + "! "
-                + ChatColor.WHITE + trimMessage(message));
+                + ChatColor.WHITE + message);
         if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
@@ -345,7 +345,14 @@ public class dB {
                 ex = ex.getCause();
                 first = false;
             }
-            dB.echoError(source, errorMesage.toString());
+            dScript script = null;
+            if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
+                script = source.getEntries().get(0).getScript();
+            }
+            ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
+                    (script != null ? " in script '" + script.getName() + "'" : "")
+                    + (source != null ? " in queue '" + source.id + "'" : "") + "! "
+                    + ChatColor.WHITE + errorMesage.toString(), false);
         }
         throwErrorEvent = wasThrown;
     }
@@ -521,6 +528,9 @@ public class dB {
 
         // Use this method for sending a message
         public static void sendMessage(String string) {
+            sendMessage(string, true);
+        }
+        public static void sendMessage(String string, boolean reformat) {
             if (commandSender == null) {
                 commandSender = Bukkit.getServer().getConsoleSender();
             }
@@ -547,34 +557,36 @@ public class dB {
                 skipFooter = false;
             }
 
-            // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
-            String[] words = string.split(" ");
-            StringBuilder buffer = new StringBuilder();
-            int length = 0;
-            int width = Settings.consoleWidth();
-            for (String word : words) { // # of total chars * # of lines - timestamp
-                int strippedLength = ChatColor.stripColor(word).length() + 1;
-                if (length + strippedLength < width) {
-                    buffer.append(word).append(" ");
-                    length = length + strippedLength;
+            if (reformat) {
+                // Create buffer for wrapping debug text nicely. This is mostly needed for Windows logging.
+                String[] words = string.split(" ");
+                StringBuilder buffer = new StringBuilder();
+                int length = 0;
+                int width = Settings.consoleWidth();
+                for (String word : words) { // # of total chars * # of lines - timestamp
+                    int strippedLength = ChatColor.stripColor(word).length() + 1;
+                    if (length + strippedLength < width) {
+                        buffer.append(word).append(" ");
+                        length = length + strippedLength;
+                    }
+                    else {
+                        // Increase # of lines to account for
+                        length = strippedLength;
+                        // Leave spaces to account for timestamp and indent
+                        buffer.append("\n                   ").append(word).append(" ");
+                    }                 // [01:02:03 INFO]:
                 }
-                else {
-                    // Increase # of lines to account for
-                    length = strippedLength;
-                    // Leave spaces to account for timestamp and indent
-                    buffer.append("\n                   ").append(word).append(" ");
-                }                 // [01:02:03 INFO]:
+                string = buffer.toString();
             }
 
-            String result = buffer.toString();
             // Record current buffer to the to-be-submitted buffer
             if (dB.record) {
                 dB.Recording.append(URLEncoder.encode(dateFormat.format(new Date())
-                        + " [INFO] " + result.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
+                        + " [INFO] " + string.replace(ChatColor.COLOR_CHAR, (char) 0x01) + "\n"));
             }
 
             // Send buffer to the player
-            commandSender.sendMessage(showColor ? result : ChatColor.stripColor(result));
+            commandSender.sendMessage(showColor ? string : ChatColor.stripColor(string));
         }
     }
 }

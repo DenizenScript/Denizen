@@ -212,7 +212,7 @@ public abstract class EntityHelper {
 
     public static UUID DEFAULT_HIDE = new UUID(0, 0);
 
-    public boolean isHiddenByDefault(Entity ent) { // TODO: Backport?
+    public boolean isHiddenByDefault(Entity ent) {
         Set<UUID> hiding = hiddenEntitiesEntPl.get(ent.getUniqueId());
         return hiding != null && hiding.contains(DEFAULT_HIDE);
     }
