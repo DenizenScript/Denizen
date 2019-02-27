@@ -5,10 +5,9 @@ Denizen: Helpful Citizens for Bukkit!
 
 #### Download Links:
 
-- **Developmental builds**: http://ci.citizensnpcs.co/job/Denizen/
-- **VERY Developmental builds**: http://ci.citizensnpcs.co/job/Denizen_Developmental/
-- **BukkitDev - unmaintained**: http://dev.bukkit.org/bukkit-plugins/denizen/
-- **SpigotMC - very slow releases**: https://www.spigotmc.org/resources/denizen.21039/
+- **Release builds**: http://ci.citizensnpcs.co/job/Denizen/
+- **Developmental builds**: http://ci.citizensnpcs.co/job/Denizen_Developmental/
+- **SpigotMC - VERY SLOW releases**: https://www.spigotmc.org/resources/denizen.21039/
 
 #### Need help using Denizen? Try one of these places:
 
