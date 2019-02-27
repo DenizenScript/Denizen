@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.CommandScriptContainer;
@@ -11,9 +12,11 @@ import net.aufdemrand.denizencore.tags.TagManager;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.CommandMinecart;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -131,6 +134,12 @@ public class DenizenCommand extends Command {
         }
         else {
             context.put("server", Element.TRUE);
+            if (commandSender instanceof BlockCommandSender) {
+                context.put("command_block_location", new dLocation(((BlockCommandSender) commandSender).getBlock().getLocation()));
+            }
+            else if (commandSender instanceof CommandMinecart) {
+                context.put("command_minecart", new dEntity((CommandMinecart) commandSender));
+            }
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);

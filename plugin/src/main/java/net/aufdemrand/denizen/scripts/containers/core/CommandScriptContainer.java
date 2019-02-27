@@ -100,6 +100,8 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.raw_args> returns all the arguments as raw text.
     //   # <context.server> returns whether the server is running the command (a player if false).
     //   # <context.alias> returns the command alias being used.
+    //   # <context.command_block_location> returns the command block's location (if the command was run from one).
+    //   # <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
     //   script:
     //   - if !<player.is_op||<context.server>> {
     //     - narrate "<red>You do not have permission for that command."
