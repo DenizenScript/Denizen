@@ -180,7 +180,14 @@ public class InventoryScriptContainer extends ScriptContainer {
                             }
                         }
                         else if (dItem.matches(item)) {
-                            finalItems[itemsAdded] = dItem.valueOf(item, player, npc).getItemStack();
+                            try {
+                                finalItems[itemsAdded] = dItem.valueOf(item, player, npc).getItemStack();
+                            }
+                            catch (Exception ex) {
+                                dB.echoError("Inventory script \"" + getName() + "\" has an invalid slot item: ["
+                                        + item + "]...");
+                                dB.echoError(ex);
+                            }
                         }
                         else {
                             finalItems[itemsAdded] = new ItemStack(Material.AIR);
