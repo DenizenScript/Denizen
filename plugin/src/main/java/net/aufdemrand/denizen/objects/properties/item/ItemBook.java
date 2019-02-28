@@ -180,7 +180,7 @@ public class ItemBook implements Property {
             // Pre-escaped to prevent issues.
             // See <@link language Property Escaping>
             // -->
-            String output = getPropertyString();
+            String output = getOutputString();
             if (output == null) {
                 output = "null";
             }
@@ -193,6 +193,14 @@ public class ItemBook implements Property {
 
     @Override
     public String getPropertyString() {
+        String output = getOutputString();
+        if (output.equals("raw_pages")) {
+            return null;
+        }
+        return output;
+    }
+
+    public String getOutputString() {
         StringBuilder output = new StringBuilder();
         BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
         if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
