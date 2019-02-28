@@ -153,18 +153,34 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
+            // @attribute <i@item.book.raw_pages>
+            // @returns dList
+            // @mechanism dItem.book
+            // @group properties
+            // @description
+            // Returns the pages of the book as a dList of raw JSON.
+            // -->
+            if (attribute.startsWith("raw_pages")) {
+                dList output = new dList();
+                for (BaseComponent[] page : bookInfo.spigot().getPages()) {
+                    output.add(ComponentSerializer.toString(page));
+                }
+                return output.getAttribute(attribute.fulfill(1));
+            }
+
+            // <--[tag]
             // @attribute <i@item.book>
             // @returns Element
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns full information on the book item, in the format
-            // author|AUTHOR|title|TITLE|pages|PAGE_ONE|PAGE_TWO|...
-            // or as pages|PAGE_ONE|PAGE_TWO|...
+            // author|AUTHOR|title|TITLE|raw_pages|PAGE_ONE|PAGE_TWO|...
+            // or as raw_pages|PAGE_ONE|PAGE_TWO|...
             // Pre-escaped to prevent issues.
             // See <@link language Property Escaping>
             // -->
-            String output = getPlainString();
+            String output = getPropertyString();
             if (output == null) {
                 output = "null";
             }
@@ -173,28 +189,6 @@ public class ItemBook implements Property {
         }
 
         return null;
-    }
-
-    public String getPlainString() {
-        StringBuilder output = new StringBuilder();
-        BookMeta bookInfo = (BookMeta) item.getItemStack().getItemMeta();
-        if (item.getItemStack().getType().equals(Material.WRITTEN_BOOK)
-                && bookInfo.hasAuthor() && bookInfo.hasTitle()) {
-            output.append("author|").append(EscapeTags.escape(bookInfo.getAuthor()))
-                    .append("|title|").append(EscapeTags.escape(bookInfo.getTitle())).append("|");
-        }
-        output.append("pages|");
-        if (bookInfo.hasPages()) {
-            for (String page : bookInfo.getPages()) {
-                output.append(EscapeTags.escape(page)).append("|");
-            }
-        }
-        if (output.length() <= 6) {
-            return null;
-        }
-        else {
-            return output.substring(0, output.length() - 1);
-        }
     }
 
     @Override
@@ -212,12 +206,7 @@ public class ItemBook implements Property {
                 output.append(EscapeTags.escape(ComponentSerializer.toString(page))).append("|");
             }
         }
-        if (output.length() <= 6) {
-            return null;
-        }
-        else {
-            return output.substring(0, output.length() - 1);
-        }
+        return output.substring(0, output.length() - 1);
     }
 
     @Override
@@ -242,6 +231,8 @@ public class ItemBook implements Property {
         // <i@item.book.page_count>
         // <i@item.book.get_page[<#>]>
         // <i@item.book.pages>
+        // <i@item.book.get_raw_page[<#>]>
+        // <i@item.book.raw_pages>
         // <i@item.book>
         // -->
 
@@ -255,7 +246,7 @@ public class ItemBook implements Property {
                 if (data.size() > 4 && data.get(0).equalsIgnoreCase("author")
                         && data.get(2).equalsIgnoreCase("title")) {
                     if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
-                        dB.echoError("That type of book cannot have title or author!");
+                        dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
                     }
                     else {
                         meta.setAuthor(EscapeTags.unEscape(data.get(1)));
