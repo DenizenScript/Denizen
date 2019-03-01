@@ -2,11 +2,13 @@ package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
+import net.aufdemrand.denizencore.objects.properties.PropertyParser;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -14,14 +16,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.material.MaterialData;
 
 import java.util.HashMap;
 
 public class dMaterial implements dObject, Adjustable {
-
-    // Will be called a lot, no need to construct/deconstruct.
-    public final static dMaterial AIR = new dMaterial(Material.AIR);
 
     /**
      * Legacy dMaterial identities.
@@ -56,6 +56,12 @@ public class dMaterial implements dObject, Adjustable {
      */
     @Fetchable("m")
     public static dMaterial valueOf(String string, TagContext context) {
+
+        ///////
+        // Handle objects with properties through the object fetcher
+        if (ObjectFetcher.DESCRIBED_PATTERN.matcher(string).matches()) {
+            return ObjectFetcher.getObjectFrom(dMaterial.class, string, context);
+        }
 
         string = string.toUpperCase();
         if (string.startsWith("M@")) {
@@ -100,6 +106,9 @@ public class dMaterial implements dObject, Adjustable {
                 dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
             }
             if (data == 0) {
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    return new dMaterial(mat.material);
+                }
                 return mat;
             }
             return OldMaterialsHelper.getMaterialFrom(mat.material, data);
@@ -191,12 +200,14 @@ public class dMaterial implements dObject, Adjustable {
      */
     public dMaterial(Material material, int data) {
         this.material = material;
-
         if (data < 0) {
             this.data = null;
         }
         else {
             this.data = (byte) data;
+        }
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            modernData = new ModernBlockData(material);
         }
     }
 
@@ -204,32 +215,39 @@ public class dMaterial implements dObject, Adjustable {
         this(material, 0);
     }
 
-    public dMaterial(MaterialData data) {
-        this.material = data.getItemType();
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
-            this.data = data.getData();
-        }
-    }
-
     public dMaterial(BlockState state) {
         this.material = state.getType();
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            this.modernData = new ModernBlockData(state);
+        }
+        else {
             this.data = state.getRawData();
         }
     }
 
     public dMaterial(BlockData block) {
         this.material = block.getMaterial();
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            this.modernData = block.modern();
+        }
+        else {
             this.data = block.getData();
         }
     }
 
     public dMaterial(Block block) {
         this.material = block.getType();
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            this.modernData = new ModernBlockData(block);
+        }
+        else {
             this.data = block.getData();
         }
+    }
+
+    public dMaterial(ModernBlockData data) {
+        this.modernData = data;
+        this.material = data.getMaterial();
     }
 
     /////////////////////
@@ -238,6 +256,22 @@ public class dMaterial implements dObject, Adjustable {
 
     private Material material;
     private Byte data = 0;
+    private ModernBlockData modernData;
+
+    public boolean hasModernData() {
+        return modernData != null;
+    }
+
+    public ModernBlockData getModernData() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            return modernData;
+        }
+        throw new IllegalStateException("Modern block data handler is not available prior to MC 1.13.");
+    }
+
+    public void setModernData(ModernBlockData data) {
+        modernData = data;
+    }
 
     public Material getMaterial() {
         return material;
@@ -324,31 +358,26 @@ public class dMaterial implements dObject, Adjustable {
 
     @Override
     public String identify() {
-        if (forcedIdentity != null) {
-            return "m@" + forcedIdentityLow;
-        }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
-            return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
-        }
-        return "m@" + CoreUtilities.toLowerCase(material.name());
+        return "m@" + identifyNoIdentifier();
     }
 
     public String identifyFull() {
-        if (forcedIdentity != null) {
-            return "m@" + forcedIdentityLow + (getData() != null ? "," + getData() : "");
-        }
-        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
-            return "m@" + CoreUtilities.toLowerCase(material.name()) + "," + getData();
-        }
-        return "m@" + CoreUtilities.toLowerCase(material.name());
+        return "m@" + identifyFullNoIdentifier();
     }
 
     @Override
     public String identifySimple() {
+        return "m@" + identifySimpleNoIdentifier();
+    }
+
+    public String identifyNoPropertiesNoIdentifier() {
         if (forcedIdentity != null) {
-            return "m@" + forcedIdentityLow;
+            return forcedIdentityLow;
         }
-        return "m@" + CoreUtilities.toLowerCase(material.name());
+        if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
+            return CoreUtilities.toLowerCase(material.name()) + "," + getData();
+        }
+        return CoreUtilities.toLowerCase(material.name());
     }
 
     public String identifyNoIdentifier() {
@@ -358,7 +387,7 @@ public class dMaterial implements dObject, Adjustable {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return CoreUtilities.toLowerCase(material.name());
+        return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
 
     public String identifySimpleNoIdentifier() {
@@ -375,7 +404,7 @@ public class dMaterial implements dObject, Adjustable {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && getData() != null && getData() > 0) {
             return CoreUtilities.toLowerCase(material.name()) + "," + getData();
         }
-        return CoreUtilities.toLowerCase(material.name());
+        return CoreUtilities.toLowerCase(material.name()) + PropertyParser.getPropertiesString(this);
     }
 
     @Override
@@ -672,8 +701,13 @@ public class dMaterial implements dObject, Adjustable {
         registerTag("item", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new dItem(((dMaterial) object), 1)
-                        .getAttribute(attribute.fulfill(1));
+                dMaterial material = (dMaterial) object;
+                dItem item = new dItem(material, 1);
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
+                        item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                    ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(material.modernData.getBlockState());
+                }
+                return item.getAttribute(attribute.fulfill(1));
             }
         });
 
@@ -729,7 +763,7 @@ public class dMaterial implements dObject, Adjustable {
 
     @Override
     public void applyProperty(Mechanism mechanism) {
-        dB.echoError("Cannot apply properties to a material!");
+        adjust(mechanism);
     }
 
     @Override
@@ -744,7 +778,7 @@ public class dMaterial implements dObject, Adjustable {
         // @tags
         // <m@material.block_resistance>
         // -->
-        if (mechanism.matches("block_resistance") && mechanism.requireFloat()) {
+        if (!mechanism.isProperty && mechanism.matches("block_resistance") && mechanism.requireFloat()) {
             if (!NMSHandler.getInstance().getBlockHelper().setBlockResistance(material, mechanism.getValue().asFloat())) {
                 dB.echoError("Provided material does not have a placeable block.");
             }

@@ -2198,7 +2198,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.command_block_name>
         // @returns Element
-        // @mechanism command_block_name
+        // @mechanism dLocation.command_block_name
         // @description
         // Returns the name a command block is set to.
         // -->
@@ -2210,7 +2210,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.command_block>
         // @returns Element
-        // @mechanism command_block
+        // @mechanism dLocation.command_block
         // @description
         // Returns the command a command block is set to.
         // -->
@@ -2222,7 +2222,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.furnace_burn_time>
         // @returns Element(Number)
-        // @mechanism furnace_burn_time
+        // @mechanism dLocation.furnace_burn_time
         // @description
         // Returns the burn time a furnace has left.
         // -->
@@ -2234,7 +2234,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.furnace_cook_time>
         // @returns Element(Number)
-        // @mechanism furnace_cook_time
+        // @mechanism dLocation.furnace_cook_time
         // @description
         // Returns the cook time a furnace has left.
         // -->
@@ -2265,7 +2265,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <--[tag]
         // @attribute <l@location.custom_name>
         // @returns Element
-        // @mechanism custom_name
+        // @mechanism dLocation.custom_name
         // @description
         // Returns the custom name of this block.
         // Only works for nameable blocks, such as chests and dispensers.

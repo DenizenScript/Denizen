@@ -162,4 +162,10 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
         // this is presumably more accurate these days
         return !material.isSolid();
     }
+
+    @Override
+    public org.bukkit.block.BlockState generateBlockState(Material mat) {
+        return new CraftBlockState(mat);
+    }
+
 }

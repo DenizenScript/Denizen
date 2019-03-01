@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.StringTag;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.objects.properties.item.*;
@@ -28,6 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
@@ -589,7 +591,7 @@ public class dItem implements dObject, Notable, Adjustable {
         else if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1) && (item.getDurability() >= 16 || item.getDurability() < 0) && item.getType() != Material.AIR) {
             return "i@" + getMaterial().realName() + "," + item.getDurability() + PropertyParser.getPropertiesString(this);
         }
-        return "i@" + getMaterial().identify().replace("m@", "") + PropertyParser.getPropertiesString(this);
+        return "i@" + getMaterial().identifyNoPropertiesNoIdentifier().replace("m@", "") + PropertyParser.getPropertiesString(this);
     }
 
 
@@ -845,7 +847,13 @@ public class dItem implements dObject, Notable, Adjustable {
         registerTag("material", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return ((dItem) object).getMaterial().getAttribute(attribute.fulfill(1));
+                dItem item = (dItem) object;
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
+                        item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                    return new dMaterial(new ModernBlockData(((BlockStateMeta) item.getItemStack().getItemMeta()).getBlockState()))
+                            .getAttribute(attribute.fulfill(1));
+                }
+                return item.getMaterial().getAttribute(attribute.fulfill(1));
             }
         });
 

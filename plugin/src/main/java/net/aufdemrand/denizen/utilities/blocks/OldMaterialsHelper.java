@@ -521,7 +521,7 @@ public class OldMaterialsHelper {
         }
         for (dMaterials material : dMaterials.values()) {
             try {
-                Field field = dMaterial.class.getField(material.name());
+                Field field = OldMaterialsHelper.class.getField(material.name());
                 dMaterial mat = (dMaterial) field.get(null);
                 if (mat != null) {
                     registerVariety(mat);
@@ -553,9 +553,6 @@ public class OldMaterialsHelper {
      * @return a dMaterial representation of the input Bukkit material
      */
     public static dMaterial getMaterialFrom(Material material, int data) {
-        if (material == Material.AIR) {
-            return dMaterial.AIR;
-        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             if (data != 0) {
                 // upvert old data valued materials

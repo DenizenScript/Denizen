@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.blocks;
 
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
@@ -10,8 +11,9 @@ import net.minecraft.server.v1_13_R2.TileEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_13_R2.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_13_R2.block.CraftBlockState;
 
 public class BlockData_v1_13_R2 implements BlockData {
 
@@ -102,5 +104,10 @@ public class BlockData_v1_13_R2 implements BlockData {
     @Override
     public void setData(byte data) {
         // no
+    }
+
+    @Override
+    public ModernBlockData modern() {
+        return new ModernBlockData(blockData);
     }
 }

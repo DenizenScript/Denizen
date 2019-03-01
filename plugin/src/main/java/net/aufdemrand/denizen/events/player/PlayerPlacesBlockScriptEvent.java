@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.material.MaterialData;
 
 public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements Listener {
 
@@ -106,7 +105,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
             return material;
         }
         else if (name.equals("old_material")) {
-            return new dMaterial(event.getBlockReplacedState().getData());
+            return new dMaterial(event.getBlockReplacedState());
         }
         else if (name.equals("item_in_hand")) {
             return item_in_hand;

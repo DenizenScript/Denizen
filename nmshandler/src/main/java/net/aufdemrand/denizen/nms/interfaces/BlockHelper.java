@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
 import org.bukkit.material.MaterialData;
 
@@ -36,4 +37,8 @@ public interface BlockHelper {
     float getBlockResistance(Material material);
 
     boolean isSafeBlock(Material material);
+
+    default BlockState generateBlockState(Material mat) {
+        return null;
+    }
 }

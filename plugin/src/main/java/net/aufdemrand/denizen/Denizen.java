@@ -848,7 +848,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             // register core dInventory properties
             PropertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
-            PropertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size...(Too small for contents)
+            PropertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size... (too small for contents)
             PropertyParser.registerProperty(InventoryContents.class, dInventory.class);
             PropertyParser.registerProperty(InventoryTitle.class, dInventory.class);
 
