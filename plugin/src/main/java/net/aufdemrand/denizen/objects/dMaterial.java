@@ -721,11 +721,22 @@ public class dMaterial implements dObject, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 dMaterial material = (dMaterial) object;
                 dItem item = new dItem(material, 1);
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) &&
-                        item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
-                    ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(material.modernData.getBlockState());
+                attribute = attribute.fulfill(1);
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    // Special patch for older material-item tags.
+                    if (!attribute.isComplete()) {
+                        String tag = attribute.getAttribute(1);
+                        String returned = CoreUtilities.autoPropertyTag(object, attribute);
+                        if (returned != null) {
+                            dB.echoError("Usage of outdated 'material.item." + tag + "' tag should be replaced by 'material." + tag + "' (with '.item' removed).");
+                            return returned;
+                        }
+                    }
+                    if (item.getItemStack().hasItemMeta() && item.getItemStack().getItemMeta() instanceof BlockStateMeta) {
+                        ((BlockStateMeta) item.getItemStack().getItemMeta()).setBlockState(material.modernData.getBlockState());
+                    }
                 }
-                return item.getAttribute(attribute.fulfill(1));
+                return item.getAttribute(attribute);
             }
         });
 
