@@ -70,6 +70,7 @@ public class ItemPlantgrowth implements Property {
         // Nether Warts: SEEDED, STAGE_ONE, STAGE_TWO, RIPE
         // Cocoa Plants: SMALL, MEDIUM, LARGE
         // Pumpkin stem, melon stem, carrot, potato: 0-7
+        // Deprecated as of MC 1.13, use <@link tag m@material.plant_growth> instead.
         // -->
         if (attribute.startsWith("plant_growth")) {
             if (item.getItemStack().getData() instanceof Crops) {
@@ -133,6 +134,7 @@ public class ItemPlantgrowth implements Property {
         // @description
         // Changes the growth level of plant items.
         // See <@link tag i@item.plant_growth> for valid inputs.
+        // Deprecated as of MC 1.13, use <@link mechanism dMaterial.plant_growth> instead.
         // @tags
         // <i@item.is_crop>
         // <i@item.plant_growth>
