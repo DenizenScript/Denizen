@@ -111,7 +111,7 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
         entity = new dEntity(event.getPlayer());
         location = new dLocation(event.getBlockClicked().getLocation());
         item = new dItem(event.getItemStack());
-        material = dMaterial.getMaterialFrom(event.getBlockClicked().getType(), event.getBlockClicked().getData());
+        material = new dMaterial(event.getBlockClicked());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

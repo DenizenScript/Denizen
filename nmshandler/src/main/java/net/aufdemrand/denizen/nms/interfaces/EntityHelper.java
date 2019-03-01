@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
@@ -476,4 +477,8 @@ public abstract class EntityHelper {
     public abstract boolean isCarryingChest(Entity horse);
 
     public abstract void setCarryingChest(Entity horse, boolean carrying);
+
+    public BlockData getBlockDataFor(FallingBlock entity) {
+        return NMSHandler.getInstance().getBlockHelper().getBlockData(entity.getMaterial(), (byte) 0);
+    }
 }

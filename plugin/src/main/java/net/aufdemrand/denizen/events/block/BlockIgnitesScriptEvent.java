@@ -110,7 +110,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onBlockIgnites(BlockIgniteEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         entity = null;
         if (event.getIgnitingEntity() != null) {
             entity = new dEntity(event.getIgnitingEntity());

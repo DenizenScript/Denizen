@@ -11,6 +11,7 @@ import net.aufdemrand.denizen.scripts.containers.core.ItemScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.ItemScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
+import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.objects.notable.Notable;
@@ -500,9 +501,9 @@ public class dItem implements dObject, Notable, Adjustable {
 
     public dMaterial getMaterial() {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            return dMaterial.getMaterialFrom(getItemStack().getType());
+            return new dMaterial(getItemStack().getType());
         }
-        return dMaterial.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
+        return OldMaterialsHelper.getMaterialFrom(getItemStack().getType(), getItemStack().getData().getData());
     }
 
     public String getMaterialName() {

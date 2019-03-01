@@ -156,7 +156,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        dMaterial material = event.hasBlock() ? dMaterial.getMaterialFrom(event.getClickedBlock().getType(), event.getClickedBlock().getData()) : null;
+        dMaterial material = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : null;
         String mat = CoreUtilities.getXthArg(index, lower);
         if (mat.length() > 0
                 && !withHelpList.contains(mat)

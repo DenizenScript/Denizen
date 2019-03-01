@@ -51,7 +51,7 @@ public class ItemCanDestroy implements Property {
         if (materials != null && !materials.isEmpty()) {
             dList list = new dList();
             for (Material material : materials) {
-                list.addObject(dMaterial.getMaterialFrom(material));
+                list.addObject(new dMaterial(material));
             }
             return list;
         }

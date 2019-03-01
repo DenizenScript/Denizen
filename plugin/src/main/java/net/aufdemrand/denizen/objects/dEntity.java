@@ -1856,7 +1856,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns the material of a fallingblock-type entity.
         // -->
         if (attribute.startsWith("fallingblock_material") && entity instanceof FallingBlock) {
-            return dMaterial.getMaterialFrom(((FallingBlock) entity).getMaterial())
+            return new dMaterial(NMSHandler.getInstance().getEntityHelper().getBlockDataFor((FallingBlock) entity))
                     .getAttribute(attribute.fulfill(1));
         }
 

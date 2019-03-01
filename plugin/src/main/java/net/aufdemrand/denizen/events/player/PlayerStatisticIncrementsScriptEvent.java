@@ -126,7 +126,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         previous_value = null;
         statistic = event.getStatistic();
         if (statistic.getType() == Statistic.Type.BLOCK || statistic.getType() == Statistic.Type.ITEM) {
-            material = dMaterial.getMaterialFrom(event.getMaterial());
+            material = new dMaterial(event.getMaterial());
         }
         else if (statistic.getType() == Statistic.Type.ENTITY) {
             entity = new dEntity(DenizenEntityType.getByName(event.getEntityType().name()));

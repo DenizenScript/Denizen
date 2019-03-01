@@ -105,7 +105,7 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     public void onVehicleCollidesBlock(VehicleBlockCollisionEvent event) {
         vehicle = new dEntity(event.getVehicle());
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         this.event = event;
         fire();
     }

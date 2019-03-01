@@ -149,7 +149,7 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
             return;
         }
         Sign sign = (Sign) state;
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = null;
         old_sign = new dList(Arrays.asList(sign.getLines()));

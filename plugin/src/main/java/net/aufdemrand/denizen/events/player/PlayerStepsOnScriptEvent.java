@@ -60,7 +60,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         String lower = path.eventLower;
 
         String mat = CoreUtilities.getXthArg(3, lower);
-        dMaterial material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        dMaterial material = new dMaterial(location.getBlock());
         if (!tryMaterial(material, mat)) {
             return false;
         }

@@ -109,7 +109,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
         if (event.getAction() != Action.PHYSICAL) {
             return;
         }
-        material = dMaterial.getMaterialFrom(event.getClickedBlock().getType(), event.getClickedBlock().getData());
+        material = new dMaterial(event.getClickedBlock());
         location = new dLocation(event.getClickedBlock().getLocation());
         cancelled = event.isCancelled();
         this.event = event;

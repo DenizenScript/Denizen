@@ -130,7 +130,7 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
         new_materials = new dList();
         for (BlockState block : event.getBlocks()) {
             blocks.add(new dLocation(block.getLocation()).identify());
-            new_materials.add(dMaterial.getMaterialFrom(block.getType(), block.getRawData()).identify());
+            new_materials.add(new dMaterial(block.getType(), block.getRawData()).identify());
         }
         this.event = event;
         cancelled = event.isCancelled();

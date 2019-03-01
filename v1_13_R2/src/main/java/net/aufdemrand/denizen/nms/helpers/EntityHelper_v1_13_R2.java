@@ -1,7 +1,9 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.impl.blocks.BlockData_v1_13_R2;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
+import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.Utilities;
@@ -534,5 +536,10 @@ public class EntityHelper_v1_13_R2 extends EntityHelper {
         if (horse instanceof ChestedHorse) {
             ((ChestedHorse) horse).setCarryingChest(carrying);
         }
+    }
+
+    @Override
+    public BlockData getBlockDataFor(FallingBlock entity) {
+        return new BlockData_v1_13_R2(entity.getBlockData());
     }
 }

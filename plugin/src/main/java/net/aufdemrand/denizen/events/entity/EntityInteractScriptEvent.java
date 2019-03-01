@@ -125,7 +125,7 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public void onEntityInteract(EntityInteractEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;

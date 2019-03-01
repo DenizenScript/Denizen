@@ -150,8 +150,8 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     public void onEntityChangesBlock(EntityChangeBlockEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
-        old_material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
-        new_material = dMaterial.getMaterialFrom(event.getTo());
+        old_material = new dMaterial(location.getBlock());
+        new_material = new dMaterial(event.getTo());
         cuboids = null;
         cancelled = event.isCancelled();
         this.event = event;

@@ -89,7 +89,7 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onLeafDecays(LeavesDecayEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

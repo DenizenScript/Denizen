@@ -133,7 +133,7 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onBlockDispenses(BlockDispenseEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         item = new dItem(event.getItem());
         cancelled = event.isCancelled();
         velocity = new dLocation(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());

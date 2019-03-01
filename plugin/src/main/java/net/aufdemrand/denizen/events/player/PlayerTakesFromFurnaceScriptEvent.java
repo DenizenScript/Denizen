@@ -105,7 +105,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        item = new dItem(dMaterial.getMaterialFrom(event.getItemType()), event.getItemAmount());
+        item = new dItem(event.getItemType(), event.getItemAmount());
         location = new dLocation(event.getBlock().getLocation());
         xp = event.getExpToDrop();
         this.event = event;

@@ -2,7 +2,7 @@ package net.aufdemrand.denizen.utilities;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
-import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -114,19 +114,19 @@ public class MaterialCompat {
 
     public static ItemStack updateItem(int oldMat) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            Material mat = Bukkit.getUnsafe().fromLegacy(dMaterial.getLegacyMaterial(oldMat));
+            Material mat = Bukkit.getUnsafe().fromLegacy(OldMaterialsHelper.getLegacyMaterial(oldMat));
             return new ItemStack(mat);
         }
-        return new ItemStack(dMaterial.getLegacyMaterial(oldMat));
+        return new ItemStack(OldMaterialsHelper.getLegacyMaterial(oldMat));
     }
 
     public static ItemStack updateItem(int oldMat, byte bit) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            BlockData blockDat = Bukkit.getUnsafe().fromLegacy(dMaterial.getLegacyMaterial(oldMat), bit);
+            BlockData blockDat = Bukkit.getUnsafe().fromLegacy(OldMaterialsHelper.getLegacyMaterial(oldMat), bit);
             Material mat = blockDat.getMaterial();
             return new ItemStack(mat);
         }
-        return new ItemStack(dMaterial.getLegacyMaterial(oldMat), bit);
+        return new ItemStack(OldMaterialsHelper.getLegacyMaterial(oldMat), bit);
     }
 
     public static boolean isBannerOrShield(Material material) {

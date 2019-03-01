@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_13_R2.block.data.CraftBlockData;
 
 public class BlockData_v1_13_R2 implements BlockData {
 
@@ -28,6 +29,11 @@ public class BlockData_v1_13_R2 implements BlockData {
             mat = Bukkit.getUnsafe().toLegacy(mat);
         }
         blockData = Bukkit.getUnsafe().fromLegacy(mat, dat);
+    }
+
+    public BlockData_v1_13_R2(org.bukkit.block.data.BlockData data) {
+        this.blockData = data;
+        // TODO: ctag?
     }
 
     public BlockData_v1_13_R2(Block block) {

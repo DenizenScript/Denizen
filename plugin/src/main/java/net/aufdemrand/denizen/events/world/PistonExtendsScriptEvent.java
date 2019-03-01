@@ -113,7 +113,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     @EventHandler
     public void onPistonExtends(BlockPistonExtendEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         sticky = new Element(event.isSticky() ? "true" : "false");
         relative = new dLocation(event.getBlock().getRelative(event.getDirection()).getLocation());
         blocks = new dList();

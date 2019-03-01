@@ -115,7 +115,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onPistonRetracts(BlockPistonRetractEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         sticky = new Element(event.isSticky() ? "true" : "false");
         relative = new dLocation(event.getBlock().getRelative(event.getDirection().getOppositeFace()).getLocation());
         blocks = new dList();

@@ -94,7 +94,7 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockForms(BlockFormEvent event) {
 
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getNewState().getType(), event.getNewState().getData().getData());
+        material = new dMaterial(event.getNewState());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

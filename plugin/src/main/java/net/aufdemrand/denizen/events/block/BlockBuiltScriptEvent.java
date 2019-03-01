@@ -113,8 +113,8 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
     @EventHandler
     public void onBlockBuilt(BlockCanBuildEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        old_material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
-        new_material = dMaterial.getMaterialFrom(event.getMaterial());  // Deprecated because it doesn't have proper data
+        old_material = new dMaterial(event.getBlock());
+        new_material = new dMaterial(event.getMaterial()); // Deprecated because it doesn't have proper data
         cancelled = !event.isBuildable();
         this.event = event;
         fire();

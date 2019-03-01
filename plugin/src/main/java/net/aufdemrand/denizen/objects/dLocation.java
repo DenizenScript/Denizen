@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.utilities.MaterialCompat;
 import net.aufdemrand.denizen.utilities.PathFinder;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
+import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.entity.DenizenEntityType;
 import net.aufdemrand.denizencore.objects.*;
@@ -673,7 +674,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // Returns the material of the block at the location.
         // -->
         if (attribute.startsWith("material")) {
-            return dMaterial.getMaterialFrom(getBlock().getType(), getBlock().getData()).getAttribute(attribute.fulfill(1));
+            return new dMaterial(getBlock()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
@@ -829,7 +830,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             else if (getBlock().getType() == Material.FLOWER_POT) {
                 MaterialData contents = NMSHandler.getInstance().getBlockHelper().getFlowerpotContents(getBlock());
-                return dMaterial.getMaterialFrom(contents.getItemType(), contents.getData())
+                return OldMaterialsHelper.getMaterialFrom(contents.getItemType(), contents.getData())
                         .getAttribute(attribute.fulfill(1));
             }
             return null;

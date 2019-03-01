@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockHelper;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.Utilities;
+import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.objects.*;
@@ -433,7 +434,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (materials == null) {
             return true;
         }
-        dMaterial mat = dMaterial.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
+        dMaterial mat = OldMaterialsHelper.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
         for (dMaterial material : materials) {
             if (mat.equals(material) || (mat.getMaterial() == material.getMaterial()
                     && (material.getData() == null || material.getData() == 0))) { // TODO: only if null?
@@ -470,7 +471,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     for (int z = 0; z != z_distance + 1; z++) {
                         loc = new dLocation(loc_1.clone().add(x, y, z));
                         if (loc.getY() < 0 || loc.getY() > 255) {
-                            continue; // TODO: Why is this ever possible?
+                            continue;
                         }
                         if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter

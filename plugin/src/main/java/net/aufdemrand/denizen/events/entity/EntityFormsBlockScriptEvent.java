@@ -117,7 +117,7 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
     @EventHandler
     public void onEntityFormsBlock(EntityBlockFormEvent event) {
         location = new dLocation(event.getBlock().getLocation());
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         entity = new dEntity(event.getEntity());
         cancelled = event.isCancelled();
         this.event = event;

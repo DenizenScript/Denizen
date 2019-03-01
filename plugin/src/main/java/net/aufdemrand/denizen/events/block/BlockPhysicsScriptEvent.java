@@ -106,8 +106,8 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         location = new dLocation(event.getBlock().getLocation());
-        new_material = dMaterial.getMaterialFrom(changedType);
-        material = dMaterial.getMaterialFrom(location.getBlock().getType(), location.getBlock().getData());
+        new_material = new dMaterial(changedType);
+        material = new dMaterial(location.getBlock());
         cancelled = event.isCancelled();
         this.event = event;
         fire();

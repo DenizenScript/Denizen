@@ -160,7 +160,7 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = null;
         cancelled = event.isCancelled();

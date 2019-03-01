@@ -106,8 +106,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
             return material;
         }
         else if (name.equals("old_material")) {
-            MaterialData materialData = event.getBlockReplacedState().getData();
-            return dMaterial.getMaterialFrom(materialData.getItemType(), materialData.getData());
+            return new dMaterial(event.getBlockReplacedState().getData());
         }
         else if (name.equals("item_in_hand")) {
             return item_in_hand;
@@ -127,7 +126,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
-        material = dMaterial.getMaterialFrom(event.getBlock().getType(), event.getBlock().getData());
+        material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         cancelled = event.isCancelled();
         item_in_hand = new dItem(event.getItemInHand());

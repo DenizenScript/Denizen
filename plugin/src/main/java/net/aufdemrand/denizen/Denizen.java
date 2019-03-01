@@ -38,6 +38,7 @@ import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.tags.core.*;
 import net.aufdemrand.denizen.utilities.*;
+import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.command.CommandManager;
 import net.aufdemrand.denizen.utilities.command.Injector;
 import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
@@ -772,8 +773,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            // Initialize non-standard dMaterials
-            dMaterial._initialize();
+            // Initialize old Materials helper
+            OldMaterialsHelper._initialize();
 
             // register properties that add Bukkit code to core objects
             PropertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
