@@ -129,22 +129,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         return valueOf(string, null);
     }
 
-    /**
-     * Gets a dEntity Object from a string form. </br>
-     * </br>
-     * Unique dEntities: </br>
-     * n@13 will return the entity object of NPC 13 </br>
-     * e@5884 will return the entity object for the entity with the entityid of 5884 </br>
-     * e@jimmys_pet will return the saved entity object for the id 'jimmys pet' </br>
-     * p@aufdemrand will return the entity object for aufdemrand </br>
-     * </br>
-     * New dEntities: </br>
-     * zombie will return an unspawned Zombie dEntity </br>
-     * super_creeper will return an unspawned custom 'Super_Creeper' dEntity </br>
-     *
-     * @param string the string or dScript argument String
-     * @return a dEntity, or null
-     */
     @Fetchable("e")
     public static dEntity valueOf(String string, TagContext context) {
         if (string == null) {

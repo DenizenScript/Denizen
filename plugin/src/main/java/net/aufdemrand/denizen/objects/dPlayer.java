@@ -18,6 +18,7 @@ import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
@@ -92,9 +93,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
     // @group Object Fetcher System
     // @description
     // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
-    // Fetcher. The only valid constructor for a dPlayer is the name of the player the object should be
-    // associated with. For example, to reference the player named 'mythan', use p@mythan. Player names
-    // are case insensitive.
+    // Fetcher. The only valid constructor for a dPlayer is the UUID of the player the object should be
+    // associated with.
     // -->
 
 
@@ -104,14 +104,20 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
     @Fetchable("p")
     public static dPlayer valueOf(String string, TagContext context) {
-        return valueOfInternal(string, context == null || context.debug);
+        return valueOfInternal(string, context, true);
     }
 
+    public static SlowWarning playerByNameWarning = new SlowWarning("");
 
-    static dPlayer valueOfInternal(String string, boolean announce) {
+    public static dPlayer valueOfInternal(String string, boolean announce) {
+        return valueOfInternal(string, null, announce);
+    }
+
+    public static dPlayer valueOfInternal(String string, TagContext context, boolean defaultAnnounce) {
         if (string == null) {
             return null;
         }
+        boolean announce = context == null ? defaultAnnounce : context.debug;
 
         string = string.replace("p@", "").replace("P@", "");
 
@@ -136,7 +142,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (playerNames.containsKey(CoreUtilities.toLowerCase(string))) {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerNames.get(CoreUtilities.toLowerCase(string)));
             if (announce) {
-                dB.echoError("Warning: loading player by name - use the UUID instead (or use tag server.match_player)! Player named '" + player.getName() + "' has UUID: " + player.getUniqueId());
+                playerByNameWarning.message = "Warning: loading player by name - use the UUID instead" +
+                        " (or use tag server.match_player)! Player named '" + player.getName() + "' has UUID: " + player.getUniqueId();
+                playerByNameWarning.warn(context == null ? null : context.entry);
             }
             return new dPlayer(player);
         }
