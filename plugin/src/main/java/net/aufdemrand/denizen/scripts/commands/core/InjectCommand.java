@@ -120,7 +120,18 @@ public class InjectCommand extends AbstractCommand {
                 scriptEntry.addObject("script", arg.asType(dScript.class));
             }
             else if (!scriptEntry.hasObject("path")) {
-                scriptEntry.addObject("path", arg.asElement());
+                String path = arg.asElement().asString();
+                if (!scriptEntry.hasObject("script")) {
+                    int dotIndex = path.indexOf('.');
+                    if (dotIndex > 0) {
+                        dScript script = new dScript(path.substring(0, dotIndex));
+                        if (script.isValid()) {
+                            scriptEntry.addObject("script", script);
+                            path = path.substring(dotIndex + 1);
+                        }
+                    }
+                }
+                scriptEntry.addObject("path", new Element(path));
             }
             else {
                 arg.reportUnhandled();
