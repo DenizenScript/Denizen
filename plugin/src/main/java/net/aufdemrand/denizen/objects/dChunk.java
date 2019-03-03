@@ -101,6 +101,7 @@ public class dChunk implements dObject, Adjustable {
      */
     public dChunk(Chunk chunk) {
         this.cachedChunk = chunk;
+        world = new dWorld(chunk.getWorld());
         chunkX = chunk.getX();
         chunkZ = chunk.getZ();
     }
