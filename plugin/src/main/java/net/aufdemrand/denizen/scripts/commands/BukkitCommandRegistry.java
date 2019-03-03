@@ -2360,6 +2360,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <e@entity.vehicle>
         // <e@entity.inside_vehicle>
+        // <entry[saveName].mounted_entities> returns a list of entities that were mounted.
         //
         // @Usage
         // Use to mount an NPC on top of a player.
@@ -3624,6 +3625,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <server.entity_is_spawned[<entity>]>
         // <server.list_entity_types>
         // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
+        // <entry[saveName].spawned_entity> returns the entity that was spawned (if you only spawned one).
         //
         // @Usage
         // Use to spawn a spider at the player's location.

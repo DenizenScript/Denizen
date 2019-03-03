@@ -124,5 +124,8 @@ public class SpawnCommand extends AbstractCommand {
         // can be fetched.
 
         scriptEntry.addObject("spawned_entities", entityList);
+        if (entityList.size() != 0) {
+            scriptEntry.addObject("spawned_entity", entityList.get(0));
+        }
     }
 }

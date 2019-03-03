@@ -89,5 +89,9 @@ public class MountCommand extends AbstractCommand {
         else {
             Position.dismount(Conversion.convertEntities(entities));
         }
+
+        dList entityList = new dList();
+        entityList.addObjects((List) entities);
+        scriptEntry.addObject("mounted_entities", entityList);
     }
 }
