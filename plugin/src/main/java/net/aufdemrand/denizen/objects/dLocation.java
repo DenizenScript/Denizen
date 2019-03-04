@@ -234,10 +234,31 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return null;
             }
         }
+        else if (split.size() == 5)
+
+        // If 5 values, location with pitch/yaw (no world)
+        // x,y,z,pitch,yaw
+        {
+            try {
+                dLocation output = new dLocation(null,
+                        Double.valueOf(split.get(0)),
+                        Double.valueOf(split.get(1)),
+                        Double.valueOf(split.get(2)),
+                        Float.valueOf(split.get(3)),
+                        Float.valueOf(split.get(4)));
+                return output;
+            }
+            catch (Exception e) {
+                if (context == null || context.debug) {
+                    dB.log("Minor: valueOf dLocation returning null: " + string + "(internal exception:" + e.getMessage() + ")");
+                }
+                return null;
+            }
+        }
         else if (split.size() == 6)
 
         // If 6 values, location with pitch/yaw
-        // x,y,z,yaw,pitch,world
+        // x,y,z,pitch,yaw,world
         {
             try {
                 World world = Bukkit.getWorld(split.get(5));
@@ -328,8 +349,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         super(world, x, y, z);
     }
 
-    public dLocation(World world, double x, double y, double z, float yaw, float pitch) {
-        super(world, x, y, z, pitch, yaw);
+    public dLocation(World world, double x, double y, double z, float pitch, float yaw) {
+        super(world, x, y, z, yaw, pitch);
     }
 
 
