@@ -71,11 +71,6 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         InventoryOpenEvent.getHandlerList().unregister(this);
     }

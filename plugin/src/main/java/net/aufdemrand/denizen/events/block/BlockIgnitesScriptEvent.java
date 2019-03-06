@@ -73,11 +73,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         BlockIgniteEvent.getHandlerList().unregister(this);
     }

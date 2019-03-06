@@ -65,11 +65,6 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         WeatherChangeEvent.getHandlerList().unregister(this);
     }

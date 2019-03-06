@@ -77,11 +77,6 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         BlockPlaceEvent.getHandlerList().unregister(this);
     }

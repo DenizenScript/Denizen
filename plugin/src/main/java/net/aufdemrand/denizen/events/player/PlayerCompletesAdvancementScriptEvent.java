@@ -56,11 +56,6 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerAdvancementDoneEvent.getHandlerList().unregister(this);
     }

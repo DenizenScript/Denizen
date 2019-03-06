@@ -64,11 +64,6 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerItemConsumeEvent.getHandlerList().unregister(this);
     }

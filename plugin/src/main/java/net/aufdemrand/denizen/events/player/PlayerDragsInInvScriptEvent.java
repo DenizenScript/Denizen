@@ -95,11 +95,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         InventoryDragEvent.getHandlerList().unregister(this);
     }

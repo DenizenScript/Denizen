@@ -69,11 +69,6 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerLeashEntityEvent.getHandlerList().unregister(this);
     }

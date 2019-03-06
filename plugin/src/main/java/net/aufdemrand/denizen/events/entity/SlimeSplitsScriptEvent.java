@@ -80,11 +80,6 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         SlimeSplitEvent.getHandlerList().unregister(this);
     }

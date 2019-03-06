@@ -74,11 +74,6 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         FurnaceSmeltEvent.getHandlerList().unregister(this);
     }

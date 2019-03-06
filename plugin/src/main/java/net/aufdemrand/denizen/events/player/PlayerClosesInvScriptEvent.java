@@ -77,11 +77,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         InventoryCloseEvent.getHandlerList().unregister(this);
     }

@@ -68,11 +68,6 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         VehicleCreateEvent.getHandlerList().unregister(this);
     }

@@ -62,11 +62,6 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerSwapHandItemsEvent.getHandlerList().unregister(this);
     }

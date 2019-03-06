@@ -68,11 +68,6 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         SpawnerSpawnEvent.getHandlerList().unregister(this);
     }

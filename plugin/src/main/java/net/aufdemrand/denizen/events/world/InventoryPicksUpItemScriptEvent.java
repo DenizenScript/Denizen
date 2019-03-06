@@ -77,11 +77,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         InventoryPickupItemEvent.getHandlerList().unregister(this);
     }

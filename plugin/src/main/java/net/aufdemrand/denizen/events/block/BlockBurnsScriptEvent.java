@@ -67,11 +67,6 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         BlockBurnEvent.getHandlerList().unregister(this);
     }

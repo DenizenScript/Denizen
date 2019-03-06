@@ -64,11 +64,6 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerGameModeChangeEvent.getHandlerList().unregister(this);
     }

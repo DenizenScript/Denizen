@@ -63,11 +63,6 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerItemHeldEvent.getHandlerList().unregister(this);
     }

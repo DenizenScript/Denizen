@@ -186,11 +186,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerInteractEvent.getHandlerList().unregister(this);
     }

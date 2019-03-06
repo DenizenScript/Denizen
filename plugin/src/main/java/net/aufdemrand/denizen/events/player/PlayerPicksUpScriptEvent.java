@@ -86,11 +86,6 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerPickupItemEvent.getHandlerList().unregister(this);
     }

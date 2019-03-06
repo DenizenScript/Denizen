@@ -55,11 +55,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         SpawnChangeEvent.getHandlerList().unregister(this);
     }

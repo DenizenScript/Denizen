@@ -84,11 +84,6 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         EntityRegainHealthEvent.getHandlerList().unregister(this);
     }

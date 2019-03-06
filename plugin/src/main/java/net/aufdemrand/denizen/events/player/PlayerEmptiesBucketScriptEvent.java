@@ -72,11 +72,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerBucketEmptyEvent.getHandlerList().unregister(this);
     }

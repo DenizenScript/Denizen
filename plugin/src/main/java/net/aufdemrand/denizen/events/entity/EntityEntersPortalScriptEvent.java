@@ -72,11 +72,6 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         EntityPortalEnterEvent.getHandlerList().unregister(this);
     }

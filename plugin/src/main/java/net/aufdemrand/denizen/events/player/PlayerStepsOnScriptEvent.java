@@ -78,11 +78,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerMoveEvent.getHandlerList().unregister(this);
     }

@@ -69,11 +69,6 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         EntityResurrectEvent.getHandlerList().unregister(this);
     }

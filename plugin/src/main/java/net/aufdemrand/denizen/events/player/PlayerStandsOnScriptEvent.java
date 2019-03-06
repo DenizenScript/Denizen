@@ -74,11 +74,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerInteractEvent.getHandlerList().unregister(this);
     }

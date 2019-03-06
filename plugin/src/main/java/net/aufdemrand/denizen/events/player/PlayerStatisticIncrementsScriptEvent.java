@@ -75,11 +75,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerStatisticIncrementEvent.getHandlerList().unregister(this);
     }

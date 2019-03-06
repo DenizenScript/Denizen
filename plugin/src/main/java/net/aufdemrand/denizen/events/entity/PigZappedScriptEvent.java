@@ -61,11 +61,6 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PigZapEvent.getHandlerList().unregister(this);
     }

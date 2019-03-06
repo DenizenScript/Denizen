@@ -121,11 +121,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         EntityDamageEvent.getHandlerList().unregister(this);
     }

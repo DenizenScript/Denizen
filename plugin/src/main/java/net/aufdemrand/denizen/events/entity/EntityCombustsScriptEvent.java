@@ -84,11 +84,6 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         EntityCombustEvent.getHandlerList().unregister(this);
     }

@@ -59,11 +59,6 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerCommandSendEvent.getHandlerList().unregister(this);
     }

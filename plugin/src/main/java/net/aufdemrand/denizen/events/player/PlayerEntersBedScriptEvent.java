@@ -58,11 +58,6 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerBedEnterEvent.getHandlerList().unregister(this);
     }

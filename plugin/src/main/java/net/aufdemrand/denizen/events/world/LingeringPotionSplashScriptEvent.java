@@ -82,11 +82,6 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         LingeringPotionSplashEvent.getHandlerList().unregister(this);
     }

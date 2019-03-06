@@ -84,11 +84,6 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
     }
 
     @Override
-    public void init() {
-        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-    }
-
-    @Override
     public void destroy() {
         PlayerInteractAtEntityEvent.getHandlerList().unregister(this);
     }
