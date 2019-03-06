@@ -1523,9 +1523,9 @@ public class ServerTags {
         // -->
         if (mechanism.matches("reset_event_stats")) {
             for (ScriptEvent se : ScriptEvent.events) {
-                se.fires = 0;
-                se.scriptFires = 0;
-                se.nanoTimes = 0;
+                se.stats.fires = 0;
+                se.stats.scriptFires = 0;
+                se.stats.nanoTimes = 0;
             }
         }
 

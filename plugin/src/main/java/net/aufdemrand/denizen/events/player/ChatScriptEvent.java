@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
@@ -15,7 +14,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -91,20 +89,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     public void init() {
         async = Settings.worldScriptChatEventAsynchronous();
         if (async) {
-            Bukkit.getServer().getPluginManager().registerEvents(asch, DenizenAPI.getCurrentInstance());
+            initListener(asch);
         }
         else {
-            Bukkit.getServer().getPluginManager().registerEvents(sch, DenizenAPI.getCurrentInstance());
-        }
-    }
-
-    @Override
-    public void destroy() {
-        if (async) {
-            AsyncPlayerChatEvent.getHandlerList().unregister(asch);
-        }
-        else {
-            PlayerChatEvent.getHandlerList().unregister(sch);
+            initListener(sch);
         }
     }
 

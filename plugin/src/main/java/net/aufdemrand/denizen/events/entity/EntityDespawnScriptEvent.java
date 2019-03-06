@@ -48,7 +48,6 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
 
     @Override
     public boolean matches(ScriptPath path) {
-        String s = path.event;
         String lower = path.eventLower;
         String target = CoreUtilities.getXthArg(0, lower);
 
@@ -70,14 +69,6 @@ public class EntityDespawnScriptEvent extends BukkitScriptEvent {
     @Override
     public String getName() {
         return "EntityDespawn";
-    }
-
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public void destroy() {
     }
 
     @Override
