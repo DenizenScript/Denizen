@@ -31,7 +31,8 @@ public class BukkitQueueProperties implements Property {
     };
 
     public static final String[] handledMechs = new String[] {
-    }; // None
+            "linked_player", "linked_npc"
+    };
 
     private BukkitQueueProperties(ScriptQueue queue) {
         this.queue = queue;
