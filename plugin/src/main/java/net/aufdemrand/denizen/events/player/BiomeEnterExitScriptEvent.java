@@ -1,11 +1,10 @@
 package net.aufdemrand.denizen.events.player;
 
-
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -16,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class BiomeEnterExitScriptEvent extends ScriptEvent implements Listener {
+public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements Listener {
 
     // TODO: in area?
     // <--[event]

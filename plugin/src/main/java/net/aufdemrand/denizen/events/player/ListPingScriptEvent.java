@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.events.player;
 
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-public class ListPingScriptEvent extends ScriptEvent implements Listener {
+public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events

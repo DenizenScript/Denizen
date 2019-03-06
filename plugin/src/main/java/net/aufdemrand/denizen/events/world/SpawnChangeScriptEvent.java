@@ -1,10 +1,9 @@
 package net.aufdemrand.denizen.events.world;
 
-
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -13,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.SpawnChangeEvent;
 
-public class SpawnChangeScriptEvent extends ScriptEvent implements Listener {
+public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
