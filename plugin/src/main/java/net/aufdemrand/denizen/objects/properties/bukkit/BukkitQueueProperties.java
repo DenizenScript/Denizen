@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.tags.Attribute;
 
@@ -44,6 +45,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <q@queue.npc>
         // @returns dNPC
+        // @mechanism ScriptQueue.npc
         // @description
         // Returns the dNPC linked to a queue.
         // -->
@@ -69,6 +71,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <q@queue.player>
         // @returns dPlayer
+        // @mechanism ScriptQueue.player
         // @description
         // Returns the dPlayer linked to a queue.
         // -->
@@ -105,6 +108,38 @@ public class BukkitQueueProperties implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
-        // None
+
+        // <--[mechanism]
+        // @object ScriptQueue
+        // @name player
+        // @input dPlayer
+        // @description
+        // Sets the linked player for the remainder of the queue.
+        // @tags
+        // <q@queue.player>
+        // -->
+        if (mechanism.matches("player") && mechanism.requireObject(dPlayer.class)) {
+            dPlayer player = mechanism.valueAsType(dPlayer.class);
+            for (ScriptEntry entry : queue.getEntries()) {
+                BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
+                data.setPlayer(player);
+            }
+        }
+        // <--[mechanism]
+        // @object ScriptQueue
+        // @name npc
+        // @input dNPC
+        // @description
+        // Sets the linked NPC for the remainder of the queue.
+        // @tags
+        // <q@queue.npc>
+        // -->
+        if (mechanism.matches("npc") && mechanism.requireObject(dNPC.class)) {
+            dNPC npc = mechanism.valueAsType(dNPC.class);
+            for (ScriptEntry entry : queue.getEntries()) {
+                BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
+                data.setNPC(npc);
+            }
+        }
     }
 }
