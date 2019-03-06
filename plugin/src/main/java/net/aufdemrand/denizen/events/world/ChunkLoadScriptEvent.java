@@ -3,11 +3,9 @@ package net.aufdemrand.denizen.events.world;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dChunk;
 import net.aufdemrand.denizen.objects.dWorld;
-import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -48,7 +46,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean matches(ScriptPath path) {
-        String s = path.event;
         String lower = path.eventLower;
         return lower.equals("chunk loads for the first time")
                 || lower.equals("chunk loads for the first time in " +
