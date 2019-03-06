@@ -5,9 +5,17 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.util.Vector;
 
 public class DirectionalBlocksHelper {
+
+    public static boolean isBedTopHalf(Block b) {
+        if (b.getBlockData() instanceof Bed) {
+            return ((Bed) b.getBlockData()).getPart() == Bed.Part.HEAD;
+        }
+        return false;
+    }
 
     public static BlockFace getFace(Block b) {
         if (b.getBlockData() instanceof Directional) {

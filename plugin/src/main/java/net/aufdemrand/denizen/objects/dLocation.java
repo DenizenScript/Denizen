@@ -34,6 +34,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
+import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -2281,6 +2282,59 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 return new dLocation(getBlock().getRelative(face).getLocation())
                         .getAttribute(attribute.fulfill(1));
             }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.other_block>
+        // @returns dLocation
+        // @description
+        // If the location is part of a double-block structure
+        // (double chests, doors, beds, etc), returns the location of the other block in the double-block structure.
+        // -->
+        if (attribute.startsWith("other_block")) {
+            BlockState state = getBlock().getState();
+            if (state instanceof Chest) {
+                // There is no remotely sane API for this.
+                InventoryHolder holder = ((Chest) state).getBlockInventory().getHolder();
+                if (holder instanceof DoubleChest) {
+                    Location left = ((DoubleChest) holder).getLeftSide().getInventory().getLocation();
+                    Location right = ((DoubleChest) holder).getRightSide().getInventory().getLocation();
+                    if (left.getBlockX() == getBlockX() && left.getBlockY() == getBlockY() && left.getBlockZ() == getBlockZ()) {
+                        return new dLocation(right).getAttribute(attribute.fulfill(1));
+                    }
+                    else {
+                        return new dLocation(left).getAttribute(attribute.fulfill(1));
+                    }
+                }
+            }
+            else if (state instanceof Bed
+                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                // There's no pre-1.13 API for this *at all*, and the new API isn't very sane, but can be used.
+                boolean isTop = DirectionalBlocksHelper.isBedTopHalf(getBlock());
+                BlockFace direction = DirectionalBlocksHelper.getFace(getBlock());
+                if (!isTop) {
+                    direction = direction.getOppositeFace();
+                }
+                return new dLocation(this.clone().add(direction.getDirection())).getAttribute(attribute.fulfill(1));
+            }
+            else if (state.getData() instanceof Door) {
+                if (((Door) state.getData()).isTopHalf()) {
+                    return new dLocation(this.clone().subtract(0, 1, 0)).getAttribute(attribute.fulfill(1));
+                }
+                else {
+                    return new dLocation(this.clone().add(0, 1, 0)).getAttribute(attribute.fulfill(1));
+                }
+            }
+            else {
+                if (!attribute.hasAlternative()) {
+                    dB.echoError("Block of type " + getBlock().getType().name() + " isn't supported by other_block.");
+                }
+                return null;
+            }
+            if (!attribute.hasAlternative()) {
+                dB.echoError("Block of type " + getBlock().getType().name() + " doesn't have an other block.");
+            }
+            return null;
         }
 
         // <--[tag]
