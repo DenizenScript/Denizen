@@ -45,7 +45,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <q@queue.npc>
         // @returns dNPC
-        // @mechanism ScriptQueue.npc
+        // @mechanism ScriptQueue.linked_npc
         // @description
         // Returns the dNPC linked to a queue.
         // -->
@@ -71,7 +71,7 @@ public class BukkitQueueProperties implements Property {
         // <--[tag]
         // @attribute <q@queue.player>
         // @returns dPlayer
-        // @mechanism ScriptQueue.player
+        // @mechanism ScriptQueue.linked_player
         // @description
         // Returns the dPlayer linked to a queue.
         // -->
@@ -111,14 +111,14 @@ public class BukkitQueueProperties implements Property {
 
         // <--[mechanism]
         // @object ScriptQueue
-        // @name player
+        // @name linked_player
         // @input dPlayer
         // @description
         // Sets the linked player for the remainder of the queue.
         // @tags
         // <q@queue.player>
         // -->
-        if (mechanism.matches("player") && mechanism.requireObject(dPlayer.class)) {
+        if (mechanism.matches("linked_player") && mechanism.requireObject(dPlayer.class)) {
             dPlayer player = mechanism.valueAsType(dPlayer.class);
             for (ScriptEntry entry : queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
@@ -127,14 +127,14 @@ public class BukkitQueueProperties implements Property {
         }
         // <--[mechanism]
         // @object ScriptQueue
-        // @name npc
+        // @name linked_npc
         // @input dNPC
         // @description
         // Sets the linked NPC for the remainder of the queue.
         // @tags
         // <q@queue.npc>
         // -->
-        if (mechanism.matches("npc") && mechanism.requireObject(dNPC.class)) {
+        if (mechanism.matches("linked_npc") && mechanism.requireObject(dNPC.class)) {
             dNPC npc = mechanism.valueAsType(dNPC.class);
             for (ScriptEntry entry : queue.getEntries()) {
                 BukkitScriptEntryData data = (BukkitScriptEntryData) entry.entryData;
