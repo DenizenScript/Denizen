@@ -70,11 +70,6 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void destroy() {
-        ExplosionPrimeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             radius = aH.getFloatFrom(determination);

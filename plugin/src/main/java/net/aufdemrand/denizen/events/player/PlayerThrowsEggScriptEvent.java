@@ -75,11 +75,6 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        PlayerEggThrowEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (dEntity.matches(lower)) {

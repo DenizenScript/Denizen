@@ -80,11 +80,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        BlockDispenseEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             velocity = new dLocation(velocity.multiply(aH.getDoubleFrom(determination)));

@@ -58,11 +58,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        LightningStrikeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

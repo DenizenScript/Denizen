@@ -59,11 +59,6 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public void destroy() {
-        PlayerCommandSendEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (determination.length() > 0 && !isDefaultDetermination(determination)) {

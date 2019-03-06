@@ -69,11 +69,6 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public void destroy() {
-        PlayerLeashEntityEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

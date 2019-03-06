@@ -77,11 +77,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public void destroy() {
-        InventoryPickupItemEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -78,11 +78,6 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        PlayerMoveEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

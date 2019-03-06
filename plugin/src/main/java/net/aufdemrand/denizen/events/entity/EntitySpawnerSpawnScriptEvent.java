@@ -68,11 +68,6 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void destroy() {
-        SpawnerSpawnEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

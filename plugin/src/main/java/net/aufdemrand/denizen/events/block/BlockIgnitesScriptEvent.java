@@ -73,11 +73,6 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void destroy() {
-        BlockIgniteEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

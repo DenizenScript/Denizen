@@ -66,11 +66,6 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     }
 
     @Override
-    public void destroy() {
-        FurnaceExtractEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             xp = aH.getIntegerFrom(determination);

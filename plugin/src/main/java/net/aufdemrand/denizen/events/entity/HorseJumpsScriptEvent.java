@@ -85,11 +85,6 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void destroy() {
-        HorseJumpEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             power = aH.getFloatFrom(determination);

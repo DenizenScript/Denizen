@@ -59,11 +59,6 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void destroy() {
-        WorldUnloadEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

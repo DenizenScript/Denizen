@@ -63,11 +63,6 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public void destroy() {
-        ServerListPingEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.length() > 0 && !determination.equalsIgnoreCase("none")) {
             String[] values = determination.split("[\\|" + dList.internal_escape + "]", 2);

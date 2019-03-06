@@ -81,11 +81,6 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        EntityToggleGlideEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

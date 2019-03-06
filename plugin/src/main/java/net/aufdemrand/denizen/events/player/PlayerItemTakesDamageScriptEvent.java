@@ -80,11 +80,6 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void destroy() {
-        PlayerItemDamageEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             damage = new Element(determination);

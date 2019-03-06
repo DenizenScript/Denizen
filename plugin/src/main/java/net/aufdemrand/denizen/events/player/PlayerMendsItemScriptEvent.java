@@ -78,11 +78,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        PlayerItemMendEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             repairAmount = new Element(determination);

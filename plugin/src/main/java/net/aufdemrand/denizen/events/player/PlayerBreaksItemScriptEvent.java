@@ -66,11 +66,6 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        PlayerItemBreakEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -75,11 +75,6 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void destroy() {
-        VehicleExitEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

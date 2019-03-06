@@ -72,11 +72,6 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     }
 
     @Override
-    public void destroy() {
-        PlayerBucketEmptyEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

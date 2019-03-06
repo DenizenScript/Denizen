@@ -72,11 +72,6 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        VehicleMoveEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

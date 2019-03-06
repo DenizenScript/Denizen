@@ -96,11 +96,6 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void destroy() {
-        PlayerFishEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

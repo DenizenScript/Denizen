@@ -75,11 +75,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
     }
 
     @Override
-    public void destroy() {
-        PlayerStatisticIncrementEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

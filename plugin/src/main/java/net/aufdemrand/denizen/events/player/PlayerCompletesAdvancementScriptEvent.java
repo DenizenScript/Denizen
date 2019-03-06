@@ -56,11 +56,6 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
     }
 
     @Override
-    public void destroy() {
-        PlayerAdvancementDoneEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

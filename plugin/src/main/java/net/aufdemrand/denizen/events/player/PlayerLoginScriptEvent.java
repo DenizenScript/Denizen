@@ -64,11 +64,6 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        PlayerLoginEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (CoreUtilities.toLowerCase(determination).startsWith("kicked")) {
             message = determination.length() > 7 ? determination.substring(7) : determination;

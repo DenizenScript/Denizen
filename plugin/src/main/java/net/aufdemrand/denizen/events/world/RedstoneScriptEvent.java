@@ -62,11 +62,6 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public void destroy() {
-        BlockRedstoneEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         Element power = new Element(determination);
         if (power.isInt()) {

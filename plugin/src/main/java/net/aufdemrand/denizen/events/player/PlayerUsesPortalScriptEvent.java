@@ -60,11 +60,6 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        PlayerPortalEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dLocation.matches(determination)) {
             to = dLocation.valueOf(determination);

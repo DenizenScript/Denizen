@@ -92,11 +92,6 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void destroy() {
-        EnchantItemEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             cost = aH.getIntegerFrom(determination);

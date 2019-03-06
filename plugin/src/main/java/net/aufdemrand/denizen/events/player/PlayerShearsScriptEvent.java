@@ -75,11 +75,6 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     }
 
     @Override
-    public void destroy() {
-        PlayerShearEntityEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

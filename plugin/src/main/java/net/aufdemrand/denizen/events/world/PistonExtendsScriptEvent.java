@@ -73,11 +73,6 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void destroy() {
-        BlockPistonExtendEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

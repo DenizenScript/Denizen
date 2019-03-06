@@ -98,11 +98,6 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     }
 
     @Override
-    public void destroy() {
-        EntityShootBowEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.Argument.valueOf(determination).matchesArgumentList(dEntity.class)) {
             cancelled = true;

@@ -64,11 +64,6 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        FireworkExplodeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

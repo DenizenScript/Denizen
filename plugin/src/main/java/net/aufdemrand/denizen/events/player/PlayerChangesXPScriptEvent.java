@@ -68,11 +68,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        PlayerExpChangeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (aH.matchesInteger(determination)) {

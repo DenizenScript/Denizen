@@ -69,11 +69,6 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        EntityResurrectEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -78,11 +78,6 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        EntityTameEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -64,11 +64,6 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void destroy() {
-        PlayerGameModeChangeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

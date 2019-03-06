@@ -95,11 +95,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void destroy() {
-        EntityTargetEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dEntity.matches(determination)) {
             target = dEntity.valueOf(determination);

@@ -185,11 +185,6 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         return "PlayerClicksBlock";
     }
 
-    @Override
-    public void destroy() {
-        PlayerInteractEvent.getHandlerList().unregister(this);
-    }
-
     public boolean wasCancellationAltered;
 
     @Override

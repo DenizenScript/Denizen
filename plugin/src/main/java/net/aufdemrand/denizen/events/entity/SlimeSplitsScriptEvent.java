@@ -80,11 +80,6 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        SlimeSplitEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             count = aH.getIntegerFrom(determination);

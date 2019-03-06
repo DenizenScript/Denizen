@@ -88,11 +88,6 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     }
 
     @Override
-    public void destroy() {
-        InventoryMoveItemEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
             item = dItem.valueOf(determination, container);

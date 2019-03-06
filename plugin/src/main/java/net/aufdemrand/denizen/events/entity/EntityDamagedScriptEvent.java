@@ -131,11 +131,6 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     }
 
     @Override
-    public void destroy() {
-        EntityDamageEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             damage = new Element(aH.getDoubleFrom(determination));

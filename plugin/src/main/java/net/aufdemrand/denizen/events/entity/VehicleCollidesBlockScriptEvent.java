@@ -76,11 +76,6 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     }
 
     @Override
-    public void destroy() {
-        VehicleBlockCollisionEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

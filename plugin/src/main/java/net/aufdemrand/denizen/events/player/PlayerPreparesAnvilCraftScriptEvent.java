@@ -82,11 +82,6 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
     }
 
     @Override
-    public void destroy() {
-        PrepareAnvilEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             repairCost = new Element(determination);

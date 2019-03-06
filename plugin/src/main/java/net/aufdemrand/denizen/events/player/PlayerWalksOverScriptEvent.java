@@ -62,11 +62,6 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        PlayerMoveEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

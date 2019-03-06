@@ -83,11 +83,6 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
         return "PlayerRightClicksAtEntity";
     }
 
-    @Override
-    public void destroy() {
-        PlayerInteractAtEntityEvent.getHandlerList().unregister(this);
-    }
-
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {

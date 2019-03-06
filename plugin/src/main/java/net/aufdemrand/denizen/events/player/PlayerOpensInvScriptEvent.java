@@ -71,11 +71,6 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        InventoryOpenEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -59,11 +59,6 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void destroy() {
-        PlayerMoveEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

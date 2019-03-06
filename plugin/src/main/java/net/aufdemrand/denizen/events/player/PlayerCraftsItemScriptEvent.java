@@ -80,11 +80,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        CraftItemEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
             result = dItem.valueOf(determination, container);

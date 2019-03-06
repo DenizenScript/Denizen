@@ -66,11 +66,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        PlayerRespawnEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
             dLocation loc = dLocation.valueOf(determination);

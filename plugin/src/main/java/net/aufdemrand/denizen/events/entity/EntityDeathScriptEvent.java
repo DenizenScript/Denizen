@@ -115,11 +115,6 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        EntityDeathEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         // finish this
         String lower = CoreUtilities.toLowerCase(determination);

@@ -78,11 +78,6 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void destroy() {
-        FoodLevelChangeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             food = aH.getIntegerFrom(determination);

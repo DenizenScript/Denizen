@@ -110,11 +110,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        ProjectileHitEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

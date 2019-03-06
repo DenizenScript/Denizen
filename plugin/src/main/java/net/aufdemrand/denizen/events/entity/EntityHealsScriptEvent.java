@@ -84,11 +84,6 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        EntityRegainHealthEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             amount = new Element(aH.getDoubleFrom(determination));

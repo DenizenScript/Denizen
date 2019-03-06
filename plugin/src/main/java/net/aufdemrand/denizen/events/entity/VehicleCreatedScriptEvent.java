@@ -68,11 +68,6 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        VehicleCreateEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

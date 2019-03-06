@@ -69,11 +69,6 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        PlayerAnimationEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

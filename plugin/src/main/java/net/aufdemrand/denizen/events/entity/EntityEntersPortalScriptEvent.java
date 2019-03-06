@@ -72,11 +72,6 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void destroy() {
-        EntityPortalEnterEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

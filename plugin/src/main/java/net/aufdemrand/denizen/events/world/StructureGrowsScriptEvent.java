@@ -87,11 +87,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        StructureGrowEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

@@ -75,11 +75,6 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void destroy() {
-        PlayerChangedWorldEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

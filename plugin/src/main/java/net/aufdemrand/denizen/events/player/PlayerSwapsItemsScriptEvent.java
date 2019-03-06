@@ -62,11 +62,6 @@ public class PlayerSwapsItemsScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        PlayerSwapHandItemsEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("main:")) {

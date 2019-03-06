@@ -77,11 +77,6 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     }
 
     @Override
-    public void destroy() {
-        PlayerEditBookEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
             signing = Element.FALSE;

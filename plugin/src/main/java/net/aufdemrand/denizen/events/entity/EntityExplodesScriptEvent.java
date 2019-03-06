@@ -84,11 +84,6 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        EntityExplodeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             strength = aH.getFloatFrom(determination);

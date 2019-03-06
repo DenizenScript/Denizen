@@ -65,11 +65,6 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
     }
 
     @Override
-    public void destroy() {
-        FurnaceBurnEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesInteger(determination)) {
             burntime = aH.getIntegerFrom(determination);

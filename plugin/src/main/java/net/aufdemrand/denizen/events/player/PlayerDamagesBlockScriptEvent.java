@@ -79,11 +79,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     }
 
     @Override
-    public void destroy() {
-        BlockDamageEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (CoreUtilities.toLowerCase(determination).equals("instabreak")) {
             instabreak = true;

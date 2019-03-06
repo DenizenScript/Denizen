@@ -80,11 +80,6 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        PlayerLevelChangeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

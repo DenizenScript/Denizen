@@ -81,11 +81,6 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
         return "LingeringPotionSplash";
     }
 
-    @Override
-    public void destroy() {
-        LingeringPotionSplashEvent.getHandlerList().unregister(this);
-    }
-
 
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {

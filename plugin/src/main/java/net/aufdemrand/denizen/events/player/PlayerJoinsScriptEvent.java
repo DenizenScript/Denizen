@@ -59,11 +59,6 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
     }
 
     @Override
-    public void destroy() {
-        PlayerJoinEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (!CoreUtilities.toLowerCase(determination).equals("none")) {
             message = determination;

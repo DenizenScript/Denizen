@@ -99,11 +99,6 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     }
 
     @Override
-    public void destroy() {
-        VehicleDamageEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (aH.matchesDouble(determination)) {
             damage = aH.getDoubleFrom(determination);

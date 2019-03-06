@@ -93,11 +93,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void destroy() {
-        BlockBreakEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         Block block = event.getBlock();

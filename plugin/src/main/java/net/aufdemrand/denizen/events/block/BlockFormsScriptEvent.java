@@ -65,11 +65,6 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void destroy() {
-        BlockFormEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

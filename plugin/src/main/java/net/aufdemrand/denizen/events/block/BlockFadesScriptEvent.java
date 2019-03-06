@@ -65,11 +65,6 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
     }
 
     @Override
-    public void destroy() {
-        BlockFadeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         return super.applyDetermination(container, determination);
     }

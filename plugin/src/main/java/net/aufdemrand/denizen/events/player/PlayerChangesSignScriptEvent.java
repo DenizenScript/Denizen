@@ -90,11 +90,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void destroy() {
-        SignChangeEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.length() > 0 && !isDefaultDetermination(determination)) {
             new_text = dList.valueOf(determination);

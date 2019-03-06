@@ -74,11 +74,6 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     }
 
     @Override
-    public void destroy() {
-        FurnaceSmeltEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (dItem.matches(determination)) {
             result_item = dItem.valueOf(determination, container);

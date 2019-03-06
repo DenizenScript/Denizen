@@ -87,11 +87,6 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
     }
 
     @Override
-    public void destroy() {
-        VehicleEntityCollisionEvent.getHandlerList().unregister(this);
-    }
-
-    @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         aH.Argument arg = aH.Argument.valueOf(determination);
         if (arg.matchesPrefix("pickup")) {
