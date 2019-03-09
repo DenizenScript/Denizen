@@ -40,7 +40,7 @@ public class ItemHelper_v1_13_R2 implements ItemHelper {
 
     @Override
     public String getJsonString(ItemStack itemStack) {
-        String json = CraftItemStack.asNMSCopy(itemStack).A().getChatModifier().toString().replace("\"", "\\\"");
+        String json = CraftItemStack.asNMSCopy(itemStack).A().getChatModifier().toString().replace("\\", "\\\\").replace("\"", "\\\"");
         return json.substring(176, json.length() - 185);
     }
 
