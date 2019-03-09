@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public abstract class BukkitScriptEvent extends ScriptEvent {
 
-    public Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
+    public static Class<? extends Event> getRegistrationClass(Class<? extends Event> clazz) {
         try {
             clazz.getDeclaredMethod("getHandlerList");
             return clazz;
@@ -42,7 +42,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    public HandlerList getEventListeners(Class<? extends Event> type) {
+    public static HandlerList getEventListeners(Class<? extends Event> type) {
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
             method.setAccessible(true);
@@ -64,7 +64,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
     }
 
-    public EventExecutor getExecutor(RegisteredListener listener) {
+    public static EventExecutor getExecutor(RegisteredListener listener) {
         try {
             return (EventExecutor) REGISTERED_LISTENER_EXECUTOR_FIELD.get(listener);
         }

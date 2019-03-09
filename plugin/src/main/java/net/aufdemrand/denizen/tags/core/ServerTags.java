@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
@@ -43,8 +44,12 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -52,11 +57,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ServerTags {
@@ -1463,8 +1464,65 @@ public class ServerTags {
             event.setReplaced(new Element(NMSHandler.getInstance().getPort()).getAttribute(attribute.fulfill(1)));
         }
 
-        // TODO: Add everything else from Bukkit.getServer().*
+        // <--[tag]
+        // @attribute <server.list_plugins_handling_event[<bukkit event>]>
+        // @returns dList(dPlugin)
+        // @description
+        // Returns a list of all plugins that handle a given Bukkit event.
+        // Can specify by ScriptEvent name ("PlayerBreaksBlock"), or by full Bukkit class name ("org.bukkit.event.block.BlockBreakEvent").
+        // This is a primarily a dev tool and is not necessarily useful to most players or scripts.
+        // -->
+        else if (attribute.matches("list_plugins_handling_event")
+                && attribute.hasContext(1)) {
+            String eventName = attribute.getContext(1);
+            if (eventName.contains(".")) {
+                try {
+                    Class clazz = Class.forName(eventName, false, ServerTags.class.getClassLoader());
+                    dList result = getHandlerPluginList(clazz);
+                    if (result != null) {
+                        event.setReplaced(result.getAttribute(attribute.fulfill(1)));
+                    }
+                }
+                catch (ClassNotFoundException ex) {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError(ex);
+                    }
+                }
+            }
+            else {
+                ScriptEvent scriptEvent = ScriptEvent.eventLookup.get(CoreUtilities.toLowerCase(eventName));
+                if (scriptEvent instanceof Listener) {
+                    Plugin plugin = DenizenAPI.getCurrentInstance();
+                    for (Class eventClass : plugin.getPluginLoader()
+                            .createRegisteredListeners((Listener) scriptEvent, plugin).keySet()) {
+                        dList result = getHandlerPluginList(eventClass);
+                        // Return results for the first valid match.
+                        if (result != null && result.size() > 0) {
+                            event.setReplaced(result.getAttribute(attribute.fulfill(1)));
+                            return;
+                        }
+                    }
+                    event.setReplaced(new dList().getAttribute(attribute.fulfill(1)));
+                }
+            }
+        }
+    }
 
+    public static dList getHandlerPluginList(Class eventClass) {
+        if (Event.class.isAssignableFrom(eventClass)) {
+            HandlerList handlers = BukkitScriptEvent.getEventListeners(eventClass);
+            if (handlers != null) {
+                dList result = new dList();
+                HashSet<String> deduplicationSet = new HashSet<>();
+                for (RegisteredListener listener : handlers.getRegisteredListeners()) {
+                    if (deduplicationSet.add(listener.getPlugin().getName())) {
+                        result.addObject(new dPlugin(listener.getPlugin()));
+                    }
+                }
+                return result;
+            }
+        }
+        return null;
     }
 
     public static void adjustServer(Mechanism mechanism) {
