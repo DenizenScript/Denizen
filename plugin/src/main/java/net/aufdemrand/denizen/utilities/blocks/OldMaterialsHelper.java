@@ -450,6 +450,12 @@ public class OldMaterialsHelper {
         if (NMSHandler.getVersion() == NMSVersion.v1_12_R1) {
             return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
         }
+        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            if (all_dMaterials == null) {
+                all_dMaterials = new HashMap<>();
+            }
+            all_dMaterials.put(name, new dMaterial(getBukkitMaterial(material), data));
+        }
         return null;
     }
 
@@ -457,12 +463,27 @@ public class OldMaterialsHelper {
         if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_12_R1)) {
             return new dMaterial(Material.valueOf(material), data).forceIdentifyAs(name);
         }
+        else {
+            if (all_dMaterials == null) {
+                all_dMaterials = new HashMap<>();
+            }
+            all_dMaterials.put(name, new dMaterial(getBukkitMaterial(material), data));
+        }
         return null;
     }
+
+    public static Material getBukkitMaterial(String material) {
+        Material result = Material.getMaterial(material);
+        if (result == null) {
+            result = Material.getMaterial(material, true);
+        }
+        return result;
+    }
+
     private static final Map<Integer, Material> MATERIAL_BY_LEGACY_ID;
 
     static {
-        MATERIAL_BY_LEGACY_ID = new HashMap<Integer, Material>();
+        MATERIAL_BY_LEGACY_ID = new HashMap<>();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             Map<String, Material> map = ReflectionHelper.getFieldValue(Material.class, "BY_NAME", null);
             for (Material material : map.values()) {
@@ -485,7 +506,7 @@ public class OldMaterialsHelper {
 
     public static Map<Material, Map<Integer, dMaterial>> material_varieties = new HashMap<>();
 
-    public static Map<String, dMaterial> all_dMaterials = new HashMap<>();
+    public static Map<String, dMaterial> all_dMaterials;
 
     /**
      * Registers a dMaterial as a 'variety'. Upon construction of a dMaterial, this
@@ -510,6 +531,9 @@ public class OldMaterialsHelper {
         entry.put((int) material.getData(), material);
         // Return the dMaterial
         material_varieties.put(material.getMaterial(), entry);
+        if (all_dMaterials == null) {
+            all_dMaterials = new HashMap<>();
+        }
         all_dMaterials.put(material.realName().toUpperCase(), material);
         return material;
     }
