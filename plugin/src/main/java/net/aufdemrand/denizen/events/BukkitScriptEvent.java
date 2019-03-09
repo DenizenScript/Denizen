@@ -204,14 +204,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 }
             }
         }
-        if (it.equals("cuboid")) {
+        String lower = CoreUtilities.toLowerCase(it);
+        if (lower.equals("cuboid")) {
             return dCuboid.getNotableCuboidsContaining(location).size() > 0;
         }
-        else if (it.equals("ellipsoid")) {
+        else if (lower.equals("ellipsoid")) {
             return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
         }
         else if (dWorld.matches(it)) {
-            return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(it);
+            return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(lower);
         }
         else if (dCuboid.matches(it)) {
             dCuboid cuboid = dCuboid.valueOf(it);
@@ -222,7 +223,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             return ellipsoid.contains(location);
         }
         else {
-            dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in ???'): '" + path.event + "' for " + path.container.getName());
+            dB.echoError("Invalid event 'in:<area>' switch [" + getName() + "] ('in:???'): '" + path.event + "' for " + path.container.getName());
             return false;
         }
     }
@@ -254,13 +255,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public boolean runWithCheck(ScriptPath path, dItem held) {
         String with = path.switches.get("with");
         if (with != null) {
-            if (with.equals("item")) {
+            if (with.equalsIgnoreCase("item")) {
                 return true;
-            }
-            dItem it = dItem.valueOf(with, noDebugTagContext);
-            if (it == null) {
-                dB.echoError("Invalid WITH item in " + getName() + " for '" + path.event + "' in " + path.container.getName());
-                return false;
             }
             if (held == null || !tryItem(held, with)) {
                 return false;
