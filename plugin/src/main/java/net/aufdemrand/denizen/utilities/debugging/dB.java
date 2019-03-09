@@ -367,17 +367,27 @@ public class dB {
         }
     }
 
+    private static boolean canGetClass = true;
+
     public static void log(String message) {
         if (!showDebug) {
             return;
         }
-        Class[] classes = new SecurityManagerTrick().getClassContext();
-        Class caller = classes.length > 2 ? classes[2] : dB.class;
-        String callerName = classNameCache.get(caller);
-        if (callerName == null) {
-            classNameCache.put(caller, callerName = caller.getSimpleName());
+        String callerName = "<JVM-Block>";
+        try {
+            if (canGetClass) {
+                Class[] classes = new SecurityManagerTrick().getClassContext();
+                Class caller = classes.length > 2 ? classes[2] : dB.class;
+                callerName = classNameCache.get(caller);
+                if (callerName == null) {
+                    classNameCache.put(caller, callerName = caller.getSimpleName());
+                }
+                callerName = callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName;
+            }
         }
-        callerName = callerName.length() > 16 ? callerName.substring(0, 12) + "..." : callerName;
+        catch (Throwable ex) {
+            canGetClass = false;
+        }
         ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
                 + callerName + "] "
                 + ChatColor.WHITE + trimMessage(message));
