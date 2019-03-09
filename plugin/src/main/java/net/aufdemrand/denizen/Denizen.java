@@ -73,6 +73,7 @@ import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
+import net.aufdemrand.denizencore.utilities.text.ConfigUpdater;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.apache.commons.lang.StringUtils;
@@ -90,8 +91,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -266,7 +266,6 @@ import java.util.logging.Logger;
 
 public class Denizen extends JavaPlugin implements DenizenImplementation {
 
-    public final static int configVersion = 15;
     public static String versionTag = null;
     private boolean startedSuccessful = false;
 
@@ -486,17 +485,28 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
 
         try {
-            // Warn if configuration is outdated / too new
-            if (!getConfig().isSet("Config.Version") ||
-                    getConfig().getInt("Config.Version", 0) != configVersion) {
-
-                dB.echoError("Your Denizen config file is from an older version. " +
-                        "Some settings will not be available unless you generate a new one. " +
-                        "This is easily done by stopping the server, deleting the current config.yml file in the Denizen folder " +
-                        "and restarting the server.");
+            // Automatic config file update
+            InputStream properConfig = Denizen.class.getResourceAsStream("/config.yml");
+            String properConfigString = ScriptHelper.convertStreamToString(properConfig);
+            properConfig.close();
+            FileInputStream currentConfig = new FileInputStream(getDataFolder() + "/config.yml");
+            String currentConfigString = ScriptHelper.convertStreamToString(currentConfig);
+            currentConfig.close();
+            String updated = ConfigUpdater.updateConfig(currentConfigString, properConfigString);
+            if (updated != null) {
+                dB.log("Your config file is outdated. Automatically updating it...");
+                FileOutputStream configOutput = new FileOutputStream(getDataFolder() + "/config.yml");
+                OutputStreamWriter writer = new OutputStreamWriter(configOutput);
+                writer.write(updated);
+                writer.close();
+                configOutput.close();
             }
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
 
-            // Create the command script handler for listener
+        try {
             ws_helper = new BukkitWorldScriptHelper();
             ItemScriptHelper is_helper = new ItemScriptHelper();
             InventoryScriptHelper in_helper = new InventoryScriptHelper();

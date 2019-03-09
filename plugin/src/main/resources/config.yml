@@ -1,5 +1,6 @@
-# Whether debug information about Denizen should appear in the
-# server console
+# Denizen config.
+
+# Whether debug information about Denizen should appear in the server console
 Debug:
   Show: true
   Ex command help: true
@@ -13,7 +14,7 @@ Debug:
   # This is purely to maintain basic information on things like how many servers run any given version of Denizen.
   # Please do not disable this unless it is throwing errors (Please report any errors you receive as well).
   Stats: true
-  # Whether to force the help command to be the default bukkit help.
+  # Whether to force the help command to be the default bukkit help (required to fix issues with command script help options).
   Override help: true
 
 Scripts:
@@ -157,8 +158,3 @@ Packets:
   # It also enables hiding item script IDs and most likely has no real reason to be disabled.
   # Note that changing this setting requires a full server restart.
   Interception: true
-
-# The version of this configuration file, used to check if your
-# configuration file is outdated or too new
-Config:
-  Version: 15
