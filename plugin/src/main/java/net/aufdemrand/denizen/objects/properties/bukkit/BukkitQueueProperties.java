@@ -126,6 +126,7 @@ public class BukkitQueueProperties implements Property {
                 data.setPlayer(player);
             }
         }
+
         // <--[mechanism]
         // @object ScriptQueue
         // @name linked_npc

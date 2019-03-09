@@ -11,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
+import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -81,10 +82,6 @@ public class ItemScriptContainer extends ScriptContainer {
     //   # NOTE: THIS IS NOT RECOMMENDED UNLESS YOU HAVE A SPECIFIC REASON TO USE IT.
     //   no_id: true/false
     //
-    //   # Set to true to not allow players to drop or otherwise lose this item besides by way of script
-    //   # or plugin-related means.
-    //   bound: true/false
-    //
     //   # For colorable items, such as leather armor, you can specify a valid dColor to specify the item's appearance.
     //   # See 'dColor' for more information.
     //   color: co@color
@@ -153,6 +150,8 @@ public class ItemScriptContainer extends ScriptContainer {
         return getItemFrom(null, null);
     }
 
+    public static SlowWarning boundWarning = new SlowWarning("Item script 'bound' functionality has never been reliable and should not be used. Consider replicating the concept with world events.");
+
     public dItem getItemFrom(dPlayer player, dNPC npc) {
         // Try to use this script to make an item.
         dItem stack = null;
@@ -186,6 +185,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set if the object is bound to the player
             if (contains("BOUND")) {
+                boundWarning.warn();
                 bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this))));
             }
 
