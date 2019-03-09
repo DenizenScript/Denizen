@@ -21,7 +21,8 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
     // @Events
     // player changes world (from <world>) (to <world>)
     //
-    // @Regex ^on player world( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player world( from [^\s]+)?( to [^\s]+)?$
+    // @Switch in <area>
     //
     // @Triggers when a player moves to a different world.
     //

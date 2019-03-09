@@ -22,10 +22,11 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // item enchanted (in <area>)
-    // <item> enchanted (in <area>)
+    // item enchanted
+    // <item> enchanted
     //
-    // @Regex ^on [^\s]+ enchanted( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ enchanted$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

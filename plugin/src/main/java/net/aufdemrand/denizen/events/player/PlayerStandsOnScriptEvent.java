@@ -16,10 +16,11 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player stands on material (in <area>)
-    // player stands on (<material>) (in <area>)
+    // player stands on material
+    // player stands on (<material>)
     //
-    // @Regex ^on player stands on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player stands on [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

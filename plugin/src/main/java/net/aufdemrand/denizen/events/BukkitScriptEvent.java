@@ -177,30 +177,38 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     }
 
     public boolean runInCheck(ScriptPath path, Location location, String innote) {
-        int index;
-        for (index = 0; index < path.eventArgsLower.length; index++) {
-            if (path.eventArgsLower[index].equals(innote)) {
-                break;
+        String it = path.switches.get(innote);
+        if (it == null) {
+            int index;
+            for (index = 0; index < path.eventArgsLower.length; index++) {
+                if (path.eventArgsLower[index].equals(innote)) {
+                    break;
+                }
+            }
+            if (index >= path.eventArgsLower.length) {
+                // No 'in ...' specified
+                return true;
+            }
+            it = path.eventArgLowerAt(index + 1);
+            if (it.equals("notable")) {
+                String subit = path.eventArgLowerAt(index + 2);
+                if (subit.equals("cuboid")) {
+                    return dCuboid.getNotableCuboidsContaining(location).size() > 0;
+                }
+                else if (subit.equals("ellipsoid")) {
+                    return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
+                }
+                else {
+                    dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
+                    return false;
+                }
             }
         }
-        if (index >= path.eventArgsLower.length) {
-            // No 'in ...' specified
-            return true;
+        if (it.equals("cuboid")) {
+            return dCuboid.getNotableCuboidsContaining(location).size() > 0;
         }
-
-        String it = path.eventArgLowerAt(index + 1);
-        if (it.equals("notable")) {
-            String subit = path.eventArgLowerAt(index + 2);
-            if (subit.equals("cuboid")) {
-                return dCuboid.getNotableCuboidsContaining(location).size() > 0;
-            }
-            else if (subit.equals("ellipsoid")) {
-                return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
-            }
-            else {
-                dB.echoError("Invalid event 'IN ...' check [" + getName() + "] ('in notable ???'): '" + path.event + "' for " + path.container.getName());
-                return false;
-            }
+        else if (it.equals("ellipsoid")) {
+            return dEllipsoid.getNotableEllipsoidsContaining(location).size() > 0;
         }
         else if (dWorld.matches(it)) {
             return CoreUtilities.toLowerCase(location.getWorld().getName()).equals(it);

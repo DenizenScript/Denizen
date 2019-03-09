@@ -15,10 +15,11 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block falls (in <area>)
-    // <material> falls (in <area>)
+    // block falls
+    // <material> falls
     //
-    // @Regex ^on [^\s]+ falls( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ falls$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -18,10 +18,11 @@ public class PlayerFillsBucketScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player fills bucket (in <area>)
-    // player fills <bucket> (in <area>)
+    // player fills bucket
+    // player fills <bucket>
     //
-    // @Regex ^on player fills [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player fills [^\s]+$
+    // @Switch in <area>
     //
     // @Triggers when a player fills a bucket.
     //

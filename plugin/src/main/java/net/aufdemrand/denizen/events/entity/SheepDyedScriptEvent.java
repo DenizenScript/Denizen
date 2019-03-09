@@ -17,10 +17,11 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // sheep dyed (<color>) (in <area>)
-    // player dyes sheep (<color>) (in <area>)
+    // sheep dyed (<color>)
+    // player dyes sheep (<color>)
     //
-    // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on (sheep dyed|player dyes sheep) [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

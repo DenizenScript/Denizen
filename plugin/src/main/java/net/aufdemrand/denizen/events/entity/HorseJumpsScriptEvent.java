@@ -16,10 +16,11 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // horse jumps (in <area>)
-    // (<color>) (<type>) jumps (in <area>)
+    // horse jumps
+    // (<color>) (<type>) jumps
     //
-    // @Regex ^on [^\s]+( [^\s]+)? jumps( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+( [^\s]+)? jumps$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

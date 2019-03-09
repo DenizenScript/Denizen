@@ -18,9 +18,10 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // portal created (because <reason>) (in <area>)
+    // portal created (because <reason>)
     //
-    // @Regex ^on portal created( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on portal created( because [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

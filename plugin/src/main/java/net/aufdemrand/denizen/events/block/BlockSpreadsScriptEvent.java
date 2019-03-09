@@ -14,10 +14,11 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // block spreads (in <area>)
-    // <material> spreads (in <area>)
+    // block spreads
+    // <material> spreads
     //
-    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ spreads$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

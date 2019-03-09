@@ -15,10 +15,11 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // furnace burns item (in <area>)
-    // furnace burns <item> (in <area>)
+    // furnace burns item
+    // furnace burns <item>
     //
-    // @Regex ^on furnace burns [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on furnace burns [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -21,12 +21,13 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // TODO: de-collide with breaks item
     // <--[event]
     // @Events
-    // player breaks block (in <area>)
-    // player breaks <material> (in <area>)
-    // player breaks block (in <area>)
-    // player breaks <material> (in <area>)
+    // player breaks block
+    // player breaks <material>
+    // player breaks block
+    // player breaks <material>
     //
-    // @Regex ^on player breaks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player breaks [^\s]+$
+    // @Switch in <area>
     //
     // @Switch with <item>
     //

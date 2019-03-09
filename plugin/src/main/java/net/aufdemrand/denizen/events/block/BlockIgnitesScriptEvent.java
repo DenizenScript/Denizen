@@ -16,10 +16,11 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // block ignites (in <area>)
-    // <material> ignites (in <area>)
+    // block ignites
+    // <material> ignites
     //
-    // @Regex ^on [^\s]+ ignites( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ ignites$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

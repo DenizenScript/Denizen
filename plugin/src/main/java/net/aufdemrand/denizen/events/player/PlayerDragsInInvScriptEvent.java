@@ -25,10 +25,11 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // player drags in inventory (in_area <area>)
-    // player drags (<item>) (in <inventory>) (in_area <area>)
+    // player drags in inventory
+    // player drags (<item>) (in <inventory>)
     //
     // @Regex ^on player drags( ^[\s]+)?(in [^\s]+)?( in_area ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Switch in_area <area>
     //
     // @Cancellable true
     //
@@ -54,7 +55,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     public dList raw_slots;
     private dPlayer entity;
     private dInventory dInv;
-    private boolean manual_cancelled;
     public InventoryDragEvent event;
 
     @Override

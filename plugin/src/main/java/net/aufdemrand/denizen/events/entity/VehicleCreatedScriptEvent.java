@@ -14,10 +14,11 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // vehicle created (in <area>)
-    // <vehicle> created (in <area>)
+    // vehicle created
+    // <vehicle> created
     //
-    // @Regex ^on [^\s]+ created( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ created$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

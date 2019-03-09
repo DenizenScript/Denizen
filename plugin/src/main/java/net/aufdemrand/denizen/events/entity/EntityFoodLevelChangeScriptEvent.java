@@ -17,10 +17,11 @@ public class EntityFoodLevelChangeScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // entity changes food level (in <area>)
-    // <entity> changes food level (in <area>)
+    // entity changes food level
+    // <entity> changes food level
     //
-    // @Regex ^on [^\s]+ changes food level( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ changes food level$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

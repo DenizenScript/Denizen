@@ -14,10 +14,11 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // liquid spreads (in <area>)
-    // <liquid block> spreads (in <area>)
+    // liquid spreads
+    // <liquid block> spreads
     //
-    // @Regex ^on [^\s]+ spreads( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ spreads$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

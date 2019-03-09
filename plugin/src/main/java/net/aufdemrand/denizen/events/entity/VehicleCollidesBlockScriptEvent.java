@@ -16,12 +16,13 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     // TODO: de-collide with 'collides with entity'
     // <--[event]
     // @Events
-    // vehicle collides with block (in <area>)
-    // vehicle collides with <material> (in <area>)
-    // <vehicle> collides with block (in <area>)
-    // <vehicle> collides with <material> (in <area>)
+    // vehicle collides with block
+    // vehicle collides with <material>
+    // <vehicle> collides with block
+    // <vehicle> collides with <material>
     //
-    // @Regex ^on [^\s]+ collides with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ collides with [^\s]+$
+    // @Switch in <area>
     //
     // @Triggers when a vehicle collides with a block.
     //

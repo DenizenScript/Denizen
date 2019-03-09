@@ -21,10 +21,11 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player changes sign (in <area>)
-    // player changes <material> (in <area>)
+    // player changes sign
+    // player changes <material>
     //
-    // @Regex ^on player changes [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player changes [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

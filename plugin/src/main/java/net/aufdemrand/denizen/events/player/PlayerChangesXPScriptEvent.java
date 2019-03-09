@@ -19,9 +19,10 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
     // TODO: in area
     // <--[event]
     // @Events
-    // player changes xp (in <area>)
+    // player changes xp
     //
-    // @Regex ^on player changes xp( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player changes xp$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

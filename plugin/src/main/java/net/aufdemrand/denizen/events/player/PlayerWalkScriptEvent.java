@@ -17,9 +17,10 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // player walks (in <area>)
+    // player walks
     //
-    // @Regex ^on player walks( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player walks$
+    // @Switch in <area>
     //
     // @Warning This event fires very very rapidly!
     //

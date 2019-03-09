@@ -21,10 +21,11 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity explodes (in <area>)
-    // <entity> explodes (in <area>)
+    // entity explodes
+    // <entity> explodes
     //
-    // @Regex ^on [^\s]+ explodes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ explodes$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

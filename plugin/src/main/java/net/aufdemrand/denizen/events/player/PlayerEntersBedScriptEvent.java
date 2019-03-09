@@ -17,9 +17,10 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // player enters bed (in <area>)
+    // player enters bed
     //
-    // @Regex ^on player enters bed( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player enters bed$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

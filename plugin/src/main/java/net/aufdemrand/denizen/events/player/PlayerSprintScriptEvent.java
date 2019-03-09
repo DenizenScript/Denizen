@@ -17,11 +17,12 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player toggles sprinting (in <area>)
-    // player starts sprinting (in <area>)
-    // player stops sprinting (in <area>)
+    // player toggles sprinting
+    // player starts sprinting
+    // player stops sprinting
     //
-    // @Regex ^on player (toggles|starts\stops) sprinting( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (toggles|starts\stops) sprinting$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

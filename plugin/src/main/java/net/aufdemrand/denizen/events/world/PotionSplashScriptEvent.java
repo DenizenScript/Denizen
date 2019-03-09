@@ -17,10 +17,11 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // potion splash (in <area>)
-    // <item> splashes (in <area>)
+    // potion splash
+    // <item> splashes
     //
-    // @Regex ^on [^\s]+ splashes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ splashes$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

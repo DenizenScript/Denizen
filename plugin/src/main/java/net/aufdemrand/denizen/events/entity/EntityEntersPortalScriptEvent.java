@@ -16,10 +16,11 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity enters portal (in <area>)
-    // <entity> enters portal (in <area>)
+    // entity enters portal
+    // <entity> enters portal
     //
-    // @Regex ^on [^\s]+ enters portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ enters portal$
+    // @Switch in <area>
     //
     // @Triggers when an entity enters a portal.
     //

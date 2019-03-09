@@ -22,9 +22,10 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player fishes (<entity>/<item>) (while <state>) (in <area>)
+    // player fishes (<entity>/<item>) (while <state>)
     //
-    // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player fishes( [^\s]+)?( while [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

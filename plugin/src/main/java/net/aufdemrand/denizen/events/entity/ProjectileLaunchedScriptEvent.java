@@ -15,10 +15,11 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // projectile launched (in <area>)
-    // <entity> launched (in <area>)
+    // projectile launched
+    // <entity> launched
     //
-    // @Regex ^on [^\s]+ launched( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ launched$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

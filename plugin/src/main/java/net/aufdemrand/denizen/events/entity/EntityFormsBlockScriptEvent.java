@@ -17,12 +17,13 @@ public class EntityFormsBlockScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // entity forms block (in <area>)
-    // entity forms <block> (in <area>)
-    // <entity> forms block (in <area>)
-    // <entity> forms <block> (in <area>)
+    // entity forms block
+    // entity forms <block>
+    // <entity> forms block
+    // <entity> forms <block>
     //
-    // @Regex ^on [^\s]+ forms [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ forms [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

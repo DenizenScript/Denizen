@@ -21,10 +21,11 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // player breaks item (in <area>)
-    // player breaks <item> (in <area>)
+    // player breaks item
+    // player breaks <item>
     //
-    // @Regex ^on player breaks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player breaks [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

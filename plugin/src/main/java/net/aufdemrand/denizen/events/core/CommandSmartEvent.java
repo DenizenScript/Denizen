@@ -109,9 +109,10 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // <--[event]
     // @Events
     // command
-    // <command_name>|... command (in <area>)
+    // <command_name>|... command
     //
-    // @Regex ^on( [^\s]+)? command( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on( [^\s]+)? command$
+    // @Switch in <area>
     //
     // @Triggers when a player, console, or command block/minecart runs a Bukkit command. This happens before
     // any code of established commands allowing scripters to 'override' existing commands.

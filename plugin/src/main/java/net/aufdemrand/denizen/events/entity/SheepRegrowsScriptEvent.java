@@ -14,9 +14,10 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // sheep regrows wool (in <area>)
+    // sheep regrows wool
     //
-    // @Regex ^on sheep regrows wool( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on sheep regrows wool$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

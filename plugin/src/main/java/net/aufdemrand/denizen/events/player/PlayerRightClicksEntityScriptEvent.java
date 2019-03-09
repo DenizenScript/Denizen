@@ -24,7 +24,8 @@ import org.bukkit.inventory.EquipmentSlot;
 // player right clicks <entity> in <area>
 // player right clicks <entity> in notable cuboid
 //
-// @Regex ^on player right clicks [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+// @Regex ^on player right clicks [^\s]+$
+    // @Switch in <area>
 //
 // @Switch with <item>
 //

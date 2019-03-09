@@ -16,11 +16,12 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
     // TODO: de-colide with entity despawns
     // <--[event]
     // @Events
-    // item despawns (in <area>)
-    // <item> despawns (in <area>)
-    // <material> despawns (in <area>)
+    // item despawns
+    // <item> despawns
+    // <material> despawns
     //
-    // @Regex ^on [^\s]+ despawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ despawns$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

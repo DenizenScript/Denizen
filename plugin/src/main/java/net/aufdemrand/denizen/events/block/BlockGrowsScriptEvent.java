@@ -14,10 +14,11 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block grows (in <area>)
-    // <block> grows (in <area>)
+    // block grows
+    // <block> grows
     //
-    // @Regex ^on [^\s]+ grows( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ grows$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

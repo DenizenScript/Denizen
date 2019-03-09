@@ -16,11 +16,12 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // item spawns (in <area>)
-    // <item> spawns (in <area>)
-    // <material> spawns (in <area>)
+    // item spawns
+    // <item> spawns
+    // <material> spawns
     //
-    // @Regex ^on [^\s]+ spawns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ spawns$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

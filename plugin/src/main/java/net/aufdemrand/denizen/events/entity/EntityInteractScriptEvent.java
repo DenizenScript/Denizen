@@ -19,12 +19,13 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // <entity> interacts with <material> (in <area>)
-    // entity interacts with <material> (in <area>)
-    // <entity> interacts with block (in <area>)
-    // entity interacts with block (in <area>)
+    // <entity> interacts with <material>
+    // entity interacts with <material>
+    // <entity> interacts with block
+    // entity interacts with block
     //
-    // @Regex ^on [^\s]+ interacts with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ interacts with [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

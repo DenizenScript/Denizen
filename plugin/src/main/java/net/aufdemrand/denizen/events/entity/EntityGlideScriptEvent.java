@@ -16,11 +16,12 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity toggles gliding (in <area>)
-    // entity starts gliding (in <area>)
-    // entity stops gliding (in <area>)
+    // entity toggles gliding
+    // entity starts gliding
+    // entity stops gliding
     //
-    // @Regex ^on player (toggles|starts|stops) gliding( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (toggles|starts|stops) gliding$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

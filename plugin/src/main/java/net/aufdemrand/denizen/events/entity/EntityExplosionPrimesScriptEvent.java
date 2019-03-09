@@ -15,10 +15,11 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // entity explosion primes (in <area>)
-    // <entity> explosion primes (in <area>)
+    // entity explosion primes
+    // <entity> explosion primes
     //
-    // @Regex ^on [^\s]+ explosion primes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ explosion primes$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

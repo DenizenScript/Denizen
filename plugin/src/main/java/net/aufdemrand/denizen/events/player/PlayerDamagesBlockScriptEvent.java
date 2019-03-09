@@ -16,10 +16,11 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // player damages block (in <area>)
-    // player damages <material> (in <area>)
+    // player damages block
+    // player damages <material>
     //
-    // @Regex ^on player damages [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player damages [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

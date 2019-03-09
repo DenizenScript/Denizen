@@ -17,12 +17,13 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // vehicle collides with entity (in <area>)
-    // vehicle collides with <entity> (in <area>)
-    // <vehicle> collides with entity (in <area>)
-    // <vehicle> collides with <entity> (in <area>)
+    // vehicle collides with entity
+    // vehicle collides with <entity>
+    // <vehicle> collides with entity
+    // <vehicle> collides with <entity>
     //
-    // @Regex ^on [^\s]+ collides with [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ collides with [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

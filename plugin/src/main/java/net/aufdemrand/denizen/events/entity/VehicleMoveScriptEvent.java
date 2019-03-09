@@ -14,10 +14,11 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // vehicle moves (in <area>)
-    // <vehicle> moves (in <area>)
+    // vehicle moves
+    // <vehicle> moves
     //
-    // @Regex ^on [^\s]+ moves( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ moves$
+    // @Switch in <area>
     //
     // @Warning This event fires very very rapidly!
     //

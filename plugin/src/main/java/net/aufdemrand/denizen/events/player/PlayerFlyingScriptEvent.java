@@ -17,11 +17,12 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player toggles flying (in <area>)
-    // player starts flying (in <area>)
-    // player stops flying (in <area>)
+    // player toggles flying
+    // player starts flying
+    // player stops flying
     //
-    // @Regex ^on player (toggles|starts|stops) flying( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (toggles|starts|stops) flying$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

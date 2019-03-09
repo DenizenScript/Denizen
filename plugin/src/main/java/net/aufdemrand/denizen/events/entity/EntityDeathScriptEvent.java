@@ -30,14 +30,15 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity death (in <area>)
-    // entity dies (in <area>)
-    // <entity> dies (in <area>)
-    // <entity> death (in <area>)
+    // entity death
+    // entity dies
+    // <entity> dies
+    // <entity> death
     //
     // @Cancellable true
     //
-    // @Regex ^on [^\s]+ (death|dies)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ (death|dies)$
+    // @Switch in <area>
     //
     // @Triggers when an entity dies.
     //

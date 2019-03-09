@@ -16,10 +16,11 @@ public class EntityExitsPortalScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // entity exits portal (in <area>)
-    // <entity> exits portal (in <area>)
+    // entity exits portal
+    // <entity> exits portal
     //
-    // @Regex ^on [^\s]+ exits portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ exits portal$
+    // @Switch in <area>
     //
     // @Triggers when an entity exits a portal.
     //

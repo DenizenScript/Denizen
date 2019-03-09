@@ -14,10 +14,11 @@ public class BlockFormsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block forms (in <area>)
-    // <block> forms (in <area>)
+    // block forms
+    // <block> forms
     //
-    // @Regex ^on [^\s]+ forms( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ forms$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

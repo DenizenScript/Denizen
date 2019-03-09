@@ -16,10 +16,11 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity creates portal (in <area>)
-    // <entity> creates portal (in <area>)
+    // entity creates portal
+    // <entity> creates portal
     //
-    // @Regex ^on [^\s]+ creates portal( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ creates portal$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

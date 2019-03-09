@@ -15,12 +15,13 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // entity exits vehicle (in <area>)
-    // entity exits <vehicle> (in <area>)
-    // <entity> exits vehicle (in <area>)
-    // <entity> exits <vehicle> (in <area>)
+    // entity exits vehicle
+    // entity exits <vehicle>
+    // <entity> exits vehicle
+    // <entity> exits <vehicle>
     //
-    // @Regex ^on [^\s]+ exits [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ exits [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

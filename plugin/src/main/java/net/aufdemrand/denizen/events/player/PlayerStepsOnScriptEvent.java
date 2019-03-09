@@ -17,10 +17,11 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // player steps on block (in <area>)
-    // player steps on <material> (in <area>)
+    // player steps on block
+    // player steps on <material>
     //
-    // @Regex ^on player steps on [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player steps on [^\s]+$
+    // @Switch in <area>
     //
     // @Warning This event may fire very rapidly.
     //

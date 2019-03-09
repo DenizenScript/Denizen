@@ -14,9 +14,10 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
     // @Events
-    // brewing stand brews (in <area>)
+    // brewing stand brews
     //
-    // @Regex ^on brewing stand brews( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on brewing stand brews$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

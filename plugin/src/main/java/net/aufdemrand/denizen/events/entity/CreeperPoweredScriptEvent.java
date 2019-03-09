@@ -14,9 +14,10 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // creeper powered (because <cause>) (in <area>)
+    // creeper powered (because <cause>)
     //
-    // @Regex ^on creeper powered( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on creeper powered( because [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

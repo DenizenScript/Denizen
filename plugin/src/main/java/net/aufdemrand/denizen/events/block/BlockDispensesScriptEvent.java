@@ -18,12 +18,13 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // block dispenses item (in <area>)
-    // block dispenses <item> (in <area>)
-    // <block> dispenses item (in <area>)
-    // <block> dispenses <item> (in <area>)
+    // block dispenses item
+    // block dispenses <item>
+    // <block> dispenses item
+    // <block> dispenses <item>
     //
-    // @Regex ^on [^\s]+ dispense [^\s]+ ( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ dispense [^\s]+ $
+    // @Switch in <area>
     //
     // @Cancellable true
     //

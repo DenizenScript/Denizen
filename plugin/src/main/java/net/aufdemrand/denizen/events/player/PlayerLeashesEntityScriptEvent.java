@@ -16,10 +16,11 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // player leashes entity (in <area>)
-    // player leashes <entity> (in <area>)
+    // player leashes entity
+    // player leashes <entity>
     //
-    // @Regex ^on player leashes [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player leashes [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -20,10 +20,11 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 
 // <--[event]
 // @Events
-// player item takes damage (in <area>)
-// player <item> takes damage (in <area>)
+// player item takes damage
+// player <item> takes damage
 //
-// @Regex ^on player [^\s]+ takes damage( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+// @Regex ^on player [^\s]+ takes damage$
+    // @Switch in <area>
 //
 // @Cancellable true
 //

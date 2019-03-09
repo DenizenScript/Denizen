@@ -20,9 +20,10 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player levels up (from <level>) (to <level>) (in <area>)
+    // player levels up (from <level>) (to <level>)
     //
-    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player levels up( from [^\s]+)?( to [^\s]+)?$
+    // @Switch in <area>
     //
     // @Triggers when a player levels up.
     //

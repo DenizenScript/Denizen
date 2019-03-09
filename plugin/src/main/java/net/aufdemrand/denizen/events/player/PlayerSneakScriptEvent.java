@@ -17,11 +17,12 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // player toggles sneaking (in <area>)
-    // player starts sneaking (in <area>)
-    // player stops sneaking (in <area>)
+    // player toggles sneaking
+    // player starts sneaking
+    // player stops sneaking
     //
-    // @Regex ^on player (toggles|starts|stops) sneaking( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (toggles|starts|stops) sneaking$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -17,11 +17,12 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // item merges (in <area>)
-    // <item> merges (in <area>)
-    // <material> merges (in <area>)
+    // item merges
+    // <item> merges
+    // <material> merges
     //
-    // @Regex ^on [^\s]+ merges( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ merges$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

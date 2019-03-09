@@ -20,10 +20,11 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // player mends item (in <area>)
-    // player mends <item> (in <area>)
+    // player mends item
+    // player mends <item>
     //
-    // @Regex ^on player mends [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player mends [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

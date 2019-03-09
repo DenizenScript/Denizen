@@ -21,10 +21,11 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // TODO: de-collide with places block
     // <--[event]
     // @Events
-    // player places hanging (in <area>)
-    // player places <hanging> (in <area>)
+    // player places hanging
+    // player places <hanging>
     //
-    // @Regex ^on player places [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player places [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

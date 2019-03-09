@@ -17,10 +17,11 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // piston retracts (in <area>)
-    // <block> retracts (in <area>)
+    // piston retracts
+    // <block> retracts
     //
-    // @Regex ^on [^\s]+ retracts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ retracts$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -18,10 +18,11 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // player empties bucket (in <area>)
-    // player empties <bucket> (in <area>)
+    // player empties bucket
+    // player empties <bucket>
     //
-    // @Regex ^on player empties [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player empties [^\s]+$
+    // @Switch in <area>
     //
     // @Triggers when a player empties a bucket.
     //

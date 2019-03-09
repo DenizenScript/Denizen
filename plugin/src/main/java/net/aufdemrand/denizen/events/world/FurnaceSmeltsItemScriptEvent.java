@@ -14,12 +14,13 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // furnace smelts item (into <item>) (in <area>)
-    // furnace smelts <item> (into <item>) (in <area>)
+    // furnace smelts item (into <item>)
+    // furnace smelts <item> (into <item>)
     //
     // @Cancellable true
     //
-    // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on furnace smelts [^\s]+( into [^\s]+)?$
+    // @Switch in <area>
     //
     // @Triggers when a furnace smelts an item.
     //

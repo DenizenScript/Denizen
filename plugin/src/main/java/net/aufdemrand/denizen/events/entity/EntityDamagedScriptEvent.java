@@ -27,18 +27,19 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // entity damaged (by <cause>) (in <area>)
-    // <entity> damaged (by <cause>) (in <area>)
-    // entity damages entity (in <area>)
-    // entity damages <entity> (in <area>)
-    // entity damaged by entity (in <area>)
-    // entity damaged by <entity> (in <area>)
-    // <entity> damages entity (in <area>)
-    // <entity> damaged by entity (in <area>)
-    // <entity> damaged by <entity> (in <area>)
-    // <entity> damages <entity> (in <area>)
+    // entity damaged (by <cause>)
+    // <entity> damaged (by <cause>)
+    // entity damages entity
+    // entity damages <entity>
+    // entity damaged by entity
+    // entity damaged by <entity>
+    // <entity> damages entity
+    // <entity> damaged by entity
+    // <entity> damaged by <entity>
+    // <entity> damages <entity>
     //
-    // @Regex ^on [^\s]+ ((damages [^\s]+)|damaged( by [^\s]+)?)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ ((damages [^\s]+)|damaged( by [^\s]+)?)$
+    // @Switch in <area>
     //
     // @Switch with <item>
     //

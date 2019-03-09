@@ -17,10 +17,11 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // piston extends (in <area>)
-    // <block> extends (in <area>)
+    // piston extends
+    // <block> extends
     //
-    // @Regex ^on [^\s]+ extends( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ extends$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

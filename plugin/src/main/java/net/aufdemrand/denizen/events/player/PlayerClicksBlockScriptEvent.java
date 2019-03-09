@@ -25,12 +25,13 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <--[event]
     // @Events
     // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (using hand/off_hand/either_hand) (in <area>)
-    // player (<click type>) clicks block (with <item>) (using hand/off_hand/either_hand) (in <area>)
+    // player (<click type>) clicks (<material>) (with <item>) (using hand/off_hand/either_hand)
+    // player (<click type>) clicks block (with <item>) (using hand/off_hand/either_hand)
     //
     // @Cancellable true
     //
-    // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?)))( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (((([^\s]+ )?clicks [^\s]+( with [^\s]+)?( in [^\s]+)?)))$
+    // @Switch in <area>
     //
     // @Triggers when a player clicks on a block or in the air.
     //

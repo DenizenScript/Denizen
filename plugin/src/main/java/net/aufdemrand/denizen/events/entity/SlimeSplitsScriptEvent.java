@@ -15,9 +15,10 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // slime splits (into <#>) (in <area>)
+    // slime splits (into <#>)
     //
-    // @Regex ^on slime splits( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on slime splits( into [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

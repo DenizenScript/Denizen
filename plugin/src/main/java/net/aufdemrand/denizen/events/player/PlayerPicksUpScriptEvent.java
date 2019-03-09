@@ -23,12 +23,13 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // player picks up item (in <area>)
-    // player picks up <item> (in <area>)
-    // player takes item (in <area>)
-    // player takes <item> (in <area>)
+    // player picks up item
+    // player picks up <item>
+    // player takes item
+    // player takes <item>
     //
-    // @Regex ^on player (picks up|takes) [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player (picks up|takes) [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

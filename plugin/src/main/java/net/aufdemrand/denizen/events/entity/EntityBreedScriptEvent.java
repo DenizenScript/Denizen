@@ -21,10 +21,11 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity breeds (in <area>)
-    // <entity> breeds (in <area>)
+    // entity breeds
+    // <entity> breeds
     //
-    // @Regex ^on [^\s]+ breeds( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ breeds$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -20,10 +20,11 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
 
     // <--[event]
     // @Events
-    // hanging breaks (because <cause>) (in <area>)
-    // <hanging> breaks (because <cause>) (in <area>)
+    // hanging breaks (because <cause>)
+    // <hanging> breaks (because <cause>)
     //
-    // @Regex ^on [^\s]+ breaks( because [^\s]+)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ breaks( because [^\s]+)$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

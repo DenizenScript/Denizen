@@ -15,10 +15,11 @@ public class EntityResurrectScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity resurrected (in <area>)
-    // <entity> resurrected (in <area>)
+    // entity resurrected
+    // <entity> resurrected
     //
-    // @Regex ^on [^\s]+ resurrected( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ resurrected$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -29,9 +29,10 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // TODO: in area
     // <--[event]
     // @Events
-    // player chats (in <area>)
+    // player chats
     //
-    // @Regex ^on player chats( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player chats$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

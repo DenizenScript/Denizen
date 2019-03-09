@@ -16,10 +16,11 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
     // <--[event]
     // @Events
-    // player places block (in <area>)
-    // player places <material> (in <area>)
+    // player places block
+    // player places <material>
     //
-    // @Regex ^on player places [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player places [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

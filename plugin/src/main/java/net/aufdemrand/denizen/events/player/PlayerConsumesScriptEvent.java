@@ -17,10 +17,11 @@ public class PlayerConsumesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player consumes item (in <area>)
-    // player consumes <item> (in <area>)
+    // player consumes item
+    // player consumes <item>
     //
-    // @Regex ^on player consumes [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player consumes [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

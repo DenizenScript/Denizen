@@ -15,14 +15,15 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // vehicle destroyed (in <area>)
-    // <vehicle> destroyed (in <area>)
-    // entity destroys vehicle (in <area>)
-    // <entity> destroys vehicle (in <area>)
-    // entity destroys <vehicle> (in <area>)
-    // <entity> destroys <vehicle> (in <area>)
+    // vehicle destroyed
+    // <vehicle> destroyed
+    // entity destroys vehicle
+    // <entity> destroys vehicle
+    // entity destroys <vehicle>
+    // <entity> destroys <vehicle>
     //
-    // @Regex ^on [^\s]+ destroys [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ destroys [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

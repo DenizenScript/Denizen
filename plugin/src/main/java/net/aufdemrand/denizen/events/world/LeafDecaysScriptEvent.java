@@ -14,10 +14,11 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // leaves decay (in <area>)
-    // <block> decay (in <area>)
+    // leaves decay
+    // <block> decay
     //
-    // @Regex ^on [^\s]+ decay( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ decay$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

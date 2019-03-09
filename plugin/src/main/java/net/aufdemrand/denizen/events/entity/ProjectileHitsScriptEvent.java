@@ -22,12 +22,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // projectile hits block (in <area>)
-    // projectile hits <material> (in <area>)
-    // <projectile> hits block (in <area>)
-    // <projectile> hits <material> (in <area>)
+    // projectile hits block
+    // projectile hits <material>
+    // <projectile> hits block
+    // <projectile> hits <material>
     //
-    // @Regex ^on [^\s]+ hits [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ hits [^\s]+$
+    // @Switch in <area>
     //
     // @Triggers when a projectile hits a block.
     //
@@ -40,12 +41,13 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity shoots block (in <area>)
-    // entity shoots <material> (with <projectile>) (in <area>)
-    // <entity> shoots block (in <area>)
-    // <entity> shoots <material> (with <projectile>) (in <area>)
+    // entity shoots block
+    // entity shoots <material> (with <projectile>)
+    // <entity> shoots block
+    // <entity> shoots <material> (with <projectile>)
     //
-    // @Regex ^on [^\s]+ shoots [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ shoots [^\s]+$
+    // @Switch in <area>
     //
     // @Triggers when a projectile shot by an entity hits a block.
     //

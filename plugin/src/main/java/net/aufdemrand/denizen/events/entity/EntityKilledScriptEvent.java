@@ -21,20 +21,21 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // entity killed (in <area>)
-    // entity killed by <cause> (in <area>)
-    // entity killed by entity (in <area>)
-    // entity killed by <entity> (in <area>)
-    // <entity> killed (in <area>)
-    // <entity> killed by <cause> (in <area>)
-    // <entity> killed by entity (in <area>)
-    // <entity> killed by <entity> (in <area>)
-    // entity kills entity (in <area>)
-    // entity kills <entity> (in <area>)
-    // <entity> kills entity (in <area>)
-    // <entity> kills <entity> (in <area>)
+    // entity killed
+    // entity killed by <cause>
+    // entity killed by entity
+    // entity killed by <entity>
+    // <entity> killed
+    // <entity> killed by <cause>
+    // <entity> killed by entity
+    // <entity> killed by <entity>
+    // entity kills entity
+    // entity kills <entity>
+    // <entity> kills entity
+    // <entity> kills <entity>
     //
-    // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ ((kills [^\s]+)|killed( by [^\s]+)?)$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

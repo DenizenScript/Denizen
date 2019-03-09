@@ -22,7 +22,8 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     // player walks over notable
     // player walks over <location>
     //
-    // @Regex ^on player walks over [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player walks over [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

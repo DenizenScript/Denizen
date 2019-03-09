@@ -17,11 +17,12 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // player shears entity (in <area>)
-    // player shears <entity> (in <area>)
-    // player shears <color> sheep (in <area>)
+    // player shears entity
+    // player shears <entity>
+    // player shears <color> sheep
     //
-    // @Regex ^on player shears [^\s]+( sheep)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player shears [^\s]+( sheep)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

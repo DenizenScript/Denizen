@@ -14,10 +14,11 @@ public class EntityUnleashedScriptEvent extends BukkitScriptEvent implements Lis
 
     // <--[event]
     // @Events
-    // entity unleashed (because <reason>) (in <area>)
-    // <entity> unleashed (because <reason>) (in <area>)
+    // entity unleashed (because <reason>)
+    // <entity> unleashed (because <reason>)
     //
-    // @Regex ^on [^\s]+ unleashed( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ unleashed( because [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

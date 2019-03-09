@@ -16,9 +16,10 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
 
     // <--[event]
     // @Events
-    // lightning strikes (in <area>)
+    // lightning strikes
     //
-    // @Regex ^on lightning strikes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on lightning strikes$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

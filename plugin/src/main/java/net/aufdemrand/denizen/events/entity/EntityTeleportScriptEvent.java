@@ -19,10 +19,11 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity teleports (in <area>)
-    // <entity> teleports (in <area>)
+    // entity teleports
+    // <entity> teleports
     //
-    // @Regex ^on [^\s]+ teleports( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ teleports$
+    // @Switch in <area>
     //
     // @Triggers when an entity teleports.
     //

@@ -14,10 +14,11 @@ public class BlockFadesScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block fades (in <area>)
-    // <block> fades (in <area>)
+    // block fades
+    // <block> fades
     //
-    // @Regex ^on [^\s]+ fades( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ fades$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

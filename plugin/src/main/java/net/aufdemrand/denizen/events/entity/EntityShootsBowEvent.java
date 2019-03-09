@@ -24,12 +24,13 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // entity shoots bow (in <area>)
-    // <entity> shoots bow (in <area>)
-    // entity shoots <item> (in <area>)
-    // <entity> shoots <item> (in <area>)
+    // entity shoots bow
+    // <entity> shoots bow
+    // entity shoots <item>
+    // <entity> shoots <item>
     //
-    // @Regex ^on [^\s]+ shoots [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ shoots [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

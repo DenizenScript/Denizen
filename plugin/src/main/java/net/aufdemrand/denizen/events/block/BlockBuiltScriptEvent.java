@@ -14,10 +14,11 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block being built (on <material>) (in <area>)
-    // <material> being built (on <material>) (in <area>)
+    // block being built (on <material>)
+    // <material> being built (on <material>)
     //
-    // @Regex ^on [^\s]+ being built( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ being built$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

@@ -17,9 +17,10 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // firework bursts (in <area>)
+    // firework bursts
     //
-    // @Regex ^on firework bursts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on firework bursts$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

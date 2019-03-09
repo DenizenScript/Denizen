@@ -21,11 +21,12 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // <--[event]
     // @Events
     // entity spawns
-    // entity spawns (because <cause>) (in <area>)
+    // entity spawns (because <cause>)
     // <entity> spawns
-    // <entity> spawns (because <cause>) (in <area>)
+    // <entity> spawns (because <cause>)
     //
-    // @Regex ^on [^\s]+ spawns( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ spawns( because [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

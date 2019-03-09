@@ -17,10 +17,11 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     // <--[event]
     // @Events
-    // spawner spawns entity (in <area>)
-    // spawner spawns <entity> (in <area>)
+    // spawner spawns entity
+    // spawner spawns <entity>
     //
-    // @Regex ^on spawner spawns [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on spawner spawns [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

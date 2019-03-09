@@ -19,12 +19,13 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     // <--[event]
     // @Events
-    // entity breaks hanging (because <cause>) (in <area>)
-    // entity breaks <hanging> (because <cause>) (in <area>)
-    // <entity> breaks hanging (because <cause>) (in <area>)
-    // <entity> breaks <hanging> (because <cause>) (in <area>)
+    // entity breaks hanging (because <cause>)
+    // entity breaks <hanging> (because <cause>)
+    // <entity> breaks hanging (because <cause>)
+    // <entity> breaks <hanging> (because <cause>)
     //
-    // @Regex ^on [^\s]+ breaks [^\s]+( because [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ breaks [^\s]+( because [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

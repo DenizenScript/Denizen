@@ -18,9 +18,10 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // player animates (<animation>) (in <area>)
+    // player animates (<animation>)
     //
-    // @Regex ^on player animates [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player animates [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

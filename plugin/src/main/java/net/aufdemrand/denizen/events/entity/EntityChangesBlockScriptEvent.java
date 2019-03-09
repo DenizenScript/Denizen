@@ -21,12 +21,13 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     // <--[event]
     // @Events
     // entity changes block
-    // entity changes block (into <material>) (in <area>)
-    // entity changes <material> (into <material>) (in <area>)
-    // <entity> changes block (into <material>) (in <area>)
-    // <entity> changes <material> (into <material>) (in <area>)
+    // entity changes block (into <material>)
+    // entity changes <material> (into <material>)
+    // <entity> changes block (into <material>)
+    // <entity> changes <material> (into <material>)
     //
-    // @Regex ^on [^\s]+ changes [^\s]+( into [^\s]+)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ changes [^\s]+( into [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

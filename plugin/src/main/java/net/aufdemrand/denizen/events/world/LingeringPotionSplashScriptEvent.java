@@ -17,10 +17,11 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
 
     // <--[event]
     // @Events
-    // lingering potion splash (in <area>)
-    // lingering <item> splashes (in <area>)
+    // lingering potion splash
+    // lingering <item> splashes
     //
-    // @Regex ^on lingering [^\s]+ splashes( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on lingering [^\s]+ splashes$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

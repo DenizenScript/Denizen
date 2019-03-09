@@ -16,11 +16,12 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
 
     // <--[event]
     // @Events
-    // player takes item from furnace (in <area>)
-    // player takes <item> from furnace (in <area>)
-    // player takes <material> from furnace (in <area>)
+    // player takes item from furnace
+    // player takes <item> from furnace
+    // player takes <material> from furnace
     //
-    // @Regex ^on player takes [^\s]+ from furnace( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on player takes [^\s]+ from furnace$
+    // @Switch in <area>
     //
     // @Triggers when a player takes an item from a furnace.
     // @Context

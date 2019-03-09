@@ -16,12 +16,13 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
 
     // <--[event]
     // @Events
-    // entity tamed (in <area>)
-    // <entity> tamed (in <area>)
-    // player tames entity (in <area>)
-    // player tames <entity> (in <area>)
+    // entity tamed
+    // <entity> tamed
+    // player tames entity
+    // player tames <entity>
     //
-    // @Regex ^on [^\s]+ (tames [^\s]+|tamed)( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ (tames [^\s]+|tamed)$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

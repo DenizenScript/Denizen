@@ -16,10 +16,11 @@ public class BlockPhysicsScriptEvent extends BukkitScriptEvent implements Listen
 
     // <--[event]
     // @Events
-    // block physics (in <area>)
-    // <material> physics (in <area>)
+    // block physics
+    // <material> physics
     //
-    // @Regex ^on [^\s]+ physics( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ physics$
+    // @Switch in <area>
     //
     // @Warning This event may fire very rapidly.
     //

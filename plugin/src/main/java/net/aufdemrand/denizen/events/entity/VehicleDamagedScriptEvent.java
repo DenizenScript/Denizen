@@ -18,14 +18,15 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // vehicle damaged (in <area>)
-    // <vehicle> damaged (in <area>)
-    // entity damages vehicle (in <area>)
-    // <entity> damages vehicle (in <area>)
-    // entity damages <vehicle> (in <area>)
-    // <entity> damages <vehicle> (in <area>)
+    // vehicle damaged
+    // <vehicle> damaged
+    // entity damages vehicle
+    // <entity> damages vehicle
+    // entity damages <vehicle>
+    // <entity> damages <vehicle>
     //
-    // @Regex ^on [^\s]+ damages [^\s]+( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ damages [^\s]+$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

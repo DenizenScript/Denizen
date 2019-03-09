@@ -19,12 +19,13 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // structure grows (naturally/from bonemeal) (in <area>)
-    // <structure> grows (naturally/from bonemeal) (in <area>)
-    // plant grows (naturally/from bonemeal) (in <area>)
-    // <plant> grows (naturally/from bonemeal) (in <area>)
+    // structure grows (naturally/from bonemeal)
+    // <structure> grows (naturally/from bonemeal)
+    // plant grows (naturally/from bonemeal)
+    // <plant> grows (naturally/from bonemeal)
     //
-    // @Regex ^on [^\s]+ grows( naturally|from bonemeal)?( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ grows( naturally|from bonemeal)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

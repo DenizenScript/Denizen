@@ -22,10 +22,11 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
 
     // <--[event]
     // @Events
-    // entity combusts (in <area>)
-    // <entity> combusts (in <area>)
+    // entity combusts
+    // <entity> combusts
     //
-    // @Regex ^on [^\s]+ combusts( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ combusts$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

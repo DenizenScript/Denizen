@@ -14,10 +14,11 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
 
     // <--[event]
     // @Events
-    // block burns (in <area>)
-    // <block> burns (in <area>)
+    // block burns
+    // <block> burns
     //
-    // @Regex ^on [^\s]+ burns( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on [^\s]+ burns$
+    // @Switch in <area>
     //
     // @Cancellable true
     //

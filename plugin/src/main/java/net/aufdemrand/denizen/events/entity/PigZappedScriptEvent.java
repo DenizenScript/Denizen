@@ -14,9 +14,10 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
 
     // <--[event]
     // @Events
-    // pig zapped (in <area>)
+    // pig zapped
     //
-    // @Regex ^on pig zapped( in ((notable (cuboid|ellipsoid))|([^\s]+)))?$
+    // @Regex ^on pig zapped$
+    // @Switch in <area>
     //
     // @Cancellable true
     //
