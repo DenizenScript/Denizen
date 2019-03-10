@@ -636,6 +636,25 @@ public class dMaterial implements dObject, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <m@material.hardness>
+        // @returns Element(Decimal)
+        // @description
+        // Returns the value representing how hard a material, used as a basis for calculating the time it takes to break.
+        // -->
+        registerTag("hardness", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                dMaterial material = (dMaterial) object;
+                if (!material.getMaterial().isBlock()) {
+                    dB.echoError("Provided material does not have a placeable block.");
+                    return null;
+                }
+                return new Element(material.getMaterial().getHardness())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <m@material.max_stack_size>
         // @returns Element(Number)
         // @description
