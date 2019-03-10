@@ -272,6 +272,8 @@ public abstract class EntityHelper {
      */
     public abstract Location rayTrace(Location start, Vector direction, double range);
 
+    public abstract Location rayTraceBlock(Location start, Vector direction, double range);
+
     public abstract Location getImpactNormal(Location start, Vector direction, double range);
 
     /**

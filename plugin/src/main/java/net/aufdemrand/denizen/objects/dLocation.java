@@ -977,7 +977,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dLocation
         // @description
         // Returns the exact impact normal at the location this location is pointing at.
-        // Optionally, specify a maximum range to find the location from.
+        // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         if (attribute.startsWith("precise_impact_normal")) {
             int range = attribute.getIntContext(1);
@@ -988,9 +988,34 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getInstance().getEntityHelper().getImpactNormal(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getInstance().getEntityHelper().getImpactNormal(this, new Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new dLocation(location).getAttribute(attribute.fulfill(1));
+            }
+            else {
+                return null;
+            }
+        }
+
+        // <--[tag]
+        // @attribute <l@location.precise_cursor_on_block[<range>]>
+        // @returns dLocation
+        // @description
+        // Returns the block location this location is pointing at.
+        // Optionally, specify a maximum range to find the location from (defaults to 200).
+        // -->
+        if (attribute.startsWith("precise_cursor_on_block")) {
+            int range = attribute.getIntContext(1);
+            if (range < 1) {
+                range = 200;
+            }
+            double xzLen = Math.cos((getPitch() % 360) * (Math.PI / 180));
+            double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
+            double ny = Math.sin(getPitch() * (Math.PI / 180));
+            double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
+            Location location = NMSHandler.getInstance().getEntityHelper().rayTraceBlock(this, new Vector(nx, -ny, nz), range);
+            if (location != null) {
+                return new dLocation(location.getBlock().getLocation()).getAttribute(attribute.fulfill(1));
             }
             else {
                 return null;
@@ -1002,7 +1027,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dLocation
         // @description
         // Returns the exact location this location is pointing at.
-        // Optionally, specify a maximum range to find the location from.
+        // Optionally, specify a maximum range to find the location from (defaults to 200).
         // -->
         if (attribute.startsWith("precise_cursor_on")) {
             int range = attribute.getIntContext(1);
@@ -1013,7 +1038,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             double nx = xzLen * Math.sin(-getYaw() * (Math.PI / 180));
             double ny = Math.sin(getPitch() * (Math.PI / 180));
             double nz = xzLen * Math.cos(getYaw() * (Math.PI / 180));
-            Location location = NMSHandler.getInstance().getEntityHelper().rayTrace(this, new org.bukkit.util.Vector(nx, -ny, nz), range);
+            Location location = NMSHandler.getInstance().getEntityHelper().rayTrace(this, new Vector(nx, -ny, nz), range);
             if (location != null) {
                 return new dLocation(location).getAttribute(attribute.fulfill(1));
             }

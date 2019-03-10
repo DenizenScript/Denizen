@@ -461,6 +461,18 @@ public class EntityHelper_v1_11_R1 extends EntityHelper {
     }
 
     @Override
+    public Location rayTraceBlock(Location start, Vector direction, double range) {
+        Vector startVec = start.toVector();
+        MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
+        if (l != null && l.pos != null) {
+            return new Location(start.getWorld(), l.pos.x - (l.direction.getAdjacentX() * 0.05),
+                    l.pos.y - (l.direction.getAdjacentY() * 0.05),
+                    l.pos.z - (l.direction.getAdjacentZ() * 0.05));
+        }
+        return null;
+    }
+
+    @Override
     public Location getImpactNormal(Location start, Vector direction, double range) {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
