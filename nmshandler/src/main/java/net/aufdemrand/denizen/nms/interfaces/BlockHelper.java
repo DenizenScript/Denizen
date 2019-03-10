@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.interfaces;
 
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import org.bukkit.Material;
@@ -27,6 +28,10 @@ public interface BlockHelper {
     BlockData getBlockData(Material material, byte data);
 
     BlockData getBlockData(Block block);
+
+    default BlockData getBlockData(ModernBlockData data) {
+        return null;
+    }
 
     BlockData getBlockData(String compressedString);
 

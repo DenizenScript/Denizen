@@ -2398,9 +2398,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (mechanism.matches("block_type") && mechanism.requireObject(dMaterial.class)) {
             dMaterial mat = mechanism.valueAsType(dMaterial.class);
-            byte data = mat.hasData() ? mat.getData() : 0;
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(mat.getMaterial(), data);
-            blockData.setBlock(getBlock(), false);
+            mat.getNmsBlockData().setBlock(getBlock(), false);
         }
 
         // <--[mechanism]

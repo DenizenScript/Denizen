@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.scripts.commands.world.SchematicCommand;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -294,7 +295,8 @@ public class CuboidBlockSet implements BlockSet {
                         int index = y * width * length + z * width + x;
                         BlockVector pt = new BlockVector(x, y, z);
                         // TODO: 1.13 - move away from legacy IDs somehow?
-                        BlockData block = NMSHandler.getInstance().getBlockHelper().getBlockData(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
+                        dMaterial dMat = OldMaterialsHelper.getMaterialFrom(OldMaterialsHelper.getLegacyMaterial(blocks[index]), blockData[index]);
+                        BlockData block = dMat.getNmsBlockData();
                         if (tileEntitiesMap.containsKey(pt)) {
                             CompoundTag otag = NMSHandler.getInstance().createCompoundTag(tileEntitiesMap.get(pt));
                             block.setCompoundTag(otag);

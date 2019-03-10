@@ -279,6 +279,13 @@ public class dMaterial implements dObject, Adjustable {
         return material;
     }
 
+    public BlockData getNmsBlockData() {
+        if (modernData != null) {
+            return NMSHandler.getInstance().getBlockHelper().getBlockData(modernData);
+        }
+        return NMSHandler.getInstance().getBlockHelper().getBlockData(getMaterial(), getData((byte) 0));
+    }
+
     public String name() {
         return material.name();
     }

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.impl.blocks.BlockData_v1_13_R2;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
@@ -106,6 +107,11 @@ public class BlockHelper_v1_13_R2 implements BlockHelper {
     @Override
     public BlockData getBlockData(Material material, byte data) {
         return new BlockData_v1_13_R2(material, data);
+    }
+
+    @Override
+    public BlockData getBlockData(ModernBlockData data) {
+        return new BlockData_v1_13_R2(data.data);
     }
 
     @Override
