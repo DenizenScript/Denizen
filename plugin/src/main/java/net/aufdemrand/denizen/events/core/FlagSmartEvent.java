@@ -55,7 +55,7 @@ public class FlagSmartEvent implements OldSmartEvent, Listener {
 
     static boolean active = false;
 
-    public static boolean IsActive() {
+    public static boolean isActive() {
         return active;
     }
 }
