@@ -110,10 +110,8 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     public void onSheepDyed(SheepDyeWoolEvent event) {
         entity = new dEntity(event.getEntity());
         color = DyeColor.valueOf(event.getColor().toString());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setColor(color);
     }
 }

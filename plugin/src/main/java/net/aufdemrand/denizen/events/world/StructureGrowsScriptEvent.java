@@ -121,8 +121,6 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
             new_materials.add(new dMaterial(block.getType(), block.getRawData()).identify());
         }
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

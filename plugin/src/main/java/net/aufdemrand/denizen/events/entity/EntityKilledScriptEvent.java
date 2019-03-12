@@ -196,10 +196,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
                 }
             }
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setDamage(damage.asDouble());
     }
 }

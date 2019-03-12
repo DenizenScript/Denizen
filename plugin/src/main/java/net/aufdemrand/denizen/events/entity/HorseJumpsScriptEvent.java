@@ -115,10 +115,8 @@ public class HorseJumpsScriptEvent extends BukkitScriptEvent implements Listener
             color = new Element(((Horse) event.getEntity()).getColor().name());
             variant = new Element(event.getEntity().getVariant().name());
             power = event.getPower();
-            cancelled = event.isCancelled();
             this.event = event;
-            fire();
-            event.setCancelled(cancelled);
+            fire(event);
             event.setPower(power);
         }
     }

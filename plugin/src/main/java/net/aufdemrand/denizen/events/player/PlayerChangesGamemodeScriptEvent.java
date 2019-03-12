@@ -84,9 +84,7 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
             return;
         }
         gamemode = new Element(event.getNewGameMode().name());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

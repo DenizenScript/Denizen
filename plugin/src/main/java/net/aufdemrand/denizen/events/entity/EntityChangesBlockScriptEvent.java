@@ -141,9 +141,7 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
         old_material = new dMaterial(location.getBlock());
         new_material = new dMaterial(event.getTo());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

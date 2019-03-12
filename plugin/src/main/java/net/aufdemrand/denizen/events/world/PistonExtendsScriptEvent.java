@@ -109,9 +109,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
             blocks.add(new dLocation(block.getLocation()).identify());
         }
         length = new Element(blocks.size());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

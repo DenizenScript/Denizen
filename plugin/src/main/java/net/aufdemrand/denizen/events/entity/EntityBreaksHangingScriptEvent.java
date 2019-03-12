@@ -141,9 +141,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         location = new dLocation(hanging.getLocation());
         breaker = new dEntity(event.getRemover());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

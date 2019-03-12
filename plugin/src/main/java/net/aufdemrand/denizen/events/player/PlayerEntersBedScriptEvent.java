@@ -79,9 +79,7 @@ public class PlayerEntersBedScriptEvent extends BukkitScriptEvent implements Lis
             return;
         }
         location = new dLocation(event.getBed().getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -129,9 +129,7 @@ public class HangingBreaksScriptEvent extends BukkitScriptEvent implements Liste
             entity = new dEntity(((HangingBreakByEntityEvent) event).getRemover());
         }
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

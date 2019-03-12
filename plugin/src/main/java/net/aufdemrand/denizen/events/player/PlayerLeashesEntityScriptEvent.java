@@ -94,9 +94,7 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
         }
         holder = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         entity = new dEntity(event.getEntity());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

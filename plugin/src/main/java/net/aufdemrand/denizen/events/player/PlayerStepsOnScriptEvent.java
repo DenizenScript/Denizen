@@ -120,10 +120,8 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 
     @EventHandler

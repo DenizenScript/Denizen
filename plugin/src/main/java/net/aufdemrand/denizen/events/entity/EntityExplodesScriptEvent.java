@@ -137,10 +137,8 @@ public class EntityExplodesScriptEvent extends BukkitScriptEvent implements List
         for (Block block : event.blockList()) {
             blocks.add(new dLocation(block.getLocation()).identify());
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         if (blockSet) {
             event.blockList().clear();
             if (blocks.size() > 0) {

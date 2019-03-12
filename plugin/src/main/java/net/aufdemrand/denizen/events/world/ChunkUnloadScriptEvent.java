@@ -78,9 +78,7 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
     public void onChunkUnload(ChunkUnloadEvent event) {
         chunk = new dChunk(event.getChunk());
         world = new dWorld(event.getWorld());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

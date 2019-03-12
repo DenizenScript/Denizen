@@ -85,9 +85,7 @@ public class ItemScrollScriptEvent extends BukkitScriptEvent implements Listener
     public void onPlayerScrollsHotbar(PlayerItemHeldEvent event) {
         new_slot = new Element(event.getNewSlot() + 1);
         previous_slot = new Element(event.getPreviousSlot() + 1);
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

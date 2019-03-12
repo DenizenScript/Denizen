@@ -72,9 +72,7 @@ public class WorldUnloadsScriptEvent extends BukkitScriptEvent implements Listen
     @EventHandler
     public void onWorldUnloads(WorldUnloadEvent event) {
         world = new dWorld(event.getWorld());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

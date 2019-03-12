@@ -136,10 +136,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         for (Integer raw_slot : event.getRawSlots()) {
             raw_slots.add(String.valueOf(raw_slot + 1));
         }
-        cancelled = event.isCancelled();
-        boolean wasCancelled = cancelled;
+        boolean wasCancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         if (cancelled && !wasCancelled) {
             final InventoryHolder holder = inventory.getHolder();
             new BukkitRunnable() {
@@ -152,6 +151,5 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
                 }
             }.runTaskLater(DenizenAPI.getCurrentInstance(), 1);
         }
-        event.setCancelled(cancelled);
     }
 }

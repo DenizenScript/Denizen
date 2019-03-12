@@ -112,11 +112,9 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
         item = new dItem(event.getItem());
         damage = new Element(event.getDamage());
         location = new dLocation(event.getPlayer().getLocation());
-        cancelled = event.isCancelled();
-        boolean wasCancelled = cancelled;
+        boolean wasCancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setDamage(damage.asInt());
         final Player p = event.getPlayer();
         if (cancelled && !wasCancelled) {

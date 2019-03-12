@@ -111,9 +111,7 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
         if (old_biome.identify().equals(new_biome.identify())) {
             return;
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

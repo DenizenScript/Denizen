@@ -96,9 +96,7 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
         for (Entity e : event.getAffectedEntities()) {
             entities.add(new dEntity(e).identify());
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

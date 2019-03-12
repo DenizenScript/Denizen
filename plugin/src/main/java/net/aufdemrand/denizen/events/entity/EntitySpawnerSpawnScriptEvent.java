@@ -96,11 +96,9 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
         this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
         spawnerLocation = new dLocation(event.getSpawner().getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
         dEntity.rememberEntity(entity);
-        fire();
+        fire(event);
         dEntity.forgetEntity(entity);
-        event.setCancelled(cancelled);
     }
 }

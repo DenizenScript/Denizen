@@ -197,10 +197,8 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
                 }
             }
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setDamage(damage.asDouble());
     }
 }

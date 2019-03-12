@@ -121,13 +121,11 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         mother = new dEntity(event.getMother());
         item  = new dItem(event.getBredWith());
         experience = event.getExperience();
-        cancelled = event.isCancelled();
-        boolean wasCancelled = cancelled;
+        boolean wasCancelled = event.isCancelled();
         this.event = event;
         dEntity.rememberEntity(entity);
-        fire();
+        fire(event);
         dEntity.forgetEntity(entity);
-        event.setCancelled(cancelled);
         event.setExperience(experience);
 
         // Prevent entities from continuing to breed with each other

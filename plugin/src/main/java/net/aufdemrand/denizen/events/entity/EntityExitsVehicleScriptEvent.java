@@ -99,8 +99,6 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
         vehicle = new dEntity(event.getVehicle());
         entity = new dEntity(event.getExited());
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

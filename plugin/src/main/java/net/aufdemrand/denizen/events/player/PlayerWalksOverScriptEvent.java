@@ -89,9 +89,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
         if (notable == null) {
             return;
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

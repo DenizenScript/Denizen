@@ -101,10 +101,8 @@ public class SlimeSplitsScriptEvent extends BukkitScriptEvent implements Listene
     public void onSlimeSplits(SlimeSplitEvent event) {
         entity = new dEntity(event.getEntity());
         count = event.getCount();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setCount(count);
     }
 

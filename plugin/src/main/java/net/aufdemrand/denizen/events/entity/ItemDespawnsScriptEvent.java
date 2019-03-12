@@ -96,9 +96,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
         location = new dLocation(event.getLocation());
         item = new dItem(event.getEntity().getItemStack());
         entity = new dEntity(event.getEntity());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

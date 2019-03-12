@@ -86,9 +86,7 @@ public class BlockFallsScriptEvent extends BukkitScriptEvent implements Listener
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

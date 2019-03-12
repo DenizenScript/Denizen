@@ -143,10 +143,8 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         old_sign = new dList(Arrays.asList(sign.getLines()));
         new_sign = new dList(Arrays.asList(event.getLines()));
         new_text = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         if (new_text != null) {
             for (int i = 0; i < 4 && i < new_text.size(); i++) {
                 event.setLine(i, EscapeTags.unEscape(new_text.get(i)));

@@ -93,9 +93,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
             return;
         }
         state = event.isSneaking();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

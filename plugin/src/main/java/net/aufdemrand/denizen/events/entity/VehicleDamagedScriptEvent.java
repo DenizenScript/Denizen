@@ -131,9 +131,7 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;
         damage = event.getDamage();
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
+        fire(event);
         event.setDamage(damage);
-        event.setCancelled(cancelled);
     }
 }

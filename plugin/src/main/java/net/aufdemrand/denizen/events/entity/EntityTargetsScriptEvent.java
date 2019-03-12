@@ -136,10 +136,8 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 
 }

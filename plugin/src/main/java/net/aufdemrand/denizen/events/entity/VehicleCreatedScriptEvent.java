@@ -81,12 +81,10 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
     @EventHandler
     public void onVehicleCreated(VehicleCreateEvent event) {
         Entity entity = event.getVehicle();
-        cancelled = event.isCancelled();
         dEntity.rememberEntity(entity);
         vehicle = new dEntity(entity);
         this.event = event;
-        fire();
+        fire(event);
         dEntity.forgetEntity(entity);
-        event.setCancelled(cancelled);
     }
 }

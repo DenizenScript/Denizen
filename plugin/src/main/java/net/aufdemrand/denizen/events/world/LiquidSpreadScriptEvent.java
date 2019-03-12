@@ -86,9 +86,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
         destination = new dLocation(event.getToBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -131,10 +131,8 @@ public class EntityCombustsScriptEvent extends BukkitScriptEvent implements List
     public void onEntityCombusts(EntityCombustEvent event) {
         entity = new dEntity(event.getEntity());
         burntime = event.getDuration();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setDuration(burntime);
     }
 }

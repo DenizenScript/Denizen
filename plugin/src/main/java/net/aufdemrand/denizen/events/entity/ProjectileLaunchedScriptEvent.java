@@ -86,10 +86,8 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
         dEntity.rememberEntity(projectile);
         this.projectile = new dEntity(projectile);
         location = new dLocation(event.getEntity().getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         dEntity.forgetEntity(projectile);
-        event.setCancelled(cancelled);
     }
 }

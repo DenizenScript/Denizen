@@ -80,8 +80,6 @@ public class LightningStrikesScriptEvent extends BukkitScriptEvent implements Li
         lightning = new dEntity(event.getLightning());
         location = new dLocation(event.getLightning().getLocation());
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

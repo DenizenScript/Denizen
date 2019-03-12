@@ -105,9 +105,7 @@ public class ItemMergesScriptEvent extends BukkitScriptEvent implements Listener
         location = new dLocation(target.getLocation());
         item = new dItem(entity.getItemStack());
         this.entity = new dEntity(entity);
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -119,10 +119,8 @@ public class VehicleCollidesEntityScriptEvent extends BukkitScriptEvent implemen
         entity = new dEntity(event.getEntity());
         vehicle = new dEntity(event.getVehicle());
         pickup_cancel = event.isPickupCancelled();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setPickupCancelled(pickup_cancel);
     }
 }

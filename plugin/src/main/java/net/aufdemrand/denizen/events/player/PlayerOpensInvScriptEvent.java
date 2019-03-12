@@ -93,8 +93,6 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
         }
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

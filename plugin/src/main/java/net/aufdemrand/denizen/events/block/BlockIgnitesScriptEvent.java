@@ -108,9 +108,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
             origin_location = new dLocation(event.getIgnitingBlock().getLocation());
         }
         cause = new Element(event.getCause().toString());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -92,8 +92,6 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
             blocks.add(new dLocation(block.getLocation()).identify());
         }
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

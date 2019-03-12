@@ -112,9 +112,7 @@ public class LingeringPotionSplashScriptEvent extends BukkitScriptEvent implemen
         entity = new dEntity(event.getEntity());
         location = entity.getLocation();
         radius = new Element(cloud.getRadius());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

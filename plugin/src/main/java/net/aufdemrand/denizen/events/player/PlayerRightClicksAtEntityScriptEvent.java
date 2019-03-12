@@ -124,10 +124,8 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
         item = new dItem(event.getPlayer().getItemInHand());
         location = new dLocation(event.getClickedPosition().toLocation(event.getPlayer().getWorld()));
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 
 }

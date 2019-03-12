@@ -112,8 +112,6 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
         vehicle = new dEntity(event.getVehicle());
         entity = event.getAttacker() != null ? new dEntity(event.getAttacker()) : null;
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -143,12 +143,10 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         entity = new dEntity(event.getEntity());
-        cancelled = event.isCancelled();
         cause = "ENTITY_TELEPORT";
         this.event = event;
         pEvent = null;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setFrom(from);
         event.setTo(to);
     }
@@ -161,12 +159,10 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
         from = new dLocation(event.getFrom());
         to = new dLocation(event.getTo());
         entity = new dEntity(event.getPlayer());
-        cancelled = event.isCancelled();
         cause = event.getCause().name();
         this.event = null;
         pEvent = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setFrom(from);
         event.setTo(to);
     }

@@ -99,10 +99,8 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
         location = new dLocation(event.getBlock().getLocation());
         source_item = new dItem(event.getSource());
         result_item = new dItem(event.getResult());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         event.setResult(result_item.getItemStack());
-        event.setCancelled(cancelled);
     }
 }

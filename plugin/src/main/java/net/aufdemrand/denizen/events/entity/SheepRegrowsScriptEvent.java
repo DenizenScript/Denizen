@@ -76,9 +76,7 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
     public void onSheepRegrows(SheepRegrowWoolEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(entity.getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

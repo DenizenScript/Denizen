@@ -93,10 +93,8 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
         entity = new dEntity(event.getPlayer());
         to = new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setTo(to);
     }
 }

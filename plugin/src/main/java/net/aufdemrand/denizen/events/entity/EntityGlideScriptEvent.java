@@ -104,8 +104,6 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     public void onEntityToggleGlide(EntityToggleGlideEvent event) {
         entity = new dEntity(event.getEntity());
         state = event.isGliding();
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -99,9 +99,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
         }
         material = new dMaterial(event.getClickedBlock());
         location = new dLocation(event.getClickedBlock().getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

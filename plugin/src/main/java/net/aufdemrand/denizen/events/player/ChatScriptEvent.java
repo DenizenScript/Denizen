@@ -164,13 +164,11 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         public void onSyncChat(PlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
-            cancelled = event.isCancelled();
             recipients = new HashSet<Player>(event.getRecipients());
             pcEvent = event;
             apcEvent = null;
             player = dEntity.getPlayerFrom(event.getPlayer());
-            fire();
-            event.setCancelled(cancelled);
+            fire(event);
             event.setMessage(message.asString());
             event.setFormat(format.asString());
             event.getRecipients().clear();
@@ -183,13 +181,11 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         public void onAsyncChat(AsyncPlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
-            cancelled = event.isCancelled();
             recipients = new HashSet<Player>(event.getRecipients());
             pcEvent = null;
             apcEvent = event;
             player = dEntity.getPlayerFrom(event.getPlayer());
-            fire();
-            event.setCancelled(cancelled);
+            fire(event);
             event.setMessage(message.asString());
             event.setFormat(format.asString());
             event.getRecipients().clear();

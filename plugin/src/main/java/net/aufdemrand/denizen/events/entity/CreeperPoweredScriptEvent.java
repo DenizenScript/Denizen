@@ -91,9 +91,7 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
         lightning = new dEntity(event.getLightning());
         entity = new dEntity(event.getEntity());
         cause = new Element(event.getCause().name());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

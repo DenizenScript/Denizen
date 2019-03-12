@@ -123,12 +123,10 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
         item = new dItem(event.getItem());
-        cancelled = event.isCancelled();
         velocity = new dLocation(null, event.getVelocity().getX(), event.getVelocity().getY(), event.getVelocity().getZ());
         this.event = event;
-        fire();
+        fire(event);
         event.setVelocity(velocity.toVector());
         event.setItem(item.getItemStack());
-        event.setCancelled(cancelled);
     }
 }

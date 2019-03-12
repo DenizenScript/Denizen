@@ -111,9 +111,7 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
             blocks.add(new dLocation(block.getLocation()).identify());
         }
         retract_location = new dLocation(event.getBlock().getRelative(event.getDirection().getOppositeFace(), 2).getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

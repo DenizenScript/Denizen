@@ -99,9 +99,7 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         entity = new dEntity(event.getEntity());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

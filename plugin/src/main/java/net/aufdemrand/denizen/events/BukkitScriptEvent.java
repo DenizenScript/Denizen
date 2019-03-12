@@ -13,10 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Vehicle;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
@@ -90,6 +87,15 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // Monitor is executed last, and is intended to only be used when reading the results of an event but not changing it.
     // The default priority is "normal".
     // -->
+
+    public void fire(Cancellable cancellable) {
+        cancelled = cancellable.isCancelled();
+        boolean wasCancelled = cancelled;
+        fire();
+        if (cancelled != wasCancelled) {
+            cancellable.setCancelled(cancelled);
+        }
+    }
 
     @Override
     public void destroy() {

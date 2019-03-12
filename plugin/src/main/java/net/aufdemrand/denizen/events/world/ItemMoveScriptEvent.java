@@ -118,9 +118,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
         initiator = dInventory.mirrorBukkitInventory(event.getInitiator());
         item = new dItem(event.getItem());
         itemSet = false;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         if (itemSet) {
             event.setItem(item.getItemStack());
         }

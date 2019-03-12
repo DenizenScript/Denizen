@@ -97,11 +97,9 @@ public class PlayerKickedScriptEvent extends BukkitScriptEvent implements Listen
         message = new Element(event.getLeaveMessage());
         reason = new Element(event.getReason());
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
+        fire(event);
         event.setLeaveMessage(message.asString());
         event.setReason(reason.asString());
-        event.setCancelled(cancelled);
 
     }
 }

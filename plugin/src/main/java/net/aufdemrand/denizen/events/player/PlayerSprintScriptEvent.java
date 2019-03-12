@@ -89,9 +89,7 @@ public class PlayerSprintScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         state = event.isSprinting();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

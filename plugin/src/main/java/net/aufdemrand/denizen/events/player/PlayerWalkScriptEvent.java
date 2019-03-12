@@ -89,9 +89,7 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
         }
         old_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

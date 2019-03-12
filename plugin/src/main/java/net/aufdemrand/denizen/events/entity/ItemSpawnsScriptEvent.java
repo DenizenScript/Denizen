@@ -102,11 +102,9 @@ public class ItemSpawnsScriptEvent extends BukkitScriptEvent implements Listener
         location = new dLocation(event.getLocation());
         item = new dItem(entity.getItemStack());
         this.entity = new dEntity(entity);
-        cancelled = event.isCancelled();
         this.event = event;
         dEntity.rememberEntity(entity);
-        fire();
+        fire(event);
         dEntity.forgetEntity(entity);
-        event.setCancelled(cancelled);
     }
 }

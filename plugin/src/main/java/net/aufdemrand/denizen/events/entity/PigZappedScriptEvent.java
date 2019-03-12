@@ -85,10 +85,8 @@ public class PigZappedScriptEvent extends BukkitScriptEvent implements Listener 
         dEntity.rememberEntity(pigZombie);
         pig_zombie = new dEntity(pigZombie);
         lightning = new dEntity(event.getLightning());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         dEntity.forgetEntity(pigZombie);
-        event.setCancelled(cancelled);
     }
 }

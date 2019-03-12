@@ -100,10 +100,8 @@ public class EntityExplosionPrimesScriptEvent extends BukkitScriptEvent implemen
         entity = new dEntity(event.getEntity());
         radius = event.getRadius();
         fire = event.getFire();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setFire(fire);
         event.setRadius(radius);
     }

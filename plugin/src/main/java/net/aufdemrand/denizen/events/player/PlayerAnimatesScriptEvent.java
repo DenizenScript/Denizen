@@ -91,9 +91,7 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
         }
         location = new dLocation(event.getPlayer().getLocation());
         animation = event.getAnimationType().name();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

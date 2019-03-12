@@ -115,10 +115,8 @@ public class EntityHealsScriptEvent extends BukkitScriptEvent implements Listene
         entity = new dEntity(event.getEntity());
         amount = new Element(event.getAmount());
         reason = new Element(event.getRegainReason().toString());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setAmount(amount.asDouble());
     }
 }

@@ -102,9 +102,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
             blocks.add(tempLoc.identifySimple());
         }
 */
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

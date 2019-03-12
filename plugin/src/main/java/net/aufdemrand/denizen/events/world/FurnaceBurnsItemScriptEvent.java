@@ -87,10 +87,8 @@ public class FurnaceBurnsItemScriptEvent extends BukkitScriptEvent implements Li
         location = new dLocation(event.getBlock().getLocation());
         item = new dItem(event.getFuel());
         burntime = event.getBurnTime();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         event.setBurnTime(burntime);
-        event.setCancelled(cancelled);
     }
 }

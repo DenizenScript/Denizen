@@ -121,10 +121,8 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
         pages = new Element(bookMeta.getPageCount());
         title = event.isSigning() ? new Element(bookMeta.getTitle()) : null;
         book = new dItem(event.getPlayer().getInventory().getItem(event.getSlot()));
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setNewBookMeta(bookMeta);
         event.setSigning(signing.asBoolean());
     }

@@ -86,9 +86,7 @@ public class FireworkBurstsScriptEvent extends BukkitScriptEvent implements List
     public void onFireworkBursts(FireworkExplodeEvent event) {
         entity = new dEntity(event.getEntity());
         location = new dLocation(entity.getLocation());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

@@ -126,12 +126,10 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         location = new dLocation(event.getLocation());
         cuboids = null;
         reason = new Element(event.getSpawnReason().name());
-        cancelled = event.isCancelled();
         this.event = event;
         dEntity.rememberEntity(entity);
-        fire();
+        fire(event);
         dEntity.forgetEntity(entity);
-        event.setCancelled(cancelled);
     }
 
 }

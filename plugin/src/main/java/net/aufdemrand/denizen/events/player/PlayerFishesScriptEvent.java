@@ -142,11 +142,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
                 item = new dItem(((Item) caughtEntity).getItemStack());
             }
         }
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         dEntity.forgetEntity(hookEntity);
         dEntity.forgetEntity(caughtEntity);
-        event.setCancelled(cancelled);
     }
 }

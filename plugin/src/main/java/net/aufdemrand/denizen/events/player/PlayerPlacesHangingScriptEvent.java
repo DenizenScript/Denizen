@@ -111,10 +111,8 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         hanging = new dEntity(hangingEntity);
         location = new dLocation(event.getBlock().getLocation());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
+        fire(event);
         dEntity.forgetEntity(hangingEntity);
-        event.setCancelled(cancelled);
     }
 }

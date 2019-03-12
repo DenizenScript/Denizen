@@ -104,9 +104,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
         dEntity.rememberEntity(itemDrop);
         item = new dItem(itemDrop.getItemStack());
         entity = new dEntity(itemDrop);
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

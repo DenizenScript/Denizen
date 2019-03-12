@@ -86,9 +86,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     public void onBlockGrows(BlockGrowEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getNewState());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

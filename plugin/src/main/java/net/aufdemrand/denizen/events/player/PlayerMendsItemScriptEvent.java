@@ -112,10 +112,8 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
         experienceOrb = new dEntity(event.getExperienceOrb());
         location = new dLocation(event.getPlayer().getLocation());
         repairAmount = new Element(event.getRepairAmount());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setRepairAmount(repairAmount.asInt());
     }
 

@@ -151,11 +151,9 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = null;
-        cancelled = event.isCancelled();
         xp = new Element(event.getExpToDrop());
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setExpToDrop(xp.asInt());
     }
 

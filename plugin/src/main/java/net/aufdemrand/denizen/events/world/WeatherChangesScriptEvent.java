@@ -82,8 +82,6 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
         world = new dWorld(event.getWorld());
         weather = new Element(event.toWeatherState() ? "rains" : "clears");
         this.event = event;
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

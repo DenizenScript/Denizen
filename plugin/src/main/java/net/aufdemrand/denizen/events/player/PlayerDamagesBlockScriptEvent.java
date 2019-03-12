@@ -118,11 +118,9 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         cuboids = null;
-        cancelled = event.isCancelled();
         instabreak = event.getInstaBreak();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
         event.setInstaBreak(instabreak);
     }
 

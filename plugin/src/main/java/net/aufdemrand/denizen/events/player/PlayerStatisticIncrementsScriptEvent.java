@@ -120,9 +120,7 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
         }
         previous_value = event.getPreviousValue();
         new_value = event.getNewValue();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

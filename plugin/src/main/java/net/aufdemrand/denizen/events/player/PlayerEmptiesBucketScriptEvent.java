@@ -99,9 +99,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
         location = new dLocation(event.getBlockClicked().getLocation());
         relative = new dLocation(event.getBlockClicked().getRelative(event.getBlockFace()).getLocation());
         item = new dItem(event.getBucket());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

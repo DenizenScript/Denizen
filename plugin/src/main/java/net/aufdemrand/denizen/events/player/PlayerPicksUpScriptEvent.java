@@ -127,17 +127,13 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
         location = new dLocation(itemEntity.getLocation());
         item = new dItem(itemEntity.getItemStack());
         entity = new dEntity(itemEntity);
-        cancelled = event.isCancelled();
         itemChanged = false;
         this.event = event;
-        fire();
+        fire(event);
         if (itemChanged) {
             itemEntity.setItemStack(item.getItemStack());
             editedItems.add(itemUUID);
             event.setCancelled(true);
-        }
-        else {
-            event.setCancelled(cancelled);
         }
     }
 }

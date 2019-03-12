@@ -90,9 +90,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
             return;
         }
         state = event.isFlying();
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

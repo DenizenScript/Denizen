@@ -97,8 +97,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         item = new dItem(event.getItem());
         entity = new dEntity(event.getItem());
-        cancelled = event.isCancelled();
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

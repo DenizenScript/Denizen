@@ -115,11 +115,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         }
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        cancelled = event.isCancelled();
         item_in_hand = new dItem(event.getItemInHand());
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 
 }

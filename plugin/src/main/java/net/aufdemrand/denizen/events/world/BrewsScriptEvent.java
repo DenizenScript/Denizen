@@ -73,9 +73,7 @@ public class BrewsScriptEvent extends BukkitScriptEvent implements Listener {
     public void onBrews(BrewEvent event) {
         location = new dLocation(event.getBlock().getLocation());
         inventory = dInventory.mirrorBukkitInventory(event.getContents());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

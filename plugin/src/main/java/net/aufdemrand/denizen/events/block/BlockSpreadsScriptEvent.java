@@ -90,9 +90,7 @@ public class BlockSpreadsScriptEvent extends BukkitScriptEvent implements Listen
         source = new dLocation(event.getBlock().getLocation());
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getSource());
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 }

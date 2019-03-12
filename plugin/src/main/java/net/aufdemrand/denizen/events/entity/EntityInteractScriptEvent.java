@@ -115,10 +115,8 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
         cuboids = null;
-        cancelled = event.isCancelled();
         this.event = event;
-        fire();
-        event.setCancelled(cancelled);
+        fire(event);
     }
 
 }
