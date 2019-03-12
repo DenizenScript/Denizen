@@ -200,7 +200,7 @@ public class FlagManager {
          */
         public List<String> values() {
             checkExpired();
-            return value.values;
+            return value.asList();
         }
 
         /**
@@ -241,7 +241,7 @@ public class FlagManager {
             String OldOwner = flagOwner;
             String OldName = flagName;
             dObject OldValue = FlagSmartEvent.isActive() ? (value.size() > 1
-                    ? new dList(denizen.getSaves().getStringList(flagPath))
+                    ? value.asList()
                     : value.size() == 1 ? new Element(value.get(0).asString()) : new Element("null")) : null;
 
             denizen.getSaves().set(flagPath, null);
@@ -323,21 +323,24 @@ public class FlagManager {
 
             // No index? Clear the flag and set the whole thing.
             if (index < 0) {
-                value.values.clear();
-                value.values.add((String) obj);
+                value.values = null;
+                value.size = 1;
+                value.firstValue = (String) obj;
             }
             else if (size() == 0) {
-                value.values.add((String) obj);
+                value.firstValue = (String) obj;
+                value.size = 1;
             }
             else if (index > 0) {
+                value.mustBeList();
                 if (value.values.size() > index - 1) {
-                    value.values.remove(index - 1);
-                    value.values.add(index - 1, (String) obj);
+                    value.values.set(index - 1, (String) obj);
 
                     // Index higher than currently exists? Add the item to the end of the list.
                 }
                 else {
                     value.values.add((String) obj);
+                    value.size++;
                 }
             }
             valid = true;
@@ -352,7 +355,9 @@ public class FlagManager {
          */
         public int add(Object obj) {
             checkExpired();
+            value.mustBeList();
             value.values.add((String) obj);
+            value.size++;
             valid = true;
             save();
             rebuild();
@@ -367,9 +372,11 @@ public class FlagManager {
             checkExpired();
             dList split = dList.valueOf(obj.toString());
             if (split.size() > 0) {
+                value.mustBeList();
                 for (String val : split) {
                     if (val.length() > 0) {
                         value.values.add(val);
+                        value.size++;
                     }
                 }
                 save();
@@ -382,10 +389,13 @@ public class FlagManager {
             checkExpired();
             dList split = dList.valueOf(obj.toString());
             if (split.size() > 0) {
+                value.mustBeList();
                 value.values.clear();
+                value.size = 0;
                 for (String val : split) {
                     if (val.length() > 0) {
                         value.values.add(val);
+                        value.size++;
                     }
                 }
                 save();
@@ -417,6 +427,7 @@ public class FlagManager {
             checkExpired();
             boolean isDouble = aH.matchesDouble((String) obj);
 
+            value.mustBeList();
             // No index? Match object and remove it.
             if (index <= 0 && obj != null) {
                 int x = 0;
@@ -426,6 +437,7 @@ public class FlagManager {
                     if (val.equalsIgnoreCase(String.valueOf(obj))) {
 
                         value.values.remove(x);
+                        value.size--;
                         break;
                     }
 
@@ -433,6 +445,7 @@ public class FlagManager {
                     try {
                         if (isDouble && aH.matchesDouble(val) && Double.valueOf(val).equals(Double.valueOf((String) obj))) {
                             value.values.remove(x);
+                            value.size--;
                             break;
                         }
                     }
@@ -447,6 +460,7 @@ public class FlagManager {
             }
             else if (index <= size()) {
                 value.values.remove(index - 1);
+                value.size--;
             }
 
             valid = true;
@@ -513,12 +527,17 @@ public class FlagManager {
             String oldName = flagName;
             dObject oldValue = null;
             if (FlagSmartEvent.isActive()) {
-                List<String> oldValueList = denizen.getSaves().getStringList(flagPath);
-                oldValue = oldValueList.size() > 1 ? new dList(oldValueList)
+                dList oldValueList = value.asList();
+                oldValue = oldValueList.size() > 1 ? oldValueList
                         : oldValueList.size() == 1 ? new Element(oldValueList.get(0)) : new Element("null");
             }
 
-            denizen.getSaves().set(flagPath, value.values);
+            if (value.values != null) {
+                denizen.getSaves().set(flagPath, value.values);
+            }
+            else {
+                denizen.getSaves().set(flagPath, value.size == 0 ? null : value.firstValue);
+            }
             denizen.getSaves().set(flagPath + "-expiration", (expiration > 0 ? expiration : null));
 
             if (FlagSmartEvent.isActive()) {
@@ -555,9 +574,9 @@ public class FlagManager {
                 world_script_events.add(type + " flag changed");
                 world_script_events.add(type + " flag " + oldName + " changed");
 
-                context.put("owner", Element.valueOf(oldOwner));
-                context.put("name", Element.valueOf(oldName));
-                context.put("type", Element.valueOf(type));
+                context.put("owner", new Element(oldOwner));
+                context.put("name", new Element(oldName));
+                context.put("type", new Element(type));
                 context.put("old_value", oldValue);
 
                 world_script_events.add("flag changed");
@@ -608,11 +627,11 @@ public class FlagManager {
             rebuild();
             if (denizen.getSaves().contains(flagPath + "-expiration")) {
                 if (expiration > 1 && expiration < DenizenCore.currentTimeMillis) {
-                    String OldOwner = flagOwner;
-                    String OldName = flagName;
-                    dObject OldValue = FlagSmartEvent.isActive() ? (value.size() > 1
-                            ? new dList(denizen.getSaves().getStringList(flagPath))
-                            : value.size() == 1 ? new Element(value.get(0).asString()) : Element.valueOf("null")) : null;
+                    String oldOwner = flagOwner;
+                    String oldName = flagName;
+                    dObject oldValue = FlagSmartEvent.isActive() ? (value.size() > 1
+                            ? value.asList()
+                            : value.size() == 1 ? new Element(value.get(0).asString()) : new Element("null")) : null;
                     denizen.getSaves().set(flagPath + "-expiration", null);
                     denizen.getSaves().set(flagPath, null);
                     valid = false;
@@ -623,16 +642,16 @@ public class FlagManager {
 
                         Map<String, dObject> context = new HashMap<>();
                         dPlayer player = null;
-                        if (dPlayer.matches(OldOwner)) {
-                            player = dPlayer.valueOf(OldOwner);
+                        if (dPlayer.matches(oldOwner)) {
+                            player = dPlayer.valueOf(oldOwner);
                         }
                         dNPC npc = null;
-                        if (Depends.citizens != null && dNPC.matches(OldOwner)) {
-                            npc = dNPC.valueOf(OldOwner);
+                        if (Depends.citizens != null && dNPC.matches(oldOwner)) {
+                            npc = dNPC.valueOf(oldOwner);
                         }
                         dEntity entity = null;
-                        if (dEntity.matches(OldOwner)) {
-                            entity = dEntity.valueOf(OldOwner);
+                        if (dEntity.matches(oldOwner)) {
+                            entity = dEntity.valueOf(oldOwner);
                         }
 
                         String type;
@@ -650,12 +669,12 @@ public class FlagManager {
                             type = "server";
                         }
                         world_script_events.add(type + " flag expires");
-                        world_script_events.add(type + " flag " + OldName + " expires");
+                        world_script_events.add(type + " flag " + oldName + " expires");
 
-                        context.put("owner", Element.valueOf(OldOwner));
-                        context.put("name", Element.valueOf(OldName));
-                        context.put("type", Element.valueOf(type));
-                        context.put("old_value", OldValue);
+                        context.put("owner", new Element(oldOwner));
+                        context.put("name", new Element(oldName));
+                        context.put("type", new Element(type));
+                        context.put("old_value", oldValue);
 
                         world_script_events.add("flag expires");
 
@@ -835,6 +854,21 @@ public class FlagManager {
         public Value() {
             size = 0;
             index = 0;
+        }
+
+        public void mustBeList() {
+            if (values == null) {
+                values = new ArrayList<>();
+                if (size != 0) {
+                    values.add(firstValue);
+                }
+            }
+        }
+
+        public void fixSize() {
+            if (values != null) {
+                size = values.size();
+            }
         }
 
         public Value(String oneValue) {
