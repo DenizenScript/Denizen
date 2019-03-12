@@ -2254,7 +2254,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @returns Duration
         // @group attributes
         // @description
-        // Returns how long the entity has lived.
+        // Returns how long before the item-type entity can be picked up by a player.
         // -->
         if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
                 && getBukkitEntity() instanceof Item) {
