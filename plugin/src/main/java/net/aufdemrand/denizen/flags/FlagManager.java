@@ -742,8 +742,11 @@ public class FlagManager {
                 }
                 value = new Value(val);
             }
+            else if (obj == null || obj.toString().length() == 0) {
+                value = new Value();
+            }
             else {
-                value = new Value(String.valueOf(obj));
+                value = new Value(obj.toString());
             }
             return this;
         }
