@@ -21,6 +21,8 @@ public class MountCommand extends AbstractCommand {
 
         // Initialize necessary fields
 
+        List<dEntity> entities = null;
+
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
@@ -36,23 +38,30 @@ public class MountCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
                 // Entity arg
-                scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
+                entities = arg.asType(dList.class).filter(dEntity.class, scriptEntry);
+                scriptEntry.addObject("entities", entities);
             }
             else {
                 arg.reportUnhandled();
             }
         }
 
-        // Use the NPC or player's locations as the location if one is not specified
-
-        scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null,
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null);
-
-        // Check to make sure required arguments have been filled
-
         if (!scriptEntry.hasObject("entities")) {
             throw new InvalidArgumentsException("Must specify entity/entities!");
+        }
+
+        if (!scriptEntry.hasObject("location")) {
+            if (entities != null) {
+                for (int i = entities.size() - 1; i >= 0; i--) {
+                    if (entities.get(i).isSpawned()) {
+                        scriptEntry.defaultObject("location", entities.get(i).getLocation());
+                        break;
+                    }
+                }
+            }
+            scriptEntry.defaultObject("location",
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null,
+                    ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null);
         }
 
         if (!scriptEntry.hasObject("location")) {
