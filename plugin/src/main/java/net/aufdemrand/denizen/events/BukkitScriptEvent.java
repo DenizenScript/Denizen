@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.events;
 
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -286,6 +287,32 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public boolean equalityCheck(String input, String compared, String regexed) {
         input = CoreUtilities.toLowerCase(input);
         return input.equals(compared) || (regexed != null && input.matches(regexed));
+    }
+
+    public boolean tryInventory(dInventory inv, String comparedto) {
+        comparedto = CoreUtilities.toLowerCase(comparedto);
+        if (comparedto.equals("inventory")) {
+            return true;
+        }
+        if (comparedto.equals("notable")) {
+            return NotableManager.isSaved(inv);
+        }
+        String regexd = regexHandle(comparedto);
+        if (equalityCheck(inv.getInventoryType().name(), comparedto, regexd)) {
+            return true;
+        }
+        if (equalityCheck(inv.getIdType(), comparedto, regexd)) {
+            return true;
+        }
+        if (equalityCheck(inv.getIdHolder(), comparedto, regexd)) {
+            return true;
+        }
+        if (NotableManager.isSaved(inv)) {
+            if (equalityCheck(NotableManager.getSavedId(inv), comparedto, regexd)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean tryItem(dItem item, String comparedto) {

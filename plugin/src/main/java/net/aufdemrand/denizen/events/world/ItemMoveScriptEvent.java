@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 
 public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
-    // TODO: in <area>
     // <--[event]
     // @Events
     // item moves from inventory (to <inventory type>)
@@ -21,6 +20,7 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
     // <item> moves from <inventory type> (to <inventory type>)
     //
     // @Regex ^on [^\s]+ moves from [^\s]+( to [^\s]+)?$
+    // @Switch in <area>
     //
     // @Cancellable true
     //
@@ -58,23 +58,19 @@ public class ItemMoveScriptEvent extends BukkitScriptEvent implements Listener {
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        String iCheck = CoreUtilities.getXthArg(0, lower);
-        String oCheck = CoreUtilities.getXthArg(3, lower);
-        String dCheck = CoreUtilities.getXthArg(5, lower);
-        String originType = CoreUtilities.toLowerCase(origin.getInventoryType().name());
-        String destinationType = CoreUtilities.toLowerCase(destination.getInventoryType().name());
-
-        if (!tryItem(item, iCheck)) {
+        if (!tryItem(item, CoreUtilities.getXthArg(0, path.eventLower))) {
             return false;
         }
-        if (!oCheck.equals(originType)) {
+        if (!tryInventory(origin, CoreUtilities.getXthArg(3, path.eventLower))) {
             return false;
         }
-        if (dCheck.length() > 0) {
-            if (!dCheck.equals(destinationType)) {
+        if (CoreUtilities.xthArgEquals(4, path.eventLower, "to")) {
+            if (!tryInventory(destination, CoreUtilities.getXthArg(5, path.eventLower))) {
                 return false;
             }
+        }
+        if (!runInCheck(path, origin.getLocation())) {
+            return false;
         }
         return true;
     }
