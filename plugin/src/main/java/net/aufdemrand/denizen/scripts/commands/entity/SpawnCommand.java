@@ -105,11 +105,7 @@ public class SpawnCommand extends AbstractCommand {
 
             entity.spawnAt(loc);
 
-            // Only add to entityList after the entities have been
-            // spawned, otherwise you'll get something like "e@skeleton"
-            // instead of "e@57" on it
-
-            entityList.add(entity.toString());
+            entityList.addObject(entity);
 
             if (persistent && entity.isLivingEntity()) {
                 entity.getLivingEntity().setRemoveWhenFarAway(false);
@@ -124,8 +120,8 @@ public class SpawnCommand extends AbstractCommand {
         // can be fetched.
 
         scriptEntry.addObject("spawned_entities", entityList);
-        if (entityList.size() != 0) {
-            scriptEntry.addObject("spawned_entity", entityList.get(0));
+        if (entities.size() != 0) {
+            scriptEntry.addObject("spawned_entity", entities.get(0));
         }
     }
 }
