@@ -10,6 +10,7 @@ import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -92,7 +93,7 @@ public class PlayerTags implements Listener {
 
         // Player tag may specify a new player in the <player[context]...> portion of the tag.
         if (attribute.hasContext(1)) {
-            p = dPlayer.valueOf(attribute.getContext(1));
+            p = dPlayer.valueOf(attribute.getContext(1), attribute.context);
         }
         if (p == null || !p.isValid()) {
             if (!event.hasAlternative()) {
@@ -101,7 +102,7 @@ public class PlayerTags implements Listener {
             return;
         }
 
-        event.setReplaced(p.getAttribute(attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(p, attribute.fulfill(1)));
     }
 }
 

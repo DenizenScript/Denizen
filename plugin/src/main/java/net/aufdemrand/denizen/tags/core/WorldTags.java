@@ -1,45 +1,42 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
+public class WorldTags {
 
-public class CuboidTags {
-
-    public CuboidTags(Denizen denizen) {
+    public WorldTags(Denizen denizen) {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                cuboidTags(event);
+                worldTags(event);
             }
-        }, "cuboid");
+        }, "world");
     }
 
-    public void cuboidTags(ReplaceableTagEvent event) {
+    public void worldTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("cuboid") || event.replaced()) {
+        if (!event.matches("world") || event.replaced()) {
             return;
         }
 
-        dCuboid cuboid = null;
+        dWorld world = null;
 
         if (event.hasNameContext()) {
-            cuboid = dCuboid.valueOf(event.getNameContext(), event.getAttributes().context);
+            world = dWorld.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        // Check if cuboid is null, return if it is
-        if (cuboid == null) {
+        if (world == null) {
             return;
         }
 
-        // Build and fill attributes
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(cuboid, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(world, attribute.fulfill(1)));
 
     }
 }

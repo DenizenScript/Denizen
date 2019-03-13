@@ -558,15 +558,30 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             tagManager().registerCoreTags();
 
+            // Objects
+            new BiomeTags(this);
+            new ChunkTags(this);
+            new ColorTags(this);
             new CuboidTags(this);
+            new EllipsoidTags(this);
             new EntityTags(this);
+            new InventoryTags(this);
+            new ItemTags(this);
             new LocationTags(this);
+            new MaterialTags(this);
+            if (Depends.citizens != null) {
+                new NPCTags(this);
+            }
             new PlayerTags(this);
+            new PluginTags(this);
+            new TradeTags(this);
+            new WorldTags(this);
+
+            // Other bases
             new ServerTags(this);
             new TextTags(this);
             new ParseTags(this);
             if (Depends.citizens != null) {
-                new NPCTags(this);
                 new AnchorTags(this);
                 new ConstantTags(this);
             }

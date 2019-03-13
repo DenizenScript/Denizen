@@ -1,45 +1,42 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dEllipsoid;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
+public class EllipsoidTags {
 
-public class CuboidTags {
-
-    public CuboidTags(Denizen denizen) {
+    public EllipsoidTags(Denizen denizen) {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                cuboidTags(event);
+                ellipsoidTags(event);
             }
-        }, "cuboid");
+        }, "ellipsoid");
     }
 
-    public void cuboidTags(ReplaceableTagEvent event) {
+    public void ellipsoidTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("cuboid") || event.replaced()) {
+        if (!event.matches("ellipsoid") || event.replaced()) {
             return;
         }
 
-        dCuboid cuboid = null;
+        dEllipsoid ellipsoid = null;
 
         if (event.hasNameContext()) {
-            cuboid = dCuboid.valueOf(event.getNameContext(), event.getAttributes().context);
+            ellipsoid = dEllipsoid.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        // Check if cuboid is null, return if it is
-        if (cuboid == null) {
+        if (ellipsoid == null) {
             return;
         }
 
-        // Build and fill attributes
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(cuboid, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(ellipsoid, attribute.fulfill(1)));
 
     }
 }

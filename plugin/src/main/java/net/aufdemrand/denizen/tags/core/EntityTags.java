@@ -2,11 +2,11 @@ package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class EntityTags {
 
@@ -29,26 +29,18 @@ public class EntityTags {
             return;
         }
 
-        // Build a new attribute out of the raw_tag supplied in the script to be fulfilled
-        Attribute attribute = event.getAttributes();
+        dEntity entity = null;
 
-        dEntity e = null;
-
-        // Entity tag may specify a new entity in the <entity[context]...> portion of the tag.
-        if (attribute.hasContext(1)) {
-            // Check if this is a valid entity and update the dEntity object reference.
-            if (attribute.getIntContext(1) >= 1) {
-                e = dEntity.valueOf("e@" + attribute.getContext(1)); // TODO: Is the e@ needed here? If so, why? Should it be?
-            }
+        if (event.hasNameContext()) {
+            entity = dEntity.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        if (e == null || !e.isValid()) {
-            if (!event.hasAlternative()) {
-                dB.echoError("Invalid or missing entity for tag <" + event.raw_tag + ">!");
-            }
+        if (entity == null) {
             return;
         }
 
-        event.setReplaced(e.getAttribute(attribute.fulfill(1)));
+        Attribute attribute = event.getAttributes();
+        event.setReplacedObject(CoreUtilities.autoAttrib(entity, attribute.fulfill(1)));
+
     }
 }

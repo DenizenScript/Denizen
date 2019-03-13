@@ -1,45 +1,42 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.objects.dCuboid;
+import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.tags.ReplaceableTagEvent;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
+public class InventoryTags {
 
-public class CuboidTags {
-
-    public CuboidTags(Denizen denizen) {
+    public InventoryTags(Denizen denizen) {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
-                cuboidTags(event);
+                inventoryTags(event);
             }
-        }, "cuboid");
+        }, "inventory");
     }
 
-    public void cuboidTags(ReplaceableTagEvent event) {
+    public void inventoryTags(ReplaceableTagEvent event) {
 
-        if (!event.matches("cuboid") || event.replaced()) {
+        if (!event.matches("inventory") || event.replaced()) {
             return;
         }
 
-        dCuboid cuboid = null;
+        dInventory inventory = null;
 
         if (event.hasNameContext()) {
-            cuboid = dCuboid.valueOf(event.getNameContext(), event.getAttributes().context);
+            inventory = dInventory.valueOf(event.getNameContext(), event.getAttributes().context);
         }
 
-        // Check if cuboid is null, return if it is
-        if (cuboid == null) {
+        if (inventory == null) {
             return;
         }
 
-        // Build and fill attributes
         Attribute attribute = event.getAttributes();
-        event.setReplacedObject(CoreUtilities.autoAttrib(cuboid, attribute.fulfill(1)));
+        event.setReplacedObject(CoreUtilities.autoAttrib(inventory, attribute.fulfill(1)));
 
     }
 }
