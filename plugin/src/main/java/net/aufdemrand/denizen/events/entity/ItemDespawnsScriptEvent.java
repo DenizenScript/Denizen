@@ -53,8 +53,7 @@ public class ItemDespawnsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        String item_test = CoreUtilities.getXthArg(0, lower);
+        String item_test = CoreUtilities.getXthArg(0, path.eventLower);
 
         if (!tryItem(item, item_test)) {
             return false;

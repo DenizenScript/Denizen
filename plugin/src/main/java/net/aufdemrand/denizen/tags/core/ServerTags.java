@@ -37,6 +37,7 @@ import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.aufdemrand.denizencore.utilities.javaluator.DoubleEvaluator;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.command.CommandContext;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -1619,6 +1620,32 @@ public class ServerTags {
             }
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "+> Server restarted by a Denizen script, see config to prevent this!");
             Bukkit.spigot().restart();
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name save
+        // @input None
+        // @description
+        // Immediately saves the Denizen saves files.
+        // @tags
+        // None
+        // -->
+        if (mechanism.matches("save")) {
+            DenizenAPI.getCurrentInstance().saveSaves();
+        }
+
+        // <--[mechanism]
+        // @object server
+        // @name save_citizens
+        // @input None
+        // @description
+        // Immediately saves the Citizens saves files.
+        // @tags
+        // None
+        // -->
+        if (Depends.citizens != null && mechanism.matches("save_citizens")) {
+            Depends.citizens.storeNPCs(new CommandContext(new String[0]));
         }
 
         // <--[mechanism]
