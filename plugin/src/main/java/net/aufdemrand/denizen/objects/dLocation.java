@@ -557,11 +557,14 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     public String identifyRaw() {
         if (getYaw() != 0.0 || getPitch() != 0.0) {
-            return "l@" + getX() + "," + getY() + "," + getZ() + "," + getPitch() + "," + getYaw()
+            return "l@" + CoreUtilities.doubleToString(getX()) + "," + CoreUtilities.doubleToString(getY())
+                    + "," + CoreUtilities.doubleToString(getZ()) + "," + CoreUtilities.doubleToString(getPitch())
+                    + "," + CoreUtilities.doubleToString(getYaw())
                     + (getWorldName() != null ? "," + getWorldName() : "");
         }
         else {
-            return "l@" + getX() + "," + getY() + (!is2D ? "," + getZ() : "")
+            return "l@" + CoreUtilities.doubleToString(getX()) + "," + CoreUtilities.doubleToString(getY())
+                    + (!is2D ? "," + CoreUtilities.doubleToString(getZ()) : "")
                     + (getWorldName() != null ? "," + getWorldName() : "");
         }
     }
