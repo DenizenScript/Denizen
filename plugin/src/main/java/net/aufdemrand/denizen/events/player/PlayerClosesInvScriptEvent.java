@@ -50,11 +50,11 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String entName = CoreUtilities.getXthArg(0, lower);
+        String entName = path.eventArgLowerAt(0);
         if (entName.equals("player") && !entity.isPlayer()) {
             return false;
         }
-        String inv = CoreUtilities.getXthArg(2, lower);
+        String inv = path.eventArgLowerAt(2);
         String nname = NotableManager.isSaved(inventory) ?
                 CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)) :
                 "\0";

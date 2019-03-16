@@ -48,7 +48,7 @@ public class PlayerOpensInvScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String inv = CoreUtilities.getXthArg(2, lower);
+        String inv = path.eventArgLowerAt(2);
         String nname = NotableManager.isSaved(inventory) ?
                 CoreUtilities.toLowerCase(NotableManager.getSavedId(inventory)) :
                 "\0";

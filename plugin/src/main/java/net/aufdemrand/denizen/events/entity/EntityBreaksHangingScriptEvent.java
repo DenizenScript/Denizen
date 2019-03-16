@@ -66,8 +66,8 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String entName = CoreUtilities.getXthArg(0, lower);
-        String hang = CoreUtilities.getXthArg(2, lower);
+        String entName = path.eventArgLowerAt(0);
+        String hang = path.eventArgLowerAt(2);
 
         if (!tryEntity(breaker, entName)) {
             return false;
@@ -81,7 +81,7 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "because") && !CoreUtilities.getXthArg(4, lower).equals(CoreUtilities.toLowerCase(cause.asString()))) {
+        if (path.eventArgLowerAt(3).equals("because") && !path.eventArgLowerAt(4).equals(CoreUtilities.toLowerCase(cause.asString()))) {
             return false;
         }
 

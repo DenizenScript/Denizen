@@ -54,11 +54,11 @@ public class EntityGlideScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
 
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String cmd = path.eventArgLowerAt(1);
         if (cmd.equals("starts") && !state) {
             return false;
         }

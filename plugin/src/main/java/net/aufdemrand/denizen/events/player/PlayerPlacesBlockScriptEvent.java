@@ -57,7 +57,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String mat = CoreUtilities.getXthArg(2, lower);
+        String mat = path.eventArgLowerAt(2);
         if (!tryItem(item_in_hand, mat) && !tryMaterial(material, mat)) {
             return false;
         }

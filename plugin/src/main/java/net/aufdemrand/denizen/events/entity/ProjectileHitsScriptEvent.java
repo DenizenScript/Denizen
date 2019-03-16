@@ -78,20 +78,20 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String cmd = path.eventArgLowerAt(1);
         String pTest = "";
 
         if (cmd.equals("hits")) {
-            pTest = CoreUtilities.getXthArg(0, lower);
+            pTest = path.eventArgLowerAt(0);
         }
-        else if (cmd.equals("shoots") && CoreUtilities.xthArgEquals(3, lower, "with")) {
-            pTest = CoreUtilities.getXthArg(4, lower);
+        else if (cmd.equals("shoots") && path.eventArgLowerAt(3).equals("with")) {
+            pTest = path.eventArgLowerAt(4);
         }
         if (!pTest.isEmpty() && !pTest.equals("projectile") && !tryEntity(projectile, pTest)) {
             return false;
         }
 
-        if (!tryMaterial(material, CoreUtilities.getXthArg(2, lower))) {
+        if (!tryMaterial(material, path.eventArgLowerAt(2))) {
             return false;
         }
 

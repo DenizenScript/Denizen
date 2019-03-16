@@ -61,7 +61,7 @@ public class BlockIgnitesScriptEvent extends BukkitScriptEvent implements Listen
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(0, lower);
+        String mat = path.eventArgLowerAt(0);
         return tryMaterial(material, mat);
     }
 

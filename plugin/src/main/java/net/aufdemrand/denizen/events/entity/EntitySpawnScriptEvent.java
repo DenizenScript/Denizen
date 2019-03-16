@@ -64,12 +64,12 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(2, lower, "because")
-                && !CoreUtilities.getXthArg(3, lower).equalsIgnoreCase(reason.toString())) {
+        if (path.eventArgLowerAt(2).equals("because")
+                && !path.eventArgLowerAt(3).equalsIgnoreCase(reason.toString())) {
             return false;
         }
 

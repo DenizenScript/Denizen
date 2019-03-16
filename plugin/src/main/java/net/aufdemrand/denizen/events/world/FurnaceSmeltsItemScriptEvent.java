@@ -52,13 +52,13 @@ public class FurnaceSmeltsItemScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String srcItem = CoreUtilities.getXthArg(2, lower);
+        String srcItem = path.eventArgLowerAt(2);
         if (!tryItem(source_item, srcItem)) {
             return false;
         }
 
-        if (CoreUtilities.getXthArg(3, lower).equals("into")) {
-            String resItem = CoreUtilities.getXthArg(4, lower);
+        if (path.eventArgLowerAt(3).equals("into")) {
+            String resItem = path.eventArgLowerAt(4);
             if (!tryItem(result_item, resItem)) {
                 return false;
             }

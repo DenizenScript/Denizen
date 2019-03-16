@@ -55,7 +55,7 @@ public class PlayerDropsItemScriptEvent extends BukkitScriptEvent implements Lis
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String iCheck = CoreUtilities.getXthArg(2, lower);
+        String iCheck = path.eventArgLowerAt(2);
         if (!iCheck.equals("item") && !tryItem(item, iCheck)) {
             return false;
         }

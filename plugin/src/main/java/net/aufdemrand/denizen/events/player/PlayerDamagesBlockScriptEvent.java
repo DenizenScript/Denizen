@@ -59,7 +59,7 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String mat = CoreUtilities.getXthArg(2, lower);
+        String mat = path.eventArgLowerAt(2);
         if (!tryMaterial(material, mat)) {
             return false;
         }

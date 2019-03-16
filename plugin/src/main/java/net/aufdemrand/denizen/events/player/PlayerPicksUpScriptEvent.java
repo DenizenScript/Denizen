@@ -70,8 +70,8 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String iTest = CoreUtilities.xthArgEquals(1, lower, "picks") ?
-                CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        String iTest = path.eventArgLowerAt(1).equals("picks") ?
+                path.eventArgLowerAt(3) : path.eventArgLowerAt(2);
         if (!tryItem(item, iTest)) {
             return false;
         }

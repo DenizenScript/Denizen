@@ -49,7 +49,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String cmd = path.eventArgLowerAt(1);
         if (cmd.equals("starts") && !state) {
             return false;
         }

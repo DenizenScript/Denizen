@@ -58,7 +58,7 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(4, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(4))) {
             return false;
         }
         if (!runInCheck(path, event.getPlayer().getLocation())) {
@@ -68,8 +68,8 @@ public class PlayerRightClicksAtEntityScriptEvent extends BukkitScriptEvent impl
             return false;
         }
         // Deprecated in favor of with: format
-        if (CoreUtilities.xthArgEquals(5, lower, "with")) {
-            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), CoreUtilities.getXthArg(6, lower))) {
+        if (path.eventArgLowerAt(5).equals("with")) {
+            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), path.eventArgLowerAt(6))) {
                 return false;
             }
         }

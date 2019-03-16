@@ -67,9 +67,9 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String arg2 = CoreUtilities.getXthArg(2, lower);
-        String arg3 = CoreUtilities.getXthArg(3, lower);
-        String arg4 = CoreUtilities.getXthArg(4, lower);
+        String arg2 = path.eventArgLowerAt(2);
+        String arg3 = path.eventArgLowerAt(3);
+        String arg4 = path.eventArgLowerAt(4);
         String inv = arg2.equals("in") ? arg3 : arg3.equals("in") ? arg4 : "";
         String nname = NotableManager.isSaved(dInv) ?
                 CoreUtilities.toLowerCase(NotableManager.getSavedId(dInv)) :

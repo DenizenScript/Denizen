@@ -50,7 +50,7 @@ public class PlayerWalksOverScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String loc = CoreUtilities.getXthArg(3, lower);
+        String loc = path.eventArgLowerAt(3);
         return loc.equals(CoreUtilities.toLowerCase(notable)) || tryLocation(new dLocation(event.getPlayer().getLocation()), loc);
     }
 

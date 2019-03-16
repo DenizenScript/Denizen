@@ -53,11 +53,11 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;
         }
 
-        if (!tryMaterial(material, CoreUtilities.getXthArg(3, lower))) {
+        if (!tryMaterial(material, path.eventArgLowerAt(3))) {
             return false;
         }
 

@@ -60,7 +60,7 @@ public class PistonExtendsScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String mat = CoreUtilities.getXthArg(0, lower);
+        String mat = path.eventArgLowerAt(0);
         return (mat.equals("piston") || tryMaterial(material, mat))
                 && runInCheck(path, location);
     }

@@ -55,8 +55,8 @@ public class EntityExitsVehicleScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))
-                || !tryEntity(vehicle, CoreUtilities.getXthArg(2, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))
+                || !tryEntity(vehicle, path.eventArgLowerAt(2))) {
             return false;
         }
 

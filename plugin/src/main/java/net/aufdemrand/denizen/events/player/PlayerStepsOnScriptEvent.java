@@ -57,7 +57,7 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String mat = CoreUtilities.getXthArg(3, lower);
+        String mat = path.eventArgLowerAt(3);
         dMaterial material = new dMaterial(location.getBlock());
         if (!tryMaterial(material, mat)) {
             return false;

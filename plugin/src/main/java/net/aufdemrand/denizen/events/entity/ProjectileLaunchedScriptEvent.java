@@ -49,7 +49,7 @@ public class ProjectileLaunchedScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String projTest = CoreUtilities.getXthArg(0, lower);
+        String projTest = path.eventArgLowerAt(0);
 
         if (!projTest.equals("projectile") && !tryEntity(projectile, projTest)) {
             return false;

@@ -54,7 +54,7 @@ public class BlockBurnsScriptEvent extends BukkitScriptEvent implements Listener
             return false;
         }
 
-        String mat = CoreUtilities.getXthArg(0, lower);
+        String mat = path.eventArgLowerAt(0);
         return tryMaterial(material, mat);
 
     }

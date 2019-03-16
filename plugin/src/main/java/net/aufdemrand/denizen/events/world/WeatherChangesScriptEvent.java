@@ -45,11 +45,11 @@ public class WeatherChangesScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String cmd = path.eventArgLowerAt(1);
         if (!cmd.equals("changes") && !cmd.equals(weather.identifySimple())) {
             return false;
         }
-        String wCheck = CoreUtilities.getXthArg(3, lower);
+        String wCheck = path.eventArgLowerAt(3);
         if (wCheck.length() > 0 && !wCheck.equals(CoreUtilities.toLowerCase(world.getName()))) {
             return false;
         }

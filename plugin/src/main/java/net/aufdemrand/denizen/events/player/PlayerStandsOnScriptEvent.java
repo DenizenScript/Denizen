@@ -52,7 +52,7 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String mat = CoreUtilities.getXthArg(3, lower);
+        String mat = path.eventArgLowerAt(3);
         if (mat.length() > 0
                 && !mat.equals("in")
                 && !tryMaterial(material, mat)) {

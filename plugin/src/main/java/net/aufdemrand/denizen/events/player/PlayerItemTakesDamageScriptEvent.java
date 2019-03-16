@@ -64,7 +64,7 @@ public class PlayerItemTakesDamageScriptEvent extends BukkitScriptEvent implemen
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        String iItem = CoreUtilities.getXthArg(1, lower);
+        String iItem = path.eventArgLowerAt(1);
         if (!tryItem(item, iItem)) {
             return false;
         }

@@ -55,9 +55,9 @@ public class EntityTamesScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String ownerTest = cmd.equals("tames") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
-        String tamed = cmd.equals("tamed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
+        String cmd = path.eventArgLowerAt(1);
+        String ownerTest = cmd.equals("tames") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
+        String tamed = cmd.equals("tamed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
 
         if (!tryEntity(owner, ownerTest) || !tryEntity(entity, tamed)) {
             return false;

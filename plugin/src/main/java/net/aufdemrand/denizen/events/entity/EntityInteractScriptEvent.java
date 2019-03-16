@@ -58,11 +58,11 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
 
-        if (!tryMaterial(material, CoreUtilities.getXthArg(3, lower))) {
+        if (!tryMaterial(material, path.eventArgLowerAt(3))) {
             return false;
         }
 

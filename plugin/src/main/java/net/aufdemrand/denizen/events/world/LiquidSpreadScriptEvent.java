@@ -51,7 +51,7 @@ public class LiquidSpreadScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String mat = CoreUtilities.getXthArg(0, lower);
+        String mat = path.eventArgLowerAt(0);
         return (mat.equals("liquid") || tryMaterial(material, mat))
                 && (runInCheck(path, location)
                 || runInCheck(path, destination));

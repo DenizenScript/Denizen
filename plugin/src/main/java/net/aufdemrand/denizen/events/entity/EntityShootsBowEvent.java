@@ -71,8 +71,8 @@ public class EntityShootsBowEvent extends BukkitScriptEvent implements Listener 
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String attacker = CoreUtilities.getXthArg(0, lower);
-        String item = CoreUtilities.getXthArg(2, lower);
+        String attacker = path.eventArgLowerAt(0);
+        String item = path.eventArgLowerAt(2);
 
         if (!tryEntity(entity, attacker)) {
             return false;

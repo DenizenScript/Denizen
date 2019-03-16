@@ -53,7 +53,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String itemTest = CoreUtilities.getXthArg(2, lower);
+        String itemTest = path.eventArgLowerAt(2);
 
         return tryItem(item, itemTest) && runInCheck(path, location);
     }

@@ -65,15 +65,15 @@ public class StructureGrowsScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String struct = CoreUtilities.getXthArg(0, lower);
+        String struct = path.eventArgLowerAt(0);
         if (!struct.equals("structure") && !struct.equals("plant") &&
                 !struct.equals(CoreUtilities.toLowerCase(structure.asString()))) {
             return false;
         }
-        if (CoreUtilities.getXthArg(2, lower).equals("from") && !event.isFromBonemeal()) {
+        if (path.eventArgLowerAt(2).equals("from") && !event.isFromBonemeal()) {
             return false;
         }
-        else if (CoreUtilities.getXthArg(2, lower).equals("naturally") && event.isFromBonemeal()) {
+        else if (path.eventArgLowerAt(2).equals("naturally") && event.isFromBonemeal()) {
             return false;
         }
         return runInCheck(path, location);

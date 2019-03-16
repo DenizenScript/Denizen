@@ -58,9 +58,9 @@ public class SheepDyedScriptEvent extends BukkitScriptEvent implements Listener 
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
+        String cmd = path.eventArgLowerAt(1);
 
-        String new_color = cmd.equals("dyes") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(2, lower);
+        String new_color = cmd.equals("dyes") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(2);
         if (!new_color.isEmpty() && !new_color.equals(CoreUtilities.toLowerCase(color.toString()))) {
             return false;
         }

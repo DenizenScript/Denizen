@@ -64,18 +64,18 @@ public class EntityChangesBlockScriptEvent extends BukkitScriptEvent implements 
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String entName = CoreUtilities.getXthArg(0, lower);
+        String entName = path.eventArgLowerAt(0);
 
         if (!tryEntity(entity, entName)) {
             return false;
         }
 
-        if (!tryMaterial(old_material, CoreUtilities.getXthArg(2, lower))) {
+        if (!tryMaterial(old_material, path.eventArgLowerAt(2))) {
             return false;
         }
 
-        if (CoreUtilities.xthArgEquals(3, lower, "into")) {
-            String mat2 = CoreUtilities.getXthArg(4, lower);
+        if (path.eventArgLowerAt(3).equals("into")) {
+            String mat2 = path.eventArgLowerAt(4);
             if (mat2.isEmpty()) {
                 dB.echoError("Invalid event material [" + getName() + "]: '" + path.event + "' for " + path.container.getName());
                 return false;

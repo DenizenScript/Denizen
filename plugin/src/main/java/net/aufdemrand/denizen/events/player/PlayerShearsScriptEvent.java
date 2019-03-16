@@ -49,13 +49,13 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String ent = CoreUtilities.xthArgEquals(3, lower, "sheep") ? "sheep" : CoreUtilities.getXthArg(2, lower);
+        String ent = path.eventArgLowerAt(3).equals("sheep") ? "sheep" : path.eventArgLowerAt(2);
 
         if (!ent.equals("sheep") && !tryEntity(entity, ent)) {
             return false;
         }
 
-        String color = CoreUtilities.xthArgEquals(3, lower, "sheep") ? CoreUtilities.getXthArg(2, lower) : "";
+        String color = path.eventArgLowerAt(3).equals("sheep") ? path.eventArgLowerAt(2) : "";
         if (color.length() > 0 && !color.equals(CoreUtilities.toLowerCase(((Sheep) entity.getBukkitEntity()).getColor().name()))) {
             return false;
         }

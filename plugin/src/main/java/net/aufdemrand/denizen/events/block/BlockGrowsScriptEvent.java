@@ -51,7 +51,7 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String mat = CoreUtilities.getXthArg(0, lower);
+        String mat = path.eventArgLowerAt(0);
         if (!tryMaterial(material, mat)) {
             return false;
         }

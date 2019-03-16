@@ -51,7 +51,7 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(vehicle, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;
         }
 

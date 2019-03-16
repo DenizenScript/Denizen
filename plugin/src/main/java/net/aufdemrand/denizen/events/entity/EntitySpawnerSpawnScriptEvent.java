@@ -53,7 +53,7 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(2, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(2))) {
             return false;
         }
 

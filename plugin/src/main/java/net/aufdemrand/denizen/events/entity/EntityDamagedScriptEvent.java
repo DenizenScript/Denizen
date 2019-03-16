@@ -90,10 +90,10 @@ public class EntityDamagedScriptEvent extends BukkitScriptEvent implements Liste
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String attacker = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) :
-                CoreUtilities.getXthArg(2, lower).equals("by") ? CoreUtilities.getXthArg(3, lower) : "";
-        String target = cmd.equals("damages") ? CoreUtilities.getXthArg(2, lower) : CoreUtilities.getXthArg(0, lower);
+        String cmd = path.eventArgLowerAt(1);
+        String attacker = cmd.equals("damages") ? path.eventArgLowerAt(0) :
+                path.eventArgLowerAt(2).equals("by") ? path.eventArgLowerAt(3) : "";
+        String target = cmd.equals("damages") ? path.eventArgLowerAt(2) : path.eventArgLowerAt(0);
 
         if (!attacker.isEmpty()) {
             if (damager != null) {

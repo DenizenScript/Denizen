@@ -52,7 +52,7 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String rCheck = CoreUtilities.getXthArg(2, lower).equals("because") ? CoreUtilities.getXthArg(3, lower) : CoreUtilities.getXthArg(5, lower);
+        String rCheck = path.eventArgLowerAt(2).equals("because") ? path.eventArgLowerAt(3) : path.eventArgLowerAt(5);
         if (rCheck.length() > 0 && !rCheck.equals(CoreUtilities.toLowerCase(reason.asString()))) {
             return false;
         }

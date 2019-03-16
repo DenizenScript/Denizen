@@ -67,8 +67,8 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
             return false;
         }
 
-        String dispenser = CoreUtilities.getXthArg(0, lower);
-        String iTest = CoreUtilities.getXthArg(2, lower);
+        String dispenser = path.eventArgLowerAt(0);
+        String iTest = path.eventArgLowerAt(2);
         return tryMaterial(material, dispenser) && (iTest.equals("item") || tryItem(item, iTest));
     }
 

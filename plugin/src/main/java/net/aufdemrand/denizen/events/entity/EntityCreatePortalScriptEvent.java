@@ -52,7 +52,7 @@ public class EntityCreatePortalScriptEvent extends BukkitScriptEvent implements 
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
 

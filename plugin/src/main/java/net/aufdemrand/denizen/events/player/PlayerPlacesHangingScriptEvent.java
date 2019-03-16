@@ -57,7 +57,7 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String hangCheck = CoreUtilities.getXthArg(2, lower);
+        String hangCheck = path.eventArgLowerAt(2);
         if (!tryEntity(hanging, hangCheck)) {
             return false;
         }

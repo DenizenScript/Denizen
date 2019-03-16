@@ -65,13 +65,13 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String type = CoreUtilities.getXthArg(1, lower);
+        String type = path.eventArgLowerAt(1);
 
         if (!type.equals(CoreUtilities.toLowerCase(equipType.asString()))) {
             return false;
         }
 
-        String eItem = CoreUtilities.getXthArg(2, lower);
+        String eItem = path.eventArgLowerAt(2);
 
         if (!eItem.equals("armor") && !eItem.equals(CoreUtilities.toLowerCase(armorType.asString()))
                 && !tryItem(armor, eItem)) {

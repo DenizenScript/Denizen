@@ -52,7 +52,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String iCheck = CoreUtilities.getXthArg(2, lower);
+        String iCheck = path.eventArgLowerAt(2);
         if (!tryItem(item, iCheck)) {
             return false;
         }

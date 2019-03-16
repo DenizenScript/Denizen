@@ -63,11 +63,11 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
 
-        if (!tryEntity(entity, CoreUtilities.getXthArg(0, lower))) {
+        if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
         }
 
-        String victim = CoreUtilities.getXthArg(2, lower);
+        String victim = path.eventArgLowerAt(2);
         if (!victim.equals("in") && !victim.equals("because") && !victim.equals("") && !tryEntity(target, victim)) {
             return false;
         }

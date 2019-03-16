@@ -150,7 +150,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         int index = CoreUtilities.split(lower, ' ').indexOf("clicks") + 1;
 
         if (index == 3
-                && !click_type.identify().startsWith(CoreUtilities.getXthArg(1, lower).toUpperCase())) {
+                && !click_type.identify().startsWith(path.eventArgLowerAt(1).toUpperCase())) {
             return false;
         }
 

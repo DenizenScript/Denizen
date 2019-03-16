@@ -83,10 +83,10 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String arg0 = CoreUtilities.getXthArg(0, lower);
-        String arg2 = CoreUtilities.getXthArg(2, lower);
-        String arg3 = CoreUtilities.getXthArg(3, lower);
+        String cmd = path.eventArgLowerAt(1);
+        String arg0 = path.eventArgLowerAt(0);
+        String arg2 = path.eventArgLowerAt(2);
+        String arg3 = path.eventArgLowerAt(3);
         String attacker = cmd.equals("kills") ? arg0 : arg2.equals("by") ? arg3 : "";
         String target = cmd.equals("kills") ? arg2 : arg0;
 

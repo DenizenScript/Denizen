@@ -59,7 +59,7 @@ public class PlayerEmptiesBucketScriptEvent extends BukkitScriptEvent implements
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String iTest = CoreUtilities.getXthArg(2, lower);
+        String iTest = path.eventArgLowerAt(2);
         return (iTest.equals("bucket") || tryItem(item, iTest))
                 && runInCheck(path, location);
     }

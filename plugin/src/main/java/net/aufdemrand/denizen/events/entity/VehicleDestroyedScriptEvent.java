@@ -58,9 +58,9 @@ public class VehicleDestroyedScriptEvent extends BukkitScriptEvent implements Li
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String veh = cmd.equals("destroyed") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
-        String ent = cmd.equals("destroys") ? CoreUtilities.getXthArg(0, lower) : "";
+        String cmd = path.eventArgLowerAt(1);
+        String veh = cmd.equals("destroyed") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
+        String ent = cmd.equals("destroys") ? path.eventArgLowerAt(0) : "";
 
         if (!tryEntity(vehicle, veh)) {
             return false;

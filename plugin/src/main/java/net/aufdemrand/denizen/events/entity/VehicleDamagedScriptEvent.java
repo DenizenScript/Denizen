@@ -73,9 +73,9 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
     @Override
     public boolean matches(ScriptPath path) {
         String lower = path.eventLower;
-        String cmd = CoreUtilities.getXthArg(1, lower);
-        String veh = cmd.equals("damaged") ? CoreUtilities.getXthArg(0, lower) : CoreUtilities.getXthArg(2, lower);
-        String ent = cmd.equals("damages") ? CoreUtilities.getXthArg(0, lower) : "";
+        String cmd = path.eventArgLowerAt(1);
+        String veh = cmd.equals("damaged") ? path.eventArgLowerAt(0) : path.eventArgLowerAt(2);
+        String ent = cmd.equals("damages") ? path.eventArgLowerAt(0) : "";
 
         if (!tryEntity(vehicle, veh)) {
             return false;
