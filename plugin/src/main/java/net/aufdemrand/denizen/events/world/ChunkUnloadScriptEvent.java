@@ -48,9 +48,8 @@ public class ChunkUnloadScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        return (lower.startsWith("chunk unloads") && !lower.contains(" in "))
-                || lower.startsWith("chunk unloads in " + CoreUtilities.toLowerCase(world.getName()));
+        return (path.eventLower.startsWith("chunk unloads") && !path.eventLower.contains(" in "))
+                || path.eventLower.startsWith("chunk unloads in " + CoreUtilities.toLowerCase(world.getName()));
     }
 
     @Override

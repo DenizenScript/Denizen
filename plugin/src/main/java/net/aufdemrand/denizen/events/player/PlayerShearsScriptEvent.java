@@ -48,7 +48,6 @@ public class PlayerShearsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String ent = path.eventArgLowerAt(3).equals("sheep") ? "sheep" : path.eventArgLowerAt(2);
 
         if (!ent.equals("sheep") && !tryEntity(entity, ent)) {

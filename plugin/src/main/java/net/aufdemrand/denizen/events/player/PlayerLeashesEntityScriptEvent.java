@@ -48,7 +48,6 @@ public class PlayerLeashesEntityScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(entity, path.eventArgLowerAt(2))) {
             return false;

@@ -46,7 +46,6 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         return runInCheck(path, location);
     }
 

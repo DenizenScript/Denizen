@@ -46,9 +46,8 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        return lower.equals("chunk loads for the first time")
-                || lower.equals("chunk loads for the first time in " +
+        return path.eventLower.equals("chunk loads for the first time")
+                || path.eventLower.equals("chunk loads for the first time in " +
                 CoreUtilities.toLowerCase(world.getName()));
     }
 

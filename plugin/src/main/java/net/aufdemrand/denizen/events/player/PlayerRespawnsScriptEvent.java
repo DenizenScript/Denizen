@@ -46,7 +46,6 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String loc = path.eventArgLowerAt(2);
         if (loc.equals("at") && !event.isBedSpawn()) {
             return false;

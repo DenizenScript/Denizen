@@ -57,7 +57,6 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String action = path.eventArgLowerAt(1);
         if (action.equals("edits")) {
             return true;

@@ -58,7 +58,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(entity, path.eventArgLowerAt(3))) {
             return false;

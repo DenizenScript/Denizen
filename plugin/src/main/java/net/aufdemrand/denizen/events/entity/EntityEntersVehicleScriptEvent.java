@@ -56,7 +56,6 @@ public class EntityEntersVehicleScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(entity, path.eventArgLowerAt(0))
                 || !tryEntity(vehicle, path.eventArgLowerAt(2))) {

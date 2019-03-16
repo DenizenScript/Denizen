@@ -61,7 +61,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;
@@ -76,12 +75,9 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
             return false;
         }
 
-        Integer pos = lower.indexOf(" because ") + 9;
-        if (pos > 9) {
-            Integer end = lower.indexOf(" ", pos) < 0 ? lower.length() : lower.indexOf(" ", pos);
-            if (!lower.substring(pos, end).equals(CoreUtilities.toLowerCase(reason.toString()))) {
-                return false;
-            }
+        int index = path.eventArgLowerAt(3).equals("because") ? 3 : (path.eventArgAt(2).equals("because") ? 2 : -1);
+        if (index > 0 && !path.eventArgLowerAt(index + 1).equals(CoreUtilities.toLowerCase(reason.toString()))) {
+            return false;
         }
 
         return true;

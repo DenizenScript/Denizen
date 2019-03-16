@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
-import java.util.List;
-
 public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -57,7 +55,6 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String fish = path.eventArgLowerAt(2);
 
         if (!fish.isEmpty() && !fish.equals("in") && !fish.equals("while")) {
@@ -74,9 +71,9 @@ public class PlayerFishesScriptEvent extends BukkitScriptEvent implements Listen
             }
         }
 
-        List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 2; index < data.size(); index++) {
-            if (data.get(index).equals("while") && !data.get(index + 1).equalsIgnoreCase(state.asString())) {
+        String[] data = path.eventArgsLower;
+        for (int index = 2; index < data.length; index++) {
+            if (data[index].equals("while") && !data[index + 1].equalsIgnoreCase(state.asString())) {
                 return false;
             }
         }

@@ -13,8 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
-import java.util.List;
-
 public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -48,17 +46,16 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
-        List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 3; index < data.size(); index++) {
-            if (data.get(index).equals("from")) {
-                if (!data.get(index + 1).equals(CoreUtilities.toLowerCase(origin_world.getName()))) {
+        String[] data = path.eventArgsLower;
+        for (int index = 3; index < data.length; index++) {
+            if (data[index].equals("from")) {
+                if (!data[index + 1].equals(CoreUtilities.toLowerCase(origin_world.getName()))) {
                     return false;
                 }
             }
-            else if (data.get(index).equals("to")) {
-                if (!data.get(index + 1).equals(CoreUtilities.toLowerCase(destination_world.getName()))) {
+            else if (data[index].equals("to")) {
+                if (!data[index + 1].equals(CoreUtilities.toLowerCase(destination_world.getName()))) {
                     return false;
                 }
             }

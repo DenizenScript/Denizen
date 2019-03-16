@@ -56,7 +56,6 @@ public class PlayerStatisticIncrementsScriptEvent extends BukkitScriptEvent impl
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String stat = path.eventArgLowerAt(2);
 
         if (!stat.equals("increments") && !stat.equals(CoreUtilities.toLowerCase(statistic.toString()))) {

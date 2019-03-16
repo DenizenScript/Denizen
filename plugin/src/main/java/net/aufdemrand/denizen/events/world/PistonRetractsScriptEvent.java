@@ -61,7 +61,6 @@ public class PistonRetractsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String mat = path.eventArgLowerAt(0);
         return (mat.equals("piston") || tryMaterial(material, mat))
                 && runInCheck(path, location);

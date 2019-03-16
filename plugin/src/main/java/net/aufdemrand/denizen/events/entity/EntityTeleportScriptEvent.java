@@ -66,7 +66,6 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
             return false;

@@ -66,7 +66,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String mat = path.eventArgLowerAt(2);
         if (!tryMaterial(material, mat)) {
             return false;

@@ -58,7 +58,6 @@ public class PlayerMendsItemScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         String iItem = path.eventArgLowerAt(2);
         if (!tryItem(item, iItem)) {

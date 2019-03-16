@@ -45,7 +45,6 @@ public class PlayerChangesGamemodeScriptEvent extends BukkitScriptEvent implemen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String mode = path.eventArgLowerAt(4);
         if (mode.length() > 0) {
             if (!CoreUtilities.toLowerCase(gamemode.asString()).equals(mode)) {

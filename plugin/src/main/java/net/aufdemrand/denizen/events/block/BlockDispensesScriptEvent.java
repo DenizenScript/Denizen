@@ -62,7 +62,6 @@ public class BlockDispensesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         if (!runInCheck(path, location)) {
             return false;
         }

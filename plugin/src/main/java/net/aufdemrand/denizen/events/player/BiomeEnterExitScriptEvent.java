@@ -60,9 +60,8 @@ public class BiomeEnterExitScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        String biome_test = lower.substring(lower.lastIndexOf(' ') + 1);
-        String direction = lower.substring(lower.indexOf(' ') + 1, lower.lastIndexOf(' ')).trim();
+        String biome_test = path.eventArgAt(2);
+        String direction = path.eventArgAt(1);
 
         return biome_test.equals("biome")
                 || (direction.equals("enters") && biome_test.equals(CoreUtilities.toLowerCase(new_biome.toString())))

@@ -50,7 +50,6 @@ public class PlayerStandsOnScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         String mat = path.eventArgLowerAt(3);
         if (mat.length() > 0

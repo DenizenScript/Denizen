@@ -50,7 +50,6 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String target = path.eventArgLowerAt(0);
 
         if (!tryEntity(entity, target)) {

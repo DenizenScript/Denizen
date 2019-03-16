@@ -48,7 +48,6 @@ public class PlayerAnimatesScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         if (dEntity.isNPC(event.getPlayer())) {
             return false;
         }

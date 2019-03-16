@@ -47,7 +47,6 @@ public class LeafDecaysScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String mat = path.eventArgLowerAt(0);
         return (mat.equals("leaves") || (tryMaterial(material, mat)))
                 && runInCheck(path, location);

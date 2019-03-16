@@ -57,7 +57,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         String mat = path.eventArgLowerAt(2);
         if (!tryMaterial(material, mat)) {

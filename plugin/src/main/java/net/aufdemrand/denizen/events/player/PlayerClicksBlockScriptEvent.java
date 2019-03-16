@@ -146,16 +146,15 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        int index = CoreUtilities.split(lower, ' ').indexOf("clicks") + 1;
+        int index = path.eventArgLowerAt(1).equals("clicks") ? 1 : 2;
 
-        if (index == 3
+        if (index == 2
                 && !click_type.identify().startsWith(path.eventArgLowerAt(1).toUpperCase())) {
             return false;
         }
 
         dMaterial material = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : null;
-        String mat = CoreUtilities.getXthArg(index, lower);
+        String mat = path.eventArgLowerAt(index + 1);
         if (mat.length() > 0
                 && !withHelpList.contains(mat)
                 && !tryMaterial(material, mat)) {

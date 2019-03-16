@@ -65,7 +65,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String entName = path.eventArgLowerAt(0);
         String hang = path.eventArgLowerAt(2);
 

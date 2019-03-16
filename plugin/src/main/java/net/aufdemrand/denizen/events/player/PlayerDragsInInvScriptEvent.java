@@ -65,7 +65,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         String arg2 = path.eventArgLowerAt(2);
         String arg3 = path.eventArgLowerAt(3);

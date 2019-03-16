@@ -82,7 +82,6 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String cmd = path.eventArgLowerAt(1);
         String arg0 = path.eventArgLowerAt(0);
         String arg2 = path.eventArgLowerAt(2);

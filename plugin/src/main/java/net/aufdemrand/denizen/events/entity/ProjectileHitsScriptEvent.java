@@ -77,7 +77,6 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String cmd = path.eventArgLowerAt(1);
         String pTest = "";
 

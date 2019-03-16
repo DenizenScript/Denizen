@@ -45,7 +45,6 @@ public class VehicleCreatedScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!tryEntity(vehicle, path.eventArgLowerAt(0))) {
             return false;

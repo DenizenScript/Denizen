@@ -61,7 +61,6 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String eItem = path.eventArgLowerAt(2);
 
         if (!tryItem(result, eItem)) {

@@ -45,7 +45,6 @@ public class SheepRegrowsScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (!runInCheck(path, location)) {
             return false;

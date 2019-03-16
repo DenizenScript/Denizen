@@ -52,7 +52,6 @@ public class InventoryPicksUpItemScriptEvent extends BukkitScriptEvent implement
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String inv = path.eventArgLowerAt(0);
         String itemName = path.eventArgLowerAt(3);
         if (!inv.equals("inventory")) {

@@ -70,7 +70,6 @@ public class ItemEnchantedScriptEvent extends BukkitScriptEvent implements Liste
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String itemTest = path.eventArgLowerAt(0);
 
         if (!itemTest.equals("item") && !tryItem(item, itemTest)) {

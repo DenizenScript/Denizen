@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 
-import java.util.List;
-
 public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements Listener {
 
     // <--[event]
@@ -50,16 +48,15 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
-        List<String> data = CoreUtilities.split(lower, ' ');
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).equals("from")) {
-                if (aH.getIntegerFrom(data.get(index + 1)) != old_level) {
+        String[] data = path.eventArgsLower;
+        for (int index = 3; index < data.length; index++) {
+            if (data[index].equals("from")) {
+                if (aH.getIntegerFrom(data[index + 1]) != old_level) {
                     return false;
                 }
             }
-            if (data.get(index).equals("to")) {
-                if (aH.getIntegerFrom(data.get(index + 1)) != new_level) {
+            if (data[index].equals("to")) {
+                if (aH.getIntegerFrom(data[index + 1]) != new_level) {
                     return false;
                 }
             }

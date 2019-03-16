@@ -52,7 +52,6 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         if (!runInCheck(path, player.getLocation())) {
             return false;
         }

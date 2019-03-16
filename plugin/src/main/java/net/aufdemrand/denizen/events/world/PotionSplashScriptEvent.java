@@ -55,7 +55,6 @@ public class PotionSplashScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         String iTest = path.eventArgLowerAt(0);
         return tryItem(potion, iTest) && runInCheck(path, location);
     }

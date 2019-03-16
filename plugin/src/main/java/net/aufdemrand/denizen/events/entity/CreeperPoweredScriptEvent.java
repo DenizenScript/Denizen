@@ -48,10 +48,9 @@ public class CreeperPoweredScriptEvent extends BukkitScriptEvent implements List
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
 
         if (path.eventArgLowerAt(2).equals("because")
-                && !CoreUtilities.xthArgEquals(3, lower, CoreUtilities.toLowerCase(cause.toString()))) {
+                && !path.eventArgLowerAt(3).equals(CoreUtilities.toLowerCase(cause.toString()))) {
             return false;
         }
 

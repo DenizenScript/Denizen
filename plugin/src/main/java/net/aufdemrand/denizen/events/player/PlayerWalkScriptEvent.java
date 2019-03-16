@@ -52,7 +52,6 @@ public class PlayerWalkScriptEvent extends BukkitScriptEvent implements Listener
 
     @Override
     public boolean matches(ScriptPath path) {
-        String lower = path.eventLower;
         return runInCheck(path, old_location) || runInCheck(path, new_location);
     }
 
