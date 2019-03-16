@@ -587,10 +587,45 @@ public class NPCCommandHandler {
         SneakingTrait trait = npc.getTrait(SneakingTrait.class);
 
         if (trait.isSneaking()) {
+            trait.stand();
             Messaging.sendError(sender, npc.getName() + " is already sneaking!");
         }
         else {
             trait.sneak();
+            Messaging.send(sender, npc.getName() + " is now sneaking.");
+        }
+
+    }
+
+    /*
+     * Mirror
+     */
+    @Command(
+            aliases = {"npc"}, usage = "mirror",
+            desc = "Makes the NPC mirror the skin of the player looking at it.", flags = "", modifiers = {"mirror"},
+            min = 1, max = 3, permission = "denizen.npc.mirror")
+    @Requirements(selected = true, ownership = true)
+    public void mirror(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (npc.getEntity().getType() != EntityType.PLAYER) {
+            Messaging.sendError(sender, npc.getName() + " needs to be a Player type NPC to be a mirror!");
+            return;
+        }
+
+        if (!npc.hasTrait(MirrorTrait.class)) {
+            npc.addTrait(MirrorTrait.class);
+            npc.getTrait(MirrorTrait.class).enableMirror();
+            Messaging.send(sender, npc.getName() + " is now mirroring player skins.");
+            return;
+        }
+        MirrorTrait trait = npc.getTrait(MirrorTrait.class);
+
+        if (trait.mirror) {
+            trait.disableMirror();
+            Messaging.send(sender, npc.getName() + " is no longer mirroring player skins.");
+        }
+        else {
+            trait.enableMirror();
+            Messaging.send(sender, npc.getName() + " is now mirroring player skins.");
         }
 
     }

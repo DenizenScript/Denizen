@@ -2,9 +2,12 @@ package net.aufdemrand.denizen.nms.impl;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.helpers.PacketHelper_v1_13_R2;
+import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenNetworkManager_v1_13_R2;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -19,6 +22,7 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +61,58 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
         }.runTaskLater(NMSHandler.getJavaPlugin(), 5);
     }
 
+    public static boolean handleMirrorProfiles(PacketPlayOutPlayerInfo packet, DenizenNetworkManager_v1_13_R2 manager,
+                                            GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+        if (ProfileEditor.mirrorUUIDs.isEmpty()) {
+            return true;
+        }
+        PacketPlayOutPlayerInfo.EnumPlayerInfoAction action = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "a", packet);
+        if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
+            return true;
+        }
+        List dataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", packet);
+        if (dataList == null) {
+            return true;
+        }
+        try {
+            boolean any = false;
+            for (Object data : dataList) {
+                GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
+                if (ProfileEditor.mirrorUUIDs.contains(gameProfile.getId())) {
+                    any = true;
+                }
+            }
+            if (!any) {
+                return true;
+            }
+            GameProfile ownProfile = manager.player.getProfile();
+            for (Object data : dataList) {
+                GameProfile gameProfile = (GameProfile) playerInfoData_gameProfile.get(data);
+                if (!ProfileEditor.mirrorUUIDs.contains(gameProfile.getId())) {
+                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
+                    List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
+                    newPacketDataList.add(data);
+                    manager.oldManager.sendPacket(newPacket, genericfuturelistener);
+                }
+                else {
+                    PacketPlayOutPlayerInfo newPacket = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER);
+                    List newPacketDataList = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "b", newPacket);
+                    GameProfile patchedProfile = new GameProfile(gameProfile.getId(), gameProfile.getName());
+                    patchedProfile.getProperties().putAll(ownProfile.getProperties());
+                    Object newData = playerInfoData_construct.newInstance(newPacket, patchedProfile,
+                            playerInfoData_latency.getInt(data), playerInfoData_gamemode.get(data), playerInfoData_displayName.get(data));
+                    newPacketDataList.add(newData);
+                    manager.oldManager.sendPacket(newPacket, genericfuturelistener);
+                }
+            }
+            return false;
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+            return true;
+        }
+    }
+
     public static void updatePlayerProfiles(PacketPlayOutPlayerInfo packet) {
         PacketPlayOutPlayerInfo.EnumPlayerInfoAction action = ReflectionHelper.getFieldValue(PacketPlayOutPlayerInfo.class, "a", packet);
         if (action != PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER) {
@@ -85,22 +141,45 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
         return gameProfile;
     }
 
-    private static final Field playerInfoData_gameProfile;
+    public static final Class playerInfoData;
+
+    public static final Field playerInfoData_latency,
+            playerInfoData_gamemode,
+            playerInfoData_gameProfile,
+            playerInfoData_displayName;
+
+    public static final Constructor playerInfoData_construct;
 
     static {
-        Field pidGameProfile = null;
+        Class pid = null;
+        Field pidLatency = null, pidGamemode = null, pidGameProfile = null, pidDisplayName = null;
+        Constructor pidConstruct = null;
         try {
             for (Class clzz : PacketPlayOutPlayerInfo.class.getDeclaredClasses()) {
-                if (CoreUtilities.toLowerCase(clzz.getName()).contains("infodata")) {
-                    pidGameProfile = clzz.getDeclaredField("d"); // PlayerInfoData.
+                if (CoreUtilities.toLowerCase(clzz.getName()).contains("infodata")) { // PlayerInfoData.
+                    pid = clzz;
+                    pidLatency = clzz.getDeclaredField("b");
+                    pidLatency.setAccessible(true);
+                    pidGamemode = clzz.getDeclaredField("c");
+                    pidGamemode.setAccessible(true);
+                    pidGameProfile = clzz.getDeclaredField("d");
                     pidGameProfile.setAccessible(true);
+                    pidDisplayName = clzz.getDeclaredField("e");
+                    pidDisplayName.setAccessible(true);
+                    pidConstruct = pid.getDeclaredConstructors()[0];
+                    pidConstruct.setAccessible(true);
                     break;
                 }
             }
         }
         catch (Exception e) {
-            dB.echoError(e);
+            e.printStackTrace();
         }
+        playerInfoData = pid;
+        playerInfoData_latency = pidLatency;
+        playerInfoData_gamemode = pidGamemode;
         playerInfoData_gameProfile = pidGameProfile;
+        playerInfoData_displayName = pidDisplayName;
+        playerInfoData_construct = pidConstruct;
     }
 }

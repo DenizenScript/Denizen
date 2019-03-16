@@ -1,5 +1,5 @@
 name: Denizen
-authors: ['aufdemrand', 'mcmonkey', 'Morphan1']
+authors: ['mcmonkey', 'Morphan1', 'aufdemrand']
 version: ${project.version} (build ${BUILD_NUMBER}-${BUILD_CLASS})
 main: net.aufdemrand.denizen.Denizen
 softdepend: [Citizens, Vault]
@@ -19,7 +19,6 @@ commands:
     description: Executes a dScript command.
     usage: Use /ex in front of a normal script entry.
     permission: denizen.ex
-
 
 permissions:
   denizen.*:
@@ -63,4 +62,4 @@ permissions:
       denizen.npc.assign: true
       denizen.npc.constants: true
       denizen.npc.pushable: true
-
+      denizen.npc.mirror: true

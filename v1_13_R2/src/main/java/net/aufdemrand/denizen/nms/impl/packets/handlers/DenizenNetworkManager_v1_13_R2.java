@@ -31,10 +31,10 @@ import java.util.UUID;
 
 public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
 
-    private final NetworkManager oldManager;
-    private final DenizenPacketListener_v1_13_R2 packetListener;
-    private final EntityPlayer player;
-    private final PacketHandler packetHandler;
+    public final NetworkManager oldManager;
+    public final DenizenPacketListener_v1_13_R2 packetListener;
+    public final EntityPlayer player;
+    public final PacketHandler packetHandler;
 
     public DenizenNetworkManager_v1_13_R2(EntityPlayer entityPlayer, NetworkManager oldManager, PacketHandler packetHandler) {
         super(getProtocolDirection(oldManager));
@@ -295,8 +295,10 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
         }
         else if (packet instanceof PacketPlayOutPlayerInfo) {
             PacketPlayOutPlayerInfo playerInfo = (PacketPlayOutPlayerInfo) packet;
-            ProfileEditor_v1_13_R2.updatePlayerProfiles(playerInfo);
-            oldManager.sendPacket(playerInfo);
+            if (ProfileEditor_v1_13_R2.handleMirrorProfiles(playerInfo, this, genericfuturelistener)) {
+                ProfileEditor_v1_13_R2.updatePlayerProfiles(playerInfo);
+                oldManager.sendPacket(playerInfo);
+            }
         }
         else if (packet instanceof PacketPlayOutEntityMetadata) {
             if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutEntityMetadata_v1_13_R2((PacketPlayOutEntityMetadata) packet))) {

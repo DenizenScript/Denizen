@@ -3,8 +3,10 @@ package net.aufdemrand.denizen.objects;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.abstracts.ProfileEditor;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.interfaces.FakePlayer;
+import net.aufdemrand.denizen.npc.traits.MirrorTrait;
 import net.aufdemrand.denizen.objects.properties.entity.EntityAge;
 import net.aufdemrand.denizen.objects.properties.entity.EntityColor;
 import net.aufdemrand.denizen.objects.properties.entity.EntityTame;
@@ -3093,6 +3095,38 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("hide_from_players")) {
             NMSHandler.getInstance().getEntityHelper().hideEntity(null, getBukkitEntity(), false);
+        }
+
+        // <--[mechanism]
+        // @object dEntity
+        // @name mirror_player
+        // @input Element(Boolean)
+        // @description
+        // Makes the player-like entity have the same skin as the player looking at it.
+        // For NPCs, this will add the Mirror trait.
+        // -->
+        if (mechanism.matches("mirror_player") && mechanism.requireBoolean()) {
+            if (isNPC()) {
+                NPC npc = getDenizenNPC().getCitizen();
+                if (!npc.hasTrait(MirrorTrait.class)) {
+                    npc.addTrait(MirrorTrait.class);
+                }
+                MirrorTrait mirror = npc.getTrait(MirrorTrait.class);
+                if (mechanism.getValue().asBoolean()) {
+                    mirror.enableMirror();
+                }
+                else {
+                    mirror.disableMirror();
+                }
+            }
+            else {
+                if (mechanism.getValue().asBoolean()) {
+                    ProfileEditor.mirrorUUIDs.add(getUUID());
+                }
+                else {
+                    ProfileEditor.mirrorUUIDs.remove(getUUID());
+                }
+            }
         }
 
         // <--[mechanism]

@@ -9,12 +9,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
 public abstract class ProfileEditor {
 
-    protected static final Map<UUID, PlayerProfile> fakeProfiles = new HashMap<UUID, PlayerProfile>();
+    public final static Map<UUID, PlayerProfile> fakeProfiles = new HashMap<>();
+
+    public final static HashSet<UUID> mirrorUUIDs = new HashSet<>();
 
     public ProfileEditor() {
         Bukkit.getServer().getPluginManager().registerEvents(new PlayerProfileEditorListener(), NMSHandler.getJavaPlugin());
