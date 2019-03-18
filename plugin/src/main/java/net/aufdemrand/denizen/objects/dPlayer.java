@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
+import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
 import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
 import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
@@ -1720,12 +1721,12 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
 
             // <--[tag]
-            // @attribute <p@player.attack_cooldown.time_passed>
+            // @attribute <p@player.attack_cooldown.duration>
             // @returns Duration
             // @description
             // Returns the amount of time that passed since the start of the attack cooldown.
             // -->
-            if (attribute.startsWith("time_passed")) {
+            if (attribute.startsWith("duration")) {
                 return new Duration((long) NMSHandler.getInstance().getPlayerHelper()
                         .ticksPassedDuringCooldown(getPlayerEntity())).getAttribute(attribute.fulfill(1));
             }
@@ -1747,14 +1748,14 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
 
             // <--[tag]
-            // @attribute <p@player.attack_cooldown.percent_done>
-            // @returns Element(Number)
+            // @attribute <p@player.attack_cooldown.percent>
+            // @returns Element(Decimal)
             // @description
             // Returns the progress of the attack cooldown. 0 means that the attack cooldown has just
             // started, while 100 means that the attack cooldown has finished.
             // NOTE: This may not match exactly with the clientside attack cooldown indicator.
             // -->
-            else if (attribute.startsWith("percent_done")) {
+            else if (attribute.startsWith("percent")) {
                 return new Element(NMSHandler.getInstance().getPlayerHelper()
                         .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
             }
@@ -2475,7 +2476,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @input None
         // @description
         // Forces the player to wait for the full attack cooldown duration for the item in their hand.
-        // NOTE: The clientside attack cooldown indicator will not be updated when you use this mechanism!
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
         // @tags
         // <p@player.attack_cooldown.time_passed>
         // <p@player.attack_cooldown.max_duration>
@@ -2483,13 +2484,90 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (mechanism.matches("redo_attack_cooldown")) {
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                NMSHandler.getInstance().getPlayerHelper().resetAttackCooldown(getPlayerEntity());
+                NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
             }
             else {
                 dB.echoError("Attack cooldowns don't exist prior to 1.9.");
             }
         }
 
+        // <--[mechanism]
+        // @object dPlayer
+        // @name reset_attack_cooldown
+        // @input None
+        // @description
+        // Ends the player's attack cooldown.
+        // NOTE: This will do nothing if the player's attack speed attribute is set to 0.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <p@player.attack_cooldown.time_passed>
+        // <p@player.attack_cooldown.max_duration>
+        // <p@player.attack_cooldown.percent_done>
+        // -->
+        if (mechanism.matches("reset_attack_cooldown")) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+                playerHelper.setAttackCooldown(getPlayerEntity(),
+                        Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity())));
+            }
+            else {
+                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name attack_cooldown_percent
+        // @input Element(Decimal)
+        // @description
+        // Sets the progress of the player's attack cooldown. Takes a decimal from 0 to 1.
+        // 0 means the cooldown has just begun, while 1 means the cooldown has been completed.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <p@player.attack_cooldown.time_passed>
+        // <p@player.attack_cooldown.max_duration>
+        // <p@player.attack_cooldown.percent_done>
+        // -->
+        if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                float percent = mechanism.getValue().asFloat();
+                System.out.println(percent + " >> " + (percent >= 0 && percent <= 1));
+                if (percent >= 0 && percent <= 1) {
+                    PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+                    playerHelper.setAttackCooldown(getPlayerEntity(),
+                            Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
+                }
+                else {
+                    dB.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
+                }
+            }
+            else {
+                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
+        // @name attack_cooldown
+        // @input Duration
+        // @description
+        // Sets the player's time since their last attack. If the time is greater than the max duration of their
+        // attack cooldown, then the cooldown is considered finished.
+        // NOTE: The clientside attack cooldown indicator will not reflect this change!
+        // @tags
+        // <p@player.attack_cooldown.time_passed>
+        // <p@player.attack_cooldown.max_duration>
+        // <p@player.attack_cooldown.percent_done>
+        // -->
+        if (mechanism.matches("attack_cooldown") && mechanism.requireObject(Duration.class)) {
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
+                NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
+                        mechanism.getValue().asType(Duration.class).getTicksAsInt());
+            }
+            else {
+                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+            }
+        }
 
         // <--[mechanism]
         // @object dPlayer

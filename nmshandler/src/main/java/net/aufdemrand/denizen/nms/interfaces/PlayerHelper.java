@@ -19,7 +19,7 @@ public interface PlayerHelper {
 
     float getAttackCooldownPercent(Player player);
 
-    void resetAttackCooldown(Player player);
+    void setAttackCooldown(Player player, int ticks);
 
     boolean hasChunkLoaded(Player player, Chunk chunk);
 

@@ -10,7 +10,6 @@ import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -20,12 +19,7 @@ import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerHelper_v1_9_R2 implements PlayerHelper {
 
@@ -63,8 +57,16 @@ public class PlayerHelper_v1_9_R2 implements PlayerHelper {
     }
 
     @Override
-    public void resetAttackCooldown(Player player) {
-        ((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+    public void setAttackCooldown(Player player, int ticks) {
+        // Theoretically the a(EnumHand) method sets the ATTACK_COOLDOWN_TICKS field to 0 and performs an
+        // animation, but I'm unable to confirm if the animation actually triggers.
+        //((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+        try {
+            ATTACK_COOLDOWN_TICKS.setInt(((CraftPlayer) player).getHandle(), ticks);
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
     }
 
     @Override

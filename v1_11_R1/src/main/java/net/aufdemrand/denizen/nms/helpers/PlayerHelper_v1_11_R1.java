@@ -62,8 +62,16 @@ public class PlayerHelper_v1_11_R1 implements PlayerHelper {
     }
 
     @Override
-    public void resetAttackCooldown(Player player) {
-        ((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+    public void setAttackCooldown(Player player, int ticks) {
+        // Theoretically the a(EnumHand) method sets the ATTACK_COOLDOWN_TICKS field to 0 and performs an
+        // animation, but I'm unable to confirm if the animation actually triggers.
+        //((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+        try {
+            ATTACK_COOLDOWN_TICKS.setInt(((CraftPlayer) player).getHandle(), ticks);
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
     }
 
     @Override

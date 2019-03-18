@@ -48,7 +48,7 @@ public class PlayerHelper_v1_8_R3 implements PlayerHelper {
     }
 
     @Override
-    public void resetAttackCooldown(Player player) {
+    public void setAttackCooldown(Player player, int ticks) {
         dB.echoError("Attack cooldowns don't exist prior to Minecraft 1.9.");
     }
 
