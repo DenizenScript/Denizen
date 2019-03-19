@@ -62,7 +62,7 @@ public class PlayerFlyingScriptEvent extends BukkitScriptEvent implements Listen
 
     @Override
     public String getName() {
-        return "PlayerSpring";
+        return "PlayerFlying";
     }
 
     @Override

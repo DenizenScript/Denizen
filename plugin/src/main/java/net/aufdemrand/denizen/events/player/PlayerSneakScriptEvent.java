@@ -65,7 +65,7 @@ public class PlayerSneakScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public String getName() {
-        return "PlayerSpring";
+        return "PlayerSneak";
     }
 
     @Override
