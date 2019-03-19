@@ -1760,6 +1760,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                         .getAttackCooldownPercent(getPlayerEntity()) * 100).getAttribute(attribute.fulfill(1));
             }
 
+            dB.echoError("The tag 'player.attack_cooldown...' must be followed by a sub-tag.");
+
             return null;
         }
 
