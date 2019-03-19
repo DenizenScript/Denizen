@@ -311,7 +311,7 @@ public class ItemPotion implements Property {
         // @input dList
         // @description
         // Sets the potion's potion effect(s).
-        // Input is a formed like: Effect,Upgraded,Extended(,Color)|Type,Amplifier,Duration,Ambient,Particles(,Icon)|...
+        // Input is a formed like: Type,Upgraded,Extended(,Color)|Effect,Amplifier,Duration,Ambient,Particles(,Icon)|...
         // For example: SPEED,true,false|SPEED,2,200,false,true,true
         // NOTE: In pre-1.13 Minecraft versions, you could set a color in the custom effects list instead of "icon".
         // @tags
