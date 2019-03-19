@@ -32,7 +32,7 @@ public class FishCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("stop")
                     && arg.matches("stop")) {
-                scriptEntry.addObject("stop", Element.TRUE);
+                scriptEntry.addObject("stop", new Element(true));
             }
             else if (!scriptEntry.hasObject("percent")
                     && arg.matchesPrefix("catchpercent", "percent", "chance", "c")
@@ -47,7 +47,7 @@ public class FishCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("catch", new Element("NONE"))
-                .defaultObject("stop", Element.FALSE)
+                .defaultObject("stop", new Element(false))
                 .defaultObject("percent", new Element(65));
 
         if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {

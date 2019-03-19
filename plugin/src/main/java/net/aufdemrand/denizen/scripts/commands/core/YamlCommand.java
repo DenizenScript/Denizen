@@ -132,11 +132,11 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 }
                 else if (flagArgs[1].equals("!")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.DELETE);
-                    scriptEntry.addObject("value", Element.FALSE);
+                    scriptEntry.addObject("value", new Element(false));
                 }
                 else if (flagArgs[1].equals("<-")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.REMOVE);
-                    scriptEntry.addObject("value", Element.FALSE);
+                    scriptEntry.addObject("value", new Element(false));
                 }
                 else {
                     // No ACTION, we're just setting a value...

@@ -48,7 +48,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
             }
             else if (!scriptEntry.hasObject("auto_range")
                     && arg.matches("auto_range")) {
-                scriptEntry.addObject("auto_range", Element.TRUE);
+                scriptEntry.addObject("auto_range", new Element(true));
             }
             else if (!scriptEntry.hasObject("radius")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)
@@ -144,7 +144,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
 
                 if (auto_range != null
-                        && auto_range == Element.TRUE) {
+                        && auto_range == new Element(true)) {
                     double distance = npc.getLocation().distance(loc);
                     if (npc.getNavigator().getLocalParameters().range() < distance + 10) {
                         npc.getNavigator().getLocalParameters().range((float) distance + 10);

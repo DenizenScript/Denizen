@@ -27,7 +27,7 @@ public class NoteCommand extends AbstractCommand {
                 scriptEntry.addObject("object", arg.getValue());
             }
             else if (arg.matches("remove")) {
-                scriptEntry.addObject("remove", Element.TRUE);
+                scriptEntry.addObject("remove", new Element(true));
             }
             else {
                 arg.reportUnhandled();
@@ -41,7 +41,7 @@ public class NoteCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a fetchable-object to note.");
         }
         if (!scriptEntry.hasObject("remove")) {
-            scriptEntry.addObject("remove", Element.FALSE);
+            scriptEntry.addObject("remove", new Element(false));
         }
 
     }

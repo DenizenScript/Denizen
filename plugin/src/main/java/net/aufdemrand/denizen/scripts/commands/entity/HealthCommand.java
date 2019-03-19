@@ -84,7 +84,7 @@ public class HealthCommand extends AbstractCommand {
         }
 
         if (action == null) {
-            action = Element.TRUE;
+            action = new Element(true);
         }
 
         for (dEntity target : targets) {

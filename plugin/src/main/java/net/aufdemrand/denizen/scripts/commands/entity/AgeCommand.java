@@ -95,7 +95,7 @@ public class AgeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("lock")
                     && arg.matches("lock")) {
-                scriptEntry.addObject("lock", Element.TRUE);
+                scriptEntry.addObject("lock", new Element(true));
             }
             else {
                 arg.reportUnhandled();

@@ -22,7 +22,7 @@ public class StrikeCommand extends AbstractCommand {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (arg.matches("no_damage") || arg.matches("nodamage")) {
-                scriptEntry.addObject("damage", Element.FALSE);
+                scriptEntry.addObject("damage", new Element(false));
             }
             else {
                 arg.reportUnhandled();
@@ -35,7 +35,7 @@ public class StrikeCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing location argument!");
         }
 
-        scriptEntry.defaultObject("damage", Element.TRUE);
+        scriptEntry.defaultObject("damage", new Element(true));
     }
 
     @Override

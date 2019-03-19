@@ -55,10 +55,10 @@ public class DenizenCommand extends Command {
             if (!dEntity.isNPC(pl)) {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", Element.FALSE);
+            context.put("server", new Element(false));
         }
         else {
-            context.put("server", Element.TRUE);
+            context.put("server", new Element(true));
         }
         return script.runAllowedHelpProcedure(player, npc, context);
     }
@@ -130,10 +130,10 @@ public class DenizenCommand extends Command {
             else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", Element.FALSE);
+            context.put("server", new Element(false));
         }
         else {
-            context.put("server", Element.TRUE);
+            context.put("server", new Element(true));
             if (commandSender instanceof BlockCommandSender) {
                 context.put("command_block_location", new dLocation(((BlockCommandSender) commandSender).getBlock().getLocation()));
             }
@@ -184,10 +184,10 @@ public class DenizenCommand extends Command {
             else {
                 player = dPlayer.mirrorBukkitPlayer(pl);
             }
-            context.put("server", Element.FALSE);
+            context.put("server", new Element(false));
         }
         else {
-            context.put("server", Element.TRUE);
+            context.put("server", new Element(true));
         }
         if (Depends.citizens != null && npc == null) {
             NPC citizen = CitizensAPI.getDefaultNPCSelector().getSelected(commandSender);

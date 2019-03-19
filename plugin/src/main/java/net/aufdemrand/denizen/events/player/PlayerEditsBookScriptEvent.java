@@ -75,7 +75,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public boolean applyDetermination(ScriptContainer container, String determination) {
         if (determination.toUpperCase().equals("NOT_SIGNING")) {
-            signing = Element.FALSE;
+            signing = new Element(false);
         }
         else if (dScript.matches(determination)) {
             dScript script = dScript.valueOf(determination);
@@ -83,7 +83,7 @@ public class PlayerEditsBookScriptEvent extends BukkitScriptEvent implements Lis
                 dItem dBook = ((BookScriptContainer) script.getContainer()).getBookFrom(player, null);
                 bookMeta = (BookMeta) dBook.getItemStack().getItemMeta();
                 if (dBook.getMaterial().getMaterial() == MaterialCompat.WRITABLE_BOOK) {
-                    signing = Element.FALSE;
+                    signing = new Element(false);
                 }
             }
             else {

@@ -57,7 +57,7 @@ public class AnimateChestCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("sound")) {
-            scriptEntry.addObject("sound", Element.TRUE);
+            scriptEntry.addObject("sound", new Element(true));
         }
 
         if (!scriptEntry.hasObject("players")) {

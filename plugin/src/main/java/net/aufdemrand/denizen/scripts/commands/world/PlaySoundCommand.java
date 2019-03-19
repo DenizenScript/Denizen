@@ -48,7 +48,7 @@ public class PlaySoundCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("custom")
                     && arg.matches("custom")) {
-                scriptEntry.addObject("custom", Element.TRUE);
+                scriptEntry.addObject("custom", new Element(true));
             }
             else if (!scriptEntry.hasObject("sound_category")
                     && arg.matchesOnePrefix("sound_category")) {
@@ -69,7 +69,7 @@ public class PlaySoundCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("volume", new Element(1));
         scriptEntry.defaultObject("pitch", new Element(1));
-        scriptEntry.defaultObject("custom", Element.FALSE);
+        scriptEntry.defaultObject("custom", new Element(false));
         scriptEntry.defaultObject("sound_category", new Element("MASTER"));
 
     }

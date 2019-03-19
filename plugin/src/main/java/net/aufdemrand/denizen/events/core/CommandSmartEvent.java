@@ -168,7 +168,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1
                 ? message.split(" ", 2)[1] : "")));
-        context.put("server", Element.FALSE);
+        context.put("server", new Element(false));
         String determination;
 
         // Run any event scripts and get the determination.
@@ -207,7 +207,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         context.put("parsed_args", new dList(parsed_args));
         context.put("command", new Element(command));
         context.put("raw_args", new Element((message.split(" ").length > 1 ? event.getCommand().split(" ", 2)[1] : "")));
-        context.put("server", Element.TRUE);
+        context.put("server", new Element(true));
 
         CommandSender sender = event.getSender();
         if (sender instanceof BlockCommandSender) {

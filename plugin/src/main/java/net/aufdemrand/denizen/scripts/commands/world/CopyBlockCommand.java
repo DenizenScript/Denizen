@@ -44,7 +44,7 @@ public class CopyBlockCommand extends AbstractCommand {
                 scriptEntry.addObject("destination", arg.asType(dLocation.class));
             }
             else if (arg.matches("remove_original")) {
-                scriptEntry.addObject("remove", Element.TRUE);
+                scriptEntry.addObject("remove", new Element(true));
             }
             else {
                 arg.reportUnhandled();
@@ -61,7 +61,7 @@ public class CopyBlockCommand extends AbstractCommand {
         }
 
         // Set defaults
-        scriptEntry.defaultObject("remove", Element.FALSE);
+        scriptEntry.defaultObject("remove", new Element(false));
     }
 
     @Override
