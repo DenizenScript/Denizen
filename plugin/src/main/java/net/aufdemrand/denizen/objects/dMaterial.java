@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
-import net.aufdemrand.denizen.objects.properties.material.MaterialPlantGrowth;
+import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -469,7 +469,7 @@ public class dMaterial implements dObject, Adjustable {
         registerTag("is_plant", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialPlantGrowth.describes(object))
+                return new Element(MaterialAge.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });

@@ -9,7 +9,7 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.block.data.Ageable;
 
-public class MaterialPlantGrowth implements Property {
+public class MaterialAge implements Property {
 
     public static boolean describes(dObject material) {
         return material instanceof dMaterial
@@ -17,25 +17,25 @@ public class MaterialPlantGrowth implements Property {
                 && ((dMaterial) material).getModernData().data instanceof Ageable;
     }
 
-    public static MaterialPlantGrowth getFrom(dObject _material) {
+    public static MaterialAge getFrom(dObject _material) {
         if (!describes(_material)) {
             return null;
         }
         else {
-            return new MaterialPlantGrowth((dMaterial) _material);
+            return new MaterialAge((dMaterial) _material);
         }
     }
 
     public static final String[] handledTags = new String[] {
-            "maximum_plant_growth", "plant_growth"
+            "maximum_age", "age", "maximum_plant_growth", "plant_growth"
     };
 
     public static final String[] handledMechs = new String[] {
-            "plant_growth"
+            "age", "plant_growth"
     };
 
 
-    private MaterialPlantGrowth(dMaterial _material) {
+    private MaterialAge(dMaterial _material) {
         material = _material;
     }
 
@@ -49,27 +49,26 @@ public class MaterialPlantGrowth implements Property {
         }
 
         // <--[tag]
-        // @attribute <m@material.maximum_plant_growth>
+        // @attribute <m@material.maximum_age>
         // @returns Element(Number)
         // @group properties
         // @description
-        // Returns the maximum plant growth stage for a plant material.
+        // Returns the maximum age for an ageable material.
         // -->
-        if (attribute.startsWith("maximum_plant_growth")) {
+        if (attribute.startsWith("maximum_age") || attribute.startsWith("maximum_plant_growth")) {
             return new Element(getMax()).getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <m@material.plant_growth>
+        // @attribute <m@material.age>
         // @returns Element(Number)
-        // @mechanism dMaterial.plant_growth
+        // @mechanism dMaterial.age
         // @group properties
         // @description
-        // Returns the current plant growth stage for a plant material.
+        // Returns the current age for an ageable material.
         // -->
-        if (attribute.startsWith("plant_growth")) {
-            return new Element(((Ageable) material.getModernData().data).getAge())
-                    .getAttribute(attribute.fulfill(1));
+        if (attribute.startsWith("age") || attribute.startsWith("plant_growth")) {
+            return new Element(getCurrent()).getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -94,7 +93,7 @@ public class MaterialPlantGrowth implements Property {
 
     @Override
     public String getPropertyId() {
-        return "plant_growth";
+        return "age";
     }
 
     @Override
@@ -102,21 +101,21 @@ public class MaterialPlantGrowth implements Property {
 
         // <--[mechanism]
         // @object dMaterial
-        // @name plant_growth
+        // @name age
         // @input Element(Number)
         // @description
-        // Sets a plant material's current growth level.
+        // Sets an ageable material's current age.
         // @tags
-        // <m@material.plant_growth>
-        // <m@material.maximum_plant_growth>
+        // <m@material.age>
+        // <m@material.maximum_age>
         // -->
-        if (mechanism.matches("plant_growth") && mechanism.requireInteger()) {
-            int growth = mechanism.getValue().asInt();
-            if (growth < 0 || growth > getMax()) {
-                dB.echoError("Growth value '" + growth + "' is not valid. Must be between 0 and " + getAgeable() + " for material '" + material.realName() + "'.");
+        if ((mechanism.matches("age") || mechanism.matches("plant_growth")) && mechanism.requireInteger()) {
+            int age = mechanism.getValue().asInt();
+            if (age < 0 || age > getMax()) {
+                dB.echoError("Age value '" + age + "' is not valid. Must be between 0 and " + getMax() + " for material '" + material.realName() + "'.");
                 return;
             }
-            getAgeable().setAge(growth);
+            getAgeable().setAge(age);
         }
     }
 }

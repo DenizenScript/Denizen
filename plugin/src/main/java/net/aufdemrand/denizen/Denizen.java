@@ -31,7 +31,7 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
 import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
-import net.aufdemrand.denizen.objects.properties.material.MaterialPlantGrowth;
+import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
 import net.aufdemrand.denizen.objects.properties.trade.*;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.*;
@@ -896,7 +896,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 // register core dMaterial properties
-                PropertyParser.registerProperty(MaterialPlantGrowth.class, dMaterial.class);
+                PropertyParser.registerProperty(MaterialAge.class, dMaterial.class);
             }
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
