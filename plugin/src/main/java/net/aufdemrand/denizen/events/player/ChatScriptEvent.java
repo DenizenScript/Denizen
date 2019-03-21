@@ -101,7 +101,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     public boolean applyDetermination(ScriptContainer container, String determination) {
         String lower = CoreUtilities.toLowerCase(determination);
         if (lower.startsWith("format:")) {
-            String name = determination.substring(7);
+            String name = determination.substring("format:".length());
             FormatScriptContainer formatscr = ScriptRegistry.getScriptContainer(name);
             if (formatscr == null) {
                 dB.echoError("Could not find format script matching '" + name + '\'');
@@ -114,12 +114,12 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
                 format = new Element(formatstr);
             }
         }
-        else if (lower.startsWith("raw_format")) {
-            String form = determination.substring("raw_format".length());
+        else if (lower.startsWith("raw_format:")) {
+            String form = determination.substring("raw_format:".length());
             format = new Element(form);
         }
         else if (lower.startsWith("recipients:")) {
-            String rec_new = determination.substring(11);
+            String rec_new = determination.substring("recipients:".length());
             dList recs = dList.valueOf(rec_new);
             List<dPlayer> players = recs.filter(dPlayer.class, container);
             recipients.clear();

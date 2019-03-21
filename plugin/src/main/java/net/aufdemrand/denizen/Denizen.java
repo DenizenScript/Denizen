@@ -1257,11 +1257,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // -->
 
         if (cmdName.equalsIgnoreCase("ex")) {
-            List<Object> entries = new ArrayList<Object>();
-            String entry = "";
-            for (String arg : args) {
-                entry = entry + arg + " ";
-            }
+            List<Object> entries = new ArrayList<>();
+            String entry = String.join(" ", args);
 
             if (entry.length() < 2) {
                 sender.sendMessage("/ex <dCommand> (arguments)");
