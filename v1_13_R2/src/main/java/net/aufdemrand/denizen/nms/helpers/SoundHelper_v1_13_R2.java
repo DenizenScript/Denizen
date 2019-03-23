@@ -46,16 +46,6 @@ public class SoundHelper_v1_13_R2 implements SoundHelper {
     }
 
     @Override
-    public Sound getChestOpen() {
-        return Sound.BLOCK_CHEST_OPEN;
-    }
-
-    @Override
-    public Sound getChestClose() {
-        return Sound.BLOCK_CHEST_CLOSE;
-    }
-
-    @Override
     public void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
         SoundCategory categoryEnum = SoundCategory.MASTER;
         try {

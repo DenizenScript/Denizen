@@ -28,8 +28,6 @@ package net.aufdemrand.denizen.nms.abstracts;
  * @author one4me
  */
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.DoubleTag;
 import net.aufdemrand.denizen.nms.util.jnbt.FloatTag;

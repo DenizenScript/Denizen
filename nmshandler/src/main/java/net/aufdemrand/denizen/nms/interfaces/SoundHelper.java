@@ -49,10 +49,6 @@ public interface SoundHelper {
 
     Sound getDefaultMidiInstrument();
 
-    Sound getChestOpen();
-
-    Sound getChestClose();
-
     default void playSound(Player player, Location location, String sound, float volume, float pitch, String category) {
         if (player == null) {
             location.getWorld().playSound(location, sound, volume, pitch);

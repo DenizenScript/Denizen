@@ -48,7 +48,7 @@ public class Handler_v1_13_R2 extends NMSHandler {
     private final ItemHelper itemHelper = new ItemHelper_v1_13_R2();
     private final SoundHelper soundHelper = new SoundHelper_v1_13_R2();
     private final PacketHelper packetHelper = new PacketHelper_v1_13_R2();
-    private final ParticleHelper particleHelper = new ParticleHelper_v1_13_R2();
+    private final ParticleHelper particleHelper = new ParticleHelper();
     private final PlayerHelper playerHelper = new PlayerHelper_v1_13_R2();
     private final WorldHelper worldHelper = new WorldHelper_v1_13_R2();
 

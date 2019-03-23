@@ -483,17 +483,6 @@ public class EntityHelper_v1_11_R1 extends EntityHelper {
     }
 
     @Override
-    public void faceLocation(Entity from, Location at) {
-        if (from.getWorld() != at.getWorld()) {
-            return;
-        }
-        Location origin = from instanceof LivingEntity ? ((LivingEntity) from).getEyeLocation()
-                : from.getLocation().getBlock().getLocation().add(0.5, 0.5, 0.5);
-        Location rotated = faceLocation(origin, at);
-        rotate(from, rotated.getYaw(), rotated.getPitch());
-    }
-
-    @Override
     public void move(Entity entity, Vector vector) {
         ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, vector.getX(), vector.getY(), vector.getZ());
     }

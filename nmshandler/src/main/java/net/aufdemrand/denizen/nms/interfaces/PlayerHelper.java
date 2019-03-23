@@ -5,35 +5,31 @@ import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
+import java.util.*;
 
-public interface PlayerHelper {
+public abstract class PlayerHelper {
 
-    float getAbsorption(Player player);
+    public abstract float getAbsorption(Player player);
 
-    void setAbsorption(Player player, float value);
+    public abstract void setAbsorption(Player player, float value);
 
-    int ticksPassedDuringCooldown(Player player);
+    public abstract int ticksPassedDuringCooldown(Player player);
 
-    float getMaxAttackCooldownTicks(Player player);
+    public abstract float getMaxAttackCooldownTicks(Player player);
 
-    float getAttackCooldownPercent(Player player);
+    public abstract float getAttackCooldownPercent(Player player);
 
-    void setAttackCooldown(Player player, int ticks);
+    public abstract void setAttackCooldown(Player player, int ticks);
 
-    boolean hasChunkLoaded(Player player, Chunk chunk);
+    public abstract boolean hasChunkLoaded(Player player, Chunk chunk);
 
-    int getPing(Player player);
+    public abstract int getPing(Player player);
 
-    void setTemporaryOp(Player player, boolean op);
+    public abstract void setTemporaryOp(Player player, boolean op);
 
-    void showEndCredits(Player player);
+    public abstract void showEndCredits(Player player);
 
-    ImprovedOfflinePlayer getOfflineData(UUID uuid);
+    public abstract ImprovedOfflinePlayer getOfflineData(UUID uuid);
 
-    ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
-
-    void showSimpleBossBar(Player player, String title, double progress);
-
-    void removeSimpleBossBar(Player player);
+    public abstract ImprovedOfflinePlayer getOfflineData(OfflinePlayer offlinePlayer);
 }

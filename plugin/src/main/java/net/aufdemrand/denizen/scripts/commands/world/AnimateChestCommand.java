@@ -12,6 +12,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -96,7 +97,7 @@ public class AnimateChestCommand extends AbstractCommand {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
-                                NMSHandler.getInstance().getSoundHelper().getChestOpen(), 1, 1, "BLOCKS");
+                                Sound.BLOCK_CHEST_OPEN, 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 1);
                 }
@@ -107,7 +108,7 @@ public class AnimateChestCommand extends AbstractCommand {
                     Player ent = player.getPlayerEntity();
                     if (sound.asBoolean()) {
                         NMSHandler.getInstance().getSoundHelper().playSound(ent, location,
-                                NMSHandler.getInstance().getSoundHelper().getChestClose(), 1, 1, "BLOCKS");
+                                Sound.BLOCK_CHEST_CLOSE, 1, 1, "BLOCKS");
                     }
                     packetHelper.showBlockAction(ent, location, 1, 0);
                 }

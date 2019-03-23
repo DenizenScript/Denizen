@@ -29,14 +29,4 @@ public class SoundHelper_v1_11_R1 implements SoundHelper {
     public Sound getDefaultMidiInstrument() {
         return Sound.BLOCK_NOTE_HARP;
     }
-
-    @Override
-    public Sound getChestOpen() {
-        return Sound.BLOCK_CHEST_OPEN;
-    }
-
-    @Override
-    public Sound getChestClose() {
-        return Sound.BLOCK_CHEST_CLOSE;
-    }
 }

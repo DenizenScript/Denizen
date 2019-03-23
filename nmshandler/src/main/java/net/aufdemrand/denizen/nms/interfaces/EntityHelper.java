@@ -306,7 +306,15 @@ public abstract class EntityHelper {
      * @param from The Entity whose yaw and pitch you want to change.
      * @param at   The Location it should be looking at.
      */
-    public abstract void faceLocation(Entity from, Location at);
+    public void faceLocation(Entity from, Location at) {
+        if (from.getWorld() != at.getWorld()) {
+            return;
+        }
+        Location origin = from instanceof LivingEntity ? ((LivingEntity) from).getEyeLocation()
+                : from.getLocation().getBlock().getLocation().add(0.5, 0.5, 0.5);
+        Location rotated = faceLocation(origin, at);
+        rotate(from, rotated.getYaw(), rotated.getPitch());
+    }
 
     /**
      * Changes an entity's yaw and pitch to make it face another entity.

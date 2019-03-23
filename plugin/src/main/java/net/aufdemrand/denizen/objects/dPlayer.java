@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizen.utilities.entity.BossBarHelper;
 import net.aufdemrand.denizen.utilities.packets.ItemChangeMessage;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -23,7 +24,6 @@ import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Entity;
@@ -2921,14 +2921,14 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (!mechanism.getValue().asString().isEmpty()) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]", 2);
                 if (split.length == 2 && new Element(split[0]).isDouble()) {
-                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble() * (1.0 / 200.0));
+                    BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[1], new Element(split[0]).asDouble() * (1.0 / 200.0));
                 }
                 else {
-                    NMSHandler.getInstance().getPlayerHelper().showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
+                    BossBarHelper.showSimpleBossBar(getPlayerEntity(), split[0], 1.0);
                 }
             }
             else {
-                NMSHandler.getInstance().getPlayerHelper().removeSimpleBossBar(getPlayerEntity());
+                BossBarHelper.removeSimpleBossBar(getPlayerEntity());
             }
         }
 
