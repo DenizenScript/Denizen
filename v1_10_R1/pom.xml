@@ -4,7 +4,7 @@
     <parent>
         <artifactId>denizen-parent</artifactId>
         <groupId>net.aufdemrand</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
