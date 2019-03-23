@@ -1715,11 +1715,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (attribute.startsWith("attack_cooldown")) {
             attribute.fulfill(1);
 
-            if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
-                return null;
-            }
-
             // <--[tag]
             // @attribute <p@player.attack_cooldown.duration>
             // @returns Duration
@@ -2485,12 +2480,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("redo_attack_cooldown")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
-            }
-            else {
-                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
-            }
+            NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(), 0);
         }
 
         // <--[mechanism]
@@ -2507,14 +2497,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("reset_attack_cooldown")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
-                playerHelper.setAttackCooldown(getPlayerEntity(),
-                        Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity())));
-            }
-            else {
-                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
-            }
+            PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+            playerHelper.setAttackCooldown(getPlayerEntity(), Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity())));
         }
 
         // <--[mechanism]
@@ -2531,20 +2515,15 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("attack_cooldown_percent") && mechanism.requireFloat()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                float percent = mechanism.getValue().asFloat();
-                System.out.println(percent + " >> " + (percent >= 0 && percent <= 1));
-                if (percent >= 0 && percent <= 1) {
-                    PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
-                    playerHelper.setAttackCooldown(getPlayerEntity(),
-                            Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
-                }
-                else {
-                    dB.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
-                }
+            float percent = mechanism.getValue().asFloat();
+            System.out.println(percent + " >> " + (percent >= 0 && percent <= 1));
+            if (percent >= 0 && percent <= 1) {
+                PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
+                playerHelper.setAttackCooldown(getPlayerEntity(),
+                        Math.round(playerHelper.getMaxAttackCooldownTicks(getPlayerEntity()) * mechanism.getValue().asFloat()));
             }
             else {
-                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
+                dB.echoError("Invalid percentage! \"" + percent + "\" is not between 0 and 1!");
             }
         }
 
@@ -2562,13 +2541,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <p@player.attack_cooldown.percent_done>
         // -->
         if (mechanism.matches("attack_cooldown") && mechanism.requireObject(Duration.class)) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
-                        mechanism.getValue().asType(Duration.class).getTicksAsInt());
-            }
-            else {
-                dB.echoError("Attack cooldowns don't exist prior to 1.9.");
-            }
+            NMSHandler.getInstance().getPlayerHelper().setAttackCooldown(getPlayerEntity(),
+                    mechanism.getValue().asType(Duration.class).getTicksAsInt());
         }
 
         // <--[mechanism]
@@ -3175,7 +3149,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // The book can safely be removed from the player's offhand
         // without the player closing the book.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("open_offhand_book")) {
+        if (mechanism.matches("open_offhand_book")) {
             NMSHandler.getInstance().getPacketHelper().openBook(getPlayerEntity(), EquipmentSlot.OFF_HAND);
         }
 
@@ -3186,7 +3160,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @description
         // Displays a book to a player.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("show_book")
+        if (mechanism.matches("show_book")
                 && mechanism.requireObject(dItem.class)) {
             dItem book = mechanism.valueAsType(dItem.class);
             if (!book.getItemStack().hasItemMeta() || !(book.getItemStack().getItemMeta() instanceof BookMeta)) {

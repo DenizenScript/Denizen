@@ -27,10 +27,9 @@ public class ItemPotion implements Property {
     public static boolean describes(dObject item) {
         return item instanceof dItem
                 && (((dItem) item).getItemStack().getType() == Material.POTION
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && (((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
+                || ((dItem) item).getItemStack().getType() == Material.SPLASH_POTION
                 || ((dItem) item).getItemStack().getType() == Material.LINGERING_POTION
-                || ((dItem) item).getItemStack().getType() == Material.TIPPED_ARROW)));
+                || ((dItem) item).getItemStack().getType() == Material.TIPPED_ARROW);
     }
 
     public static ItemPotion getFrom(dObject _item) {
@@ -211,10 +210,6 @@ public class ItemPotion implements Property {
                         dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
                         return null;
                     }
-                    else if (!NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                        dB.echoError("Custom effects with the color option are not supported before Minecraft version 1.9.");
-                        return null;
-                    }
                     return new dColor(meta.getCustomEffects().get(potN).getColor())
                             .getAttribute(attribute.fulfill(1));
                 }
@@ -360,21 +355,19 @@ public class ItemPotion implements Property {
                 Color color = null;
                 boolean icon = false;
                 if (d2.length > 5) {
-                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-                        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                            Element check = new Element(d2[5]);
-                            if (check.isBoolean()) {
-                                icon = check.asBoolean();
-                            }
-                            else {
-                                dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
-                            }
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                        Element check = new Element(d2[5]);
+                        if (check.isBoolean()) {
+                            icon = check.asBoolean();
                         }
                         else {
-                            String check = d2[5].replace("&comma", ",");
-                            if (dColor.matches(check)) {
-                                color = dColor.valueOf(check).getColor();
-                            }
+                            dB.echoError("Custom effects with the color option are not supported as of Minecraft version 1.13.");
+                        }
+                    }
+                    else {
+                        String check = d2[5].replace("&comma", ",");
+                        if (dColor.matches(check)) {
+                            color = dColor.valueOf(check).getColor();
                         }
                     }
                 }

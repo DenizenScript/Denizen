@@ -22,8 +22,7 @@ public class EntityProfession implements Property {
             return false;
         }
         return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE)
+                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
                 || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
                 && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER);
     }

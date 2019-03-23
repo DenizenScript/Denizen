@@ -2115,7 +2115,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns whether the entity is collidable.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("is_collidable")) {
+        if (attribute.startsWith("is_collidable")) {
             return new Element(getLivingEntity().isCollidable())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2271,7 +2271,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is gliding.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("gliding")) {
+        if (attribute.startsWith("gliding")) {
             return new Element(getLivingEntity().isGliding())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2297,7 +2297,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns whether this entity is glowing.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && attribute.startsWith("glowing")) {
+        if (attribute.startsWith("glowing")) {
             return new Element(getBukkitEntity().isGlowing())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2908,7 +2908,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.is_collidable>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("collidable")
+        if (mechanism.matches("collidable")
                 && mechanism.requireBoolean()) {
             getLivingEntity().setCollidable(mechanism.getValue().asBoolean());
         }
@@ -3015,7 +3015,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.gliding>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("gliding") && mechanism.requireBoolean()) {
+        if (mechanism.matches("gliding") && mechanism.requireBoolean()) {
             getLivingEntity().setGliding(mechanism.getValue().asBoolean());
         }
 
@@ -3028,7 +3028,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.glowing>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && mechanism.matches("glowing") && mechanism.requireBoolean()) {
+        if (mechanism.matches("glowing") && mechanism.requireBoolean()) {
             getBukkitEntity().setGlowing(mechanism.getValue().asBoolean());
             if (Depends.citizens != null && CitizensAPI.getNPCRegistry().isNPC(getLivingEntity())) {
                 CitizensAPI.getNPCRegistry().getNPC(getLivingEntity()).data().setPersistent(NPC.GLOWING_METADATA, mechanism.getValue().asBoolean());

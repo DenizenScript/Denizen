@@ -33,9 +33,7 @@ public class CustomNBT {
         slotMap.put(EquipmentSlot.LEGS, 2);
         slotMap.put(EquipmentSlot.CHEST, 3);
         slotMap.put(EquipmentSlot.HEAD, 4);
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-            slotMap.put(EquipmentSlot.OFF_HAND, 5);
-        }
+        slotMap.put(EquipmentSlot.OFF_HAND, 5);
     }
 
     /*

@@ -118,7 +118,7 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
 
     @EventHandler
     public void playerRightClicksEntity(PlayerInteractEntityEvent event) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && event.getHand() == EquipmentSlot.OFF_HAND) {
+        if (event.getHand() == EquipmentSlot.OFF_HAND) {
             return;
         }
         entity = new dEntity(event.getRightClicked());

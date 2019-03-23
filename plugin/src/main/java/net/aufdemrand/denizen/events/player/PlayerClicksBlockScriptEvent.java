@@ -220,7 +220,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (event.getAction() == Action.PHYSICAL) {
             return;
         }
-        hand = new Element(NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) ? event.getHand().name() : "HAND");
+        hand = new Element(event.getHand().name());
         item = new dItem(event.getItem());
         location = event.hasBlock() ? new dLocation(event.getClickedBlock().getLocation()) : null;
         relative = event.hasBlock() ? new dLocation(event.getClickedBlock().getRelative(event.getBlockFace()).getLocation()) : null;

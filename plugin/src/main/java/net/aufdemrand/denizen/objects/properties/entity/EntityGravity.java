@@ -13,10 +13,7 @@ import org.bukkit.entity.ArmorStand;
 public class EntityGravity implements Property {
 
     public static boolean describes(dObject entity) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
-            return entity instanceof dEntity;
-        }
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof ArmorStand;
+        return entity instanceof dEntity;
     }
 
     public static EntityGravity getFrom(dObject entity) {
@@ -53,16 +50,7 @@ public class EntityGravity implements Property {
 
     @Override
     public String getPropertyString() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
-            if (dentity.getBukkitEntity().hasGravity()) {
-                return null;
-            }
-            else {
-                return "false";
-            }
-        }
-
-        if (((ArmorStand) dentity.getBukkitEntity()).hasGravity()) {
+        if (dentity.getBukkitEntity().hasGravity()) {
             return null;
         }
         else {
@@ -95,11 +83,7 @@ public class EntityGravity implements Property {
         // Returns whether the entity has gravity.
         // -->
         if (attribute.startsWith("gravity")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
-                return new Element(dentity.getBukkitEntity().hasGravity())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            return new Element(((ArmorStand) dentity.getBukkitEntity()).hasGravity())
+            return new Element(dentity.getBukkitEntity().hasGravity())
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -120,12 +104,7 @@ public class EntityGravity implements Property {
         // -->
 
         if (mechanism.matches("gravity") && mechanism.requireBoolean()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)) {
-                dentity.getBukkitEntity().setGravity(mechanism.getValue().asBoolean());
-            }
-            else {
-                ((ArmorStand) dentity.getBukkitEntity()).setGravity(mechanism.getValue().asBoolean());
-            }
+            dentity.getBukkitEntity().setGravity(mechanism.getValue().asBoolean());
         }
     }
 }

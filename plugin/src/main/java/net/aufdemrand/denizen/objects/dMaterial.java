@@ -325,8 +325,7 @@ public class dMaterial implements dObject, Adjustable {
     }
 
     public boolean isStructure() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)
-                && material == Material.CHORUS_PLANT) {
+        if (material == Material.CHORUS_PLANT) {
             return true;
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)

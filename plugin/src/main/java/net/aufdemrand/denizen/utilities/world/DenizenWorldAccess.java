@@ -17,7 +17,7 @@ public class DenizenWorldAccess implements WorldAccess {
     @Override
     public void despawn(Entity entity) {
         try {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && entity instanceof LivingEntity) {
+            if (entity instanceof LivingEntity) {
                 GlowCommand.unGlow((LivingEntity) entity);
             }
             if (dEntity.isCitizensNPC(entity)) {

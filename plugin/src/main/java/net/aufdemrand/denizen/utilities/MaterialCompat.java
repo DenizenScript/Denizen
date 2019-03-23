@@ -130,7 +130,7 @@ public class MaterialCompat {
     }
 
     public static boolean isBannerOrShield(Material material) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2) && material == Material.SHIELD) {
+        if (material == Material.SHIELD) {
             return true;
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {

@@ -786,8 +786,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns the password to a locked container.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
-                && attribute.startsWith("lock") && getBlock().getState() instanceof Lockable) {
+        if (attribute.startsWith("lock") && getBlock().getState() instanceof Lockable) {
             Lockable lock = (Lockable) getBlock().getState();
             return new Element(lock.isLocked() ? lock.getLock() : null)
                     .getAttribute(attribute.fulfill(1));
@@ -800,8 +799,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns whether the container is locked.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
-                && attribute.startsWith("is_locked") && getBlock().getState() instanceof Lockable) {
+        if (attribute.startsWith("is_locked") && getBlock().getState() instanceof Lockable) {
             return new Element(((Lockable) getBlock().getState()).isLocked())
                     .getAttribute(attribute.fulfill(1));
         }
@@ -813,8 +811,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns whether the container is lockable.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
-                && attribute.startsWith("is_lockable")) {
+        if (attribute.startsWith("is_lockable")) {
             return new Element(getBlock().getState() instanceof Lockable)
                     .getAttribute(attribute.fulfill(1));
         }
@@ -2471,8 +2468,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <l@location.is_locked>
         // <l@location.is_lockable>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_10_R1)
-                && mechanism.matches("lock") && getBlock().getState() instanceof Lockable) {
+        if (mechanism.matches("lock") && getBlock().getState() instanceof Lockable) {
             BlockState state = getBlock().getState();
             ((Lockable) state).setLock(mechanism.hasValue() ? mechanism.getValue().asString() : null);
             state.update();

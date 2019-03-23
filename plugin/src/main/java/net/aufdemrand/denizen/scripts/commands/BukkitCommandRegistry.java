@@ -576,10 +576,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Delete the boss bar.
         // - bossbar remove MyMessageID
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-            registerCoreMember(BossBarCommand.class,
-                    "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
-        }
+        registerCoreMember(BossBarCommand.class,
+                "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
 
 
         // <--[command]
@@ -1698,10 +1696,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to make the player's target not glow.
         // - glow <player.target> false
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_9_R2)) {
-            registerCoreMember(GlowCommand.class,
-                    "GLOW", "glow [<entity>|...] (<should glow>)", 1);
-        }
+        registerCoreMember(GlowCommand.class,
+                "GLOW", "glow [<entity>|...] (<should glow>)", 1);
 
 
         // <--[command]
