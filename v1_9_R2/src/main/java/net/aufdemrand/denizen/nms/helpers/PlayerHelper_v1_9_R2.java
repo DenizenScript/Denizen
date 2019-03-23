@@ -4,6 +4,8 @@ import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_9_R2;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_9_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -16,14 +18,12 @@ import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class PlayerHelper_v1_9_R2 implements PlayerHelper {
+
+    public static Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aE");
 
     @Override
     public float getAbsorption(Player player) {
@@ -33,6 +33,40 @@ public class PlayerHelper_v1_9_R2 implements PlayerHelper {
     @Override
     public void setAbsorption(Player player, float value) {
         ((CraftPlayer) player).getHandle().getDataWatcher().set(DataWatcherRegistry.c.a(11), value);
+    }
+
+    @Override
+    public int ticksPassedDuringCooldown(Player player) {
+        try {
+            return ATTACK_COOLDOWN_TICKS.getInt(((CraftPlayer) player).getHandle());
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
+        return -1;
+    }
+
+    @Override
+    public float getMaxAttackCooldownTicks(Player player) {
+        return ((CraftPlayer) player).getHandle().cZ();
+    }
+
+    @Override
+    public float getAttackCooldownPercent(Player player) {
+        return ((CraftPlayer) player).getHandle().o(0.5f);
+    }
+
+    @Override
+    public void setAttackCooldown(Player player, int ticks) {
+        // Theoretically the a(EnumHand) method sets the ATTACK_COOLDOWN_TICKS field to 0 and performs an
+        // animation, but I'm unable to confirm if the animation actually triggers.
+        //((CraftPlayer) player).getHandle().a(EnumHand.MAIN_HAND);
+        try {
+            ATTACK_COOLDOWN_TICKS.setInt(((CraftPlayer) player).getHandle(), ticks);
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
     }
 
     @Override
