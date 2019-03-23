@@ -1,14 +1,11 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
-import org.bukkit.entity.ArmorStand;
 
 public class EntityGravity implements Property {
 

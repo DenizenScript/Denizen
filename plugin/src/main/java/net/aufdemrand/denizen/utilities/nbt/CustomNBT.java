@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.utilities.nbt;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.objects.properties.entity.EntityDisabledSlots.Action;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;

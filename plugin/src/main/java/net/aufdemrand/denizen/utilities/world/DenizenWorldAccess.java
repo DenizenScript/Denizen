@@ -1,8 +1,6 @@
 package net.aufdemrand.denizen.utilities.world;
 
 import net.aufdemrand.denizen.events.entity.EntityDespawnScriptEvent;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.interfaces.WorldAccess;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.scripts.commands.player.GlowCommand;

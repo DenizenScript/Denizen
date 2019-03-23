@@ -2,8 +2,6 @@ package net.aufdemrand.denizen.events.player;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;

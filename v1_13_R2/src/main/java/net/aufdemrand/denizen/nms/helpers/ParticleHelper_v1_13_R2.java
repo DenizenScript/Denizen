@@ -1,9 +1,7 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
-import net.aufdemrand.denizen.nms.impl.effects.Effect_v1_13_R2;
 import net.aufdemrand.denizen.nms.impl.effects.Particle_v1_13_R2;
-import org.bukkit.Effect;
 import org.bukkit.Particle;
 
 public class ParticleHelper_v1_13_R2 extends ParticleHelper {
@@ -12,11 +10,6 @@ public class ParticleHelper_v1_13_R2 extends ParticleHelper {
         for (Particle particle : Particle.values()) {
             register(particle.name(), new Particle_v1_13_R2(particle));
         }
-        for (Effect effect : Effect.values()) {
-            register(effect.name(), new Effect_v1_13_R2(effect));
-        }
-        //register("DRIP_WATER", new Effect_v1_13_R2(Effect.WATERDRIP)); -- not relevant anymore
-        //register("DRIP_LAVA", new Effect_v1_13_R2(Effect.LAVADRIP));
         register("SMOKE", new Particle_v1_13_R2(Particle.SMOKE_NORMAL));
         register("HUGE_EXPLOSION", new Particle_v1_13_R2(Particle.EXPLOSION_HUGE));
         register("LARGE_EXPLODE", new Particle_v1_13_R2(Particle.EXPLOSION_LARGE));
