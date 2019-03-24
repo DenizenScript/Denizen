@@ -90,7 +90,7 @@ public class PlayerUsesPortalScriptEvent extends BukkitScriptEvent implements Li
             return;
         }
         entity = new dEntity(event.getPlayer());
-        to = new dLocation(event.getTo());
+        to = event.getTo() == null ? null : new dLocation(event.getTo());
         from = new dLocation(event.getFrom());
         this.event = event;
         fire(event);
