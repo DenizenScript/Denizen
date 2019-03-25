@@ -274,19 +274,38 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     private static final String ASTERISK_QUOTED = Pattern.quote("*");
 
-    public String regexHandle(String input) {
+    public static final HashMap<String, Pattern> knownPatterns = new HashMap<>();
+
+    public Pattern regexHandle(String input) {
+        Pattern result = knownPatterns.get(input);
+        if (result != null) {
+            return result;
+        }
+        String output;
         if (input.startsWith("regex:")) {
-            return input.substring("regex:".length());
+            output = input.substring("regex:".length());
         }
-        if (input.contains("*")) {
-            return Pattern.quote(input).replace(ASTERISK_QUOTED, "(.*)");
+        else if (input.contains("|")) {
+            String[] split = input.split("\\|");
+            for (int i = 0; i < split.length; i++) {
+                split[i] = Pattern.quote(split[i]).replace(ASTERISK_QUOTED, "(.*)");
+            }
+            output = String.join("|", split);
         }
-        return null;
+        else if (input.contains("*")) {
+            output = Pattern.quote(input).replace(ASTERISK_QUOTED, "(.*)");
+        }
+        else {
+            return null;
+        }
+        result = Pattern.compile(output);
+        knownPatterns.put(input, result);
+        return result;
     }
 
-    public boolean equalityCheck(String input, String compared, String regexed) {
+    public boolean equalityCheck(String input, String compared, Pattern regexed) {
         input = CoreUtilities.toLowerCase(input);
-        return input.equals(compared) || (regexed != null && input.matches(regexed));
+        return input.equals(compared) || (regexed != null && regexed.matcher(input).matches());
     }
 
     public boolean tryInventory(dInventory inv, String comparedto) {
@@ -297,7 +316,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         if (comparedto.equals("notable")) {
             return NotableManager.isSaved(inv);
         }
-        String regexd = regexHandle(comparedto);
+        Pattern regexd = regexHandle(comparedto);
         if (equalityCheck(inv.getInventoryType().name(), comparedto, regexd)) {
             return true;
         }
@@ -336,7 +355,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
-        String regexd = regexHandle(comparedto);
+        Pattern regexd = regexHandle(comparedto);
         item = new dItem(item.getItemStack().clone());
         item.setAmount(1);
         if (equalityCheck(item.identify().substring("i@".length()), comparedto, regexd)) {
@@ -372,7 +391,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
                 return true;
             }
         }
-        String regexd = regexHandle(comparedto);
+        Pattern regexd = regexHandle(comparedto);
         if (equalityCheck(mat.realName(), comparedto, regexd)) {
             return true;
         }
@@ -412,7 +431,7 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (comparedto.equals("hanging")) {
             return bEntity instanceof Hanging;
         }
-        String regexd = regexHandle(comparedto);
+        Pattern regexd = regexHandle(comparedto);
         if (entity.getEntityScript() != null && equalityCheck(entity.getEntityScript(), comparedto, regexd)) {
             return true;
         }
