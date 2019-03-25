@@ -27,6 +27,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -2261,6 +2262,37 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         if ((attribute.startsWith("pickup_delay") || attribute.startsWith("pickupdelay"))
                 && getBukkitEntity() instanceof Item) {
             return new Duration(((Item) getBukkitEntity()).getPickupDelay() * 20).getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.is_in_block>
+        // @returns Element(Boolean)
+        // @group attributes
+        // @description
+        // Returns whether or not the arrow/trident entity is in a block.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("is_in_block")) {
+            if (getBukkitEntity() instanceof Arrow) {
+                return new Element(((Arrow) getBukkitEntity()).isInBlock()).getAttribute(attribute.fulfill(1));
+            }
+            return null;
+        }
+
+        // <--[tag]
+        // @attribute <e@entity.attached_block>
+        // @returns dLocation
+        // @group attributes
+        // @description
+        // Returns the location of the block that the arrow/trident entity is attached to.
+        // -->
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("attached_block")) {
+            if (getBukkitEntity() instanceof Arrow) {
+                Block attachedBlock = ((Arrow) getBukkitEntity()).getAttachedBlock();
+                if (attachedBlock != null) {
+                    return new dLocation(attachedBlock.getLocation()).getAttribute(attribute.fulfill(1));
+                }
+            }
+            return null;
         }
 
         // <--[tag]

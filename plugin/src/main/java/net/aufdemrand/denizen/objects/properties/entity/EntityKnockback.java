@@ -7,12 +7,11 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 
 public class EntityKnockback implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARROW;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityKnockback getFrom(dObject entity) {
@@ -74,7 +73,7 @@ public class EntityKnockback implements Property {
         // @mechanism dEntity.knockback
         // @group properties
         // @description
-        // If the entity is an arrow, returns the knockback strength of the arrow.
+        // If the entity is an arrow or trident, returns the knockback strength of the arrow/trident.
         // -->
         if (attribute.startsWith("knockback")) {
             return new Element(((Arrow) arrow.getBukkitEntity()).getKnockbackStrength())
@@ -92,7 +91,7 @@ public class EntityKnockback implements Property {
         // @name knockback
         // @input Element(Number)
         // @description
-        // Changes an arrow's knockback strength.
+        // Changes an arrow's/trident's knockback strength.
         // @tags
         // <e@entity.knockback>
         // -->
