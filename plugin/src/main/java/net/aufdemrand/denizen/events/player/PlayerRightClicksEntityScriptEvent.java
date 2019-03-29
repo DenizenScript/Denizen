@@ -13,33 +13,34 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
-// <--[event]
-// @Events
-// player right clicks entity
-// player right clicks entity in <area>
-// player right clicks entity in notable cuboid
-// player right clicks <entity>
-// player right clicks <entity> in <area>
-// player right clicks <entity> in notable cuboid
-//
-// @Regex ^on player right clicks [^\s]+$
-    // @Switch in <area>
-//
-// @Switch with <item>
-//
-// @Cancellable true
-//
-// @Triggers when a player right clicks on an entity.
-//
-// @Context
-// <context.entity> returns the dEntity the player is clicking on.
-// <context.item> returns the dItem the player is clicking with.
-// <context.cuboids> NOTE: DEPRECATED IN FAVOR OF <context.entity.location.cuboids>
-// <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
-//
-// -->
 
 public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implements Listener {
+
+    // <--[event]
+    // @Events
+    // player right clicks entity
+    // player right clicks entity in <area>
+    // player right clicks entity in notable cuboid
+    // player right clicks <entity>
+    // player right clicks <entity> in <area>
+    // player right clicks <entity> in notable cuboid
+    //
+    // @Regex ^on player right clicks [^\s]+$
+    // @Switch in <area>
+    //
+    // @Switch with <item>
+    //
+    // @Cancellable true
+    //
+    // @Triggers when a player right clicks on an entity.
+    //
+    // @Context
+    // <context.entity> returns the dEntity the player is clicking on.
+    // <context.item> returns the dItem the player is clicking with.
+    // <context.cuboids> NOTE: DEPRECATED IN FAVOR OF <context.entity.location.cuboids>
+    // <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
+    //
+    // -->
 
     PlayerRightClicksEntityScriptEvent instance;
     PlayerInteractEntityEvent event;

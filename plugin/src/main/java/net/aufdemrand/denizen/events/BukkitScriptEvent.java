@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
-import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagContext;
@@ -272,9 +272,20 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         return true;
     }
 
-    private static final String ASTERISK_QUOTED = Pattern.quote("*");
-
     public static final HashMap<String, Pattern> knownPatterns = new HashMap<>();
+
+    private static String quotify(String input) {
+        StringBuilder output = new StringBuilder(input.length());
+        int last = 0;
+        int index = input.indexOf('*');
+        while (index >= 0) {
+            output.append(Pattern.quote(input.substring(last, index))).append("(.*)");
+            last = index + 1;
+            index = input.indexOf('*', last);
+        }
+        output.append(Pattern.quote(input.substring(last)));
+        return output.toString();
+    }
 
     public Pattern regexHandle(String input) {
         Pattern result = knownPatterns.get(input);
@@ -288,15 +299,18 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         else if (input.contains("|")) {
             String[] split = input.split("\\|");
             for (int i = 0; i < split.length; i++) {
-                split[i] = Pattern.quote(split[i]).replace(ASTERISK_QUOTED, "(.*)");
+                split[i] = quotify(split[i]);
             }
             output = String.join("|", split);
         }
         else if (input.contains("*")) {
-            output = Pattern.quote(input).replace(ASTERISK_QUOTED, "(.*)");
+            output = quotify(input);
         }
         else {
             return null;
+        }
+        if (dB.verbose) {
+            dB.log("Event regex compile: " + output);
         }
         result = Pattern.compile(output);
         knownPatterns.put(input, result);
