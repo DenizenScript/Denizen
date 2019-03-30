@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,15 +36,6 @@ public class DirectionalBlocksHelper {
         return null;
     }
 
-    public static BlockFace faceFor(Vector vec) {
-        for (BlockFace face : BlockFace.values()) {
-            if (face.getDirection().distanceSquared(vec) < 0.01) { // floating-point safe check
-                return face;
-            }
-        }
-        return null;
-    }
-
     public static void setFace(Block b, BlockFace face) {
         if (b.getBlockData() instanceof Directional) {
             Directional dir = (Directional) b.getBlockData();
@@ -58,7 +50,7 @@ public class DirectionalBlocksHelper {
     }
 
     public static void setFacing(Block b, Vector faceVec) {
-        BlockFace newFace = faceFor(faceVec);
+        BlockFace newFace = Utilities.faceFor(faceVec);
         if (newFace == null) {
             dB.echoError("Direction '" + faceVec + "' does not appear to be a valid block face.");
             return;

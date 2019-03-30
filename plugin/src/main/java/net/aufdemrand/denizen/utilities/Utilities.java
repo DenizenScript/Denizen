@@ -23,6 +23,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,6 +127,15 @@ public class Utilities {
             dB.echoError(ex);
             return false;
         }
+    }
+
+    public static BlockFace faceFor(Vector vec) {
+        for (BlockFace face : BlockFace.values()) {
+            if (face.getDirection().distanceSquared(vec) < 0.01) { // floating-point safe check
+                return face;
+            }
+        }
+        return null;
     }
 
     /**

@@ -1983,6 +1983,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
+        // @attribute <l@location.vector_to_face>
+        // @returns Element
+        // @description
+        // Returns the name of the BlockFace represented by a vector.
+        // Result can be any of the following:
+        // NORTH, EAST, SOUTH, WEST, UP, DOWN, NORTH_EAST, NORTH_WEST, SOUTH_EAST, SOUTH_WEST,
+        // WEST_NORTH_WEST, NORTH_NORTH_WEST, NORTH_NORTH_EAST, EAST_NORTH_EAST, EAST_SOUTH_EAST,
+        // SOUTH_SOUTH_EAST, SOUTH_SOUTH_WEST, WEST_SOUTH_WEST, SELF
+        // -->
+        if (attribute.startsWith("vector_to_face")) {
+            BlockFace face = Utilities.faceFor(toVector());
+            if (face != null) {
+                return new Element(face.name())
+                        .getAttribute(attribute.fulfill(1));
+            }
+        }
+
+        // <--[tag]
         // @attribute <l@location.distance_squared[<location>]>
         // @returns Element(Decimal)
         // @description
