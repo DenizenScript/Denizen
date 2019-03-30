@@ -15,6 +15,7 @@ import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
+import net.aufdemrand.denizen.scripts.containers.core.CommandScriptHelper;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScoreboardHelper;
@@ -172,6 +173,21 @@ public class ServerTags {
             if (slotId != -1) {
                 event.setReplaced(new Element(slotId).getAttribute(attribute.fulfill(1)));
             }
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.list_commands>
+        // @returns dList
+        // @description
+        // Returns a list of all registered command names in Bukkit.
+        // -->
+        if (attribute.startsWith("list_commands")) {
+            dList list = new dList();
+            for (String cmd : CommandScriptHelper.knownCommands.keySet()) {
+                list.add(cmd);
+            }
+            event.setReplaced(list.getAttribute(attribute.fulfill(1)));
             return;
         }
 

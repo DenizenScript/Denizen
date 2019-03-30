@@ -27,12 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandScriptHelper implements Listener {
 
-    private static Map<String, DenizenCommand> denizenCommands = new ConcurrentHashMap<String, DenizenCommand>(8, 0.9f, 1);
-    private static Map<String, Command> overriddenCommands = new HashMap<String, Command>();
-    private static Map<String, HelpTopic> overriddenHelpTopics = new HashMap<String, HelpTopic>();
-    private static Map<String, Command> knownCommands = null;
-    private static Map<String, HelpTopic> helpTopics = null;
-    private static boolean hasCommandInformation = true;
+    public static Map<String, DenizenCommand> denizenCommands = new ConcurrentHashMap<String, DenizenCommand>(8, 0.9f, 1);
+    public static Map<String, Command> overriddenCommands = new HashMap<String, Command>();
+    public static Map<String, HelpTopic> overriddenHelpTopics = new HashMap<String, HelpTopic>();
+    public static Map<String, Command> knownCommands = null;
+    public static Map<String, HelpTopic> helpTopics = null;
+    public static boolean hasCommandInformation = true;
 
     public CommandScriptHelper() {
         try {
