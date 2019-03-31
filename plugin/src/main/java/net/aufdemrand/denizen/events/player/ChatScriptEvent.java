@@ -41,13 +41,13 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
     // @Triggers when a player chats.
     // @Context
     // <context.message> returns the player's message as an Element.
-    // <context.format> returns the chat message's format.
+    // <context.format> returns the chat message's raw format.
     // <context.recipients> returns a list of all players that will receive the chat.
     //
     // @Determine
     // Element to change the message.
     // "FORMAT:" + dScript to set the format script the message should use.
-    // "RAW_FORMAT:" + Element to set the format directly (without a format script).
+    // "RAW_FORMAT:" + Element to set the format directly (without a format script). (Use with caution, avoid if possible).
     // "RECIPIENTS:" + dList(dPlayer) to set the list of players that will receive the message.
     //
     // -->
