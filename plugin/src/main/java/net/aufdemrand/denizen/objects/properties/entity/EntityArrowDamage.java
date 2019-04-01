@@ -74,7 +74,7 @@ public class EntityArrowDamage implements Property {
 
         // <--[tag]
         // @attribute <e@entity.damage>
-        // @returns Element
+        // @returns Element(Decimal)
         // @mechanism dEntity.damage
         // @group properties
         // @description
@@ -101,7 +101,7 @@ public class EntityArrowDamage implements Property {
         // <--[mechanism]
         // @object dEntity
         // @name damage
-        // @input Element
+        // @input Element(Decimal)
         // @description
         // Changes how much damage an arrow/trident will inflict.
         // @tags
