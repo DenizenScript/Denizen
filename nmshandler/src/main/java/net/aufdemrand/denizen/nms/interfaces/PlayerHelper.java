@@ -9,6 +9,10 @@ import java.util.*;
 
 public abstract class PlayerHelper {
 
+    public abstract int getFlyKickCooldown(Player player);
+
+    public abstract void setFlyKickCooldown(Player player, int ticks);
+
     public abstract float getAbsorption(Player player);
 
     public abstract void setAbsorption(Player player, float value);

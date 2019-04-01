@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.ImprovedOfflinePlayer_v1_12_R1;
+import net.aufdemrand.denizen.nms.impl.packets.handlers.AbstractListenerPlayIn_v1_12_R1;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
@@ -16,11 +17,49 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerHelper_v1_12_R1 extends PlayerHelper {
 
-    public static Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aE");
+    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aE");
+
+    public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(PlayerConnection.class);
+    public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
+    public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
+
+    @Override
+    public int getFlyKickCooldown(Player player) {
+        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+        if (conn instanceof AbstractListenerPlayIn_v1_12_R1) {
+            conn = ((AbstractListenerPlayIn_v1_12_R1) conn).oldListener;
+        }
+
+        try {
+            return Math.max(80 - Math.max(FLY_TICKS.getInt(conn), VEHICLE_FLY_TICKS.getInt(conn)), 0);
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
+        return 80;
+    }
+
+    @Override
+    public void setFlyKickCooldown(Player player, int ticks) {
+        ticks = 80 - ticks;
+        PlayerConnection conn = ((CraftPlayer) player).getHandle().playerConnection;
+        if (conn instanceof AbstractListenerPlayIn_v1_12_R1) {
+            conn = ((AbstractListenerPlayIn_v1_12_R1) conn).oldListener;
+        }
+
+        try {
+            FLY_TICKS.setInt(conn, ticks);
+            VEHICLE_FLY_TICKS.setInt(conn, ticks);
+        }
+        catch (IllegalAccessException e) {
+            dB.echoError(e);
+        }
+    }
 
     @Override
     public float getAbsorption(Player player) {
