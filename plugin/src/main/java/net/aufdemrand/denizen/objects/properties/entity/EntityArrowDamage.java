@@ -105,7 +105,7 @@ public class EntityArrowDamage implements Property {
         // @description
         // Changes how much damage an arrow/trident will inflict.
         // @tags
-        // <e@entity.pickup_status>
+        // <e@entity.damage>
         // -->
 
         if (mechanism.matches("damage") && mechanism.requireDouble()) {
