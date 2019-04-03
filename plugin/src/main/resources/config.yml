@@ -63,7 +63,6 @@ Triggers:
   Click:
     Enabled: true
     Cooldown: 2s
-    Allows left click: false
   Damage:
     Enabled: false
     Cooldown: 0.5s
@@ -113,11 +112,6 @@ Commands:
         # Note that this could be abused by overwriting existing files.
         # Set to 'false' if you're worried about security.
         Allow copying files: true
-  Java:
-        # Whether scripts are allowed to run arbitrary Java code.
-        # This is extremely dangerous and should be kept off unless monitored carefully.
-        # Set to 'false' if you're worried about security.
-        Allow running java: false
   Log:
         # The log command writes to file, which is potentially dangerous
         # Set to 'false' if you're worried about security.
@@ -145,9 +139,6 @@ Tags:
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place
     Max blocks: 1000000
-  Path finding:
-    # How far away the path finder can search before giving up
-    Max distance: 100
   Chat history:
     # How many player messages will be stored for each player (<player.chat_history>, etc.)
     Max messages: 10

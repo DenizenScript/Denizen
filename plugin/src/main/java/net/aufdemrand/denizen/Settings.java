@@ -184,24 +184,6 @@ public class Settings {
 
     /*
 
-    # If the damage trigger is disabled on an NPC, and the NPC is not
-    # vulnerable, both the right and left clicks can be used to activate
-    # the click trigger. Default setting in versions 0.8+ is 'false',
-    # but it's worth noting that in previous versions this was by
-    # default 'true'.
-    #
-    # Select true if you would like invulnerable NPCs to use both right
-    # and left clicks to activate the click trigger.
-
-    */
-
-    public static boolean clickTriggerAllowsLeftClick() { // TODO: Remove?
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Click.Allows left click", false);
-    }
-
-    /*
-
     # Default engage timeout. When NPCs are set to ENGAGE, this is
     # the default timeout that they will auto-DISENGAGE if not otherwise
     # specified. (Default, 150 seconds)
@@ -272,11 +254,6 @@ public class Settings {
     public static boolean allowServerRestart() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Commands.Restart.Allow server restart", true);
-    }
-
-    public static boolean allowRunningJava() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Java.Allow running java", false);
     }
 
     public static boolean allowLogging() {
@@ -431,11 +408,6 @@ public class Settings {
     public static int blockTagsMaxBlocks() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getInt("Tags.Block tags.Max blocks", 1000000);
-    }
-
-    public static int pathfindingMaxDistance() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Path finding.Max distance", 100);
     }
 
     public static int chatHistoryMaxMessages() {
