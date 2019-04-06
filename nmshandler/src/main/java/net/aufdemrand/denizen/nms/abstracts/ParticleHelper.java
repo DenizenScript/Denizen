@@ -37,10 +37,10 @@ public class ParticleHelper {
     }
 
     public HashMap<String, Effect> effectRemap = new HashMap<>();
-    private final Map<String, Particle> particles = new HashMap<>();
-    private final List<Particle> visibleParticles = new ArrayList<>();
+    public final Map<String, Particle> particles = new HashMap<>();
+    public final List<Particle> visibleParticles = new ArrayList<>();
 
-    protected void register(String name, Particle particle) {
+    public void register(String name, Particle particle) {
         particles.put(name.toUpperCase(), particle);
         if (particle.isVisible()) {
             visibleParticles.add(particle);
