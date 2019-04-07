@@ -7,12 +7,11 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
 
 public class EntityCritical implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntityType() == EntityType.ARROW;
+        return entity instanceof dEntity && ((dEntity) entity).getBukkitEntity() instanceof Arrow;
     }
 
     public static EntityCritical getFrom(dObject entity) {
@@ -79,7 +78,7 @@ public class EntityCritical implements Property {
         // @mechanism dEntity.critical
         // @group properties
         // @description
-        // If the entity is an arrow, returns whether the arrow is critical.
+        // If the entity is an arrow or trident, returns whether the arrow/trident is critical.
         // -->
         if (attribute.startsWith("critical")) {
             return new Element(((Arrow) critical.getBukkitEntity()).isCritical())
@@ -97,7 +96,7 @@ public class EntityCritical implements Property {
         // @name critical
         // @input Element(Boolean)
         // @description
-        // Changes whether an arrow is critical.
+        // Changes whether an arrow/trident is critical.
         // @tags
         // <e@entity.critical>
         // -->

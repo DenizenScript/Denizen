@@ -4,7 +4,7 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
-import net.aufdemrand.denizen.objects.properties.material.MaterialPlantGrowth;
+import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -458,18 +458,26 @@ public class dMaterial implements dObject, Adjustable {
         });
 
         // <--[tag]
-        // @attribute <m@material.is_plant>
+        // @attribute <m@material.is_ageable>
         // @returns Element(Boolean)
         // @group properties
         // @description
-        // Returns whether the material is a plant block material.
-        // When this returns true, <@link tag m@material.plant_growth>,  <@link tag m@material.maximum_plant_growth>,
-        // and <@link mechanism dMaterial.plant_growth> are accessible.
+        // Returns whether the material is an ageable material.
+        // When this returns true, <@link tag m@material.age>,  <@link tag m@material.maximum_age>,
+        // and <@link mechanism dMaterial.age> are accessible.
         // -->
+        registerTag("is_ageable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(MaterialAge.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
         registerTag("is_plant", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new Element(MaterialPlantGrowth.describes(object))
+                return new Element(MaterialAge.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });

@@ -31,7 +31,7 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventoryHolder;
 import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
-import net.aufdemrand.denizen.objects.properties.material.MaterialPlantGrowth;
+import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
 import net.aufdemrand.denizen.objects.properties.trade.*;
 import net.aufdemrand.denizen.scripts.commands.BukkitCommandRegistry;
 import net.aufdemrand.denizen.scripts.containers.core.*;
@@ -809,6 +809,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityAngry.class, dEntity.class);
             PropertyParser.registerProperty(EntityAreaEffectCloud.class, dEntity.class);
             PropertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
+            PropertyParser.registerProperty(EntityArrowDamage.class, dEntity.class);
             PropertyParser.registerProperty(EntityInvulnerable.class, dEntity.class);
             PropertyParser.registerProperty(EntityBoatType.class, dEntity.class);
             PropertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
@@ -838,6 +839,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityMarker.class, dEntity.class);
             PropertyParser.registerProperty(EntityMaxFuseTicks.class, dEntity.class);
             PropertyParser.registerProperty(EntityPainting.class, dEntity.class);
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
+                PropertyParser.registerProperty(EntityPickupStatus.class, dEntity.class);
+            }
             PropertyParser.registerProperty(EntityPotion.class, dEntity.class);
             PropertyParser.registerProperty(EntityPowered.class, dEntity.class);
             PropertyParser.registerProperty(EntityProfession.class, dEntity.class);
@@ -896,7 +900,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 // register core dMaterial properties
-                PropertyParser.registerProperty(MaterialPlantGrowth.class, dMaterial.class);
+                PropertyParser.registerProperty(MaterialAge.class, dMaterial.class);
             }
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
