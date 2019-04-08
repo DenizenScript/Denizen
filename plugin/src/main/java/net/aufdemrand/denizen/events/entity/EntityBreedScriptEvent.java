@@ -93,22 +93,25 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
 
     @Override
     public dObject getContext(String name) {
-        switch (name) {
-            case "child":
-                return entity;
-            case "breeder":
-                return breeder;
-            case "father":
-                return father;
-            case "mother":
-                return mother;
-            case "item":
-                return item;
-            case "experience":
-                return new Element(experience);
-            default:
-                return super.getContext(name);
+        if (name.equals("child")) {
+            return entity;
         }
+        else if (name.equals("breeder")) {
+            return breeder;
+        }
+        else if (name.equals("father")) {
+            return father;
+        }
+        else if (name.equals("mother")) {
+            return mother;
+        }
+        else if (name.equals("item")) {
+            return item;
+        }
+        else if (name.equals("experience")) {
+            return new Element(experience);
+        }
+        return super.getContext(name);
     }
 
     @EventHandler

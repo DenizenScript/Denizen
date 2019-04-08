@@ -77,16 +77,16 @@ public class EntitySpawnerSpawnScriptEvent extends BukkitScriptEvent implements 
 
     @Override
     public dObject getContext(String name) {
-        switch (name) {
-            case "entity":
-                return entity;
-            case "location":
-                return location;
-            case "spawner_location":
-                return spawnerLocation;
-            default:
-                return super.getContext(name);
+        if (name.equals("entity")) {
+            return entity;
         }
+        else if (name.equals("location")) {
+            return location;
+        }
+        else if (name.equals("spawner_location")) {
+            return spawnerLocation;
+        }
+        return super.getContext(name);
     }
 
     @EventHandler

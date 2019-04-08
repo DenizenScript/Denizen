@@ -97,17 +97,20 @@ public class PlayerTabCompleteScriptEvent extends BukkitScriptEvent implements L
 
     @Override
     public dObject getContext(String name) {
-        switch (name) {
-            case "buffer":
-                return new Element(buffer);
-            case "command":
-                return new Element(getCommand());
-            case "current_arg":
-                return new Element(getCurrentArg());
-            case "completions":
-                return completions;
-            case "server":
-                return new Element(sender instanceof ConsoleCommandSender);
+        if (name.equals("buffer")) {
+            return new Element(buffer);
+        }
+        else if (name.equals("command")) {
+            return new Element(getCommand());
+        }
+        else if (name.equals("current_arg")) {
+            return new Element(getCurrentArg());
+        }
+        else if (name.equals("completions")) {
+            return completions;
+        }
+        else if (name.equals("server")) {
+            return new Element(sender instanceof ConsoleCommandSender);
         }
         return super.getContext(name);
     }
