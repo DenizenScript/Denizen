@@ -258,10 +258,14 @@ public class dB {
         if (!showDebug) {
             return;
         }
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
+        String fullMessage = ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                 (script != null ? " in script '" + script.getName() + "'" : "")
                 + (source != null ? " in queue '" + source.id + "'" : "") + "! "
-                + ChatColor.WHITE + message);
+                + ChatColor.WHITE + message;
+        if (script != null && !script.getContainer().shouldDebug()) {
+            fullMessage += ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.";
+        }
+        ConsoleSender.sendMessage(fullMessage);
         if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
