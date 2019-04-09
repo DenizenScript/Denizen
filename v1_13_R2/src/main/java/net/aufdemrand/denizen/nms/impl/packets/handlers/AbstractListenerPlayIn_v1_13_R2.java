@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class AbstractListenerPlayIn_v1_13_R2 extends PlayerConnection {
 
-    protected final PlayerConnection oldListener;
+    public final PlayerConnection oldListener;
 
     public AbstractListenerPlayIn_v1_13_R2(NetworkManager networkManager, EntityPlayer entityPlayer, PlayerConnection oldListener) {
         super(MinecraftServer.getServer(), networkManager, entityPlayer);
