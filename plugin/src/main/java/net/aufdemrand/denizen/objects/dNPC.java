@@ -26,11 +26,10 @@ import net.citizensnpcs.npc.skin.SkinnableEntity;
 import net.citizensnpcs.trait.Anchors;
 import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.Poses;
-import net.citizensnpcs.trait.waypoint.Waypoint;
-import net.citizensnpcs.trait.waypoint.WaypointProvider;
-import net.citizensnpcs.trait.waypoint.Waypoints;
+import net.citizensnpcs.trait.waypoint.*;
 import net.citizensnpcs.util.Anchor;
 import net.citizensnpcs.util.Pose;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -1454,6 +1453,13 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
                 ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints()).clear();
             }
+            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
+                List<Location> locs = ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres();
+                for (Location loc : locs) {
+                    locs.remove(loc); // Manual clear to ensure recalculation for the forwarding list
+                }
+
+            }
         }
 
         // <--[mechanism]
@@ -1473,6 +1479,10 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
             if ((wp.getCurrentProvider() instanceof WaypointProvider.EnumerableWaypointProvider)) {
                 ((List<Waypoint>) ((WaypointProvider.EnumerableWaypointProvider) wp.getCurrentProvider()).waypoints())
                         .add(new Waypoint(mechanism.valueAsType(dLocation.class)));
+            }
+            else if ((wp.getCurrentProvider() instanceof WanderWaypointProvider)) {
+                ((WanderWaypointProvider) wp.getCurrentProvider()).getRegionCentres()
+                        .add(mechanism.valueAsType(dLocation.class));
             }
         }
 
