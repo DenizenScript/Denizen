@@ -3476,13 +3476,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Shoot
-        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
+        // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
         // @Required 1
         // @Short Shoots an entity through the air, useful for things like firing arrows.
         // @Group entity
         //
         // @Description
-        // Shoots an entity through the air up to a certain height, optionally using a custom gravity value and triggering a script on impact with a target.
+        // Shoots an entity through the air up to a certain height, optionally triggering a script on impact with a target.
+        //
+        // Generally, use the "speed" argument to send an entity exactly the direction you input,
+        // and don't include it to have the entity automatically attempt to land exactly on the destination.
+        //
         // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
         // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
         // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
@@ -3505,7 +3509,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - shoot arrow origin:<player> speed:2
         // -->
         registerCoreMember(ShootCommand.class,
-                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (gravity:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
+                "SHOOT", "shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)", 1);
 
 
         // <--[command]
