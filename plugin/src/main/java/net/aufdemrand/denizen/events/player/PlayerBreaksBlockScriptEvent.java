@@ -27,8 +27,8 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // player breaks <material>
     //
     // @Regex ^on player breaks [^\s]+$
-    // @Switch in <area>
     //
+    // @Switch in <area>
     // @Switch with <item>
     //
     // @Cancellable true

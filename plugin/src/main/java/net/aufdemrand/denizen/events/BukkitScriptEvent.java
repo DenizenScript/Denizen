@@ -77,7 +77,8 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     public List<Map.Entry<RegisteredListener, HandlerList>> registeredHandlers;
 
     // <--[language]
-    // @name bukkit event priority
+    // @name Bukkit Event Priority
+    // @group Script Events
     // @description
     // Script events that are backed by standard Bukkit events are able to control what underlying Bukkit event priority
     // they register as.
@@ -270,56 +271,6 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
             }
         }
         return true;
-    }
-
-    public static final HashMap<String, Pattern> knownPatterns = new HashMap<>();
-
-    private static String quotify(String input) {
-        StringBuilder output = new StringBuilder(input.length());
-        int last = 0;
-        int index = input.indexOf('*');
-        while (index >= 0) {
-            output.append(Pattern.quote(input.substring(last, index))).append("(.*)");
-            last = index + 1;
-            index = input.indexOf('*', last);
-        }
-        output.append(Pattern.quote(input.substring(last)));
-        return output.toString();
-    }
-
-    public Pattern regexHandle(String input) {
-        Pattern result = knownPatterns.get(input);
-        if (result != null) {
-            return result;
-        }
-        String output;
-        if (input.startsWith("regex:")) {
-            output = input.substring("regex:".length());
-        }
-        else if (input.contains("|")) {
-            String[] split = input.split("\\|");
-            for (int i = 0; i < split.length; i++) {
-                split[i] = quotify(split[i]);
-            }
-            output = String.join("|", split);
-        }
-        else if (input.contains("*")) {
-            output = quotify(input);
-        }
-        else {
-            return null;
-        }
-        if (dB.verbose) {
-            dB.log("Event regex compile: " + output);
-        }
-        result = Pattern.compile(output);
-        knownPatterns.put(input, result);
-        return result;
-    }
-
-    public boolean equalityCheck(String input, String compared, Pattern regexed) {
-        input = CoreUtilities.toLowerCase(input);
-        return input.equals(compared) || (regexed != null && regexed.matcher(input).matches());
     }
 
     public boolean tryInventory(dInventory inv, String comparedto) {

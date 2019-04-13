@@ -1294,6 +1294,18 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return false;
     }
 
+    // --------------------------------------------------------------------------------------
+    // ------------------------- Begin Denizen Core Implementations -------------------------
+    // --------------------------------------------------------------------------------------
+
+    // <--[language]
+    // @name Tick
+    // @group Common Terminology
+    // @description
+    // A 'tick' is usually referred to as 1/20th of a second, the speed at which Minecraft servers update
+    // and process everything on them.
+    // -->
+
     @Override
     public File getScriptFolder() {
         File file = null;
