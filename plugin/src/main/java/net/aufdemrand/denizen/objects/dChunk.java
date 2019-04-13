@@ -21,6 +21,37 @@ import java.util.*;
 
 public class dChunk implements dObject, Adjustable {
 
+    // <--[language]
+    // @name dChunk
+    // @group Object System
+    // @description
+    // A dChunk represents a chunk in the world.
+    //
+    // -->
+
+    // <--[language]
+    // @name ch@
+    // @group Object Fetcher System
+    // @description
+    // ch@ refers to the 'object identifier' of a dChunk. The 'ch@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dChunk is <x>,<z>,<world>.
+    // For example, 'ch@5,3,world'.
+    //
+    // Note that the X/Z pair are chunk coordinates, not block coordinates.
+    // To convert from block coordinates to chunk coordinates, divide by 16 and round downward.
+    // Note that negative chunks are one unit lower than you might expect.
+    // To understand why, simply look at chunks on a number line...
+    //  x      x      x      x      x
+    // -2     -1    b 0 a    1      2
+    // The block 'a' at block position '1' is in chunk '0', but the block 'b' at block position '-1' is in chunk '-1'.
+    // As otherwise (if 'b' was in chunk '0'), chunk '0' would be double-wide (32 blocks wide instead of the standard 16).
+    //
+    //
+    // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
+    // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
+    //
+    // -->
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////

@@ -43,6 +43,24 @@ import java.util.regex.Pattern;
 
 public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObject {
 
+    // <--[language]
+    // @name dNPC
+    // @group Object System
+    // @description
+    // A dNPC represents an NPC configured through Citizens.
+    //
+    // -->
+
+    // <--[language]
+    // @name n@
+    // @group Object Fetcher System
+    // @description
+    // n@ refers to the 'object identifier' of a dNPC. The 'n@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dNPC is the NPC's id number.
+    // For example, 'n@5'.
+    //
+    // -->
+
     public static dNPC mirrorCitizensNPC(NPC npc) {
         if (dNPCRegistry._isRegistered(npc)) {
             return dNPCRegistry.getDenizen(npc);

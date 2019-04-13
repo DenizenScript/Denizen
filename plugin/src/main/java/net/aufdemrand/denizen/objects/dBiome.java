@@ -15,6 +15,27 @@ import java.util.List;
 
 public class dBiome implements dObject, Adjustable {
 
+    // <--[language]
+    // @name dBiome
+    // @group Object System
+    // @description
+    // A dBiome represents a world biome type.
+    //
+    // A list of all valid Bukkit biomes can found be at
+    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
+    //
+    // -->
+
+    // <--[language]
+    // @name b@
+    // @group Object Fetcher System
+    // @description
+    // b@ refers to the 'object identifier' of a dBiome. The 'b@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dBiome is the name of a valid biome (in Bukkit).
+    // For example, 'b@desert'.
+    //
+    // -->
+
     //////////////////
     //    OBJECT FETCHER
     ////////////////

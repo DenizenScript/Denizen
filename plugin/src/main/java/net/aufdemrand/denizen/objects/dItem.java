@@ -42,6 +42,33 @@ import java.util.regex.Pattern;
 
 public class dItem implements dObject, Notable, Adjustable {
 
+    // <--[language]
+    // @name dItem
+    // @group Object System
+    // @description
+    // A dItem represents a holdable item generically.
+    //
+    // dItems are temporary objects, to actually modify an item in an inventory you must add the item into that inventory.
+    //
+    // dItems do NOT remember where they came from. If you read an item from an inventory, changing it
+    // does not change the original item in the original inventory. You must set it back in.
+    //
+    // -->
+
+    // <--[language]
+    // @name i@
+    // @group Object Fetcher System
+    // @description
+    // i@ refers to the 'object identifier' of a dItem. The 'i@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dItem is the basic material type name, or an item script name. Other data is specified in properties.
+    // For example, 'i@stick'.
+    //
+    // Find a list of valid materials at:
+    // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html>
+    // Note that some materials on that list are exclusively for use with blocks, and cannot be held as items.
+    //
+    // -->
+
     final static Pattern ITEM_PATTERN =
             Pattern.compile("(?:item:)?([\\w ]+)[:,]?(\\d+)?\\[?(\\d+)?\\]?", // TODO: Wot.
                     Pattern.CASE_INSENSITIVE);

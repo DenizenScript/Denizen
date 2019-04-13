@@ -16,6 +16,27 @@ import java.util.List;
 
 public class dEllipsoid implements dObject, Notable {
 
+    // <--[language]
+    // @name dEllipsoid
+    // @group Object System
+    // @description
+    // A dEllipsoid represents an ellipsoidal region in the world.
+    //
+    // The word 'ellipsoid' means a less strict sphere.
+    // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
+    //
+    // -->
+
+    // <--[language]
+    // @name ellipsoid@
+    // @group Object Fetcher System
+    // @description
+    // ellipsoid@ refers to the 'object identifier' of a dEllipsoid. The 'ellipsoid@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dEllipsoid is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
+    // For example, 'ellipsoid@1,2,3,space,7,7,7'.
+    //
+    // -->
+
     public static List<dEllipsoid> getNotableEllipsoidsContaining(Location location) {
         List<dEllipsoid> cuboids = new ArrayList<dEllipsoid>();
         for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class)) {

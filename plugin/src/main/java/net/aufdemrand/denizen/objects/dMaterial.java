@@ -24,6 +24,24 @@ import java.util.HashMap;
 
 public class dMaterial implements dObject, Adjustable {
 
+    // <--[language]
+    // @name dMaterial
+    // @group Object System
+    // @description
+    // A dMaterial represents a material (a type of block or item).
+    //
+    // -->
+
+    // <--[language]
+    // @name m@
+    // @group Object Fetcher System
+    // @description
+    // m@ refers to the 'object identifier' of a dMaterial. The 'm@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dMaterial is the material type name.
+    // For example, 'm@stick'.
+    //
+    // -->
+
     /**
      * Legacy dMaterial identities.
      */

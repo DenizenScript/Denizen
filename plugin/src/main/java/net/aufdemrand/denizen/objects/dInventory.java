@@ -38,6 +38,29 @@ import java.util.regex.Pattern;
 
 public class dInventory implements dObject, Notable, Adjustable {
 
+    // <--[language]
+    // @name dInventory
+    // @group Object System
+    // @description
+    // A dInventory represents an inventory, generically or attached to some in-the-world object.
+    //
+    // Inventories can be generically designed using inventory script containers,
+    // and can be modified using the inventory command.
+    //
+    // -->
+
+    // <--[language]
+    // @name in@
+    // @group Object Fetcher System
+    // @description
+    // in@ refers to the 'object identifier' of a dInventory. The 'in@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dInventory is a the classification type of inventory to use. All other data is specified through properties.
+    //
+    // Valid inventory type classifications:
+    // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
+    //
+    // -->
+
     public static dInventory mirrorBukkitInventory(Inventory inventory) {
         // Scripts have priority over notables
         if (InventoryScriptHelper.tempInventoryScripts.containsKey(inventory)) {

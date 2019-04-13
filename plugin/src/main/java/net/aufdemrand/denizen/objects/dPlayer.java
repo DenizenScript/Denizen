@@ -48,6 +48,14 @@ import java.util.regex.Pattern;
 public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
 
+    // <--[language]
+    // @name dPlayer
+    // @group Object System
+    // @description
+    // A dPlayer represents a player in the game.
+    //
+    // -->
+
     /////////////////////
     //   STATIC METHODS
     /////////////////
@@ -97,6 +105,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
     // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dPlayer is the UUID of the player the object should be
     // associated with.
+    //
     // -->
 
 

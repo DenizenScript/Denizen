@@ -46,6 +46,27 @@ import java.util.regex.Pattern;
 
 public class dLocation extends org.bukkit.Location implements dObject, Notable, Adjustable {
 
+    // <--[language]
+    // @name dLocation
+    // @group Object System
+    // @description
+    // A dLocation represents a point in the world.
+    //
+    // -->
+
+    // <--[language]
+    // @name l@
+    // @group Object Fetcher System
+    // @description
+    // l@ refers to the 'object identifier' of a dLocation. The 'l@' is notation for Denizen's Object
+    // Fetcher. Note that 'l' is a lowercase 'L', the first letter in 'location'.
+    // The full constructor for a dLocation is: 'l@<x>,<y>,<z>,<pitch>,<yaw>,<world>'
+    // Note that you can leave off the world, and/or pitch and yaw, and/or the z value.
+    // You cannot leave off both the z and the pitch+yaw at the same time.
+    // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
+    //
+    // -->
+
     /**
      * The world name if a world reference is bad.
      */

@@ -32,6 +32,30 @@ import java.util.regex.Pattern;
 
 public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
+    // <--[language]
+    // @name dCuboid
+    // @group Object System
+    // @description
+    // A dCuboid represents a cuboidal region in the world.
+    //
+    // The word 'cuboid' means a less strict cube.
+    // Basically: a "cuboid" is to a 3D "cube" what a "rectangle" is to a 2D "square".
+    //
+    // One 'cuboid' consists of two points: the low point and a high point.
+    // a dCuboid can contain as many cuboids within itself as needed (this allows forming more complex shapes from a single dCuboid).
+    //
+    // -->
+
+    // <--[language]
+    // @name cu@
+    // @group Object Fetcher System
+    // @description
+    // cu@ refers to the 'object identifier' of a dCuboid. The 'cu@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dCuboid is <x>,<y>,<z>,<world>|...
+    // For example, 'cu@1,2,3,space|4,5,6,space'.
+    //
+    // -->
+
     // Cloning
     @Override
     public dCuboid clone() throws CloneNotSupportedException {

@@ -18,10 +18,12 @@ public class dTrade implements dObject, Adjustable {
 
     // <--[language]
     // @name Merchant Trades
-    // @group Merchant Trades
+    // @group Object System
     // @description
     // Merchant trades are the parts of a special merchant inventory that is typically viewed by right clicking
     // a villager entity. Any number of trades can fit in a single merchant inventory.
+    //
+    // Trades are represented by 'trade@trade' dObjects.
     //
     // The properties that can be used to customize a merchant trade are:
     //
@@ -42,6 +44,15 @@ public class dTrade implements dObject, Adjustable {
     //     script:
     //     - opentrades li@trade@trade[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|trade@trade[result=i@barrier]
     // </code>
+    // -->
+
+    // <--[language]
+    // @name trade@
+    // @group Object Fetcher System
+    // @description
+    // trade@ refers to the 'object identifier' of a dTrade. The 'trade@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dNPC is just the text 'trade'. All other data is specified through properties.
+    //
     // -->
 
     //////////////////

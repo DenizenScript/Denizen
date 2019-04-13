@@ -46,6 +46,14 @@ public class dWorld implements dObject, Adjustable {
     /////////////////
 
     // <--[language]
+    // @name dWorld
+    // @group Object System
+    // @description
+    // A dWorld represents a world on the server.
+    //
+    // -->
+
+    // <--[language]
     // @name w@
     // @group Object Fetcher System
     // @description

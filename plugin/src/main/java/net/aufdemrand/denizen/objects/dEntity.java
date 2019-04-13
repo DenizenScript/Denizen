@@ -41,6 +41,26 @@ import java.util.regex.Pattern;
 
 public class dEntity implements dObject, Adjustable, EntityFormObject {
 
+    // <--[language]
+    // @name dEntity
+    // @group Object System
+    // @description
+    // A dEntity represents a spawned entity, or a generic entity type.
+    //
+    // Note that players and NPCs are valid dEntities, but are generally represented by the more specific
+    // dPlayer and dNPC objects.
+    //
+    // -->
+
+    // <--[language]
+    // @name e@
+    // @group Object Fetcher System
+    // @description
+    // e@ refers to the 'object identifier' of a dEntity. The 'e@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dEntity is a spawned entity's UUID, or an entity type.
+    // For example, 'e@zombie'.
+    //
+    // -->
 
     /////////////////////
     //   STATIC METHODS

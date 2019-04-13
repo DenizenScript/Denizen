@@ -15,6 +15,31 @@ import java.util.regex.Pattern;
 
 public class dColor implements dObject {
 
+    // <--[language]
+    // @name dColor
+    // @group Object System
+    // @description
+    // A dColor represents an RGB color code.
+    //
+    // Note that a dColor is NOT a base dye color (used by wool, etc). That is handled by a separate naming system.
+    //
+    // -->
+
+    // <--[language]
+    // @name co@
+    // @group Object Fetcher System
+    // @description
+    // co@ refers to the 'object identifier' of a dColor. The 'co@' is notation for Denizen's Object
+    // Fetcher. The constructor for a dColor is <red>,<green>,<blue>, or the name of a color.
+    // For example, 'co@50,64,128' or 'co@red'.
+    //
+    // A list of accepted color names can be found at
+    // <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Color.html>
+    //
+    // Red/green/blue values are each from 0 to 256.
+    //
+    // -->
+
     final static Pattern rgbPattern = Pattern.compile("(\\d+)[,:](\\d+)[,:](\\d+)");
 
     //////////////////
