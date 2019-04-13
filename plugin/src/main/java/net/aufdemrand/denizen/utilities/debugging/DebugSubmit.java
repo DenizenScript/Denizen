@@ -76,6 +76,8 @@ public class DebugSubmit extends Thread {
             if (playerlist.length() < 2) {
                 playerlist.append("No Online Players, ");
             }
+            // Gather other setting info
+            boolean bungee = Bukkit.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
             // Create the final message pack and upload it
             uc.getOutputStream().write(("postid=pastetext&pastetype=log"
                     + "&response=micro&v=100&pastetitle=Denizen+Debug+Logs+From+" + URLEncoder.encode(Bukkit.getServer().getMotd().replace(ChatColor.COLOR_CHAR, (char) 0x01))
@@ -87,7 +89,7 @@ public class DebugSubmit extends Thread {
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
                     + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
-                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline")
+                    + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCoord)" : "")
                     + "\n\n") + recording)
                     .getBytes("UTF-8"));
             // Wait for a response from the server
