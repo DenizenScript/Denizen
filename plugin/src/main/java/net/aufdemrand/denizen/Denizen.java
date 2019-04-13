@@ -172,7 +172,7 @@ import java.util.logging.Logger;
 // | object notation: i@    can reference unique objects: no     can be notable: yes
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   i@<material_name> - fetches a new item of the specified material
-// |   i@<material_name>,<data> - fetches a new item with the specified data
+// |   i@<material_name>,<data> - fetches a new item with the specified data (deprecated)
 // |   i@<item_script_name> - fetches a new custom item as specified by the referenced item script
 // |   i@<notable_name> - fetches the item that has been noted with the specified ID
 //
@@ -221,8 +221,8 @@ import java.util.logging.Logger;
 // | object notation: m@    can reference unique objects: no      can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   m@<material_name> - fetches the material as specified by Bukkit's material enumeration
-// |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data
-// |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' dMaterials
+// |   m@<material_name>,<data> - fetches the material as specified by Bukkit's material enumeration with specified data (deprecated)
+// |   m@<data_variety_material> - fetches the material specified by Denizen's 'data variety' dMaterials (deprecated)
 // |   m@random - fetches a random material
 //
 // + ----- dTrade -----+
@@ -260,6 +260,11 @@ import java.util.logging.Logger;
 // | object notation: q@   can reference unique objects: yes      can be notable: no
 // | constructors: ( <>'s represent non-static information and are not literal)
 // |   q@<id> - fetches the queue with the given ID
+//
+// + ----- Custom Object ------+
+// | object notation: custom@   can reference unique objects: no      can be notable: no
+// | constructors: ( <>'s represent non-static information and are not literal)
+// |   custom@<custom_script_name> - fetches a custom object of the specified base custom script.
 //
 // -->
 
