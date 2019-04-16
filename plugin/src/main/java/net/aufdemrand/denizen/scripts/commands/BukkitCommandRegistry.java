@@ -4255,6 +4255,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // such as tabs instead of spaces or comments inside braced blocks.
         // Use holdable syntax ("- ~yaml load:...") with load or savefile actions to avoid locking up the server during file IO.
         //
+        // For loading and saving, the starting path is within 'plugins/Denizen'.
+        // Note that the '.yml' extension is not automatically appended, and you will have to include that in filenames.
+        //
         // @Tags
         // <yaml[<idname>].contains[<path>]>
         // <yaml[<idname>].read[<path>]>
