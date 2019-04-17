@@ -70,20 +70,8 @@ public class Settings {
     */
 
     public static String scriptQueueSpeed() {
-        String delay = DenizenAPI.getCurrentInstance().getConfig()
+        return DenizenAPI.getCurrentInstance().getConfig()
                 .getString("Scripts.Queue speed", "0.5s");
-
-        // Check for users setting delay to 0, which will in turn lock up the server
-        try {
-            if (Duration.valueOf(delay).getTicks() < 1) {
-                delay = "1t";
-            }
-        }
-        catch (Exception e) {
-            delay = "0.5s";
-        }
-
-        return delay;
     }
 
     /*
