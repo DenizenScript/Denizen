@@ -63,6 +63,11 @@ public class Settings {
         return DenizenAPI.getCurrentInstance().getConfig().getBoolean("Debug.Stats", true);
     }
 
+    public static boolean defaultDebugMode() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Debug.Container default", true);
+    }
+
     /*
 
     # Sets the default speed between execution of commands in queues

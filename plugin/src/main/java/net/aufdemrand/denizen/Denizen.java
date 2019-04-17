@@ -1737,6 +1737,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         }
         return tTimeoutSil;
     }
+
+    @Override
+    public boolean getDefaultDebugMode() {
+        return Settings.defaultDebugMode();
+    }
 }
 
 

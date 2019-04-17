@@ -16,6 +16,9 @@ Debug:
   Stats: true
   # Whether to force the help command to be the default bukkit help (required to fix issues with command script help options).
   Override help: true
+  # The default debug mode for script containers.
+  # This should almost always be left at 'true'.
+  Container default: true
 
 Scripts:
   World:
