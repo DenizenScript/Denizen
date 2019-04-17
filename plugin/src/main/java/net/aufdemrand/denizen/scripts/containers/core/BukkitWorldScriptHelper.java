@@ -209,7 +209,8 @@ public class BukkitWorldScriptHelper implements Listener {
     // @Triggers when a player clicks in an inventory.
     // @Context
     // <context.item> returns the dItem the player has clicked on.
-    // <context.inventory> returns the dInventory.
+    // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
+    // <context.clicked_inventory> returns the dInventory that was clicked in.
     // <context.cursor_item> returns the item the Player is clicking with.
     // <context.click> returns an Element with the name of the click type. Click type list: <@link url http://bit.ly/2IjY198>
     // <context.slot_type> returns an Element with the name of the slot type that was clicked.
@@ -359,6 +360,7 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot() + 1));
         context.put("raw_slot", new Element(event.getRawSlot() + 1));
+        context.put("clicked_inventory", dInventory.mirrorBukkitInventory(event.getClickedInventory());
         context.put("is_shift_click", new Element(event.isShiftClick()));
         context.put("action", new Element(event.getAction().name()));
         context.put("hotbar_button", new Element(event.getHotbarButton() + 1));
