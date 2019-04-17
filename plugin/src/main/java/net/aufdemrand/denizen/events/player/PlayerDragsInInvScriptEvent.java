@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -51,9 +50,7 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     public static PlayerDragsInInvScriptEvent instance;
 
     public Inventory inventory;
-    public dList slots;
     public dItem item;
-    public dList raw_slots;
     private dPlayer entity;
     private dInventory dInv;
     public InventoryDragEvent event;
@@ -101,9 +98,17 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
             return dInv;
         }
         else if (name.equals("slots")) {
+            dList slots = new dList();
+            for (Integer slot : event.getInventorySlots()) {
+                slots.add(String.valueOf(slot + 1));
+            }
             return slots;
         }
         else if (name.equals("raw_slots")) {
+            dList raw_slots = new dList();
+            for (Integer raw_slot : event.getRawSlots()) {
+                raw_slots.add(String.valueOf(raw_slot + 1));
+            }
             return raw_slots;
         }
         else if (name.equals("item")) {
@@ -125,14 +130,6 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         inventory = event.getInventory();
         dInv = dInventory.mirrorBukkitInventory(inventory);
         item = new dItem(event.getOldCursor());
-        slots = new dList();
-        for (Integer slot : event.getInventorySlots()) {
-            slots.add(String.valueOf(slot + 1));
-        }
-        raw_slots = new dList();
-        for (Integer raw_slot : event.getRawSlots()) {
-            raw_slots.add(String.valueOf(raw_slot + 1));
-        }
         boolean wasCancelled = event.isCancelled();
         this.event = event;
         fire(event);
