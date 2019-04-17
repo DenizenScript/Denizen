@@ -37,7 +37,8 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
     //
     // @Context
     // <context.item> returns the dItem the player has dragged.
-    // <context.inventory> returns the dInventory.
+    // <context.inventory> returns the dInventory (the 'top' inventory, regardless of which slot was clicked).
+    // <context.clicked_inventory> returns the dInventory that was clicked in.
     // <context.slots> returns a dList of the slot numbers dragged through.
     // <context.raw_slots> returns a dList of the raw slot numbers dragged through.
     //
@@ -107,6 +108,10 @@ public class PlayerDragsInInvScriptEvent extends BukkitScriptEvent implements Li
         }
         else if (name.equals("item")) {
             return item;
+        }
+        else if (name.equals("clicked_inventory")) {
+            return dInventory.mirrorBukkitInventory(event.getView()
+                    .getInventory(event.getRawSlots().stream().findFirst().orElse(0)));
         }
         return super.getContext(name);
     }
