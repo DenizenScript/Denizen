@@ -112,7 +112,7 @@ public class EntityItem implements Property {
         // @name item
         // @input dItem
         // @description
-        // Changes what item a dropped or an Enderman item holds.
+        // Changes what item a dropped item or an Enderman holds.
         // @tags
         // <e@entity.item>
         // -->

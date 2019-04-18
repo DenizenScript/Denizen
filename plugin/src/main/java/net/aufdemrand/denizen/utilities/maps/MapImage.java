@@ -23,6 +23,7 @@ public class MapImage extends MapObject {
     protected int height = 0;
     protected String fileTag;
     protected String actualFile = null;
+    boolean disabled = false;
 
     public MapImage(String xTag, String yTag, String visibilityTag, boolean debug, String fileTag,
                     int width, int height) {
@@ -73,6 +74,15 @@ public class MapImage extends MapObject {
             if (height == 0) {
                 height = image.getHeight(null);
             }
+            if (width == -1 || height == -1) {
+                dB.echoError("Image loading failed (bad width/height) for image " + file);
+                disabled = true;
+                return;
+            }
+            disabled = false;
+        }
+        if (disabled) {
+            return;
         }
         // Use custom functions to draw image to allow transparency and reduce lag intensely
         byte[] bytes;
