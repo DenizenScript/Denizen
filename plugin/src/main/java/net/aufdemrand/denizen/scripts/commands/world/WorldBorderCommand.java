@@ -82,7 +82,7 @@ public class WorldBorderCommand extends AbstractCommand {
 
         // Check to make sure required arguments have been filled
 
-        if (!scriptEntry.hasObject("world") && !scriptEntry.hasObject("players") ) {
+        if (!scriptEntry.hasObject("world") && !scriptEntry.hasObject("players")) {
             throw new InvalidArgumentsException("Must specify a world or players!");
         }
 

@@ -28,34 +28,24 @@ public class MidiCommand extends AbstractCommand implements Holdable {
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
 
             if (!scriptEntry.hasObject("cancel")
-                    && (arg.matches("cancel") || arg.matches("stop")))
-
-            {
+                    && (arg.matches("cancel") || arg.matches("stop"))) {
                 scriptEntry.addObject("cancel", "");
             }
             else if (!scriptEntry.hasObject("location") &&
-                    arg.matchesArgumentType(dLocation.class))
-
-            {
+                    arg.matchesArgumentType(dLocation.class)) {
                 scriptEntry.addObject("location", arg.asType(dLocation.class));
             }
             else if (!scriptEntry.hasObject("entities") &&
-                    arg.matchesArgumentList(dEntity.class))
-
-            {
+                    arg.matchesArgumentList(dEntity.class)) {
                 scriptEntry.addObject("entities", arg.asType(dList.class).filter(dEntity.class, scriptEntry));
             }
             else if (!scriptEntry.hasObject("volume") &&
                     arg.matchesPrimitive(aH.PrimitiveType.Double) &&
-                    arg.matchesPrefix("volume", "vol", "v"))
-
-            {
+                    arg.matchesPrefix("volume", "vol", "v")) {
                 scriptEntry.addObject("volume", arg.asElement());
             }
             else if (!scriptEntry.hasObject("tempo") &&
-                    arg.matchesPrimitive(aH.PrimitiveType.Double))
-
-            {
+                    arg.matchesPrimitive(aH.PrimitiveType.Double)) {
                 scriptEntry.addObject("tempo", arg.asElement());
             }
             else if (!scriptEntry.hasObject("file")) {

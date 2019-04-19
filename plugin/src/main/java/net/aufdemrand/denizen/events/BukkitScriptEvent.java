@@ -31,10 +31,12 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         try {
             clazz.getDeclaredMethod("getHandlerList");
             return clazz;
-        } catch (NoSuchMethodException var3) {
+        }
+        catch (NoSuchMethodException var3) {
             if (clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Event.class) && Event.class.isAssignableFrom(clazz.getSuperclass())) {
                 return getRegistrationClass(clazz.getSuperclass().asSubclass(Event.class));
-            } else {
+            }
+            else {
                 throw new IllegalPluginAccessException("Unable to find handler list for event " + clazz.getName() + ". Static getHandlerList method required!");
             }
         }
@@ -44,8 +46,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
             method.setAccessible(true);
-            return (HandlerList)method.invoke(null);
-        } catch (Exception var3) {
+            return (HandlerList) method.invoke(null);
+        }
+        catch (Exception var3) {
             throw new IllegalPluginAccessException(var3.toString());
         }
     }

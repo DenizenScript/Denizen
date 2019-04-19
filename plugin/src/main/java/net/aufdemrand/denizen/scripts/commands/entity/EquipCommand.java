@@ -95,8 +95,7 @@ public class EquipCommand extends AbstractCommand {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void execute(ScriptEntry scriptEntry)
-            {
+    public void execute(ScriptEntry scriptEntry) {
 
         Map<String, dItem> equipment = (Map<String, dItem>) scriptEntry.getObject("equipment");
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");

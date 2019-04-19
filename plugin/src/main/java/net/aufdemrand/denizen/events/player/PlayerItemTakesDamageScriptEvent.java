@@ -24,7 +24,7 @@ import org.bukkit.event.player.PlayerItemDamageEvent;
 // player <item> takes damage
 //
 // @Regex ^on player [^\s]+ takes damage$
-    // @Switch in <area>
+// @Switch in <area>
 //
 // @Cancellable true
 //

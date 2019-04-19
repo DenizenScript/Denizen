@@ -74,7 +74,7 @@ public class PacketOutChat_v1_13_R2 implements PacketOutChat {
                 MESSAGE.set(internal, new ChatComponentText(message));
             }
             else {
-                internal.components = new BaseComponent[]{new TextComponent(message)};
+                internal.components = new BaseComponent[] {new TextComponent(message)};
             }
         }
         catch (Exception e) {

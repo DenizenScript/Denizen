@@ -733,7 +733,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             equipment = ((PlayerInventory) inventory).getArmorContents();
         }
         else if (inventory instanceof HorseInventory) {
-            equipment = new ItemStack[]{((HorseInventory) inventory).getSaddle(), ((HorseInventory) inventory).getArmor()};
+            equipment = new ItemStack[] {((HorseInventory) inventory).getSaddle(), ((HorseInventory) inventory).getArmor()};
         }
         if (equipment == null) {
             return null;

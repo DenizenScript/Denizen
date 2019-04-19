@@ -16,7 +16,7 @@ public abstract class BlockLight {
 
     protected static final Map<Location, BlockLight> lightsByLocation = new HashMap<Location, BlockLight>();
     protected static final Map<Chunk, List<BlockLight>> lightsByChunk = new HashMap<Chunk, List<BlockLight>>();
-    protected static final BlockFace[] adjacentFaces = new BlockFace[]{
+    protected static final BlockFace[] adjacentFaces = new BlockFace[] {
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };
 

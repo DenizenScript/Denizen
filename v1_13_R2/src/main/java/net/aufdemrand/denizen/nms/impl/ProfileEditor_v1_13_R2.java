@@ -62,7 +62,7 @@ public class ProfileEditor_v1_13_R2 extends ProfileEditor {
     }
 
     public static boolean handleMirrorProfiles(PacketPlayOutPlayerInfo packet, DenizenNetworkManager_v1_13_R2 manager,
-                                            GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
+                                               GenericFutureListener<? extends Future<? super Void>> genericfuturelistener) {
         if (ProfileEditor.mirrorUUIDs.isEmpty()) {
             return true;
         }

@@ -226,7 +226,7 @@ public class dMaterial implements dObject, Adjustable {
             this.data = (byte) data;
         }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
-            && material.isBlock()) {
+                && material.isBlock()) {
             modernData = new ModernBlockData(material);
         }
     }

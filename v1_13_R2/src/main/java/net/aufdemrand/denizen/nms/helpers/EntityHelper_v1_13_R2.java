@@ -72,8 +72,8 @@ public class EntityHelper_v1_13_R2 extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         ((CraftBlock) location.getBlock()).getNMS().interact(((CraftWorld) location.getWorld()).getHandle(), pos,
-                        craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND,
-                        null, 0f, 0f, 0f);
+                craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND,
+                null, 0f, 0f, 0f);
     }
 
     @Override

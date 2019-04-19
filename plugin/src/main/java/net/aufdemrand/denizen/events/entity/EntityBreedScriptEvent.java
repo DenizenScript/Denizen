@@ -121,7 +121,7 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
         breeder = new dEntity(event.getBreeder());
         father = new dEntity(event.getFather());
         mother = new dEntity(event.getMother());
-        item  = new dItem(event.getBredWith());
+        item = new dItem(event.getBredWith());
         experience = event.getExperience();
         boolean wasCancelled = event.isCancelled();
         this.event = event;

@@ -88,9 +88,7 @@ public class EntityCustomName implements Property {
                 return new Element(name).getAttribute(attribute.fulfill(1));
             }
         }
-        else
-
-        {
+        else {
             return null;
         }
     }

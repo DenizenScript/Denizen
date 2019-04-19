@@ -2372,7 +2372,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 }
             }
             else if (state instanceof Bed
-                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 // There's no pre-1.13 API for this *at all*, and the new API isn't very sane, but can be used.
                 boolean isTop = DirectionalBlocksHelper.isBedTopHalf(getBlock());
                 BlockFace direction = DirectionalBlocksHelper.getFace(getBlock());

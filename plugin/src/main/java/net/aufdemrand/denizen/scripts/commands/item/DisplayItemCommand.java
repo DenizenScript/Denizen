@@ -74,7 +74,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
     @EventHandler
     public void onItemMerge(ItemMergeEvent event) {
         if (protectedEntities.contains(event.getEntity().getUniqueId())
-            || protectedEntities.contains(event.getTarget().getUniqueId())) {
+                || protectedEntities.contains(event.getTarget().getUniqueId())) {
             event.setCancelled(true);
         }
     }

@@ -33,6 +33,6 @@ public class BukkitTagContext extends TagContext {
 
     @Override
     public String toString() {
-        return "Context{player=" + player + ",npc=" + npc +",instant=" + instant + ",entry=" + entry + ",debug=" + debug + ",script=" + script + "}";
+        return "Context{player=" + player + ",npc=" + npc + ",instant=" + instant + ",entry=" + entry + ",debug=" + debug + ",script=" + script + "}";
     }
 }

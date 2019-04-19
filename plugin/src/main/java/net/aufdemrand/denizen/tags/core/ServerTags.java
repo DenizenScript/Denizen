@@ -1281,9 +1281,11 @@ public class ServerTags {
 
             if (ban == null) {
                 event.setReplaced(new Element(false).getAttribute(attribute.fulfill(1)));
-            } else if (ban.getExpiration() == null) {
+            }
+            else if (ban.getExpiration() == null) {
                 event.setReplaced(new Element(true).getAttribute(attribute.fulfill(1)));
-            } else {
+            }
+            else {
                 event.setReplaced(new Element(ban.getExpiration().after(new Date())).getAttribute(attribute.fulfill(1)));
             }
 

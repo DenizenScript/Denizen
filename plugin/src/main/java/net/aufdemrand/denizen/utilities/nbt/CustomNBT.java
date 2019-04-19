@@ -379,7 +379,9 @@ public class CustomNBT {
     public static void setDisabledSlots(Entity entity, Map<EquipmentSlot, Set<Action>> map) {
         int sum = 0;
         for (Map.Entry<EquipmentSlot, Set<Action>> entry : map.entrySet()) {
-            if (!slotMap.containsKey(entry.getKey())) continue;
+            if (!slotMap.containsKey(entry.getKey())) {
+                continue;
+            }
             for (Action action : entry.getValue()) {
                 sum += 1 << (slotMap.get(entry.getKey()) + action.getId());
             }
@@ -414,7 +416,9 @@ public class CustomNBT {
                     set.add(action);
 
                     disabledSlots -= matchedSlot;
-                    if (disabledSlots == 0) break slotLoop;
+                    if (disabledSlots == 0) {
+                        break slotLoop;
+                    }
                 }
             }
         }

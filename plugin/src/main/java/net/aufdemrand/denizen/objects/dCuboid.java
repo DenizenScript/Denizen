@@ -1484,7 +1484,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     if (obj.isInsideCuboid(new Location(obj.getWorld(), maxChunk.getX() * 16 + 15, minY, maxChunk.getZ() * 16 + 15))) {
                         chunks.addObject(maxChunk);
                     }
-                    for (int x = minChunk.getX() + 1; x < maxChunk.getX() ; x++) {
+                    for (int x = minChunk.getX() + 1; x < maxChunk.getX(); x++) {
                         for (int z = minChunk.getZ() + 1; z < maxChunk.getZ(); z++) {
                             chunks.addObject(new dChunk(new dWorld(((dCuboid) object).getWorld()), x, z));
                         }

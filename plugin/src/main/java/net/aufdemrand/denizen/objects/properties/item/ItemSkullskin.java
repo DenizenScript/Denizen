@@ -41,7 +41,6 @@ public class ItemSkullskin implements Property {
     };
 
 
-
     private ItemSkullskin(dItem _item) {
         item = _item;
     }
