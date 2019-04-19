@@ -43,7 +43,7 @@ public class FormatScriptContainer extends ScriptContainer {
     //   # <&b> = cyan text
     //   # <npc.name> will become the NPC's name
     //   # <&7> = white text
-    //   # <&co> = a :colon: (You can't directly type one in a message, as it can cause errors)
+    //   # <&co> = a :colon: (In some cases you can't directly type one in a message, as it can cause errors)
     //   # <&2> = green text
     //   # <text> will become the message
     //
@@ -64,6 +64,32 @@ public class FormatScriptContainer extends ScriptContainer {
     //
     // # ALSO, you can at any time reformat a tag using the tag '<el@element.format[<script>]>'
     // # EG, <npc.name.format[FormatExample]>
+    //
+    // -->
+
+    // <--[language]
+    // @name Format Script Containers
+    // @group Script Container System
+    // @description
+    // Format script containers are generic script containers for text formats used by other commands.
+    //
+    // Generally format scripts are used in the narrate/chat/announce commands, and the 'element.format' tag,
+    // but may be used in any number of other places.
+    //
+    // The only required key on a format script container is the 'format:' key.
+    //
+    // In the 'format' block you can use any tags freely, and as well you can use '<text>' to represent the input text,
+    // and optionally '<name>' to represent the input name (primarily for chat script events,
+    // most other cases should use the relevant name tags).
+    //
+    // <code>
+    // Format_Script_Name:
+    //
+    //   type: format
+    //
+    //   format: <name> says some format with <text> input
+    //
+    // </code>
     //
     // -->
 

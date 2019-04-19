@@ -35,7 +35,7 @@ public class EntityScriptContainer extends ScriptContainer {
     // # The name of the entity script is the same name that you can use to construct a new
     // # dEntity based on this entity script. For example, an entity script named 'space zombie'
     // # can be referred to as 'e@space zombie'.
-    // Entity Script Name:
+    // Entity_Script_Name:
     //
     //   type: entity
     //

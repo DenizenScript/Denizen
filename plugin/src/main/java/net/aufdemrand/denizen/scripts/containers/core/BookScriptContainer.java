@@ -26,7 +26,7 @@ public class BookScriptContainer extends ScriptContainer {
     // Example: - give <player> i@my_book
     //
     // <code>
-    // Book Script Name:
+    // Book_Script_Name:
     //
     //   type: book
     //

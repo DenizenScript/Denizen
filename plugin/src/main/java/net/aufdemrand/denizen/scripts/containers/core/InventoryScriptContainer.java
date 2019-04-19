@@ -37,9 +37,11 @@ public class InventoryScriptContainer extends ScriptContainer {
     //
     // Example: - inventory open d:in@MyInventoryScript
     //
-    // The following is the format for the container. They all are optional, but you have to have at least one
-    // of them.
+    // The following is the format for the container.
     //
+    // The 'inventory:' key is required, other keys vary based on the type.
+    // Some types will require you define either 'size:' or 'slots:' (or both).
+    // 'Procedural items:' and 'definitions:' are optional, and should only be defined if needed.
     //
     // <code>
     // # The name of the script is the same name that you can use to construct a new

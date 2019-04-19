@@ -37,12 +37,19 @@ public class CommandScriptContainer extends ScriptContainer {
     // If you want to run a script at the same time as an existing command, see <@link example on command event tutorial>.
     //
     // The following is the format for the container.
-    // Note that everything is optional except for "name" and "script".
     //
+    // The required keys are 'name:', 'description:', 'usage:', and 'script:'
+    // All other keys can be excluded if unneeded.
+    // If you are not intentionally setting a specific value for the other keys, it is
+    // strongly recommended that you simply not include them at all.
+    //
+    // Please note that 'name:' is the true name of the command (written by users),
+    // and 'usage:' is for documentation in the '/help' command.
+    // These two options should almost always show the same name.
     //
     // <code>
     // # The name of the script doesn't matter, and will not affect the command in any way.
-    // Command Script Name:
+    // Command_Script_Name:
     //
     //   type: command
     //
@@ -103,10 +110,9 @@ public class CommandScriptContainer extends ScriptContainer {
     //   # <context.command_block_location> returns the command block's location (if the command was run from one).
     //   # <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
     //   script:
-    //   - if !<player.is_op||<context.server>> {
+    //   - if !<player.is_op||<context.server>>:
     //     - narrate "<red>You do not have permission for that command."
     //     - queue clear
-    //     }
     //   - narrate "Yay!"
     //   - narrate "My command worked!"
     //   - narrate "And I typed '<context.raw_args>'!"

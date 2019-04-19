@@ -15,6 +15,44 @@ import java.util.*;
 
 public class InteractScriptContainer extends ScriptContainer {
 
+    // <--[language]
+    // @name Interact Script Containers
+    // @group Script Container System
+    // @description
+    // Interact script containers are used to handle NPC triggers.
+    //
+    // Interact scripts must be referenced from an assignment script container to be of any use.
+    //
+    // The only required key on a task script container is the 'steps:' key.
+    //
+    // Within the steps key is a list of steps,
+    // where the first step is '1', 'default', or any step that contains a '*' symbol.
+    // After that, any steps must be 'zapped' to via the zap command: <@link command zap>.
+    //
+    // Each step contains a list of trigger types that it handles, and the relevant handling that the given
+    // trigger makes available.
+    //
+    // <code>
+    // Interact_Script_Name:
+    //
+    //   type: interact
+    //
+    //   steps:
+    //
+    //     # The first step
+    //     1:
+    //       # Any trigger type here
+    //       click trigger:
+    //         script:
+    //         # Handle what happens when the NPC is clicked during step 1
+    //         - some commands
+    //       # Other triggers here
+    //     # other steps here
+    //
+    // </code>
+    //
+    // -->
+
     public InteractScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {
         super(configurationSection, scriptContainerName);
 
