@@ -1,9 +1,12 @@
 # Denizen config.
 
-# Whether debug information about Denizen should appear in the server console
 Debug:
+  # Whether debug information about Denizen should appear in the server console
   Show: true
+  # Whether the '/ex' command should tell you to check debug when you use it.
   Ex command help: true
+  # Whether the '/ex' command should show debug by default. (if set to false, this inverts the '-q' option)
+  Ex command debug: true
   # The max length of a line of debug output. Shorten this if your console is hard to read.
   Line length: 128
   # The max length of debug output. After this length, all further output will be cut off.

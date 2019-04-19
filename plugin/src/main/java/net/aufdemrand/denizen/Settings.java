@@ -54,6 +54,11 @@ public class Settings {
                 .getBoolean("Debug.Ex command help", true);
     }
 
+    public static boolean showExDebug() {
+        return DenizenAPI.getCurrentInstance().getConfig()
+                .getBoolean("Debug.Ex command debug", true);
+    }
+
     public static boolean allowConsoleRedirection() {
         return DenizenAPI.getCurrentInstance().getConfig()
                 .getBoolean("Debug.Allow console redirection", false);

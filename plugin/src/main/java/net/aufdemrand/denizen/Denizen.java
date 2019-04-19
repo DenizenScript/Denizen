@@ -1260,6 +1260,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 quiet = true;
                 entry = entry.substring("-q ".length());
             }
+            if (!Settings.showExDebug()) {
+                quiet = !quiet;
+            }
 
             if (entry.length() < 2) {
                 sender.sendMessage("/ex (-q) <dCommand> (arguments)");
