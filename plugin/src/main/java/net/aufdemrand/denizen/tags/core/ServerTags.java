@@ -555,6 +555,8 @@ public class ServerTags {
         // @returns Element(Number)
         // @description
         // How much RAM is allocated to the server, in bytes (total memory).
+        // This is how much of the system memory is reserved by the Java process, NOT how much is actually in use
+        // by the minecraft server.
         // -->
         if (attribute.startsWith("ram_allocated")) {
             event.setReplaced(new Element(Runtime.getRuntime().totalMemory())
@@ -565,7 +567,7 @@ public class ServerTags {
         // @attribute <server.ram_max>
         // @returns Element(Number)
         // @description
-        // How much RAM is available to the server, in bytes (max memory).
+        // How much RAM is available to the server (total), in bytes (max memory).
         // -->
         if (attribute.startsWith("ram_max")) {
             event.setReplaced(new Element(Runtime.getRuntime().maxMemory())
@@ -580,6 +582,18 @@ public class ServerTags {
         // -->
         if (attribute.startsWith("ram_free")) {
             event.setReplaced(new Element(Runtime.getRuntime().freeMemory())
+                    .getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
+        // @attribute <server.ram_usage>
+        // @returns Element(Number)
+        // @description
+        // How much RAM is used by the server, in bytes (free memory).
+        // Equivalent to ram_max minus ram_free
+        // -->
+        if (attribute.startsWith("ram_usage")) {
+            event.setReplaced(new Element(Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory())
                     .getAttribute(attribute.fulfill(1)));
         }
 
