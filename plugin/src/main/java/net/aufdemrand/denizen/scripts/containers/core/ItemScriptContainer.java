@@ -6,12 +6,15 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.nbt.LeatherColorer;
+import net.aufdemrand.denizencore.objects.Element;
+import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dScript;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.YamlConfiguration;
 import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
+import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -43,6 +46,11 @@ public class ItemScriptContainer extends ScriptContainer {
     //
     //   # Must be a valid dItem (EG i@red_wool or i@potion,8226) See 'dItem' for more information.
     //   material: i@base_material
+    //
+    //   # List any mechanisms you want to apply to the item within
+    //   mechanisms:
+    //     # An example of a mechanism to apply
+    //     unbreakable: true
     //
     //   # The 'custom name' can be anything you wish. Use color tags to make colored custom names.
     //   display name: custom name
@@ -160,9 +168,10 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("DEBUG")) {
                 debug = Boolean.valueOf(getString("DEBUG"));
             }
+            BukkitTagContext context = new BukkitTagContext(player, npc, false, null, debug, new dScript(this));
             // Check validity of material
             if (contains("MATERIAL")) {
-                String material = TagManager.tag(getString("MATERIAL"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
+                String material = TagManager.tag(getString("MATERIAL"), context);
                 if (material.startsWith("m@")) {
                     material = material.substring(2);
                 }
@@ -174,26 +183,35 @@ public class ItemScriptContainer extends ScriptContainer {
                 return null;
             }
 
+            // Handle listed mechanisms
+            if (contains("MECHANISMS")) {
+                YamlConfiguration mechs = getConfigurationSection("MECHANISMS");
+                for (StringHolder key : mechs.getKeys(false)) {
+                    String val = TagManager.tag(mechs.getString(key.str), context);
+                    stack.safeAdjust(new Mechanism(new Element(key.low), new Element(val), context));
+                }
+            }
+
             ItemMeta meta = stack.getItemStack().getItemMeta();
-            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
+            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
             // Set Display Name
             if (contains("DISPLAY NAME")) {
-                String displayName = TagManager.tag(getString("DISPLAY NAME"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
+                String displayName = TagManager.tag(getString("DISPLAY NAME"), context);
                 meta.setDisplayName(displayName);
             }
 
             // Set if the object is bound to the player
             if (contains("BOUND")) {
                 boundWarning.warn();
-                bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this))));
+                bound = Boolean.valueOf(TagManager.tag(getString("BOUND"), context));
             }
 
             // Set Lore
             if (contains("LORE")) {
 
                 for (String l : getStringList("LORE")) {
-                    l = TagManager.tag(l, new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
+                    l = TagManager.tag(l, context);
                     lore.add(l);
                 }
             }
@@ -211,7 +229,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("ENCHANTMENTS")) {
                 for (String enchantment : getStringList("ENCHANTMENTS")) {
 
-                    enchantment = TagManager.tag(enchantment, new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
+                    enchantment = TagManager.tag(enchantment, context);
                     try {
                         // Build enchantment context
                         int level = 1;
@@ -233,7 +251,7 @@ public class ItemScriptContainer extends ScriptContainer {
 
             // Set Color
             if (contains("COLOR")) {
-                String color = TagManager.tag(getString("COLOR"), new BukkitTagContext(player, npc, false, null, debug, new dScript(this)));
+                String color = TagManager.tag(getString("COLOR"), context);
                 LeatherColorer.colorArmor(stack, color);
             }
 
@@ -241,8 +259,7 @@ public class ItemScriptContainer extends ScriptContainer {
             if (contains("BOOK")) {
                 BookScriptContainer book = ScriptRegistry
                         .getScriptContainer(TagManager.tag(getString("BOOK"),
-                                new BukkitTagContext(player, npc, false, null, debug,
-                                        new dScript(this))).replace("s@", ""));
+                                context).replace("s@", ""));
 
                 stack = book.writeBookTo(stack, player, npc);
             }
