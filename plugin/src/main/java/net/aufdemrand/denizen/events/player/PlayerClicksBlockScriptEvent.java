@@ -226,7 +226,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         cancelled = event.isCancelled() && event.useItemInHand() == Event.Result.DENY; // Spigot is dumb!
         this.event = event;
         wasCancellationAltered = false;
-        fire();
+        fire(event);
         if (wasCancellationAltered) { // Workaround for Spigot=Dumb!
             event.setCancelled(cancelled);
         }

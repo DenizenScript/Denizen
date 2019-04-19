@@ -131,7 +131,7 @@ public class PlayerPreparesAnvilCraftScriptEvent extends BukkitScriptEvent imple
         this.player = dEntity.getPlayerFrom(humanEntity);
         this.resultChanged = false;
         this.cancelled = false;
-        fire();
+        fire(event);
         inventory.setRepairCost(repairCost.asInt());
         if (resultChanged) {
             event.setResult(result.getItemStack());

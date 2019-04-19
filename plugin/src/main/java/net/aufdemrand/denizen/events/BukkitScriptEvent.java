@@ -90,12 +90,19 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
     // The default priority is "normal".
     // -->
 
-    public void fire(Cancellable cancellable) {
-        cancelled = cancellable.isCancelled();
-        boolean wasCancelled = cancelled;
-        fire();
-        if (cancelled != wasCancelled) {
-            cancellable.setCancelled(cancelled);
+    public void fire(Event event) {
+        if (event instanceof Cancellable) {
+            Cancellable cancellable = (Cancellable) event;
+            cancelled = cancellable.isCancelled();
+            boolean wasCancelled = cancelled;
+            fire();
+            if (cancelled != wasCancelled) {
+                cancellable.setCancelled(cancelled);
+            }
+        }
+        else {
+            cancelled = false;
+            fire();
         }
     }
 

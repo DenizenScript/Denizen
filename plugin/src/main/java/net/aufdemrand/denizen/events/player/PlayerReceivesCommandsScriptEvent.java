@@ -89,6 +89,6 @@ public class PlayerReceivesCommandsScriptEvent extends BukkitScriptEvent impleme
         }
         commands = event.getCommands();
         this.event = event;
-        fire();
+        fire(event);
     }
 }

@@ -99,6 +99,6 @@ public class PlayerClosesInvScriptEvent extends BukkitScriptEvent implements Lis
         inventory = dInventory.mirrorBukkitInventory(event.getInventory());
         entity = new dEntity(event.getPlayer());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

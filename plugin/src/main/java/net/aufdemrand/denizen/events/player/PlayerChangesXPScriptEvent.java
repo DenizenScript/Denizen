@@ -96,7 +96,7 @@ public class PlayerChangesXPScriptEvent extends BukkitScriptEvent implements Lis
         player = dPlayer.mirrorBukkitPlayer(event.getPlayer());
         this.event = event;
         cancelled = false;
-        fire();
+        fire(event);
         if (cancelled) {
             amount = 0;
         }

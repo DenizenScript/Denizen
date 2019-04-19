@@ -80,6 +80,6 @@ public class ChunkLoadScriptEvent extends BukkitScriptEvent implements Listener 
         chunk = new dChunk(event.getChunk());
         world = new dWorld(event.getWorld());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

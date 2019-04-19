@@ -93,7 +93,7 @@ public class PlayerRespawnsScriptEvent extends BukkitScriptEvent implements List
         }
         location = new dLocation(event.getRespawnLocation());
         this.event = event;
-        fire();
+        fire(event);
         event.setRespawnLocation(location);
     }
 }

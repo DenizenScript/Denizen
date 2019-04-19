@@ -70,6 +70,6 @@ public class WorldLoadsScriptEvent extends BukkitScriptEvent implements Listener
     public void onWorldLoads(WorldLoadEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

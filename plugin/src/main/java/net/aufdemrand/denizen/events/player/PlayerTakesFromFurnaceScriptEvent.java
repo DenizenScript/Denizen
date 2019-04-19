@@ -96,7 +96,7 @@ public class PlayerTakesFromFurnaceScriptEvent extends BukkitScriptEvent impleme
         location = new dLocation(event.getBlock().getLocation());
         xp = event.getExpToDrop();
         this.event = event;
-        fire();
+        fire(event);
         event.setExpToDrop(xp);
     }
 

@@ -91,7 +91,7 @@ public class PlayerLoginScriptEvent extends BukkitScriptEvent implements Listene
         }
         kicked = false;
         this.event = event;
-        fire();
+        fire(event);
         if (kicked) {
             event.disallow(PlayerLoginEvent.Result.KICK_OTHER, message);
         }

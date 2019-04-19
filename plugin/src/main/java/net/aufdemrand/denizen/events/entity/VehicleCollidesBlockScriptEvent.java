@@ -94,6 +94,6 @@ public class VehicleCollidesBlockScriptEvent extends BukkitScriptEvent implement
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

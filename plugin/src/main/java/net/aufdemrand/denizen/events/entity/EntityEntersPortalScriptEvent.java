@@ -95,6 +95,6 @@ public class EntityEntersPortalScriptEvent extends BukkitScriptEvent implements 
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getLocation());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

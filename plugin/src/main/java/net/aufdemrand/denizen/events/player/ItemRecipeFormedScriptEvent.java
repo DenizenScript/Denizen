@@ -133,7 +133,7 @@ public class ItemRecipeFormedScriptEvent extends BukkitScriptEvent implements Li
         player = dEntity.getPlayerFrom(humanEntity);
         resultChanged = false;
         cancelled = false;
-        fire();
+        fire(event);
         if (cancelled) { // Hacked-in cancellation helper
             inventory.setResult(null);
         }

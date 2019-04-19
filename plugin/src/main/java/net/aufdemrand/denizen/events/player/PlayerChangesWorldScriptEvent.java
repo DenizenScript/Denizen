@@ -98,6 +98,6 @@ public class PlayerChangesWorldScriptEvent extends BukkitScriptEvent implements 
         origin_world = new dWorld(event.getFrom());
         destination_world = new dWorld(event.getPlayer().getWorld());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

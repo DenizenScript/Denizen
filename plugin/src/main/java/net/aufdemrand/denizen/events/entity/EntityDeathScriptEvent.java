@@ -263,7 +263,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         dropItems = null;
         xp = event.getDroppedExp();
         this.event = event;
-        fire();
+        fire(event);
 
         event.setDroppedExp(xp);
         if (dropItems != null) {

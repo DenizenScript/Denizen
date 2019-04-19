@@ -77,6 +77,6 @@ public class PlayerCompletesAdvancementScriptEvent extends BukkitScriptEvent imp
         criteria = new dList();
         criteria.addAll(event.getAdvancement().getCriteria());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

@@ -104,6 +104,6 @@ public class PlayerLevelsUpScriptEvent extends BukkitScriptEvent implements List
         old_level = event.getOldLevel();
         new_level = event.getNewLevel();
         this.event = event;
-        fire();
+        fire(event);
     }
 }

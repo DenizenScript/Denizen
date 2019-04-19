@@ -148,6 +148,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         reason = new Element(reasonString);
         armor = new dItem(newItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
+        cancelled = false;
         fire();
     }
 
@@ -157,6 +158,7 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         reason = new Element(reasonString);
         armor = new dItem(oldItem);
         player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
+        cancelled = false;
         fire();
     }
 

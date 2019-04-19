@@ -69,6 +69,6 @@ public class WorldInitsScriptEvent extends BukkitScriptEvent implements Listener
     public void onWorldInits(WorldInitEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

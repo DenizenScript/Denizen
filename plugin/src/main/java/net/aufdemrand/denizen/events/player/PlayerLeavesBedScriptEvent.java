@@ -79,6 +79,6 @@ public class PlayerLeavesBedScriptEvent extends BukkitScriptEvent implements Lis
         }
         location = new dLocation(event.getBed().getLocation());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

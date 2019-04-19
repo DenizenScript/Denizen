@@ -79,6 +79,6 @@ public class PlayerRiptideScriptEvent extends BukkitScriptEvent implements Liste
         }
         this.item = new dItem(event.getItem());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

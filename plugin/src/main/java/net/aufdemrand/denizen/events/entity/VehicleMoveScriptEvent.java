@@ -93,6 +93,6 @@ public class VehicleMoveScriptEvent extends BukkitScriptEvent implements Listene
         from = new dLocation(event.getFrom());
         vehicle = new dEntity(event.getVehicle());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

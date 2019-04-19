@@ -88,7 +88,7 @@ public class PlayerJumpScriptEvent extends BukkitScriptEvent implements Listener
             // Not perfect checking, but close enough until Bukkit adds a proper event
             location = new dLocation(event.getFrom());
             this.event = event;
-            fire();
+            fire(event);
         }
     }
 }

@@ -111,7 +111,7 @@ public class PlayerThrowsEggScriptEvent extends BukkitScriptEvent implements Lis
         type = event.getHatchingType();
         this.event = event;
         cancelled = false;
-        fire();
+        fire(event);
         if (cancelled) {
             is_hatching = false;
         }

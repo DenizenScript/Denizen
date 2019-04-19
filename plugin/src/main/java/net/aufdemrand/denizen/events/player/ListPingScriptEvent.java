@@ -107,7 +107,7 @@ public class ListPingScriptEvent extends BukkitScriptEvent implements Listener {
         num_players = new Element(event.getNumPlayers());
         address = new Element(event.getAddress().toString());
         this.event = event;
-        fire();
+        fire(event);
         event.setMaxPlayers(max_players.asInt());
         event.setMotd(motd.asString());
     }

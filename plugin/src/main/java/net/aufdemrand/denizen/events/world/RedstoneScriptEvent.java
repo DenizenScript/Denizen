@@ -90,7 +90,7 @@ public class RedstoneScriptEvent extends BukkitScriptEvent implements Listener {
         old_current = new Element(event.getOldCurrent());
         new_current = new Element(event.getNewCurrent());
         this.event = event;
-        fire();
+        fire(event);
         event.setNewCurrent(new_current.asInt());
     }
 }

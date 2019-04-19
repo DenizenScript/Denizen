@@ -129,7 +129,7 @@ public class PlayerCraftsItemScriptEvent extends BukkitScriptEvent implements Li
         this.player = dEntity.getPlayerFrom(humanEntity);
         this.resultChanged = false;
         this.cancelled = false;
-        fire();
+        fire(event);
         if (cancelled) { // This event has a weird cancellation handler
             event.setCancelled(true);
         }

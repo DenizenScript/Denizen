@@ -77,6 +77,6 @@ public class SpawnChangeScriptEvent extends BukkitScriptEvent implements Listene
         old_location = new dLocation(event.getPreviousLocation());
         new_location = new dLocation(event.getWorld().getSpawnLocation());
         this.event = event;
-        fire();
+        fire(event);
     }
 }

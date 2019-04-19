@@ -88,7 +88,7 @@ public class PlayerJoinsScriptEvent extends BukkitScriptEvent implements Listene
         }
         message = event.getJoinMessage();
         this.event = event;
-        fire();
+        fire(event);
         event.setJoinMessage(message);
     }
 }

@@ -104,7 +104,7 @@ public class BlockBuiltScriptEvent extends BukkitScriptEvent implements Listener
         new_material = new dMaterial(event.getMaterial()); // Deprecated because it doesn't have proper data
         cancelled = !event.isBuildable();
         this.event = event;
-        fire();
+        fire(event);
         event.setBuildable(!cancelled);
     }
 }

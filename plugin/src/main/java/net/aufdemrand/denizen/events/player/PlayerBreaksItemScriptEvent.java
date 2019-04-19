@@ -89,7 +89,7 @@ public class PlayerBreaksItemScriptEvent extends BukkitScriptEvent implements Li
         item = new dItem(event.getBrokenItem());
         this.event = event;
         cancelled = false;
-        fire();
+        fire(event);
         if (cancelled) { // Hacked-in cancellation helper
             final Player player = event.getPlayer();
             final ItemStack itemstack = event.getBrokenItem();

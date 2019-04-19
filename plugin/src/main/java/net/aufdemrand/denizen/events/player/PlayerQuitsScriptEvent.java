@@ -88,7 +88,7 @@ public class PlayerQuitsScriptEvent extends BukkitScriptEvent implements Listene
         }
         message = event.getQuitMessage();
         this.event = event;
-        fire();
+        fire(event);
         event.setQuitMessage(message);
 
     }

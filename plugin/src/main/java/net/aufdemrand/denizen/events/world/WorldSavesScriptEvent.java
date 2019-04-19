@@ -71,6 +71,6 @@ public class WorldSavesScriptEvent extends BukkitScriptEvent implements Listener
     public void onWorldSaves(WorldSaveEvent event) {
         world = new dWorld(event.getWorld());
         this.event = event;
-        fire();
+        fire(event);
     }
 }
