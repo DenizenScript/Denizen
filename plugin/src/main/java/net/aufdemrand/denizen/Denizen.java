@@ -98,6 +98,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -1434,7 +1435,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
+        Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
+        entry.getResidingQueue().debugOutput = null;
         dB.echoDebug(entry, ChatColor.DARK_GRAY + "Queue '" + queue + "' Executing: " + execute);
+        entry.getResidingQueue().debugOutput = altDebug;
     }
 
     @Override
