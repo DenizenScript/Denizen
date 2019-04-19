@@ -1234,6 +1234,10 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // is also supplied, such as '<player>' if being run by a player (versus the console), as well as
         // '<npc>' if a NPC is selected by using the '/npc sel' command.
         //
+        // By default, ex command debug output is sent to the player that ran the ex command (if the command was ran by a player).
+        // To avoid this, use '-q' at the start of the ex command.
+        // Like: /ex -q narrate "wow no output"
+        //
         // Examples:
         // /ex flag <player> test_flag:!
         // /ex run 's@npc walk script' as:<npc>
@@ -1250,15 +1254,20 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         if (cmdName.equalsIgnoreCase("ex")) {
             List<Object> entries = new ArrayList<>();
             String entry = String.join(" ", args);
+            boolean quiet = false;
+            if (entry.length() > 3 && entry.startsWith("-q ")) {
+                quiet = true;
+                entry = entry.substring("-q ".length());
+            }
 
             if (entry.length() < 2) {
-                sender.sendMessage("/ex <dCommand> (arguments)");
+                sender.sendMessage("/ex (-q) <dCommand> (arguments)");
                 return true;
             }
 
             if (Settings.showExHelp()) {
                 if (dB.showDebug) {
-                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for debug output!");
+                    sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... check the console for full debug output!");
                 }
                 else {
                     sender.sendMessage(ChatColor.YELLOW + "Executing dCommand... to see debug, use /denizen debug");
@@ -1275,6 +1284,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                     new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, npc));
 
             queue.addEntries(scriptEntries);
+            if (!quiet && sender instanceof Player) {
+                queue.debugOutput = sender::sendMessage;
+            }
             queue.start();
             return true;
         }

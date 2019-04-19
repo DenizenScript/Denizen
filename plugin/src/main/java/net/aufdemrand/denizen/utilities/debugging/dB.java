@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Preferred method of outputting debugger information with Denizen and
@@ -102,6 +103,27 @@ public class dB {
     // </code>
     //
     // -->
+
+    public static Consumer<String> getDebugSender(Debuggable caller) {
+        if (caller == null) {
+            caller = CommandExecuter.currentQueue;
+        }
+        if (caller instanceof TagContext) {
+            if (((TagContext) caller).entry != null) {
+                caller = ((TagContext) caller).entry;
+            }
+        }
+        if (caller instanceof ScriptEntry) {
+            if (((ScriptEntry) caller).getResidingQueue() != null) {
+                caller = ((ScriptEntry) caller).getResidingQueue();
+            }
+        }
+        if (caller instanceof ScriptQueue) {
+            return ((ScriptQueue) caller).debugOutput;
+        }
+        // ScriptContainer can't be traced to a queue
+        return null;
+    }
 
     /**
      * Used by Commands to report how the supplied arguments were parsed.
@@ -195,8 +217,8 @@ public class dB {
         if (!showDebug) {
             return;
         }
-        ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
-                + ChatColor.WHITE + message);
+        finalOutputDebugText(ChatColor.LIGHT_PURPLE + " " + ChatColor.GREEN + "OKAY! "
+                + ChatColor.WHITE + message, null);
     }
 
 
@@ -265,7 +287,7 @@ public class dB {
         if (script != null && !script.getContainer().shouldDebug()) {
             fullMessage += ChatColor.GRAY + " ... " + ChatColor.RED + "Enable debug on the script for more information.";
         }
-        ConsoleSender.sendMessage(fullMessage);
+        finalOutputDebugText(fullMessage, source);
         if (net.aufdemrand.denizencore.utilities.debugging.dB.verbose && depthCorrectError == 0) {
             depthCorrectError++;
             try {
@@ -353,10 +375,10 @@ public class dB {
             if (source != null && source.getEntries().size() > 0 && source.getEntries().get(0).getScript() != null) {
                 script = source.getEntries().get(0).getScript();
             }
-            ConsoleSender.sendMessage(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
+            finalOutputDebugText(ChatColor.LIGHT_PURPLE + " " + ChatColor.RED + "ERROR" +
                     (script != null ? " in script '" + script.getName() + "'" : "")
                     + (source != null ? " in queue '" + source.id + "'" : "") + "! "
-                    + ChatColor.WHITE + errorMesage.toString(), false);
+                    + ChatColor.WHITE + errorMesage.toString(), source, false);
         }
         throwErrorEvent = wasThrown;
     }
@@ -392,9 +414,9 @@ public class dB {
         catch (Throwable ex) {
             canGetClass = false;
         }
-        ConsoleSender.sendMessage(ChatColor.YELLOW + "+> ["
+        finalOutputDebugText(ChatColor.YELLOW + "+> ["
                 + callerName + "] "
-                + ChatColor.WHITE + trimMessage(message));
+                + ChatColor.WHITE + trimMessage(message), null);
     }
 
 
@@ -417,7 +439,7 @@ public class dB {
                 break;
         }
 
-        ConsoleSender.sendMessage(sb.toString());
+        finalOutputDebugText(sb.toString(), null);
     }
 
     ///////////////
@@ -518,11 +540,31 @@ public class dB {
                 else {
                     callerId = caller.toString();
                 }
-                ConsoleSender.sendMessage(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string);
+                finalOutputDebugText(ChatColor.DARK_GRAY + "[Src:" + ChatColor.GRAY + callerId + ChatColor.DARK_GRAY + "]" + ChatColor.WHITE + string, caller);
             }
             else {
-                ConsoleSender.sendMessage(string);
+                finalOutputDebugText(string, caller);
             }
+        }
+    }
+
+    static void finalOutputDebugText(String message, Debuggable caller) {
+        finalOutputDebugText(message, caller, true);
+    }
+
+    static void finalOutputDebugText(String message, Debuggable caller, boolean reformat) {
+        // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
+        // than having a bunch of ChatColor.XXXX
+        message = TagManager.cleanOutputFully(message
+                .replace("<Y>", ChatColor.YELLOW.toString())
+                .replace("<G>", ChatColor.DARK_GRAY.toString())
+                .replace("<A>", ChatColor.AQUA.toString())
+                .replace("<R>", ChatColor.DARK_RED.toString())
+                .replace("<W>", ChatColor.WHITE.toString()));
+        ConsoleSender.sendMessage(message, reformat);
+        Consumer<String> additional = getDebugSender(caller);
+        if (additional != null) {
+            additional.accept(message);
         }
     }
 
@@ -540,23 +582,10 @@ public class dB {
         public static SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         static boolean skipFooter = false;
 
-        // Use this method for sending a message
-        public static void sendMessage(String string) {
-            sendMessage(string, true);
-        }
         public static void sendMessage(String string, boolean reformat) {
             if (commandSender == null) {
                 commandSender = Bukkit.getServer().getConsoleSender();
             }
-
-            // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
-            // than having a bunch of ChatColor.XXXX
-            string = TagManager.cleanOutputFully(string
-                    .replace("<Y>", ChatColor.YELLOW.toString())
-                    .replace("<G>", ChatColor.DARK_GRAY.toString())
-                    .replace("<A>", ChatColor.AQUA.toString())
-                    .replace("<R>", ChatColor.DARK_RED.toString())
-                    .replace("<W>", ChatColor.WHITE.toString()));
 
             // 'Hack-fix' for disallowing multiple 'footers' to print in a row
             if (string.equals(ChatColor.LIGHT_PURPLE + "+---------------------+")) {
