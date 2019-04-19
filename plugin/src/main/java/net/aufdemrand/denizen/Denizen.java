@@ -361,6 +361,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.echoError(ex);
         }
 
+
         try {
             versionTag = this.getDescription().getVersion();
 
@@ -376,6 +377,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 //return;
             }
             startedSuccessful = true;
+        }
+        catch (Exception e) {
+            dB.echoError(e);
+        }
+
+        try {
+            // Populate config.yml if it doesn't yet exist.
+            saveDefaultConfig();
+            reloadConfig();
 
             // Startup procedure
             dB.log(ChatColor.LIGHT_PURPLE + "+-------------------------+");
@@ -448,10 +458,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             // Register script-container types
             ScriptRegistry._registerCoreTypes();
-
-            // Populate config.yml if it doesn't yet exist.
-            saveDefaultConfig();
-            reloadConfig();
         }
         catch (Exception e) {
             dB.echoError(e);

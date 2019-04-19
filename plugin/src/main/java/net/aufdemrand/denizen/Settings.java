@@ -17,7 +17,6 @@ public class Settings {
         cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
         cache_consoleWidth = config.getInt("Debug.Line length", 128);
         cache_trimLength = config.getInt("Debug.Trim length limit", 1024);
-        cache_showDebug = config.getBoolean("Debug.Ex command debug", true);
         cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
         cache_canRecordStats = config.getBoolean("Debug.Stats", true);
         cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
@@ -60,7 +59,7 @@ public class Settings {
         cache_packetInterception = config.getBoolean("Packets.Interception", true);
     }
 
-    private static boolean cache_showDebug, cache_overrideHelp, cache_useDefaultScriptPath,
+    private static boolean cache_showDebug = true, cache_overrideHelp, cache_useDefaultScriptPath,
             cache_showExHelp, cache_showExDebug, cache_allowConsoleRedirection, cache_canRecordStats,
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
             cache_healthTraitRespawnEnabled, cache_allowWebget, cache_allowFilecopy, cache_allowDelete,
@@ -75,7 +74,7 @@ public class Settings {
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
             cache_chatToNpcFormat, cache_chatToNpcOverheardFormat;
 
-    private static int cache_consoleWidth, cache_trimLength, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
+    private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout;
 
     private static long cache_warningRate;
