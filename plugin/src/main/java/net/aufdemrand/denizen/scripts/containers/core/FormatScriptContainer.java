@@ -82,13 +82,14 @@ public class FormatScriptContainer extends ScriptContainer {
     }
 
     public String getFormattedText(String textToReplace, dNPC npc, dPlayer player) {
-        String text = getFormat().replace("<text", "<el@val[" + EscapeTags.escape(textToReplace) + "].unescaped");
+        String text = getFormat().replace("<text", "<el@val[" + EscapeTags.escape(textToReplace) + "].unescaped")
+                .replace("<name", "<el@val[" + EscapeTags.escape(npc != null ? npc.getName() : (player != null ? player.getName() : "")) + "].unescaped");
         return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)));
     }
 
     public String getFormatText(dNPC npc, dPlayer player) {
-        String text = getFormat().replace("<text>", String.valueOf((char) 0x00));
+        String text = getFormat().replace("<text>", String.valueOf((char) 0x00)).replace("<name>", String.valueOf((char) 0x04));
         return TagManager.tag(text, new BukkitTagContext(player, npc, false, null, shouldDebug(), new dScript(this)))
-                .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s");
+                .replace("%", "%%").replace(String.valueOf((char) 0x00), "%2$s").replace(String.valueOf((char) 0x04), "%1$s");
     }
 }
