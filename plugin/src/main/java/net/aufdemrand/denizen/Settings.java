@@ -3,8 +3,86 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class Settings {
+
+    public static void refillCache() {
+        FileConfiguration config = DenizenAPI.getCurrentInstance().getConfig();
+        cache_showDebug = config.getBoolean("Debug.Show", true);
+        cache_overrideHelp = config.getBoolean("Debug.Override help", true);
+        cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
+        cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
+        cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
+        cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
+        cache_consoleWidth = config.getInt("Debug.Line length", 128);
+        cache_trimLength = config.getInt("Debug.Trim length limit", 1024);
+        cache_showDebug = config.getBoolean("Debug.Ex command debug", true);
+        cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
+        cache_canRecordStats = config.getBoolean("Debug.Stats", true);
+        cache_defaultDebugMode = config.getBoolean("Debug.Container default", true);
+        cache_scriptQueueSpeed = config.getString("Scripts.Queue speed", "0.5s");
+        cache_healthTraitEnabledByDefault = config.getBoolean("Traits.Health.Enabled", false);
+        cache_healthTraitRespawnEnabled = config.getBoolean("Traits.Health.Respawn.Enabled", true);
+        cache_healthTraitAnimatedDeathEnabled = config.getBoolean("Traits.Health.Animated death.Enabled", true);
+        cache_healthTraitRespawnDelay = config.getString("Traits.Health.Respawn.Delay", "10s");
+        cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
+        cache_whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
+        cache_allowWebget = config.getBoolean("Commands.Webget.Allow", true);
+        cache_allowFilecopy = config.getBoolean("Commands.Filecopy.Allow copying files", true);
+        cache_allowDelete = config.getBoolean("Commands.Delete.Allow file deletion", true);
+        cache_allowServerStop = config.getBoolean("Commands.Restart.Allow server stop", false);
+        cache_allowServerRestart = config.getBoolean("Commands.Restart.Allow server restart", true);
+        cache_allowLogging = config.getBoolean("Commands.Log.Allow logging", true);
+        cache_allowStrangeYAMLSaves = config.getBoolean("Commands.Yaml.Allow saving outside folder", false);
+        cache_chatMultipleTargetsFormat = config.getString("Commands.Chat.Options.Multiple targets format", "%target%, %target%, %target%, and others");
+        cache_chatBystandersRange = config.getDouble("Commands.Chat.Options.Range for bystanders", 5.0);
+        cache_chatNoTargetFormat = config.getString("Commands.Chat.Formats.No target", "[<def[talker].name>]: <def[message]>");
+        cache_chatToTargetFormat = config.getString("Commands.Chat.Formats.To target", "[<def[talker].name>] -> You: <def[message]>");
+        cache_chatWithTargetToBystandersFormat = config.getString("Commands.Chat.Formats.With target to bystanders", "[<def[talker].name>] -> <def[target].name>: <def[message]>");
+        cache_chatWithTargetsToBystandersFormat = config.getString("Commands.Chat.Formats.With targets to bystanders", "[<def[talker].name>] -> [<def[targets]>]: <def[message]>");
+        cache_chatAsynchronous = config.getBoolean("Triggers.Chat.Use asynchronous event", false);
+        cache_chatToNpcFormat = config.getString("Triggers.Chat.Formats.Player to NPC", "You -> <npc.name.nickname>: <text>");
+        cache_chatToNpcOverheardFormat = config.getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.name.nickname>: <text>");
+        cache_chatToNpcOverhearingRange = config.getDouble("Triggers.Chat.Overhearing range", 4);
+        cache_chatMustSeeNPC = config.getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
+        cache_chatMustLookAtNPC = config.getBoolean("Triggers.Chat.Prerequisites.Must be looking in direction of NPC", true);
+        cache_chatGloballyIfFailedChatTriggers = config.getBoolean("Triggers.Chat.Appears globally.If triggers failed", false);
+        cache_chatGloballyIfNoChatTriggers = config.getBoolean("Triggers.Chat.Appears globally.If triggers missing", true);
+        cache_chatGloballyIfUninteractable = config.getBoolean("Triggers.Chat.Appears globally.If NPC uninteractable", true);
+        cache_worldScriptChatEventAsynchronous = config.getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", false);
+        cache_worldScriptTimeEventFrequency = Duration.valueOf(config.getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
+        cache_blockTagsMaxBlocks = config.getInt("Tags.Block tags.Max blocks", 1000000);
+        cache_chatHistoryMaxMessages = config.getInt("Tags.Chat history.Max messages", 10);
+        cache_tagTimeout = config.getInt("Tags.Timeout", 10);
+        cache_tagTimeoutSilent = config.getBoolean("Tags.Timeout when silent", false);
+        cache_warningRate = config.getLong("Tags.Warning rate", 10000);
+        cache_packetInterception = config.getBoolean("Packets.Interception", true);
+    }
+
+    private static boolean cache_showDebug, cache_overrideHelp, cache_useDefaultScriptPath,
+            cache_showExHelp, cache_showExDebug, cache_allowConsoleRedirection, cache_canRecordStats,
+            cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
+            cache_healthTraitRespawnEnabled, cache_allowWebget, cache_allowFilecopy, cache_allowDelete,
+            cache_allowServerStop, cache_allowServerRestart, cache_allowLogging, cache_allowStrangeYAMLSaves,
+            cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
+            cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
+            cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
+            cache_tagTimeoutSilent, cache_packetInterception;
+
+    private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
+            cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
+            cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat;
+
+    private static int cache_consoleWidth, cache_trimLength, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
+            cache_chatHistoryMaxMessages, cache_tagTimeout;
+
+    private static long cache_warningRate;
+
+    private static double cache_chatBystandersRange, cache_chatToNpcOverhearingRange;
+
+    private static Duration cache_worldScriptTimeEventFrequency;
 
     /*
 
@@ -13,13 +91,11 @@ public class Settings {
     */
 
     public static boolean useDefaultScriptPath() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Scripts location.Use default script folder", true);
+        return cache_useDefaultScriptPath;
     }
 
     public static String getAlternateScriptPath() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Scripts location.Alternative folder path", "plugins/Denizen");
+        return cache_getAlternateScriptPath;
     }
 
 
@@ -30,47 +106,39 @@ public class Settings {
     */
 
     public static boolean showDebug() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Show", true);
+        return cache_showDebug;
     }
 
     public static boolean overrideHelp() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Override help", true);
+        return cache_overrideHelp;
     }
 
     public static int consoleWidth() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.Line length", 128);
+        return cache_consoleWidth;
     }
 
     public static int trimLength() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Debug.Trim length limit", 1024);
+        return cache_trimLength;
     }
 
     public static boolean showExHelp() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Ex command help", true);
+        return cache_showExHelp;
     }
 
     public static boolean showExDebug() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Ex command debug", true);
+        return cache_showExDebug;
     }
 
     public static boolean allowConsoleRedirection() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Allow console redirection", false);
+        return cache_allowConsoleRedirection;
     }
 
     public static boolean canRecordStats() {
-        return DenizenAPI.getCurrentInstance().getConfig().getBoolean("Debug.Stats", true);
+        return cache_canRecordStats;
     }
 
     public static boolean defaultDebugMode() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Debug.Container default", true);
+        return cache_defaultDebugMode;
     }
 
     /*
@@ -80,8 +148,7 @@ public class Settings {
     */
 
     public static String scriptQueueSpeed() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Scripts.Queue speed", "0.5s");
+        return cache_scriptQueueSpeed;
     }
 
     /*
@@ -91,8 +158,7 @@ public class Settings {
     */
 
     public static boolean healthTraitEnabledByDefault() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Traits.Health.Enabled", false);
+        return cache_healthTraitEnabledByDefault;
     }
 
     /*
@@ -102,8 +168,7 @@ public class Settings {
     */
 
     public static boolean healthTraitRespawnEnabled() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Traits.Health.Respawn.Enabled", true);
+        return cache_healthTraitRespawnEnabled;
     }
 
     /*
@@ -113,8 +178,7 @@ public class Settings {
     */
 
     public static boolean healthTraitAnimatedDeathEnabled() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Traits.Health.Animated death.Enabled", true);
+        return cache_healthTraitAnimatedDeathEnabled;
     }
 
     /*
@@ -124,8 +188,7 @@ public class Settings {
     */
 
     public static String healthTraitRespawnDelay() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Traits.Health.Respawn.Delay", "10s");
+        return cache_healthTraitRespawnDelay;
     }
 
     /*
@@ -189,18 +252,15 @@ public class Settings {
     */
 
     public static String engageTimeoutInSeconds() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Engage.Timeout", "150s");
+        return cache_engageTimeoutInSeconds;
     }
 
     public static int whileMaxLoops() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Commands.While.Max loops", 10000);
+        return cache_whileMaxLoops;
     }
 
     public static boolean allowWebget() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Webget.Allow", false);
+        return cache_allowWebget;
     }
 
     public static boolean allowStupids() {
@@ -235,63 +295,51 @@ public class Settings {
     }
 
     public static boolean allowFilecopy() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Filecopy.Allow copying files", true);
+        return cache_allowFilecopy;
     }
 
     public static boolean allowDelete() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Delete.Allow file deletion", true);
+        return cache_allowDelete;
     }
 
     public static boolean allowServerStop() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Restart.Allow server stop", false);
+        return cache_allowServerStop;
     }
 
     public static boolean allowServerRestart() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Restart.Allow server restart", true);
+        return cache_allowServerRestart;
     }
 
     public static boolean allowLogging() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Log.Allow logging", true);
+        return cache_allowLogging;
     }
 
     public static boolean allowStrangeYAMLSaves() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Commands.Yaml.Allow saving outside folder", false);
+        return cache_allowStrangeYAMLSaves;
     }
 
     public static String chatMultipleTargetsFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Chat.Options.Multiple targets format", "%target%, %target%, %target%, and others");
+        return cache_chatMultipleTargetsFormat;
     }
 
     public static double chatBystandersRange() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble("Commands.Chat.Options.Range for bystanders", 5.0);
+        return cache_chatBystandersRange;
     }
 
     public static String chatNoTargetFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Chat.Formats.No target", "[<def[talker].name>]: <def[message]>");
+        return cache_chatNoTargetFormat;
     }
 
     public static String chatToTargetFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Chat.Formats.To target", "[<def[talker].name>] -> You: <def[message]>");
+        return cache_chatToTargetFormat;
     }
 
     public static String chatWithTargetToBystandersFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Chat.Formats.With target to bystanders", "[<def[talker].name>] -> <def[target].name>: <def[message]>");
+        return cache_chatWithTargetToBystandersFormat;
     }
 
     public static String chatWithTargetsToBystandersFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Commands.Chat.Formats.With targets to bystanders", "[<def[talker].name>] -> [<def[targets]>]: <def[message]>");
+        return cache_chatWithTargetsToBystandersFormat;
     }
 
     /*
@@ -302,8 +350,7 @@ public class Settings {
     */
 
     public static boolean chatAsynchronous() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Use asynchronous event", false);
+        return cache_chatAsynchronous;
     }
 
     /*
@@ -314,13 +361,11 @@ public class Settings {
     */
 
     public static String chatToNpcFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers.Chat.Formats.Player to NPC", "You -> <npc.name.nickname>: <text>");
+        return cache_chatToNpcFormat;
     }
 
     public static String chatToNpcOverheardFormat() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Triggers.Chat.Formats.Player to NPC overheard", "<player.name> -> <npc.name.nickname>: <text>");
+        return cache_chatToNpcOverheardFormat;
     }
 
     /*
@@ -331,8 +376,7 @@ public class Settings {
     */
 
     public static double chatToNpcOverhearingRange() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getDouble("Triggers.Chat.Overhearing range", 4);
+        return cache_chatToNpcOverhearingRange;
     }
 
     /*
@@ -343,13 +387,11 @@ public class Settings {
 
 
     public static boolean chatMustSeeNPC() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Prerequisites.Must be able to see NPC", true);
+        return cache_chatMustSeeNPC;
     }
 
     public static boolean chatMustLookAtNPC() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Prerequisites.Must be looking in direction of NPC", true);
+        return cache_chatMustLookAtNPC;
     }
 
     /*
@@ -360,18 +402,15 @@ public class Settings {
     */
 
     public static boolean chatGloballyIfFailedChatTriggers() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears globally.If triggers failed", false);
+        return cache_chatGloballyIfFailedChatTriggers;
     }
 
     public static boolean chatGloballyIfNoChatTriggers() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears globally.If triggers missing", true);
+        return cache_chatGloballyIfNoChatTriggers;
     }
 
     public static boolean chatGloballyIfUninteractable() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Triggers.Chat.Appears globally.If NPC uninteractable", true);
+        return cache_chatGloballyIfUninteractable;
     }
 
 
@@ -387,8 +426,7 @@ public class Settings {
     */
 
     public static boolean worldScriptChatEventAsynchronous() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Scripts.World.Events.On player chats.Use asynchronous event", false);
+        return cache_worldScriptChatEventAsynchronous;
     }
 
     /*
@@ -399,37 +437,30 @@ public class Settings {
     */
 
     public static Duration worldScriptTimeEventFrequency() {
-        return Duration.valueOf(DenizenAPI.getCurrentInstance().getConfig()
-                .getString("Scripts.World.Events.On time changes.Frequency of check", "250t"));
+        return cache_worldScriptTimeEventFrequency;
     }
 
     public static int blockTagsMaxBlocks() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Block tags.Max blocks", 1000000);
+        return cache_blockTagsMaxBlocks;
     }
 
     public static int chatHistoryMaxMessages() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Chat history.Max messages", 10);
+        return cache_chatHistoryMaxMessages;
     }
 
     public static int tagTimeout() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getInt("Tags.Timeout", 10);
+        return cache_tagTimeout;
     }
 
     public static boolean tagTimeoutSilent() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Tags.Timeout when silent", false);
+        return cache_tagTimeoutSilent;
     }
 
     public static long warningRate() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getLong("Tags.Warning rate", 10000);
+        return cache_warningRate;
     }
 
     public static boolean packetInterception() {
-        return DenizenAPI.getCurrentInstance().getConfig()
-                .getBoolean("Packets.Interception", true);
+        return cache_packetInterception;
     }
 }

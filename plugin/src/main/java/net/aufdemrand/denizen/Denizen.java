@@ -1049,6 +1049,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     @Override
     public void reloadConfig() {
         super.reloadConfig();
+        Settings.refillCache();
         SlowWarning.WARNING_RATE = Settings.warningRate();
     }
 
