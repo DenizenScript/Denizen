@@ -2678,7 +2678,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @name fallingblock_drop_item
         // @input Element(Boolean)
         // @description
-        // Sets whether the falling block will drop an item if broken
+        // Sets whether the falling block will drop an item if broken.
         // -->
         if (mechanism.matches("fallingblock_drop_item") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
@@ -2690,7 +2690,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @name fallingblock_hurt_entities
         // @input Element(Boolean)
         // @description
-        // Sets whether the falling block will hurt entities when it lands
+        // Sets whether the falling block will hurt entities when it lands.
         // -->
         if (mechanism.matches("fallingblock_hurt_entities") && mechanism.requireBoolean()
                 && entity instanceof FallingBlock) {
