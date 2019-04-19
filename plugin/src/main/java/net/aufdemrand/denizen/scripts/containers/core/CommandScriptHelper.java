@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.containers.core;
 
 import com.google.common.base.Predicate;
 import net.aufdemrand.denizen.Settings;
+import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -14,6 +15,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.defaults.HelpCommand;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.help.HelpMap;
 import org.bukkit.help.HelpTopic;
@@ -91,6 +93,11 @@ public class CommandScriptHelper implements Listener {
             //dB.echoError(e);
             hasCommandInformation = false;
         }
+    }
+
+    @EventHandler
+    public void scriptReload(ScriptReloadEvent event) {
+        syncDenizenCommands();
     }
 
     public static final Method syncCommandsMethod;
