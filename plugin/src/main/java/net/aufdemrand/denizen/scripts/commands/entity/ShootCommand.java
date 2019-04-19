@@ -217,7 +217,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             // Only add to entityList after the entities have been
             // spawned, otherwise you'll get something like "e@skeleton"
             // instead of "e@57" on it
-            entityList.add(entity.toString());
+            entityList.addObject(entity);
 
             if (!no_rotate) {
                 NMSHandler.getInstance().getEntityHelper().faceLocation(entity.getBukkitEntity(), destination);
