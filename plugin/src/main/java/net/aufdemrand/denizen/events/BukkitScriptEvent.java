@@ -270,6 +270,22 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public static TagContext noDebugTagContext = new BukkitTagContext(null, null, false, null, false, null);
 
+    public boolean runGenericSwitchCheck(ScriptPath path, String switchName, String value) {
+        String with = path.switches.get(switchName);
+        if (with != null) {
+            value = CoreUtilities.toLowerCase(value);
+            with = CoreUtilities.toLowerCase(with);
+            if (with.equalsIgnoreCase(value)) {
+                return true;
+            }
+            Pattern regexd = regexHandle(with);
+            if (!equalityCheck(value, with, regexd)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean runWithCheck(ScriptPath path, dItem held) {
         String with = path.switches.get("with");
         if (with != null) {

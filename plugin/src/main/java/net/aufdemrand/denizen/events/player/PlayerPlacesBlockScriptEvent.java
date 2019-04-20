@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -20,7 +21,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // player places <material>
     //
     // @Regex ^on player places [^\s]+$
+    //
     // @Switch in <area>
+    // @Switch using HAND/OFF_HAND
     //
     // @Cancellable true
     //
@@ -32,6 +35,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.old_material> returns the dMaterial of the block that was replaced.
     // <context.cuboids> DEPRECATED.
     // <context.item_in_hand> returns the dItem of the item in hand.
+    // <context.hand> returns the name of the hand that the block was in (HAND or OFF_HAND).
     //
     // -->
 
@@ -42,6 +46,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     public static PlayerPlacesBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
+    public Element hand;
     public dItem item_in_hand;
     public BlockPlaceEvent event;
 
@@ -58,6 +63,10 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
 
         String mat = path.eventArgLowerAt(2);
         if (!tryItem(item_in_hand, mat) && !tryMaterial(material, mat)) {
+            return false;
+        }
+
+        if (!runGenericSwitchCheck(path, "using", hand.asString())) {
             return false;
         }
 
@@ -97,6 +106,9 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("item_in_hand")) {
             return item_in_hand;
         }
+        else if (name.equals("hand")) {
+            return hand;
+        }
         else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
             dList cuboids = new dList();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
@@ -112,6 +124,7 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         if (dEntity.isNPC(event.getPlayer())) {
             return;
         }
+        hand = new Element(event.getHand().name());
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
         item_in_hand = new dItem(event.getItemInHand());
