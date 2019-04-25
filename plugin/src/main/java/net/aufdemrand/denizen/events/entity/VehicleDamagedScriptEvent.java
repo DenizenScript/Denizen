@@ -67,7 +67,8 @@ public class VehicleDamagedScriptEvent extends BukkitScriptEvent implements List
         }
         String tid = CoreUtilities.getXthArg(0, lower);
         String cmd = CoreUtilities.getXthArg(1, lower);
-        return (cmd.equals("damaged") && !tid.equals("entity")) || cmd.equals("damages");
+        return !tid.equals("entity") && (cmd.equals("damaged")
+                || (cmd.equals("damages") && !CoreUtilities.getXthArg(2, lower).equals("entity")));
     }
 
     @Override
