@@ -360,7 +360,9 @@ public class BukkitWorldScriptHelper implements Listener {
         context.put("slot_type", new Element(slotType));
         context.put("slot", new Element(event.getSlot() + 1));
         context.put("raw_slot", new Element(event.getRawSlot() + 1));
-        context.put("clicked_inventory", dInventory.mirrorBukkitInventory(event.getClickedInventory()));
+        if (event.getClickedInventory() != null) {
+            context.put("clicked_inventory", dInventory.mirrorBukkitInventory(event.getClickedInventory()));
+        }
         context.put("is_shift_click", new Element(event.isShiftClick()));
         context.put("action", new Element(event.getAction().name()));
         context.put("hotbar_button", new Element(event.getHotbarButton() + 1));
