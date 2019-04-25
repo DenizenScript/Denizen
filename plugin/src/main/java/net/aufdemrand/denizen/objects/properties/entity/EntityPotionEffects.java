@@ -9,7 +9,6 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -23,11 +22,7 @@ public class EntityPotionEffects implements Property {
     public static boolean describes(dObject object) {
         return object instanceof dEntity &&
                 (((dEntity) object).isLivingEntity()
-                        || isTippedArrow(((dEntity) object).getBukkitEntityType()));
-    }
-
-    public static boolean isTippedArrow(EntityType entityType) {
-        return entityType.getEntityClass() == TippedArrow.class;
+                        || ((dEntity) object).getBukkitEntity() instanceof TippedArrow);
     }
 
     public static EntityPotionEffects getFrom(dObject object) {
@@ -62,10 +57,10 @@ public class EntityPotionEffects implements Property {
         if (entity.isLivingEntity()) {
             return entity.getLivingEntity().getActivePotionEffects();
         }
-        else if (isTippedArrow(entity.getBukkitEntityType())) {
+        else if (entity.getBukkitEntity() instanceof TippedArrow) {
             return ((TippedArrow) entity.getBukkitEntity()).getCustomEffects();
         }
-        return new ArrayList<PotionEffect>();
+        return new ArrayList<>();
     }
 
     /////////
@@ -170,7 +165,7 @@ public class EntityPotionEffects implements Property {
                         entity.getLivingEntity().addPotionEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
                                 Integer.valueOf(split.get(1))));
                     }
-                    else if (isTippedArrow(entity.getBukkitEntityType())) {
+                    else if (entity.getBukkitEntity() instanceof TippedArrow) {
                         ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
                                 Integer.valueOf(split.get(1))), true);
                     }

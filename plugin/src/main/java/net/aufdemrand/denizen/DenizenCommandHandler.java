@@ -3,7 +3,6 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.containers.core.CommandScriptHelper;
 import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.ScriptVersionChecker;
