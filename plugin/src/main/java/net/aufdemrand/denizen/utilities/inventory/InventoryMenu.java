@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.inventory;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -72,7 +73,7 @@ public class InventoryMenu implements InventoryHolder {
 
     public void openMenu(Player player) {
         if (getInventory().getViewers().contains(player)) {
-            throw new IllegalArgumentException(player.getName() + " is already viewing " + getInventory().getTitle());
+            throw new IllegalArgumentException(player.getName() + " is already viewing " + NMSHandler.getInstance().getTitle(getInventory()));
         }
 
         player.openInventory(getInventory());

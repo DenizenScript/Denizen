@@ -21,7 +21,7 @@ public class MaterialCompat {
     public static Material OAK_DOOR;
     public static Material OAK_FENCE;
     public static Material OAK_TRAPDOOR;
-    public static Material SIGN;
+    public static Material SIGN; // in 1.14, set to OAK_SIGN
     public static Material WRITABLE_BOOK;
 
     // Combined materials in 1.13 - generally, methods should be used over these
@@ -42,7 +42,14 @@ public class MaterialCompat {
     private static Material STANDING_BANNER;
     private static Material WALL_BANNER;
 
+    // Materials split in 1.14
+    public static Material WALL_SIGN; // in 1.14, set to OAK_WALL_SIGN
+
     static {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+            SIGN = Material.OAK_SIGN;
+            WALL_SIGN = Material.OAK_WALL_SIGN;
+        }
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             COMMAND_BLOCK = Material.COMMAND_BLOCK;
             COMPARATOR = Material.COMPARATOR;
@@ -55,7 +62,11 @@ public class MaterialCompat {
             OAK_FENCE = Material.OAK_FENCE;
             OAK_TRAPDOOR = Material.OAK_TRAPDOOR;
             REPEATER = Material.REPEATER;
-            SIGN = Material.SIGN;
+            if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_13_R2)) {
+                // split in 1.14
+                SIGN = Material.valueOf("SIGN");
+                WALL_SIGN = Material.valueOf("WALL_SIGN");
+            }
             WRITABLE_BOOK = Material.WRITABLE_BOOK;
         }
         else {
@@ -92,6 +103,44 @@ public class MaterialCompat {
 
     public static boolean isRepeater(Material material) {
         return material == REPEATER || material == DIODE_BLOCK_OFF || material == DIODE_BLOCK_ON;
+    }
+
+    public static boolean isStandingSign(Material material) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+            switch (material) {
+                case ACACIA_SIGN:
+                case BIRCH_SIGN:
+                case DARK_OAK_SIGN:
+                case JUNGLE_SIGN:
+                case OAK_SIGN:
+                case SPRUCE_SIGN:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        return material == SIGN;
+    }
+
+    public static boolean isWallSign(Material material) {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+            switch (material) {
+                case ACACIA_WALL_SIGN:
+                case BIRCH_WALL_SIGN:
+                case DARK_OAK_WALL_SIGN:
+                case JUNGLE_WALL_SIGN:
+                case OAK_WALL_SIGN:
+                case SPRUCE_WALL_SIGN:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        return material == WALL_SIGN;
+    }
+
+    public static boolean isAnySign(Material material) {
+        return isStandingSign(material) || isWallSign(material);
     }
 
     public static ItemStack createGrayPane() {

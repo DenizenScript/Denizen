@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -8,9 +10,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.npc.NPC;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 
 public class StandCommand extends AbstractCommand {
 
@@ -43,11 +43,9 @@ public class StandCommand extends AbstractCommand {
 
         }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
-            ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(false);
-        }
-        else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.WOLF) {
-            ((Wolf) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(false);
+        Entity entity = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity();
+        if (entity instanceof Sittable) {
+            ((Sittable) entity).setSitting(false);
         }
         else {
             NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();

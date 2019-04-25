@@ -1,41 +1,40 @@
 package net.aufdemrand.denizen.nms.impl.packets;
 
-import io.netty.buffer.Unpooled;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutTradeList;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.TradeOffer;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.minecraft.server.v1_14_R1.PacketDataSerializer;
-import net.minecraft.server.v1_14_R1.PacketPlayOutCustomPayload;
+import net.minecraft.server.v1_14_R1.MerchantRecipe;
+import net.minecraft.server.v1_14_R1.MerchantRecipeList;
+import net.minecraft.server.v1_14_R1.PacketPlayOutOpenWindowMerchant;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PacketOutTradeList_v1_14_R1 implements PacketOutTradeList {
 
-    private PacketPlayOutCustomPayload internal;
+    private PacketPlayOutOpenWindowMerchant internal;
     private int container;
     private List<TradeOffer> tradeOffers;
 
-    public PacketOutTradeList_v1_14_R1(PacketPlayOutCustomPayload internal, PacketDataSerializer serializer) {
+    public PacketOutTradeList_v1_14_R1(PacketPlayOutOpenWindowMerchant internal) {
         this.internal = internal;
         try {
-            container = serializer.readInt();
-            tradeOffers = new ArrayList<TradeOffer>();
-            byte tradeCount = serializer.readByte();
-            for (byte i = 0; i < tradeCount; i++) {
-                ItemStack firstCost = CraftItemStack.asBukkitCopy(serializer.k());
-                ItemStack product = CraftItemStack.asBukkitCopy(serializer.k());
-                boolean hasSecondCost = serializer.readBoolean();
-                ItemStack secondCost = hasSecondCost ? CraftItemStack.asBukkitCopy(serializer.k()) : null;
-                boolean usedMaxTimes = serializer.readBoolean();
-                int currentUses = serializer.readInt();
-                int maxUses = serializer.readInt();
-                tradeOffers.add(new TradeOffer(product, firstCost, secondCost, usedMaxTimes, currentUses, maxUses));
+            container = (int) CONTAINER.get(internal);
+            MerchantRecipeList list = (MerchantRecipeList) RECIPE_LIST.get(internal);
+            tradeOffers = new ArrayList<>();
+            for (MerchantRecipe recipe : list) {
+                tradeOffers.add(new TradeOffer(CraftItemStack.asBukkitCopy(recipe.sellingItem),
+                        CraftItemStack.asBukkitCopy(recipe.buyingItem1),
+                        CraftItemStack.asBukkitCopy(recipe.buyingItem2),
+                        recipe.isFullyUsed(), recipe.uses, recipe.maxUses,
+                        recipe.rewardExp, recipe.xp, recipe.priceMultiplier));
             }
         }
-        catch (Exception e) {
+        catch (IllegalAccessException e) {
             dB.echoError(e);
         }
     }
@@ -47,27 +46,24 @@ public class PacketOutTradeList_v1_14_R1 implements PacketOutTradeList {
 
     @Override
     public void setTradeOffers(List<TradeOffer> tradeOffers) {
-        try {
-            PacketDataSerializer serializer = new PacketDataSerializer(Unpooled.buffer());
-            serializer.a(PacketPlayOutCustomPayload.a); // MC|TrList -> minecraft:trader_list
-            serializer.writeInt(container);
-            serializer.writeByte((byte) (tradeOffers.size() & 255));
-            for (TradeOffer tradeOffer : tradeOffers) {
-                serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getFirstCost()));
-                serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getProduct()));
-                boolean hasSecondCost = tradeOffer.hasSecondCost();
-                serializer.writeBoolean(hasSecondCost);
-                if (hasSecondCost) {
-                    serializer.a(CraftItemStack.asNMSCopy(tradeOffer.getSecondCost()));
-                }
-                serializer.writeBoolean(tradeOffer.isUsedMaxTimes());
-                serializer.writeInt(tradeOffer.getCurrentUses());
-                serializer.writeInt(tradeOffer.getMaxUses());
-            }
-            internal.a(serializer);
+        MerchantRecipeList list = new MerchantRecipeList();
+        for (TradeOffer offer : tradeOffers) {
+            MerchantRecipe recipe = new MerchantRecipe(CraftItemStack.asNMSCopy(offer.getFirstCost()),
+                    CraftItemStack.asNMSCopy(offer.getSecondCost()),
+                    CraftItemStack.asNMSCopy(offer.getProduct()),
+                    offer.getCurrentUses(), offer.getMaxUses(), offer.xp, offer.priceMultiplier);
+            recipe.rewardExp = offer.rewardExp;
+            list.add(recipe);
         }
-        catch (Exception e) {
+        try {
+            RECIPE_LIST.set(internal, list);
+        }
+        catch (IllegalAccessException e) {
             dB.echoError(e);
         }
     }
+
+    private static final Map<String, Field> FIELDS = ReflectionHelper.getFields(PacketPlayOutOpenWindowMerchant.class);
+    private static final Field CONTAINER = FIELDS.get("a");
+    private static final Field RECIPE_LIST = FIELDS.get("b");
 }

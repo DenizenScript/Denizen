@@ -12,6 +12,7 @@ public class SoundHelper_v1_14_R1 implements SoundHelper {
     @Override
     public Sound getMidiInstrumentFromPatch(int patch) {
         // look up the instrument matching the patch
+        // TODO: 1.14 -
         // TODO: 1.13 - does this still work?
         switch (instruments_1_12[patch]) {
             case 0:

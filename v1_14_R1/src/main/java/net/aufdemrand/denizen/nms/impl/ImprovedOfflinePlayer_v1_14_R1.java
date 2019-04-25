@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.impl;
 import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_14_R1;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventoryPlayer;
@@ -57,7 +58,7 @@ public class ImprovedOfflinePlayer_v1_14_R1 extends ImprovedOfflinePlayer {
     @Override
     public void setEnderChest(Inventory inventory) {
         NBTTagCompound nbtTagCompound = ((CompoundTag_v1_14_R1) compound).toNMSTag();
-        nbtTagCompound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).i());
+        nbtTagCompound.set("EnderItems", ((InventoryEnderChest) ((CraftInventory) inventory).getInventory()).f());
         this.compound = CompoundTag_v1_14_R1.fromNMSTag(nbtTagCompound);
         if (this.autosave) {
             savePlayerData();
@@ -66,16 +67,16 @@ public class ImprovedOfflinePlayer_v1_14_R1 extends ImprovedOfflinePlayer {
 
     @Override
     public double getMaxHealth() {
-        AttributeInstance maxHealth = getAttributes().a(GenericAttributes.maxHealth);
-        return maxHealth == null ? GenericAttributes.maxHealth.getDefault() : maxHealth.getValue();
+        AttributeInstance maxHealth = getAttributes().a(GenericAttributes.MAX_HEALTH);
+        return maxHealth == null ? GenericAttributes.MAX_HEALTH.getDefault() : maxHealth.getValue();
     }
 
     @Override
     public void setMaxHealth(double input) {
         AttributeMapBase attributes = getAttributes();
-        AttributeInstance maxHealth = attributes.a(GenericAttributes.maxHealth);
+        AttributeInstance maxHealth = attributes.a(GenericAttributes.MAX_HEALTH);
         if (maxHealth == null) {
-            maxHealth = attributes.b(GenericAttributes.maxHealth);
+            maxHealth = attributes.b(GenericAttributes.MAX_HEALTH);
         }
         maxHealth.setValue(input);
         setAttributes(attributes);
@@ -90,17 +91,17 @@ public class ImprovedOfflinePlayer_v1_14_R1 extends ImprovedOfflinePlayer {
 
     private void initAttributes(AttributeMapBase amb) {
         // --v from EntityHuman superclass (EntityLiving) v--
-        amb.b(GenericAttributes.maxHealth);
-        amb.b(GenericAttributes.c);
+        amb.b(GenericAttributes.MAX_HEALTH);
+        amb.b(GenericAttributes.KNOCKBACK_RESISTANCE);
         //this.getAttributeMap().b(GenericAttributes.MOVEMENT_SPEED); -- merged below to simplify code
-        amb.b(GenericAttributes.h);
-        amb.b(GenericAttributes.i);
+        amb.b(GenericAttributes.ARMOR);
+        amb.b(GenericAttributes.ARMOR_TOUGHNESS);
         // --v from EntityHuman v--
         amb.b(GenericAttributes.ATTACK_DAMAGE).setValue(1.0D);
         //this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D); -- merged below
         amb.b(GenericAttributes.MOVEMENT_SPEED).setValue(0.10000000149011612D);
-        amb.b(GenericAttributes.g);
-        amb.b(GenericAttributes.j);
+        amb.b(GenericAttributes.ATTACK_SPEED);
+        amb.b(GenericAttributes.LUCK);
     }
 
     public void setAttributes(AttributeMapBase attributes) {

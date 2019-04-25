@@ -8,6 +8,7 @@ import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.BoundingBox;
 import net.aufdemrand.denizen.nms.util.Utilities;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,6 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_14_R1.entity.*;
+import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -65,9 +67,9 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
     public void forceInteraction(Player player, Location location) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         BlockPosition pos = new BlockPosition(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-        ((CraftBlock) location.getBlock()).getNMS().interact(((CraftWorld) location.getWorld()).getHandle(), pos,
+        ((CraftBlock) location.getBlock()).getNMS().interact(((CraftWorld) location.getWorld()).getHandle(),
                 craftPlayer != null ? craftPlayer.getHandle() : null, EnumHand.MAIN_HAND,
-                null, 0f, 0f, 0f);
+                new MovingObjectPositionBlock(new Vec3D(0, 0, 0), null, pos, false));
     }
 
     @Override
@@ -163,7 +165,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
         if (!(nmsEntity instanceof EntityInsentient)) {
             return;
         }
-        ((EntityInsentient) nmsEntity).getNavigation().q();
+        ((EntityInsentient) nmsEntity).getNavigation().o();
     }
 
     @Override
@@ -264,7 +266,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
                     inRadius = true;
                 }
                 if (inRadius && !allowWander) {
-                    followerNavigation.q();
+                    followerNavigation.o();
                 }
                 nmsFollower.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
             }
@@ -299,7 +301,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (entityNavigation.p() || path.b()) {
+                    if (entityNavigation.n() || path.b()) {
                         if (callback != null) {
                             callback.run();
                         }
@@ -333,9 +335,10 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+            // TODO: 1.14 - make sure this works
+            PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
             net.minecraft.server.v1_14_R1.Entity other = ((CraftEntity) entity).getHandle();
-            EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
+            PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
             }
@@ -351,9 +354,10 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
         CraftPlayer craftPlayer = (CraftPlayer) pl;
         EntityPlayer entityPlayer = craftPlayer.getHandle();
         if (entityPlayer.playerConnection != null && !craftPlayer.equals(entity)) {
-            EntityTracker tracker = ((WorldServer) craftPlayer.getHandle().world).tracker;
+            // TODO: 1.14 - same as hide packet above
+            PlayerChunkMap tracker = ((WorldServer) craftPlayer.getHandle().world).getChunkProvider().playerChunkMap;
             net.minecraft.server.v1_14_R1.Entity other = ((CraftEntity) entity).getHandle();
-            EntityTrackerEntry entry = tracker.trackedEntities.get(other.getId());
+            PlayerChunkMap.EntityTracker entry = tracker.trackedEntities.get(other.getId());
             if (entry != null) {
                 entry.clear(entityPlayer);
                 entry.updatePlayer(entityPlayer);
@@ -387,7 +391,7 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
     @Override
     public float getBaseYaw(Entity entity) {
         net.minecraft.server.v1_14_R1.Entity handle = ((CraftEntity) entity).getHandle();
-        return ((EntityLiving) handle).aR;
+        return ((EntityLiving) handle).aL;
     }
 
     @Override
@@ -403,19 +407,21 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
                 while (yaw >= 180.0F) {
                     yaw -= 360.0F;
                 }
-                livingHandle.aR = yaw;
+                livingHandle.aL = yaw;
                 if (!(handle instanceof EntityHuman)) {
-                    livingHandle.aQ = yaw;
+                    livingHandle.aK = yaw;
                 }
-                livingHandle.aS = yaw;
+                livingHandle.aM = yaw;
             }
             handle.pitch = pitch;
         }
     }
 
     private static MovingObjectPosition rayTrace(World world, Vector start, Vector end) {
-        return ((CraftWorld) world).getHandle().rayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
-                new Vec3D(end.getX(), end.getY(), end.getZ()));
+        return ((CraftWorld) world).getHandle().rayTrace(new RayTrace(new Vec3D(start.getX(), start.getY(), start.getZ()),
+                new Vec3D(end.getX(), end.getY(), end.getZ()),
+                // TODO: 1.14 - check if these collision options are reasonable (maybe provide the options for this method?)
+                RayTrace.BlockCollisionOption.OUTLINE, RayTrace.FluidCollisionOption.NONE, null));
     }
 
     @Override
@@ -433,12 +439,12 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
         double nz = xzLen * Math.cos(start.getYaw() * (Math.PI / 180));
         Vector endVec = startVec.clone().add(new Vector(nx, -ny, nz).multiply(range));
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, endVec);
-        if (l == null || l.pos == null) {
+        if (!(l instanceof MovingObjectPositionBlock) || l.getPos() == null) {
             return null;
         }
-        Vector finalVec = new Vector(l.pos.x, l.pos.y, l.pos.z);
+        Vector finalVec = new Vector(l.getPos().x, l.getPos().y, l.getPos().z);
         MapTraceResult mtr = new MapTraceResult();
-        switch (l.direction) {
+        switch (((MovingObjectPositionBlock) l).getDirection()) {
             case NORTH:
                 mtr.angle = BlockFace.NORTH;
                 break;
@@ -462,10 +468,10 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
     public Location rayTraceBlock(Location start, Vector direction, double range) {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l != null && l.pos != null) {
-            return new Location(start.getWorld(), l.pos.x - (l.direction.getAdjacentX() * 0.05),
-                    l.pos.y - (l.direction.getAdjacentY() * 0.05),
-                    l.pos.z - (l.direction.getAdjacentZ() * 0.05));
+        if (l instanceof MovingObjectPositionBlock && l.getPos() != null) {
+            return new Location(start.getWorld(), l.getPos().x - (((MovingObjectPositionBlock) l).getDirection().getAdjacentX() * 0.05),
+                    l.getPos().y - (((MovingObjectPositionBlock) l).getDirection().getAdjacentY() * 0.05),
+                    l.getPos().z - (((MovingObjectPositionBlock) l).getDirection().getAdjacentZ() * 0.05));
         }
         return null;
     }
@@ -474,8 +480,8 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
     public Location rayTrace(Location start, Vector direction, double range) {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l != null && l.pos != null) {
-            return new Location(start.getWorld(), l.pos.x, l.pos.y, l.pos.z);
+        if (l != null && l.getPos() != null) {
+            return new Location(start.getWorld(), l.getPos().x, l.getPos().y, l.getPos().z);
         }
         return null;
     }
@@ -484,15 +490,17 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
     public Location getImpactNormal(Location start, Vector direction, double range) {
         Vector startVec = start.toVector();
         MovingObjectPosition l = rayTrace(start.getWorld(), startVec, startVec.clone().add(direction.multiply(range)));
-        if (l != null && l.direction != null) {
-            return new Location(start.getWorld(), l.direction.getAdjacentX(), l.direction.getAdjacentY(), l.direction.getAdjacentZ());
+        if (l instanceof MovingObjectPositionBlock && ((MovingObjectPositionBlock) l).getDirection() != null) {
+            return new Location(start.getWorld(), ((MovingObjectPositionBlock) l).getDirection().getAdjacentX(),
+                    ((MovingObjectPositionBlock) l).getDirection().getAdjacentY(),
+                    ((MovingObjectPositionBlock) l).getDirection().getAdjacentZ());
         }
         return null;
     }
 
     @Override
     public void move(Entity entity, Vector vector) {
-        ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, vector.getX(), vector.getY(), vector.getZ());
+        ((CraftEntity) entity).getHandle().move(EnumMoveType.SELF, new Vec3D(vector.getX(), vector.getY(), vector.getZ()));
     }
 
     @Override

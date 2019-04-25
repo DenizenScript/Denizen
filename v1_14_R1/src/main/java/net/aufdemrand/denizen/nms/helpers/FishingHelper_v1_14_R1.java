@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftFishHook;
@@ -59,7 +60,7 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
     @Override
     public FishHook spawnHook(Location location, Player player) {
         WorldServer nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
-        EntityFishingHook hook = new EntityFishingHook(nmsWorld, ((CraftPlayer) player).getHandle());
+        EntityFishingHook hook = new EntityFishingHook(((CraftPlayer) player).getHandle(), nmsWorld, 0, 0);
         nmsWorld.addEntity(hook);
         return (FishHook) hook.getBukkitEntity();
     }
@@ -68,8 +69,11 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         //fishHook.owner.a(StatisticList.F, 1); -- removed stat as of 1.12
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder(worldServer);
-        playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().getLootTableRegistry().getLootTable(LootTables.aP).populateLoot(worldServer.random, playerFishEvent2.build());
+        // TODO: 1.14 - set luck?
+        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
+        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
+        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ac)
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ac).a()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 
@@ -77,8 +81,11 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         //fishHook.owner.a(StatisticList.G, 1); -- removed stat as of 1.12
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder((WorldServer) fishHook.getWorld());
-        playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().getLootTableRegistry().getLootTable(LootTables.aQ).populateLoot(worldServer.random, playerFishEvent2.build());
+        // TODO: 1.14 - set luck?
+        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
+        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
+        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ad)
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ad).a()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 
@@ -87,8 +94,11 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         fishHook.owner.a(StatisticList.FISH_CAUGHT, 1);
         WorldServer worldServer = (WorldServer) fishHook.getWorld();
         LootTableInfo.Builder playerFishEvent2 = new LootTableInfo.Builder((WorldServer) fishHook.getWorld());
-        playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
-        List<ItemStack> itemStacks = fishHook.getWorld().getMinecraftServer().getLootTableRegistry().getLootTable(LootTables.aR).populateLoot(worldServer.random, playerFishEvent2.build());
+        // TODO: 1.14 - set luck?
+        //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
+        LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
+        List<ItemStack> itemStacks = registry.getLootTable(LootTables.ae)
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ae).a()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 }

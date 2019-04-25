@@ -54,12 +54,12 @@ public class BiomeNMS_v1_14_R1 extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "aO", biomeBase, humidity);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "j", biomeBase, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "aN", biomeBase, temperature);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "i", biomeBase, temperature);
     }
 
     @Override
@@ -79,12 +79,12 @@ public class BiomeNMS_v1_14_R1 extends BiomeNMS {
 
     @Override
     protected boolean getDoesRain() {
-        return biomeBase.c() == BiomeBase.Precipitation.RAIN;
+        return biomeBase.b() == BiomeBase.Precipitation.RAIN;
     }
 
     @Override
     protected boolean getDoesSnow() {
-        return biomeBase.c() == BiomeBase.Precipitation.SNOW;
+        return biomeBase.b() == BiomeBase.Precipitation.SNOW;
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {

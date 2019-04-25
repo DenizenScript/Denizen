@@ -65,13 +65,15 @@ public class SignCommand extends AbstractCommand {
 
     public void setWallSign(Block sign, BlockFace bf) {
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            sign.setType(Material.WALL_SIGN, false);
+            // TODO: 1.14 - allow new sign types?
+            sign.setType(MaterialCompat.WALL_SIGN, false);
             DirectionalBlocksHelper.setFace(sign, bf);
         }
         else {
-            org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(Material.WALL_SIGN);
+            // TODO: 1.14 - allow new sign types?
+            org.bukkit.material.Sign sgntmp = new org.bukkit.material.Sign(MaterialCompat.WALL_SIGN);
             sgntmp.setFacingDirection(bf);
-            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(Material.WALL_SIGN, sgntmp.getData());
+            BlockData blockData = NMSHandler.getInstance().getBlockHelper().getBlockData(MaterialCompat.WALL_SIGN, sgntmp.getData());
             blockData.setBlock(sign, false);
         }
     }
@@ -95,8 +97,7 @@ public class SignCommand extends AbstractCommand {
         Type type = Type.valueOf(typeElement.asString().toUpperCase());
         Block sign = location.getBlock();
         if (type != Type.AUTOMATIC
-                || (sign.getType() != Material.WALL_SIGN
-                && sign.getType() != MaterialCompat.SIGN)) {
+                || !MaterialCompat.isAnySign(sign.getType())) {
             if (type == Type.WALL_SIGN) {
                 BlockFace bf;
                 if (direction != null) {
@@ -108,15 +109,16 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf);
             }
             else {
+                // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
                 if (direction != null) {
                     Utilities.setSignRotation(sign.getState(), direction);
                 }
             }
         }
-        else if (sign.getType() != Material.WALL_SIGN
-                && sign.getType() != MaterialCompat.SIGN) {
+        else if (MaterialCompat.isAnySign(sign.getType())) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
+                // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
             }
             else {

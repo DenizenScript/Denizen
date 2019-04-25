@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.inventory;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -41,7 +42,7 @@ public class InventoryTitle implements Property {
 
     public String getTitle() {
         if (inventory.getInventory() != null) {
-            String title = inventory.getInventory().getTitle();
+            String title = NMSHandler.getInstance().getTitle(inventory.getInventory());
             if (title != null) {
                 if (inventory.isUnique()) {
                     return title.substring(0, title.length() - dInventory.inventoryNameNotableRequired);

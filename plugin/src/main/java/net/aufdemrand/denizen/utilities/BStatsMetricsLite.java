@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -229,7 +229,7 @@ public class BStatsMetricsLite {
 
                 for (RegisteredServiceProvider<?> provider : Bukkit.getServicesManager().getRegistrations(service)) {
                     try {
-                        pluginData.add(provider.getService().getMethod("getPluginData").invoke(provider.getProvider()));
+                        pluginData.put(provider.getService().getMethod("getPluginData").invoke(provider.getProvider()));
                     } catch (NullPointerException | NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
                     }
                 }

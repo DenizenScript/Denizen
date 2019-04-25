@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.entities;
 
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
@@ -7,88 +8,73 @@ import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.event.CraftEventFactory;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.UUID;
 
 public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjectile {
 
     public Entity shooter;
-    public String shooterName;
+    public UUID shooterId;
     public Entity c;
     private int aw;
 
+    public boolean inGround;
+    public int shake;
+
     public EntityItemProjectile_v1_14_R1(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
-        super(craftWorld.getHandle());
+        super(EntityTypes.ITEM, craftWorld.getHandle());
         bukkitEntity = new CraftItemProjectile_v1_14_R1((CraftServer) Bukkit.getServer(), this);
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        this.setSize(0.25F, 0.25F);
+        //this.setSize(0.25F, 0.25F); as of 1.14, part of EntityTypes
         this.setItemStack(CraftItemStack.asNMSCopy(itemStack));
         world.addEntity(this);
     }
 
     @Override
     public void tick() {
-        this.N = this.locX;
-        this.O = this.locY;
-        this.P = this.locZ;
-        super.W();
-
-        Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
-        Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-        MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
-        vec3d = new Vec3D(this.locX, this.locY, this.locZ);
-        vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-        if (movingobjectposition != null) {
-            vec3d1 = new Vec3D(movingobjectposition.pos.x, movingobjectposition.pos.y, movingobjectposition.pos.z);
+        this.H = this.locX;
+        this.I = this.locY;
+        this.J = this.locZ;
+        super.tick();
+        if (this.shake > 0) {
+            --this.shake;
         }
 
-        Entity entity = null;
-        List list = this.world.getEntities(this, this.getBoundingBox().b(this.motX, this.motY, this.motZ).g(1.0D));
-        double d0 = 0.0D;
-        boolean flag = false;
+        if (this.inGround) {
+            this.inGround = false;
+            this.setMot(this.getMot().d((double) (this.random.nextFloat() * 0.2F), (double) (this.random.nextFloat() * 0.2F), (double) (this.random.nextFloat() * 0.2F)));
+        }
 
-        for (Object aList : list) {
-            Entity f1 = (Entity) aList;
+        AxisAlignedBB axisalignedbb = this.getBoundingBox().a(this.getMot()).g(1.0D);
+        Iterator iterator = this.world.getEntities(this, axisalignedbb, (entityx) -> {
+            return !entityx.t() && entityx.isInteractable();
+        }).iterator();
 
-            if (f1.isInteractable()) {
-                if (f1 == this.c) {
-                    flag = true;
-                }
-                else if (this.shooter != null && this.ticksLived < 2 && this.c == null) {
-                    this.c = f1;
-                    flag = true;
-                }
-                else {
-                    flag = false;
-                    AxisAlignedBB f2 = f1.getBoundingBox().g(0.30000001192092896D);
-                    MovingObjectPosition j = f2.b(vec3d, vec3d1);
-                    if (j != null) {
-                        double d1 = vec3d.distanceSquared(j.pos);
-                        if (d1 < d0 || d0 == 0.0D) {
-                            entity = f1;
-                            d0 = d1;
-                        }
-                    }
-                }
+        while (iterator.hasNext()) {
+            Entity entity = (Entity) iterator.next();
+            if (entity == this.c) {
+                ++this.aw;
+                break;
+            }
+
+            if (this.shooter != null && this.ticksLived < 2 && this.c == null && this.shooter == entity) {
+                this.c = entity;
+                this.aw = 3;
+                break;
             }
         }
 
-        if (this.c != null) {
-            if (flag) {
-                this.aw = 2;
-            }
-            else if (this.aw-- <= 0) {
-                this.c = null;
-            }
+        MovingObjectPosition movingobjectposition = ProjectileHelper.a(this, axisalignedbb, (entity1) -> {
+            return !entity1.t() && entity1.isInteractable() && entity1 != this.c;
+        }, RayTrace.BlockCollisionOption.OUTLINE, true);
+        if (this.c != null && this.aw-- <= 0) {
+            this.c = null;
         }
 
-        if (entity != null) {
-            movingobjectposition = new MovingObjectPosition(entity);
-        }
-
-        if (movingobjectposition != null) {
-            if (movingobjectposition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(movingobjectposition.getBlockPosition()).getBlock() == Blocks.NETHER_PORTAL) {
-                this.e(movingobjectposition.getBlockPosition());
+        if (movingobjectposition.getType() != MovingObjectPosition.EnumMovingObjectType.MISS) {
+            if (movingobjectposition.getType() == MovingObjectPosition.EnumMovingObjectType.BLOCK && this.world.getType(((MovingObjectPositionBlock) movingobjectposition).getBlockPosition()).getBlock() == Blocks.NETHER_PORTAL) {
+                this.c(((MovingObjectPositionBlock) movingobjectposition).getBlockPosition());
             }
             else {
                 this.a(movingobjectposition);
@@ -98,15 +84,14 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
             }
         }
 
-        this.locX += this.motX;
-        this.locY += this.motY;
-        this.locZ += this.motZ;
-        float var15 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
-        this.pitch = (float) (MathHelper.c(this.motY, (double) var15) * 57.2957763671875D);
-        this.yaw = (float) (MathHelper.c(this.motX, this.motZ) * 57.2957763671875D);
+        Vec3D vec3d = this.getMot();
+        this.locX += vec3d.x;
+        this.locY += vec3d.y;
+        this.locZ += vec3d.z;
+        float f = MathHelper.sqrt(b(vec3d));
+        this.yaw = (float) (MathHelper.d(vec3d.x, vec3d.z) * 57.2957763671875D);
 
-        while (this.pitch - this.lastPitch < -180.0F) {
-            this.lastPitch -= 360.0F;
+        for (this.pitch = (float) (MathHelper.d(vec3d.y, (double) f) * 57.2957763671875D); this.pitch - this.lastPitch < -180.0F; this.lastPitch -= 360.0F) {
         }
 
         while (this.pitch - this.lastPitch >= 180.0F) {
@@ -121,27 +106,28 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
             this.lastYaw += 360.0F;
         }
 
-        this.pitch = this.lastPitch + (this.pitch - this.lastPitch) * 0.2F;
-        this.yaw = this.lastYaw + (this.yaw - this.lastYaw) * 0.2F;
-        float var16 = 0.99F;
-        float var17 = 0.03F;
+        this.pitch = MathHelper.g(0.2F, this.lastPitch, this.pitch);
+        this.yaw = MathHelper.g(0.2F, this.lastYaw, this.yaw);
+        float f1;
         if (this.isInWater()) {
-            for (int var18 = 0; var18 < 4; ++var18) {
-                this.world.addParticle(Particles.e, this.locX - this.motX * 0.25D, this.locY - this.motY * 0.25D, this.locZ - this.motZ * 0.25D, this.motX, this.motY, this.motZ);
+            for (int i = 0; i < 4; ++i) {
+                float f2 = 0.25F;
+                this.world.addParticle(Particles.BUBBLE, this.locX - vec3d.x * 0.25D, this.locY - vec3d.y * 0.25D, this.locZ - vec3d.z * 0.25D, vec3d.x, vec3d.y, vec3d.z);
             }
 
-            var16 = 0.8F;
+            f1 = 0.8F;
+        }
+        else {
+            f1 = 0.99F;
         }
 
-        this.motX *= (double) var16;
-        this.motY *= (double) var16;
-        this.motZ *= (double) var16;
+        this.setMot(vec3d.a((double) f1));
         if (!this.isNoGravity()) {
-            this.motY -= (double) var17;
+            Vec3D vec3d1 = this.getMot();
+            this.setMot(vec3d1.x, vec3d1.y - 0.03, vec3d1.z);
         }
 
         this.setPosition(this.locX, this.locY, this.locZ);
-        checkBlockCollisions();
     }
 
     @Override
@@ -157,9 +143,7 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
         d0 *= f;
         d1 *= f;
         d2 *= f;
-        motX = d0;
-        motY = d1;
-        motZ = d2;
+        setMot(d0, d1, d2);
         float f3 = MathHelper.sqrt(d0 * d0 + d2 * d2);
 
         lastYaw = yaw = (float) (Math.atan2(d0, d2) * 180.0D / 3.1415927410125732D);
@@ -167,17 +151,22 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
     }
 
     protected void a(MovingObjectPosition var1) {
-        if (var1.entity != null) {
-            var1.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0);
+        if (var1 instanceof MovingObjectPositionEntity) {
+            ((MovingObjectPositionEntity) var1).getEntity().damageEntity(DamageSource.projectile(this, this.getShooter()), 0);
         }
         this.die();
     }
 
     public Entity getShooter() {
-        if (this.shooter == null && this.shooterName != null && this.shooterName.length() > 0) {
-            this.shooter = this.world.a(this.shooterName);
+        if (this.shooter == null && this.shooterId != null && this.world instanceof WorldServer) {
+            Entity entity = ((WorldServer) this.world).getEntity(this.shooterId);
+            if (entity instanceof EntityLiving) {
+                this.shooter = entity;
+            }
+            else {
+                this.shooterId = null;
+            }
         }
-
         return this.shooter;
     }
 

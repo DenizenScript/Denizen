@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.nms.impl.jnbt;
 
+import net.aufdemrand.denizen.nms.util.jnbt.*;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.minecraft.server.v1_14_R1.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,7 @@ public class CompoundTag_v1_14_R1 extends CompoundTag {
                 NBTTagList list = new NBTTagList();
                 List<Tag> tags = ((ListTag) entry.getValue()).getValue();
                 for (Tag btag : tags) {
-                    HashMap<String, Tag> btags = new HashMap<String, Tag>();
+                    HashMap<String, Tag> btags = new HashMap<>();
                     btags.put("test", btag);
                     CompoundTag_v1_14_R1 comp = new CompoundTag_v1_14_R1(btags);
                     list.add(comp.toNMSTag().get("test"));
@@ -66,7 +68,7 @@ public class CompoundTag_v1_14_R1 extends CompoundTag {
     }
 
     public static CompoundTag fromNMSTag(NBTTagCompound tag) {
-        HashMap<String, Tag> tags = new HashMap<String, Tag>();
+        HashMap<String, Tag> tags = new HashMap<>();
         for (String key : tag.getKeys()) {
             NBTBase base = tag.get(key);
             if (base instanceof NBTTagInt) {
@@ -82,10 +84,10 @@ public class CompoundTag_v1_14_R1 extends CompoundTag {
                 tags.put(key, new DoubleTag(((NBTTagDouble) base).asDouble()));
             }
             else if (base instanceof NBTTagByteArray) {
-                tags.put(key, new ByteArrayTag(((NBTTagByteArray) base).c()));
+                tags.put(key, new ByteArrayTag(((NBTTagByteArray) base).getBytes()));
             }
             else if (base instanceof NBTTagIntArray) {
-                tags.put(key, new IntArrayTag(((NBTTagIntArray) base).d()));
+                tags.put(key, new IntArrayTag(((NBTTagIntArray) base).getInts()));
             }
             else if (base instanceof NBTTagCompound) {
                 tags.put(key, fromNMSTag(((NBTTagCompound) base)));
@@ -100,7 +102,7 @@ public class CompoundTag_v1_14_R1 extends CompoundTag {
                 tags.put(key, new ShortTag(((NBTTagShort) base).asShort()));
             }
             else if (base instanceof NBTTagString) {
-                tags.put(key, new StringTag(((NBTTagString) base).asString()));
+                tags.put(key, new StringTag(base.asString()));
             }
             else if (base instanceof NBTTagList) {
                 NBTTagList list = (NBTTagList) base;

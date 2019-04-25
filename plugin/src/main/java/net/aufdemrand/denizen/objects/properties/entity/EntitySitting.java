@@ -8,14 +8,14 @@ import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Ocelot;
+import org.bukkit.entity.Sittable;
 import org.bukkit.entity.Wolf;
 
 public class EntitySitting implements Property {
 
     public static boolean describes(dObject entity) {
-        return entity instanceof dEntity && (
-                ((dEntity) entity).getBukkitEntityType() == EntityType.WOLF
-                        || ((dEntity) entity).getBukkitEntityType() == EntityType.OCELOT);
+        return entity instanceof dEntity
+                && ((dEntity) entity).getBukkitEntity() instanceof Sittable;
     }
 
     public static EntitySitting getFrom(dObject entity) {
@@ -52,22 +52,10 @@ public class EntitySitting implements Property {
 
     @Override
     public String getPropertyString() {
-        if (entity.getBukkitEntityType() == EntityType.WOLF) {
-            if (!((Wolf) entity.getBukkitEntity()).isSitting()) {
-                return null;
-            }
-            else {
-                return "true";
-            }
+        if (((Sittable) entity.getBukkitEntity()).isSitting()) {
+            return "true";
         }
-        else {
-            if (!((Ocelot) entity.getBukkitEntity()).isSitting()) {
-                return null;
-            }
-            else {
-                return "true";
-            }
-        }
+        return null;
     }
 
     @Override
@@ -92,17 +80,11 @@ public class EntitySitting implements Property {
         // @mechanism dEntity.sitting
         // @group properties
         // @description
-        // If the entity is a wolf or ocelot, returns whether the animal is sitting.
+        // If the entity is a wolf, cat, or parrot, returns whether the animal is sitting.
         // -->
         if (attribute.startsWith("sitting")) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF) {
-                return new Element(((Wolf) entity.getBukkitEntity()).isSitting())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return new Element(((Ocelot) entity.getBukkitEntity()).isSitting())
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return new Element(((Sittable) entity.getBukkitEntity()).isSitting())
+                    .getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -116,18 +98,13 @@ public class EntitySitting implements Property {
         // @name sitting
         // @input Element(Boolean)
         // @description
-        // Changes the sitting state of a wolf or ocelot.
+        // Changes the sitting state of a wolf, cat, or parrot.
         // @tags
         // <e@entity.sitting>
         // -->
 
         if (mechanism.matches("sitting") && mechanism.requireBoolean()) {
-            if (entity.getBukkitEntityType() == EntityType.WOLF) {
-                ((Wolf) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
-            }
-            else {
-                ((Ocelot) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
-            }
+            ((Sittable) entity.getBukkitEntity()).setSitting(mechanism.getValue().asBoolean());
         }
     }
 }

@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.nms.impl.network;
 
+import io.netty.channel.*;
+
 import java.net.SocketAddress;
 
 public class FakeChannel_v1_14_R1 extends AbstractChannel {

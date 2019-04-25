@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.nms.impl.packets.handlers.AbstractListenerPlayIn_v
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
@@ -21,11 +22,13 @@ import java.util.UUID;
 
 public class PlayerHelper_v1_14_R1 extends PlayerHelper {
 
-    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aH");
+    public static final Field ATTACK_COOLDOWN_TICKS = ReflectionHelper.getFields(EntityLiving.class).get("aD");
 
     public static final Map<String, Field> PLAYER_CONNECTION_FIELDS = ReflectionHelper.getFields(PlayerConnection.class);
     public static final Field FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("C");
     public static final Field VEHICLE_FLY_TICKS = PLAYER_CONNECTION_FIELDS.get("E");
+
+    public static final Field PLAYER_MAP = ReflectionHelper.getFields(PlayerChunkMap.class).get("y");
 
     @Override
     public int getFlyKickCooldown(Player player) {
@@ -83,12 +86,12 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
 
     @Override
     public float getMaxAttackCooldownTicks(Player player) {
-        return ((CraftPlayer) player).getHandle().dG() + 3;
+        return ((CraftPlayer) player).getHandle().dY() + 3;
     }
 
     @Override
     public float getAttackCooldownPercent(Player player) {
-        return ((CraftPlayer) player).getHandle().r(0.5f);
+        return ((CraftPlayer) player).getHandle().s(0.5f);
     }
 
     @Override
@@ -107,8 +110,9 @@ public class PlayerHelper_v1_14_R1 extends PlayerHelper {
 
     @Override
     public boolean hasChunkLoaded(Player player, Chunk chunk) {
-        return ((CraftWorld) chunk.getWorld()).getHandle().getPlayerChunkMap()
-                .a(((CraftPlayer) player).getHandle(), chunk.getX(), chunk.getZ());
+        return ((CraftWorld) chunk.getWorld()).getHandle().getChunkProvider().playerChunkMap
+                .a(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()), false)
+                .anyMatch(entityPlayer -> entityPlayer.getUniqueID().equals(player.getUniqueId()));
     }
 
     @Override

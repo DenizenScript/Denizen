@@ -20,9 +20,8 @@ public class PacketOutSpawnEntity_v1_14_R1 implements PacketOutSpawnEntity {
             entityUuid = ReflectionHelper.getFieldValue(internal.getClass(), "b", internal);
         }
         else {
-            EntityTracker tracker = ((WorldServer) player.world).tracker;
-            EntityTrackerEntry entry = tracker.trackedEntities.get(entityId);
-            entityUuid = entry != null ? entry.b().getUniqueID() : null;
+            Entity entity = player.world.getEntity(entityId);
+            entityUuid = entity != null ? entity.getUniqueID() : null;
         }
     }
 

@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.impl.entities;
 import com.mojang.authlib.GameProfile;
 import net.aufdemrand.denizen.nms.impl.network.FakeNetworkManager_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.network.FakePlayerConnection_v1_14_R1;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -16,7 +17,7 @@ public class EntityFakePlayer_v1_14_R1 extends EntityPlayer {
         NetworkManager networkManager = new FakeNetworkManager_v1_14_R1(EnumProtocolDirection.CLIENTBOUND);
         playerConnection = new FakePlayerConnection_v1_14_R1(minecraftserver, networkManager, this);
         networkManager.setPacketListener(playerConnection);
-        datawatcher.set(EntityHuman.bx, (byte) 127);
+        datawatcher.set(EntityHuman.bt, (byte) 127);
         worldserver.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
     }
 

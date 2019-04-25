@@ -592,17 +592,9 @@ public class dChunk implements dObject, Adjustable {
             getChunk().unload(true);
         }
 
-        // <--[mechanism]
-        // @object dChunk
-        // @name unload_safely
-        // @input None
-        // @description
-        // Removes a chunk from memory in a safe manner.
-        // @tags
-        // <chunk.is_loaded>
-        // -->
         if (mechanism.matches("unload_safely")) {
-            getChunk().unload(true, true);
+            dB.echoError("Mechanism 'dChunk.unload_safely' is not valid: It is never safe to remove a chunk in use.");
+            getChunk().unload(true);
         }
 
         // <--[mechanism]

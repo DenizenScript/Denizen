@@ -12,6 +12,7 @@ import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -62,7 +63,7 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
 
     @Override
     public PlayerProfile getPlayerProfile(Skull skull) {
-        GameProfile profile = getTE(((CraftSkull) skull)).getGameProfile();
+        GameProfile profile = getTE(((CraftSkull) skull)).gameProfile;
         if (profile == null) {
             return null;
         }
@@ -86,16 +87,16 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
         if (tileEntity == null) {
             return null;
         }
-        return CompoundTag_v1_14_R1.fromNMSTag(tileEntity.aa_());
+        return CompoundTag_v1_14_R1.fromNMSTag(tileEntity.b());
     }
 
     @Override
     public void setNbtData(Block block, CompoundTag compoundTag) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) (CraftBlockState) block.getState());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
         if (tileEntity == null) {
             return;
         }

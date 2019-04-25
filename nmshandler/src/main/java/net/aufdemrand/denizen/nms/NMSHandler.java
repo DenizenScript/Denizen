@@ -17,6 +17,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
@@ -126,6 +127,8 @@ public abstract class NMSHandler {
     public abstract CompoundTag createCompoundTag(Map<String, Tag> value);
 
     public abstract int getPort();
+
+    public abstract String getTitle(Inventory inventory);
 
     public static Vector fixOffset(Vector offset, double yaw, double pitch) {
         yaw = Math.toRadians(yaw);

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.AdvancementHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
@@ -17,7 +18,7 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
 
     private static final String IMPOSSIBLE_KEY = "impossible";
     private static final Map<String, Criterion> IMPOSSIBLE_CRITERIA = Collections.singletonMap(IMPOSSIBLE_KEY, new Criterion(new CriterionTriggerImpossible.a()));
-    private static final String[][] IMPOSSIBLE_REQUIREMENTS = new String[][] { { IMPOSSIBLE_KEY } };
+    private static final String[][] IMPOSSIBLE_REQUIREMENTS = new String[][]{{IMPOSSIBLE_KEY}};
 
     @Override
     public void register(net.aufdemrand.denizen.nms.util.Advancement advancement) {

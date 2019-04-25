@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -12,7 +11,7 @@ import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketOutSpawnEntity;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
-import net.minecraft.server.v1_14_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -276,13 +275,9 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
             else if (!NMSHandler.getInstance().getEntityHelper().isHidden(player.getBukkitEntity(), entity.getBukkitEntity())) {
                 if (entity instanceof EntityFakePlayer_v1_14_R1) {
                     final EntityFakePlayer_v1_14_R1 fakePlayer = (EntityFakePlayer_v1_14_R1) entity;
-                    sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
-                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(), new Runnable() {
-                        @Override
-                        public void run() {
-                            sendPacket(new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer));
-                        }
-                    }, 5);
+                    sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer));
+                    Bukkit.getScheduler().runTaskLater(NMSHandler.getJavaPlugin(),
+                            () -> sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, fakePlayer)), 5);
                 }
                 oldManager.sendPacket(packet, genericfuturelistener);
             }
@@ -309,27 +304,8 @@ public class DenizenNetworkManager_v1_14_R1 extends NetworkManager {
                 oldManager.sendPacket(packet, genericfuturelistener);
             }
         }
-        else if (packet instanceof PacketPlayOutCustomPayload) {
-            PacketPlayOutCustomPayload payload = (PacketPlayOutCustomPayload) packet;
-            PacketDataSerializer original = new PacketDataSerializer(Unpooled.buffer());
-            try {
-                payload.b(original);
-                // Copy the data without removing it from the original
-                PacketDataSerializer serializer = new PacketDataSerializer(original.getBytes(original.readerIndex(),
-                        new byte[original.readableBytes()]));
-                // Write the original back to avoid odd errors
-                payload.a(original);
-                MinecraftKey key = serializer.l();
-                if (key != null && key.equals(PacketPlayOutCustomPayload.a)) { // MC|TrList -> minecraft:trader_list
-                    if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_14_R1(payload, serializer))) {
-                        oldManager.sendPacket(packet, genericfuturelistener);
-                    }
-                }
-                else {
-                    oldManager.sendPacket(packet, genericfuturelistener);
-                }
-            }
-            catch (Exception e) {
+        else if (packet instanceof PacketPlayOutOpenWindowMerchant) {
+            if (!packetHandler.sendPacket(player.getBukkitEntity(), new PacketOutTradeList_v1_14_R1((PacketPlayOutOpenWindowMerchant) packet))) {
                 oldManager.sendPacket(packet, genericfuturelistener);
             }
         }

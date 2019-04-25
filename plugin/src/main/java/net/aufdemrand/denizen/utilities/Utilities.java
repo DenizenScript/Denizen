@@ -351,8 +351,7 @@ public class Utilities {
 
             Material material = block.getType();
             if (material != Material.AIR
-                    && material != MaterialCompat.SIGN
-                    && material != Material.WALL_SIGN) {
+                    && !MaterialCompat.isAnySign(material)) {
 
                 return blockFace.getOppositeFace();
             }
@@ -388,8 +387,7 @@ public class Utilities {
 
             Material material = block.getType();
             if (material != Material.AIR
-                    && material != MaterialCompat.SIGN
-                    && material != Material.WALL_SIGN) {
+                    && !MaterialCompat.isAnySign(material)) {
 
                 ((org.bukkit.material.Sign) signState.getData())
                         .setFacingDirection(blockFace.getOppositeFace());

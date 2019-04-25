@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.helpers;
 import net.aufdemrand.denizen.nms.interfaces.WorldAccess;
 import net.aufdemrand.denizen.nms.interfaces.WorldHelper;
 import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class WorldHelper_v1_14_R1 implements WorldHelper {
 
-    private final Map<World, IWorldAccess> worldAccessMap = new HashMap<World, IWorldAccess>();
+    //private final Map<World, IWorldAccess> worldAccessMap = new HashMap<>();
 
     @Override
     public boolean isStatic(World world) {
@@ -28,7 +29,8 @@ public class WorldHelper_v1_14_R1 implements WorldHelper {
 
     @Override
     public void setWorldAccess(World world, final WorldAccess worldAccess) {
-        if (worldAccessMap.containsKey(world)) {
+        // TODO: 1.14 - IWorldAccess was removed
+        /*if (worldAccessMap.containsKey(world)) {
             removeWorldAccess(world);
         }
         IWorldAccess nmsWorldAccess = new IWorldAccess() {
@@ -82,19 +84,22 @@ public class WorldHelper_v1_14_R1 implements WorldHelper {
             }
         };
         worldAccessMap.put(world, nmsWorldAccess);
-        ((CraftWorld) world).getHandle().addIWorldAccess(nmsWorldAccess);
+        ((CraftWorld) world).getHandle().addIWorldAccess(nmsWorldAccess);*/
     }
 
     @Override
     public void removeWorldAccess(World world) {
+        // TODO: 1.14 - IWorldAccess was removed
+        /*
         if (!worldAccessMap.containsKey(world)) {
             return;
         }
-        net.minecraft.server.v1_14_R1.World nmsWorld = ((CraftWorld) world).getHandle();
-        List<IWorldAccess> list = ReflectionHelper.getFieldValue(net.minecraft.server.v1_14_R1.World.class, "v", nmsWorld);
+        net.minecraft.server.v1_13_R2.World nmsWorld = ((CraftWorld) world).getHandle();
+        List<IWorldAccess> list = ReflectionHelper.getFieldValue(net.minecraft.server.v1_13_R2.World.class, "v", nmsWorld);
         if (list != null) {
             list.remove(worldAccessMap.get(world));
         }
         worldAccessMap.remove(world);
+        */
     }
 }

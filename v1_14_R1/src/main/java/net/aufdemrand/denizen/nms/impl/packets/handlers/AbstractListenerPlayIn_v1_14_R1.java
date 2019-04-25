@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.nms.impl.packets.handlers;
 
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 
@@ -262,5 +263,20 @@ public class AbstractListenerPlayIn_v1_14_R1 extends PlayerConnection {
     @Override
     public void a(IChatBaseComponent iChatBaseComponent) {
         oldListener.a(iChatBaseComponent);
+    }
+
+    @Override
+    public void a(PacketPlayInSetJigsaw packetplayinsetjigsaw) {
+        oldListener.a(packetplayinsetjigsaw);
+    }
+
+    @Override
+    public void a(PacketPlayInDifficultyLock packetplayindifficultylock) {
+        oldListener.a(packetplayindifficultylock);
+    }
+
+    @Override
+    public void a(PacketPlayInDifficultyChange packetplayindifficultychange) {
+        oldListener.a(packetplayindifficultychange);
     }
 }

@@ -9,6 +9,7 @@ import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -90,13 +91,16 @@ public class PacketHelper_v1_14_R1 implements PacketHelper {
     public void setVision(Player player, EntityType entityType) {
         final EntityLiving entity;
         if (entityType == EntityType.CREEPER) {
-            entity = new EntityCreeper(((CraftWorld) player.getWorld()).getHandle());
+            entity = new EntityCreeper(EntityTypes.CREEPER, ((CraftWorld) player.getWorld()).getHandle());
         }
-        else if (entityType == EntityType.SPIDER || entityType == EntityType.CAVE_SPIDER) {
-            entity = new EntitySpider(((CraftWorld) player.getWorld()).getHandle());
+        else if (entityType == EntityType.SPIDER) {
+            entity = new EntitySpider(EntityTypes.SPIDER, ((CraftWorld) player.getWorld()).getHandle());
+        }
+        else if (entityType == EntityType.CAVE_SPIDER) {
+            entity = new EntityCaveSpider(EntityTypes.CAVE_SPIDER, ((CraftWorld) player.getWorld()).getHandle());
         }
         else if (entityType == EntityType.ENDERMAN) {
-            entity = new EntityEnderman(((CraftWorld) player.getWorld()).getHandle());
+            entity = new EntityEnderman(EntityTypes.ENDERMAN, ((CraftWorld) player.getWorld()).getHandle());
         }
         else {
             return;
@@ -139,7 +143,7 @@ public class PacketHelper_v1_14_R1 implements PacketHelper {
         List<CompoundTag> nbtPatterns = new ArrayList<CompoundTag>();
         for (Pattern pattern : patterns) {
             nbtPatterns.add(NMSHandler.getInstance()
-                    .createCompoundTag(new HashMap<String, Tag>())
+                    .createCompoundTag(new HashMap<>())
                     .createBuilder()
                     .putInt("Color", pattern.getColor().getDyeData())
                     .putString("Pattern", pattern.getPattern().getIdentifier())

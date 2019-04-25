@@ -4,17 +4,22 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.aufdemrand.denizen.nms.abstracts.*;
+import net.aufdemrand.denizen.nms.helpers.*;
 import net.aufdemrand.denizen.nms.impl.BiomeNMS_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.ProfileEditor_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.Sidebar_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.blocks.BlockLight_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenPacketListener_v1_14_R1;
+import net.aufdemrand.denizen.nms.interfaces.*;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.IInventory;
+import net.minecraft.server.v1_14_R1.INamableTileEntity;
 import net.minecraft.server.v1_14_R1.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,9 +29,15 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.util.CraftCustomInventoryConverter;
+import org.bukkit.craftbukkit.v1_14_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 
 public class Handler_v1_14_R1 extends NMSHandler {
@@ -54,12 +65,12 @@ public class Handler_v1_14_R1 extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("7dd4b3ec31629620c41553e5c142e454");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("8b7fe9012a93b36df04844a6c990de27");
     }
 
     @Override
     public Thread getMainThread() {
-        return ((CraftServer) Bukkit.getServer()).getServer().primaryThread;
+        return ((CraftServer) Bukkit.getServer()).getServer().serverThread;
     }
 
     @Override
@@ -185,7 +196,7 @@ public class Handler_v1_14_R1 extends NMSHandler {
                     }
                 }
                 if (Iterables.getFirst(gameProfile1.getProperties().get("textures"), null) == null) {
-                    gameProfile1 = minecraftServer.ap().fillProfileProperties(gameProfile1, true);
+                    gameProfile1 = minecraftServer.getMinecraftSessionService().fillProfileProperties(gameProfile1, true);
                 }
                 Property property = Iterables.getFirst(gameProfile1.getProperties().get("textures"), null);
                 return new PlayerProfile(gameProfile1.getName(), gameProfile1.getId(),
@@ -204,6 +215,46 @@ public class Handler_v1_14_R1 extends NMSHandler {
     @Override
     public int getPort() {
         return ((CraftServer) Bukkit.getServer()).getServer().getPort();
+    }
+
+    @Override
+    public String getTitle(Inventory inventory) {
+        IInventory nms = ((CraftInventory) inventory).getInventory();
+        if (nms instanceof INamableTileEntity) {
+            return CraftChatMessage.fromComponent(((INamableTileEntity) nms).getDisplayName());
+        }
+        else if (MINECRAFT_INVENTORY.isInstance(nms)) {
+            try {
+                return (String) INVENTORY_TITLE.get(nms);
+            }
+            catch (IllegalAccessException e) {
+                dB.echoError(e);
+            }
+        }
+        return null;
+    }
+
+    private static final Class MINECRAFT_INVENTORY;
+    private static final Field INVENTORY_TITLE;
+
+    static {
+        Class minecraftInv = null;
+        Field title = null;
+        try {
+            for (Class clzz : CraftInventoryCustom.class.getDeclaredClasses()) {
+                if (CoreUtilities.toLowerCase(clzz.getName()).contains("minecraftinventory")) { // MinecraftInventory.
+                    minecraftInv = clzz;
+                    title = clzz.getDeclaredField("title");
+                    title.setAccessible(true);
+                    break;
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        MINECRAFT_INVENTORY = minecraftInv;
+        INVENTORY_TITLE = title;
     }
 
     @Override

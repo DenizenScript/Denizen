@@ -8,9 +8,7 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Ocelot;
-import org.bukkit.entity.Wolf;
+import org.bukkit.entity.*;
 
 public class SitCommand extends AbstractCommand {
 
@@ -49,11 +47,9 @@ public class SitCommand extends AbstractCommand {
 
         }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.OCELOT) {
-            ((Ocelot) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(true);
-        }
-        else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() == EntityType.WOLF) {
-            ((Wolf) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setSitting(true);
+        Entity entity = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity();
+        if (entity instanceof Sittable) {
+            ((Sittable) entity).setSitting(true);
         }
         else {
             SittingTrait trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(SittingTrait.class);

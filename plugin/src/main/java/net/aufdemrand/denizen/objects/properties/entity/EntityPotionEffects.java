@@ -19,10 +19,15 @@ import java.util.Collection;
 import java.util.List;
 
 public class EntityPotionEffects implements Property {
+
     public static boolean describes(dObject object) {
         return object instanceof dEntity &&
                 (((dEntity) object).isLivingEntity()
-                        || ((dEntity) object).getBukkitEntityType() == EntityType.TIPPED_ARROW);
+                        || isTippedArrow(((dEntity) object).getBukkitEntityType()));
+    }
+
+    public static boolean isTippedArrow(EntityType entityType) {
+        return entityType.getEntityClass() == TippedArrow.class;
     }
 
     public static EntityPotionEffects getFrom(dObject object) {
@@ -57,7 +62,7 @@ public class EntityPotionEffects implements Property {
         if (entity.isLivingEntity()) {
             return entity.getLivingEntity().getActivePotionEffects();
         }
-        else if (entity.getBukkitEntityType() == EntityType.TIPPED_ARROW) {
+        else if (isTippedArrow(entity.getBukkitEntityType())) {
             return ((TippedArrow) entity.getBukkitEntity()).getCustomEffects();
         }
         return new ArrayList<PotionEffect>();
@@ -165,7 +170,7 @@ public class EntityPotionEffects implements Property {
                         entity.getLivingEntity().addPotionEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
                                 Integer.valueOf(split.get(1))));
                     }
-                    else if (entity.getBukkitEntityType() == EntityType.TIPPED_ARROW) {
+                    else if (isTippedArrow(entity.getBukkitEntityType())) {
                         ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
                                 Integer.valueOf(split.get(1))), true);
                     }

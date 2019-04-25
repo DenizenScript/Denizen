@@ -33,6 +33,7 @@ import org.bukkit.craftbukkit.v1_13_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Map;
 
@@ -211,6 +212,11 @@ public class Handler_v1_13_R2 extends NMSHandler {
     @Override
     public int getPort() {
         return ((CraftServer) Bukkit.getServer()).getServer().getPort();
+    }
+
+    @Override
+    public String getTitle(Inventory inventory) {
+        return inventory.getTitle();
     }
 
     @Override

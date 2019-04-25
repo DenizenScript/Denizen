@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.nms.impl;
 
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.helpers.PacketHelper_v1_14_R1;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.entity.Player;
 
 public class Sidebar_v1_14_R1 extends Sidebar {

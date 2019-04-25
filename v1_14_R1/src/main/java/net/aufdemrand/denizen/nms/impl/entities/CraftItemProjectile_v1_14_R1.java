@@ -39,12 +39,12 @@ public class CraftItemProjectile_v1_14_R1 extends CraftItem implements ItemProje
         if (shooter instanceof CraftLivingEntity) {
             getHandle().shooter = ((CraftLivingEntity) shooter).getHandle();
             if (shooter instanceof CraftHumanEntity) {
-                getHandle().shooterName = ((CraftHumanEntity) shooter).getName();
+                getHandle().shooterId = ((CraftHumanEntity) shooter).getUniqueId();
             }
         }
         else {
             getHandle().shooter = null;
-            getHandle().shooterName = null;
+            getHandle().shooterId = null;
         }
         getHandle().projectileSource = shooter;
     }

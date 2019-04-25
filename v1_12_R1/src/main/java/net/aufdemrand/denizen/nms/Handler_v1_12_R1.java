@@ -29,6 +29,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Map;
 
@@ -202,6 +203,11 @@ public class Handler_v1_12_R1 extends NMSHandler {
     @Override
     public int getPort() {
         return ((CraftServer) Bukkit.getServer()).getServer().P();
+    }
+
+    @Override
+    public String getTitle(Inventory inventory) {
+        return inventory.getTitle();
     }
 
     @Override

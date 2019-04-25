@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.impl.blocks;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.BlockLight;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,10 +16,18 @@ import org.bukkit.scheduler.BukkitTask;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class BlockLight_v1_14_R1 extends BlockLight {
 
+    // TODO: 1.14 - update to new light engine
+
+    /*
     private static final Method playerChunkMethod;
     private static final Field dirtyCountField;
     private static final BukkitTask bukkitTask;
@@ -67,9 +76,11 @@ public class BlockLight_v1_14_R1 extends BlockLight {
     private final CraftWorld craftWorld;
     private final WorldServer worldServer;
     private final BlockPosition position;
+    */
 
     private BlockLight_v1_14_R1(Location location, long ticks) {
         super(location, ticks);
+        /*
         this.craftWorld = (CraftWorld) location.getWorld();
         this.worldServer = craftWorld.getHandle();
         if (!worlds.contains(craftWorld.getUID())) {
@@ -78,9 +89,11 @@ public class BlockLight_v1_14_R1 extends BlockLight {
             worlds.add(craftWorld.getUID());
         }
         this.position = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        */
     }
 
     public static BlockLight createLight(Location location, int lightLevel, long ticks) {
+        /*
         location = location.getBlock().getLocation();
         BlockLight blockLight;
         if (lightsByLocation.containsKey(location)) {
@@ -102,10 +115,13 @@ public class BlockLight_v1_14_R1 extends BlockLight {
         }
         blockLight.update(lightLevel, true);
         return blockLight;
+        */
+        return null;
     }
 
     @Override
     public void update(int lightLevel, boolean updateChunk) {
+        /*
         if (this.currentLight == lightLevel) {
             return;
         }
@@ -137,9 +153,11 @@ public class BlockLight_v1_14_R1 extends BlockLight {
             updateChunk(chunk, worldServer.getPlayerChunkMap());
         }
         this.currentLight = lightLevel;
+         */
     }
 
     private static void updateChunk(org.bukkit.Chunk chunk, PlayerChunkMap playerChunkMap) {
+        /*
         int cX = chunk.getX();
         int cZ = chunk.getZ();
         for (int x = -1; x <= 1; x++) {
@@ -151,8 +169,10 @@ public class BlockLight_v1_14_R1 extends BlockLight {
                 setDirtyCount(pChunk);
             }
         }
+        */
     }
 
+    /*
     private static Object getPlayerChunk(PlayerChunkMap map, int x, int z) {
         try {
             return playerChunkMethod.invoke(map, x, z);
@@ -228,4 +248,5 @@ public class BlockLight_v1_14_R1 extends BlockLight {
             }
         };
     }
+    */
 }

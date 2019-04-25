@@ -72,8 +72,9 @@ public class dInventory implements dObject, Notable, Adjustable {
                     InventoryScriptHelper.tempInventoryScripts.get(inventory));
         }
         // Use the map to get notable inventories
-        if (InventoryScriptHelper.notableInventories.containsKey(inventory.getTitle())) {
-            return InventoryScriptHelper.notableInventories.get(inventory.getTitle());
+        String title = NMSHandler.getInstance().getTitle(inventory);
+        if (InventoryScriptHelper.notableInventories.containsKey(title)) {
+            return InventoryScriptHelper.notableInventories.get(title);
         }
         // Iterate through offline player inventories
         for (Map.Entry<UUID, PlayerInventory> inv : ImprovedOfflinePlayer.offlineInventories.entrySet()) {
@@ -130,7 +131,7 @@ public class dInventory implements dObject, Notable, Adjustable {
     public static int inventoryNameNotableMax = 32 - inventoryNameNotableRequired;
 
     public void makeUnique(String id) {
-        String title = inventory.getTitle();
+        String title = NMSHandler.getInstance().getTitle(inventory);
         if (title == null || title.startsWith("container.")) {
             title = inventory.getType().getDefaultTitle();
         }
@@ -283,7 +284,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             else if (type.equals("workbench")) {
                 if (dPlayer.matches(holder)) {
                     dInventory workbench = dPlayer.valueOf(holder).getWorkbench();
-                    if (workbench != null) {
+                    if (workbench == null) {
                         if (!silent) {
                             dB.echoError("Value of dInventory returning null (" + string + ")." +
                                     " Specified player does not have an open workbench.");
@@ -459,7 +460,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         if (!(getIdType().equals("generic") || getIdType().equals("script")) || title == null) {
             return;
         }
-        if (inventory != null && inventory.getTitle().equals(title)) {
+        if (inventory != null && NMSHandler.getInstance().getTitle(inventory).equals(title)) {
             return;
         }
         if (inventory == null) {
@@ -469,7 +470,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         }
         else if (notableColors != null) {
             title += notableColors;
-            InventoryScriptHelper.notableInventories.remove(inventory.getTitle());
+            InventoryScriptHelper.notableInventories.remove(NMSHandler.getInstance().getTitle(inventory));
             InventoryScriptHelper.notableInventories.put(title, this);
         }
         ItemStack[] contents = inventory.getContents();
@@ -572,7 +573,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         else {
             newContents = oldContents;
         }
-        String title = inventory.getTitle();
+        String title = NMSHandler.getInstance().getTitle(inventory);
         inventory = Bukkit.getServer().createInventory(null, size, (title != null ? title : inventory.getType().getDefaultTitle()));
         inventory.setContents(newContents);
         loadIdentifiers();
@@ -1388,7 +1389,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             int attribs = 1;
 
             InventoryType type = inventory.getType();
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, inventory.getTitle()));
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, type == InventoryType.PLAYER ? InventoryType.CHEST : type, NMSHandler.getInstance().getTitle(inventory)));
             ItemStack[] contents = getStorageContents();
             if (dummyInv.getInventoryType() == InventoryType.CHEST) {
                 dummyInv.setSize(contents.length);
@@ -1437,7 +1438,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             int attribs = 1;
             int qty = 1;
 
-            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), inventory.getTitle()));
+            dInventory dummyInv = new dInventory(Bukkit.createInventory(null, inventory.getType(), NMSHandler.getInstance().getTitle(inventory)));
             if (inventory.getType() == InventoryType.CHEST) {
                 dummyInv.setSize(inventory.getSize());
             }
