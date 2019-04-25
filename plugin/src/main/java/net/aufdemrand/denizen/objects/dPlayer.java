@@ -54,6 +54,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
     // @description
     // A dPlayer represents a player in the game.
     //
+    // For format info, see <@link language p@>
+    //
     // -->
 
     /////////////////////
@@ -105,6 +107,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
     // p@ refers to the 'object identifier' of a dPlayer. The 'p@' is notation for Denizen's Object
     // Fetcher. The only valid constructor for a dPlayer is the UUID of the player the object should be
     // associated with.
+    //
+    // For general info, see <@link language dPlayer>
     //
     // -->
 

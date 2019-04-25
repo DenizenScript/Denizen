@@ -30,6 +30,8 @@ public class dMaterial implements dObject, Adjustable {
     // @description
     // A dMaterial represents a material (a type of block or item).
     //
+    // For format info, see <@link language m@>
+    //
     // -->
 
     // <--[language]
@@ -39,6 +41,8 @@ public class dMaterial implements dObject, Adjustable {
     // m@ refers to the 'object identifier' of a dMaterial. The 'm@' is notation for Denizen's Object
     // Fetcher. The constructor for a dMaterial is the material type name.
     // For example, 'm@stick'.
+    //
+    // For general info, see <@link language dMaterial>
     //
     // -->
 

@@ -37,13 +37,14 @@ public class dTrade implements dObject, Adjustable {
     // first trade offers a sponge for two emeralds for a sponge, can be used up to 10 times, and offers XP upon a
     // successful transaction. The second trade has zero maximum uses and displays a barrier.
     //
-    //
     // <code>
     // open two trades:
     //     type: task
     //     script:
     //     - opentrades li@trade@trade[max_uses=10;inputs=i@emerald[quantity=2];result=i@sponge|trade@trade[result=i@barrier]
     // </code>
+    //
+    // For format info, see <@link language trade@>
     // -->
 
     // <--[language]
@@ -52,6 +53,8 @@ public class dTrade implements dObject, Adjustable {
     // @description
     // trade@ refers to the 'object identifier' of a dTrade. The 'trade@' is notation for Denizen's Object
     // Fetcher. The constructor for a dNPC is just the text 'trade'. All other data is specified through properties.
+    //
+    // For general info, see <@link language Merchant Trades>
     //
     // -->
 

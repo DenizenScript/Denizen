@@ -47,6 +47,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     // Inventories can be generically designed using inventory script containers,
     // and can be modified using the inventory command.
     //
+    // For format info, see <@link language in@>
+    //
     // -->
 
     // <--[language]
@@ -58,6 +60,8 @@ public class dInventory implements dObject, Notable, Adjustable {
     //
     // Valid inventory type classifications:
     // "npc", "player", "crafting", "enderchest", "workbench", "entity", "location", "generic"
+    //
+    // For general info, see <@link language dInventory>
     //
     // -->
 

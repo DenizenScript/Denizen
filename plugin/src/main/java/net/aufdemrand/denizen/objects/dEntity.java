@@ -50,6 +50,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     // Note that players and NPCs are valid dEntities, but are generally represented by the more specific
     // dPlayer and dNPC objects.
     //
+    // For format info, see <@link language e@>
+    //
     // -->
 
     // <--[language]
@@ -59,6 +61,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     // e@ refers to the 'object identifier' of a dEntity. The 'e@' is notation for Denizen's Object
     // Fetcher. The constructor for a dEntity is a spawned entity's UUID, or an entity type.
     // For example, 'e@zombie'.
+    //
+    // For general info, see <@link language dEntity>
     //
     // -->
 

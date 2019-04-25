@@ -51,6 +51,8 @@ public class dWorld implements dObject, Adjustable {
     // @description
     // A dWorld represents a world on the server.
     //
+    // For format info, see <@link language w@>
+    //
     // -->
 
     // <--[language]
@@ -61,6 +63,8 @@ public class dWorld implements dObject, Adjustable {
     // Fetcher. The only valid constructor for a dWorld is the name of the world it should be
     // associated with. For example, to reference the world named 'world1', use w@world1.
     // World names are case insensitive.
+    //
+    // For general info, see <@link language dWorld>
     // -->
 
 

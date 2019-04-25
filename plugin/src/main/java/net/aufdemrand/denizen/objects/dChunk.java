@@ -27,6 +27,8 @@ public class dChunk implements dObject, Adjustable {
     // @description
     // A dChunk represents a chunk in the world.
     //
+    // For format info, see <@link language ch@>
+    //
     // -->
 
     // <--[language]
@@ -49,6 +51,8 @@ public class dChunk implements dObject, Adjustable {
     //
     // For example, block at X,Z 32,67 is in the chunk at X,Z 2,4
     // And the block at X,Z -32,-67 is in the chunk at X,Z -2,-5
+    //
+    // For general info, see <@link language dChunk>
     //
     // -->
 

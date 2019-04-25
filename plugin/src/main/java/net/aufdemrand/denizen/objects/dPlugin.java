@@ -18,6 +18,8 @@ public class dPlugin implements dObject {
     // @description
     // A dPlugin represents a Bukkit plugin on the server.
     //
+    // For format info, see <@link language pl@>
+    //
     // -->
 
     // <--[language]
@@ -27,6 +29,8 @@ public class dPlugin implements dObject {
     // pl@ refers to the 'object identifier' of a dPlugin. The 'pl@' is notation for Denizen's Object
     // Fetcher. The constructor for a dPlugin is the plugin's registered name.
     // For example, 'pl@Denizen'.
+    //
+    // For general info, see <@link language dPlugin>
     //
     // -->
 

@@ -24,6 +24,8 @@ public class dBiome implements dObject, Adjustable {
     // A list of all valid Bukkit biomes can found be at
     // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/block/Biome.html>
     //
+    // For format info, see <@link language b@>
+    //
     // -->
 
     // <--[language]
@@ -33,6 +35,8 @@ public class dBiome implements dObject, Adjustable {
     // b@ refers to the 'object identifier' of a dBiome. The 'b@' is notation for Denizen's Object
     // Fetcher. The constructor for a dBiome is the name of a valid biome (in Bukkit).
     // For example, 'b@desert'.
+    //
+    // For general info, see <@link language dBiome>
     //
     // -->
 

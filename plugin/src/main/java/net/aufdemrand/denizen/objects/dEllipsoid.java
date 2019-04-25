@@ -25,6 +25,8 @@ public class dEllipsoid implements dObject, Notable {
     // The word 'ellipsoid' means a less strict sphere.
     // Basically: an "ellipsoid" is to a 3D "sphere" what an "ellipse" (or "oval") is to a 2D "circle".
     //
+    // For format info, see <@link language ellipsoid@>
+    //
     // -->
 
     // <--[language]
@@ -34,6 +36,8 @@ public class dEllipsoid implements dObject, Notable {
     // ellipsoid@ refers to the 'object identifier' of a dEllipsoid. The 'ellipsoid@' is notation for Denizen's Object
     // Fetcher. The constructor for a dEllipsoid is <x>,<y>,<z>,<world>,<x-radius>,<y-radius>,<z-radius>
     // For example, 'ellipsoid@1,2,3,space,7,7,7'.
+    //
+    // For general info, see <@link language dEllipsoid>
     //
     // -->
 

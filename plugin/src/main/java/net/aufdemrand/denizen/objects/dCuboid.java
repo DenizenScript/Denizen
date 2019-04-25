@@ -44,6 +44,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     // One 'cuboid' consists of two points: the low point and a high point.
     // a dCuboid can contain as many cuboids within itself as needed (this allows forming more complex shapes from a single dCuboid).
     //
+    // For format info, see <@link language cu@>
+    //
     // -->
 
     // <--[language]
@@ -53,6 +55,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     // cu@ refers to the 'object identifier' of a dCuboid. The 'cu@' is notation for Denizen's Object
     // Fetcher. The constructor for a dCuboid is <x>,<y>,<z>,<world>|...
     // For example, 'cu@1,2,3,space|4,5,6,space'.
+    //
+    // For general info, see <@link language dCuboid>
     //
     // -->
 

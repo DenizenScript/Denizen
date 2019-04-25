@@ -23,6 +23,8 @@ public class dColor implements dObject {
     //
     // Note that a dColor is NOT a base dye color (used by wool, etc). That is handled by a separate naming system.
     //
+    // For format info, see <@link language co@>
+    //
     // -->
 
     // <--[language]
@@ -37,6 +39,8 @@ public class dColor implements dObject {
     // <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Color.html>
     //
     // Red/green/blue values are each from 0 to 256.
+    //
+    // For general info, see <@link language dColor>
     //
     // -->
 

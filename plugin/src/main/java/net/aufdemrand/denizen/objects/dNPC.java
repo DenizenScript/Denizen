@@ -49,6 +49,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     // @description
     // A dNPC represents an NPC configured through Citizens.
     //
+    // For format info, see <@link language n@>
+    //
     // -->
 
     // <--[language]
@@ -58,6 +60,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     // n@ refers to the 'object identifier' of a dNPC. The 'n@' is notation for Denizen's Object
     // Fetcher. The constructor for a dNPC is the NPC's id number.
     // For example, 'n@5'.
+    //
+    // For general info, see <@link language dNPC>
     //
     // -->
 

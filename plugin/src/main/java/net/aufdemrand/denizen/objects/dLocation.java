@@ -52,6 +52,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     // @description
     // A dLocation represents a point in the world.
     //
+    // For format info, see <@link language l@>
+    //
     // -->
 
     // <--[language]
@@ -64,6 +66,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     // Note that you can leave off the world, and/or pitch and yaw, and/or the z value.
     // You cannot leave off both the z and the pitch+yaw at the same time.
     // For example, 'l@1,2.15,3,45,90,space' or 'l@7.5,99,3.2'
+    //
+    // For general info, see <@link language dLocation>
     //
     // -->
 
