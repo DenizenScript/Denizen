@@ -59,12 +59,12 @@ public class BiomeNMS_v1_13_R2 extends BiomeNMS {
 
     @Override
     public void setHumidity(float humidity) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "C", biomeBase, humidity);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "aO", biomeBase, humidity);
     }
 
     @Override
     public void setTemperature(float temperature) {
-        ReflectionHelper.setFieldValue(BiomeBase.class, "B", biomeBase, temperature);
+        ReflectionHelper.setFieldValue(BiomeBase.class, "aN", biomeBase, temperature);
     }
 
     @Override
