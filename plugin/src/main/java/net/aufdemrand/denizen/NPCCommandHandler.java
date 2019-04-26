@@ -503,7 +503,7 @@ public class NPCCommandHandler {
         FishingTrait trait = npc.getTrait(FishingTrait.class);
 
         if (trait.isFishing()) {
-            Messaging.sendError(sender, npc.getName() + " is already fishing!");
+            Messaging.sendError(sender, npc.getName() + " is already fishing! Use '/npc stopfishing' to stop.");
             return;
         }
 
@@ -540,7 +540,7 @@ public class NPCCommandHandler {
         else {
             trait.startFishing();
         }
-
+        Messaging.send(sender, npc.getName() + " is now fishing.");
     }
 
     /*
@@ -565,6 +565,7 @@ public class NPCCommandHandler {
 
         trait.stopFishing();
         npc.removeTrait(FishingTrait.class);
+        Messaging.send(sender, npc.getName() + " is no longer fishing.");
     }
 
     /*
