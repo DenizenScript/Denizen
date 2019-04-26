@@ -91,7 +91,7 @@ public class FakeBlock {
         }
         cancelTime = -1;
         material = null;
-        location.getBlock().getState().update();
+        location.getBlockState().update();
         blocks.get(player.getOfflinePlayer().getUniqueId()).remove(location);
     }
 

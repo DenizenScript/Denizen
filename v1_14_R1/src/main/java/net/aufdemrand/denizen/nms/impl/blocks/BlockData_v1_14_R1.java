@@ -37,7 +37,8 @@ public class BlockData_v1_14_R1 implements BlockData {
     }
 
     public BlockData_v1_14_R1(Block block) {
-        blockData = block.getBlockData();
+        ModernBlockData mbd = new ModernBlockData(block);
+        blockData = mbd.data;
         TileEntity te = ((CraftWorld) block.getWorld()).getHandle().getTileEntity(
                 new BlockPosition(block.getX(), block.getY(), block.getZ()));
         if (te != null) {

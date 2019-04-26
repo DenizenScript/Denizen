@@ -1,12 +1,55 @@
 package net.aufdemrand.denizen.nms.helpers;
 
 import net.aufdemrand.denizen.nms.interfaces.ChunkHelper;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.*;
+import org.bukkit.World;
 import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 
+import java.lang.reflect.Field;
+
 public class ChunkHelper_v1_14_R1 implements ChunkHelper {
+
+    public final static Field chunkProviderServerThreadField;
+
+    static {
+        chunkProviderServerThreadField = ReflectionHelper.getFields(ChunkProviderServer.class).get("serverThread");
+    }
+
+    Thread resetServerThread;
+
+    @Override
+    public void changeChunkServerThread(World world) {
+        if (resetServerThread != null) {
+            return;
+        }
+        ChunkProviderServer provider = ((CraftWorld) world).getHandle().getChunkProvider();
+        try {
+            resetServerThread = (Thread) chunkProviderServerThreadField.get(provider);
+            chunkProviderServerThreadField.set(provider, Thread.currentThread());
+        }
+        catch (IllegalAccessException ex) {
+            dB.echoError(ex);
+        }
+    }
+
+    @Override
+    public void restoreServerThread(World world) {
+        if (resetServerThread == null) {
+            return;
+        }
+        ChunkProviderServer provider = ((CraftWorld) world).getHandle().getChunkProvider();
+        try {
+            chunkProviderServerThreadField.set(provider, resetServerThread);
+            resetServerThread = null;
+        }
+        catch (IllegalAccessException ex) {
+            dB.echoError(ex);
+        }
+    }
 
     @Override
     public void refreshChunkSections(Chunk chunk) {

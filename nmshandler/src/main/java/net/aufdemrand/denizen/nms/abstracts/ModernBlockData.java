@@ -18,7 +18,9 @@ public class ModernBlockData {
     }
 
     public ModernBlockData(Block block) {
+        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
         this.data = block.getBlockData();
+        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
     }
 
     public ModernBlockData(BlockState block) {

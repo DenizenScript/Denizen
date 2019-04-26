@@ -277,29 +277,36 @@ public class Handler_v1_14_R1 extends NMSHandler {
 
     @Override
     public Boolean getSwitchState(Block b) {
-        if (b.getBlockData() instanceof Openable) {
-            return ((Openable) b.getBlockData()).isOpen();
+        ModernBlockData mbd = new ModernBlockData(b);
+        if (mbd.data instanceof Openable) {
+            return ((Openable) mbd.data).isOpen();
         }
-        else if (b.getBlockData() instanceof Powerable) {
-            return ((Powerable) b.getBlockData()).isPowered();
+        else if (mbd.data instanceof Powerable) {
+            return ((Powerable) mbd.data).isPowered();
         }
         return null;
     }
 
     @Override
     public boolean setSwitchState(Location interactLocation, boolean state) {
-        if (interactLocation.getBlock().getBlockData() instanceof Openable) {
-            Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
+        Block block = interactLocation.getBlock();
+        ModernBlockData mbd = new ModernBlockData(block);
+        if (mbd.data instanceof Openable) {
+            Openable newState = ((Openable) mbd.data);
             newState.setOpen(state);
+            NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
             interactLocation.getBlock().setBlockData(newState, true);
             interactLocation.getBlock().getState().update(true, true);
+            NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
             return true;
         }
-        else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
-            Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
+        else if (mbd.data instanceof Powerable) {
+            Powerable newState = ((Powerable) mbd.data);
             newState.setPowered(state);
+            NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
             interactLocation.getBlock().setBlockData(newState, true);
             interactLocation.getBlock().getState().update(true, true);
+            NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
             return true;
         }
         return false;

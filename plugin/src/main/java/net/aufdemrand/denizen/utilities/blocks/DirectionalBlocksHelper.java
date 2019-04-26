@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities.blocks;
 
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import org.bukkit.block.Block;
@@ -12,18 +13,20 @@ import org.bukkit.util.Vector;
 public class DirectionalBlocksHelper {
 
     public static boolean isBedTopHalf(Block b) {
-        if (b.getBlockData() instanceof Bed) {
-            return ((Bed) b.getBlockData()).getPart() == Bed.Part.HEAD;
+        ModernBlockData mbd = new ModernBlockData(b);
+        if (mbd.data instanceof Bed) {
+            return ((Bed) mbd.data).getPart() == Bed.Part.HEAD;
         }
         return false;
     }
 
     public static BlockFace getFace(Block b) {
-        if (b.getBlockData() instanceof Directional) {
-            return ((Directional) b.getBlockData()).getFacing();
+        ModernBlockData mbd = new ModernBlockData(b);
+        if (mbd.data instanceof Directional) {
+            return ((Directional) mbd.data).getFacing();
         }
-        else if (b.getBlockData() instanceof Rotatable) {
-            return ((Rotatable) b.getBlockData()).getRotation();
+        else if (mbd.data instanceof Rotatable) {
+            return ((Rotatable) mbd.data).getRotation();
         }
         return null;
     }
@@ -37,13 +40,14 @@ public class DirectionalBlocksHelper {
     }
 
     public static void setFace(Block b, BlockFace face) {
-        if (b.getBlockData() instanceof Directional) {
-            Directional dir = (Directional) b.getBlockData();
+        ModernBlockData mbd = new ModernBlockData(b);
+        if (mbd.data instanceof Directional) {
+            Directional dir = (Directional) mbd.data;
             dir.setFacing(face);
             b.setBlockData(dir);
         }
-        else if (b.getBlockData() instanceof Rotatable) {
-            Rotatable dir = (Rotatable) b.getBlockData();
+        else if (mbd.data instanceof Rotatable) {
+            Rotatable dir = (Rotatable) mbd.data;
             dir.setRotation(face);
             b.setBlockData(dir);
         }

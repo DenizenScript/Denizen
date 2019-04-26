@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.nms.helpers;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.impl.blocks.BlockData_v1_14_R1;
 import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_14_R1;
@@ -82,12 +83,15 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
         }
         TileEntitySkull tileEntity = getTE((CraftSkull) skull);
         tileEntity.setGameProfile(gameProfile);
-        skull.getBlock().getState().update();
+        skull.update();
     }
 
     @Override
     public CompoundTag getNbtData(Block block) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
+        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        org.bukkit.block.BlockState state = block.getState();
+        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) state);
         if (tileEntity == null) {
             return null;
         }
@@ -96,7 +100,10 @@ public class BlockHelper_v1_14_R1 implements BlockHelper {
 
     @Override
     public void setNbtData(Block block, CompoundTag compoundTag) {
-        TileEntity tileEntity = getTE((CraftBlockEntityState) block.getState());
+        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        org.bukkit.block.BlockState state = block.getState();
+        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        TileEntity tileEntity = getTE((CraftBlockEntityState) state);
         if (tileEntity == null) {
             return;
         }

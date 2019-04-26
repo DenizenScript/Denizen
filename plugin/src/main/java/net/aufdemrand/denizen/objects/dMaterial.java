@@ -250,21 +250,23 @@ public class dMaterial implements dObject, Adjustable {
     }
 
     public dMaterial(BlockData block) {
-        this.material = block.getMaterial();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             this.modernData = block.modern();
+            this.material = modernData.getMaterial();
         }
         else {
+            this.material = block.getMaterial();
             this.data = block.getData();
         }
     }
 
     public dMaterial(Block block) {
-        this.material = block.getType();
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             this.modernData = new ModernBlockData(block);
+            this.material = modernData.getMaterial();
         }
         else {
+            this.material = block.getType();
             this.data = block.getData();
         }
     }

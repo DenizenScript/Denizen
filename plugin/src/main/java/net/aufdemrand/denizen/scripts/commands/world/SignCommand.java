@@ -111,7 +111,7 @@ public class SignCommand extends AbstractCommand {
                 // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
                 if (direction != null) {
-                    Utilities.setSignRotation(sign.getState(), direction);
+                    Utilities.setSignRotation(dLocation.getBlockStateFor(sign), direction);
                 }
             }
         }
@@ -125,7 +125,7 @@ public class SignCommand extends AbstractCommand {
                 setWallSign(sign, bf);
             }
         }
-        BlockState signState = sign.getState();
+        BlockState signState = dLocation.getBlockStateFor(sign);
 
         Utilities.setSignLines((Sign) signState, text.toArray(4));
     }

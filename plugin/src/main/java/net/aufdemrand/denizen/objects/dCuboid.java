@@ -462,7 +462,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         if (materials == null) {
             return true;
         }
-        dMaterial mat = OldMaterialsHelper.getMaterialFrom(loc.getBlock().getType(), loc.getBlock().getData());
+        dMaterial mat = new dMaterial(loc.getBlock());
         for (dMaterial material : materials) {
             if (mat.equals(material) || (mat.getMaterial() == material.getMaterial()
                     && (material.getData() == null || material.getData() == 0))) { // TODO: only if null?
@@ -504,8 +504,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                         if (!filter.isEmpty()) { // TODO: Should 'filter' exist?
                             // Check filter
                             for (dObject material : filter) {
-                                if (((dMaterial) material).matchesMaterialData(
-                                        new MaterialData(loc.getBlock().getType(), loc.getBlock().getData()))) {
+                                if (((dMaterial) material).matchesBlock(loc.getBlock())) {
                                     if (matchesMaterialList(loc, materials)) {
                                         list.add(loc);
                                     }
