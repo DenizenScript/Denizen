@@ -1529,7 +1529,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         ItemScriptHelper.item_scripts.clear();
         ItemScriptHelper.item_scripts_by_hash_id.clear();
         InventoryScriptHelper.inventory_scripts.clear();
-        tT = Integer.MAX_VALUE;
     }
 
     @Override
@@ -1637,14 +1636,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return new BukkitScriptEntryData(null, null);
     }
 
-    int tT = Integer.MAX_VALUE;
-
     @Override
     public int getTagTimeout() {
-        if (tT == Integer.MAX_VALUE) {
-            tT = Settings.tagTimeout();
-        }
-        return tT;
+        return Settings.tagTimeout();
     }
 
     @Override
