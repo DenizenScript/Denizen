@@ -15,6 +15,7 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -134,13 +135,16 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @EventHandler
     public void stopUnload(ChunkUnloadEvent e) {
+        if (!(e instanceof Cancellable)) { // TODO: Not cancellable in 1.14
+            return;
+        }
         String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ();
         if (chunkDelays.containsKey(chunkString)) {
             if (chunkDelays.get(chunkString) == 0) {
-                e.setCancelled(true);
+                ((Cancellable) e).setCancelled(true);
             }
             else if (System.currentTimeMillis() < chunkDelays.get(chunkString)) {
-                e.setCancelled(true);
+                ((Cancellable) e).setCancelled(true);
             }
             else {
                 chunkDelays.remove(chunkString);

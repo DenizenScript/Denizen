@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -71,7 +72,7 @@ public class EntityScriptHelper implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent event) {
-        if (event.isCancelled()) {
+        if (event instanceof Cancellable &&((Cancellable) event).isCancelled()) {
             return;
         }
         // TODO: This doesn't work. Awaiting Entity Despawn Event PR's for Bukkit:
