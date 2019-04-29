@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,6 +54,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     Element click_type;
     Element hand;
     dLocation relative;
+    dMaterial blockMaterial;
 
     private boolean couldMatchIn(String lower) {
         int index = CoreUtilities.split(lower, ' ').indexOf("in");
@@ -151,11 +153,10 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        dMaterial material = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : null;
         String mat = path.eventArgLowerAt(index + 1);
         if (mat.length() > 0
                 && !withHelpList.contains(mat)
-                && !tryMaterial(material, mat)) {
+                && !tryMaterial(blockMaterial, mat)) {
             return false;
         }
 
@@ -218,6 +219,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         if (event.getAction() == Action.PHYSICAL) {
             return;
         }
+        blockMaterial = event.hasBlock() ? new dMaterial(event.getClickedBlock()) : new dMaterial(Material.AIR);
         hand = new Element(event.getHand().name());
         item = new dItem(event.getItem());
         location = event.hasBlock() ? new dLocation(event.getClickedBlock().getLocation()) : null;
