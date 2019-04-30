@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -46,7 +47,7 @@ public class EntityPickupStatus implements Property {
 
     @Override
     public String getPropertyString() {
-        return ((Arrow) dentity.getBukkitEntity()).getPickupStatus().toString();
+        return NMSHandler.getInstance().getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity());
     }
 
     @Override
@@ -74,7 +75,7 @@ public class EntityPickupStatus implements Property {
         // If the entity is an arrow or trident, returns the pickup status of the arrow/trident.
         // -->
         if (attribute.startsWith("pickup_status")) {
-            return new Element(((Arrow) dentity.getBukkitEntity()).getPickupStatus().toString())
+            return new Element(NMSHandler.getInstance().getEntityHelper().getArrowPickupStatus(dentity.getBukkitEntity()))
                     .getAttribute(attribute.fulfill(1));
         }
 
@@ -95,8 +96,8 @@ public class EntityPickupStatus implements Property {
         // <e@entity.pickup_status>
         // -->
 
-        if (mechanism.matches("pickup_status") && mechanism.requireEnum(false, Arrow.PickupStatus.values())) {
-            ((Arrow) dentity.getBukkitEntity()).setPickupStatus(Arrow.PickupStatus.valueOf(mechanism.getValue().asString().toUpperCase()));
+        if (mechanism.matches("pickup_status")) {
+            NMSHandler.getInstance().getEntityHelper().setArrowPickupStatus(dentity.getBukkitEntity(), mechanism.getValue().asString().toUpperCase());
         }
     }
 }

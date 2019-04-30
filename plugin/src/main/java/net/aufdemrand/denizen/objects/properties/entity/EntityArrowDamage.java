@@ -48,12 +48,7 @@ public class EntityArrowDamage implements Property {
 
     @Override
     public String getPropertyString() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-            return String.valueOf(((Arrow) dentity.getBukkitEntity()).getDamage());
-        }
-        else {
-            return String.valueOf(((Arrow) dentity.getBukkitEntity()).spigot().getDamage());
-        }
+        return String.valueOf(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()));
     }
 
     @Override
@@ -82,14 +77,8 @@ public class EntityArrowDamage implements Property {
         // NOTE: The actual damage dealt by the arrow/trident may be different depending on the projectile's flight speed.
         // -->
         if (attribute.startsWith("damage")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                return new Element(((Arrow) dentity.getBukkitEntity()).getDamage())
-                        .getAttribute(attribute.fulfill(1));
-            }
-            else {
-                return new Element(((Arrow) dentity.getBukkitEntity()).spigot().getDamage())
-                        .getAttribute(attribute.fulfill(1));
-            }
+            return new Element(NMSHandler.getInstance().getEntityHelper().getArrowDamage(dentity.getBukkitEntity()))
+                    .getAttribute(attribute.fulfill(1));
         }
 
         return null;
@@ -109,12 +98,7 @@ public class EntityArrowDamage implements Property {
         // -->
 
         if (mechanism.matches("damage") && mechanism.requireDouble()) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                ((Arrow) dentity.getBukkitEntity()).setDamage(mechanism.getValue().asDouble());
-            }
-            else {
-                ((Arrow) dentity.getBukkitEntity()).spigot().setDamage(mechanism.getValue().asDouble());
-            }
+            NMSHandler.getInstance().getEntityHelper().setArrowDamage(dentity.getBukkitEntity(), mechanism.getValue().asDouble());
         }
     }
 }

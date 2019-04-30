@@ -40,6 +40,26 @@ public class EntityHelper_v1_13_R2 extends EntityHelper {
      */
 
     @Override
+    public String getArrowPickupStatus(Entity entity) {
+        return ((Arrow) entity).getPickupStatus().name();
+    }
+
+    @Override
+    public void setArrowPickupStatus(Entity entity, String status) {
+        ((Arrow) entity).setPickupStatus(Arrow.PickupStatus.valueOf(status));
+    }
+
+    @Override
+    public double getArrowDamage(Entity arrow) {
+        return ((Arrow) arrow).getDamage();
+    }
+
+    @Override
+    public void setArrowDamage(Entity arrow, double damage) {
+        ((Arrow) arrow).setDamage(damage);
+    }
+
+    @Override
     public void setCarriedItem(Enderman entity, ItemStack item) {
         entity.setCarriedBlock(Bukkit.createBlockData(item.getType()));
     }

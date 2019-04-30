@@ -36,6 +36,26 @@ public class EntityHelper_v1_12_R1 extends EntityHelper {
      */
 
     @Override
+    public String getArrowPickupStatus(Entity entity) {
+        return ((Arrow) entity).getPickupStatus().name();
+    }
+
+    @Override
+    public void setArrowPickupStatus(Entity entity, String status) {
+        ((Arrow) entity).setPickupStatus(Arrow.PickupStatus.valueOf(status));
+    }
+
+    @Override
+    public double getArrowDamage(Entity arrow) {
+        return ((Arrow) arrow).spigot().getDamage();
+    }
+
+    @Override
+    public void setArrowDamage(Entity arrow, double damage) {
+        ((Arrow) arrow).spigot().setDamage(damage);
+    }
+
+    @Override
     public int getBodyArrows(Entity entity) {
         // https://wiki.vg/Entity_metadata#Living
         return ((CraftEntity) entity).getHandle().getDataWatcher().get(DataWatcherRegistry.b.a(10));

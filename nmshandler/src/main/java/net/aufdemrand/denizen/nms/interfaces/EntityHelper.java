@@ -34,6 +34,14 @@ public abstract class EntityHelper {
 
     public abstract void setBodyArrows(Entity entity, int numArrows);
 
+    public abstract double getArrowDamage(Entity arrow);
+
+    public abstract void setArrowDamage(Entity arrow, double damage);
+
+    public abstract String getArrowPickupStatus(Entity entity);
+
+    public abstract void setArrowPickupStatus(Entity entity, String status);
+
     public abstract Entity getFishHook(PlayerFishEvent event);
 
     public abstract void forceInteraction(Player player, Location location);
