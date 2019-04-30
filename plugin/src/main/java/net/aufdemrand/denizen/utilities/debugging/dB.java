@@ -358,7 +358,7 @@ public class dB {
         else {
             dB.echoError(source, "Internal exception was thrown!");
             StringBuilder errorMesage = new StringBuilder();
-            String prefix = ConsoleSender.dateFormat.format(new Date()) + " [SEVERE] ";
+            String prefix = "[Error Continued] ";
             boolean first = true;
             while (ex != null) {
                 errorMesage.append(prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n");
