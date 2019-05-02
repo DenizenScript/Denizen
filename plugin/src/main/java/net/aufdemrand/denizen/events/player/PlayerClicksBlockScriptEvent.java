@@ -113,18 +113,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
         }
 
         String with = path.eventArgLowerAt(index + 1);
-        if (with != null) {
-            if (with.equals("item")) {
-                return true;
-            }
-            dItem it = dItem.valueOf(with, false);
-            if (it == null) {
-                dB.echoError("Invalid WITH item in " + getName() + " for '" + path.event + "' in " + path.container.getName());
-                return false;
-            }
-            if (held == null || !tryItem(held, with)) {
-                return false;
-            }
+        if (with != null && !tryItem(held, with)) {
+            return false;
         }
         return true;
     }
