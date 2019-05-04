@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Duration;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,6 +11,7 @@ public class Settings {
     public static void refillCache() {
         FileConfiguration config = DenizenAPI.getCurrentInstance().getConfig();
         cache_showDebug = config.getBoolean("Debug.Show", true);
+        dB.showDebug = cache_showDebug;
         cache_overrideHelp = config.getBoolean("Debug.Override help", true);
         cache_useDefaultScriptPath = config.getBoolean("Scripts location.Use default script folder", true);
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);

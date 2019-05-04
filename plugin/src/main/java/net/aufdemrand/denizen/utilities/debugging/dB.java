@@ -65,7 +65,7 @@ import java.util.function.Consumer;
  */
 public class dB {
 
-    public static boolean showDebug = Settings.showDebug();
+    public static boolean showDebug = true;
     public static boolean showStackTraces = true;
     public static boolean showColor = true;
     public static boolean debugOverride = false;
