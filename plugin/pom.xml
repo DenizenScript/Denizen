@@ -104,7 +104,7 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <includes>
                     <include>*.yml</include>
-                    <include>*.dscript</include>
+                    <include>*.dsc</include>
                 </includes>
             </resource>
         </resources>

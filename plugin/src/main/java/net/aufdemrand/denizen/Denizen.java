@@ -1432,7 +1432,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public List<net.aufdemrand.denizencore.utilities.YamlConfiguration> getOutsideScripts() {
         List<net.aufdemrand.denizencore.utilities.YamlConfiguration> files = new ArrayList<net.aufdemrand.denizencore.utilities.YamlConfiguration>();
         try {
-            files.add(ScriptHelper.loadConfig("Denizen.jar/util.dscript", getResource("util.dscript")));
+            files.add(ScriptHelper.loadConfig("Denizen.jar/util.dsc", getResource("util.dsc")));
         }
         catch (IOException e) {
             dB.echoError(e);
