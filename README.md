@@ -1,7 +1,7 @@
 Denizen: Helpful Citizens for Bukkit!
 -------------------------------------
 
-**Version 1.0.5**: Compatible with Spigot 1.10.2, 1.11.2, 1.12.2, 1.13.2, and 1.14!
+**Version 1.0.6**: Compatible with Spigot 1.12.2, 1.13.2, and 1.14!
 
 #### Download Links:
 

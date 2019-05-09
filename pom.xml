@@ -6,7 +6,7 @@
     <groupId>net.aufdemrand</groupId>
     <artifactId>denizen-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.6-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,7 +15,7 @@
         <dcore.version>1.40-SNAPSHOT</dcore.version>
         <BUILD_NUMBER>Unknown</BUILD_NUMBER>
         <BUILD_CLASS>CUSTOM</BUILD_CLASS>
-        <DENIZEN_VERSION>1.0.5</DENIZEN_VERSION>
+        <DENIZEN_VERSION>1.0.6</DENIZEN_VERSION>
     </properties>
 
     <modules>

@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -209,7 +210,7 @@ public class ItemScriptHelper implements Listener {
         colors.append(ItemScriptHashID);
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] bytes = script.getBytes("UTF-8");
+            byte[] bytes = script.getBytes(StandardCharsets.UTF_8);
             md.update(bytes, 0, bytes.length);
             String hash = new BigInteger(1, md.digest()).toString(16);
             for (int i = 0; i < 16; i++) {

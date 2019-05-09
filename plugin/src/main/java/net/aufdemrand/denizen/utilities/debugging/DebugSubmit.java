@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class DebugSubmit extends Thread {
     public String recording;
@@ -91,7 +92,7 @@ public class DebugSubmit extends Thread {
                     + "\nOffline Players: " + (dPlayer.getAllPlayers().size() - playerCount)
                     + "\nMode: " + (Bukkit.getServer().getOnlineMode() ? "online" : "offline") + (bungee ? " (BungeeCoord)" : "")
                     + "\n\n") + recording)
-                    .getBytes("UTF-8"));
+                    .getBytes(StandardCharsets.UTF_8));
             // Wait for a response from the server
             in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
             // Record the response

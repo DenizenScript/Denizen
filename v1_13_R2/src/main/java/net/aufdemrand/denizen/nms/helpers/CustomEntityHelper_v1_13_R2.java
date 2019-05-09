@@ -24,6 +24,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.UUID;
 
@@ -126,7 +127,7 @@ public class CustomEntityHelper_v1_13_R2 implements CustomEntityHelper {
             String hash = null;
             try {
                 MessageDigest md = MessageDigest.getInstance("MD5");
-                byte[] bytes = teamName.getBytes("UTF-8");
+                byte[] bytes = teamName.getBytes(StandardCharsets.UTF_8);
                 md.update(bytes, 0, bytes.length);
                 hash = new BigInteger(1, md.digest()).toString(16).substring(0, 16);
             }
