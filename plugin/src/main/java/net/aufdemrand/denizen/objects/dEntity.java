@@ -1658,7 +1658,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the villager entity is trading.
         // -->
         if (attribute.startsWith("is_trading")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && entity instanceof Merchant) {
+            if (entity instanceof Merchant) {
                 return new Element(((Merchant) entity).isTrading()).getAttribute(attribute.fulfill(1));
             }
         }
@@ -1670,8 +1670,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns the player who is trading with the villager entity, or null if it is not trading.
         // -->
         if (attribute.startsWith("trading_with")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
-                    && entity instanceof Merchant
+            if (entity instanceof Merchant
                     && ((Merchant) entity).getTrader() != null) {
                 return new dEntity(((Merchant) entity).getTrader()).getAttribute(attribute.fulfill(1));
             }
@@ -1989,7 +1988,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // NOTE: The returned entity will not be spawned within the world,
         // so most operations are invalid unless the entity is first spawned in.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && attribute.startsWith("left_shoulder")) {
             return new dEntity(((HumanEntity) getLivingEntity()).getShoulderEntityLeft())
                     .getAttribute(attribute.fulfill(1));
@@ -2004,7 +2003,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // NOTE: The returned entity will not be spawned within the world,
         // so most operations are invalid unless the entity is first spawned in.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && attribute.startsWith("right_shoulder")) {
             return new dEntity(((HumanEntity) getLivingEntity()).getShoulderEntityRight())
                     .getAttribute(attribute.fulfill(1));
@@ -2295,7 +2294,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns whether or not the arrow/trident entity is in a block.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("is_in_block")) {
+        if (attribute.startsWith("is_in_block")) {
             if (getBukkitEntity() instanceof Arrow) {
                 return new Element(((Arrow) getBukkitEntity()).isInBlock()).getAttribute(attribute.fulfill(1));
             }
@@ -2309,7 +2308,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns the location of the block that the arrow/trident entity is attached to.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && attribute.startsWith("attached_block")) {
+        if (attribute.startsWith("attached_block")) {
             if (getBukkitEntity() instanceof Arrow) {
                 Block attachedBlock = ((Arrow) getBukkitEntity()).getAttachedBlock();
                 if (attachedBlock != null) {
@@ -2842,7 +2841,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Releases the player's left shoulder entity.
         // Only applies to player-typed entities.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("release_left_shoulder")) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityLeft();
             if (bukkitEnt != null) {
@@ -2863,7 +2862,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Releases the player's right shoulder entity.
         // Only applies to player-typed entities.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("release_right_shoulder")) {
             Entity bukkitEnt = ((HumanEntity) getLivingEntity()).getShoulderEntityRight();
             if (bukkitEnt != null) {
@@ -2889,7 +2888,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.left_shoulder>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("left_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {
@@ -2914,7 +2913,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @tags
         // <e@entity.right_shoulder>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && getLivingEntity() instanceof HumanEntity
+        if (getLivingEntity() instanceof HumanEntity
                 && mechanism.matches("right_shoulder")) {
             if (mechanism.hasValue()) {
                 if (mechanism.requireObject(dEntity.class)) {

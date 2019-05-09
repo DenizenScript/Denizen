@@ -128,10 +128,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - advancement "id:hello_world" "grant:<player>"
         //
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            registerCoreMember(AdvancementCommand.class,
-                    "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
-        }
+        registerCoreMember(AdvancementCommand.class,
+                "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
 
         // <--[command]
         // @Name Age
@@ -2553,10 +2551,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to force a player to trade with a villager.
         // - opentrades <def[villager_entity]>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            registerCoreMember(OpenTradesCommand.class,
-                    "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
-        }
+        registerCoreMember(OpenTradesCommand.class,
+                "OPENTRADES", "opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)", 1);
 
 
         // <--[command]
@@ -4001,10 +3997,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - toast "You finished a challenge!" frame:challenge icon:diamond
         //
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            registerCoreMember(ToastCommand.class,
-                    "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
-        }
+        registerCoreMember(ToastCommand.class,
+                "TOAST", "toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)", 1);
 
         // <--[command]
         // @Name Trait

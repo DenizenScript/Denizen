@@ -159,9 +159,6 @@ public abstract class NMSHandler {
     public HashMap<UUID, Vector> visiblePositions = new HashMap<>();
 
     public void forceAttachMove(Entity a, Entity b, Vector offset, boolean matchRotation) {
-        if (!getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            throw new RuntimeException("Unsupported forceAttachMove!");
-        }
         if (attachmentsA.containsKey(a.getUniqueId())) {
             attachments2.remove(attachmentsA.get(a.getUniqueId()));
             attachmentsA.remove(a.getUniqueId());

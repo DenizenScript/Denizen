@@ -32,8 +32,8 @@ public class EntityColor implements Property {
                 type == EntityType.OCELOT ||
                 type == EntityType.RABBIT ||
                 type == EntityType.LLAMA ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
-                        && (type == EntityType.PARROT || type == EntityType.SHULKER));
+                type == EntityType.PARROT ||
+                type == EntityType.SHULKER;
     }
 
     public static EntityColor getFrom(dObject entity) {
@@ -86,10 +86,10 @@ public class EntityColor implements Property {
         else if (type == EntityType.LLAMA) {
             return LlamaHelper.llamaColorName(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
+        else if (type == EntityType.PARROT) {
             return ParrotHelper.parrotColor(colored);
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.SHULKER) {
+        else if (type == EntityType.SHULKER) {
             return ShulkerHelper.getColor(colored).name();
         }
         else // Should never happen
@@ -241,10 +241,10 @@ public class EntityColor implements Property {
             else if (type == EntityType.LLAMA) {
                 LlamaHelper.setLlamaColor(colored, mechanism.getValue().asString());
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
+            else if (type == EntityType.PARROT) {
                 ParrotHelper.setParrotColor(colored, mechanism);
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.SHULKER
+            else if (type == EntityType.SHULKER
                     && mechanism.getValue().matchesEnum(DyeColor.values())) {
                 ShulkerHelper.setColor(colored, DyeColor.valueOf(mechanism.getValue().asString().toUpperCase()));
             }

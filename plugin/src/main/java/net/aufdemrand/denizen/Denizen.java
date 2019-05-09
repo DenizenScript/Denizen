@@ -689,9 +689,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClicksBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
-            }
+            ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
@@ -712,9 +710,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
-            }
+            ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
@@ -789,9 +785,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
             ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
             dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                ObjectFetcher.registerWithObjectFetcher(dTrade.class);     // trade@
-            }
+            ObjectFetcher.registerWithObjectFetcher(dTrade.class);     // trade@
             ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
             dWorld.registerTags(); // TODO: Automate this once all classes have tag registries
 
@@ -864,13 +858,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntitySize.class, dEntity.class);
             PropertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
             PropertyParser.registerProperty(EntitySpeed.class, dEntity.class);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                PropertyParser.registerProperty(EntitySpell.class, dEntity.class);
-            }
+            PropertyParser.registerProperty(EntitySpell.class, dEntity.class);
             PropertyParser.registerProperty(EntityTame.class, dEntity.class);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                PropertyParser.registerProperty(EntityTrades.class, dEntity.class);
-            }
+            PropertyParser.registerProperty(EntityTrades.class, dEntity.class);
             PropertyParser.registerProperty(EntityVisible.class, dEntity.class);
 
             // register core dInventory properties
@@ -912,14 +902,12 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
                 PropertyParser.registerProperty(MaterialAge.class, dMaterial.class);
             }
 
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-                // register core dTrade properties
-                PropertyParser.registerProperty(TradeHasXp.class, dTrade.class);
-                PropertyParser.registerProperty(TradeInputs.class, dTrade.class);
-                PropertyParser.registerProperty(TradeMaxUses.class, dTrade.class);
-                PropertyParser.registerProperty(TradeResult.class, dTrade.class);
-                PropertyParser.registerProperty(TradeUses.class, dTrade.class);
-            }
+            // register core dTrade properties
+            PropertyParser.registerProperty(TradeHasXp.class, dTrade.class);
+            PropertyParser.registerProperty(TradeInputs.class, dTrade.class);
+            PropertyParser.registerProperty(TradeMaxUses.class, dTrade.class);
+            PropertyParser.registerProperty(TradeResult.class, dTrade.class);
+            PropertyParser.registerProperty(TradeUses.class, dTrade.class);
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1713,8 +1701,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         else if (comparedto.equalsIgnoreCase("cuboid")) {
             outcome = dCuboid.matches(comparable);
         }
-        else if (comparedto.equalsIgnoreCase("trade")
-                && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+        else if (comparedto.equalsIgnoreCase("trade")) {
             outcome = dTrade.matches(comparable);
         }
         else {

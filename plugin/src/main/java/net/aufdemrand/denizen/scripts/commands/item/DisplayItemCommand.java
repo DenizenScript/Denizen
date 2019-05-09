@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -28,9 +26,7 @@ public class DisplayItemCommand extends AbstractCommand implements Listener {
 
     @Override
     public void onEnable() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
-            Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
-        }
+        Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }
 
     @Override

@@ -1590,8 +1590,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // Returns the index of the trade the player is currently viewing, if any.
         // -->
         if (attribute.startsWith("selected_trade_index")) {
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
-                    && getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
+            if (getPlayerEntity().getOpenInventory().getTopInventory() instanceof MerchantInventory) {
                 return new Element(((MerchantInventory) getPlayerEntity().getOpenInventory().getTopInventory())
                         .getSelectedRecipeIndex() + 1).getAttribute(attribute.fulfill(1));
             }
@@ -1607,8 +1606,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         /*
         if (attribute.startsWith("selected_trade")) {
             Inventory playerInventory = getPlayerEntity().getOpenInventory().getTopInventory();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
-                    && playerInventory instanceof MerchantInventory
+            if (playerInventory instanceof MerchantInventory
                     && ((MerchantInventory) playerInventory).getSelectedRecipe() != null) {
                 return new dTrade(((MerchantInventory) playerInventory).getSelectedRecipe()).getAttribute(attribute.fulfill(1));
             }
@@ -3341,7 +3339,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @description
         // Updates the player's client-side advancements to match their server data.
         // -->
-        if (mechanism.matches("update_advancements") && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)) {
+        if (mechanism.matches("update_advancements")) {
             NMSHandler.getInstance().getAdvancementHelper().update(getPlayerEntity());
         }
 

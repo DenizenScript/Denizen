@@ -70,7 +70,7 @@ public class ItemPotion implements Property {
         effects.add(meta.getBasePotionData().getType()
                 + "," + meta.getBasePotionData().isUpgraded()
                 + "," + meta.getBasePotionData().isExtended()
-                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify().replace(",", "&comma") : "")
+                + (meta.hasColor() ? "," + new dColor(meta.getColor()).identify().replace(",", "&comma") : "")
         );
         for (PotionEffect pot : meta.getCustomEffects()) {
             StringBuilder sb = new StringBuilder();
