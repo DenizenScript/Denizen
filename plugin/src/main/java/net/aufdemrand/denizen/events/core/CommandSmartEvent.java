@@ -38,7 +38,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         }
     }
 
-    List<CommandHandlerData> cmds = new ArrayList<CommandHandlerData>();
+    List<CommandHandlerData> cmds = new ArrayList<>();
 
 
     ///////////////////
@@ -49,7 +49,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     @Override
     public boolean shouldInitialize(Set<String> events) {
 
-        cmds = new ArrayList<CommandHandlerData>();
+        cmds = new ArrayList<>();
         // Loop through event names from loaded world script events
         boolean pass = false;
         for (String event : events) {
@@ -96,7 +96,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     ///////////
 
     private List<String> getAll(String cmd) {
-        List<String> newEvents = new ArrayList<String>();
+        List<String> newEvents = new ArrayList<>();
         cmd = CoreUtilities.toLowerCase(cmd);
         for (CommandHandlerData chd : cmds) {
             if (chd.name.equalsIgnoreCase(cmd)) {
@@ -131,12 +131,12 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // -->
     @EventHandler
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
 
         String message = event.getMessage();
         String command = message.split(" ")[0].replace("/", "").toUpperCase();
 
-        List<String> events = new ArrayList<String>();
+        List<String> events = new ArrayList<>();
 
         events.add("command");
         events.add(command + " command");
@@ -146,7 +146,7 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getPlayer().getLocation());
 
         dList cuboid_context = new dList();
-        List<String> cuboidEvents = new ArrayList<String>();
+        List<String> cuboidEvents = new ArrayList<>();
         for (dCuboid cuboid : cuboids) {
             for (String str : events) {
                 cuboidEvents.add(str + " in " + cuboid.identifySimple());
@@ -189,12 +189,12 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
             return;
         }
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
 
         String message = event.getCommand();
         String command = event.getCommand().split(" ")[0].replace("/", "").toUpperCase();
 
-        List<String> events = new ArrayList<String>();
+        List<String> events = new ArrayList<>();
         events.add("command");
         events.add(command + " command");
         events.addAll(getAll(command));

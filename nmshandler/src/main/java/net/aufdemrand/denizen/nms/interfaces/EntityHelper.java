@@ -132,7 +132,7 @@ public abstract class EntityHelper {
     public boolean addHide(UUID player, UUID entity) {
         Set<UUID> hidden = hiddenEntitiesEntPl.get(entity);
         if (hidden == null) {
-            hidden = new HashSet<UUID>();
+            hidden = new HashSet<>();
             hiddenEntitiesEntPl.put(entity, hidden);
         }
         if (player.equals(DEFAULT_HIDE)) {
@@ -147,7 +147,7 @@ public abstract class EntityHelper {
         else {
             Set<UUID> plHid = hiddenEntitiesPlEnt.get(player);
             if (plHid == null) {
-                plHid = new HashSet<UUID>();
+                plHid = new HashSet<>();
                 hiddenEntitiesPlEnt.put(player, plHid);
             }
             plHid.add(entity);

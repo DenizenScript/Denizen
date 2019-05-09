@@ -54,8 +54,8 @@ public abstract class ImprovedOfflinePlayer {
     protected CompoundTag compound;
     protected boolean exists = false;
     protected boolean autosave = true;
-    public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<UUID, PlayerInventory>();
-    public static Map<UUID, Inventory> offlineEnderChests = new HashMap<UUID, Inventory>();
+    public static Map<UUID, PlayerInventory> offlineInventories = new HashMap<>();
+    public static Map<UUID, Inventory> offlineEnderChests = new HashMap<>();
 
     public ImprovedOfflinePlayer(UUID playeruuid) {
         this.exists = loadPlayerData(playeruuid);
@@ -86,11 +86,11 @@ public abstract class ImprovedOfflinePlayer {
     public void setLocation(Location location) {
         World w = location.getWorld();
         UUID uuid = w.getUID();
-        List<DoubleTag> position = new ArrayList<DoubleTag>();
+        List<DoubleTag> position = new ArrayList<>();
         position.add(new DoubleTag(location.getX()));
         position.add(new DoubleTag(location.getY()));
         position.add(new DoubleTag(location.getZ()));
-        List<FloatTag> rotation = new ArrayList<FloatTag>();
+        List<FloatTag> rotation = new ArrayList<>();
         rotation.add(new FloatTag(location.getYaw()));
         rotation.add(new FloatTag(location.getPitch()));
         this.compound = this.compound.createBuilder()
@@ -437,7 +437,7 @@ public abstract class ImprovedOfflinePlayer {
     }
 
     public void setVelocity(Vector vector) {
-        List<DoubleTag> motion = new ArrayList<DoubleTag>();
+        List<DoubleTag> motion = new ArrayList<>();
         motion.add(new DoubleTag(vector.getX()));
         motion.add(new DoubleTag(vector.getY()));
         motion.add(new DoubleTag(vector.getZ()));

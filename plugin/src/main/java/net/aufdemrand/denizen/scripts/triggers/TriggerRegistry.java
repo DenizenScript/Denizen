@@ -20,8 +20,8 @@ public class TriggerRegistry implements dRegistry {
     // Registry
     //////
 
-    private Map<String, AbstractTrigger> instances = new HashMap<String, AbstractTrigger>();
-    private Map<Class<? extends AbstractTrigger>, String> classes = new HashMap<Class<? extends AbstractTrigger>, String>();
+    private Map<String, AbstractTrigger> instances = new HashMap<>();
+    private Map<Class<? extends AbstractTrigger>, String> classes = new HashMap<>();
 
     @Override
     public void disableCoreMembers() {
@@ -82,8 +82,8 @@ public class TriggerRegistry implements dRegistry {
     // Trigger Cooldowns
     ///////
 
-    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<Integer, Map<String, Long>>(8, 0.9f, 1);
-    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<String, Map<String, Long>>(8, 0.9f, 1);
+    Map<Integer, Map<String, Long>> npcCooldown = new ConcurrentHashMap<>(8, 0.9f, 1);
+    Map<String, Map<String, Long>> playerCooldown = new ConcurrentHashMap<>(8, 0.9f, 1);
 
     public enum CooldownType {NPC, PLAYER}
 
@@ -126,7 +126,7 @@ public class TriggerRegistry implements dRegistry {
     }
 
     public void setCooldown(NPC npc, dPlayer player, AbstractTrigger triggerClass, double seconds, CooldownType cooldownType) {
-        Map<String, Long> triggerMap = new HashMap<String, Long>();
+        Map<String, Long> triggerMap = new HashMap<>();
         boolean noCooldown = seconds <= 0;
 
         switch (cooldownType) {

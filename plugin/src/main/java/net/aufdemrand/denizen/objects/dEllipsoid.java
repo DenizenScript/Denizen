@@ -42,7 +42,7 @@ public class dEllipsoid implements dObject, Notable {
     // -->
 
     public static List<dEllipsoid> getNotableEllipsoidsContaining(Location location) {
-        List<dEllipsoid> cuboids = new ArrayList<dEllipsoid>();
+        List<dEllipsoid> cuboids = new ArrayList<>();
         for (dEllipsoid ellipsoid : NotableManager.getAllType(dEllipsoid.class)) {
             if (ellipsoid.contains(location)) {
                 cuboids.add(ellipsoid);
@@ -153,7 +153,7 @@ public class dEllipsoid implements dObject, Notable {
                 new Location(loc.getWorld(),
                         loc.getX() + size.getX(), loc.getY() + size.getY(), loc.getZ() + size.getZ()))
                 .getBlocks_internal(null);
-        List<dLocation> locations = new ArrayList<dLocation>();
+        List<dLocation> locations = new ArrayList<>();
         for (dLocation loc : initial) {
             if (contains(loc)) {
                 locations.add(loc);
@@ -295,7 +295,7 @@ public class dEllipsoid implements dObject, Notable {
 
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
 
     public static void registerTag(String name, TagRunnable runnable) {
         if (runnable.name == null) {

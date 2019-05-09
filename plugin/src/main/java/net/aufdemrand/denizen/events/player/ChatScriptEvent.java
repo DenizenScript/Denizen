@@ -164,7 +164,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         public void onSyncChat(PlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
-            recipients = new HashSet<Player>(event.getRecipients());
+            recipients = new HashSet<>(event.getRecipients());
             pcEvent = event;
             apcEvent = null;
             player = dEntity.getPlayerFrom(event.getPlayer());
@@ -181,7 +181,7 @@ public class ChatScriptEvent extends BukkitScriptEvent implements Listener {
         public void onAsyncChat(AsyncPlayerChatEvent event) {
             message = new Element(event.getMessage());
             format = new Element(event.getFormat());
-            recipients = new HashSet<Player>(event.getRecipients());
+            recipients = new HashSet<>(event.getRecipients());
             pcEvent = null;
             apcEvent = event;
             player = dEntity.getPlayerFrom(event.getPlayer());

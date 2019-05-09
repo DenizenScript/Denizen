@@ -42,7 +42,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                 schematicTags(event);
             }
         }, "schematic", "schem");
-        schematics = new HashMap<String, CuboidBlockSet>();
+        schematics = new HashMap<>();
         noPhys = false;
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
     }

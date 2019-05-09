@@ -123,7 +123,7 @@ public class AdvancementCommand extends AbstractCommand {
         scriptEntry.defaultObject("y", new Element(0f));
     }
 
-    public static final Map<NamespacedKey, Advancement> customRegistered = new HashMap<NamespacedKey, Advancement>();
+    public static final Map<NamespacedKey, Advancement> customRegistered = new HashMap<>();
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

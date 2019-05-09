@@ -12,7 +12,7 @@ import java.util.UUID;
 public class MapText extends MapObject {
 
     protected String textTag;
-    protected Map<UUID, String> playerTexts = new HashMap<UUID, String>();
+    protected Map<UUID, String> playerTexts = new HashMap<>();
 
     public MapText(String xTag, String yTag, String visibilityTag, boolean debug, String textTag) {
         super(xTag, yTag, visibilityTag, debug);

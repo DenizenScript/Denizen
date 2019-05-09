@@ -46,7 +46,7 @@ public class CuboidBlockSet implements BlockSet {
         }
     }
 
-    public List<BlockData> blocks = new ArrayList<BlockData>();
+    public List<BlockData> blocks = new ArrayList<>();
 
     public double x_width;
 
@@ -125,7 +125,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void rotateOne() {
-        List<BlockData> bd = new ArrayList<BlockData>();
+        List<BlockData> bd = new ArrayList<>();
         double cx = center_x;
         center_x = center_z;
         center_z = cx;
@@ -143,7 +143,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipX() {
-        List<BlockData> bd = new ArrayList<BlockData>();
+        List<BlockData> bd = new ArrayList<>();
         center_x = x_width - center_x;
         for (int x = (int) x_width - 1; x >= 0; x--) {
             for (int y = 0; y < y_length; y++) {
@@ -156,7 +156,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipY() {
-        List<BlockData> bd = new ArrayList<BlockData>();
+        List<BlockData> bd = new ArrayList<>();
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = (int) y_length - 1; y >= 0; y--) {
@@ -169,7 +169,7 @@ public class CuboidBlockSet implements BlockSet {
     }
 
     public void flipZ() {
-        List<BlockData> bd = new ArrayList<BlockData>();
+        List<BlockData> bd = new ArrayList<>();
         center_x = x_width - center_x;
         for (int x = 0; x < x_width; x++) {
             for (int y = 0; y < y_length; y++) {
@@ -257,7 +257,7 @@ public class CuboidBlockSet implements BlockSet {
                 }
             }
             List<Tag> tileEntities = getChildTag(schematic, "TileEntities", ListTag.class).getValue();
-            Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<BlockVector, Map<String, Tag>>();
+            Map<BlockVector, Map<String, Tag>> tileEntitiesMap = new HashMap<>();
             for (Tag tag : tileEntities) {
                 if (!(tag instanceof CompoundTag)) {
                     continue;
@@ -266,7 +266,7 @@ public class CuboidBlockSet implements BlockSet {
                 int x = 0;
                 int y = 0;
                 int z = 0;
-                Map<String, Tag> values = new HashMap<String, Tag>();
+                Map<String, Tag> values = new HashMap<>();
                 for (Map.Entry<String, Tag> entry : t.getValue().entrySet()) {
                     if (entry.getKey().equals("x")) {
                         if (entry.getValue() instanceof IntTag) {
@@ -327,7 +327,7 @@ public class CuboidBlockSet implements BlockSet {
     // Thanks to WorldEdit for sample code
     public void saveMCEditFormatToStream(OutputStream os) {
         try {
-            HashMap<String, Tag> schematic = new HashMap<String, Tag>();
+            HashMap<String, Tag> schematic = new HashMap<>();
             schematic.put("Width", new ShortTag((short) (x_width)));
             schematic.put("Length", new ShortTag((short) (z_height)));
             schematic.put("Height", new ShortTag((short) (y_length)));
@@ -344,7 +344,7 @@ public class CuboidBlockSet implements BlockSet {
             byte[] blocks = new byte[(int) ((x_width) * (y_length) * (z_height))];
             byte[] addBlocks = null;
             byte[] blockData = new byte[blocks.length];
-            ArrayList<Tag> tileEntities = new ArrayList<Tag>();
+            ArrayList<Tag> tileEntities = new ArrayList<>();
             int indexer = 0;
             for (int x = 0; x < x_width; x++) {
                 for (int y = 0; y < y_length; y++) {
@@ -366,7 +366,7 @@ public class CuboidBlockSet implements BlockSet {
 
                         CompoundTag rawTag = bd.getCompoundTag();
                         if (rawTag != null) {
-                            HashMap<String, Tag> values = new HashMap<String, Tag>();
+                            HashMap<String, Tag> values = new HashMap<>();
                             for (Map.Entry<String, Tag> entry : rawTag.getValue().entrySet()) {
                                 values.put(entry.getKey(), entry.getValue());
                             }
@@ -382,7 +382,7 @@ public class CuboidBlockSet implements BlockSet {
             }
             schematic.put("Blocks", new ByteArrayTag(blocks));
             schematic.put("Data", new ByteArrayTag(blockData));
-            schematic.put("Entities", new ListTag(CompoundTag.class, new ArrayList<Tag>()));
+            schematic.put("Entities", new ListTag(CompoundTag.class, new ArrayList<>()));
             schematic.put("TileEntities", new ListTag(CompoundTag.class, tileEntities));
             if (addBlocks != null) {
                 schematic.put("AddBlocks", new ByteArrayTag(addBlocks));

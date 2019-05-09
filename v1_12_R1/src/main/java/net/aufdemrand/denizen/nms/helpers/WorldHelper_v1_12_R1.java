@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class WorldHelper_v1_12_R1 implements WorldHelper {
 
-    private final Map<World, IWorldAccess> worldAccessMap = new HashMap<World, IWorldAccess>();
+    private final Map<World, IWorldAccess> worldAccessMap = new HashMap<>();
 
     @Override
     public boolean isStatic(World world) {

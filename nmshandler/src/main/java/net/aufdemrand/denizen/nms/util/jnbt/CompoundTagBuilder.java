@@ -35,7 +35,7 @@ public class CompoundTagBuilder {
      * Create a new instance.
      */
     CompoundTagBuilder() {
-        this.entries = new HashMap<String, Tag>();
+        this.entries = new HashMap<>();
     }
 
     /**
@@ -198,7 +198,7 @@ public class CompoundTagBuilder {
      * @return the new compound tag
      */
     public CompoundTag build() {
-        return NMSHandler.getInstance().createCompoundTag(new HashMap<String, Tag>(entries));
+        return NMSHandler.getInstance().createCompoundTag(new HashMap<>(entries));
     }
 
     /**

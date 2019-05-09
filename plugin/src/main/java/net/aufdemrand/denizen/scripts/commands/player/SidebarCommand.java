@@ -371,7 +371,7 @@ public class SidebarCommand extends AbstractCommand {
         }
     }
 
-    private static final Map<UUID, Sidebar> sidebars = new HashMap<UUID, Sidebar>();
+    private static final Map<UUID, Sidebar> sidebars = new HashMap<>();
 
     private static Sidebar createSidebar(dPlayer denizenPlayer) {
         if (!denizenPlayer.isOnline()) {

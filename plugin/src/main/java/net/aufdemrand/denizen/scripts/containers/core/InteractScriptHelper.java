@@ -42,7 +42,7 @@ public class InteractScriptHelper {
 
         // Get list of interact scripts from the assignment script.
         // Note: this list includes the # priorities that prefix the script names.
-        List<String> assignedScripts = new ArrayList<String>();
+        List<String> assignedScripts = new ArrayList<>();
         if (assignmentScript.contains("INTERACT SCRIPTS")) {
             assignedScripts = assignmentScript.getStringList("INTERACT SCRIPTS");
         }
@@ -62,7 +62,7 @@ public class InteractScriptHelper {
         //
 
         // Initialize list of interactable scripts as PriorityPair objects which help with sorting
-        List<PriorityPair> interactableScripts = new ArrayList<PriorityPair>();
+        List<PriorityPair> interactableScripts = new ArrayList<>();
 
         // Iterate through all entries to check requirements for each
         for (String entry : assignedScripts) {
@@ -71,12 +71,12 @@ public class InteractScriptHelper {
 
             // Initialize the fields that will make up the PriorityPair
             String name = null;
-            Integer priority;
+            int priority;
 
             // Make sure a priority exists, deal with it if it doesn't.
             if (Character.isDigit(entry.charAt(0))) {
                 try {
-                    priority = Integer.valueOf(entry.split(" ", 2)[0]);
+                    priority = Integer.parseInt(entry.split(" ", 2)[0]);
                     name = entry.split(" ", 2)[1].replace("^", "");
                 }
                 catch (Exception e) {

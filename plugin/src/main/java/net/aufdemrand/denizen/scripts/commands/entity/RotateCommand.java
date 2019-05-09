@@ -19,7 +19,7 @@ import java.util.*;
 
 public class RotateCommand extends AbstractCommand implements Holdable {
 
-    public static Set<UUID> rotatingEntities = new HashSet<UUID>();
+    public static Set<UUID> rotatingEntities = new HashSet<>();
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -90,7 +90,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
     @Override
     public void execute(final ScriptEntry scriptEntry) {
 
-        final List<dEntity> entities = new ArrayList<dEntity>((List<dEntity>) scriptEntry.getObject("entities"));
+        final List<dEntity> entities = new ArrayList<>((List<dEntity>) scriptEntry.getObject("entities"));
         final Duration duration = (Duration) scriptEntry.getObject("duration");
         final Duration frequency = (Duration) scriptEntry.getObject("frequency");
         final Element yaw = (Element) scriptEntry.getObject("yaw");
@@ -131,7 +131,7 @@ public class RotateCommand extends AbstractCommand implements Holdable {
 
             // Track entities that are no longer used, to remove them from
             // the regular list
-            Collection<dEntity> unusedEntities = new LinkedList<dEntity>();
+            Collection<dEntity> unusedEntities = new LinkedList<>();
 
             @Override
             public void run() {

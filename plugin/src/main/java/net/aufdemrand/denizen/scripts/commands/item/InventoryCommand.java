@@ -126,7 +126,7 @@ public class InventoryCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("destination",
                 ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
-                        new AbstractMap.SimpleEntry<Integer, dInventory>(0,
+                        new AbstractMap.SimpleEntry<>(0,
                                 ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory()) : null);
 
         if (!scriptEntry.hasObject("destination")) {

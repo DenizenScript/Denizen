@@ -22,10 +22,10 @@ public class PathFinder {
                 new VectorNode(goal, start, new ChunkBlockSource(start, 100), new MinecraftBlockExaminer()),
                 50000);
         if (plan == null || plan.isComplete()) {
-            return new ArrayList<dLocation>();
+            return new ArrayList<>();
         }
         else {
-            List<dLocation> path = new ArrayList<dLocation>();
+            List<dLocation> path = new ArrayList<>();
             while (!plan.isComplete()) {
                 Vector v = plan.getCurrentVector();
                 path.add(new dLocation(start.getWorld(), v.getX(), v.getY(), v.getZ()));

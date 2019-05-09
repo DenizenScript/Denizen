@@ -19,7 +19,7 @@ import java.util.Properties;
 
 public class SQLCommand extends AbstractCommand implements Holdable {
 
-    public static Map<String, Connection> connections = new HashMap<String, Connection>();
+    public static Map<String, Connection> connections = new HashMap<>();
 
     @Override
     public void onDisable() {

@@ -56,7 +56,7 @@ public class PlayerPicksUpScriptEvent extends BukkitScriptEvent implements Liste
     public dLocation location;
     public PlayerPickupItemEvent event;
 
-    private static final Set<UUID> editedItems = new HashSet<UUID>();
+    private static final Set<UUID> editedItems = new HashSet<>();
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {

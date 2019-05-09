@@ -71,7 +71,7 @@ public class dB {
     public static boolean debugOverride = false;
     public static boolean showSources = false;
 
-    public static List<String> filter = new ArrayList<String>();
+    public static List<String> filter = new ArrayList<>();
 
     public static boolean shouldTrim = true;
     public static boolean record = false;
@@ -254,7 +254,7 @@ public class dB {
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, dObject> context = new HashMap<String, dObject>();
+            Map<String, dObject> context = new HashMap<>();
             context.put("message", new Element(message));
             if (source != null) {
                 context.put("queue", source);
@@ -262,7 +262,7 @@ public class dB {
             if (script != null) {
                 context.put("script", script);
             }
-            List<String> events = new ArrayList<String>();
+            List<String> events = new ArrayList<>();
             events.add("script generates error");
             if (script != null) {
                 events.add(script.identifySimple() + " generates error");
@@ -329,7 +329,7 @@ public class dB {
         }
         if (throwErrorEvent) {
             throwErrorEvent = false;
-            Map<String, dObject> context = new HashMap<String, dObject>();
+            Map<String, dObject> context = new HashMap<>();
             Throwable thrown = ex;
             if (ex.getCause() != null) {
                 thrown = ex.getCause();
@@ -383,7 +383,7 @@ public class dB {
         throwErrorEvent = wasThrown;
     }
 
-    private static final Map<Class<?>, String> classNameCache = new WeakHashMap<Class<?>, String>();
+    private static final Map<Class<?>, String> classNameCache = new WeakHashMap<>();
 
     private static class SecurityManagerTrick extends SecurityManager {
         @Override

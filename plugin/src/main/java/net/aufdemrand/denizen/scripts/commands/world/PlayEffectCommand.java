@@ -261,7 +261,7 @@ public class PlayEffectCommand extends AbstractCommand {
                 float osX = (float) offset.getX();
                 float osY = (float) offset.getY();
                 float osZ = (float) offset.getZ();
-                List<Player> players = new ArrayList<Player>();
+                List<Player> players = new ArrayList<>();
                 if (targets == null) {
                     float rad = radius.asFloat();
                     for (Player player : location.getWorld().getPlayers()) {
@@ -308,7 +308,7 @@ public class PlayEffectCommand extends AbstractCommand {
 
             // Play an iconcrack (item break) effect
             else {
-                List<Player> players = new ArrayList<Player>();
+                List<Player> players = new ArrayList<>();
                 if (targets == null) {
                     float rad = radius.asFloat();
                     for (Player player : location.getWorld().getPlayers()) {

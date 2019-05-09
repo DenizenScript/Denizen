@@ -103,7 +103,7 @@ public class FlyCommand extends AbstractCommand {
         List<dEntity> entities = (List<dEntity>) scriptEntry.getObject("entities");
         final List<dLocation> destinations = scriptEntry.hasObject("destinations") ?
                 (List<dLocation>) scriptEntry.getObject("destinations") :
-                new ArrayList<dLocation>();
+                new ArrayList<>();
 
         // Set freeflight to true only if there are no destinations
         final boolean freeflight = destinations.size() < 1;

@@ -46,7 +46,7 @@ public class CompoundTag_v1_12_R1 extends CompoundTag {
                 NBTTagList list = new NBTTagList();
                 List<Tag> tags = ((ListTag) entry.getValue()).getValue();
                 for (Tag btag : tags) {
-                    HashMap<String, Tag> btags = new HashMap<String, Tag>();
+                    HashMap<String, Tag> btags = new HashMap<>();
                     btags.put("test", btag);
                     CompoundTag_v1_12_R1 comp = new CompoundTag_v1_12_R1(btags);
                     list.add(comp.toNMSTag().get("test"));
@@ -67,7 +67,7 @@ public class CompoundTag_v1_12_R1 extends CompoundTag {
     }
 
     public static CompoundTag fromNMSTag(NBTTagCompound tag) {
-        HashMap<String, Tag> tags = new HashMap<String, Tag>();
+        HashMap<String, Tag> tags = new HashMap<>();
         for (String key : tag.c()) {
             NBTBase base = tag.get(key);
             if (base instanceof NBTTagInt) {

@@ -24,7 +24,7 @@ import java.util.*;
 public class DenizenMapManager {
 
     private final static Map<Integer, DenizenMapRenderer> mapRenderers = new HashMap<>();
-    private final static Map<String, String> downloadedByUrl = new HashMap<String, String>();
+    private final static Map<String, String> downloadedByUrl = new HashMap<>();
     private final static File imagesFolder = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "images");
     private final static File imageDownloads = new File(imagesFolder, "downloaded");
     private final static File mapsFile = new File(DenizenAPI.getCurrentInstance().getDataFolder(), "maps.yml");
@@ -168,7 +168,7 @@ public class DenizenMapManager {
     }
 
     public static List<MapRenderer> removeDenizenRenderers(MapView map) {
-        List<MapRenderer> oldRenderers = new ArrayList<MapRenderer>();
+        List<MapRenderer> oldRenderers = new ArrayList<>();
         for (MapRenderer renderer : map.getRenderers()) {
             if (renderer instanceof DenizenMapRenderer) {
                 map.removeRenderer(renderer);

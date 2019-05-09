@@ -26,7 +26,7 @@ public class dWorld implements dObject, Adjustable {
     //   STATIC METHODS
     /////////////////
 
-    static Map<String, dWorld> worlds = new HashMap<String, dWorld>();
+    static Map<String, dWorld> worlds = new HashMap<>();
 
     public static dWorld mirrorBukkitWorld(World world) {
         if (world == null) {
@@ -217,7 +217,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("entities", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dEntity> entities = new ArrayList<dEntity>();
+                ArrayList<dEntity> entities = new ArrayList<>();
 
                 for (Entity entity : ((dWorld) object).getWorld().getEntities()) {
                     entities.add(new dEntity(entity));
@@ -237,7 +237,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("living_entities", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dEntity> entities = new ArrayList<dEntity>();
+                ArrayList<dEntity> entities = new ArrayList<>();
 
                 for (Entity entity : ((dWorld) object).getWorld().getLivingEntities()) {
                     entities.add(new dEntity(entity));
@@ -257,7 +257,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("players", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+                ArrayList<dPlayer> players = new ArrayList<>();
 
                 for (Player player : ((dWorld) object).getWorld().getPlayers()) {
                     if (!dEntity.isNPC(player)) {
@@ -279,7 +279,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("spawned_npcs", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+                ArrayList<dNPC> npcs = new ArrayList<>();
 
                 World thisWorld = ((dWorld) object).getWorld();
 
@@ -303,7 +303,7 @@ public class dWorld implements dObject, Adjustable {
         registerTag("npcs", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+                ArrayList<dNPC> npcs = new ArrayList<>();
 
                 World thisWorld = ((dWorld) object).getWorld();
 
@@ -917,7 +917,7 @@ public class dWorld implements dObject, Adjustable {
 
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
 
     public static void registerTag(String name, TagRunnable runnable) {
         if (runnable.name == null) {

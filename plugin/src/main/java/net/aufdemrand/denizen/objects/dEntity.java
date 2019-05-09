@@ -71,11 +71,11 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     /////////////////
 
     // List a mechanism here if it can be safely run before spawn.
-    public static HashSet<String> earlyValidMechanisms = new HashSet<String>(Arrays.asList(
+    public static HashSet<String> earlyValidMechanisms = new HashSet<>(Arrays.asList(
             "max_health", "health_data", "health"
     ));
 
-    private static final Map<UUID, Entity> rememberedEntities = new HashMap<UUID, Entity>();
+    private static final Map<UUID, Entity> rememberedEntities = new HashMap<>();
 
     public static void rememberEntity(Entity entity) {
         if (entity == null) {
@@ -1779,7 +1779,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             if (range < 1) {
                 range = 50;
             }
-            Set<Material> set = new HashSet<Material>();
+            Set<Material> set = new HashSet<>();
             set.add(Material.AIR);
             attribute = attribute.fulfill(2);
             if (attribute.startsWith("ignore") && attribute.hasContext(1)) {
@@ -2542,7 +2542,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         return new Element(identify()).getAttribute(attribute);
     }
 
-    private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+    private ArrayList<Mechanism> mechanisms = new ArrayList<>();
 
     public ArrayList<Mechanism> getWaitingMechanisms() {
         return mechanisms;

@@ -81,7 +81,7 @@ public class DenizenPacketHandler implements PacketHandler {
         }
         final PlayerReceivesMessageScriptEvent event = PlayerReceivesMessageScriptEvent.instance;
         if (event.loaded) {
-            FutureTask<Boolean> futureTask = new FutureTask<Boolean>(new Callable<Boolean>() {
+            FutureTask<Boolean> futureTask = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     int pos = chat.getPosition();

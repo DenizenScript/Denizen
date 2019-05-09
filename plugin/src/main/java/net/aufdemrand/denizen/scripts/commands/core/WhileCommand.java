@@ -32,7 +32,7 @@ public class WhileCommand extends BracedCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        List<String> comparisons = new ArrayList<String>();
+        List<String> comparisons = new ArrayList<>();
 
         if (scriptEntry.getArguments().size() == 1) {
             String arg = scriptEntry.getArguments().get(0);

@@ -13,7 +13,7 @@ public class MapCursor extends MapObject {
 
     protected String directionTag;
     protected String typeTag;
-    protected Map<UUID, org.bukkit.map.MapCursor> cursors = new HashMap<UUID, org.bukkit.map.MapCursor>();
+    protected Map<UUID, org.bukkit.map.MapCursor> cursors = new HashMap<>();
 
     public MapCursor(String xTag, String yTag, String visibilityTag, boolean debug, String directionTag, String typeTag) {
         super(xTag, yTag, visibilityTag, debug);

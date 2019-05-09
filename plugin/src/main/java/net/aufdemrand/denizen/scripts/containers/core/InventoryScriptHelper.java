@@ -19,9 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryScriptHelper implements Listener {
 
-    public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<String, InventoryScriptContainer>(8, 0.9f, 1);
-    public static Map<String, dInventory> notableInventories = new HashMap<String, dInventory>();
-    public static Map<Inventory, String> tempInventoryScripts = new HashMap<Inventory, String>();
+    public static Map<String, InventoryScriptContainer> inventory_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
+    public static Map<String, dInventory> notableInventories = new HashMap<>();
+    public static Map<Inventory, String> tempInventoryScripts = new HashMap<>();
 
     public InventoryScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()

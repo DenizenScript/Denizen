@@ -19,7 +19,7 @@ import java.util.*;
 public class FlagManager {
 
     // Valid flag actions
-    public static enum Action {
+    public enum Action {
         SET_VALUE, SET_BOOLEAN, INCREASE, DECREASE, MULTIPLY,
         DIVIDE, INSERT, REMOVE, SPLIT, SPLIT_NEW, DELETE
     }

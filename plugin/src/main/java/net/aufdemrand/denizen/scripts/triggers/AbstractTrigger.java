@@ -123,7 +123,7 @@ public abstract class AbstractTrigger implements RegistrationableInstance {
      */
     // TODO: Delete?
     public Set<NPC> getActiveNPCsWithinRangeWithTrigger(Location location, int maxRange) {
-        Set<NPC> closestNPCs = new HashSet<NPC>();
+        Set<NPC> closestNPCs = new HashSet<>();
 
         Iterator<NPC> it = CitizensAPI.getNPCRegistry().iterator();
         while (it.hasNext()) {

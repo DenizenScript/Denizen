@@ -28,7 +28,7 @@ public class FishingTrait extends Trait {
     @Persist("fishing spot")
     private Location fishingLocation = null;
 
-    ArrayList<Location> available = new ArrayList<Location>();
+    ArrayList<Location> available = new ArrayList<>();
 
     Location fishingSpot = null;
     FishHook fishHook = null;
@@ -153,14 +153,14 @@ public class FishingTrait extends Trait {
         Location to = fishingLocation;
 
         Vector test = to.clone().subtract(from).toVector();
-        Double elev = test.getY();
+        double elev = test.getY();
         Double testAngle = launchAngle(from, to, v, elev, g);
         if (testAngle == null) {
             return;
         }
-        Double hangtime = hangtime(testAngle, v, elev, g);
+        double hangtime = hangtime(testAngle, v, elev, g);
         Vector victor = to.clone().subtract(from).toVector();
-        Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
+        double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
         elev = victor.getY();
 
         if (dist == 0) {
@@ -255,7 +255,7 @@ public class FishingTrait extends Trait {
 
     public static Double launchAngle(Location from, Location to, double v, double elev, double g) {
         Vector victor = from.clone().subtract(to).toVector();
-        Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
+        double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
         double v2 = Math.pow(v, 2);
         double v4 = Math.pow(v, 4);
         double derp = g * (g * Math.pow(dist, 2) + 2 * elev * v2);

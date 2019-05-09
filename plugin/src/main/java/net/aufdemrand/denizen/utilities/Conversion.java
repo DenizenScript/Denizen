@@ -24,7 +24,7 @@ public class Conversion {
 
     public static List<Color> convertColors(List<dColor> colors) {
 
-        List<Color> newList = new ArrayList<Color>();
+        List<Color> newList = new ArrayList<>();
 
         for (dColor color : colors) {
             newList.add(color.getColor());
@@ -42,7 +42,7 @@ public class Conversion {
 
     public static List<ItemStack> convertItems(List<dItem> items) {
 
-        List<ItemStack> newList = new ArrayList<ItemStack>();
+        List<ItemStack> newList = new ArrayList<>();
 
         for (dItem item : items) {
             newList.add(item.getItemStack());
@@ -60,7 +60,7 @@ public class Conversion {
 
     public static List<Entity> convertEntities(List<dEntity> entities) {
 
-        List<Entity> newList = new ArrayList<Entity>();
+        List<Entity> newList = new ArrayList<>();
 
         for (dEntity entity : entities) {
             newList.add(entity.getBukkitEntity());
@@ -84,11 +84,11 @@ public class Conversion {
             BukkitScriptEntryData data = (BukkitScriptEntryData) scriptEntry.entryData;
             if (data != null) {
                 dInventory inv = dInventory.valueOf(string, data.getTagContext());
-                return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
+                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }
             else {
                 dInventory inv = dInventory.valueOf(string, null);
-                return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
+                return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
             }
         }
         else if (arg.matchesArgumentList(dItem.class)) {
@@ -96,15 +96,15 @@ public class Conversion {
             ItemStack[] items = convertItems(list).toArray(new ItemStack[list.size()]);
             dInventory inventory = new dInventory(Math.max(dInventory.maxSlots, (items.length / 9) * 9 + 9));
             inventory.setContents(items);
-            return new AbstractMap.SimpleEntry<Integer, dInventory>(items.length, inventory);
+            return new AbstractMap.SimpleEntry<>(items.length, inventory);
         }
         else if (dLocation.matches(string)) {
             dInventory inv = dLocation.valueOf(string).getInventory();
-            return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
+            return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
         }
         else if (dEntity.matches(string)) {
             dInventory inv = dEntity.valueOf(string).getInventory();
-            return new AbstractMap.SimpleEntry<Integer, dInventory>(inv.getContents().length, inv);
+            return new AbstractMap.SimpleEntry<>(inv.getContents().length, inv);
         }
 
         return null;

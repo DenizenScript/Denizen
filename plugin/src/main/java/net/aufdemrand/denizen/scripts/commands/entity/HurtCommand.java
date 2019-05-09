@@ -55,7 +55,7 @@ public class HurtCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("entities")) {
-            List<dEntity> entities = new ArrayList<dEntity>();
+            List<dEntity> entities = new ArrayList<>();
             if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
             }

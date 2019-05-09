@@ -83,7 +83,7 @@ public abstract class InventoryMenuItem {
 
     public void setDescriptions(String... lines) {
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = new ArrayList<String>();
+        List<String> lore = new ArrayList<>();
 
         for (String s : lines) {
             lore.addAll(Arrays.asList(Utilities.wrapWords(s, 24)));

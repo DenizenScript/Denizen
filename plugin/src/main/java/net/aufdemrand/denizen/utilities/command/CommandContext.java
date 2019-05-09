@@ -16,10 +16,10 @@ public class CommandContext {
 
 
     protected String[] args;
-    protected final Set<Character> flags = new HashSet<Character>();
+    protected final Set<Character> flags = new HashSet<>();
     private Location location = null;
     private final CommandSender sender;
-    protected final Map<String, String> valueFlags = new HashMap<String, String>();
+    protected final Map<String, String> valueFlags = new HashMap<>();
 
     public CommandContext(CommandSender sender, String[] args) {
         this.sender = sender;
@@ -84,7 +84,7 @@ public class CommandContext {
                 args[i] = "";
             }
         }
-        List<String> copied = new ArrayList<String>();
+        List<String> copied = new ArrayList<>();
         for (String arg : args) {
             arg = arg.trim();
             if (arg == null || arg.isEmpty()) {

@@ -30,7 +30,7 @@ import java.util.UUID;
 
 public class EntityScriptHelper implements Listener {
 
-    static HashMap<UUID, String> entities = new HashMap<UUID, String>();
+    static HashMap<UUID, String> entities = new HashMap<>();
 
     public EntityScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()

@@ -372,7 +372,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
         }
     }
 
-    private static Map<UUID, Set<Integer>> proximityTracker = new ConcurrentHashMap<UUID, Set<Integer>>(8, 0.9f, 1);
+    private static Map<UUID, Set<Integer>> proximityTracker = new ConcurrentHashMap<>(8, 0.9f, 1);
 
     //
     // Ensures that a Player who has entered proximity of an NPC also fires Exit Proximity.
@@ -401,7 +401,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private void enterProximityOf(Player player, dNPC npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
-            npcs = new HashSet<Integer>();
+            npcs = new HashSet<>();
             proximityTracker.put(player.getUniqueId(), npcs);
         }
         npcs.add(npc.getId());
@@ -417,7 +417,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
     private void exitProximityOf(Player player, dNPC npc) {
         Set<Integer> npcs = proximityTracker.get(player.getUniqueId());
         if (npcs == null) {
-            npcs = new HashSet<Integer>();
+            npcs = new HashSet<>();
             proximityTracker.put(player.getUniqueId(), npcs);
         }
         npcs.remove(npc.getId());

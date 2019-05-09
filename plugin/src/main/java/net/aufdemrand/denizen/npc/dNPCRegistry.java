@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class dNPCRegistry implements Listener {
 
-    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<Integer, dNPC>(8, 0.9f, 1);
+    private static Map<Integer, dNPC> denizenNPCs = new ConcurrentHashMap<>(8, 0.9f, 1);
     //private static Map<Integer, Inventory> npcInventories = new ConcurrentHashMap<Integer, Inventory>(8, 0.9f, 1);
 
     public static dNPCRegistry getCurrentInstance() {
@@ -153,7 +153,7 @@ public class dNPCRegistry implements Listener {
      */
     public static Set<dNPC> getSpawnedNPCs() {
         Iterator<Map.Entry<Integer, dNPC>> it = denizenNPCs.entrySet().iterator();
-        Set<dNPC> npcs = new HashSet<dNPC>();
+        Set<dNPC> npcs = new HashSet<>();
         while (it.hasNext()) {
             Map.Entry<Integer, dNPC> npc = it.next();
             if (npc.getValue().getCitizen() == null) {

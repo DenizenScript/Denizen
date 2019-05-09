@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DenizenEntityType {
 
-    private static final Map<String, DenizenEntityType> registeredTypes = new HashMap<String, DenizenEntityType>();
+    private static final Map<String, DenizenEntityType> registeredTypes = new HashMap<>();
     private final EntityType bukkitEntityType;
     private final String name;
     private final String lowercaseName;

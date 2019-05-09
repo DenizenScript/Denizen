@@ -22,7 +22,7 @@ public class PacketOutTradeList_v1_12_R1 implements PacketOutTradeList {
         this.internal = internal;
         try {
             container = serializer.readInt();
-            tradeOffers = new ArrayList<TradeOffer>();
+            tradeOffers = new ArrayList<>();
             byte tradeCount = serializer.readByte();
             for (byte i = 0; i < tradeCount; i++) {
                 ItemStack firstCost = CraftItemStack.asBukkitCopy(serializer.k());

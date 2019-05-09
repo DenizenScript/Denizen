@@ -38,11 +38,11 @@ public class NotableManager {
 
 
     public static Map<String, Notable>
-            notableObjects = new ConcurrentHashMap<String, Notable>();
+            notableObjects = new ConcurrentHashMap<>();
     public static Map<String, Class>
-            typeTracker = new ConcurrentHashMap<String, Class>();
+            typeTracker = new ConcurrentHashMap<>();
     public static Map<Notable, String>
-            reverseObjects = new ConcurrentHashMap<Notable, String>();
+            reverseObjects = new ConcurrentHashMap<>();
 
 
     public static boolean isSaved(String id) {
@@ -113,7 +113,7 @@ public class NotableManager {
     }
 
     public static <T extends dObject> List<T> getAllType(Class<T> type) {
-        List<T> objects = new ArrayList<T>();
+        List<T> objects = new ArrayList<>();
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
             // dB.log(notable.toString());
             if (isType(notable.getKey(), type)) {
@@ -232,8 +232,8 @@ public class NotableManager {
     ///////////////////
 
 
-    private static Map<Class, String> objects = new HashMap<Class, String>();
-    private static Map<String, Class> reverse_objects = new HashMap<String, Class>();
+    private static Map<Class, String> objects = new HashMap<>();
+    private static Map<String, Class> reverse_objects = new HashMap<>();
 
     public static void registerWithNotableManager(Class notable) {
         for (Method method : notable.getMethods()) {

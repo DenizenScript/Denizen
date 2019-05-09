@@ -523,7 +523,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // Returns a list of all of the NPC's traits.
         // -->
         if (attribute.startsWith("list_traits")) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             for (Trait trait : getCitizen().getTraits()) {
                 list.add(trait.getName());
             }
@@ -580,7 +580,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // -->
         if (attribute.startsWith("anchor.list")
                 || attribute.startsWith("anchors.list")) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             for (Anchor anchor : getCitizen().getTrait(Anchors.class).getAnchors()) {
                 list.add(anchor.getName());
             }

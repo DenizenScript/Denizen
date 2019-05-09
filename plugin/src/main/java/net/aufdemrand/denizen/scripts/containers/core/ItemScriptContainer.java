@@ -102,8 +102,8 @@ public class ItemScriptContainer extends ScriptContainer {
     // -->
 
     // A map storing special recipes that use itemscripts as ingredients
-    public static Map<ItemScriptContainer, List<dItem>> specialrecipesMap = new HashMap<ItemScriptContainer, List<dItem>>();
-    public static Map<ItemScriptContainer, List<dItem>> shapelessRecipesMap = new HashMap<ItemScriptContainer, List<dItem>>();
+    public static Map<ItemScriptContainer, List<dItem>> specialrecipesMap = new HashMap<>();
+    public static Map<ItemScriptContainer, List<dItem>> shapelessRecipesMap = new HashMap<>();
 
     dNPC npc = null;
     dPlayer player = null;

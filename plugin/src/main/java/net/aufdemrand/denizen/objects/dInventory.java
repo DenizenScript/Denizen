@@ -420,10 +420,6 @@ public class dInventory implements dObject, Notable, Adjustable {
 
     public dInventory(String idType) {
         this.idType = CoreUtilities.toLowerCase(idType);
-        for (Mechanism mechanism : mechanisms) {
-            adjust(mechanism);
-        }
-        mechanisms.clear();
     }
 
     /////////////////////
@@ -901,7 +897,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             return null;
         }
 
-        List<ItemStack> leftovers = new ArrayList<ItemStack>();
+        List<ItemStack> leftovers = new ArrayList<>();
 
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
@@ -973,7 +969,7 @@ public class dInventory implements dObject, Notable, Adjustable {
             return null;
         }
 
-        List<ItemStack> leftovers = new ArrayList<ItemStack>();
+        List<ItemStack> leftovers = new ArrayList<>();
 
         for (int i = 0; i < items.length; i++) {
             ItemStack item = items[i];
@@ -2155,7 +2151,7 @@ public class dInventory implements dObject, Notable, Adjustable {
         return new Element(identify()).getAttribute(attribute);
     }
 
-    private ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+    private ArrayList<Mechanism> mechanisms = new ArrayList<>();
 
     public void applyProperty(Mechanism mechanism) {
         if (NotableManager.isExactSavedObject(this)) {

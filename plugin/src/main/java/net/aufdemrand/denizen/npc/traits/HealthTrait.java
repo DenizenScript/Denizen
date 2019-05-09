@@ -297,7 +297,7 @@ public class HealthTrait extends Trait implements Listener {
         entityId = npc.getEntity().getEntityId();
 
         String deathCause = CoreUtilities.toLowerCase(event.getCause().toString()).replace('_', ' ');
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         context.put("damage", new Element(event.getDamage()));
         context.put("death_cause", new Element(deathCause));
 

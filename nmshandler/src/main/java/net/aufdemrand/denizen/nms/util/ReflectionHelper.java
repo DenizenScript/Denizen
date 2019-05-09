@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ReflectionHelper {
 
-    private static final Map<Class, Map<String, Field>> cachedFields = new HashMap<Class, Map<String, Field>>();
+    private static final Map<Class, Map<String, Field>> cachedFields = new HashMap<>();
 
     public static <T> T getFieldValue(Class clazz, String fieldName, Object object) {
         Map<String, Field> cache;
@@ -17,7 +17,7 @@ public class ReflectionHelper {
             cache = cachedFields.get(clazz);
         }
         else {
-            cache = new HashMap<String, Field>();
+            cache = new HashMap<>();
             cachedFields.put(clazz, cache);
         }
         Field field;
@@ -46,7 +46,7 @@ public class ReflectionHelper {
             cache = cachedFields.get(clazz);
         }
         else {
-            cache = new HashMap<String, Field>();
+            cache = new HashMap<>();
             cachedFields.put(clazz, cache);
         }
         Field field;
@@ -80,7 +80,7 @@ public class ReflectionHelper {
         if (cachedFields.containsKey(clazz)) {
             return cachedFields.get(clazz);
         }
-        Map<String, Field> fields = new HashMap<String, Field>();
+        Map<String, Field> fields = new HashMap<>();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             fields.put(field.getName(), field);

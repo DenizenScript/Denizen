@@ -79,7 +79,7 @@ public class CopyBlockCommand extends AbstractCommand {
 
         }
 
-        List<Location> locations = new ArrayList<Location>();
+        List<Location> locations = new ArrayList<>();
 
         if (copy_location != null) {
             locations.add(copy_location);

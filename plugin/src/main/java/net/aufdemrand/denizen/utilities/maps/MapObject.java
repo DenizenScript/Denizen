@@ -16,9 +16,9 @@ public abstract class MapObject {
     protected String xTag;
     protected String yTag;
     protected String visibilityTag = "true";
-    protected Map<UUID, Integer> currentX = new HashMap<UUID, Integer>();
-    protected Map<UUID, Integer> currentY = new HashMap<UUID, Integer>();
-    protected Map<UUID, Boolean> currentVisibility = new HashMap<UUID, Boolean>();
+    protected Map<UUID, Integer> currentX = new HashMap<>();
+    protected Map<UUID, Integer> currentY = new HashMap<>();
+    protected Map<UUID, Boolean> currentVisibility = new HashMap<>();
     protected boolean debug;
 
     public MapView lastMap;
@@ -77,7 +77,7 @@ public abstract class MapObject {
     }
 
     public Map<String, Object> getSaveData() {
-        Map<String, Object> data = new HashMap<String, Object>();
+        Map<String, Object> data = new HashMap<>();
         data.put("x", xTag);
         data.put("y", yTag);
         data.put("visibility", visibilityTag);

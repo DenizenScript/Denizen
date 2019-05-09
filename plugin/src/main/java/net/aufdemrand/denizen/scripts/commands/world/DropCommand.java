@@ -158,7 +158,7 @@ public class DropCommand extends AbstractCommand {
                     break;
                 }
                 for (int x = 0; x < qty.asInt(); x++) {
-                    ArrayList<Mechanism> mechanisms = new ArrayList<Mechanism>();
+                    ArrayList<Mechanism> mechanisms = new ArrayList<>();
                     for (Mechanism mechanism : entity.getWaitingMechanisms()) {
                         mechanisms.add(new Mechanism(new Element(mechanism.getName()), mechanism.getValue()));
                     }

@@ -144,7 +144,7 @@ public class CommandScriptContainer extends ScriptContainer {
 
     public List<String> getAliases() {
         List<String> aliases = getStringList("ALIASES");
-        return aliases != null ? aliases : new ArrayList<String>();
+        return aliases != null ? aliases : new ArrayList<>();
     }
 
     public String getPermission() {
@@ -200,7 +200,7 @@ public class CommandScriptContainer extends ScriptContainer {
             return dList.valueOf(DetermineCommand.getOutcome(id).get(0));
         }
         else {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 

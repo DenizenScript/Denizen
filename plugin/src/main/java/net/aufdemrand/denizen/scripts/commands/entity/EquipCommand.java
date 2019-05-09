@@ -28,7 +28,7 @@ public class EquipCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        Map<String, dItem> equipment = new HashMap<String, dItem>();
+        Map<String, dItem> equipment = new HashMap<>();
 
         // Initialize necessary fields
         for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {

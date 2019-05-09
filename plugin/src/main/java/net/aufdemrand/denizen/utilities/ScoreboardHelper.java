@@ -23,9 +23,9 @@ public class ScoreboardHelper {
     public static ScoreboardManager manager = Bukkit.getScoreboardManager();
 
     // A map with scoreboard IDs as keys and scoreboards as values
-    public static Map<String, Scoreboard> scoreboardMap = new HashMap<String, Scoreboard>();
+    public static Map<String, Scoreboard> scoreboardMap = new HashMap<>();
     // A map with viewer names as keys and scoreboard IDs as values
-    public static Map<String, String> viewerMap = new HashMap<String, String>();
+    public static Map<String, String> viewerMap = new HashMap<>();
 
     /*
      * Called on server startup or /denizen reload saves
@@ -142,7 +142,7 @@ public class ScoreboardHelper {
             for (Map.Entry<String, Scoreboard> scoreboardEntry : scoreboardMap.entrySet()) {
 
                 String id = scoreboardEntry.getKey();
-                List<String> viewerList = new ArrayList<String>();
+                List<String> viewerList = new ArrayList<>();
 
                 // Find all of the viewers that are viewing this scoreboard
                 // and put them on a list
@@ -253,7 +253,7 @@ public class ScoreboardHelper {
         //
         // So use crazy workaround below
         Scoreboard board = o.getScoreboard();
-        Map<String, Integer> scoreMap = new HashMap<String, Integer>();
+        Map<String, Integer> scoreMap = new HashMap<>();
 
         // Go through every score for this (real or fake) player
         // and put it in scoreMap if it doesn't belong to the
@@ -279,13 +279,13 @@ public class ScoreboardHelper {
 
     private static Map.Entry<Team, String> createTeam(Scoreboard scoreboard, String text) {
         if (text.length() <= 16) {
-            return new HashMap.SimpleEntry<Team, String>(null, text);
+            return new HashMap.SimpleEntry<>(null, text);
         }
         if (text.length() <= 32) {
             Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
             team.setPrefix(text.substring(0, text.length() - 16));
             String result = text.substring(text.length() - 16);
-            return new HashMap.SimpleEntry<Team, String>(team, result);
+            return new HashMap.SimpleEntry<>(team, result);
         }
         Team team = scoreboard.registerNewTeam("text-" + scoreboard.getTeams().size());
         Iterator<String> iterator = Splitter.fixedLength(16).split(text).iterator();
@@ -294,7 +294,7 @@ public class ScoreboardHelper {
         if (text.length() > 32) {
             team.setSuffix(iterator.next());
         }
-        return new HashMap.SimpleEntry<Team, String>(team, result);
+        return new HashMap.SimpleEntry<>(team, result);
     }
 
     /////////////////////

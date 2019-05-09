@@ -36,7 +36,7 @@ public abstract class BiomeNMS {
     public abstract float getTemperature();
 
     public List<EntityType> getAllEntities() {
-        List<EntityType> entityTypes = new ArrayList<EntityType>();
+        List<EntityType> entityTypes = new ArrayList<>();
         entityTypes.addAll(getAmbientEntities());
         entityTypes.addAll(getCreatureEntities());
         entityTypes.addAll(getMonsterEntities());

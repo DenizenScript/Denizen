@@ -59,7 +59,7 @@ public class EventCommand extends AbstractCommand {
         }
 
         // Change the context input to a list of objects
-        Map<String, dObject> context_map = new HashMap<String, dObject>();
+        Map<String, dObject> context_map = new HashMap<>();
         for (int i = 0; i < context.size(); i += 2) {
             context_map.put(context.get(i), ObjectFetcher.pickObjectFor(context.get(i + 1), scriptEntry.entryData.getTagContext()));
         }

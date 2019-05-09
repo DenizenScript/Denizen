@@ -36,7 +36,7 @@ import java.util.UUID;
 
 public class ShootCommand extends AbstractCommand implements Listener, Holdable {
 
-    Map<UUID, dEntity> arrows = new HashMap<UUID, dEntity>();
+    Map<UUID, dEntity> arrows = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -267,7 +267,7 @@ public class ShootCommand extends AbstractCommand implements Listener, Holdable 
             double hangTime = Velocity.hangtime(testAng, v, relative.getY(), g);
             Vector to = destination.clone().add(lead.clone().multiply(hangTime)).toVector();
             relative = to.clone().subtract(originLocation.toVector());
-            Double dist = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
+            double dist = Math.sqrt(relative.getX() * relative.getX() + relative.getZ() * relative.getZ());
             if (dist == 0) {
                 dist = 0.1d;
             }

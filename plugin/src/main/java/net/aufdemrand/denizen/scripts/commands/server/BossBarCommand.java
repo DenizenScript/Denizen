@@ -91,7 +91,7 @@ public class BossBarCommand extends AbstractCommand {
         scriptEntry.defaultObject("action", new Element("CREATE"));
     }
 
-    public final static Map<String, BossBar> bossBarMap = new HashMap<String, BossBar>();
+    public final static Map<String, BossBar> bossBarMap = new HashMap<>();
 
     @Override
     public void execute(ScriptEntry scriptEntry) {

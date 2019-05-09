@@ -75,7 +75,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     /////////////////
 
     public static List<dCuboid> getNotableCuboidsContaining(Location location) {
-        List<dCuboid> cuboids = new ArrayList<dCuboid>();
+        List<dCuboid> cuboids = new ArrayList<>();
         for (dCuboid cuboid : NotableManager.getAllType(dCuboid.class)) {
             if (cuboid.isInsideCuboid(location)) {
                 cuboids.add(cuboid);
@@ -482,7 +482,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public List<dLocation> getBlocks_internal(List<dMaterial> materials) {
         int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
-        List<dLocation> list = new ArrayList<dLocation>();
+        List<dLocation> list = new ArrayList<>();
         int index = 0;
 
         for (LocationPair pair : pairs) {
@@ -576,7 +576,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
     public List<dLocation> getBlockLocations() {
         int max = Settings.blockTagsMaxBlocks();
         dLocation loc;
-        List<dLocation> list = new ArrayList<dLocation>();
+        List<dLocation> list = new ArrayList<>();
         int index = 0;
 
         for (LocationPair pair : pairs) {
@@ -1378,7 +1378,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_players", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dPlayer> players = new ArrayList<dPlayer>();
+                ArrayList<dPlayer> players = new ArrayList<>();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (((dCuboid) object).isInsideCuboid(player.getLocation())) {
                         players.add(dPlayer.mirrorBukkitPlayer(player));
@@ -1398,7 +1398,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             registerTag("list_npcs", new TagRunnable() {
                 @Override
                 public String run(Attribute attribute, dObject object) {
-                    ArrayList<dNPC> npcs = new ArrayList<dNPC>();
+                    ArrayList<dNPC> npcs = new ArrayList<>();
                     for (NPC npc : CitizensAPI.getNPCRegistry()) {
                         dNPC dnpc = dNPC.mirrorCitizensNPC(npc);
                         if (((dCuboid) object).isInsideCuboid(dnpc.getLocation())) {
@@ -1420,7 +1420,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_entities", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dEntity> entities = new ArrayList<dEntity>();
+                ArrayList<dEntity> entities = new ArrayList<>();
                 dList types = new dList();
                 if (attribute.hasContext(1)) {
                     types = dList.valueOf(attribute.getContext(1));
@@ -1454,7 +1454,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("list_living_entities", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                ArrayList<dEntity> entities = new ArrayList<dEntity>();
+                ArrayList<dEntity> entities = new ArrayList<>();
                 for (Entity ent : ((dCuboid) object).getWorld().getLivingEntities()) {
                     if (ent.isValid() && ((dCuboid) object).isInsideCuboid(ent.getLocation()) && !dEntity.isCitizensNPC(ent)) {
                         entities.add(new dEntity(ent));
@@ -1565,7 +1565,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
 
     public static void registerTag(String name, TagRunnable runnable) {
         if (runnable.name == null) {

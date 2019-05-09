@@ -21,7 +21,7 @@ import java.util.Map;
  * @author authorblues, patched by mcmonkey
  */
 public class MidiUtil {
-    public static Map<String, Receiver> receivers = new HashMap<String, Receiver>();
+    public static Map<String, Receiver> receivers = new HashMap<>();
 
     public static void startSequencer(File file, float tempo, NoteBlockReceiver receiver)
             throws InvalidMidiDataException, IOException, MidiUnavailableException {

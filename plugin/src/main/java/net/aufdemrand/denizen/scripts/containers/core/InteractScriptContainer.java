@@ -105,7 +105,7 @@ public class InteractScriptContainer extends ScriptContainer {
     }
 
     private String defaultStep = null;
-    private List<String> steps = new ArrayList<String>();
+    private List<String> steps = new ArrayList<>();
 
     public List<String> getStepNames() {
         return steps;
@@ -258,7 +258,7 @@ public class InteractScriptContainer extends ScriptContainer {
         // Check for entries
         if (contains("STEPS." + step + "." + triggerName + " TRIGGER")) {
             // Trigger exists in Player's current step, get ids.
-            Map<String, String> idMap = new HashMap<String, String>();
+            Map<String, String> idMap = new HashMap<>();
             // Iterate through IDs to build the idMap
             try {
                 for (StringHolder id : getConfigurationSection("STEPS." + step + "."

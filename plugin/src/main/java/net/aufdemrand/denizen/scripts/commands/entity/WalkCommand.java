@@ -127,8 +127,8 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
         boolean shouldStop = stop.asBoolean();
 
-        List<dNPC> npcs = new ArrayList<dNPC>();
-        final List<dEntity> waitForEntities = new ArrayList<dEntity>();
+        List<dNPC> npcs = new ArrayList<>();
+        final List<dEntity> waitForEntities = new ArrayList<>();
         for (final dEntity entity : entities) {
             if (entity.isCitizensNPC()) {
                 dNPC npc = entity.getDenizenNPC();
@@ -144,7 +144,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
                 }
 
                 if (auto_range != null
-                        && auto_range == new Element(true)) {
+                        && auto_range.asBoolean()) {
                     double distance = npc.getLocation().distance(loc);
                     if (npc.getNavigator().getLocalParameters().range() < distance + 10) {
                         npc.getNavigator().getLocalParameters().range((float) distance + 10);
@@ -200,7 +200,7 @@ public class WalkCommand extends AbstractCommand implements Holdable {
 
 
     // Held script entries
-    public static List<ScriptEntry> held = new ArrayList<ScriptEntry>();
+    public static List<ScriptEntry> held = new ArrayList<>();
 
     public void checkHeld(dEntity entity) {
         for (int i = 0; i < held.size(); i++) {

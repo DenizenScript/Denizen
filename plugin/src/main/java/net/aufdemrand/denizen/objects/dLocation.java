@@ -1305,8 +1305,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("with_pose")) {
             String context = attribute.getContext(1);
-            Float pitch = 0f;
-            Float yaw = 0f;
+            float pitch = 0f;
+            float yaw = 0f;
             if (dEntity.matches(context)) {
                 dEntity ent = dEntity.valueOf(context);
                 if (ent.isSpawned()) {
@@ -1316,8 +1316,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
             else if (context.split(",").length == 2) {
                 String[] split = context.split(",");
-                pitch = Float.valueOf(split[0]);
-                yaw = Float.valueOf(split[1]);
+                pitch = Float.parseFloat(split[0]);
+                yaw = Float.parseFloat(split[1]);
             }
             dLocation loc = dLocation.valueOf(identify());
             loc.setPitch(pitch);
@@ -1449,9 +1449,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             if (attribute.startsWith("blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
-                ArrayList<dLocation> found = new ArrayList<dLocation>();
+                ArrayList<dLocation> found = new ArrayList<>();
                 int radius = aH.matchesInteger(attribute.getContext(2)) ? attribute.getIntContext(2) : 10;
-                List<dMaterial> materials = new ArrayList<dMaterial>();
+                List<dMaterial> materials = new ArrayList<>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 }
@@ -1518,9 +1518,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else if (attribute.startsWith("surface_blocks")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
-                ArrayList<dLocation> found = new ArrayList<dLocation>();
+                ArrayList<dLocation> found = new ArrayList<>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
-                List<dMaterial> materials = new ArrayList<dMaterial>();
+                List<dMaterial> materials = new ArrayList<>();
                 if (attribute.hasContext(1)) {
                     materials = dList.valueOf(attribute.getContext(1)).filter(dMaterial.class, attribute.context);
                 }
@@ -1586,7 +1586,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else if (attribute.startsWith("players")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
-                ArrayList<dPlayer> found = new ArrayList<dPlayer>();
+                ArrayList<dPlayer> found = new ArrayList<>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -1614,7 +1614,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else if (attribute.startsWith("npcs")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
-                ArrayList<dNPC> found = new ArrayList<dNPC>();
+                ArrayList<dNPC> found = new ArrayList<>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (dNPC npc : DenizenAPI.getSpawnedNPCs()) {
@@ -1647,7 +1647,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
                 if (attribute.hasContext(1)) {
                     ent_list = dList.valueOf(attribute.getContext(1));
                 }
-                ArrayList<dEntity> found = new ArrayList<dEntity>();
+                ArrayList<dEntity> found = new ArrayList<>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities()) {
@@ -1686,7 +1686,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else if (attribute.startsWith("living_entities")
                     && attribute.getAttribute(2).startsWith("within")
                     && attribute.hasContext(2)) {
-                ArrayList<dEntity> found = new ArrayList<dEntity>();
+                ArrayList<dEntity> found = new ArrayList<>();
                 double radius = aH.matchesDouble(attribute.getContext(2)) ? attribute.getDoubleContext(2) : 10;
                 attribute.fulfill(2);
                 for (Entity entity : getWorld().getEntities()) {
@@ -2744,7 +2744,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // <server.list_patterns>
         // -->
         if (mechanism.matches("patterns")) {
-            List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
+            List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
             dList list = mechanism.valueAsType(dList.class);
             List<String> split;
             for (String string : list) {

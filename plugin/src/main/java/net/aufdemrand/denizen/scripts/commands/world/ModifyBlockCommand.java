@@ -163,7 +163,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         final int depth = depthElement.asInt();
         List<Float> percentages = null;
         if (percents != null) {
-            percentages = new ArrayList<Float>();
+            percentages = new ArrayList<>();
             for (String str : percents) {
                 percentages.add(new Element(str).asFloat());
             }
@@ -352,7 +352,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
 
     boolean no_physics = false;
 
-    public final List<Location> block_physics = new ArrayList<Location>();
+    public final List<Location> block_physics = new ArrayList<>();
 
     long tick = 0;
 

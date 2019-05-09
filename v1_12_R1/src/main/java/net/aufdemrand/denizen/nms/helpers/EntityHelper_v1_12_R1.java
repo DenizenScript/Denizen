@@ -156,7 +156,7 @@ public class EntityHelper_v1_12_R1 extends EntityHelper {
         Entity Movement
      */
 
-    private final static Map<UUID, BukkitTask> followTasks = new HashMap<UUID, BukkitTask>();
+    private final static Map<UUID, BukkitTask> followTasks = new HashMap<>();
 
     @Override
     public void stopFollowing(Entity follower) {

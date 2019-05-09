@@ -72,7 +72,7 @@ public class SlotHelper {
             case HEAD:
                 return HELMET;
             case OFF_HAND:
-                return BOOTS;
+                return OFFHAND;
             default:
                 return -1;
         }

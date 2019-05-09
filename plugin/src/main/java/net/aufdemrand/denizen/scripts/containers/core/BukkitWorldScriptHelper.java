@@ -96,7 +96,7 @@ public class BukkitWorldScriptHelper implements Listener {
                 null, null, null);
     }
 
-    private final Map<String, Integer> current_time = new HashMap<String, Integer>();
+    private final Map<String, Integer> current_time = new HashMap<>();
 
     // <--[event]
     // @Events
@@ -125,7 +125,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
             if (!current_time.containsKey(currentWorld.identifySimple())
                     || current_time.get(currentWorld.identifySimple()) != hour) {
-                Map<String, dObject> context = new HashMap<String, dObject>();
+                Map<String, dObject> context = new HashMap<>();
 
                 context.put("time", new Element(hour));
                 context.put("world", currentWorld);
@@ -230,7 +230,7 @@ public class BukkitWorldScriptHelper implements Listener {
 
         // TODO: make this a script event...
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         dItem item = new dItem(Material.AIR);
         dItem holding;
 
@@ -240,7 +240,7 @@ public class BukkitWorldScriptHelper implements Listener {
         String click = event.getClick().name();
         String slotType = event.getSlotType().name();
 
-        List<String> events = new ArrayList<String>();
+        List<String> events = new ArrayList<>();
         events.add("player clicks in inventory");
         events.add("player clicks in " + type);
         events.add("player clicks in " + inventory.identifySimple());

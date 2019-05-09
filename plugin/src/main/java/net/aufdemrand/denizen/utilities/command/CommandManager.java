@@ -19,7 +19,7 @@ import java.util.*;
 public class CommandManager {
 
     private final Map<Class<? extends Annotation>, CommandAnnotationProcessor> annotationProcessors =
-            new HashMap<Class<? extends Annotation>, CommandAnnotationProcessor>();
+            new HashMap<>();
 
     /*
      * Mapping of commands (including aliases) with a description. Root commands
@@ -27,11 +27,11 @@ public class CommandManager {
      * their respective Method. The child map has the key of the command name
      * (one for each alias) with the method.
      */
-    private final Map<String, Method> commands = new HashMap<String, Method>();
+    private final Map<String, Method> commands = new HashMap<>();
     private Injector injector;
-    private final Map<Method, Object> instances = new HashMap<Method, Object>();
+    private final Map<Method, Object> instances = new HashMap<>();
     private final ListMultimap<Method, Annotation> registeredAnnotations = ArrayListMultimap.create();
-    private final Set<Method> serverCommands = new HashSet<Method>();
+    private final Set<Method> serverCommands = new HashSet<>();
 
     public CommandManager() {
         registerAnnotationProcessor(new RequirementsProcessor());
@@ -257,7 +257,7 @@ public class CommandManager {
      * @return The list of {@link CommandInfo}s
      */
     public List<CommandInfo> getCommands(String command) {
-        List<CommandInfo> cmds = new ArrayList<CommandInfo>();
+        List<CommandInfo> cmds = new ArrayList<>();
         command = CoreUtilities.toLowerCase(command);
         for (Map.Entry<String, Method> entry : commands.entrySet()) {
             if (!entry.getKey().startsWith(command) || entry.getValue() == null) {
@@ -274,8 +274,8 @@ public class CommandManager {
 
     private List<String> getLines(CommandSender sender, String baseCommand) {
         // Ensures that commands with multiple modifiers are only added once
-        Set<CommandInfo> processed = new HashSet<CommandInfo>();
-        List<String> lines = new ArrayList<String>();
+        Set<CommandInfo> processed = new HashSet<>();
+        List<String> lines = new ArrayList<>();
         for (CommandInfo info : getCommands(baseCommand)) {
             Command command = info.getCommandAnnotation();
             if (processed.contains(info) || !sender.hasPermission(command.permission())) {
@@ -383,7 +383,7 @@ public class CommandManager {
                 }
             }
 
-            List<Annotation> annotations = new ArrayList<Annotation>();
+            List<Annotation> annotations = new ArrayList<>();
             for (Annotation annotation : method.getDeclaringClass().getAnnotations()) {
                 Class<? extends Annotation> annotationClass = annotation.annotationType();
                 if (annotationProcessors.containsKey(annotationClass)) {

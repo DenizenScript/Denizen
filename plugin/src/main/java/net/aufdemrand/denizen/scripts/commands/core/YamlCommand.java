@@ -35,7 +35,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         }, "yaml");
     }
 
-    Map<String, YamlConfiguration> yamls = new HashMap<String, YamlConfiguration>();
+    Map<String, YamlConfiguration> yamls = new HashMap<>();
 
     private YamlConfiguration getYaml(String id) {
         if (id == null) {
@@ -45,9 +45,9 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         return yamls.get(id.toUpperCase());
     }
 
-    public static enum Action {LOAD, LOADTEXT, UNLOAD, CREATE, WRITE, SAVE, SET}
+    public enum Action {LOAD, LOADTEXT, UNLOAD, CREATE, WRITE, SAVE, SET}
 
-    public static enum YAML_Action {
+    public enum YAML_Action {
         SET_VALUE, INCREASE, DECREASE, MULTIPLY,
         DIVIDE, INSERT, REMOVE, SPLIT, DELETE
     }
@@ -445,7 +445,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                         case INSERT: {
                             List<String> list = yaml.getStringList(keyStr);
                             if (list == null) {
-                                list = new ArrayList<String>();
+                                list = new ArrayList<>();
                             }
                             list.add(valueStr);
                             yaml.set(keyStr, list);
@@ -484,7 +484,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                         case SPLIT: {
                             List<String> list = yaml.getStringList(keyStr);
                             if (list == null) {
-                                list = new ArrayList<String>();
+                                list = new ArrayList<>();
                             }
                             list.addAll(dList.valueOf(valueStr));
                             yaml.set(keyStr, list);
@@ -534,7 +534,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         else {
             List<String> list = yaml.getStringList(key);
             if (list == null) {
-                list = new ArrayList<String>();
+                list = new ArrayList<>();
             }
             if (index < 0) {
                 index = 0;

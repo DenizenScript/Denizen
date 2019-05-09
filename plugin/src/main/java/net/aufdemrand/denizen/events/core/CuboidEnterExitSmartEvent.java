@@ -32,7 +32,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     ///////////////
 
 
-    ArrayList<String> cuboids_to_watch = new ArrayList<String>();
+    ArrayList<String> cuboids_to_watch = new ArrayList<>();
 
     @Override
     public boolean shouldInitialize(Set<String> events) {
@@ -93,7 +93,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
     ///////////
 
     private boolean broad_detection = false;
-    private Map<String, List<dCuboid>> player_cuboids = new ConcurrentHashMap<String, List<dCuboid>>();
+    private Map<String, List<dCuboid>> player_cuboids = new ConcurrentHashMap<>();
 
     // <--[event]
     // @Events
@@ -187,17 +187,17 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
         // Look for cuboids that contain the block's location
         List<dCuboid> cuboids = dCuboid.getNotableCuboidsContaining(event.getTo());
-        List<dCuboid> match = new ArrayList<dCuboid>();
+        List<dCuboid> match = new ArrayList<>();
         String namelow = CoreUtilities.toLowerCase(event.getPlayer().getName()); // TODO: UUID?
         if (player_cuboids.containsKey(namelow)) // TODO: Clear on quit?
         {
             match = player_cuboids.get(namelow);
         }
 
-        List<dCuboid> exits = new ArrayList<dCuboid>(match);
+        List<dCuboid> exits = new ArrayList<>(match);
         exits.removeAll(cuboids);
 
-        List<dCuboid> enters = new ArrayList<dCuboid>(cuboids);
+        List<dCuboid> enters = new ArrayList<>(cuboids);
         enters.removeAll(match);
 
         if (exits.isEmpty() && enters.isEmpty()) {
@@ -245,8 +245,8 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
      * Fires world events for the Cuboid Enter/Exit Smart Event.
      */
     private boolean Fire(PlayerMoveEvent event, dList cuboids, String EventName, String cause) {
-        List<String> events = new ArrayList<String>();
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        List<String> events = new ArrayList<>();
+        Map<String, dObject> context = new HashMap<>();
         context.put("from", new dLocation(event.getFrom()));
         context.put("to", new dLocation(event.getTo()));
         context.put("cuboids", cuboids);

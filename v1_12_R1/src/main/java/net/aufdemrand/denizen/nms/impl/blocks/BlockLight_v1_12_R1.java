@@ -28,7 +28,7 @@ public class BlockLight_v1_12_R1 extends BlockLight {
     private static final Field dirtyCountField;
     private static final BukkitTask bukkitTask;
 
-    private static final Set<UUID> worlds = new HashSet<UUID>();
+    private static final Set<UUID> worlds = new HashSet<>();
 
     static {
         Method pcm = null;
@@ -101,7 +101,7 @@ public class BlockLight_v1_12_R1 extends BlockLight {
             blockLight = new BlockLight_v1_12_R1(location, ticks);
             lightsByLocation.put(location, blockLight);
             if (!lightsByChunk.containsKey(blockLight.chunk)) {
-                lightsByChunk.put(blockLight.chunk, new ArrayList<BlockLight>());
+                lightsByChunk.put(blockLight.chunk, new ArrayList<>());
             }
             lightsByChunk.get(blockLight.chunk).add(blockLight);
         }

@@ -9,7 +9,7 @@ import java.util.List;
 public class Paginator {
 
     private String header;
-    private final List<String> lines = new ArrayList<String>();
+    private final List<String> lines = new ArrayList<>();
 
     public void addLine(String line) {
         lines.add(line);

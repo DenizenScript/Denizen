@@ -12,7 +12,7 @@ import java.util.*;
 
 public class DenizenMapRenderer extends MapRenderer {
 
-    public List<MapObject> mapObjects = new ArrayList<MapObject>();
+    public List<MapObject> mapObjects = new ArrayList<>();
     private List<MapRenderer> oldMapRenderers;
     public boolean autoUpdate;
 
@@ -58,8 +58,8 @@ public class DenizenMapRenderer extends MapRenderer {
 
     public Map<String, Object> getSaveData() {
         if (active) {
-            Map<String, Object> data = new HashMap<String, Object>();
-            Map<String, Object> objects = new HashMap<String, Object>();
+            Map<String, Object> data = new HashMap<>();
+            Map<String, Object> objects = new HashMap<>();
             for (int i = 0; i < mapObjects.size(); i++) {
                 Map<String, Object> objectData = mapObjects.get(i).getSaveData();
                 objects.put(String.valueOf(i), objectData);

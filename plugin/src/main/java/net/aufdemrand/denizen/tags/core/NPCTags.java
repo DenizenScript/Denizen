@@ -93,7 +93,7 @@ public class NPCTags implements Listener {
     // Keep track of previous locations and fire navigation actions
     ////
 
-    public static Map<Integer, dLocation> previousLocations = new HashMap<Integer, dLocation>();
+    public static Map<Integer, dLocation> previousLocations = new HashMap<>();
 
     // <--[event]
     // @Events
@@ -278,7 +278,7 @@ public class NPCTags implements Listener {
 
         dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
 
         context.put("action", new Element(event.getAction() == TeleportStuckAction.INSTANCE ? "teleport" : "none"));
 

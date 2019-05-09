@@ -217,7 +217,7 @@ public class DenizenCommandHandler {
                     "Denizen dBugger verbosity disabled."));
         }
         if (args.hasFlag('x')) {
-            dB.filter = new ArrayList<String>();
+            dB.filter = new ArrayList<>();
             Messaging.sendInfo(sender, "Denizen dBugger filter removed.");
         }
         if (args.hasFlag('n')) {

@@ -64,7 +64,7 @@ public class EngageCommand extends AbstractCommand {
     /*
      * Engaged NPCs cannot interact with Players
      */
-    private static Map<NPC, Long> currentlyEngaged = new HashMap<NPC, Long>();
+    private static Map<NPC, Long> currentlyEngaged = new HashMap<>();
 
     /**
      * Checks if the dNPC is ENGAGED. Engaged NPCs do not respond to

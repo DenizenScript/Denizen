@@ -7,7 +7,7 @@ import java.util.Map;
 
 public abstract class AnimationHelper {
 
-    private final Map<String, EntityAnimation> entityAnimations = new HashMap<String, EntityAnimation>();
+    private final Map<String, EntityAnimation> entityAnimations = new HashMap<>();
 
     protected void register(String name, EntityAnimation animation) {
         entityAnimations.put(name.toUpperCase(), animation);

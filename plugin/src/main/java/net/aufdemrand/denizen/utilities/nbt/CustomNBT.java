@@ -55,7 +55,7 @@ public class CustomNBT {
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
 
-        List<CompoundTag> attribs = new ArrayList<CompoundTag>();
+        List<CompoundTag> attribs = new ArrayList<>();
         if (compoundTag.getValue().containsKey(KEY_ATTRIBUTES)) {
             List<Tag> temp = (List<Tag>) compoundTag.getValue().get(KEY_ATTRIBUTES).getValue();
             for (Tag tag : temp) {
@@ -63,7 +63,7 @@ public class CustomNBT {
             }
         }
 
-        List<AttributeReturn> attrs = new ArrayList<AttributeReturn>();
+        List<AttributeReturn> attrs = new ArrayList<>();
 
         for (int i = 0; i < attribs.size(); i++) {
             CompoundTag ct = attribs.get(i);
@@ -130,7 +130,7 @@ public class CustomNBT {
         }
         CompoundTag compoundTag = NMSHandler.getInstance().getItemHelper().getNbtData(itemStack);
 
-        List<CompoundTag> attribs = new ArrayList<CompoundTag>();
+        List<CompoundTag> attribs = new ArrayList<>();
         if (compoundTag.getValue().containsKey(KEY_ATTRIBUTES)) {
             List<Tag> temp = (List<Tag>) compoundTag.getValue().get(KEY_ATTRIBUTES).getValue();
             for (Tag tag : temp) {
@@ -138,7 +138,7 @@ public class CustomNBT {
             }
         }
 
-        HashMap<String, Tag> tmap = new HashMap<String, Tag>();
+        HashMap<String, Tag> tmap = new HashMap<>();
 
         tmap.put("AttributeName", new StringTag(attr));
         tmap.put("Name", new StringTag(attr));
@@ -211,7 +211,7 @@ public class CustomNBT {
             denizenTag = (CompoundTag) compoundTag.getValue().get(basekey);
         }
         else {
-            denizenTag = NMSHandler.getInstance().createCompoundTag(new HashMap<String, Tag>());
+            denizenTag = NMSHandler.getInstance().createCompoundTag(new HashMap<>());
         }
 
         // Add custom NBT
@@ -293,7 +293,7 @@ public class CustomNBT {
     }
 
     public static List<String> listNBT(ItemStack itemStack, String basekey) {
-        List<String> nbt = new ArrayList<String>();
+        List<String> nbt = new ArrayList<>();
         if (itemStack == null || itemStack.getType() == Material.AIR) {
             return nbt;
         }
@@ -394,7 +394,7 @@ public class CustomNBT {
             return null;
         }
 
-        Map<EquipmentSlot, Set<Action>> map = new HashMap<EquipmentSlot, Set<Action>>();
+        Map<EquipmentSlot, Set<Action>> map = new HashMap<>();
         CompoundTag compoundTag = NMSHandler.getInstance().getEntityHelper().getNbtData(entity);
         int disabledSlots = compoundTag.getInt(KEY_DISABLED_SLOTS);
 
@@ -410,7 +410,7 @@ public class CustomNBT {
                 if (matchedSlot != 0) {
                     Set<Action> set = map.get(slot);
                     if (set == null) {
-                        set = new HashSet<Action>();
+                        set = new HashSet<>();
                         map.put(slot, set);
                     }
                     set.add(action);

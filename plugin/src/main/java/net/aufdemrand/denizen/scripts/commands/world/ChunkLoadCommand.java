@@ -131,7 +131,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     }
 
     // Map of chunks with delays
-    Map<String, Long> chunkDelays = new HashMap<String, Long>();
+    Map<String, Long> chunkDelays = new HashMap<>();
 
     @EventHandler
     public void stopUnload(ChunkUnloadEvent e) {

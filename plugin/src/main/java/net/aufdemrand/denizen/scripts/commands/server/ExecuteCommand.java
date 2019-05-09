@@ -28,7 +28,7 @@ public class ExecuteCommand extends AbstractCommand {
     enum Type {AS_SERVER, AS_NPC, AS_PLAYER, AS_OP}
 
     public DenizenCommandSender dcs = new DenizenCommandSender();
-    public static final List<UUID> silencedPlayers = new ArrayList<UUID>();
+    public static final List<UUID> silencedPlayers = new ArrayList<>();
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -101,7 +101,7 @@ public class BiomeNMS_v1_12_R1 extends BiomeNMS {
     }
 
     private List<EntityType> getSpawnableEntities(EnumCreatureType creatureType) {
-        List<EntityType> entityTypes = new ArrayList<EntityType>();
+        List<EntityType> entityTypes = new ArrayList<>();
         for (BiomeBase.BiomeMeta meta : biomeBase.getMobs(creatureType)) {
             // TODO: check if this works
             try {

@@ -71,7 +71,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         }
     }
 
-    static Map<String, UUID> playerNames = new HashMap<String, UUID>();
+    static Map<String, UUID> playerNames = new HashMap<>();
 
     /**
      * Notes that the player exists, for easy dPlayer valueOf handling.
@@ -930,7 +930,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             }
 
             List<Entity> entities = getPlayerEntity().getNearbyEntities(range, range, range);
-            ArrayList<LivingEntity> possibleTargets = new ArrayList<LivingEntity>();
+            ArrayList<LivingEntity> possibleTargets = new ArrayList<>();
             if (!attribute.hasContext(1)) {
                 for (Entity entity : entities) {
                     if (entity instanceof LivingEntity) {
@@ -1030,7 +1030,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         if (attribute.startsWith("list")) {
             dB.echoError("DO NOT USE PLAYER.LIST AS A TAG, please use <server.list_online_players> and related tags!");
-            List<String> players = new ArrayList<String>();
+            List<String> players = new ArrayList<>();
 
             if (attribute.startsWith("list.online")) {
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -3263,10 +3263,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         if (mechanism.matches("banner_update")) {
             if (mechanism.getValue().asString().length() > 0) {
                 String[] split = mechanism.getValue().asString().split("[\\|" + dList.internal_escape + "]");
-                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<org.bukkit.block.banner.Pattern>();
+                List<org.bukkit.block.banner.Pattern> patterns = new ArrayList<>();
                 if (split.length > 2) {
                     List<String> splitList;
-                    for (int i = 2; i > split.length; i++) {
+                    for (int i = 2; i < split.length; i++) {
                         String string = split[i];
                         try {
                             splitList = CoreUtilities.split(string, '/', 2);

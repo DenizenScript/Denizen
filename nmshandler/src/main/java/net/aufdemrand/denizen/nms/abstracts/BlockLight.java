@@ -14,8 +14,8 @@ import java.util.Map;
 
 public abstract class BlockLight {
 
-    protected static final Map<Location, BlockLight> lightsByLocation = new HashMap<Location, BlockLight>();
-    protected static final Map<Chunk, List<BlockLight>> lightsByChunk = new HashMap<Chunk, List<BlockLight>>();
+    protected static final Map<Location, BlockLight> lightsByLocation = new HashMap<>();
+    protected static final Map<Chunk, List<BlockLight>> lightsByChunk = new HashMap<>();
     protected static final BlockFace[] adjacentFaces = new BlockFace[] {
             BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN
     };

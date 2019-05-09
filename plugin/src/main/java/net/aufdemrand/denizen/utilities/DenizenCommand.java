@@ -47,7 +47,7 @@ public class DenizenCommand extends Command {
         if (!testPermissionSilent(commandSender)) {
             return false;
         }
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         dPlayer player = null;
         dNPC npc = null;
         if (commandSender instanceof Player) {
@@ -107,7 +107,7 @@ public class DenizenCommand extends Command {
         if (!testPermission(commandSender)) {
             return true;
         }
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         String raw_args = "";
         if (arguments.length > 0) {
             StringBuilder rawArgsBuilder = new StringBuilder();
@@ -161,7 +161,7 @@ public class DenizenCommand extends Command {
         if (!script.hasTabCompleteProcedure()) {
             return super.tabComplete(commandSender, alias, arguments);
         }
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         String raw_args = "";
         if (arguments.length > 0) {
             StringBuilder rawArgsBuilder = new StringBuilder();

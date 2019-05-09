@@ -75,7 +75,7 @@ public class DamageTrigger extends AbstractTrigger implements Listener {
             damager = damager.getShooter();
         }
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         context.put("damage", new Element(event.getDamage()));
 
         dPlayer dplayer = null;

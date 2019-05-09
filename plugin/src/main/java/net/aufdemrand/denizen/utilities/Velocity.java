@@ -75,7 +75,7 @@ public class Velocity {
 
     public static double launchAngle(Location from, Vector to, double v, double elev, double g) {
         Vector victor = from.toVector().subtract(to);
-        Double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
+        double dist = Math.sqrt(Math.pow(victor.getX(), 2) + Math.pow(victor.getZ(), 2));
         double v2 = Math.pow(v, 2);
         double v4 = Math.pow(v, 4);
         double derp = g * (g * Math.pow(dist, 2) + 2 * elev * v2);

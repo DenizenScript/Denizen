@@ -26,7 +26,7 @@ public class SpawnEntityHelper {
                     EntityScriptHelper.setEntityScript(bukkitEntity, scriptName);
                 }
                 dEntity entity = new dEntity(bukkitEntity);
-                for (Mechanism mechanism : new ArrayList<Mechanism>(mechanisms)) {
+                for (Mechanism mechanism : new ArrayList<>(mechanisms)) {
                     if (dEntity.earlyValidMechanisms.contains(CoreUtilities.toLowerCase(mechanism.getName()))) {
                         entity.safeAdjust(new Mechanism(new Element(mechanism.getName()), mechanism.getValue(), mechanism.context));
                         mechanisms.remove(mechanism);

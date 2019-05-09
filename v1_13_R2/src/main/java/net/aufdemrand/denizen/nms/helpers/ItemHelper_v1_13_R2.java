@@ -96,7 +96,7 @@ public class ItemHelper_v1_13_R2 implements ItemHelper {
         if (nmsItemStack != null && nmsItemStack.hasTag()) {
             return CompoundTag_v1_13_R2.fromNMSTag(nmsItemStack.getTag());
         }
-        return new CompoundTag_v1_13_R2(new HashMap<String, Tag>());
+        return new CompoundTag_v1_13_R2(new HashMap<>());
     }
 
     @Override
@@ -108,11 +108,11 @@ public class ItemHelper_v1_13_R2 implements ItemHelper {
 
     @Override
     public ItemStack setAttributeModifiers(ItemStack itemStack, Map<EntityAttribute, List<EntityAttributeModifier>> modifiers) {
-        List<Tag> modifierList = new ArrayList<Tag>(getNbtData(itemStack).getList("AttributeModifiers"));
+        List<Tag> modifierList = new ArrayList<>(getNbtData(itemStack).getList("AttributeModifiers"));
         for (Map.Entry<EntityAttribute, List<EntityAttributeModifier>> entry : modifiers.entrySet()) {
             EntityAttribute attribute = entry.getKey();
             for (EntityAttributeModifier modifier : entry.getValue()) {
-                Map<String, Tag> compound = new HashMap<String, Tag>();
+                Map<String, Tag> compound = new HashMap<>();
                 compound.put("AttributeName", new StringTag(attribute.getName()));
                 UUID uuid = modifier.getUniqueId();
                 compound.put("UUIDMost", new LongTag(uuid.getMostSignificantBits()));

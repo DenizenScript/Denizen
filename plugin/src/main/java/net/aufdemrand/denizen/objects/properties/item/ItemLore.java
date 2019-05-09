@@ -77,7 +77,7 @@ public class ItemLore implements Property {
         // -->
         if (attribute.startsWith("lore")) {
             if (hasLore()) {
-                List<String> loreList = new ArrayList<String>();
+                List<String> loreList = new ArrayList<>();
                 for (String itemLore : item.getItemStack().getItemMeta().getLore()) {
                     if (!itemLore.startsWith(dItem.itemscriptIdentifier)
                             && !itemLore.startsWith(ItemScriptHelper.ItemScriptHashID)) {

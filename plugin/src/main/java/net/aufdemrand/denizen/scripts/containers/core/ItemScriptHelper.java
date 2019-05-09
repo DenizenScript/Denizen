@@ -35,11 +35,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemScriptHelper implements Listener {
 
-    public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<String, ItemScriptContainer>(8, 0.9f, 1);
-    public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<String, ItemScriptContainer>();
-    public static final Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<ItemScriptContainer, List<String>>();
-    public static final Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<ItemScriptContainer, String>();
-    public static final Map<ItemScriptContainer, String> furnace_to_register = new HashMap<ItemScriptContainer, String>();
+    public static final Map<String, ItemScriptContainer> item_scripts = new ConcurrentHashMap<>(8, 0.9f, 1);
+    public static final Map<String, ItemScriptContainer> item_scripts_by_hash_id = new HashMap<>();
+    public static final Map<ItemScriptContainer, List<String>> recipes_to_register = new HashMap<>();
+    public static final Map<ItemScriptContainer, String> shapeless_to_register = new HashMap<>();
+    public static final Map<ItemScriptContainer, String> furnace_to_register = new HashMap<>();
 
     public ItemScriptHelper() {
         DenizenAPI.getCurrentInstance().getServer().getPluginManager()
@@ -67,7 +67,7 @@ public class ItemScriptHelper implements Listener {
             }
 
             // Store every ingredient in a List
-            List<dItem> ingredients = new ArrayList<dItem>();
+            List<dItem> ingredients = new ArrayList<>();
 
             boolean shouldRegister = true;
             recipeLoop:
@@ -101,7 +101,7 @@ public class ItemScriptHelper implements Listener {
             String list = TagManager.tag(string, new BukkitTagContext(container.player, container.npc,
                     false, null, dB.shouldDebug(container), new dScript(container)));
 
-            List<dItem> ingredients = new ArrayList<dItem>();
+            List<dItem> ingredients = new ArrayList<>();
 
             boolean shouldRegister = true;
             for (String element : dList.valueOf(list)) {
@@ -129,14 +129,14 @@ public class ItemScriptHelper implements Listener {
             FurnaceRecipe recipe = new FurnaceRecipe(entry.getKey().getCleanReference().getItemStack(), furnace_item.getMaterial().getMaterial(), furnace_item.getItemStack().getDurability());
             Bukkit.getServer().addRecipe(recipe);
         }
-        currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>(furnace_to_register);
+        currentFurnaceRecipes = new HashMap<>(furnace_to_register);
 
         recipes_to_register.clear();
         shapeless_to_register.clear();
         furnace_to_register.clear();
     }
 
-    public Map<ItemScriptContainer, String> currentFurnaceRecipes = new HashMap<ItemScriptContainer, String>();
+    public Map<ItemScriptContainer, String> currentFurnaceRecipes = new HashMap<>();
 
     @EventHandler
     public void furnaceSmeltHandler(FurnaceSmeltEvent event) {
@@ -487,8 +487,8 @@ public class ItemScriptHelper implements Listener {
                 ItemScriptContainer.shapelessRecipesMap.entrySet()) {
 
             // Clone recipe & matrix so we can remove items from them
-            List<ItemStack> entryList = new ArrayList<ItemStack>();
-            List<ItemStack> matrixList = new ArrayList<ItemStack>();
+            List<ItemStack> entryList = new ArrayList<>();
+            List<ItemStack> matrixList = new ArrayList<>();
             for (dItem entryItem : entry.getValue()) {
                 entryList.add(entryItem.getItemStack().clone());
             }
@@ -496,7 +496,7 @@ public class ItemScriptHelper implements Listener {
                 matrixList.add(itemStack != null ? itemStack.clone() : new ItemStack(Material.AIR));
             }
 
-            List<dItem> shapedRecipe = new ArrayList<dItem>();
+            List<dItem> shapedRecipe = new ArrayList<>();
             ItemStack matrixItem;
             ItemStack entryItem;
 
@@ -540,7 +540,7 @@ public class ItemScriptHelper implements Listener {
             }
 
             // Returns a shaped recipe entry based on the shapeless recipe
-            return new AbstractMap.SimpleEntry<ItemScriptContainer, List<dItem>>(entry.getKey(), shapedRecipe);
+            return new AbstractMap.SimpleEntry<>(entry.getKey(), shapedRecipe);
         }
 
         return null;

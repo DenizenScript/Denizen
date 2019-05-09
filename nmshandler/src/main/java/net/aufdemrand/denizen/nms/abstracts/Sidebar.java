@@ -30,7 +30,7 @@ public abstract class Sidebar {
     }
 
     public List<String> getLines() {
-        return new ArrayList<String>(Arrays.asList(lines));
+        return new ArrayList<>(Arrays.asList(lines));
     }
 
     public int[] getScores() {

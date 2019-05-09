@@ -431,7 +431,7 @@ public class dChunk implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 int[] heightMap = ((dChunk) object).getHeightMap();
-                List<String> height_map = new ArrayList<String>(heightMap.length);
+                List<String> height_map = new ArrayList<>(heightMap.length);
                 for (int i : heightMap) {
                     height_map.add(String.valueOf(i));
                 }
@@ -538,7 +538,7 @@ public class dChunk implements dObject, Adjustable {
 
     }
 
-    public static HashMap<String, TagRunnable> registeredTags = new HashMap<String, TagRunnable>();
+    public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
 
     public static void registerTag(String name, TagRunnable runnable) {
         if (runnable.name == null) {

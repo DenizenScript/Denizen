@@ -25,10 +25,10 @@ public class ConstantsTrait extends Trait {
 
     // Saved to C2 saves.yml
     @Persist(value = "", collectionType = ConcurrentHashMap.class)
-    private Map<String, String> constants = new HashMap<String, String>();
+    private Map<String, String> constants = new HashMap<>();
 
     // Used internally
-    private Map<String, String> assignmentConstants = new HashMap<String, String>();
+    private Map<String, String> assignmentConstants = new HashMap<>();
     private String assignment = null;
 
     public ConstantsTrait() {
@@ -81,7 +81,7 @@ public class ConstantsTrait extends Trait {
      * @return a map of constants, keyed by constant name.
      */
     public Map<String, String> getAllConstants() {
-        Map<String, String> allConstants = new HashMap<String, String>();
+        Map<String, String> allConstants = new HashMap<>();
         getAssignmentConstants().putAll(allConstants);
         getNPCConstants().putAll(allConstants);
         return allConstants;

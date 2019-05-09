@@ -21,7 +21,7 @@ import java.util.UUID;
 
 public class GlowCommand extends AbstractCommand {
 
-    public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<Integer, HashSet<UUID>>();
+    public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<>();
 
     public static void unGlow(LivingEntity e) {
         if (glowViewers.containsKey(e.getEntityId())) {
@@ -90,7 +90,7 @@ public class GlowCommand extends AbstractCommand {
             if (shouldGlow) {
                 HashSet<UUID> players = glowViewers.get(ent.getLivingEntity().getEntityId());
                 if (players == null) {
-                    players = new HashSet<UUID>();
+                    players = new HashSet<>();
                     glowViewers.put(ent.getLivingEntity().getEntityId(), players);
                 }
                 players.add(puuid);

@@ -49,7 +49,7 @@ public class HealCommand extends AbstractCommand {
         }
 
         if (!specified_targets) {
-            List<dEntity> entities = new ArrayList<dEntity>();
+            List<dEntity> entities = new ArrayList<>();
             if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
                 entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
             }

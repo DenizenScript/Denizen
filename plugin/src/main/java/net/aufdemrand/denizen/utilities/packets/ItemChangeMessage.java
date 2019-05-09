@@ -24,7 +24,7 @@ public class ItemChangeMessage implements Listener {
                 DenizenAPI.getCurrentInstance());
     }
 
-    private static final Map<UUID, Integer> slotChanged = new HashMap<UUID, Integer>();
+    private static final Map<UUID, Integer> slotChanged = new HashMap<>();
 
     public static void sendMessage(Player player, String message) {
         ItemStack item = NMSHandler.getInstance().getEntityHelper().getItemInHand(player);

@@ -24,7 +24,7 @@ public class OldMaterialsHelper {
     // dMaterial 'extra materials' for making 'data variety' materials easier to work with. Register materials
     // that aren't included in the bukkit Material enum here to make lookup easier.
 
-    public static enum dMaterials {
+    public enum dMaterials {
         WHITE_WOOL, ORANGE_WOOL, MAGENTA_WOOL, LIGHT_BLUE_WOOL, YELLOW_WOOL,
         LIME_WOOL, PINK_WOOL, GRAY_WOOL, LIGHT_GRAY_WOOL, CYAN_WOOL, PURPLE_WOOL, BLUE_WOOL, BROWN_WOOL,
         GREEN_WOOL, RED_WOOL, BLACK_WOOL, WHITE_CARPET, ORANGE_CARPET, MAGENTA_CARPET, LIGHT_BLUE_CARPET,

@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class DenizenCommandSender implements ConsoleCommandSender {
 
-    private ArrayList<String> output = new ArrayList<String>();
+    private ArrayList<String> output = new ArrayList<>();
 
     public boolean silent = false;
 

@@ -139,7 +139,7 @@ public class PacketHelper_v1_14_R1 implements PacketHelper {
 
     @Override
     public void showBannerUpdate(Player player, Location location, DyeColor base, List<Pattern> patterns) {
-        List<CompoundTag> nbtPatterns = new ArrayList<CompoundTag>();
+        List<CompoundTag> nbtPatterns = new ArrayList<>();
         for (Pattern pattern : patterns) {
             nbtPatterns.add(NMSHandler.getInstance()
                     .createCompoundTag(new HashMap<>())

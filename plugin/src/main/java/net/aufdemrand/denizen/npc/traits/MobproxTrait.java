@@ -32,7 +32,7 @@ public class MobproxTrait extends Trait {
     Flag frange;
     Flag facceptnpc;
     Flag ftimer;
-    List<Entity> inrange = new ArrayList<Entity>();
+    List<Entity> inrange = new ArrayList<>();
 
     @Override
     public void run() {
@@ -49,7 +49,7 @@ public class MobproxTrait extends Trait {
                     int range = frange.getLast().asInteger();
                     boolean acceptnpc = facceptnpc.getLast().asBoolean();
                     List<Entity> nearby = liveEnt.getNearbyEntities(range, range, range);
-                    List<Entity> removeme = new ArrayList<Entity>();
+                    List<Entity> removeme = new ArrayList<>();
                     removeme.addAll(inrange);
                     for (Entity ent : nearby) {
                         if (ent instanceof LivingEntity && (!(ent instanceof Player) || dEntity.isCitizensNPC(ent))
@@ -110,7 +110,7 @@ public class MobproxTrait extends Trait {
     //
     // -->
     private void callAction(String act, Entity ent) {
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         context.put("entity", new dEntity(ent));
         dnpc.action("mob " + act + " proximity", null, context);
         dnpc.action(ent.getType().name() + " " + act + " proximity", null, context);

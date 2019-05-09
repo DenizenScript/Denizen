@@ -86,8 +86,8 @@ public class MapScriptContainer extends ScriptContainer {
         }
         if (contains("OBJECTS")) {
             YamlConfiguration objectsSection = getConfigurationSection("OBJECTS");
-            List<StringHolder> objectKeys1 = new ArrayList<StringHolder>(objectsSection.getKeys(false));
-            List<String> objectKeys = new ArrayList<String>(objectKeys1.size());
+            List<StringHolder> objectKeys1 = new ArrayList<>(objectsSection.getKeys(false));
+            List<String> objectKeys = new ArrayList<>(objectKeys1.size());
             for (StringHolder sh : objectKeys1) {
                 objectKeys.add(sh.str);
             }

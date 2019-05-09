@@ -40,7 +40,7 @@ public class PlayerTags implements Listener {
     // Player Chat History
     /////////
 
-    public static Map<UUID, List<String>> playerChatHistory = new ConcurrentHashMap<UUID, List<String>>(8, 0.9f, 2);
+    public static Map<UUID, List<String>> playerChatHistory = new ConcurrentHashMap<>(8, 0.9f, 2);
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(final AsyncPlayerChatEvent event) {
@@ -52,7 +52,7 @@ public class PlayerTags implements Listener {
                     List<String> history = playerChatHistory.get(event.getPlayer().getUniqueId());
                     // If history hasn't been started for this player, initialize a new ArrayList
                     if (history == null) {
-                        history = new ArrayList<String>();
+                        history = new ArrayList<>();
                     }
                     // Maximum history size is specified by config.yml
                     if (history.size() > maxSize) {

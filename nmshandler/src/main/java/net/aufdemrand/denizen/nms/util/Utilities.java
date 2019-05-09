@@ -20,7 +20,7 @@ public class Utilities {
      * @return a random Location within range, or null if no Location within range is safe
      */
     public static Location getWalkableLocationNear(Location location, int range) {
-        List<Location> locations = new ArrayList<Location>();
+        List<Location> locations = new ArrayList<>();
         location = location.getBlock().getLocation();
 
         // Loop through each location within the range

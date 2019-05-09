@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class FakeBlock {
 
-    private final static Map<UUID, Map<dLocation, FakeBlock>> blocks = new HashMap<UUID, Map<dLocation, FakeBlock>>();
-    private final static Map<dLocation, FakeBlock> blocksByLocation = new HashMap<dLocation, FakeBlock>();
+    private final static Map<UUID, Map<dLocation, FakeBlock>> blocks = new HashMap<>();
+    private final static Map<dLocation, FakeBlock> blocksByLocation = new HashMap<>();
 
     private final dPlayer player;
     private final dLocation location;
@@ -39,7 +39,7 @@ public class FakeBlock {
             }
             UUID uuid = player.getPlayerEntity().getUniqueId();
             if (!blocks.containsKey(uuid)) {
-                blocks.put(uuid, new HashMap<dLocation, FakeBlock>());
+                blocks.put(uuid, new HashMap<>());
             }
             Map<dLocation, FakeBlock> playerBlocks = blocks.get(uuid);
             if (!playerBlocks.containsKey(location)) {
@@ -50,7 +50,7 @@ public class FakeBlock {
     }
 
     public static void stopShowingTo(List<dPlayer> players, final dLocation location) {
-        final List<UUID> uuids = new ArrayList<UUID>();
+        final List<UUID> uuids = new ArrayList<>();
         for (dPlayer player : players) {
             if (!player.isOnline() || !player.isValid()) {
                 continue;

@@ -60,8 +60,8 @@ public class ExplodeCommand extends AbstractCommand {
 
         final dLocation location = (dLocation) scriptEntry.getObject("location");
         Element power = (Element) scriptEntry.getObject("power");
-        Boolean breakblocks = scriptEntry.hasObject("breakblocks");
-        Boolean fire = scriptEntry.hasObject("fire");
+        boolean breakblocks = scriptEntry.hasObject("breakblocks");
+        boolean fire = scriptEntry.hasObject("fire");
 
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {

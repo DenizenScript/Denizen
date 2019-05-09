@@ -134,7 +134,7 @@ public class DenizenChat implements VocalChord {
 
     private void talkToBystanders(Talkable talkable, String text, DenizenSpeechContext context) {
         double range = context.getChatRange();
-        List<Entity> bystanderEntities = new ArrayList<Entity>();
+        List<Entity> bystanderEntities = new ArrayList<>();
         if (range == 0D) {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 bystanderEntities.add(player);

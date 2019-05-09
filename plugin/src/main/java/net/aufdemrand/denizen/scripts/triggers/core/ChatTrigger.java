@@ -119,12 +119,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             }
         }
 
-        Boolean ret = false;
+        boolean ret = false;
 
         // Denizen should be good to interact with. Let's get the script.
         InteractScriptContainer script = npc.getInteractScript(denizenPlayer, ChatTrigger.class);
 
-        Map<String, dObject> context = new HashMap<String, dObject>();
+        Map<String, dObject> context = new HashMap<>();
         context.put("message", new Element(message));
 
         //
@@ -211,12 +211,12 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String regexMessage = null;
 
         // Use TreeMap to sort chat triggers alphabetically
-        TreeMap<String, String> idMap = new TreeMap<String, String>();
+        TreeMap<String, String> idMap = new TreeMap<>();
         idMap.putAll(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
 
         if (!idMap.isEmpty()) {
             // Iterate through the different id entries in the step's chat trigger
-            List<Map.Entry<String, String>> entries = new ArrayList<Map.Entry<String, String>>(idMap.entrySet());
+            List<Map.Entry<String, String>> entries = new ArrayList<>(idMap.entrySet());
             Collections.sort(entries, new Comparator<Map.Entry<String, String>>() {
                 @Override
                 public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
@@ -339,7 +339,7 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
             syncChatTrigger(new PlayerChatEvent(event.getPlayer(), event.getMessage(), event.getFormat(), event.getRecipients()));
             return;
         }
-        FutureTask<ChatContext> futureTask = new FutureTask<ChatContext>(new Callable<ChatContext>() {
+        FutureTask<ChatContext> futureTask = new FutureTask<>(new Callable<ChatContext>() {
             @Override
             public ChatContext call() {
                 return process(event.getPlayer(), event.getMessage());

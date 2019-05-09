@@ -1002,7 +1002,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         // None.
         //
         // -->
-        HashMap<String, dObject> context = new HashMap<String, dObject>();
+        HashMap<String, dObject> context = new HashMap<>();
         OldEventManager.doEvents(Arrays.asList("shutdown"), new BukkitScriptEntryData(null, null), context);
 
         // Disable the log interceptor... otherwise bad things on /reload
@@ -1097,7 +1097,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             dB.log("Updating saves from v1 to v2...");
             ConfigurationSection section = savesConfig.getConfigurationSection("Players");
             if (section != null) {
-                ArrayList<String> keyList = new ArrayList<String>(section.getKeys(false));
+                ArrayList<String> keyList = new ArrayList<>(section.getKeys(false));
                 // Remove UPPERCASE cooldown saves from the list - handled manually
                 for (int i = 0; i < keyList.size(); i++) {
                     String key = keyList.get(i);
@@ -1412,7 +1412,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public List<net.aufdemrand.denizencore.utilities.YamlConfiguration> getOutsideScripts() {
-        List<net.aufdemrand.denizencore.utilities.YamlConfiguration> files = new ArrayList<net.aufdemrand.denizencore.utilities.YamlConfiguration>();
+        List<net.aufdemrand.denizencore.utilities.YamlConfiguration> files = new ArrayList<>();
         try {
             files.add(ScriptHelper.loadConfig("Denizen.jar/util.dsc", getResource("util.dsc")));
         }

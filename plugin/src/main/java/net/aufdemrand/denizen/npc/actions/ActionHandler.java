@@ -37,7 +37,7 @@ public class ActionHandler {
     public String doAction(String actionName, dNPC npc, dPlayer player, AssignmentScriptContainer assignment, Map<String, dObject> context) {
 
         if (context == null) {
-            context = new HashMap<String, dObject>();
+            context = new HashMap<>();
         }
 
         String determination = "none";

@@ -125,7 +125,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         //Handle no_drops and no_drops_or_xp and just no_xp
         if (lower.startsWith("no_drops")) {
             drops.clear();
-            dropItems = new ArrayList<dItem>();
+            dropItems = new ArrayList<>();
             if (lower.endsWith("_or_xp")) {
                 xp = 0;
             }
@@ -147,7 +147,7 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
         // Change dropped items if dList detected
         else if (aH.Argument.valueOf(lower).matchesArgumentList(dItem.class)) {
             drops.clear();
-            dropItems = new ArrayList<dItem>();
+            dropItems = new ArrayList<>();
             dList drops_list = dList.valueOf(determination);
             drops_list.filter(dItem.class, container);
             for (String drop : drops_list) {

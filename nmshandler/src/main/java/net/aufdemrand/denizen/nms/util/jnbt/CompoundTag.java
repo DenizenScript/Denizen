@@ -74,7 +74,7 @@ public abstract class CompoundTag extends Tag {
      * @return the builder
      */
     public CompoundTagBuilder createBuilder() {
-        return new CompoundTagBuilder(new HashMap<String, Tag>(value));
+        return new CompoundTagBuilder(new HashMap<>(value));
     }
 
     /**

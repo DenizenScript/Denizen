@@ -65,7 +65,7 @@ public class BlockCrackCommand extends AbstractCommand {
         public int base;
     }
 
-    private static Map<Location, Map<UUID, IntHolder>> progressTracker = new HashMap<Location, Map<UUID, IntHolder>>();
+    private static Map<Location, Map<UUID, IntHolder>> progressTracker = new HashMap<>();
     private static int lastBase;
 
     @Override
@@ -85,7 +85,7 @@ public class BlockCrackCommand extends AbstractCommand {
 
         Location loc = location.getBlock().getLocation();
         if (!progressTracker.containsKey(loc)) {
-            progressTracker.put(loc, new HashMap<UUID, IntHolder>());
+            progressTracker.put(loc, new HashMap<>());
             lastBase += 10;
         }
         Map<UUID, IntHolder> uuidInt = progressTracker.get(loc);
