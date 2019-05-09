@@ -2020,10 +2020,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - itemcooldown golden_apple d:10m
         //
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-            registerCoreMember(ItemCooldownCommand.class,
-                    "ITEMCOOLDOWN", "itemcooldown [<material>|...] (duration:<duration>)", 1);
-        }
+        registerCoreMember(ItemCooldownCommand.class,
+                "ITEMCOOLDOWN", "itemcooldown [<material>|...] (duration:<duration>)", 1);
 
         // <--[command]
         // @Name kick

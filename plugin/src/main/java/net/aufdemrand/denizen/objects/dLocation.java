@@ -2139,7 +2139,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @description
         // Returns whether the location is within the world border.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && attribute.startsWith("is_within_border")) {
+        if (attribute.startsWith("is_within_border")) {
             return new Element(getWorld().getWorldBorder().isInside(this))
                     .getAttribute(attribute.fulfill(1));
         }

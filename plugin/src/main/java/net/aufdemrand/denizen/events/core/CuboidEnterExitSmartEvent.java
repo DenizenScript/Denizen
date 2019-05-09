@@ -165,14 +165,7 @@ public class CuboidEnterExitSmartEvent implements OldSmartEvent, Listener {
 
     @EventHandler
     public void vehicleMoveEvent(VehicleMoveEvent event) {
-        List<Entity> passengers = new ArrayList<Entity>();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-            passengers.addAll(event.getVehicle().getPassengers());
-        }
-        else {
-            passengers.add(event.getVehicle().getPassenger());
-        }
-        for (Entity entity : passengers) {
+        for (Entity entity : event.getVehicle().getPassengers()) {
             if (dEntity.isPlayer(entity)) {
                 PlayerMoveEvent evt = new PlayerMoveEvent((Player) entity, event.getFrom(), event.getTo());
                 internalRun(evt, "vehicle");

@@ -1,7 +1,5 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
-import net.aufdemrand.denizen.nms.NMSHandler;
-import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.Mechanism;
@@ -11,7 +9,6 @@ import net.aufdemrand.denizencore.tags.Attribute;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import org.bukkit.entity.Zombie;
 import org.bukkit.entity.ZombieVillager;
 
 public class EntityProfession implements Property {
@@ -23,8 +20,7 @@ public class EntityProfession implements Property {
         }
         return ((dEntity) entity).getBukkitEntityType() == EntityType.VILLAGER
                 || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE
-                || (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
-                && ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER);
+                || ((dEntity) entity).getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER;
     }
 
     public static EntityProfession getFrom(dObject entity) {
@@ -56,23 +52,15 @@ public class EntityProfession implements Property {
     dEntity professional;
 
     private Villager.Profession getProfession() {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
-                && professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
             return ((ZombieVillager) professional.getBukkitEntity()).getVillagerProfession();
-        }
-        else if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
-            return ((Zombie) professional.getBukkitEntity()).getVillagerProfession();
         }
         return ((Villager) professional.getBukkitEntity()).getProfession();
     }
 
     public void setProfession(Villager.Profession profession) {
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
-                && professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
+        if (professional.getBukkitEntityType() == EntityType.ZOMBIE_VILLAGER) {
             ((ZombieVillager) professional.getBukkitEntity()).setVillagerProfession(profession);
-        }
-        else if (professional.getBukkitEntityType() == EntityType.ZOMBIE) {
-            ((Zombie) professional.getBukkitEntity()).setVillagerProfession(profession);
         }
         else {
             ((Villager) professional.getBukkitEntity()).setProfession(profession);
@@ -86,10 +74,6 @@ public class EntityProfession implements Property {
 
     @Override
     public String getPropertyString() {
-        if (professional.getBukkitEntityType() == EntityType.ZOMBIE
-                && !((Zombie) professional.getBukkitEntity()).isVillager()) {
-            return null;
-        }
         return CoreUtilities.toLowerCase(getProfession().name());
     }
 
@@ -118,7 +102,7 @@ public class EntityProfession implements Property {
         // @description
         // If the entity can have professions, returns the entity's profession.
         // Currently, only Villager-type and infected zombie entities can have professions.
-        // Possible professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST. (Or HUSK for zombies!)
+        // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // -->
         if (attribute.startsWith("profession")) {
             return new Element(CoreUtilities.toLowerCase(getProfession().name()))
@@ -138,7 +122,7 @@ public class EntityProfession implements Property {
         // @description
         // Changes the entity's profession.
         // Currently, only Villager-type entities can have professions.
-        // Acceptable professions: BLACKSMITH, BUTCHER, FARMER, LIBRARIAN, PRIEST. (Or HUSK for zombies!)
+        // For the list of possible professions, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Villager.Profession.html>
         // @tags
         // <e@entity.profession>
         // -->

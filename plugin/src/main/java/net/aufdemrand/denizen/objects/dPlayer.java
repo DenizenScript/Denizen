@@ -1137,7 +1137,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns the cooldown duration remaining on player's material.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && attribute.startsWith("item_cooldown")) {
+        if (attribute.startsWith("item_cooldown")) {
             dMaterial mat = new Element(attribute.getContext(1)).asType(dMaterial.class, attribute.context);
             if (mat != null) {
                 return new Duration((long) getPlayerEntity().getCooldown(mat.getMaterial()))
@@ -3309,8 +3309,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // NEUTRAL, PLAYERS, RECORDS, VOICE, and WEATHER
         // If no sound type is specified, all types will be stopped.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)
-                && mechanism.matches("stop_sound")) {
+        if (mechanism.matches("stop_sound")) {
             if (!mechanism.hasValue()) {
                 getPlayerEntity().stopSound("");
             }

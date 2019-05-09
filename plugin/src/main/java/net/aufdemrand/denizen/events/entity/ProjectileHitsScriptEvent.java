@@ -143,27 +143,7 @@ public class ProjectileHitsScriptEvent extends BukkitScriptEvent implements List
             return; // I can't explain this one either. It also chooses to happen whenever it pleases.
         }
 
-        Block block = null;
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-            block = event.getHitBlock();
-        }
-        else {
-            try {
-                BlockIterator bi = new BlockIterator(projectile.getLocation().getWorld(),
-                        projectile.getLocation().toVector(), projectile.getLocation().getDirection().normalize(), 0, 4);
-                while (bi.hasNext()) {
-                    block = bi.next();
-                    if (block.getType() == Material.AIR) {
-                        break;
-                    }
-                }
-            }
-            catch (IllegalStateException ex) {
-                // This happens because it can. Also not explainable whatsoever.
-                // As this error happens on no fault of the user, display no error message... just cancel the event.
-                return;
-            }
-        }
+        Block block = event.getHitBlock();
 
         if (block == null) {
             return;

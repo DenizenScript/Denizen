@@ -116,7 +116,7 @@ public class ItemPotion implements Property {
             PotionMeta meta = ((PotionMeta) item.getItemStack().getItemMeta());
             return new Element(meta.getBasePotionData().getType().name() + "," + (meta.getBasePotionData().isUpgraded() ? 2 : 1)
                     + "," + meta.getBasePotionData().isExtended() + "," + (item.getItemStack().getType() == Material.SPLASH_POTION)
-                    + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
+                    + (meta.hasColor() ? "," + new dColor(meta.getColor()).identify() : "")
             ).getAttribute(attribute.fulfill(1));
         }
 
@@ -334,12 +334,7 @@ public class ItemPotion implements Property {
                     CoreUtilities.toLowerCase(d1[2]).equals("true"),
                     CoreUtilities.toLowerCase(d1[1]).equals("true")));
             if (d1.length > 3) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                    meta.setColor(dColor.valueOf(d1[3].replace("&comma", ",")).getColor());
-                }
-                else {
-                    dB.echoError("Potion effect color is not supported before Minecraft version 1.11.");
-                }
+                meta.setColor(dColor.valueOf(d1[3].replace("&comma", ",")).getColor());
             }
             meta.clearCustomEffects();
             ItemHelper itemHelper = NMSHandler.getInstance().getItemHelper();

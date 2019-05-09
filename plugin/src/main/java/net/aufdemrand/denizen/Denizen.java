@@ -645,9 +645,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-            }
+            ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
             ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
             ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
@@ -721,9 +719,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
-            }
+            ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
             ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
@@ -854,9 +850,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(EntityMarker.class, dEntity.class);
             PropertyParser.registerProperty(EntityMaxFuseTicks.class, dEntity.class);
             PropertyParser.registerProperty(EntityPainting.class, dEntity.class);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                PropertyParser.registerProperty(EntityPickupStatus.class, dEntity.class);
-            }
+            PropertyParser.registerProperty(EntityPickupStatus.class, dEntity.class);
             PropertyParser.registerProperty(EntityPotion.class, dEntity.class);
             PropertyParser.registerProperty(EntityPowered.class, dEntity.class);
             PropertyParser.registerProperty(EntityProfession.class, dEntity.class);

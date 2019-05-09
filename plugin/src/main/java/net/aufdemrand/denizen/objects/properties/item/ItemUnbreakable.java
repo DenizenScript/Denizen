@@ -62,10 +62,7 @@ public class ItemUnbreakable implements Property {
 
     public String getPropertyString() {
         ItemStack itemStack = item.getItemStack();
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-            return (itemStack.hasItemMeta() && itemStack.getItemMeta().isUnbreakable()) ? "true" : null;
-        }
-        return (itemStack.hasItemMeta() && itemStack.getItemMeta().spigot().isUnbreakable()) ? "true" : null;
+        return (itemStack.hasItemMeta() && itemStack.getItemMeta().isUnbreakable()) ? "true" : null;
     }
 
     public String getPropertyId() {
@@ -86,12 +83,7 @@ public class ItemUnbreakable implements Property {
         if (mechanism.matches("unbreakable") && mechanism.requireBoolean()) {
             ItemStack itemStack = item.getItemStack().clone();
             ItemMeta meta = itemStack.getItemMeta();
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1)) {
-                meta.setUnbreakable(mechanism.getValue().asBoolean());
-            }
-            else {
-                meta.spigot().setUnbreakable(mechanism.getValue().asBoolean());
-            }
+            meta.setUnbreakable(mechanism.getValue().asBoolean());
             itemStack.setItemMeta(meta);
             item.setItemStack(itemStack);
         }

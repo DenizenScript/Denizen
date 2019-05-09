@@ -31,7 +31,7 @@ public class EntityColor implements Property {
                 type == EntityType.WOLF ||
                 type == EntityType.OCELOT ||
                 type == EntityType.RABBIT ||
-                (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) ||
+                type == EntityType.LLAMA ||
                 (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1)
                         && (type == EntityType.PARROT || type == EntityType.SHULKER));
     }
@@ -69,8 +69,7 @@ public class EntityColor implements Property {
 
         if (type == EntityType.HORSE) {
             Horse horse = (Horse) colored.getBukkitEntity();
-            return horse.getColor().name() + "|" + horse.getStyle().name() +
-                    (NMSHandler.getVersion().isAtMost(NMSVersion.v1_10_R1) ? "|" + horse.getVariant().name() : "");
+            return horse.getColor().name() + "|" + horse.getStyle().name();
         }
         else if (type == EntityType.SHEEP) {
             return ((Sheep) colored.getBukkitEntity()).getColor().name();
@@ -84,7 +83,7 @@ public class EntityColor implements Property {
         else if (type == EntityType.RABBIT) {
             return ((Rabbit) colored.getBukkitEntity()).getRabbitType().name();
         }
-        else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) {
+        else if (type == EntityType.LLAMA) {
             return LlamaHelper.llamaColorName(colored);
         }
         else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {
@@ -191,8 +190,7 @@ public class EntityColor implements Property {
         // @description
         // Changes the entity's color.
         // Currently, only Horse, Wolf, Ocelot, Sheep, Rabbit, Llama, Parrot, and Shulker type entities can have a color.
-        // For horses, the input is COLOR|STYLE(|VARIANT), see <@link language horse types>
-        //  NOTE: HORSE VARIANTS DEPRECATED SINCE 1.11, use spawn instead
+        // For horses, the input is COLOR|STYLE, see <@link language horse types>
         // For ocelots, the types are BLACK_CAT, RED_CAT, SIAMESE_CAT, or WILD_OCELOT.
         // For rabbit types, see <@link language rabbit types>.
         // For parrots, the types are BLUE, CYAN, GRAY, GREEN, or RED.
@@ -215,11 +213,6 @@ public class EntityColor implements Property {
                 if (horse_info.size() > 1 && new Element(horse_info.get(1)).matchesEnum(Horse.Style.values())) {
                     ((Horse) colored.getBukkitEntity())
                             .setStyle(Horse.Style.valueOf(horse_info.get(1).toUpperCase()));
-                }
-                if (NMSHandler.getVersion().isAtMost(NMSVersion.v1_10_R1)
-                        && horse_info.size() > 2 && new Element(horse_info.get(2)).matchesEnum(Horse.Variant.values())) {
-                    ((Horse) colored.getBukkitEntity())
-                            .setVariant(Horse.Variant.valueOf(horse_info.get(2).toUpperCase()));
                 }
             }
             else if (type == EntityType.SHEEP
@@ -245,7 +238,7 @@ public class EntityColor implements Property {
                     && mechanism.getValue().matchesEnum(Rabbit.Type.values())) {
                 ((Rabbit) colored.getBukkitEntity()).setRabbitType(Rabbit.Type.valueOf(mechanism.getValue().asString().toUpperCase()));
             }
-            else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && type == EntityType.LLAMA) {
+            else if (type == EntityType.LLAMA) {
                 LlamaHelper.setLlamaColor(colored, mechanism.getValue().asString());
             }
             else if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_12_R1) && type == EntityType.PARROT) {

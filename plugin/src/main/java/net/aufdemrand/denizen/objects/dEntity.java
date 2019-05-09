@@ -1943,8 +1943,8 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @description
         // Returns a list of the entity's passengers, if any.
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && (attribute.startsWith("passengers") || attribute.startsWith("get_passengers"))) {
-            ArrayList<dEntity> passengers = new ArrayList<dEntity>();
+        if (attribute.startsWith("passengers") || attribute.startsWith("get_passengers")) {
+            ArrayList<dEntity> passengers = new ArrayList<>();
             for (Entity ent : entity.getPassengers()) {
                 passengers.add(new dEntity(ent));
             }
@@ -2767,7 +2767,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // <e@entity.passengers>
         // <e@entity.empty>
         // -->
-        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_11_R1) && mechanism.matches("passengers")) {
+        if (mechanism.matches("passengers")) {
             entity.eject();
             for (dEntity ent : mechanism.valueAsType(dList.class).filter(dEntity.class, mechanism.context)) {
                 if (ent.isSpawned() && comparesTo(ent) != 1) {
