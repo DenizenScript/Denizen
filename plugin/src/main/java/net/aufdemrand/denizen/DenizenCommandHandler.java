@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen;
 
 import net.aufdemrand.denizen.objects.dLocation;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizen.scripts.containers.core.VersionScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -14,7 +13,6 @@ import net.aufdemrand.denizen.utilities.command.messaging.Messaging;
 import net.aufdemrand.denizen.utilities.debugging.DebugSubmit;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
-import net.aufdemrand.denizencore.events.core.ReloadScriptsScriptEvent;
 import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
@@ -331,13 +329,6 @@ public class DenizenCommandHandler {
             if (ScriptHelper.hadError()) {
                 Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
             }
-            // TODO: Properly handle player vs. npc?
-            ReloadScriptsScriptEvent.instance.reset();
-            ReloadScriptsScriptEvent.instance.all = true;
-            ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
-            ReloadScriptsScriptEvent.instance.sender = sender.getName();
-            ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, null);
-            ReloadScriptsScriptEvent.instance.fire();
             return;
         }
         // Reload a specific item
@@ -363,13 +354,6 @@ public class DenizenCommandHandler {
                 if (ScriptHelper.hadError()) {
                     Messaging.sendError(sender, "There was an error loading your scripts, check the console for details!");
                 }
-                // TODO: Properly handle player vs. npc?
-                ReloadScriptsScriptEvent.instance.reset();
-                ReloadScriptsScriptEvent.instance.all = false;
-                ReloadScriptsScriptEvent.instance.hadError = ScriptHelper.hadError();
-                ReloadScriptsScriptEvent.instance.sender = sender.getName();
-                ReloadScriptsScriptEvent.instance.data = new BukkitScriptEntryData(sender instanceof Player ? new dPlayer((Player) sender) : null, null);
-                ReloadScriptsScriptEvent.instance.fire();
                 return;
             }
         }
