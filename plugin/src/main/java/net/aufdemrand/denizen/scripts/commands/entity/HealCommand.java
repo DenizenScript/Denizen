@@ -21,7 +21,7 @@ public class HealCommand extends AbstractCommand {
 
         boolean specified_targets = false;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("amount")
                     && arg.matchesPrimitive(aH.PrimitiveType.Double)) {

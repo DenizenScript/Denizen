@@ -33,7 +33,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         boolean specified_target = false;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             // A duration on a flag will set it to expire after the
             // specified amount of time

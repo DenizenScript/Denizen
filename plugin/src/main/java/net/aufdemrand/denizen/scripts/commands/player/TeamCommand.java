@@ -21,7 +21,7 @@ public class TeamCommand extends AbstractCommand {
         String prefix = null;
         String suffix = null;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("id")
                     && !scriptEntry.hasObject("id")) {

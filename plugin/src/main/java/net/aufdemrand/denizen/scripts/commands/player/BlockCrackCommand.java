@@ -26,7 +26,7 @@ public class BlockCrackCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("players")
                     && arg.matchesArgumentList(dPlayer.class)) {

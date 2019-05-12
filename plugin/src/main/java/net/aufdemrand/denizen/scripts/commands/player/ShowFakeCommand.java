@@ -26,7 +26,7 @@ public class ShowFakeCommand extends AbstractCommand {
         boolean added_entities = false;
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (arg.matchesPrefix("to", "players")) {
                 for (String entity : dList.valueOf(arg.getValue())) {

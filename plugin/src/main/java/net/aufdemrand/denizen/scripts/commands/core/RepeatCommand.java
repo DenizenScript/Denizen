@@ -28,7 +28,7 @@ public class RepeatCommand extends BracedCommand {
 
         boolean handled = false;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!handled
                     && arg.matchesPrimitive(aH.PrimitiveType.Integer)) {

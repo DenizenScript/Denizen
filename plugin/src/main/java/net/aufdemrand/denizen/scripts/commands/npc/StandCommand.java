@@ -16,7 +16,7 @@ public class StandCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {
         //stand should have no additional arguments
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             arg.reportUnhandled();
         }
         if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {

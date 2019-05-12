@@ -17,7 +17,7 @@ public class FeedCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (arg.matchesPrimitive(aH.PrimitiveType.Integer)
                     && !scriptEntry.hasObject("amount")) {
                 scriptEntry.addObject("amount", arg.asElement());

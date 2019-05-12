@@ -43,7 +43,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (arg.matchesEnum(Action.values())
                     && !scriptEntry.hasObject("action")) {
                 scriptEntry.addObject("action", new Element(arg.getValue().toUpperCase()));

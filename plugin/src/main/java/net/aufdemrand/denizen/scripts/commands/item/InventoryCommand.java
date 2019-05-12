@@ -61,7 +61,7 @@ public class InventoryCommand extends AbstractCommand {
 
         boolean isAdjust = false;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             // Check for a dList of actions
             if (!scriptEntry.hasObject("actions")

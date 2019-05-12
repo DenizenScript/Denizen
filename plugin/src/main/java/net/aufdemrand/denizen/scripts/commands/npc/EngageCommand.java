@@ -25,7 +25,7 @@ public class EngageCommand extends AbstractCommand {
         }
 
         // Parse arguments
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("duration")
                     && arg.matchesArgumentType(Duration.class)) {

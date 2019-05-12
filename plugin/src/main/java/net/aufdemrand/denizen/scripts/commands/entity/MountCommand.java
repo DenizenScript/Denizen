@@ -23,7 +23,7 @@ public class MountCommand extends AbstractCommand {
 
         List<dEntity> entities = null;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("cancel")
                     && arg.matches("cancel")) {

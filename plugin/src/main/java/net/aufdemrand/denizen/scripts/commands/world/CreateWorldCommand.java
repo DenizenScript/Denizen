@@ -21,7 +21,7 @@ public class CreateWorldCommand extends AbstractCommand {
 
         // Interpret arguments
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("generator")
                     && arg.matchesPrefix("generator", "g")) {

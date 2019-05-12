@@ -23,7 +23,7 @@ public class AnimateCommand extends AbstractCommand {
 
         AnimationHelper animationHelper = NMSHandler.getInstance().getAnimationHelper();
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {

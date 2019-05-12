@@ -57,7 +57,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
         boolean isSet = false;
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action") &&
                     arg.matchesPrefix("LOAD")) {
                 scriptEntry.addObject("action", new Element("LOAD"));

@@ -59,7 +59,7 @@ public class PlayEffectCommand extends AbstractCommand {
         ParticleHelper particleHelper = NMSHandler.getInstance().getParticleHelper();
 
         // Iterate through arguments
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("location")
                     && arg.matchesArgumentList(dLocation.class)) {

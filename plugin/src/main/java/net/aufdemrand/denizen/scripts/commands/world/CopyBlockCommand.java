@@ -23,7 +23,7 @@ public class CopyBlockCommand extends AbstractCommand {
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             // CopyBlock can move a single 'location' ...
             if (arg.matchesArgumentType(dLocation.class)

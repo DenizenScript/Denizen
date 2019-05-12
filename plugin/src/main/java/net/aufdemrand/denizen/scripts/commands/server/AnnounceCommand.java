@@ -27,7 +27,7 @@ public class AnnounceCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Too many arguments! Did you forget a 'quote'?");
         }
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             if (!scriptEntry.hasObject("type")
                     && arg.matches("to_ops")) {

@@ -29,7 +29,7 @@ public class CooldownCommand extends AbstractCommand {
 
         // Parse arguments.. we need a type, duration, and script.
 
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
             // Type may be PLAYER or GLOBAL.. must not have a prefix.
             if (!arg.hasPrefix() && arg.matchesEnum(Type.values())) {

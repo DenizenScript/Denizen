@@ -17,7 +17,7 @@ public class VulnerableCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Initialize fields
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action") && arg.matchesEnum(Toggle.values())) {
                 scriptEntry.addObject("action", arg.asElement());
             }

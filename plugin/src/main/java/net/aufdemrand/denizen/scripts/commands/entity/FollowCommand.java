@@ -18,7 +18,7 @@ public class FollowCommand extends AbstractCommand {
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         // Parse Arguments
-        for (aH.Argument arg : aH.interpret(scriptEntry.getArguments())) {
+        for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("stop") &&
                     arg.matches("STOP")) {
                 scriptEntry.addObject("stop", new Element(true));
