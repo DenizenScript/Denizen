@@ -14,10 +14,13 @@ import java.util.List;
 
 public class WalkCommandCitizensEvents implements Listener {
 
+    public static double HIGH_INFLUENCE = 1.0 / 20.0;
+    public static double LOW_INFLUENCE = 1.0 / 200.0;
+
     public static Flocker generateNewFlocker(NPC npc, double radius) {
         NPCFlock flock = new RadiusNPCFlock(radius);
-        return new Flocker(npc, flock, new SeparationBehavior(Flocker.LOW_INFLUENCE),
-                new CohesionBehavior(Flocker.LOW_INFLUENCE), new AlignmentBehavior(Flocker.HIGH_INFLUENCE));
+        return new Flocker(npc, flock, new SeparationBehavior(LOW_INFLUENCE),
+                new CohesionBehavior(LOW_INFLUENCE), new AlignmentBehavior(HIGH_INFLUENCE));
     }
 
     @EventHandler
