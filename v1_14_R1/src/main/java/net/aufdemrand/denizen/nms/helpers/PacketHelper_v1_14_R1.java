@@ -110,7 +110,7 @@ public class PacketHelper_v1_14_R1 implements PacketHelper {
         sendPacket(player, new PacketPlayOutSpawnEntityLiving(entity));
         sendPacket(player, new PacketPlayOutCamera(entity));
         ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(),
-                ((CraftWorld) player.getWorld()).getHandle().dimension, true, player.getLocation(), false);
+                ((CraftWorld) player.getWorld()).getHandle().worldProvider.getDimensionManager(), true, player.getLocation(), false);
     }
 
     @Override

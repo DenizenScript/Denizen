@@ -34,6 +34,7 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.spigotmc.AsyncCatcher;
 
 import java.util.Map;
 
@@ -55,9 +56,17 @@ public class Handler_v1_13_R2 extends NMSHandler {
 
     private final ProfileEditor profileEditor = new ProfileEditor_v1_13_R2();
 
+    private boolean wasAsyncCatcherEnabled;
+
     @Override
     public void disableAsyncCatcher() {
-        org.spigotmc.AsyncCatcher.enabled = false;
+        wasAsyncCatcherEnabled = AsyncCatcher.enabled;
+        AsyncCatcher.enabled = false;
+    }
+
+    @Override
+    public void undisableAsyncCatcher() {
+        AsyncCatcher.enabled = wasAsyncCatcherEnabled;
     }
 
     @Override

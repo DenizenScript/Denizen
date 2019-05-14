@@ -3,11 +3,16 @@ package net.aufdemrand.denizen.nms.interfaces;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
+import net.aufdemrand.denizencore.objects.dList;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Skull;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.material.MaterialData;
+
+import java.util.List;
 
 public interface BlockHelper {
 
@@ -46,4 +51,6 @@ public interface BlockHelper {
     default BlockState generateBlockState(Material mat) {
         return null;
     }
+
+    List<Location> getBlocksList(PortalCreateEvent event);
 }

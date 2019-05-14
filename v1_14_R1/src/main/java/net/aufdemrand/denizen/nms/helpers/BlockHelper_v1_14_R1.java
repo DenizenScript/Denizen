@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.*;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
@@ -22,12 +23,24 @@ import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlockState;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftSkull;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftLegacy;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.material.MaterialData;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BlockHelper_v1_14_R1 implements BlockHelper {
+
+    @Override
+    public List<Location> getBlocksList(PortalCreateEvent event) {
+        List<Location> blocks = new ArrayList<>();
+        for (org.bukkit.block.BlockState block : event.getBlocks()) {
+            blocks.add(block.getLocation());
+        }
+        return blocks;
+    }
 
     public <T extends TileEntity> T getTE(CraftBlockEntityState<T> cbs) {
         try {

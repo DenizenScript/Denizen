@@ -80,6 +80,8 @@ public abstract class NMSHandler {
 
     public abstract void disableAsyncCatcher();
 
+    public abstract void undisableAsyncCatcher();
+
     public abstract Sidebar createSidebar(Player player);
 
     public abstract BlockLight createBlockLight(Location location, int lightLevel, long ticks);

@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.events.world;
 
 
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
+import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizencore.objects.Element;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -87,8 +89,8 @@ public class PortalCreateScriptEvent extends BukkitScriptEvent implements Listen
         world = new dWorld(event.getWorld());
         reason = new Element(event.getReason().toString());
         blocks = new dList();
-        for (Block block : event.getBlocks()) {
-            blocks.add(new dLocation(block.getLocation()).identify());
+        for (Location location : NMSHandler.getInstance().getBlockHelper().getBlocksList(event)) {
+            blocks.add(new dLocation(location).identify());
         }
         this.event = event;
         fire(event);

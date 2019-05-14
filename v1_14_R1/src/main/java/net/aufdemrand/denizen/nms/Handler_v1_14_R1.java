@@ -35,6 +35,7 @@ import org.bukkit.craftbukkit.v1_14_R1.util.CraftChatMessage;
 import org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.spigotmc.AsyncCatcher;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -57,14 +58,22 @@ public class Handler_v1_14_R1 extends NMSHandler {
 
     private final ProfileEditor profileEditor = new ProfileEditor_v1_14_R1();
 
+    private boolean wasAsyncCatcherEnabled;
+
     @Override
     public void disableAsyncCatcher() {
-        org.spigotmc.AsyncCatcher.enabled = false;
+        wasAsyncCatcherEnabled = AsyncCatcher.enabled;
+        AsyncCatcher.enabled = false;
+    }
+
+    @Override
+    public void undisableAsyncCatcher() {
+        AsyncCatcher.enabled = wasAsyncCatcherEnabled;
     }
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("30f0a3bd4ceb5c03fe41ac0cfea4ffe3");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("48be70f51ffe914d865f175ed3bf992d");
     }
 
     @Override
