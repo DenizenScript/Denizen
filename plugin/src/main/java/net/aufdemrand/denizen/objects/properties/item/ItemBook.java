@@ -234,8 +234,8 @@ public class ItemBook implements Property {
         // See <@link language Property Escaping>
         // @tags
         // <i@item.book.page_count>
-        // <i@item.book.get_page[<#>]>
-        // <i@item.book.pages>
+        // <i@item.book.get_raw_page[<#>]>
+        // <i@item.book.raw_pages>
         // -->
 
         if (mechanism.matches("book_raw_pages")) {
@@ -258,8 +258,8 @@ public class ItemBook implements Property {
         // See <@link language Property Escaping>
         // @tags
         // <i@item.book.page_count>
-        // <i@item.book.get_raw_page[<#>]>
-        // <i@item.book.raw_pages>
+        // <i@item.book.get_page[<#>]>
+        // <i@item.book.pages>
         // -->
 
         if (mechanism.matches("book_pages")) {
@@ -271,6 +271,48 @@ public class ItemBook implements Property {
             }
             meta.setPages(newPages);
             item.getItemStack().setItemMeta(meta);
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book_author
+        // @input Element
+        // @description
+        // Changes the author of a book item.
+        // @tags
+        // <i@item.book.author>
+        // -->
+
+        if (mechanism.matches("book_author")) {
+            if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+            }
+            else {
+                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                meta.setAuthor(mechanism.getValue().asString());
+                item.getItemStack().setItemMeta(meta);
+            }
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book_title
+        // @input Element
+        // @description
+        // Changes the title of a book item.
+        // @tags
+        // <i@item.book.title>
+        // -->
+
+        if (mechanism.matches("book_title")) {
+            if (!item.getItemStack().getType().equals(Material.WRITTEN_BOOK)) {
+                dB.echoError("Only WRITTEN_BOOK (not WRITABLE_BOOK) can have a title or author!");
+            }
+            else {
+                BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+                meta.setTitle(mechanism.getValue().asString());
+                item.getItemStack().setItemMeta(meta);
+            }
         }
 
         // <--[mechanism]
