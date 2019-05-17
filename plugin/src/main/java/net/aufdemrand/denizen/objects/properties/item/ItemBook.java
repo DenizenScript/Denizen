@@ -145,7 +145,7 @@ public class ItemBook implements Property {
             // @mechanism dItem.book
             // @group properties
             // @description
-            // Returns the pages of the book as a dList.
+            // Returns the plain-text pages of the book as a dList.
             // -->
             if (attribute.startsWith("pages")) {
                 return new dList(bookInfo.getPages())
@@ -224,6 +224,54 @@ public class ItemBook implements Property {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book_raw_pages
+        // @input dList
+        // @description
+        // Changes the raw JSON pages of a book item.
+        // See <@link language Property Escaping>
+        // @tags
+        // <i@item.book.page_count>
+        // <i@item.book.get_page[<#>]>
+        // <i@item.book.pages>
+        // -->
+
+        if (mechanism.matches("book_raw_pages")) {
+            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            dList data = mechanism.valueAsType(dList.class);
+            ArrayList<BaseComponent[]> newPages = new ArrayList<>();
+            for (String str : data) {
+                newPages.add(ComponentSerializer.parse(EscapeTags.unEscape(str)));
+            }
+            meta.spigot().setPages(newPages);
+            item.getItemStack().setItemMeta(meta);
+        }
+
+        // <--[mechanism]
+        // @object dItem
+        // @name book_pages
+        // @input dList
+        // @description
+        // Changes the plain-text pages of a book item.
+        // See <@link language Property Escaping>
+        // @tags
+        // <i@item.book.page_count>
+        // <i@item.book.get_raw_page[<#>]>
+        // <i@item.book.raw_pages>
+        // -->
+
+        if (mechanism.matches("book_pages")) {
+            BookMeta meta = (BookMeta) item.getItemStack().getItemMeta();
+            dList data = mechanism.valueAsType(dList.class);
+            ArrayList<String> newPages = new ArrayList<>();
+            for (String str : data) {
+                newPages.add(EscapeTags.unEscape(str));
+            }
+            meta.setPages(newPages);
+            item.getItemStack().setItemMeta(meta);
+        }
 
         // <--[mechanism]
         // @object dItem
