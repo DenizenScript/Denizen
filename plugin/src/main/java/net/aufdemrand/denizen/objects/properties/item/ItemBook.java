@@ -39,7 +39,7 @@ public class ItemBook implements Property {
     };
 
     public static final String[] handledMechs = new String[] {
-            "book"
+            "book", "book_raw_pages", "book_pages", "book_author", "book_title"
     };
 
 
