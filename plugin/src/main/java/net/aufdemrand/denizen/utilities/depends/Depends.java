@@ -16,17 +16,18 @@ public class Depends {
     public static Economy economy = null;
     public static Permission permissions = null;
     public static Chat chat = null;
+    public static Plugin vault = null;
 
-    public void initialize() {
+    public static void initialize() {
+        vault = Bukkit.getServer().getPluginManager().getPlugin("Vault");
         setupEconomy();
         setupPermissions();
         setupChat();
         setupCitizens();
     }
 
-    private boolean setupEconomy() {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
-        if (plugin == null || !plugin.isEnabled()) {
+    public static boolean setupEconomy() {
+        if (vault == null || !vault.isEnabled()) {
             return false;
         }
         try {
@@ -41,9 +42,8 @@ public class Depends {
         return economy != null;
     }
 
-    private boolean setupChat() {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
-        if (plugin == null || !plugin.isEnabled()) {
+    public static boolean setupChat() {
+        if (vault == null || !vault.isEnabled()) {
             return false;
         }
         try {
@@ -55,9 +55,8 @@ public class Depends {
         return chat != null;
     }
 
-    private boolean setupPermissions() {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Vault");
-        if (plugin == null || !plugin.isEnabled()) {
+    public static boolean setupPermissions() {
+        if (vault == null || !vault.isEnabled()) {
             return false;
         }
         try {
@@ -69,7 +68,7 @@ public class Depends {
         return permissions != null;
     }
 
-    private boolean setupCitizens() {
+    public static boolean setupCitizens() {
         Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("Citizens");
         if (plugin == null || !plugin.isEnabled()) {
             return false;

@@ -782,9 +782,9 @@ public class ServerTags {
         // <--[tag]
         // @attribute <server.has_economy>
         // @returns Element(Boolean)
+        // @plugin Vault
         // @description
         // Returns whether the server has a known economy plugin loaded.
-        // Note: should not be considered incredibly reliable.
         // -->
         if (attribute.startsWith("has_economy")) {
             event.setReplaced(new Element(Depends.economy != null && Depends.economy.isEnabled())

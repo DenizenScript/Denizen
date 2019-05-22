@@ -2329,10 +2329,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // Use to set the money of all online players to 250.
         // - money set quantity:250 players:<server.list_online_players>
         // -->
-        if (Depends.economy != null) {
-            registerCoreMember(MoneyCommand.class,
-                    "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
-        }
+        registerCoreMember(MoneyCommand.class,
+                "MONEY", "money [give/take/set] (quantity:<#.#>) (players:<player>|...)", 1);
 
 
         // <--[command]

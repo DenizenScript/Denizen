@@ -25,6 +25,11 @@ public class MoneyCommand extends AbstractCommand {
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        if (Depends.economy == null) {
+            dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
+            return;
+        }
+
         for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action") && arg.matchesEnum(Action.values())) {
                 scriptEntry.addObject("action", arg.asElement());

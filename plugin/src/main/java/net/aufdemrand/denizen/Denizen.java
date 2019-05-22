@@ -325,8 +325,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         return notableManager;
     }
 
-    public Depends depends = new Depends();
-
     private BukkitWorldScriptHelper ws_helper;
 
     public final static long startTime = System.currentTimeMillis();
@@ -360,7 +358,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             DenizenCore.init(this);
 
             // Activate dependencies
-            depends.initialize();
+            Depends.initialize();
 
             if (Depends.citizens == null || !Depends.citizens.isEnabled()) {
                 getLogger().warning("Citizens does not seem to be activated! Denizen will have greatly reduced functionality!");
@@ -465,6 +463,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptRegistry._registerType("command", CommandScriptContainer.class);
             ScriptRegistry._registerType("map", MapScriptContainer.class);
             ScriptRegistry._registerType("version", VersionScriptContainer.class);
+            if (Depends.vault != null) {
+                ScriptRegistry._registerType("economy", EconomyScriptContainer.class);
+            }
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -1389,10 +1390,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         ItemScriptHelper.removeDenizenRecipes();
         // Remove all registered commands added by Denizen command scripts
         CommandScriptHelper.removeDenizenCommands();
+        // Remove all registered economy scripts if needed
+        if (Depends.vault != null) {
+            EconomyScriptContainer.cleanup();
+        }
     }
 
     @Override
     public void onScriptReload() {
+        Depends.setupEconomy();
         Bukkit.getServer().getPluginManager().callEvent(new ScriptReloadEvent());
     }
 

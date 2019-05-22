@@ -851,9 +851,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // <--[tag]
         // @attribute <p@player.money>
         // @returns Element(Decimal)
+        // @plugin Vault
         // @description
         // Returns the amount of money the player has with the registered Economy system.
-        // May work offline depending on economy plugin.
+        // May work offline depending on economy provider.
         // @mechanism dPlayer.money
         // -->
 
@@ -861,8 +862,21 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (Depends.economy != null) {
 
                 // <--[tag]
+                // @attribute <p@player.money.formatted>
+                // @returns Element
+                // @plugin Vault
+                // @description
+                // Returns the formatted form of the player's money balance in the registered Economy system.
+                // -->
+                if (attribute.startsWith("money.formatted")) {
+                    return new Element(Depends.economy.format(Depends.economy.getBalance(getOfflinePlayer())))
+                            .getAttribute(attribute.fulfill(2));
+                }
+
+                // <--[tag]
                 // @attribute <p@player.money.currency_singular>
                 // @returns Element
+                // @plugin Vault
                 // @description
                 // Returns the name of a single piece of currency - For example: Dollar
                 // (Only if supported by the registered Economy system.)
@@ -875,6 +889,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 // <--[tag]
                 // @attribute <p@player.money.currency>
                 // @returns Element
+                // @plugin Vault
                 // @description
                 // Returns the name of multiple pieces of currency - For example: Dollars
                 // (Only if supported by the registered Economy system.)
@@ -3418,8 +3433,9 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // @object dPlayer
         // @name money
         // @input Element(Number)
+        // @plugin Vault
         // @description
-        // Set the amount of money a player has with the linked economy plugin.
+        // Set the amount of money a player has with the linked economy system (through Vault).
         // (Only if supported by the registered Economy system.)
         // @tags
         // <p@player.money>
