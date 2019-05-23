@@ -1448,7 +1448,7 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // <--[mechanism]
         // @object dNPC
         // @name set_distance
-        // @input Element
+        // @input Element(Decimal)
         // @description
         // Sets the NPC's distance margin.
         // @tags
@@ -1456,6 +1456,19 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
         // -->
         if (mechanism.matches("set_distance") && mechanism.requireDouble()) {
             getNavigator().getDefaultParameters().distanceMargin(mechanism.getValue().asDouble());
+        }
+
+        // <--[mechanism]
+        // @object dNPC
+        // @name name_visible
+        // @input Element
+        // @description
+        // Sets whether the NPC's nameplate is visible. Input is 'true' (always visible), 'false' (never visible), or 'hover' (only visible while looking at the NPC).
+        // @tags
+        // TODO
+        // -->
+        if (mechanism.matches("name_visible")) {
+            getCitizen().data().setPersistent(NPC.NAMEPLATE_VISIBLE_METADATA, mechanism.getValue().asString());
         }
 
         // <--[mechanism]
