@@ -3,8 +3,11 @@ package net.aufdemrand.denizen;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Duration;
+import net.aufdemrand.denizencore.scripts.ScriptHelper;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.nio.charset.Charset;
 
 public class Settings {
 
@@ -17,6 +20,18 @@ public class Settings {
         cache_showExHelp = config.getBoolean("Debug.Ex command help", true);
         cache_showExDebug = config.getBoolean("Debug.Ex command debug", true);
         cache_getAlternateScriptPath = config.getString("Scripts location.Alternative folder path", "plugins/Denizen");
+        cache_scriptEncoding = config.getString("Scripts.Encoding", "default");
+        if (cache_scriptEncoding.equalsIgnoreCase("default")) {
+            ScriptHelper.encoding = null;
+        }
+        else {
+            try {
+                ScriptHelper.encoding = Charset.forName(cache_scriptEncoding).newDecoder();
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
         cache_consoleWidth = config.getInt("Debug.Line length", 128);
         cache_trimLength = config.getInt("Debug.Trim length limit", 1024);
         cache_allowConsoleRedirection = config.getBoolean("Debug.Allow console redirection", false);
@@ -74,7 +89,7 @@ public class Settings {
     private static String cache_getAlternateScriptPath, cache_scriptQueueSpeed, cache_healthTraitRespawnDelay,
             cache_engageTimeoutInSeconds, cache_chatMultipleTargetsFormat, cache_chatNoTargetFormat,
             cache_chatToTargetFormat, cache_chatWithTargetToBystandersFormat, cache_chatWithTargetsToBystandersFormat,
-            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat;
+            cache_chatToNpcFormat, cache_chatToNpcOverheardFormat, cache_scriptEncoding;
 
     private static int cache_consoleWidth = 128, cache_trimLength = 1024, cache_whileMaxLoops, cache_blockTagsMaxBlocks,
             cache_chatHistoryMaxMessages, cache_tagTimeout;
