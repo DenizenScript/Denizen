@@ -183,9 +183,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                 + aH.debugObj("Facing", String.valueOf(NMSHandler.getInstance().getEntityHelper().isFacingEntity(player, npc.getEntity(), 45))));
 
         // Check if the NPC has Chat Triggers for this step.
-        if (!script.containsTriggerInStep(
-                InteractScriptHelper.getCurrentStep(denizenPlayer,
-                        script.getName()), ChatTrigger.class)) {
+        String step = InteractScriptHelper.getCurrentStep(denizenPlayer, script.getName());
+        if (!script.containsTriggerInStep(step, ChatTrigger.class)) {
 
             // No chat trigger for this step.. do we chat globally, or to the NPC?
             if (!Settings.chatGloballyIfNoChatTriggers()) {
@@ -295,7 +294,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
 
         // If there was a match, the id of the match should have been returned.
         if (id != null) {
-            Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
+            String hideTriggerMessage = script.getString("STEPS." + step + ".CHAT TRIGGER." + id + ".HIDE TRIGGER MESSAGE", "false");
+            if (!hideTriggerMessage.equalsIgnoreCase("true")) {
+                Utilities.talkToNPC(replacementText, denizenPlayer, npc, Settings.chatToNpcOverhearingRange());
+            }
             parse(npc, denizenPlayer, script, id, context);
             if (HyperDebug) {
                 dB.log("chat to NPC");
