@@ -9,9 +9,32 @@ import net.aufdemrand.denizen.scripts.commands.server.*;
 import net.aufdemrand.denizen.scripts.commands.world.*;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
+import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
+import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.CommandRegistry;
 
 public class BukkitCommandRegistry extends CommandRegistry {
+
+    public static class AutoNoCitizensCommand extends AbstractCommand {
+
+        public static void registerFor(String name) {
+            AutoNoCitizensCommand cmd = new AutoNoCitizensCommand();
+            cmd.name = name;
+            cmd.activate().as(name).withOptions("Requires Citizens", 0);
+        }
+
+        public String name;
+
+        @Override
+        public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
+        }
+
+        @Override
+        public void execute(ScriptEntry scriptEntry) {
+            dB.echoError("The command '" + name + "' is only available when Citizens is on the server.");
+        }
+    }
 
     @Override
     public void registerCoreMembers() {
@@ -205,6 +228,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Animate
         // @Syntax animate [<entity>|...] [animation:<name>]
         // @Required 2
+        // @Plugin Citizens
         // @Short Makes a list of entities perform a certain animation.
         // @Group entity
         //
@@ -238,6 +262,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(AnimateCommand.class,
                     "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("ANIMATE");
         }
 
 
@@ -328,6 +355,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Assignment
         // @Syntax assignment [set/remove] (script:<name>)
         // @Required 1
+        // @Plugin Citizens
         // @Short Changes an NPC's assignment.
         // @Group npc
         //
@@ -356,6 +384,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(AssignmentCommand.class,
                     "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("ASSIGNMENT");
         }
 
 
@@ -501,6 +532,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Break
         // @Syntax break [<location>] (<npc>) (radius:<#.#>)
         // @Required 1
+        // @Plugin Citizens
         // @Short Makes an NPC walk over and break a block.
         // @Group world
         //
@@ -529,6 +561,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(BreakCommand.class,
                     "BREAK", "break [<location>] (<npc>) (radius:<#.#>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("BREAK");
         }
 
 
@@ -647,6 +682,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Chat
         // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
         // @Required 1
+        // @Plugin Citizens
         // @Short Causes an NPC/NPCs to send a chat message to nearby players.
         // @Group player
         //
@@ -691,6 +727,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(ChatCommand.class,
                     "CHAT", "chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("CHAT");
         }
 
 
@@ -835,6 +874,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Create
         // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
         // @Required 1
+        // @Plugin Citizens
         // @Short Creates a new NPC, and optionally spawns it at a location.
         // @Group npc
         //
@@ -858,6 +898,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(CreateCommand.class,
                     "CREATE", "create [<entity>] [<name>] (<location>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("CREATE");
         }
 
 
@@ -900,6 +943,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <--[command]
         // @Name Despawn
         // @Syntax despawn (<npc>|...)
+        // @Plugin Citizens
         // @Required 0
         // @Short Temporarily despawns the linked NPC or a list of NPCs.
         // @Group npc
@@ -924,12 +968,16 @@ public class BukkitCommandRegistry extends CommandRegistry {
             registerCoreMember(DespawnCommand.class,
                     "DESPAWN", "despawn (<npc>)", 0);
         }
+        else {
+            AutoNoCitizensCommand.registerFor("DESPAWN");
+        }
 
 
         // <--[command]
         // @Name Disengage
         // @Syntax disengage
         // @Required 0
+        // @Plugin Citizens
         // @Short Enables an NPCs triggers that have been temporarily disabled by the engage command.
         // @Group npc
         //
@@ -962,6 +1010,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(DisengageCommand.class,
                     "DISENGAGE", "disengage", 0);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("DISENGAGE");
         }
 
 
@@ -1046,6 +1097,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Engage
         // @Syntax engage (<duration>)
         // @Required 0
+        // @Plugin Citizens
         // @Short Temporarily disables an NPCs toggled interact script-container triggers.
         // @Group npc
         //
@@ -1088,6 +1140,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
                     "ENGAGE", "engage (<duration>)", 0);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("ENGAGE");
         }
 
 
@@ -1189,8 +1244,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - execute as_server "save-all"
         //
         // @Usage
-        // Use to add the player to the op list as if an existing op had typed it.
-        // - execute as_op "op <player.name>"
+        // Use to make the linked (non-op) player execute a command that normally only ops can use.
+        // - execute as_op "staffsay hi"
         // -->
         registerCoreMember(ExecuteCommand.class,
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
@@ -2197,6 +2252,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name LookClose
         // @Syntax lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)
         // @Required 0
+        // @Plugin Citizens
         // @Short Interacts with an NPCs 'lookclose' trait as provided by Citizens2.
         // @Group npc
         //
@@ -2223,6 +2279,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(LookcloseCommand.class,
                     "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("LOOKCLOSE");
         }
 
 
@@ -2613,6 +2672,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Resume
         // @Syntax resume [waypoints/activity] (<duration>)
         // @Required 1
+        // @Plugin Citizens
         // @Short Resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
         // @Group npc
         //
@@ -2638,6 +2698,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(PauseCommand.class,
                     "PAUSE, RESUME", "pause [waypoints/activity] (<duration>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("PAUSE");
+            AutoNoCitizensCommand.registerFor("RESUME");
         }
 
 
@@ -2772,6 +2836,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Pose
         // @Syntax pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)
         // @Required 1
+        // @Plugin Citizens
         // @Short Rotates the player or NPC to match a pose, or adds/removes an NPC's poses.
         // @Group npc
         //
@@ -2800,6 +2865,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(PoseCommand.class,
                     "POSE", "pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("POSE");
         }
 
 
@@ -2995,6 +3063,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Rename
         // @Syntax rename [<name>]
         // @Required 1
+        // @Plugin Citizens
         // @Short Renames the linked NPC.
         // @Group npc
         //
@@ -3018,6 +3087,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(RenameCommand.class,
                     "RENAME", "rename [<name>]", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("RENAME");
         }
 
 
@@ -3699,6 +3771,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Stand
         // @Syntax stand
         // @Required 0
+        // @Plugin Citizens
         // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
         // @Group npc
         //
@@ -3717,6 +3790,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(StandCommand.class,
                     "STAND", "stand", 0);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("STAND");
         }
 
 
@@ -4000,6 +4076,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Trait
         // @Syntax trait (state:true/false/{toggle}) [<trait>]
         // @Required 1
+        // @Plugin Citizens
         // @Short Adds or removes a trait from an NPC.
         // @Group npc
         //
@@ -4016,6 +4093,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(TraitCommand.class,
                     "TRAIT", "trait (state:true/false/{toggle}) [<trait>]", 1);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("TRAIT");
         }
 
 
@@ -4050,6 +4130,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name Vulnerable
         // @Syntax vulnerable (state:{true}/false/toggle)
         // @Required 0
+        // @Plugin Citizens
         // @Short Sets whether an NPC is vulnerable.
         // @Group npc
         //
@@ -4071,6 +4152,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
         if (Depends.citizens != null) {
             registerCoreMember(VulnerableCommand.class,
                     "VULNERABLE", "vulnerable (state:{true}/false/toggle)", 0);
+        }
+        else {
+            AutoNoCitizensCommand.registerFor("VULNERABLE");
         }
 
         // <--[command]
