@@ -40,7 +40,8 @@ public class EntityDeathScriptEvent extends BukkitScriptEvent implements Listene
     // @Regex ^on [^\s]+ (death|dies)$
     // @Switch in <area>
     //
-    // @Triggers when an entity dies.
+    // @Triggers when an entity dies. Note that this fires *after* the entity dies, and thus some data may be lost from the entity.
+    // The death cannot be cancelled, only the death message (for players).
     //
     // @Context
     // <context.entity> returns the dEntity that died.

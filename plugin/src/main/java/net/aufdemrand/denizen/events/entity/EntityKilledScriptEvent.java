@@ -41,6 +41,8 @@ public class EntityKilledScriptEvent extends BukkitScriptEvent implements Listen
     //
     // @Triggers when an entity is killed.
     //
+    // @Warning This event may mis-fire in some cases, particularly with plugins or scripts modify the damage from scripts. If you need reliable death tracking, the entity death event may be better.
+    //
     // @Context
     // <context.entity> returns the dEntity that was killed.
     // <context.cause> returns the an Element of reason the entity was damaged - see <@link language damage cause> for causes.
