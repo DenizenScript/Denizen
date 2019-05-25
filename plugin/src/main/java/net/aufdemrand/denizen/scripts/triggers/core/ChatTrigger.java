@@ -260,18 +260,9 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             }
                         }
                     }
-                    else if (isKeywordStrict(keyword)) {
-                        if (message.toUpperCase().equalsIgnoreCase(keyword.toUpperCase())) {
-                            // Trigger matches
-                            id = entry.getKey();
-                            replacementText = triggerText.replace("/", "");
-                            matched = true;
-                            if (replace != null) {
-                                replacementText = replace;
-                            }
-                        }
-                    }
-                    else if (message.toUpperCase().contains(keyword.toUpperCase())) {
+                    else if (keyword.equals("*")
+                            || (isKeywordStrict(keyword) && message.toUpperCase().equalsIgnoreCase(keyword.toUpperCase()))
+                            || message.toUpperCase().contains(keyword.toUpperCase())) {
                         // Trigger matches
                         id = entry.getKey();
                         replacementText = triggerText.replace("/", "");
