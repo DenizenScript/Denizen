@@ -361,9 +361,12 @@ public class dB {
             String prefix = "[Error Continued] ";
             boolean first = true;
             while (ex != null) {
-                errorMesage.append(prefix + (first ? "" : "Caused by: ") + ex.toString() + "\n");
+                if (!first) {
+                    errorMesage.append(prefix).append("Caused by: ");
+                }
+                errorMesage.append(ex.toString()).append("\n");
                 for (StackTraceElement ste : ex.getStackTrace()) {
-                    errorMesage.append(prefix + ste.toString() + "\n");
+                    errorMesage.append(prefix).append(ste.toString()).append("\n");
                 }
                 if (ex.getCause() == ex) {
                     break;
