@@ -37,6 +37,47 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     final static Pattern triggerPattern = Pattern.compile("/([^/]*)/");
     final static boolean HyperDebug = false; // TODO: Replace with core->dB.verbose!
 
+    // <--[language]
+    // @name Chat Triggers
+    // @group NPC Interact Scripts
+    // @description
+    // Chat Triggers are triggered when when a player chats to the NPC (usually while standing close to the NPC and facing the NPC).
+    //
+    // Interact scripts are allowed to define a list of possible messages a player may type and the scripts triggered in response.
+    //
+    // Within any given step, the format is then as follows:
+    // <code>
+    // # Some identifier for the trigger, this only serves to make the sub-triggers unique, and sort them (alphabetically).
+    // 1:
+    //   # The trigger message written by a player. The text between // must be typed by a player, the other text is filled automatically.
+    //   trigger: /keyword/ othertext
+    //   script:
+    //   # Your code here
+    //   - wait 1
+    //   # use "<context.message>" for the exact text written by the player.
+    //   - chat "<context.message> eh?"
+    // # You can list as many as you want
+    // 2:
+    //   # You can have regex triggers. This example matches when the player types any numbers.
+    //   trigger: /regex:\d+/
+    //   script:
+    //   - wait 1
+    //   # use "<context.keyword>" for the text matched by the regex matcher.
+    //   - chat "<context.keyword> eh?"
+    // 3:
+    //   # Use '*' as the trigger to match anything at all.
+    //   trigger: /*/
+    //   # Add this line to hide the "[Player -> NPC]: hi" initial trigger message.
+    //   hide trigger message: true
+    //   script:
+    //   # If you hide the trigger message, you might want to fill that spot with something else.
+    //   - narrate "[Player -> NPC]: I don't know how to type the right thing"
+    //   - wait 1
+    //   - chat "Well type 'keyword' or any number!"
+    // </code>
+    //
+    // -->
+
     @Override
     public void onEnable() {
         Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());

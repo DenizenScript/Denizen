@@ -24,6 +24,21 @@ import java.util.Map;
 
 public class DamageTrigger extends AbstractTrigger implements Listener {
 
+
+    // <--[language]
+    // @name Damage Triggers
+    // @group NPC Interact Scripts
+    // @description
+    // Damage Triggers are triggered when when a player left clicks the NPC.
+    // Despite the name, these do not actually require the NPC take any damage, only that the player left clicks the NPC.
+    //
+    // In scripts, use <context.damage> to measure how much damage was done to the NPC
+    // (though note that invincible NPCs don't necessarily take any damage even when this is non-zero).
+    //
+    // These are very basic with no extraneous complexity.
+    //
+    // -->
+
     // <--[action]
     // @Actions
     // no damage trigger

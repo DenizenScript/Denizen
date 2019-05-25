@@ -14,12 +14,13 @@ public class AssignmentScriptContainer extends ScriptContainer {
     // scripts are meant to be used when customizing the normal behavior of NPCs. This can be used on a 'per-NPC' basis,
     // but the encouraged approach is to design assignment scripts in a way that they can be used for multiple NPCs,
     // perhaps with the use of constants or flags to determine specific information required by the scripts.
-
-    // Features unique to assignment script-containers include 'actions', 'constants', and 'interact script' assignment.
+    //
+    // Features unique to assignment script-containers include 'actions' and 'interact script' assignment.
     // Like any script, the ability to run local utility scripts can be accomplished as well. This allows fully
     // interactive NPCs to be built purely with Assignment Scripts, and for advanced situations, world scripts and
     // interact scripts can provide more functionality.
-
+    // See also <@link language interact script containers>
+    //
     // Basic structure of an assignment script:
     // <code>
     // Assignment_Script_Name:
@@ -41,7 +42,8 @@ public class AssignmentScriptContainer extends ScriptContainer {
     // All part of an assignment script are optional. The three features provided can be
     // used together, but do not require one another.
     //
-    // Though note that generally you should include the 'actions:' key, usually with the 'on assignment:' action (if using triggers).
+    // Though note that almost always you should include the 'actions:' key, usually with the 'on assignment:' action (if using triggers).
+    // Refer to <@link action assignment>.
     //
     // -->
 

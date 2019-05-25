@@ -22,6 +22,7 @@ public class InteractScriptContainer extends ScriptContainer {
     // Interact script containers are used to handle NPC triggers.
     //
     // Interact scripts must be referenced from an assignment script container to be of any use.
+    // See <@link language assignment script containers>.
     //
     // The only required key on a task script container is the 'steps:' key.
     //
@@ -31,6 +32,12 @@ public class InteractScriptContainer extends ScriptContainer {
     //
     // Each step contains a list of trigger types that it handles, and the relevant handling that the given
     // trigger makes available.
+    //
+    // Refer to <@link language interact script triggers> for documentation about the triggers available.
+    // Any triggers used must be enabled in <@link action assignment> by <@link command trigger>.
+    //
+    // Note that script commands ran in interact scripts by default have a delay between each command.
+    // To override this delay, put a '^' in front of each command name, or set 'speed: 0' on the container.
     //
     // <code>
     // Interact_Script_Name:
@@ -51,6 +58,24 @@ public class InteractScriptContainer extends ScriptContainer {
     //
     // </code>
     //
+    // -->
+
+    // <--[language]
+    // @name Interact Script Triggers
+    // @group NPC Interact Scripts
+    // @description
+    // Interact script triggers are the most basic components of standard NPC scripting.
+    // They're very useful for NPCs that give quests or have other very basic interactions with players.
+    // While less powerful that other tools that Denizen provides, they can be very straightforward and clear to use in many simpler cases.
+    //
+    // Note that triggers have a default cooldown system built in to prevent users from clicking too rapidly.
+    // However these are very short cooldowns by default - when you need a longer cooldown, use
+    // <@link command cooldown> or <@link command engage>.
+    //
+    // Triggers go in <@link language interact script containers>.
+    //
+    // The available default trigger types are <@link language click triggers>,
+    // <@link language damage triggers>, <@link language chat triggers>, and <@link language proximity triggers>.
     // -->
 
     public InteractScriptContainer(YamlConfiguration configurationSection, String scriptContainerName) {

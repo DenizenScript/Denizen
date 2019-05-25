@@ -19,6 +19,16 @@ import java.util.Map;
 
 public class ClickTrigger extends AbstractTrigger implements Listener {
 
+    // <--[language]
+    // @name Click Triggers
+    // @group NPC Interact Scripts
+    // @description
+    // Click Triggers are triggered when when a player right clicks the NPC.
+    //
+    // These are very basic with no extraneous complexity.
+    //
+    // -->
+
     // <--[action]
     // @Actions
     // no click trigger
