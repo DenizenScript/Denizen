@@ -10,6 +10,8 @@ import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,84 +21,7 @@ import org.bukkit.event.Listener;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * <p>The Proximity Trigger is used to execute a script when a player moves
- * within a certain radius of a location.  If the radius are not specified,
- * then the default for entry, exit, and move is 5 blocks.</p>
- * <p/>
- * Example Interact Script Usage:<br/>
- * This script will execute a script when the player walks within 5 blocks of
- * the NPC that this trigger is assigned to and they were not previously within
- * the 5 block range.
- * It will also execute a script when the player walks outside of a 10 block
- * radius of the NPC when they were not previously outside the 10 block radius.<br/>
- * <ol>
- * <tt>
- * Proximity Trigger:<br/>
- * &nbsp;&nbsp;Entry Radius: 5<br/>
- * &nbsp;&nbsp;Exit Radius: 10<br/>
- * &nbsp;&nbsp;Entry:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Hello <PLAYER.NAME>! Welcome to my shop!"<br/>
- * &nbsp;&nbsp;Exit:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Thanks for visiting <PLAYER.NAME>"<br/>
- * &nbsp;&nbsp;Move:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;Script:<br/>
- * &nbsp;&nbsp;&nbsp;&nbsp;- CHAT "Stop pacing <PLAYER.NAME>!"<br/>
- * </tt>
- * </ol>
- * <p/>
- * Example Action Usage:<br/>
- * Entering and exiting NPC proximities will also trigger a couple of Actions that can be utilized. If no
- * Actions are present in the NPC Assignment Script, no action will be taken. Normal cooldown and radius
- * conditions apply.<br/>
- * <ol>
- * <tt>
- * Actions:<br/>
- * &nbsp;&nbsp;On Enter Proximity:<br/>
- * &nbsp;&nbsp;- ...<br/>
- * <br/>
- * Actions:<br/>
- * &nbsp;&nbsp;On Exit Proximity:<br/>
- * &nbsp;&nbsp;- ...<br/>
- * &nbsp;&nbsp;On Move Proximity:<br/>
- * &nbsp;&nbsp;- ...<br/>
- * </tt>
- * </ol>
- *
- * @author dbixler, aufdemrand
- */
 public class ProximityTrigger extends AbstractTrigger implements Listener {
-    /*
-     * <p> This is the trigger that fires when any player moves in the entire
-     * world.  The trigger ONLY checks if the player moves to a new BLOCK in the
-     * world</p>
-     *
-     * When the trigger determines that the player has moved to a different block
-     * in the world, all of the NPCs are checked for the following criteria:
-     * <ol>
-     * <li>Does the NPC have the trigger trait?</li>
-     * <li>Is the trigger enabled?</li>
-     * <li>Is the NPC available (i.e. not busy)?</li>
-     * <li>Is the NPC Spawned?</li>
-     * <li>Is the NPC in the same World as the player</li>
-     * </ol>
-     *
-     * If the NPC passes all of these criteria, there are three events that can
-     * occur (only one of them):
-     *
-     * <ol>
-     * <li>If the player was outside of the NPC's radius, and moved inside the
-     * radius, and there's a SCRIPT or an ENTRY SCRIPT, then execute that entry
-     * script.</li>
-     * <li>If the player was INSIDE of the NPC's radius, and moved OUTSIDE the
-     * radius, and there's an EXIT SCRIPT, then execute that exit script.
-     * <li>If the player was INSIDE of the NPC's radius, and moved WITHIN the
-     * radius, and there's an MOVE SCRIPT, then execute that move script.
-     * </ol>
-     *
-     */
 
     //
     // Default to 75, but dynamically set by checkMaxProximities().
@@ -159,44 +84,34 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
             @Override
             public void run() {
 
+                Collection<? extends Player> allPlayers = Bukkit.getOnlinePlayers();
                 //
                 // Iterate over all of the NPCs
                 //
                 Iterator<dNPC> it = dNPCRegistry.getSpawnedNPCs().iterator();
-                while (it.hasNext()) {
-                    dNPC npc = it.next();
-                    if (npc == null) {
+                for (NPC citizensNPC : CitizensAPI.getNPCRegistry()) {
+                    if (citizensNPC == null || !citizensNPC.isSpawned()) {
                         continue;
                     }
-                    if (npc.getCitizen() == null) {
-                        continue;
-                    }
-
                     //
                     // If the NPC doesn't have triggers, or the Proximity Trigger is not enabled,
                     // then just return.
                     //
-                    if (!npc.getCitizen().hasTrait(TriggerTrait.class)) {
+                    if (!citizensNPC.hasTrait(TriggerTrait.class) || !citizensNPC.getTrait(TriggerTrait.class).isEnabled(name)) {
                         continue;
                     }
-
-                    if (!npc.getCitizen().getTrait(TriggerTrait.class).isEnabled(name)) {
-                        continue;
-                    }
-
-                    if (!npc.isSpawned()) {
-                        continue;
-                    }
+                    dNPC npc = new dNPC(citizensNPC);
+                    TriggerTrait triggerTrait = npc.getTriggerTrait();
 
                     // Loop through all players
-                    for (Player BukkitPlayer : Bukkit.getOnlinePlayers()) {
+                    for (Player bukkitPlayer : allPlayers) {
 
                         //
                         // If this NPC is not spawned or in a different world, no need to check,
                         // unless the Player hasn't yet triggered an Exit Proximity after Entering
                         //
-                        if (!npc.getWorld().equals(BukkitPlayer.getWorld())
-                                && hasExitedProximityOf(BukkitPlayer, npc)) {
+                        if (!npc.getWorld().equals(bukkitPlayer.getWorld())
+                                && hasExitedProximityOf(bukkitPlayer, npc)) {
                             continue;
                         }
 
@@ -204,13 +119,13 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         // If this NPC is more than the maxProximityDistance, skip it, unless
                         // the Player hasn't yet triggered an 'Exit Proximity' after entering.
                         //
-                        if (!isCloseEnough(BukkitPlayer, npc)
-                                && hasExitedProximityOf(BukkitPlayer, npc)) {
+                        if (!isCloseEnough(bukkitPlayer, npc)
+                                && hasExitedProximityOf(bukkitPlayer, npc)) {
                             continue;
                         }
 
                         // Get the player
-                        dPlayer player = dPlayer.mirrorBukkitPlayer(BukkitPlayer);
+                        dPlayer player = dPlayer.mirrorBukkitPlayer(bukkitPlayer);
 
                         //
                         // Check to make sure the NPC has an assignment. If no assignment, a script doesn't need to be parsed,
@@ -222,9 +137,9 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         // Set default ranges with information from the TriggerTrait. This allows per-npc overrides and will
                         // automatically check the config for defaults.
                         //
-                        double entryRadius = npc.getTriggerTrait().getRadius(name);
-                        double exitRadius = npc.getTriggerTrait().getRadius(name);
-                        double moveRadius = npc.getTriggerTrait().getRadius(name);
+                        double entryRadius = triggerTrait.getRadius(name);
+                        double exitRadius = triggerTrait.getRadius(name);
+                        double moveRadius = triggerTrait.getRadius(name);
 
 
                         //
@@ -280,7 +195,7 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         // If the user was previously within the range and moved, then execute
                         // the "Move" script.
                         //
-                        boolean exitedProximity = hasExitedProximityOf(BukkitPlayer, npc);
+                        boolean exitedProximity = hasExitedProximityOf(bukkitPlayer, npc);
                         double distance = 0;
                         if (!playerChangedWorlds) {
                             distance = npcLocation.distance(player.getLocation());
@@ -288,11 +203,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
 
                         if (!exitedProximity
                                 && (playerChangedWorlds || distance >= exitRadius)) {
-                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player)) {
+                            if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
                                 continue;
                             }
                             // Remember that NPC has exited proximity.
-                            exitProximityOf(BukkitPlayer, npc);
+                            exitProximityOf(bukkitPlayer, npc);
                             // Exit Proximity Action
                             npc.action("exit proximity", player);
                             // Parse Interact Script
@@ -300,11 +215,11 @@ public class ProximityTrigger extends AbstractTrigger implements Listener {
                         }
                         else if (exitedProximity && distance <= entryRadius) {
                             // Cooldown
-                            if (!npc.getTriggerTrait().triggerCooldownOnly(trigger, player)) {
+                            if (!triggerTrait.triggerCooldownOnly(trigger, player)) {
                                 continue;
                             }
                             // Remember that Player has entered proximity of the NPC
-                            enterProximityOf(BukkitPlayer, npc);
+                            enterProximityOf(bukkitPlayer, npc);
                             // Enter Proximity Action
                             npc.action("enter proximity", player);
                             // Parse Interact Script

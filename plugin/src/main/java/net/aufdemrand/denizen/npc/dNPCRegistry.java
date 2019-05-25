@@ -148,8 +148,6 @@ public class dNPCRegistry implements Listener {
     /**
      * Similar to getting NPCs from Citizens' NPCRegistry, but this will filter out
      * unspawned NPCs
-     *
-     * @return map of NPC, dNPC of all spawned NPCs
      */
     public static Set<dNPC> getSpawnedNPCs() {
         Iterator<Map.Entry<Integer, dNPC>> it = denizenNPCs.entrySet().iterator();
