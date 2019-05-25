@@ -9,6 +9,7 @@ import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -83,6 +84,7 @@ public class ItemNBT implements Property {
         // @description
         // Returns the value of this item's NBT key as an Element as best it can.
         // If no key is specified, returns the full list of NBT key/value pairs (valid for input to nbt mechanism).
+        // See also <@link language property escaping>.
         // -->
         if (attribute.matches("nbt")) {
             if (!attribute.hasContext(1)) {
@@ -109,7 +111,7 @@ public class ItemNBT implements Property {
         if (nbtKeys != null && !nbtKeys.isEmpty()) {
             dList list = new dList();
             for (String key : nbtKeys) {
-                list.add(key + "/" + CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN));
+                list.add(EscapeTags.escape(key) + "/" + EscapeTags.escape(CustomNBT.getCustomNBT(itemStack, key, CustomNBT.KEY_DENIZEN)));
             }
             return list;
         }
@@ -169,6 +171,7 @@ public class ItemNBT implements Property {
         // @input dList
         // @description
         // Sets the Denizen NBT for this item in the format li@key/value|key/value...
+        // See also <@link language property escaping>.
         // @tags
         // <i@item.has_nbt[<key>]>
         // <i@item.nbt_keys>
@@ -183,7 +186,7 @@ public class ItemNBT implements Property {
             ItemStack itemStack = item.getItemStack();
             for (String string : list) {
                 String[] split = string.split("/", 2);
-                itemStack = CustomNBT.addCustomNBT(itemStack, split[0], split[1], CustomNBT.KEY_DENIZEN);
+                itemStack = CustomNBT.addCustomNBT(itemStack, EscapeTags.unEscape(split[0]), EscapeTags.unEscape(split[1]), CustomNBT.KEY_DENIZEN);
             }
             item.setItemStack(itemStack);
         }
