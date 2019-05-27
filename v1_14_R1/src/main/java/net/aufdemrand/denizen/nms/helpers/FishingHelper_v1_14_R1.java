@@ -73,7 +73,7 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
         List<ItemStack> itemStacks = registry.getLootTable(LootTables.ac)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ac).a()));
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ac).getLootContextParameterSet()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 
@@ -85,7 +85,7 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
         List<ItemStack> itemStacks = registry.getLootTable(LootTables.ad)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ad).a()));
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ad).getLootContextParameterSet()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 
@@ -98,7 +98,7 @@ public class FishingHelper_v1_14_R1 implements FishingHelper {
         //playerFishEvent2.luck((float) EnchantmentManager.a(Enchantments.LUCK, fishHook.owner) + fishHook.owner.dJ());
         LootTableRegistry registry = fishHook.getWorld().getMinecraftServer().getLootTableRegistry();
         List<ItemStack> itemStacks = registry.getLootTable(LootTables.ae)
-                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ae).a()));
+                .populateLoot(playerFishEvent2.build(registry.getLootTable(LootTables.ae).getLootContextParameterSet()));
         return itemStacks.get(worldServer.random.nextInt(itemStacks.size()));
     }
 }
