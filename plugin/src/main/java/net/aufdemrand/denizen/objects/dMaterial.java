@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
+import net.aufdemrand.denizen.objects.properties.material.MaterialLevel;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
@@ -502,6 +503,23 @@ public class dMaterial implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(MaterialAge.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <m@material.is_levelable>
+        // @returns Element(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a levelable material.
+        // When this returns true, <@link tag m@material.level>,  <@link tag m@material.maximum_level>,
+        // and <@link mechanism dMaterial.level> are accessible.
+        // -->
+        registerTag("is_levelable", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(MaterialLevel.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });
