@@ -348,6 +348,52 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return this;
     }
 
+    public dList getShell() {
+        int max = Settings.blockTagsMaxBlocks();
+        int index = 0;
+
+        dList list = new dList();
+
+        for (LocationPair pair : pairs) {
+            dLocation low = pair.low;
+            dLocation high = pair.high;
+            int y_distance = pair.y_distance;
+            int z_distance = pair.z_distance;
+            int x_distance = pair.x_distance;
+
+            for (int x = 0; x < x_distance; x++) {
+                for (int y = 0; y < y_distance; y++) {
+                    list.addObject(new dLocation(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, low.getBlockZ()));
+                    list.addObject(new dLocation(low.getWorld(), low.getBlockX() + x, low.getBlockY() + y, high.getBlockZ()));
+                    index++;
+                    if (index > max) {
+                        return list;
+                    }
+                }
+                for (int z = 0; z < z_distance; z++) {
+                    list.addObject(new dLocation(low.getWorld(), low.getBlockX() + x, low.getBlockY(), low.getBlockZ() + z));
+                    list.addObject(new dLocation(low.getWorld(), low.getBlockX() + x, high.getBlockY(), low.getBlockZ() + z));
+                    index++;
+                    if (index > max) {
+                        return list;
+                    }
+                }
+            }
+            for (int y = 0; y < y_distance; y++) {
+                for (int z = 0; z < z_distance; z++) {
+                    list.addObject(new dLocation(low.getWorld(), low.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
+                    list.addObject(new dLocation(low.getWorld(), high.getBlockX(), low.getBlockY() + y, low.getBlockZ() + z));
+                    index++;
+                    if (index > max) {
+                        return list;
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+
     public dList getOutline() {
 
         //    +-----2
@@ -370,25 +416,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             int x_distance = pair.x_distance;
 
             for (int y = loc_1.getBlockY(); y < loc_1.getBlockY() + y_distance; y++) {
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         y,
-                        loc_1.getBlockZ()).identify());
+                        loc_1.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_2.getBlockX(),
                         y,
-                        loc_2.getBlockZ()).identify());
+                        loc_2.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         y,
-                        loc_2.getBlockZ()).identify());
+                        loc_2.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_2.getBlockX(),
                         y,
-                        loc_1.getBlockZ()).identify());
+                        loc_1.getBlockZ()));
                 index++;
                 if (index > max) {
                     return list;
@@ -396,25 +442,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             }
 
             for (int x = loc_1.getBlockX(); x < loc_1.getBlockX() + x_distance; x++) {
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         x,
                         loc_1.getBlockY(),
-                        loc_1.getBlockZ()).identify());
+                        loc_1.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         x,
                         loc_1.getBlockY(),
-                        loc_2.getBlockZ()).identify());
+                        loc_2.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         x,
                         loc_2.getBlockY(),
-                        loc_2.getBlockZ()).identify());
+                        loc_2.getBlockZ()));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         x,
                         loc_2.getBlockY(),
-                        loc_1.getBlockZ()).identify());
+                        loc_1.getBlockZ()));
                 index++;
                 if (index > max) {
                     return list;
@@ -422,25 +468,25 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
             }
 
             for (int z = loc_1.getBlockZ(); z < loc_1.getBlockZ() + z_distance; z++) {
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         loc_1.getBlockY(),
-                        z).identify());
+                        z));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_2.getBlockX(),
                         loc_2.getBlockY(),
-                        z).identify());
+                        z));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_1.getBlockX(),
                         loc_2.getBlockY(),
-                        z).identify());
+                        z));
 
-                list.add(new dLocation(loc_1.getWorld(),
+                list.addObject(new dLocation(loc_1.getWorld(),
                         loc_2.getBlockX(),
                         loc_1.getBlockY(),
-                        z).identify());
+                        z));
                 index++;
                 if (index > max) {
                     return list;
@@ -870,6 +916,20 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("get_spawnable_blocks", registeredTags.get("spawnable_blocks"));
 
         // <--[tag]
+        // @attribute <cu@cuboid.shell>
+        // @returns dList(dLocation)
+        // @description
+        // Returns each block location on the shell of the dCuboid.
+        // -->
+        registerTag("shell", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return ((dCuboid) object).getShell()
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.outline>
         // @returns dList(dLocation)
         // @description
@@ -878,7 +938,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         registerTag("outline", new TagRunnable() {
             @Override
             public String run(Attribute attribute, dObject object) {
-                return new dList(((dCuboid) object).getOutline())
+                return ((dCuboid) object).getOutline()
                         .getAttribute(attribute.fulfill(1));
             }
         });
