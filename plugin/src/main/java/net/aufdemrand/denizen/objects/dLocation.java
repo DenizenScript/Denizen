@@ -639,24 +639,127 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.above>
+        // @attribute <l@location.above[<#.#>]>
         // @returns dLocation
         // @description
-        // Returns the location one block above this location.
+        // Returns the location above this location. Optionally specify a number of blocks to go up.
         // -->
         if (attribute.startsWith("above")) {
-            return new dLocation(this.clone().add(0, 1, 0))
+            return new dLocation(this.clone().add(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0))
                     .getAttribute(attribute.fulfill(1));
         }
 
         // <--[tag]
-        // @attribute <l@location.below>
+        // @attribute <l@location.below[<#.#>]>
         // @returns dLocation
         // @description
-        // Returns the location one block below this location.
+        // Returns the location below this location. Optionally specify a number of blocks to go down.
         // -->
         if (attribute.startsWith("below")) {
-            return new dLocation(this.clone().add(0, -1, 0))
+            return new dLocation(this.clone().subtract(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.forward[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location in front of this location based on pitch and yaw. Optionally specify a number of blocks to go forward.
+        // -->
+        if (attribute.startsWith("forward")) {
+            Vector vector = this.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().add(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.backward[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location behind this location based on pitch and yaw. Optionally specify a number of blocks to go backward.
+        // -->
+        if (attribute.startsWith("backward")) {
+            Vector vector = this.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().subtract(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.left[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location to the left of this location based on pitch and yaw. Optionally specify a number of blocks to go left.
+        // -->
+        if (attribute.startsWith("left")) {
+            Location loc = this.clone();
+            loc.setPitch(0);
+            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().add(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.right[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location to the right of this location based on pitch and yaw. Optionally specify a number of blocks to go right.
+        // -->
+        if (attribute.startsWith("right")) {
+            Location loc = this.clone();
+            loc.setPitch(0);
+            Vector vector = loc.getDirection().rotateAroundY(Math.PI / 2).multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().subtract(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.up[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location above this location based on pitch and yaw. Optionally specify a number of blocks to go up.
+        // -->
+        if (attribute.startsWith("up")) {
+            Location loc = this.clone();
+            loc.setPitch(loc.getPitch() - 90);
+            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().add(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.down[<#.#>]>
+        // @returns dLocation
+        // @description
+        // Returns the location below this location based on pitch and yaw. Optionally specify a number of blocks to go down.
+        // -->
+        if (attribute.startsWith("down")) {
+            Location loc = this.clone();
+            loc.setPitch(loc.getPitch() - 90);
+            Vector vector = loc.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
+            return new dLocation(this.clone().subtract(vector))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <l@location.relative[<location>]>
+        // @returns dLocation
+        // @description
+        // Returns the location relative to this location. Input is a location or vector of the form left,up,forward.
+        // -->
+        if (attribute.startsWith("relative") && attribute.hasContext(1)) {
+            dLocation offsetLoc = dLocation.valueOf(attribute.getContext(1));
+            if (offsetLoc == null) {
+                return null;
+            }
+
+            Location loc = this.clone();
+            Vector offset = loc.getDirection().multiply(offsetLoc.getZ());
+            loc.setPitch(loc.getPitch() - 90);
+            offset = offset.add(loc.getDirection().multiply(offsetLoc.getY()));
+            loc.setPitch(0);
+            offset = offset.add(loc.getDirection().rotateAroundY(Math.PI / 2).multiply(offsetLoc.getX()));
+
+            return new dLocation(this.clone().add(offset))
                     .getAttribute(attribute.fulfill(1));
         }
 
