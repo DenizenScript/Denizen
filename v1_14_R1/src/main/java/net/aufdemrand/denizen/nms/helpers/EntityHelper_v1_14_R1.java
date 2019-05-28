@@ -321,6 +321,16 @@ public class EntityHelper_v1_14_R1 extends EntityHelper {
             new BukkitRunnable() {
                 @Override
                 public void run() {
+                    if (!entity.isValid()) {
+                        if (callback != null) {
+                            callback.run();
+                        }
+                        cancel();
+                        return;
+                    }
+                    if (aiDisabled && entity instanceof Wolf) {
+                        ((Wolf) entity).setAngry(false);
+                    }
                     if (entityNavigation.n() || path.b()) {
                         if (callback != null) {
                             callback.run();
