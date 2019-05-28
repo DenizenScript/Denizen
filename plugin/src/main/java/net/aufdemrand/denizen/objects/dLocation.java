@@ -2905,6 +2905,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             }
         }
 
+        // <--[mechanism]
+        // @object dLocation
+        // @name activate
+        // @input None
+        // @description
+        // Activates the block at the location if possible.
+        // Works for blocks like dispensers, which have explicit 'activation' methods.
+        // -->
+        if (mechanism.matches("activate")) {
+            BlockState state = getBlockState();
+            if (state instanceof Dispenser) {
+                ((Dispenser) state).dispense();
+            }
+            else if (state instanceof Dropper) {
+                ((Dropper) state).drop();
+            }
+        }
+
         CoreUtilities.autoPropertyMechanism(this, mechanism);
     }
 }
