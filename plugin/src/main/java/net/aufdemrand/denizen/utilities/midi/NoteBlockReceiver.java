@@ -5,7 +5,9 @@ import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.SoundHelper;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 
 import javax.sound.midi.*;
@@ -26,6 +28,7 @@ public class NoteBlockReceiver implements Receiver {
     private Map<Integer, Integer> channelPatches;
     public String key = null;
     public Sequencer sequencer;
+    public boolean closing = false;
 
     public NoteBlockReceiver(List<dEntity> entities, String _Key) throws InvalidMidiDataException, IOException {
         this.entities = entities;
@@ -47,6 +50,9 @@ public class NoteBlockReceiver implements Receiver {
 
     @Override
     public void send(MidiMessage m, long time) {
+        if (closing) {
+            return;
+        }
         if (m instanceof ShortMessage) {
             ShortMessage smessage = (ShortMessage) m;
             int chan = smessage.getChannel();
@@ -71,6 +77,7 @@ public class NoteBlockReceiver implements Receiver {
         }
     }
 
+    // Note that this may run async
     public void playNote(ShortMessage message) {
         // if this isn't a NOTE_ON message, we can't play it
         if (ShortMessage.NOTE_ON != message.getCommand()) {
@@ -131,19 +138,22 @@ public class NoteBlockReceiver implements Receiver {
 
     @Override
     public void close() {
-        entities = null;
-        location = null;
-        channelPatches.clear();
-        channelPatches = null;
-        if (MidiUtil.receivers.containsKey(key)) {
-            MidiUtil.receivers.remove(key);
-        }
-        if (sequencer != null) {
-            sequencer.close();
-            sequencer = null;
-        }
-        if (onFinish != null) {
-            onFinish.run();
-        }
+        closing = true;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
+            if (MidiUtil.receivers.containsKey(key)) {
+                MidiUtil.receivers.remove(key);
+            }
+            if (sequencer != null) {
+                sequencer.close();
+                sequencer = null;
+            }
+            channelPatches.clear();
+            channelPatches = null;
+            entities = null;
+            location = null;
+            if (onFinish != null) {
+                onFinish.run();
+            }
+        }, 1);
     }
 }
