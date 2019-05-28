@@ -639,10 +639,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.above[<#.#>]>
+        // @attribute <l@location.above[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location above this location. Optionally specify a number of blocks to go up.
+        // This just moves straight along the Y axis, equivalent to <@link tag l@location.add> with input 0,1,0 (or the input value instead of '1').
         // -->
         if (attribute.startsWith("above")) {
             return new dLocation(this.clone().add(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0))
@@ -650,10 +651,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.below[<#.#>]>
+        // @attribute <l@location.below[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location below this location. Optionally specify a number of blocks to go down.
+        // This just moves straight along the Y axis, equivalent to <@link tag l@location.sub> with input 0,1,0 (or the input value instead of '1').
         // -->
         if (attribute.startsWith("below")) {
             return new dLocation(this.clone().subtract(0, attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1, 0))
@@ -661,7 +663,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.forward[<#.#>]>
+        // @attribute <l@location.forward[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location in front of this location based on pitch and yaw. Optionally specify a number of blocks to go forward.
@@ -673,10 +675,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.backward[<#.#>]>
+        // @attribute <l@location.backward[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location behind this location based on pitch and yaw. Optionally specify a number of blocks to go backward.
+        // This is equivalent to <@link tag l@location.forward> in the opposite direction.
         // -->
         if (attribute.startsWith("backward")) {
             Vector vector = this.getDirection().multiply(attribute.hasContext(1) ? attribute.getDoubleContext(1) : 1);
@@ -685,10 +688,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.left[<#.#>]>
+        // @attribute <l@location.left[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location to the left of this location based on pitch and yaw. Optionally specify a number of blocks to go left.
+        // This is equivalent to <@link tag l@location.forward> with a +90 degree rotation to the yaw.
         // -->
         if (attribute.startsWith("left")) {
             Location loc = this.clone();
@@ -699,10 +703,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.right[<#.#>]>
+        // @attribute <l@location.right[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location to the right of this location based on pitch and yaw. Optionally specify a number of blocks to go right.
+        // This is equivalent to <@link tag l@location.forward> with a -90 degree rotation to the yaw.
         // -->
         if (attribute.startsWith("right")) {
             Location loc = this.clone();
@@ -713,10 +718,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.up[<#.#>]>
+        // @attribute <l@location.up[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location above this location based on pitch and yaw. Optionally specify a number of blocks to go up.
+        // This is equivalent to <@link tag l@location.forward> with a +90 degree rotation to the pitch.
         // -->
         if (attribute.startsWith("up")) {
             Location loc = this.clone();
@@ -727,10 +733,11 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         }
 
         // <--[tag]
-        // @attribute <l@location.down[<#.#>]>
+        // @attribute <l@location.down[(<#.#>)]>
         // @returns dLocation
         // @description
         // Returns the location below this location based on pitch and yaw. Optionally specify a number of blocks to go down.
+        // This is equivalent to <@link tag l@location.forward> with a -90 degree rotation to the pitch.
         // -->
         if (attribute.startsWith("down")) {
             Location loc = this.clone();
@@ -744,7 +751,8 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @attribute <l@location.relative[<location>]>
         // @returns dLocation
         // @description
-        // Returns the location relative to this location. Input is a location or vector of the form left,up,forward.
+        // Returns the location relative to this location. Input is a vector location of the form left,up,forward.
+        // For example, input -1,1,1 will return a location 1 block to the right, 1 block up, and 1 block forward.
         // -->
         if (attribute.startsWith("relative") && attribute.hasContext(1)) {
             dLocation offsetLoc = dLocation.valueOf(attribute.getContext(1));
