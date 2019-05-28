@@ -17,6 +17,7 @@ public class ChunkHelper_v1_14_R1 implements ChunkHelper {
 
     static {
         chunkProviderServerThreadField = ReflectionHelper.getFields(ChunkProviderServer.class).get("serverThread");
+        ReflectionHelper.fixFinal(chunkProviderServerThreadField);
     }
 
     Thread resetServerThread;
