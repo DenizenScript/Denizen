@@ -1141,7 +1141,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     if (member > ((dCuboid) object).pairs.size()) {
                         member = ((dCuboid) object).pairs.size();
                     }
-                    LocationPair pair = ((dCuboid) object).pairs.get(0);
+                    LocationPair pair = subCuboid.pairs.get(0);
                     try {
                         dCuboid cloned = ((dCuboid) object).clone();
                         cloned.pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
@@ -1707,6 +1707,35 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
 
     @Override
     public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object dCuboid
+        // @name set_member
+        // @input (#,)dCuboid
+        // @description
+        // Sets a given sub-cuboid of the cuboid.
+        // Input is of the form like "2,cu@..." where 2 is the sub-cuboid index or just a direct dCuboid input.
+        // @tags
+        // <cu@cuboid.get>
+        // <cu@cuboid.set[<cuboid>].at[<#>]>
+        // -->
+        if (mechanism.matches("set_member")) {
+            String value = mechanism.getValue().asString();
+            int comma = value.indexOf(',');
+            int member = 1;
+            if (comma > 0) {
+                member = new Element(value.substring(0, comma)).asInt();
+            }
+            dCuboid subCuboid = dCuboid.valueOf(comma == -1 ? value : value.substring(comma + 1));
+            if (member < 1) {
+                member = 1;
+            }
+            if (member > pairs.size()) {
+                member = pairs.size();
+            }
+            LocationPair pair = subCuboid.pairs.get(0);
+            pairs.set(member - 1, new LocationPair(pair.point_1, pair.point_2));
+        }
 
         // TODO: Better mechanisms!
 
