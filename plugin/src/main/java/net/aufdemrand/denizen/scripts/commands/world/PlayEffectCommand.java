@@ -20,38 +20,22 @@ import org.bukkit.material.MaterialData;
 
 import java.util.*;
 
-
-// <--[language]
-// @name Particle Effects
-// @group Useful Lists
-// @description
-// All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
-//
-// Effects:
-// - iconcrack_[item] (item break effect - examples: iconcrack_stone, iconcrack_grass)
-// - blockcrack_[material] (block break effect - examples: blockcrack_stone, blockcrack_grass)
-// - blockdust_[material] (block break effect - examples: blockdust_stone, blockdust_grass)
-// - ANVIL_BREAK, ANVIL_LAND, ANVIL_USE, BARRIER, BAT_TAKEOFF, BLAZE_SHOOT, BOW_FIRE, BREWING_STAND_BREW,
-//   CHORUS_FLOWER_DEATH, CHORUS_FLOWER_GROW, CLICK1, CLICK2, CLOUD, COLOURED_DUST, CRIT, CRIT_MAGIC, DAMAGE_INDICATOR,
-//   DOOR_CLOSE, DOOR_TOGGLE, DRAGON_BREATH, DRIP_LAVA, DRIP_WATER, ENCHANTMENT_TABLE, END_GATEWAY_SPAWN, END_ROD,
-//   ENDER_SIGNAL, ENDERDRAGON_GROWL, ENDERDRAGON_SHOOT, ENDEREYE_LAUNCH, EXPLOSION, EXPLOSION_HUGE, EXPLOSION_LARGE,
-//   EXPLOSION_NORMAL, EXTINGUISH, FALLING_DUST, FENCE_GATE_CLOSE, FENCE_GATE_TOGGLE, FIREWORK_SHOOT, FIREWORKS_SPARK,
-//   FLAME, FLYING_GLYPH, FOOTSTEP, GHAST_SHOOT, GHAST_SHRIEK, HAPPY_VILLAGER, HEART, INSTANT_SPELL, IRON_DOOR_CLOSE,
-//   IRON_DOOR_TOGGLE, IRON_TRAPDOOR_CLOSE, IRON_TRAPDOOR_TOGGLE, ITEM_TAKE, LARGE_SMOKE, LAVA, LAVA_POP,
-//   LAVADRIP, MAGIC_CRIT, MOB_APPEARANCE, MOBSPAWNER_FLAMES, NOTE, PARTICLE_SMOKE, PORTAL, PORTAL_TRAVEL, POTION_BREAK,
-//   POTION_SWIRL, POTION_SWIRL_TRANSPARENT, RECORD_PLAY, REDSTONE, SLIME, SMALL_SMOKE, SMOKE, SMOKE_LARGE,
-//   SMOKE_NORMAL, SNOW_SHOVEL, SNOWBALL, SNOWBALL_BREAK, SPELL, SPELL_INSTANT, SPELL_MOB, SPELL_MOB_AMBIENT,
-//   SPELL_WITCH, SPLASH, STEP_SOUND, SUSPENDED, SUSPENDED_DEPTH, SWEEP_ATTACK, TOWN_AURA,
-//   TRAPDOOR_CLOSE, TRAPDOOR_TOGGLE, VILLAGER_ANGRY, VILLAGER_HAPPY, VILLAGER_PLANT_GROW, VILLAGER_THUNDERCLOUD,
-//   VOID_FOG, WATER_BUBBLE, WATER_DROP, WATER_SPLASH, WATER_WAKE, WATERDRIP, WITCH_MAGIC, WITHER_BREAK_BLOCK,
-//   WITHER_SHOOT, ZOMBIE_CHEW_IRON_DOOR, ZOMBIE_CHEW_WOODEN_DOOR, ZOMBIE_CONVERTED_VILLAGER, ZOMBIE_DESTROY_DOOR,
-//   ZOMBIE_INFECT
-// TODO: split the above list between sounds, visual effects, and particles?
-//
-// - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
-// -->
-
 public class PlayEffectCommand extends AbstractCommand {
+
+    // <--[language]
+    // @name Particle Effects
+    // @group Useful Lists
+    // @description
+    // All of the effects listed here can be used by <@link command PlayEffect> to display visual effects or play sounds
+    //
+    // Effects:
+    // - iconcrack_[item] (item break effect - examples: iconcrack_stone, iconcrack_grass)
+    // - blockcrack_[material] (block break effect - examples: blockcrack_stone, blockcrack_grass)
+    // - blockdust_[material] (block break effect - examples: blockdust_stone, blockdust_grass)
+    // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Particle.html>
+    // - Everything on <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Effect.html>
+    // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
