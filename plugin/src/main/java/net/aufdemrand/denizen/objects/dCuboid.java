@@ -1002,6 +1002,24 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <cu@cuboid.list_members>
+        // @returns dList(dCuboid)
+        // @description
+        // Returns a list of all sub-cuboids in this dCuboid (for cuboids that contain multiple sub-cuboids).
+        // -->
+        registerTag("list_members", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                List<LocationPair> pairs = ((dCuboid) object).pairs;
+                dList list = new dList();
+                for (LocationPair pair : pairs) {
+                    list.addObject(new dCuboid(pair.low, pair.high));
+                }
+                return list.getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.get[<index>]>
         // @returns dCuboid
         // @description
