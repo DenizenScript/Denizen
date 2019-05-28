@@ -1621,6 +1621,9 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public int getTagTimeout() {
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+            return 0;
+        }
         return Settings.tagTimeout();
     }
 
