@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.scripts.commands.world;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -103,9 +104,12 @@ public class SwitchCommand extends AbstractCommand {
     }
 
     public static boolean switchState(Block b) {
-        Boolean switchState = NMSHandler.getInstance().getSwitchState(b);
-        if (switchState != null) {
-            return switchState;
+        if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+            ModernBlockData mbd = new ModernBlockData(b);
+            Boolean switchState = mbd.getSwitchState();
+            if (switchState != null) {
+                return switchState;
+            }
         }
         //return (b.getData() & 0x8) > 0;
         Material type = b.getType();
@@ -147,7 +151,8 @@ public class SwitchCommand extends AbstractCommand {
                 switchState.equals(SwitchState.TOGGLE)) {
 
             if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                NMSHandler.getInstance().setSwitchState(interactLocation, !currentState);
+                ModernBlockData mbd = new ModernBlockData(interactLocation.getBlock());
+                mbd.setSwitchState(interactLocation.getBlock(), !currentState);
             }
             else {
                 try {

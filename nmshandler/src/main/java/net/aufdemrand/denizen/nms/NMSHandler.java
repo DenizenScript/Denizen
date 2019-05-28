@@ -177,12 +177,4 @@ public abstract class NMSHandler {
             attachmentRotations.add(a.getUniqueId());
         }
     }
-
-    public Boolean getSwitchState(Block b) {
-        return null;
-    }
-
-    public boolean setSwitchState(Location interactLocation, boolean state) {
-        return false;
-    }
 }

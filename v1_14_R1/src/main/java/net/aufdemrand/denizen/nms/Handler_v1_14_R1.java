@@ -27,6 +27,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftInventory;
@@ -282,42 +283,5 @@ public class Handler_v1_14_R1 extends NMSHandler {
     @Override
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_14_R1(biome);
-    }
-
-    @Override
-    public Boolean getSwitchState(Block b) {
-        ModernBlockData mbd = new ModernBlockData(b);
-        if (mbd.data instanceof Openable) {
-            return ((Openable) mbd.data).isOpen();
-        }
-        else if (mbd.data instanceof Powerable) {
-            return ((Powerable) mbd.data).isPowered();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean setSwitchState(Location interactLocation, boolean state) {
-        Block block = interactLocation.getBlock();
-        ModernBlockData mbd = new ModernBlockData(block);
-        if (mbd.data instanceof Openable) {
-            Openable newState = ((Openable) mbd.data);
-            newState.setOpen(state);
-            NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
-            interactLocation.getBlock().setBlockData(newState, true);
-            interactLocation.getBlock().getState().update(true, true);
-            NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
-            return true;
-        }
-        else if (mbd.data instanceof Powerable) {
-            Powerable newState = ((Powerable) mbd.data);
-            newState.setPowered(state);
-            NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
-            interactLocation.getBlock().setBlockData(newState, true);
-            interactLocation.getBlock().getState().update(true, true);
-            NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
-            return true;
-        }
-        return false;
     }
 }

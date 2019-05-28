@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.type.Dispenser;
 
 /**
  * Helper for 1.13+ block data.
@@ -39,5 +42,38 @@ public class ModernBlockData {
         BlockState state = NMSHandler.getInstance().getBlockHelper().generateBlockState(getMaterial());
         state.setBlockData(data);
         return state;
+    }
+
+    public Boolean getSwitchState() {
+        if (data instanceof Openable) {
+            return ((Openable) data).isOpen();
+        }
+        else if (data instanceof Powerable) {
+            return ((Powerable) data).isPowered();
+        }
+        else if (data instanceof Dispenser) {
+            return ((Dispenser) data).isTriggered();
+        }
+        return null;
+    }
+
+    public boolean setSwitchState(Block block, boolean state) {
+        if (data instanceof Openable) {
+            ((Openable) data).setOpen(state);
+        }
+        else if (data instanceof Powerable) {
+            ((Powerable) data).setPowered(true);
+        }
+        else if (data instanceof Dispenser) {
+            ((Dispenser) data).setTriggered(true);
+        }
+        else {
+            return false;
+        }
+        NMSHandler.getInstance().getChunkHelper().changeChunkServerThread(block.getWorld());
+        block.setBlockData(data, true);
+        block.getState().update(true, true);
+        NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
+        return true;
     }
 }

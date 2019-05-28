@@ -246,34 +246,4 @@ public class Handler_v1_13_R2 extends NMSHandler {
     public BiomeNMS getBiomeNMS(Biome biome) {
         return new BiomeNMS_v1_13_R2(biome);
     }
-
-    @Override
-    public Boolean getSwitchState(Block b) {
-        if (b.getBlockData() instanceof Openable) {
-            return ((Openable) b.getBlockData()).isOpen();
-        }
-        else if (b.getBlockData() instanceof Powerable) {
-            return ((Powerable) b.getBlockData()).isPowered();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean setSwitchState(Location interactLocation, boolean state) {
-        if (interactLocation.getBlock().getBlockData() instanceof Openable) {
-            Openable newState = ((Openable) interactLocation.getBlock().getBlockData());
-            newState.setOpen(state);
-            interactLocation.getBlock().setBlockData(newState, true);
-            interactLocation.getBlock().getState().update(true, true);
-            return true;
-        }
-        else if (interactLocation.getBlock().getBlockData() instanceof Powerable) {
-            Powerable newState = ((Powerable) interactLocation.getBlock().getBlockData());
-            newState.setPowered(state);
-            interactLocation.getBlock().setBlockData(newState, true);
-            interactLocation.getBlock().getState().update(true, true);
-            return true;
-        }
-        return false;
-    }
 }
