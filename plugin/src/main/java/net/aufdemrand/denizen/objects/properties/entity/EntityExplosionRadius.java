@@ -6,13 +6,15 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Explosive;
 
 public class EntityExplosionRadius implements Property {
 
     public static boolean describes(dObject entity) {
         return entity instanceof dEntity
-                && ((dEntity) entity).getBukkitEntity() instanceof Explosive;
+                && (((dEntity) entity).getBukkitEntity() instanceof Explosive
+                || ((dEntity) entity).getBukkitEntity() instanceof Creeper);
     }
 
     public static EntityExplosionRadius getFrom(dObject entity) {
@@ -28,6 +30,9 @@ public class EntityExplosionRadius implements Property {
     };
 
     public float getExplosionRadius() {
+        if (entity.getBukkitEntity() instanceof Creeper) {
+            return ((Creeper) entity.getBukkitEntity()).getExplosionRadius();
+        }
         return ((Explosive) entity.getBukkitEntity()).getYield();
     }
 
@@ -72,7 +77,7 @@ public class EntityExplosionRadius implements Property {
         // @mechanism dEntity.explosion_radius
         // @group properties
         // @description
-        // If this entity is explosive, returns its explosion radius.
+        // If this entity can explode, returns its explosion radius.
         // -->
         if (attribute.startsWith("explosion_radius")) {
             return new Element(getExplosionRadius())
@@ -90,12 +95,17 @@ public class EntityExplosionRadius implements Property {
         // @name explosion_radius
         // @input Element(Decimal)
         // @description
-        // If this entity is explosive, sets its explosion radius.
+        // If this entity can explode, sets its explosion radius.
         // @tags
         // <e@entity.explosion_radius>
         // -->
         if (mechanism.matches("explosion_radius") && mechanism.requireFloat()) {
-            ((Explosive) entity.getBukkitEntity()).setYield(mechanism.getValue().asFloat());
+            if (entity.getBukkitEntity() instanceof Creeper) {
+                ((Creeper) entity.getBukkitEntity()).setExplosionRadius(mechanism.getValue().asInt());
+            }
+            else {
+                ((Explosive) entity.getBukkitEntity()).setYield(mechanism.getValue().asFloat());
+            }
         }
     }
 }
