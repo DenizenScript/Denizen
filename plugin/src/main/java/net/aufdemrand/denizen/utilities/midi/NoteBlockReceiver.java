@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author authorblues, patched by mcmonkey
  */
-public class NoteBlockReceiver implements Receiver {
+public class NoteBlockReceiver implements Receiver, MetaEventListener {
     public float VOLUME_RANGE = 10.0f;
 
     private List<dEntity> entities;
@@ -46,6 +46,13 @@ public class NoteBlockReceiver implements Receiver {
 
     public void setSequencer(Sequencer sequencer) {
         this.sequencer = sequencer;
+    }
+
+    @Override
+    public void meta(MetaMessage meta) {
+        if (meta.getType() == 47) { // Track completion
+            close();
+        }
     }
 
     @Override
@@ -138,6 +145,9 @@ public class NoteBlockReceiver implements Receiver {
 
     @Override
     public void close() {
+        if (closing) {
+            return;
+        }
         closing = true;
         Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), () -> {
             if (MidiUtil.receivers.containsKey(key)) {

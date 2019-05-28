@@ -28,6 +28,7 @@ public class MidiUtil {
 
         Sequencer sequencer = MidiSystem.getSequencer(false);
         sequencer.setSequence(MidiSystem.getSequence(file));
+        sequencer.addMetaEventListener(receiver);
         sequencer.open();
 
         receiver.setSequencer(sequencer);
