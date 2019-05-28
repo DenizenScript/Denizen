@@ -1759,6 +1759,11 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public boolean getDefaultDebugMode() {
         return Settings.defaultDebugMode();
     }
+
+    @Override
+    public boolean canWriteToFile(File f) {
+        return Utilities.isSafeFile(f);
+    }
 }
 
 

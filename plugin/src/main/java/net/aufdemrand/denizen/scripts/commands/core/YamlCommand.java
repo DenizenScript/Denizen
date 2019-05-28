@@ -344,12 +344,12 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                         }
                         File fileObj = new File(DenizenAPI.getCurrentInstance().
                                 getDataFolder().getAbsolutePath() + "/" + filename.asString());
-                        fileObj.getParentFile().mkdirs();
                         if (!Utilities.isSafeFile(fileObj)) {
                             dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                             scriptEntry.setFinished(true);
                             return;
                         }
+                        fileObj.getParentFile().mkdirs();
                         String outp = yamls.get(id).saveToString();
                         BukkitRunnable saveRunnable = new BukkitRunnable() {
                             @Override
