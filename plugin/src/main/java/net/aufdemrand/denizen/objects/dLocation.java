@@ -692,7 +692,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dLocation
         // @description
         // Returns the location to the left of this location based on pitch and yaw. Optionally specify a number of blocks to go left.
-        // This is equivalent to <@link tag l@location.forward> with a +90 degree rotation to the yaw.
+        // This is equivalent to <@link tag l@location.forward> with a +90 degree rotation to the yaw and the pitch set to 0.
         // -->
         if (attribute.startsWith("left")) {
             Location loc = this.clone();
@@ -707,7 +707,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // @returns dLocation
         // @description
         // Returns the location to the right of this location based on pitch and yaw. Optionally specify a number of blocks to go right.
-        // This is equivalent to <@link tag l@location.forward> with a -90 degree rotation to the yaw.
+        // This is equivalent to <@link tag l@location.forward> with a -90 degree rotation to the yaw and the pitch set to 0.
         // -->
         if (attribute.startsWith("right")) {
             Location loc = this.clone();
