@@ -1109,6 +1109,22 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <cu@cuboid.volume>
+        // @returns Element(Number)
+        // @description
+        // Returns the volume of the cuboid.
+        // Effectively equivalent to: (size.x * size.y * size.z).
+        // -->
+        registerTag("volume", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                LocationPair pair = ((dCuboid) object).pairs.get(0);
+                Location base = pair.high.clone().subtract(pair.low.clone()).add(1, 1, 1);
+                return new Element(base.getX() * base.getY() * base.getZ()).getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <cu@cuboid.size>
         // @returns dLocation
         // @description
