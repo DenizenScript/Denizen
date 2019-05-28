@@ -4313,7 +4313,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
         // @Short Edits a YAML configuration file.
         // @Group core
@@ -4364,9 +4364,13 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Usage
         // Use to modify a YAML file similarly to a flag.
         // - yaml id:myfile set my.key[2]:hello
+        //
+        // @Usage
+        // Use to modify a copy the contents of one YAML key to a new owning key.
+        // - yaml id:myfile copykey:my.first.key my.new.key
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

@@ -45,7 +45,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         return yamls.get(id.toUpperCase());
     }
 
-    public enum Action {LOAD, LOADTEXT, UNLOAD, CREATE, WRITE, SAVE, SET}
+    public enum Action {LOAD, LOADTEXT, UNLOAD, CREATE, WRITE, SAVE, SET, COPYKEY}
 
     public enum YAML_Action {
         SET_VALUE, INCREASE, DECREASE, MULTIPLY,
@@ -80,6 +80,12 @@ public class YamlCommand extends AbstractCommand implements Holdable {
             else if (!scriptEntry.hasObject("action") &&
                     arg.matches("SET")) {
                 scriptEntry.addObject("action", new Element("SET"));
+                isSet = true;
+            }
+            else if (!scriptEntry.hasObject("action") &&
+                    arg.matchesPrefix("COPYKEY")) {
+                scriptEntry.addObject("action", new Element("COPYKEY"));
+                scriptEntry.addObject("key", arg.asElement());
                 isSet = true;
             }
             else if (!scriptEntry.hasObject("action") &&
@@ -395,6 +401,15 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 }
                 break;
 
+            case COPYKEY:
+                if (yamls.containsKey(id)) {
+                    YamlConfiguration yaml = yamls.get(id);
+                    YamlConfiguration sourceSection = yaml.getConfigurationSection(key.asString());
+                    YamlConfiguration newSection = copySection(sourceSection);
+                    yaml.set(value.toString(), newSection);
+                }
+                break;
+
             case SET:
                 if (yamls.containsKey(id)) {
                     if (yaml_action == null || key == null || value == null) {
@@ -506,6 +521,18 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 break;
         }
 
+    }
+
+    public YamlConfiguration copySection(YamlConfiguration section) {
+        YamlConfiguration newSection = new YamlConfiguration();
+        for (StringHolder key : section.getKeys(false)) {
+            Object obj = section.get(key.str);
+            if (obj instanceof YamlConfiguration) {
+                obj = copySection((YamlConfiguration) obj);
+            }
+            newSection.set(key.str, obj);
+        }
+        return newSection;
     }
 
     public String Get(YamlConfiguration yaml, int index, String key, String def) {
