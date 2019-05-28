@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
+import net.aufdemrand.denizen.utilities.nbt.CustomNBT;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class TakeCommand extends AbstractCommand {
 
-    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME}
+    private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
@@ -44,6 +45,12 @@ public class TakeCommand extends AbstractCommand {
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.BYDISPLAY);
                 scriptEntry.addObject("displayname", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("items")
+                    && arg.matchesPrefix("nbt")
+                    && !scriptEntry.hasObject("type")) {
+                scriptEntry.addObject("type", Type.NBT);
+                scriptEntry.addObject("nbt_key", arg.asElement());
             }
             else if (!scriptEntry.hasObject("type")
                     && !scriptEntry.hasObject("items")
@@ -112,6 +119,7 @@ public class TakeCommand extends AbstractCommand {
         dItem scriptitem = scriptEntry.getdObject("scriptitem");
         Element slot = scriptEntry.getElement("slot");
         dList titleAuthor = scriptEntry.getdObject("cover");
+        Element nbtKey = scriptEntry.getElement("nbt_key");
         Type type = (Type) scriptEntry.getObject("type");
 
         Object items_object = scriptEntry.getObject("items");
@@ -122,26 +130,25 @@ public class TakeCommand extends AbstractCommand {
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-
-            dB.report(scriptEntry, getName(),
-                    aH.debugObj("Type", type.name())
+            dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
                             + qty.debug()
                             + (inventory != null ? inventory.debug() : "")
                             + (displayname != null ? displayname.debug() : "")
                             + (scriptitem != null ? scriptitem.debug() : "")
                             + aH.debugObj("Items", items)
                             + (slot != null ? slot.debug() : "")
+                            + (nbtKey != null ? nbtKey.debug() : "")
                             + (titleAuthor != null ? titleAuthor.debug() : ""));
-
         }
 
         switch (type) {
 
-            case INVENTORY:
+            case INVENTORY: {
                 inventory.clear();
                 break;
+            }
 
-            case ITEMINHAND:
+            case ITEMINHAND: {
                 int inHandAmt = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = (int) qty.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
@@ -164,8 +171,9 @@ public class TakeCommand extends AbstractCommand {
                     }
                 }
                 break;
+            }
 
-            case MONEY:
+            case MONEY: {
                 if (Depends.economy != null) {
                     Depends.economy.withdrawPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer(), qty.asDouble());
                 }
@@ -173,8 +181,9 @@ public class TakeCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");
                 }
                 break;
+            }
 
-            case ITEM:
+            case ITEM: {
                 for (dItem item : items) {
                     ItemStack is = item.getItemStack();
                     is.setAmount(qty.asInt());
@@ -186,8 +195,9 @@ public class TakeCommand extends AbstractCommand {
                     }
                 }
                 break;
+            }
 
-            case BYDISPLAY:
+            case BYDISPLAY: {
                 int found_items = 0;
                 if (displayname == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Must specify a displayname!");
@@ -208,8 +218,31 @@ public class TakeCommand extends AbstractCommand {
                     }
                 }
                 break;
+            }
 
-            case SCRIPTNAME:
+            case NBT: {
+                int found_items = 0;
+                if (nbtKey == null) {
+                    dB.echoError(scriptEntry.getResidingQueue(), "Must specify an NBT key!");
+                    return;
+                }
+                for (ItemStack it : inventory.getContents()) {
+                    if (found_items < qty.asInt() && it != null && CustomNBT.hasCustomNBT(it, nbtKey.asString(), CustomNBT.KEY_DENIZEN)) {
+                        int amt = it.getAmount();
+                        if (found_items + it.getAmount() <= qty.asInt()) {
+                            inventory.getInventory().removeItem(it);
+                        }
+                        else {
+                            it.setAmount(it.getAmount() - (qty.asInt() - found_items));
+                            break;
+                        }
+                        found_items += amt;
+                    }
+                }
+                break;
+            }
+
+            case SCRIPTNAME: {
                 if (scriptitem == null || scriptitem.getScriptName() == null) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Must specify a valid script name!");
                     return;
@@ -232,8 +265,9 @@ public class TakeCommand extends AbstractCommand {
                     }
                 }
                 break;
+            }
 
-            case SLOT:
+            case SLOT: {
                 int slotId = SlotHelper.nameToIndex(slot.asString());
                 if (slotId == -1) {
                     dB.echoError(scriptEntry.getResidingQueue(), "The input '" + slot.asString() + "' is not a valid slot!");
@@ -241,13 +275,14 @@ public class TakeCommand extends AbstractCommand {
                 }
                 inventory.setSlots(slotId, new ItemStack(Material.AIR));
                 break;
+            }
 
-            case BYCOVER:
+            case BYCOVER: {
                 inventory.removeBook(titleAuthor.get(0),
                         titleAuthor.size() > 1 ? titleAuthor.get(1) : null,
                         qty.asInt());
                 break;
-
+            }
         }
     }
 }
