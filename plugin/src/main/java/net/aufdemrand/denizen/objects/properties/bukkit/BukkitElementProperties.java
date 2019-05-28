@@ -13,6 +13,9 @@ import net.aufdemrand.denizencore.scripts.ScriptRegistry;
 import net.aufdemrand.denizencore.tags.Attribute;
 import org.bukkit.ChatColor;
 
+import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
+
 public class BukkitElementProperties implements Property {
 
     public static boolean describes(dObject element) {
@@ -37,7 +40,8 @@ public class BukkitElementProperties implements Property {
             "aschunk", "as_chunk", "ascolor", "as_color", "ascuboid", "as_cuboid", "asentity", "as_entity",
             "asinventory", "as_inventory", "asitem", "as_item", "aslocation", "as_location", "asmaterial",
             "as_material", "asnpc", "as_npc", "asplayer", "as_player", "asworld", "as_world", "asplugin",
-            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash"
+            "as_plugin", "last_color", "format", "strip_color", "parse_color", "to_itemscript_hash",
+            "to_secret_colors", "from_secret_colors"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -305,13 +309,48 @@ public class BukkitElementProperties implements Property {
 
         // <--[tag]
         // @attribute <el@element.to_itemscript_hash>
-        // @returns Element(Number)
+        // @returns Element
         // @group conversion
         // @description
         // Shortens the element down to an itemscript hash ID, made of invisible color codes.
         // -->
         if (attribute.startsWith("to_itemscript_hash")) {
             return new Element(ItemScriptHelper.createItemScriptID(element.asString()))
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.to_secret_colors>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Hides the element's text in invisible color codes.
+        // Inverts <@link tag el@element.from_secret_colors>.
+        // -->
+        if (attribute.startsWith("to_secret_colors")) {
+            String text = element.asString();
+            byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+            String hex = DatatypeConverter.printHexBinary(bytes);
+            StringBuilder colors = new StringBuilder(text.length() * 2);
+            for (int i = 0; i < hex.length(); i++) {
+                colors.append(ChatColor.COLOR_CHAR).append(hex.charAt(i));
+            }
+            return new Element(colors.toString())
+                    .getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <el@element.from_secret_colors>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Un-hides the element's text from invisible color codes back to normal text.
+        // Inverts <@link tag el@element.to_secret_colors>.
+        // -->
+        if (attribute.startsWith("from_secret_colors")) {
+            String text = element.asString().replace(String.valueOf(ChatColor.COLOR_CHAR), "");
+            byte[] bytes = DatatypeConverter.parseHexBinary(text);
+            return new Element(new String(bytes, StandardCharsets.UTF_8))
                     .getAttribute(attribute.fulfill(1));
         }
 
