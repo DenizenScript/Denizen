@@ -36,9 +36,11 @@ public abstract class ProfileEditor {
     public void setPlayerSkin(Player player, String name) {
         PlayerProfile profile = getFakeProfile(player);
         PlayerProfile skinProfile = NMSHandler.getInstance().fillPlayerProfile(new PlayerProfile(name, null));
-        profile.setTexture(skinProfile.getTexture());
-        profile.setTextureSignature(skinProfile.getTextureSignature());
-        updatePlayer(player, true);
+        if (skinProfile.getTexture() != null) {
+            profile.setTexture(skinProfile.getTexture());
+            profile.setTextureSignature(skinProfile.getTextureSignature());
+            updatePlayer(player, true);
+        }
     }
 
     public void setPlayerSkinBlob(Player player, String blob) {
