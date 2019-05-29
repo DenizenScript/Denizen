@@ -10,10 +10,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Hanging;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -415,6 +412,9 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
         }
         else if (comparedto.equals("vehicle")) {
             return bEntity instanceof Vehicle;
+        }
+        else if (comparedto.equals("fish")) {
+            return bEntity instanceof Fish;
         }
         else if (comparedto.equals("projectile")) {
             return bEntity instanceof Projectile;
