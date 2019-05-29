@@ -19,6 +19,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -37,6 +38,8 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
     // player (un)equips [helmet/chestplate/leggings/boots]
     //
     // @Regex ^on player (un)?equips [^\s]+$
+    //
+    // @Warning This event is unstable and not guaranteed to function correctly at all.
     //
     // @Triggers when a player (un)equips armor.
     //
@@ -78,6 +81,16 @@ public class PlayerEquipsArmorScriptEvent extends BukkitScriptEvent implements L
         }
 
         return true;
+    }
+
+    @Override
+    public void init() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
+    }
+
+    @Override
+    public void destroy() {
+        HandlerList.unregisterAll(this);
     }
 
     @Override
