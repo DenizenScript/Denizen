@@ -24,8 +24,8 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <--[event]
     // @Events
     // player clicks block
-    // player (<click type>) clicks (<material>) (with <item>) (using hand/off_hand/either_hand)
-    // player (<click type>) clicks block (with <item>) (using hand/off_hand/either_hand)
+    // player (right/left) clicks (<material>) (with <item>) (using hand/off_hand/either_hand)
+    // player (right/left) clicks block (with <item>) (using hand/off_hand/either_hand)
     //
     // @Cancellable true
     //
@@ -38,7 +38,7 @@ public class PlayerClicksBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.item> returns the dItem the player is clicking with.
     // <context.location> returns the dLocation the player is clicking on.
     // <context.relative> returns a dLocation of the air block in front of the clicked block.
-    // <context.click_type> returns an Element of the click type.
+    // <context.click_type> returns an Element of the Spigot API click type <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/Action.html>.
     // <context.hand> returns an Element of the used hand.
     //
     // -->
