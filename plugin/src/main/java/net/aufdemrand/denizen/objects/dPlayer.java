@@ -2397,6 +2397,34 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
 
         // <--[mechanism]
         // @object dPlayer
+        // @name window_property
+        // @input Element
+        // @description
+        // Sets various properties of a window the player has open, such as the open page in a lectern.
+        // Input is of the form PROPERTY,VALUE where the value is a number.
+        // Note that any adjusted window properties are entirely clientside.
+        // Valid properties: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/inventory/InventoryView.Property.html>
+        // -->
+        if (mechanism.matches("window_property")) {
+            String[] split = mechanism.getValue().asString().split(",", 2);
+            if (split.length != 2) {
+                dB.echoError("Invalid input! Must be in the form PROPERTY,VALUE");
+            }
+            else {
+                try {
+                    getPlayerEntity().setWindowProperty(InventoryView.Property.valueOf(split[0].toUpperCase()), Integer.parseInt(split[1]));
+                }
+                catch (NumberFormatException e) {
+                    dB.echoError("Input value must be a number!");
+                }
+                catch (IllegalArgumentException e) {
+                    dB.echoError("Must specify a valid window property!");
+                }
+            }
+        }
+
+        // <--[mechanism]
+        // @object dPlayer
         // @name item_on_cursor
         // @input dItem
         // @description
