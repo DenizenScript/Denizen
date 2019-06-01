@@ -49,7 +49,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
     public enum YAML_Action {
         SET_VALUE, INCREASE, DECREASE, MULTIPLY,
-        DIVIDE, INSERT, REMOVE, SPLIT, DELETE
+        DIVIDE, INSERT, REMOVE, SPLIT, DELETE, SPLIT_NEW
     }
 
     @Override
@@ -166,6 +166,9 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 }
                 else if (flagArgs[1].equals("||") || flagArgs[1].equals("|")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.SPLIT);
+                }
+                else if (flagArgs[1].equals("!|")) {
+                    scriptEntry.addObject("yaml_action", YAML_Action.SPLIT_NEW);
                 }
                 else if (flagArgs[1].equals("++") || flagArgs[1].equals("+")) {
                     scriptEntry.addObject("yaml_action", YAML_Action.INCREASE);
@@ -494,6 +497,10 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                                 yaml.set(keyStr, list);
                                 break;
                             }
+                            break;
+                        }
+                        case SPLIT_NEW: {
+                            yaml.set(keyStr, new ArrayList<>(dList.valueOf(valueStr)));
                             break;
                         }
                         case SPLIT: {
