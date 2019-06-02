@@ -4313,7 +4313,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Yaml
-        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+        // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file> (as_json)]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
         // @Required 2
         // @Short Edits a YAML configuration file.
         // @Group core
@@ -4326,6 +4326,8 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // When loading a script, optionally add 'fix_formatting' to run the file through
         // Denizen's built in script preparser to correct common YAML errors,
         // such as tabs instead of spaces or comments inside braced blocks.
+        // When saving a file, optionally add 'as_json' to save the file as a single-line json string.
+        // Saving a file as json is useful when you care more about disk space than human readability.
         // Use holdable syntax ("- ~yaml load:...") with load or savefile actions to avoid locking up the server during file IO.
         //
         // For loading and saving, the starting path is within 'plugins/Denizen'.
@@ -4370,7 +4372,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // - yaml id:myfile copykey:my.first.key my.new.key
         // -->
         registerCoreMember(YamlCommand.class,
-                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
+                "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file> (as_json)]/[copykey:<source key> <target key>]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
 
         // <--[command]
         // @Name Zap

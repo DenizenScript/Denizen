@@ -119,6 +119,10 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                     arg.matches("fix_formatting")) {
                 scriptEntry.addObject("fix_formatting", new Element("true"));
             }
+            else if (!scriptEntry.hasObject("as_json") &&
+                    arg.matches("as_json")) {
+                scriptEntry.addObject("as_json", new Element("true"));
+            }
 
             // Check for key:value/action
             else if (isSet &&
@@ -211,6 +215,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
         scriptEntry.defaultObject("value", new Element(""));
         scriptEntry.defaultObject("fix_formatting", new Element("false"));
+        scriptEntry.defaultObject("as_json", new Element("false"));
     }
 
 
@@ -226,6 +231,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         Element actionElement = scriptEntry.getElement("action");
         Element idElement = scriptEntry.getElement("id");
         Element fixFormatting = scriptEntry.getElement("fix_formatting");
+        Element asJson = scriptEntry.getElement("as_json");
 
         YamlConfiguration yamlConfiguration;
 
@@ -240,7 +246,8 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                             + (value != null ? value.debug() : "")
                             + (split != null ? split.debug() : "")
                             + (rawText != null ? rawText.debug() : "")
-                            + fixFormatting.debug());
+                            + fixFormatting.debug()
+                            + asJson.debug());
 
         }
 
@@ -353,7 +360,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                             return;
                         }
                         fileObj.getParentFile().mkdirs();
-                        String outp = yamls.get(id).saveToString();
+                        String outp = asJson.asBoolean() ? new JSONObject(yamls.get(id).getMap()).toString() : yamls.get(id).saveToString();
                         BukkitRunnable saveRunnable = new BukkitRunnable() {
                             @Override
                             public void run() {
