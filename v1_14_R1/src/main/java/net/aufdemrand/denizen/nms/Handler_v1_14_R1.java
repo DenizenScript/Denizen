@@ -14,10 +14,12 @@ import net.aufdemrand.denizen.nms.impl.packets.handlers.DenizenPacketListener_v1
 import net.aufdemrand.denizen.nms.interfaces.*;
 import net.aufdemrand.denizen.nms.interfaces.packets.PacketHandler;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
+import net.aufdemrand.denizen.nms.util.ReflectionHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
+import net.minecraft.server.v1_14_R1.Entity;
 import net.minecraft.server.v1_14_R1.IInventory;
 import net.minecraft.server.v1_14_R1.INamableTileEntity;
 import net.minecraft.server.v1_14_R1.MinecraftServer;
@@ -74,7 +76,7 @@ public class Handler_v1_14_R1 extends NMSHandler {
 
     @Override
     public boolean isCorrectMappingsCode() {
-        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("c31c513e1fa6657aacbd4facd394c5b0");
+        return ((CraftMagicNumbers) CraftMagicNumbers.INSTANCE).getMappingsVersion().equals("df689a0f36ee29c2b2f456da8803f74d");
     }
 
     @Override
@@ -243,8 +245,9 @@ public class Handler_v1_14_R1 extends NMSHandler {
         return null;
     }
 
-    private static final Class MINECRAFT_INVENTORY;
-    private static final Field INVENTORY_TITLE;
+    public static final Class MINECRAFT_INVENTORY;
+    public static final Field INVENTORY_TITLE;
+    public static final Field ENTITY_BUKKITYENTITY = ReflectionHelper.getFields(Entity.class).get("bukkitEntity");
 
     static {
         Class minecraftInv = null;

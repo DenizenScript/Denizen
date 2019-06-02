@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.nms.impl.entities;
 
+import net.aufdemrand.denizen.nms.Handler_v1_14_R1;
+import net.aufdemrand.denizencore.utilities.debugging.dB;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,7 +25,12 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
 
     public EntityItemProjectile_v1_14_R1(CraftWorld craftWorld, Location location, org.bukkit.inventory.ItemStack itemStack) {
         super(EntityTypes.ITEM, craftWorld.getHandle());
-        bukkitEntity = new CraftItemProjectile_v1_14_R1((CraftServer) Bukkit.getServer(), this);
+        try {
+            Handler_v1_14_R1.ENTITY_BUKKITYENTITY.set(this, new CraftItemProjectile_v1_14_R1((CraftServer) Bukkit.getServer(), this));
+        }
+        catch (Exception ex) {
+            dB.echoError(ex);
+        }
         this.pickupDelay = Integer.MAX_VALUE;
         setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         //this.setSize(0.25F, 0.25F); as of 1.14, part of EntityTypes
@@ -48,7 +55,7 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
 
         AxisAlignedBB axisalignedbb = this.getBoundingBox().a(this.getMot()).g(1.0D);
         Iterator iterator = this.world.getEntities(this, axisalignedbb, (entityx) -> {
-            return !entityx.t() && entityx.isInteractable();
+            return !entityx.isAlive() && entityx.isInteractable();
         }).iterator();
 
         while (iterator.hasNext()) {
@@ -66,7 +73,7 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
         }
 
         MovingObjectPosition movingobjectposition = ProjectileHelper.a(this, axisalignedbb, (entity1) -> {
-            return !entity1.t() && entity1.isInteractable() && entity1 != this.c;
+            return !entity1.isAlive() && entity1.isInteractable() && entity1 != this.c;
         }, RayTrace.BlockCollisionOption.OUTLINE, true);
         if (this.c != null && this.aw-- <= 0) {
             this.c = null;
@@ -172,6 +179,6 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
 
     @Override
     public CraftItemProjectile_v1_14_R1 getBukkitEntity() {
-        return (CraftItemProjectile_v1_14_R1) bukkitEntity;
+        return (CraftItemProjectile_v1_14_R1) super.getBukkitEntity();
     }
 }
