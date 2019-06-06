@@ -231,6 +231,7 @@ public class ItemEnchantments implements Property {
         // @input dList
         // @description
         // Sets the item's enchantments.
+        // For a list of valid enchantment names, refer to <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html>
         // @tags
         // <i@item.enchantments>
         // <i@item.enchantments.levels>
