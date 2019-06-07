@@ -14,8 +14,6 @@ import java.util.*;
 
 /**
  * Creates, saves and loads scoreboards
- *
- * @author David Cernat
  */
 
 public class ScoreboardHelper {

@@ -5,8 +5,6 @@ import org.bukkit.event.HandlerList;
 
 /**
  * Bukkit event for when Denizen 'saves' are reloaded.
- *
- * @author Jeremy Schroeder
  */
 public class SavesReloadEvent extends Event {
 

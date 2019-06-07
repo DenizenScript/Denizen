@@ -13,8 +13,6 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 /**
  * <p>Sets a 'cooldown' period on a script. Can be per-player or globally.</p>
- *
- * @author Jeremy Schroeder
  */
 public class CooldownCommand extends AbstractCommand {
 

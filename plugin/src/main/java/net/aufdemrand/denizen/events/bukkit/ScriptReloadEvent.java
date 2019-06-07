@@ -6,8 +6,6 @@ import org.bukkit.event.HandlerList;
 /**
  * Bukkit event for when Denizen dScripts are reloaded. This fires
  * after scripts are reloaded.
- *
- * @author Jeremy Schroeder
  */
 public class ScriptReloadEvent extends Event {
 

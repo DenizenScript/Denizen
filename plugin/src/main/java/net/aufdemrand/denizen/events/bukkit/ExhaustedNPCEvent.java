@@ -9,8 +9,6 @@ import org.bukkit.event.HandlerList;
  * Bukkit event for when an NPC is exhausted. Exhausted NPCs cannot move
  * until their hunger level is below maxhunger, as tracked by the HungerTrait
  * provided by Denizen.
- *
- * @author Jeremy Schroeder
  */
 public class ExhaustedNPCEvent extends NPCEvent implements Cancellable {
 

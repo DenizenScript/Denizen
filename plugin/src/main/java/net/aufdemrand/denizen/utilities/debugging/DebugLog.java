@@ -5,13 +5,6 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.logging.*;
 
-/**
- * DebugLog
- * <p/>
- * Handles debug logs
- *
- * @author SpaceEmotion
- */
 public class DebugLog extends Logger {
     private final static DebugFormatter formatter = new DebugFormatter();
     private FileHandler handler;

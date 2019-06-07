@@ -22,7 +22,6 @@ import org.bukkit.event.Listener;
  * Sets a server or player/npc 'flag'. Flags can hold information to check against
  * with the FLAGGED requirement, or store important information.
  *
- * @author Jeremy Schroeder
  * @version 1.0
  */
 

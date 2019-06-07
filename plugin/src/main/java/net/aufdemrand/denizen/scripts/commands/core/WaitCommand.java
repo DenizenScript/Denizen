@@ -9,9 +9,6 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.Delayable;
 
-/**
- * @author aufdemrand
- */
 public class WaitCommand extends AbstractCommand {
 
     @Override

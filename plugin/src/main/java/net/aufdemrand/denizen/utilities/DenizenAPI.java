@@ -11,8 +11,6 @@ import java.util.Collection;
 
 /**
  * Provides some static methods for working with Denizen and Denizen-enabled NPCs
- *
- * @author aufdemrand
  */
 public class DenizenAPI {
 
