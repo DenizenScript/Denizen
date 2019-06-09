@@ -88,6 +88,10 @@ public class InvisibleTrait extends Trait implements Listener, Toggleable {
         }
     }
 
+    public boolean isInvisible() {
+        return invisible;
+    }
+
     @Override
     public void onSpawn() {
         if (invisible) {

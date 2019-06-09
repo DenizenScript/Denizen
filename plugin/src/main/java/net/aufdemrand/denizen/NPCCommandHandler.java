@@ -401,7 +401,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "stand",
             desc = "Makes the NPC stand.", modifiers = {"stand"},
-            min = 1, max = 3, permission = "denizen.npc.stand")
+            min = 1, max = 1, permission = "denizen.npc.stand")
     @Requirements(selected = true, ownership = true)
     public void standing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
 
@@ -470,7 +470,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "wakeup",
             desc = "Makes the NPC wake up.", modifiers = {"wakeup"},
-            min = 1, max = 3, permission = "denizen.npc.sleep")
+            min = 1, max = 1, permission = "denizen.npc.sleep")
     @Requirements(selected = true, ownership = true)
     public void wakingup(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(SleepingTrait.class)) {
@@ -549,7 +549,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "stopfishing",
             desc = "Makes the NPC stop fishing.", modifiers = {"stopfishing"},
-            min = 1, max = 3, permission = "denizen.npc.fish")
+            min = 1, max = 1, permission = "denizen.npc.fish")
     @Requirements(selected = true, ownership = true)
     public void stopFishing(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (!npc.hasTrait(FishingTrait.class)) {
@@ -574,7 +574,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "sneak",
             desc = "Makes the NPC crouch.", flags = "", modifiers = {"sneak", "crouch"},
-            min = 1, max = 3, permission = "denizen.npc.sneak")
+            min = 1, max = 1, permission = "denizen.npc.sneak")
     @Requirements(selected = true, ownership = true)
     public void sneaking(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (npc.getEntity().getType() != EntityType.PLAYER) {
@@ -604,7 +604,7 @@ public class NPCCommandHandler {
     @Command(
             aliases = {"npc"}, usage = "mirror",
             desc = "Makes the NPC mirror the skin of the player looking at it.", flags = "", modifiers = {"mirror"},
-            min = 1, max = 3, permission = "denizen.npc.mirror")
+            min = 1, max = 1, permission = "denizen.npc.mirror")
     @Requirements(selected = true, ownership = true)
     public void mirror(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
         if (npc.getEntity().getType() != EntityType.PLAYER) {
@@ -628,7 +628,32 @@ public class NPCCommandHandler {
             trait.enableMirror();
             Messaging.send(sender, npc.getName() + " is now mirroring player skins.");
         }
+    }
 
+    /*
+     * Invisible
+     */
+    @Command(
+            aliases = {"npc"}, usage = "invisible",
+            desc = "Turns the NPC invisible.", flags = "", modifiers = {"invisible"},
+            min = 1, max = 3, permission = "denizen.npc.invisible")
+    @Requirements(selected = true, ownership = true)
+    public void invisible(CommandContext args, CommandSender sender, NPC npc) throws CommandException {
+        if (!npc.hasTrait(InvisibleTrait.class)) {
+            npc.addTrait(InvisibleTrait.class);
+            npc.getTrait(InvisibleTrait.class).setInvisible(true);
+            Messaging.send(sender, npc.getName() + " is now invisible.");
+            return;
+        }
+        InvisibleTrait trait = npc.getTrait(InvisibleTrait.class);
+
+        trait.toggle();
+        if (trait.isInvisible()) {
+            Messaging.send(sender, npc.getName() + " is now invisible.");
+        }
+        else {
+            Messaging.send(sender, npc.getName() + " is no longer invisible.");
+        }
     }
 
     /*
