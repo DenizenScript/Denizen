@@ -3126,9 +3126,9 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         // <--[command]
         // @Name Reset
-        // @Syntax reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)
+        // @Syntax reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)
         // @Required 1
-        // @Short Resets various parts of Denizen's saves.yml, including a script's fails, finishes, or cooldowns.
+        // @Short Resets various parts of Denizen's saves.yml, including a script's cooldowns or general player saves.
         // @Group core
         //
         // @Description
@@ -3141,7 +3141,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // TODO: Document Command Details
         // -->
         registerCoreMember(ResetCommand.class,
-                "RESET", "reset (<player>|...) [fails/finishes/cooldown/saves/global_cooldown] (<script>)", 1);
+                "RESET", "reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)", 1);
 
 
         // <--[command]
