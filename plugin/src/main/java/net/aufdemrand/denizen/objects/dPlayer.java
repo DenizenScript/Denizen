@@ -2287,9 +2287,11 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // <--[tag]
             // @attribute <p@player.chat_prefix>
             // @returns Element
+            // @plugin Vault
             // @description
             // Returns the player's chat prefix.
             // NOTE: May work with offline players.
+            // Requires a Vault-compatible chat plugin.
             // @mechanism dPlayer.chat_prefix
             // -->
             if (attribute.startsWith("chat_prefix")) {
@@ -2303,9 +2305,11 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // <--[tag]
             // @attribute <p@player.chat_suffix>
             // @returns Element
+            // @plugin Vault
             // @description
             // Returns the player's chat suffix.
             // NOTE: May work with offline players.
+            // Requires a Vault-compatible chat plugin.
             // @mechanism dPlayer.chat_suffix
             // -->
             else if (attribute.startsWith("chat_suffix")) {
@@ -3485,8 +3489,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // @object dPlayer
             // @name chat_prefix
             // @input Element
+            // @plugin Vault
             // @description
             // Set the player's chat prefix.
+            // Requires a Vault-compatible chat plugin.
             // @tags
             // <p@player.chat_prefix>
             // -->
@@ -3498,8 +3504,10 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             // @object dPlayer
             // @name chat_suffix
             // @input Element
+            // @plugin Vault
             // @description
             // Set the player's chat suffix.
+            // Requires a Vault-compatible chat plugin.
             // @tags
             // <p@player.chat_suffix>
             // -->
