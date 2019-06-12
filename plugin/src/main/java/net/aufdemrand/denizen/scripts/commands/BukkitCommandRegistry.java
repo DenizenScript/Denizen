@@ -3201,7 +3201,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // If no speed or "instantly" argument are applied,
         // it assumes the default script speed that are configured.
         //
-        // Specifying context or definitions as argument
+        // Specifying definitions as argument
         // allows the transfer of definitions to the new queue.
         // Definitions are not carried over if not specified.
         // (See <@link command define>)
@@ -3219,11 +3219,11 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to run a new queue instant
-        // - run MyNewTask instantly context:4|20|true
+        // - run MyNewTask instantly def:4|20|true
         //
         // @Usage
         // Use to run a new queue with an attached player and npc with a definition
-        // - run MyNewTask context:friends player:p@bob npc:<player.selected_npc>
+        // - run MyNewTask def:friends player:p@bob npc:<player.selected_npc>
         //
         // @Usage
         // Use to run a new queue instant with the same attached player
