@@ -34,7 +34,7 @@ public class CommandScriptContainer extends ScriptContainer {
     // on the command.
     //
     // Note that existing names or aliases from other plugins will be overridden.
-    // If you want to run a script at the same time as an existing command, see <@link example on command event tutorial>.
+    // If you want to run a script at the same time as an existing command, see <@link event on command>.
     //
     // The following is the format for the container.
     //

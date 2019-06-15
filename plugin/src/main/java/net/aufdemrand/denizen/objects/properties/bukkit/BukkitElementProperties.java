@@ -262,7 +262,6 @@ public class BukkitElementProperties implements Property {
         // @group text manipulation
         // @description
         // Returns the text re-formatted according to a format script.
-        // See <@link example using format scripts>.
         // -->
         if (attribute.startsWith("format")
                 && attribute.hasContext(1)) {
