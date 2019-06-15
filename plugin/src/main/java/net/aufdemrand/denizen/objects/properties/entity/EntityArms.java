@@ -82,7 +82,7 @@ public class EntityArms implements Property {
         // If the entity is an armor stand, returns whether the armor stand has arms.
         // -->
         if (attribute.startsWith("arms")) {
-            return new Element(((ArmorStand) dentity.getBukkitEntity()).hasGravity())
+            return new Element(((ArmorStand) dentity.getBukkitEntity()).hasArms())
                     .getAttribute(attribute.fulfill(1));
         }
 
