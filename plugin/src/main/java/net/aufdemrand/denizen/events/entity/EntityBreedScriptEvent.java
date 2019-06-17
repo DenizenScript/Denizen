@@ -94,16 +94,16 @@ public class EntityBreedScriptEvent extends BukkitScriptEvent implements Listene
     @Override
     public dObject getContext(String name) {
         if (name.equals("child")) {
-            return entity;
+            return entity.getDenizenObject();
         }
         else if (name.equals("breeder")) {
-            return breeder;
+            return breeder.getDenizenObject();
         }
         else if (name.equals("father")) {
-            return father;
+            return father.getDenizenObject();
         }
         else if (name.equals("mother")) {
-            return mother;
+            return mother.getDenizenObject();
         }
         else if (name.equals("item")) {
             return item;
