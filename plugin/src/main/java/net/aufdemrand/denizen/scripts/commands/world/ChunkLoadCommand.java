@@ -1,6 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
 import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dChunk;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -98,7 +100,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
         }
 
         Chunk chunk = chunkloc.getChunk();
-        String chunkString = chunk.getX() + ", " + chunk.getZ();
+        String chunkString = chunk.getX() + ", " + chunk.getZ() + "," + chunkloc.getWorldName();
 
         switch (Action.valueOf(action.asString())) {
             case ADD:
@@ -112,10 +114,27 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 if (!chunk.isLoaded()) {
                     chunk.load();
                 }
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                    chunk.setForceLoaded(true);
+                    if (length.getSeconds() > 0) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(), new Runnable() {
+                            @Override
+                            public void run() {
+                                if (chunkDelays.containsKey(chunkString) && chunkDelays.get(chunkString) <= System.currentTimeMillis()) {
+                                    chunk.setForceLoaded(false);
+                                    chunkDelays.remove(chunkString);
+                                }
+                            }
+                        }, length.getTicks() + 20);
+                    }
+                }
                 break;
             case REMOVE:
                 if (chunkDelays.containsKey(chunkString)) {
                     chunkDelays.remove(chunkString);
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                        chunk.setForceLoaded(false);
+                    }
                     dB.echoDebug(scriptEntry, "...allowing unloading of chunk " + chunk.getX() + ", " + chunk.getZ());
                 }
                 else {
@@ -124,10 +143,15 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
                 break;
             case REMOVEALL:
                 dB.echoDebug(scriptEntry, "...allowing unloading of all stored chunks");
+                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
+                    for (String chunkStr : chunkDelays.keySet()) {
+                        dChunk loopChunk = dChunk.valueOf(chunkStr);
+                        loopChunk.getChunk().setForceLoaded(false);
+                    }
+                }
                 chunkDelays.clear();
                 break;
         }
-
     }
 
     // Map of chunks with delays
@@ -135,7 +159,7 @@ public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
     @EventHandler
     public void stopUnload(ChunkUnloadEvent e) {
-        if (!(e instanceof Cancellable)) { // TODO: Not cancellable in 1.14
+        if (!(e instanceof Cancellable)) { // Not cancellable in 1.14
             return;
         }
         String chunkString = e.getChunk().getX() + ", " + e.getChunk().getZ();
