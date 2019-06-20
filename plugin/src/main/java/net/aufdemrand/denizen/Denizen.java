@@ -1774,8 +1774,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     public static ChatColor[] DEBUG_FRIENDLY_COLORS = new ChatColor[] {
             ChatColor.AQUA, ChatColor.BLUE, ChatColor.DARK_AQUA, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN,
-            ChatColor.DARK_PURPLE, ChatColor.DARK_RED, ChatColor.GOLD, ChatColor.GRAY, ChatColor.GREEN,
-            ChatColor.LIGHT_PURPLE, ChatColor.RED, ChatColor.WHITE, ChatColor.YELLOW
+            ChatColor.DARK_PURPLE, ChatColor.GOLD, ChatColor.GRAY, ChatColor.GREEN,
+            ChatColor.LIGHT_PURPLE, ChatColor.WHITE, ChatColor.YELLOW
     };
 
     @Override
