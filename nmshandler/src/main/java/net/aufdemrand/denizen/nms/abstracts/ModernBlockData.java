@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.nms.abstracts;
 
 import net.aufdemrand.denizen.nms.NMSHandler;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -8,6 +9,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.type.Dispenser;
+import org.bukkit.entity.Player;
 
 /**
  * Helper for 1.13+ block data.
@@ -75,5 +77,9 @@ public class ModernBlockData {
         block.getState().update(true, true);
         NMSHandler.getInstance().getChunkHelper().restoreServerThread(block.getWorld());
         return true;
+    }
+
+    public void sendFakeChangeTo(Player player, Location location) {
+        player.sendBlockChange(location, data);
     }
 }
