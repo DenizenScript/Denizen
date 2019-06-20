@@ -149,11 +149,7 @@ public class dB {
                             + trimMessage(report);
 
                     ((BukkitScriptEntryData) ((ScriptEntry) caller).entryData).getPlayer().getPlayerEntity()
-                            .sendRawMessage(message.replace("<Y>", ChatColor.YELLOW.toString())
-                                    .replace("<G>", ChatColor.DARK_GRAY.toString())
-                                    .replace("<A>", ChatColor.AQUA.toString())
-                                    .replace("<R>", ChatColor.DARK_RED.toString())
-                                    .replace("<W>", ChatColor.WHITE.toString()));
+                            .sendRawMessage(cleanTextForDebugOutput(message));
                 }
             }
         }
@@ -555,15 +551,20 @@ public class dB {
         finalOutputDebugText(message, caller, true);
     }
 
-    static void finalOutputDebugText(String message, Debuggable caller, boolean reformat) {
-        // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
-        // than having a bunch of ChatColor.XXXX
-        message = TagManager.cleanOutputFully(message
+    public static String cleanTextForDebugOutput(String message) {
+        return TagManager.cleanOutputFully(message
                 .replace("<Y>", ChatColor.YELLOW.toString())
+                .replace("<O>", ChatColor.GOLD.toString()) // 'orange'
                 .replace("<G>", ChatColor.DARK_GRAY.toString())
                 .replace("<A>", ChatColor.AQUA.toString())
                 .replace("<R>", ChatColor.DARK_RED.toString())
                 .replace("<W>", ChatColor.WHITE.toString()));
+    }
+
+    static void finalOutputDebugText(String message, Debuggable caller, boolean reformat) {
+        // These colors are used a lot in the debugging of commands/etc, so having a few shortcuts is nicer
+        // than having a bunch of ChatColor.XXXX
+        message = cleanTextForDebugOutput(message);
         ConsoleSender.sendMessage(message, reformat);
         Consumer<String> additional = getDebugSender(caller);
         if (additional != null) {

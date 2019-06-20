@@ -156,7 +156,7 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public ScriptQueue runCommandScript(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).addEntries(getBaseEntries(
+        ScriptQueue queue = new InstantQueue(getName()).addEntries(getBaseEntries(
                 new BukkitScriptEntryData(player, npc)));
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
@@ -173,7 +173,7 @@ public class CommandScriptContainer extends ScriptContainer {
         long id = DetermineCommand.getNewId();
         ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
+        ScriptQueue queue = new InstantQueue(getName()).setReqId(id).addEntries(entries);
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;
@@ -189,7 +189,7 @@ public class CommandScriptContainer extends ScriptContainer {
         long id = DetermineCommand.getNewId();
         ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(getName())).setReqId(id).addEntries(entries);
+        ScriptQueue queue = new InstantQueue(getName()).setReqId(id).addEntries(entries);
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;

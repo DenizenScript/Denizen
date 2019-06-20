@@ -219,7 +219,7 @@ public class InventoryScriptContainer extends ScriptContainer {
                 if (!entries.isEmpty()) {
                     long id = DetermineCommand.getNewId();
                     ScriptBuilder.addObjectToEntries(entries, "reqid", id);
-                    InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("INV_SCRIPT_ITEM_PROC"));
+                    InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
                     queue.addEntries(entries);
                     queue.setReqId(id);
                     if (contains("DEFINITIONS")) {

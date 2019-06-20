@@ -213,7 +213,7 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
                     if ((locations != null && locations.size() == index) || (location_list != null && location_list.size() == index)) {
                         if (script != null) {
                             List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
-                            ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                            ScriptQueue queue = new InstantQueue(script.getContainer().getName())
                                     .addEntries(entries);
                             queue.start();
                         }

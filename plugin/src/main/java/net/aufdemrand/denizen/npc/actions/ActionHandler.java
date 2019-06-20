@@ -73,7 +73,7 @@ public class ActionHandler {
                 "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
         // Add entries and context to the queue
-        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(assignment.getName())).addEntries(script);
+        ScriptQueue queue = new InstantQueue(assignment.getName()).addEntries(script);
 
         OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
         oecs.contexts = context;

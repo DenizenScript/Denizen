@@ -272,7 +272,7 @@ public class PushCommand extends AbstractCommand implements Holdable {
                     if (script != null) {
 
                         List<ScriptEntry> entries = script.getContainer().getBaseEntries(scriptEntry.entryData.clone());
-                        ScriptQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(script.getContainer().getName()))
+                        ScriptQueue queue = new InstantQueue(script.getContainer().getName())
                                 .addEntries(entries);
                         if (lastEntity.getLocation() != null) {
                             queue.addDefinition("location", lastEntity.getLocation().identify());

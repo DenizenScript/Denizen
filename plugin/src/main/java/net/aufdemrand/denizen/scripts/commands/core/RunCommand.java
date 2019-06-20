@@ -145,32 +145,32 @@ public class RunCommand extends AbstractCommand implements Holdable {
 
         // Get the 'id' if specified
         String id = (scriptEntry.hasObject("id") ?
-                (scriptEntry.getElement("id")).asString() : ScriptQueue.getNextId(script.getContainer().getName()));
+                "FORCE:" + (scriptEntry.getElement("id")).asString() : script.getContainer().getName());
 
         // Build the queue
         ScriptQueue queue;
         if (scriptEntry.hasObject("instant")) {
-            queue = InstantQueue.getQueue(id).addEntries(entries);
+            queue = new InstantQueue(id).addEntries(entries);
         }
         else {
 
             if (scriptEntry.hasObject("speed")) {
                 Duration speed = scriptEntry.getdObject("speed");
-                queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(speed.getTicks());
+                queue = ((TimedQueue) new TimedQueue(id).addEntries(entries)).setSpeed(speed.getTicks());
             }
             else {
                 // Check speed of the script if a TimedQueue -- if identified, use the speed from the script.
                 if (script != null && script.getContainer().contains("SPEED")) {
                     long ticks = Duration.valueOf(script.getContainer().getString("SPEED", "0")).getTicks();
                     if (ticks > 0) {
-                        queue = ((TimedQueue) TimedQueue.getQueue(id).addEntries(entries)).setSpeed(ticks);
+                        queue = ((TimedQueue) new TimedQueue(id).addEntries(entries)).setSpeed(ticks);
                     }
                     else {
-                        queue = InstantQueue.getQueue(id).addEntries(entries);
+                        queue = new InstantQueue(id).addEntries(entries);
                     }
                 }
                 else {
-                    queue = TimedQueue.getQueue(id).addEntries(entries);
+                    queue = new TimedQueue(id).addEntries(entries);
                 }
             }
 

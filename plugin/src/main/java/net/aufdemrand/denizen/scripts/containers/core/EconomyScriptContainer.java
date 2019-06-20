@@ -107,7 +107,7 @@ public class EconomyScriptContainer extends ScriptContainer {
             List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new dPlayer(player), null), pathName);
             long id = DetermineCommand.getNewId();
             ScriptBuilder.addObjectToEntries(entries, "reqid", id);
-            InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId(backingScript.getName()));
+            InstantQueue queue = new InstantQueue(backingScript.getName());
             queue.addEntries(entries);
             queue.setReqId(id);
             queue.addDefinition("amount", new Element(amount));

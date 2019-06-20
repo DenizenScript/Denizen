@@ -71,6 +71,7 @@ import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
@@ -1272,7 +1273,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             }
 
             entries.add(entry);
-            InstantQueue queue = InstantQueue.getQueue(ScriptQueue.getNextId("EXCOMMAND"));
+            InstantQueue queue = new InstantQueue("EXCOMMAND");
             dNPC npc = null;
             if (Depends.citizens != null && Depends.citizens.getNPCSelector().getSelected(sender) != null) {
                 npc = new dNPC(Depends.citizens.getNPCSelector().getSelected(sender));
@@ -1438,7 +1439,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
-        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Queue '" + queue + "' Executing: " + execute);
+        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Queue '" + queue + ChatColor.DARK_GRAY + "' Executing: " + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }
 
@@ -1770,6 +1771,15 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
     public boolean canWriteToFile(File f) {
         return Utilities.canWriteToFile(f);
     }
+
+    public static ChatColor[] DEBUG_FRIENDLY_COLORS = new ChatColor[] {
+            ChatColor.AQUA, ChatColor.BLUE, ChatColor.DARK_AQUA, ChatColor.DARK_BLUE, ChatColor.DARK_GREEN,
+            ChatColor.DARK_PURPLE, ChatColor.DARK_RED, ChatColor.GOLD, ChatColor.GRAY, ChatColor.GREEN,
+            ChatColor.LIGHT_PURPLE, ChatColor.RED, ChatColor.WHITE, ChatColor.YELLOW
+    };
+
+    @Override
+    public String getRandomColor() {
+        return DEBUG_FRIENDLY_COLORS[CoreUtilities.getRandom().nextInt(DEBUG_FRIENDLY_COLORS.length)].toString();
+    }
 }
-
-
