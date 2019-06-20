@@ -1768,7 +1768,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
 
     @Override
     public boolean canWriteToFile(File f) {
-        return Utilities.isSafeFile(f);
+        return Utilities.canWriteToFile(f);
     }
 }
 

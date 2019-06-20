@@ -286,7 +286,7 @@ public class SchematicCommand extends AbstractCommand implements Holdable, Liste
                     set = schematics.get(name.asString().toUpperCase());
                     String directory = URLDecoder.decode(System.getProperty("user.dir"));
                     File f = new File(directory + "/plugins/Denizen/schematics/" + fname + ".schematic");
-                    if (!Utilities.isSafeFile(f)) {
+                    if (!Utilities.canWriteToFile(f)) {
                         dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                         return;
                     }

@@ -1575,7 +1575,7 @@ public class ServerTags {
                 return;
             }
             File file = new File(DenizenAPI.getCurrentInstance().getDataFolder(), mechanism.getValue().asString());
-            if (!Utilities.isSafeFile(file)) {
+            if (!Utilities.canWriteToFile(file)) {
                 dB.echoError("Cannot delete that file (unsafe path).");
                 return;
             }

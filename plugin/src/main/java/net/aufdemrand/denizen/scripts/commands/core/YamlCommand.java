@@ -347,7 +347,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                         }
                         File fileObj = new File(DenizenAPI.getCurrentInstance().
                                 getDataFolder().getAbsolutePath() + "/" + filename.asString());
-                        if (!Utilities.isSafeFile(fileObj)) {
+                        if (!Utilities.canWriteToFile(fileObj)) {
                             dB.echoError(scriptEntry.getResidingQueue(), "Cannot edit that file!");
                             scriptEntry.setFinished(true);
                             return;

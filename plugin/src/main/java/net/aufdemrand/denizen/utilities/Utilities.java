@@ -92,7 +92,7 @@ public class Utilities {
         }
     }
 
-    public static boolean isFileCanonicalStringSafe(String lown) {
+    public static boolean isFileCanonicalStringSafeToWrite(String lown) {
         if (lown.contains("denizen/config.yml")) {
             return false;
         }
@@ -102,18 +102,24 @@ public class Utilities {
         if (lown.endsWith(".jar") || lown.endsWith(".java")) {
             return false;
         }
+        if (lown.endsWith(".sh") || lown.endsWith(".bat")) {
+            return false;
+        }
         if (lown.endsWith("plugins/")) {
             return false;
         }
         return true;
     }
 
-    public static boolean isSafeFile(File f) {
+    public static boolean canWriteToFile(File f) {
         if (Settings.allowStupids()) {
             return true;
         }
         try {
             String lown = CoreUtilities.toLowerCase(f.getCanonicalPath()).replace('\\', '/');
+            if (lown.endsWith("/")) {
+                lown = lown.substring(0, lown.length() - 1);
+            }
             if (dB.verbose) {
                 dB.log("Checking file : " + lown);
             }
@@ -121,7 +127,7 @@ public class Utilities {
                     !f.getCanonicalPath().startsWith(new File(".").getCanonicalPath())) {
                 return false;
             }
-            return isFileCanonicalStringSafe(lown) && isFileCanonicalStringSafe(lown + "/");
+            return isFileCanonicalStringSafeToWrite(lown) && isFileCanonicalStringSafeToWrite(lown + "/");
         }
         catch (Exception ex) {
             dB.echoError(ex);

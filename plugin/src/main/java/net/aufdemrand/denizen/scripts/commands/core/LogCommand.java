@@ -77,7 +77,7 @@ public class LogCommand extends AbstractCommand {
         File file = new File(directory, fileName.asString());
 
         file.getParentFile().mkdirs();
-        if (!Utilities.isSafeFile(file)) {
+        if (!Utilities.canWriteToFile(file)) {
             dB.echoError(scriptEntry.getResidingQueue(), "Cannot log into that file!");
             return;
         }

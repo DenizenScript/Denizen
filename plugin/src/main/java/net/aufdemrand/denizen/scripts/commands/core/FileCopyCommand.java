@@ -83,7 +83,7 @@ public class FileCopyCommand extends AbstractCommand {
             return;
         }
 
-        if (!Utilities.isSafeFile(d)) {
+        if (!Utilities.canWriteToFile(d)) {
             dB.echoError(scriptEntry.getResidingQueue(), "Can't copy files to there!");
             scriptEntry.addObject("success", new Element("false"));
             return;
