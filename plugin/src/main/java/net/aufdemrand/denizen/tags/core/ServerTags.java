@@ -1498,6 +1498,16 @@ public class ServerTags {
         }
 
         // <--[tag]
+        // @attribute <server.debug_enabled>
+        // @returns Element(Boolean)
+        // @description
+        // Returns whether script debug is currently globally enabled on the server.
+        // -->
+        else if (attribute.startsWith("debug_enabled")) {
+            event.setReplaced(new Element(dB.showDebug).getAttribute(attribute.fulfill(1)));
+        }
+
+        // <--[tag]
         // @attribute <server.list_plugins_handling_event[<bukkit event>]>
         // @returns dList(dPlugin)
         // @description
