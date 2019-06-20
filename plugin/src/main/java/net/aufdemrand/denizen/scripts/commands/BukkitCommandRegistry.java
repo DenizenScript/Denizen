@@ -737,13 +737,15 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Name ChunkLoad
         // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
         // @Required 1
-        // @Short Keeps a chunk actively loaded and allowing NPC activity.
+        // @Short Keeps a chunk actively loaded and allowing activity.
         // @Group world
         //
         // @Description
-        // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.  This is
-        // persistent over server restarts. If no duration is specified it defaults to 0 (forever). While a chunk is
-        // loaded all normal activity such as crop growth and npc activity continues.
+        // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.
+        // This will not over server restarts.
+        // If no duration is specified it defaults to 0 (forever).
+        // While a chunk is loaded all normal activity such as crop growth and npc activity continues,
+        // other than activity that requires a nearby player.
         //
         // @Tags
         // <w@world.loaded_chunks>
