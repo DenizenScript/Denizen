@@ -3033,7 +3033,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Short Despawns an entity or list of entities, permanently removing any NPCs.
         // @Group entity
         // @Description
-        //  TODO: CUBOID OPTION
         // Removes the selected entity. May also take a list of entities to remove.
         // Any NPC removed this way is completely removed, as if by '/npc remove'.
         // If a generic entity name is given (see: <@link language entities>)
