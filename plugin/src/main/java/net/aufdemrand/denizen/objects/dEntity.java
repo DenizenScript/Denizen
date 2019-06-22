@@ -1719,7 +1719,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // @returns Element(Boolean)
         // @group location
         // @description
-        // Returns whether the entity can see the specified other entity.
+        // Returns whether the entity can see the specified other entity (has an uninterrupted line-of-sight).
         // -->
         if (attribute.startsWith("can_see")) {
             if (isLivingEntity() && attribute.hasContext(1) && dEntity.matches(attribute.getContext(1))) {
