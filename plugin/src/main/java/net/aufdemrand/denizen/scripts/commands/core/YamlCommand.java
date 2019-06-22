@@ -59,47 +59,47 @@ public class YamlCommand extends AbstractCommand implements Holdable {
 
         for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
             if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("LOAD")) {
+                    arg.matchesPrefix("load")) {
                 scriptEntry.addObject("action", new Element("LOAD"));
                 scriptEntry.addObject("filename", arg.asElement());
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("LOADTEXT")) {
+                    arg.matchesPrefix("loadtext")) {
                 scriptEntry.addObject("action", new Element("LOADTEXT"));
                 scriptEntry.addObject("raw_text", arg.asElement());
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("SAVEFILE", "FILESAVE")) {
+                    arg.matchesPrefix("savefile", "filesave")) {
                 scriptEntry.addObject("action", new Element("SAVE"));
                 scriptEntry.addObject("filename", arg.asElement());
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matches("CREATE")) {
+                    arg.matches("create")) {
                 scriptEntry.addObject("action", new Element("CREATE"));
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matches("SET")) {
+                    arg.matches("set")) {
                 scriptEntry.addObject("action", new Element("SET"));
                 isSet = true;
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("COPYKEY")) {
+                    arg.matchesPrefix("copykey")) {
                 scriptEntry.addObject("action", new Element("COPYKEY"));
                 scriptEntry.addObject("key", arg.asElement());
                 isSet = true;
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matches("UNLOAD")) {
+                    arg.matches("unload")) {
                 scriptEntry.addObject("action", new Element("UNLOAD"));
             }
             else if (!scriptEntry.hasObject("action") &&
-                    arg.matchesPrefix("WRITE")) {
+                    arg.matchesPrefix("write")) {
                 dB.echoError(scriptEntry.getResidingQueue(), "YAML write is deprecated, use YAML set!");
                 scriptEntry.addObject("action", new Element("WRITE"));
                 scriptEntry.addObject("key", arg.asElement());
             }
             else if (!scriptEntry.hasObject("value") &&
-                    arg.matchesPrefix("VALUE")) {
+                    arg.matchesPrefix("value")) {
                 if (arg.matchesArgumentType(dList.class)) {
                     scriptEntry.addObject("value", arg.asType(dList.class));
                 }
@@ -108,8 +108,12 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 }
             }
             else if (!scriptEntry.hasObject("id") &&
-                    arg.matchesPrefix("ID")) {
+                    arg.matchesPrefix("id")) {
                 scriptEntry.addObject("id", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("to_id") &&
+                    arg.matchesPrefix("to_id")) {
+                scriptEntry.addObject("to_id", arg.asElement());
             }
             else if (!scriptEntry.hasObject("split") &&
                     arg.matches("split_list")) {
@@ -226,6 +230,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
         Element actionElement = scriptEntry.getElement("action");
         Element idElement = scriptEntry.getElement("id");
         Element fixFormatting = scriptEntry.getElement("fix_formatting");
+        Element toId = scriptEntry.getElement("to_id");
 
         YamlConfiguration yamlConfiguration;
 
@@ -240,6 +245,7 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                             + (value != null ? value.debug() : "")
                             + (split != null ? split.debug() : "")
                             + (rawText != null ? rawText.debug() : "")
+                            + (toId != null ? toId.debug() : "")
                             + fixFormatting.debug());
 
         }
@@ -404,14 +410,26 @@ public class YamlCommand extends AbstractCommand implements Holdable {
                 }
                 break;
 
-            case COPYKEY:
-                if (yamls.containsKey(id)) {
-                    YamlConfiguration yaml = yamls.get(id);
-                    YamlConfiguration sourceSection = yaml.getConfigurationSection(key.asString());
-                    YamlConfiguration newSection = copySection(sourceSection);
-                    yaml.set(value.toString(), newSection);
+            case COPYKEY: {
+                if (!yamls.containsKey(id)) {
+                    break;
                 }
+                YamlConfiguration yaml = yamls.get(id);
+                YamlConfiguration destYaml = yaml;
+                if (toId != null) {
+                    if (yamls.containsKey(toId.toString().toUpperCase())) {
+                        destYaml = yamls.get(toId.toString().toUpperCase());
+                    }
+                    else {
+                        dB.echoError("Unknown YAML TO-ID '" + id + "'");
+                        break;
+                    }
+                }
+                YamlConfiguration sourceSection = yaml.getConfigurationSection(key.asString());
+                YamlConfiguration newSection = copySection(sourceSection);
+                destYaml.set(value.toString(), newSection);
                 break;
+            }
 
             case SET:
                 if (yamls.containsKey(id)) {
