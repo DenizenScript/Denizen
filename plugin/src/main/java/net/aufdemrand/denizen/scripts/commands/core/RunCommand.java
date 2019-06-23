@@ -202,7 +202,7 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 String name = definition_names != null && definition_names.length >= x ?
                         definition_names[x - 1].trim() : String.valueOf(x);
                 queue.addDefinition(name, definition);
-                dB.echoDebug(scriptEntry, "Adding definition %" + name + "% as " + definition);
+                dB.echoDebug(scriptEntry, "Adding definition '" + name + "' as " + definition);
                 x++;
             }
             queue.addDefinition("raw_context", raw_defintions.asString());
