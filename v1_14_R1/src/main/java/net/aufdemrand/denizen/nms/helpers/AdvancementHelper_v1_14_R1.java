@@ -20,6 +20,10 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
     private static final Map<String, Criterion> IMPOSSIBLE_CRITERIA = Collections.singletonMap(IMPOSSIBLE_KEY, new Criterion(new CriterionTriggerImpossible.a()));
     private static final String[][] IMPOSSIBLE_REQUIREMENTS = new String[][]{{IMPOSSIBLE_KEY}};
 
+    public static AdvancementDataWorld getAdvancementDataWorld() {
+        return ((CraftServer) Bukkit.getServer()).getServer().getAdvancementData();
+    }
+
     @Override
     public void register(net.aufdemrand.denizen.nms.util.Advancement advancement) {
         if (advancement.temporary || advancement.registered) {
@@ -27,22 +31,22 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
         }
         Advancement nms = asNMSCopy(advancement);
         if (advancement.parent == null) {
-            Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", AdvancementDataWorld.REGISTRY);
+            Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", getAdvancementDataWorld().REGISTRY);
             roots.add(nms);
-            Advancements.a something = ReflectionHelper.getFieldValue(Advancements.class, "e", AdvancementDataWorld.REGISTRY);
+            Advancements.a something = ReflectionHelper.getFieldValue(Advancements.class, "e", getAdvancementDataWorld().REGISTRY);
             if (something != null) {
                 something.a(nms);
             }
         }
         else {
-            Set<Advancement> branches = ReflectionHelper.getFieldValue(Advancements.class, "d", AdvancementDataWorld.REGISTRY);
+            Set<Advancement> branches = ReflectionHelper.getFieldValue(Advancements.class, "d", getAdvancementDataWorld().REGISTRY);
             branches.add(nms);
-            Advancements.a something = ReflectionHelper.getFieldValue(Advancements.class, "e", AdvancementDataWorld.REGISTRY);
+            Advancements.a something = ReflectionHelper.getFieldValue(Advancements.class, "e", getAdvancementDataWorld().REGISTRY);
             if (something != null) {
                 something.c(nms);
             }
         }
-        AdvancementDataWorld.REGISTRY.advancements.put(nms.getName(), nms);
+        getAdvancementDataWorld().REGISTRY.advancements.put(nms.getName(), nms);
         advancement.registered = true;
         if (!advancement.hidden && advancement.parent != null) {
             ((CraftServer) Bukkit.getServer()).getHandle().sendAll(new PacketPlayOutAdvancements(false,
@@ -55,15 +59,15 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
         if (advancement.temporary || !advancement.registered) {
             return;
         }
-        Map<MinecraftKey, Advancement> advancements = AdvancementDataWorld.REGISTRY.advancements;
+        Map<MinecraftKey, Advancement> advancements = getAdvancementDataWorld().REGISTRY.advancements;
         MinecraftKey key = asMinecraftKey(advancement.key);
         Advancement nms = advancements.get(key);
         if (advancement.parent == null) {
-            Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", AdvancementDataWorld.REGISTRY);
+            Set<Advancement> roots = ReflectionHelper.getFieldValue(Advancements.class, "c", getAdvancementDataWorld().REGISTRY);
             roots.remove(nms);
         }
         else {
-            Set<Advancement> branches = ReflectionHelper.getFieldValue(Advancements.class, "d", AdvancementDataWorld.REGISTRY);
+            Set<Advancement> branches = ReflectionHelper.getFieldValue(Advancements.class, "d", getAdvancementDataWorld().REGISTRY);
             branches.remove(nms);
         }
         advancements.remove(key);
@@ -85,7 +89,7 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
                     Collections.singletonMap(nmsAdvancement.getName(), progress)));
         }
         else {
-            Advancement nmsAdvancement = AdvancementDataWorld.REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().grantCriteria(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
@@ -99,7 +103,7 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
                     Collections.emptyMap()));
         }
         else {
-            Advancement nmsAdvancement = AdvancementDataWorld.REGISTRY.advancements.get(asMinecraftKey(advancement.key));
+            Advancement nmsAdvancement = getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.key));
             ((CraftPlayer) player).getHandle().getAdvancementData().revokeCritera(nmsAdvancement, IMPOSSIBLE_KEY);
         }
     }
@@ -120,7 +124,7 @@ public class AdvancementHelper_v1_14_R1 implements AdvancementHelper {
     private static Advancement asNMSCopy(net.aufdemrand.denizen.nms.util.Advancement advancement) {
         MinecraftKey key = asMinecraftKey(advancement.key);
         Advancement parent = advancement.parent != null
-                ? AdvancementDataWorld.REGISTRY.advancements.get(asMinecraftKey(advancement.parent))
+                ? getAdvancementDataWorld().REGISTRY.advancements.get(asMinecraftKey(advancement.parent))
                 : null;
         AdvancementDisplay display = new AdvancementDisplay(CraftItemStack.asNMSCopy(advancement.icon),
                 new ChatComponentText(advancement.title), new ChatComponentText(advancement.description),
