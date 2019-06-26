@@ -1426,6 +1426,25 @@ public class dInventory implements dObject, Notable, Adjustable {
             dummyInv.setContents(contents);
 
             // <--[tag]
+            // @attribute <in@inventory.can_fit[<item>].count>
+            // @returns Element(Number)
+            // @description
+            // Returns the total count of how many times an item can fit into an inventory.
+            // -->
+            if (attribute.getAttribute(2).startsWith("count")) {
+                attribs = 2;
+                ItemStack toAdd = items.get(0).getItemStack().clone();
+                int totalCount = 64 * 64 * 4; // Technically nothing stops us from ridiculous numbers in an ItemStack amount.
+                toAdd.setAmount(totalCount);
+                List<ItemStack> leftovers = dummyInv.addWithLeftovers(0, true, toAdd);
+                int result = 0;
+                if (leftovers.size() > 0) {
+                    result += leftovers.get(0).getAmount();
+                }
+                return new Element(totalCount - result).getAttribute(attribute.fulfill(attribs));
+            }
+
+            // <--[tag]
             // @attribute <in@inventory.can_fit[<item>].quantity[<#>]>
             // @returns Element(Boolean)
             // @description
