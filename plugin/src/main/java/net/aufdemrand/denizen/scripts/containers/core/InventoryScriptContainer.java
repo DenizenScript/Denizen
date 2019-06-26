@@ -10,9 +10,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -216,11 +214,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                 }
                 List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "PROCEDURAL ITEMS");
                 if (!entries.isEmpty()) {
-                    long id = DetermineCommand.getNewId();
-                    ScriptBuilder.addObjectToEntries(entries, "reqid", id);
                     InstantQueue queue = new InstantQueue("INV_SCRIPT_ITEM_PROC");
                     queue.addEntries(entries);
-                    queue.setReqId(id);
                     if (contains("DEFINITIONS")) {
                         YamlConfiguration section = getConfigurationSection("DEFINITIONS");
                         for (StringHolder string : section.getKeys(false)) {
@@ -229,8 +224,8 @@ public class InventoryScriptContainer extends ScriptContainer {
                         }
                     }
                     queue.start();
-                    if (DetermineCommand.hasOutcome(id)) {
-                        dList list = dList.valueOf(DetermineCommand.getOutcome(id).get(0));
+                    if (queue.determinations != null) {
+                        dList list = dList.getListFor(queue.determinations.getObject(0));
                         if (list != null) {
                             int x = 0;
                             for (dItem item : list.filter(dItem.class, this)) {

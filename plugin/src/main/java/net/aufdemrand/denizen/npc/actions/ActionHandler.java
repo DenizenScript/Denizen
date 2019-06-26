@@ -10,9 +10,7 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
@@ -63,12 +61,6 @@ public class ActionHandler {
             return determination;
         }
 
-        // Create new ID -- this is what we will look for when determining an outcome
-        long id = DetermineCommand.getNewId();
-
-        // Add the reqId to each of the entries for the determine command
-        ScriptBuilder.addObjectToEntries(script, "reqid", id);
-
         dB.echoDebug(assignment, DebugElement.Header,
                 "Building action 'On " + actionName.toUpperCase() + "' for " + npc.toString());
 
@@ -84,8 +76,8 @@ public class ActionHandler {
         queue.start();
 
         // Check the determination by asking the DetermineCommand
-        if (DetermineCommand.hasOutcome(id)) {
-            determination = DetermineCommand.getOutcome(id).get(0);
+        if (queue.determinations != null && queue.determinations.size() > 0) {
+            determination = queue.determinations.get(0);
         }
         // TODO: Multiple determination system
         return determination;

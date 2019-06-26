@@ -9,9 +9,7 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
@@ -168,36 +166,30 @@ public class CommandScriptContainer extends ScriptContainer {
     }
 
     public boolean runAllowedHelpProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        // Add the reqId to each of the entries for the determine command
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "ALLOWED HELP");
-        long id = DetermineCommand.getNewId();
-        ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
-        ScriptQueue queue = new InstantQueue(getName()).setReqId(id).addEntries(entries);
+        ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;
             queue.setContextSource(oecs);
         }
         queue.start();
-        return DetermineCommand.hasOutcome(id) && DetermineCommand.getOutcome(id).get(0).equalsIgnoreCase("true");
+        return queue.determinations != null && queue.determinations.size() > 0 && queue.determinations.get(0).equalsIgnoreCase("true");
     }
 
     public List<String> runTabCompleteProcedure(dPlayer player, dNPC npc, Map<String, dObject> context) {
-        // Add the reqId to each of the entries for the determine command
         List<ScriptEntry> entries = getEntries(new BukkitScriptEntryData(player, npc), "TAB COMPLETE");
-        long id = DetermineCommand.getNewId();
-        ScriptBuilder.addObjectToEntries(entries, "reqid", id);
 
-        ScriptQueue queue = new InstantQueue(getName()).setReqId(id).addEntries(entries);
+        ScriptQueue queue = new InstantQueue(getName()).addEntries(entries);
         if (context != null) {
             OldEventManager.OldEventContextSource oecs = new OldEventManager.OldEventContextSource();
             oecs.contexts = context;
             queue.setContextSource(oecs);
         }
         queue.start();
-        if (DetermineCommand.hasOutcome(id)) {
-            return dList.valueOf(DetermineCommand.getOutcome(id).get(0));
+        if (queue.determinations != null && queue.determinations.size() > 0) {
+            return dList.getListFor(queue.determinations.getObject(0));
         }
         else {
             return new ArrayList<>();

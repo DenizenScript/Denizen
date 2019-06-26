@@ -5,7 +5,6 @@ import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
@@ -102,9 +101,6 @@ public class InjectCommand extends AbstractCommand {
             dB.echoError(scriptEntry.getResidingQueue(), "Script inject failed (invalid path or script name)!");
             return;
         }
-
-        // For determine
-        ScriptBuilder.addObjectToEntries(entries, "reqid", scriptEntry.getObject("reqid"));
 
         // If 'instantly' was specified, run the commands immediately.
         if (scriptEntry.hasObject("instant")) {

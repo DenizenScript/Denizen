@@ -7,11 +7,9 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import net.aufdemrand.denizencore.scripts.commands.Holdable;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
@@ -220,13 +218,6 @@ public class RunCommand extends AbstractCommand implements Holdable {
                 }
             });
         }
-
-        // Allow determinations because why not
-        long reqId = DetermineCommand.getNewId();
-        queue.setReqId(reqId);
-
-        // Also add the reqId to each of the entries for reasons
-        ScriptBuilder.addObjectToEntries(entries, "reqid", reqId);
 
         // Save the queue for script referencing
         scriptEntry.addObject("created_queue", queue);

@@ -119,7 +119,7 @@ public class RandomCommand extends BracedCommand {
 
         }
         else {
-            queue.injectEntry(bracedCommands.get(selected).addObject("reqid", scriptEntry.getObject("reqid")), 0);
+            queue.injectEntry(bracedCommands.get(selected), 0);
         }
     }
 }

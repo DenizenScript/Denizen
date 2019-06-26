@@ -7,9 +7,7 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dScript;
-import net.aufdemrand.denizencore.scripts.ScriptBuilder;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
 import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.scripts.queues.core.InstantQueue;
 import net.aufdemrand.denizencore.tags.TagManager;
@@ -104,15 +102,12 @@ public class EconomyScriptContainer extends ScriptContainer {
 
         public String runSubScript(String pathName, OfflinePlayer player, double amount) {
             List<ScriptEntry> entries = backingScript.getEntries(new BukkitScriptEntryData(new dPlayer(player), null), pathName);
-            long id = DetermineCommand.getNewId();
-            ScriptBuilder.addObjectToEntries(entries, "reqid", id);
             InstantQueue queue = new InstantQueue(backingScript.getName());
             queue.addEntries(entries);
-            queue.setReqId(id);
             queue.addDefinition("amount", new Element(amount));
             queue.start();
-            if (DetermineCommand.hasOutcome(id)) {
-                return DetermineCommand.getOutcome(id).get(0);
+            if (queue.determinations != null && queue.determinations.size() > 0) {
+                return queue.determinations.get(0);
             }
             return null;
         }
