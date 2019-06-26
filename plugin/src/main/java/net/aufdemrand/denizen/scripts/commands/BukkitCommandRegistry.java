@@ -211,26 +211,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
 
         // <--[command]
-        // @Name Fail
-        // @Syntax fail (script:<name>)
-        // @Required 0
-        // @Deprecated This command is outdated, use flags instead!
-        // @Short Marks a script as having failed.
-        // @Group core
-        //
-        // @Description
-        // DEPRECATED, use flags instead!
-        //
-        // @Tags
-        // DEPRECATED, use flags instead!
-        //
-        // @Usage
-        // DEPRECATED, use flags instead!
-        // -->
-        registerCoreMember(FailCommand.class,
-                "FAIL", "fail (script:<name>)", 0);
-
-        // <--[command]
         // @Name FakeItem
         // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
         // @Required 2
@@ -286,26 +266,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(FeedCommand.class,
                 "FEED", "feed (amt:<#>) (target:<entity>)", 0);
 
-
-        // <--[command]
-        // @Name Finish
-        // @Syntax finish (script:<name>)
-        // @Required 0
-        // @Deprecated This command is outdated, use flags instead!
-        // @Short Marks a script as having been completed successfully.
-        // @Group core
-        //
-        // @Description
-        // DEPRECATED, use flags instead!
-        //
-        // @Tags
-        // DEPRECATED, use flags instead!
-        //
-        // @Usage
-        // DEPRECATED, use flags instead!
-        // -->
-        registerCoreMember(FinishCommand.class,
-                "FINISH", "finish (script:<name>)", 0);
 
 
         // <--[command]

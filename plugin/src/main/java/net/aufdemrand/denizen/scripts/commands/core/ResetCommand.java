@@ -11,22 +11,14 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class ResetCommand extends AbstractCommand {
 
-    private enum Type {FINISH, FAIL, PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES}
+    private enum Type {PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES}
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {
 
-            if (arg.matches("finishes", "finished", "finish")
-                    && !scriptEntry.hasObject("type")) {
-                scriptEntry.addObject("type", Type.FINISH);
-            }
-            else if (arg.matches("fails", "failed", "fail")
-                    && !scriptEntry.hasObject("type")) {
-                scriptEntry.addObject("type", Type.FAIL);
-            }
-            else if (arg.matches("cooldown")
+            if (arg.matches("cooldown")
                     && !scriptEntry.hasObject("type")) {
                 scriptEntry.addObject("type", Type.PLAYER_COOLDOWN);
             }
@@ -99,16 +91,6 @@ public class ResetCommand extends AbstractCommand {
             if (resettable.isValid()) {
 
                 switch (type) {
-                    case FAIL:
-                        FailCommand.class.toString(); // TODO: Remove references to FAIL command.
-                        dB.echoError("The 'FAIL' command is deprecated. Use flags instead!");
-                        return;
-
-                    case FINISH:
-                        FinishCommand.class.toString(); // TODO: Remove references to FINISH command.
-                        dB.echoError("The 'FINISH' command is deprecated. Use flags instead!");
-                        return;
-
                     case PLAYER_COOLDOWN:
                         CooldownCommand.setCooldown(resettable, Duration.ZERO, script.getName(), false);
                         return;

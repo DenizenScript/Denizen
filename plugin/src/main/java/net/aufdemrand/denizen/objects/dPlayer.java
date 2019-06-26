@@ -6,8 +6,6 @@ import net.aufdemrand.denizen.nms.abstracts.ImprovedOfflinePlayer;
 import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.objects.properties.entity.EntityHealth;
-import net.aufdemrand.denizen.scripts.commands.core.FailCommand;
-import net.aufdemrand.denizen.scripts.commands.core.FinishCommand;
 import net.aufdemrand.denizen.scripts.commands.player.SidebarCommand;
 import net.aufdemrand.denizen.tags.core.PlayerTags;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -1901,28 +1899,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         // -->
         if (attribute.startsWith("name")) {
             return new Element(getName()).getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.has_finished[<script>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the player has finished the specified script. DEPRECATED: Use flags instead!
-        // -->
-        if (attribute.startsWith("has_finished")) {
-            FinishCommand.class.toString(); // TODO: Remove references to FINISH command.
-            dB.echoError("The 'FINISH' command is deprecated. Use flags instead!");
-        }
-
-        // <--[tag]
-        // @attribute <p@player.has_failed[<script>]>
-        // @returns Element(Boolean)
-        // @description
-        // Returns whether the player has failed the specified script. DEPRECATED: Use flags instead!
-        // -->
-        if (attribute.startsWith("has_failed")) {
-            FailCommand.class.toString(); // TODO: Remove references to FAIL command.
-            dB.echoError("The 'FAIL' command is deprecated. Use flags instead!");
         }
 
         /////////////////////
