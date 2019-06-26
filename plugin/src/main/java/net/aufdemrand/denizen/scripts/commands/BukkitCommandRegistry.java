@@ -367,7 +367,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // @Tags
         // <n@npc.script>
         // <n@npc.has_script>
-        // <server.get_npcs_assigned[<assignment_script>]>
+        // <server.list_npcs_assigned[<assignment_script>]>
         //
         // @Usage
         // Use to assign an npc with an assignment script named 'Bob the Builder'.
@@ -1077,7 +1077,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Usage
         // Use to drop some loot around the player.
-        // - drop i@gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].get_spawnable_blocks.random>
+        // - drop i@gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
         //
         // @Usage
         // Use to reward a player with 500 xp.
@@ -1212,7 +1212,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <server.has_event[<event_name>]>
-        // <server.get_event_handlers[<event_name>]>
+        // <server.event_handlers[<event_name>]>
         // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
         //
         // @Usage
@@ -1539,10 +1539,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <server.flag[<flag>]>
         // <server.has_flag[<flag_name>]>
         // <server.list_flags[(regex:)<search>]>
-        // <server.get_online_players_flagged[<flag_name>]>
-        // <server.get_players_flagged[<flag_name>]>
-        // <server.get_spawned_npcs_flagged[<flag_name>]>
-        // <server.get_npcs_flagged[<flag_name>]>
+        // <server.list_online_players_flagged[<flag_name>]>
+        // <server.list_players_flagged[<flag_name>]>
+        // <server.list_spawned_npcs_flagged[<flag_name>]>
+        // <server.list_npcs_flagged[<flag_name>]>
         // <fl@flag_name.is_expired>
         // <fl@flag_name.expiration>
         // <fl@flag_name.as_list>
@@ -2123,7 +2123,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <e@entity.is_leashed>
-        // <e@entity.get_leash_holder>
+        // <e@entity.leash_holder>
         //
         // @Usage
         // Use to attach a leash to the player's target.
@@ -2850,7 +2850,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         //
         // @Tags
         // <n@npc.has_pose[<name>]>
-        // <n@npc.get_pose[<name>]>
+        // <n@npc.pose[<name>]>
         //
         // @Usage
         // Make an NPC assume a pose.
@@ -3517,7 +3517,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         // <i@item.book.author>
         // <i@item.book.title>
         // <i@item.book.page_count>
-        // <i@item.book.get_page[<#>]>
+        // <i@item.book.page[<#>]>
         // <i@item.book.pages>
         //
         //

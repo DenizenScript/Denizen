@@ -636,14 +636,14 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_event_handlers[<event_name>]>
+        // @attribute <server.event_handlers[<event_name>]>
         // @returns dList(dScript)
         // @description
         // Returns a list of all world scripts that will handle a given event name.
         // This tag will ignore dObject identifiers (see <@link language dobject>).
         // For use with <@link tag server.has_event[<event_name>]>
         // -->
-        if (attribute.startsWith("get_event_handlers")
+        if (attribute.startsWith("event_handlers")
                 && attribute.hasContext(1)) {
             String eventName = attribute.getContext(1).toUpperCase();
             List<WorldScriptContainer> EventsOne = OldEventManager.events.get("ON " + eventName);
@@ -688,12 +688,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_npcs_named[<name>]>
+        // @attribute <server.list_npcs_named[<name>]>
         // @returns dList(dNPC)
         // @description
         // Returns a list of NPCs with a certain name.
         // -->
-        if (attribute.startsWith("get_npcs_named") && Depends.citizens != null && attribute.hasContext(1)) {
+        if ((attribute.startsWith("list_npcs_named") || attribute.startsWith("get_npcs_named")) && Depends.citizens != null && attribute.hasContext(1)) {
             dList npcs = new dList();
             for (NPC npc : CitizensAPI.getNPCRegistry()) {
                 if (npc.getName().equalsIgnoreCase(attribute.getContext(1))) {
@@ -1061,12 +1061,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_npcs_assigned[<assignment_script>]>
+        // @attribute <server.list_npcs_assigned[<assignment_script>]>
         // @returns dList(dNPC)
         // @description
         // Returns a list of all NPCs assigned to a specified script.
         // -->
-        if (attribute.startsWith("get_npcs_assigned") && Depends.citizens != null
+        if ((attribute.startsWith("list_npcs_assigned") || attribute.startsWith("get_npcs_assigned")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
             dScript script = dScript.valueOf(attribute.getContext(1));
             if (script == null || !(script.getContainer() instanceof AssignmentScriptContainer)) {
@@ -1086,12 +1086,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_online_players_flagged[<flag_name>]>
+        // @attribute <server.list_online_players_flagged[<flag_name>]>
         // @returns dList(dPlayer)
         // @description
         // Returns a list of all online players with a specified flag set.
         // -->
-        if (attribute.startsWith("get_online_players_flagged")
+        if ((attribute.startsWith("list_online_players_flagged") || attribute.startsWith("get_online_players_flagged"))
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             dList players = new dList();
@@ -1105,12 +1105,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_players_flagged[<flag_name>]>
+        // @attribute <server.list_players_flagged[<flag_name>]>
         // @returns dList(dPlayer)
         // @description
         // Returns a list of all players with a specified flag set.
         // -->
-        if (attribute.startsWith("get_players_flagged")
+        if ((attribute.startsWith("list_players_flagged") || attribute.startsWith("get_players_flagged"))
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             dList players = new dList();
@@ -1124,12 +1124,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_spawned_npcs_flagged[<flag_name>]>
+        // @attribute <server.list_spawned_npcs_flagged[<flag_name>]>
         // @returns dList(dNPC)
         // @description
         // Returns a list of all spawned NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_spawned_npcs_flagged") && Depends.citizens != null
+        if ((attribute.startsWith("list_spawned_npcs_flagged") || attribute.startsWith("get_spawned_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             dList npcs = new dList();
@@ -1144,12 +1144,12 @@ public class ServerTags {
         }
 
         // <--[tag]
-        // @attribute <server.get_npcs_flagged[<flag_name>]>
+        // @attribute <server.list_npcs_flagged[<flag_name>]>
         // @returns dList(dNPC)
         // @description
         // Returns a list of all NPCs with a specified flag set.
         // -->
-        if (attribute.startsWith("get_npcs_flagged") && Depends.citizens != null
+        if ((attribute.startsWith("list_npcs_flagged") || attribute.startsWith("get_npcs_flagged")) && Depends.citizens != null
                 && attribute.hasContext(1)) {
             String flag = attribute.getContext(1);
             dList npcs = new dList();

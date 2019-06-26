@@ -143,7 +143,7 @@ Tags:
   Timeout when silent: false
   # Rate between when slowed warnings appear (in milliseconds). This is used for minor warnings such as future-deprecation notices, to avoid error message flood.
   Warning rate: 10000
-  # Settings for tags like cuboid.get_blocks, location.find.blocks, ...
+  # Settings for tags like cuboid.blocks, location.find.blocks, ...
   Block tags:
     # How many blocks can be read, max, before stopping the tag in place
     Max blocks: 1000000

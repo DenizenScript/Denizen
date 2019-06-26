@@ -103,27 +103,27 @@ public class ItemBook implements Property {
             }
 
             // <--[tag]
-            // @attribute <i@item.book.get_page[<#>]>
+            // @attribute <i@item.book.page[<#>]>
             // @returns Element
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element.
             // -->
-            if (attribute.startsWith("get_page") && aH.matchesInteger(attribute.getContext(1))) {
+            if ((attribute.startsWith("page") || attribute.startsWith("get_page")) && attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1))) {
                 return new Element(bookInfo.getPage(attribute.getIntContext(1)))
                         .getAttribute(attribute.fulfill(1));
             }
 
             // <--[tag]
-            // @attribute <i@item.book.get_raw_page[<#>]>
+            // @attribute <i@item.book.raw_page[<#>]>
             // @returns Element
             // @mechanism dItem.book
             // @group properties
             // @description
             // Returns the page specified from the book as an element containing raw JSON.
             // -->
-            if (attribute.startsWith("get_raw_page") && aH.matchesInteger(attribute.getContext(1))) {
+            if ((attribute.startsWith("raw_page") || attribute.startsWith("get_raw_page")) && attribute.hasContext(1) && aH.matchesInteger(attribute.getContext(1))) {
                 return new Element(ComponentSerializer.toString(bookInfo.spigot().getPage(attribute.getIntContext(1))))
                         .getAttribute(attribute.fulfill(1));
             }
@@ -234,7 +234,7 @@ public class ItemBook implements Property {
         // See <@link language Property Escaping>
         // @tags
         // <i@item.book.page_count>
-        // <i@item.book.get_raw_page[<#>]>
+        // <i@item.book.raw_page[<#>]>
         // <i@item.book.raw_pages>
         // -->
 
@@ -258,7 +258,7 @@ public class ItemBook implements Property {
         // See <@link language Property Escaping>
         // @tags
         // <i@item.book.page_count>
-        // <i@item.book.get_page[<#>]>
+        // <i@item.book.page[<#>]>
         // <i@item.book.pages>
         // -->
 
@@ -327,9 +327,9 @@ public class ItemBook implements Property {
         // <i@item.book.author>
         // <i@item.book.title>
         // <i@item.book.page_count>
-        // <i@item.book.get_page[<#>]>
+        // <i@item.book.page[<#>]>
         // <i@item.book.pages>
-        // <i@item.book.get_raw_page[<#>]>
+        // <i@item.book.raw_page[<#>]>
         // <i@item.book.raw_pages>
         // <i@item.book>
         // -->

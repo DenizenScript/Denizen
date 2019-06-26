@@ -784,7 +784,7 @@ public class dItem implements dObject, Notable, Adjustable {
         // If this returns true, it will enable access to:
         // <@link mechanism dItem.book>, <@link tag i@item.book>,
         // <@link tag i@item.book.author>, <@link tag i@item.book.title>,
-        // <@link tag i@item.book.page_count>, <@link tag i@item.book.get_page[<#>]>,
+        // <@link tag i@item.book.page_count>, <@link tag i@item.book.page[<#>]>,
         // and <@link tag i@item.book.pages>
         // -->
         registerTag("is_book", new TagRunnable() {
