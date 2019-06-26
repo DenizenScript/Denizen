@@ -129,7 +129,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(HealthCommand.class, "HEALTH", "health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)", 1);
         registerCoreMember(HurtCommand.class, "HURT", "hurt (<#.#>) (<entity>|...) (cause:<cause>)", 0);
         registerCoreMember(InventoryCommand.class, "INVENTORY", "inventory [open/close/copy/move/swap/add/remove/set/keep/exclude/fill/clear/update/adjust <mechanism>:<value>] (destination:<inventory>) (origin:<inventory>/<item>|...) (slot:<slot>)", 1);
-        registerCoreMember(InjectCommand.class, "INJECT", "inject (locally) [<script>] (path:<name>) (instantly)", 1);
         registerCoreMember(InvisibleCommand.class, "INVISIBLE", "invisible [<entity>] (state:true/false/toggle)", 1);
         registerCoreMember(ItemCooldownCommand.class, "ITEMCOOLDOWN", "itemcooldown [<material>|...] (duration:<duration>)", 1);
         registerCoreMember(KickCommand.class, "KICK", "kick [<player>|...] (reason:<text>)", 1);
