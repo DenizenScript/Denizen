@@ -444,4 +444,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public String getRandomColor() {
         return DEBUG_FRIENDLY_COLORS[CoreUtilities.getRandom().nextInt(DEBUG_FRIENDLY_COLORS.length)].toString();
     }
+
+    @Override
+    public int whileMaxLoops() {
+        return Settings.whileMaxLoops();
+    }
 }
