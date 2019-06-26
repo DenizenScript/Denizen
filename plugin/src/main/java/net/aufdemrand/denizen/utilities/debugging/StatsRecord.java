@@ -19,7 +19,7 @@ public class StatsRecord extends Thread {
         BufferedReader in = null;
         try {
             // Open a connection to the stats server
-            URL url = new URL("http://neo.mcmonkey.org/plugins/public_stats?plugin=Denizen&version=" + URLEncoder.encode(DenizenAPI.getCurrentInstance().getImplementationVersion()));
+            URL url = new URL("http://neo.mcmonkey.org/plugins/public_stats?plugin=Denizen&version=" + URLEncoder.encode(DenizenAPI.getCurrentInstance().coreImplementation.getImplementationVersion()));
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setDoInput(true);
             uc.setDoOutput(true);

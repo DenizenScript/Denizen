@@ -7,6 +7,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
@@ -154,7 +155,7 @@ public class SidebarCommand extends AbstractCommand {
                     players.debug();
         }
         else {
-            BukkitTagContext context = (BukkitTagContext) DenizenAPI.getCurrentInstance().getTagContextFor(scriptEntry, false);
+            BukkitTagContext context = (BukkitTagContext) DenizenCore.getImplementation().getTagContextFor(scriptEntry, false);
             if (elTitle != null) {
                 title = new Element(TagManager.tag(elTitle.asString(), context));
             }

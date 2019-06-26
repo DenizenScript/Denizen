@@ -85,7 +85,7 @@ public class DebugSubmit extends Thread {
                     + "&pastecontents=" + URLEncoder.encode("Java Version: " + System.getProperty("java.version")
                     + "\nUp-time: " + new Duration((System.currentTimeMillis() - Denizen.startTime) / 50).formatted()
                     + "\nCraftBukkit Version: " + Bukkit.getServer().getVersion()
-                    + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().getImplementationVersion()
+                    + "\nDenizen Version: Core: " + DenizenCore.VERSION + ", CraftBukkit: " + DenizenAPI.getCurrentInstance().coreImplementation.getImplementationVersion()
                     + "\nActive Plugins (" + pluginCount + "): " + pluginlist.substring(0, pluginlist.length() - 2)
                     + "\nLoaded Worlds (" + worldCount + "): " + worldlist.substring(0, worldlist.length() - 2)
                     + "\nOnline Players (" + playerCount + "): " + playerlist.substring(0, playerlist.length() - 2)
