@@ -223,7 +223,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         else {
             AutoNoCitizensCommand.registerFor("VULNERABLE");
         }
-        registerCoreMember(WaitCommand.class, "WAIT", "wait (<duration>) (queue:<name>)", 0);
         registerCoreMember(WalkCommand.class, "WALK", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>) (lookat:<location>)", 1);
         registerCoreMember(WeatherCommand.class, "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
         registerCoreMember(WhileCommand.class, "WHILE", "while [stop/next/<comparison tag>] [<commands>]", 1);
