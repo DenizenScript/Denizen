@@ -368,32 +368,7 @@ public class Denizen extends JavaPlugin {
             // Register all the modern script events
             ScriptEventRegistry.registermainEvents();
 
-            ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
-            dBiome.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
-            dChunk.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dColor.class);     // co@
-            dColor.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dCuboid.class);    // cu@
-            dCuboid.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dEllipsoid.class); // ellipsoid@
-            dEllipsoid.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dEntity.class);    // e@
-            ObjectFetcher.registerWithObjectFetcher(dInventory.class); // in@
-            ObjectFetcher.registerWithObjectFetcher(dItem.class);      // i@
-            dItem.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dLocation.class);  // l@
-            ObjectFetcher.registerWithObjectFetcher(dMaterial.class);  // m@
-            dMaterial.registerTags(); // TODO: Automate this once all classes have tag registries
-            if (Depends.citizens != null) {
-                ObjectFetcher.registerWithObjectFetcher(dNPC.class);   // n@
-            }
-            ObjectFetcher.registerWithObjectFetcher(dPlayer.class);    // p@
-            ObjectFetcher.registerWithObjectFetcher(dPlugin.class);    // pl@
-            dPlugin.registerTags(); // TODO: Automate this once all classes have tag registries
-            ObjectFetcher.registerWithObjectFetcher(dTrade.class);     // trade@
-            ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
-            dWorld.registerTags(); // TODO: Automate this once all classes have tag registries
+            CommonRegistries.registerMainObjects();
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
