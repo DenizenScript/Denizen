@@ -110,7 +110,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
             AutoNoCitizensCommand.registerFor("ENGAGE");
         }
         registerCoreMember(EquipCommand.class, "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
-        registerCoreMember(EventCommand.class, "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
         registerCoreMember(ExecuteCommand.class, "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
         registerCoreMember(ExperienceCommand.class, "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
         registerCoreMember(ExplodeCommand.class, "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
