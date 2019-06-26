@@ -64,15 +64,20 @@ public class DragonPhaseChangeScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
 
-        path.checkSwitch("from", event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name());
-        path.checkSwitch("to", event.getNewPhase().name());
+        if (!runGenericSwitchCheck(path, "from", event.getCurrentPhase() == null ? "null" : event.getCurrentPhase().name())) {
+            return false;
+        }
+
+        if (!runGenericSwitchCheck(path, "to", event.getNewPhase().name())) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public String getName() {
-        return "AirLevelChanged";
+        return "DragonPhaseChanged";
     }
 
     @Override

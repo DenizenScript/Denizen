@@ -267,6 +267,21 @@ public abstract class BukkitScriptEvent extends ScriptEvent {
 
     public static TagContext noDebugTagContext = new BukkitTagContext(null, null, false, null, false, null);
 
+    public boolean runGenericCheck(String inputValue, String trueValue) {
+        if (inputValue != null) {
+            trueValue = CoreUtilities.toLowerCase(trueValue);
+            inputValue = CoreUtilities.toLowerCase(inputValue);
+            if (inputValue.equalsIgnoreCase(trueValue)) {
+                return true;
+            }
+            Pattern regexd = regexHandle(inputValue);
+            if (!equalityCheck(trueValue, inputValue, regexd)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean runGenericSwitchCheck(ScriptPath path, String switchName, String value) {
         String with = path.switches.get(switchName);
         if (with != null) {

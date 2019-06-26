@@ -1,5 +1,7 @@
 package net.aufdemrand.denizen.objects.properties.entity;
 
+import net.aufdemrand.denizen.nms.NMSHandler;
+import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
@@ -83,6 +85,12 @@ public class EntityPotionEffects implements Property {
         return "potion_effects";
     }
 
+    public static String stringify(PotionEffect effect) {
+        return effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration()
+                + "," + effect.isAmbient() + "," + effect.hasParticles()
+                + (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2) ? "," + effect.hasIcon() : "");
+    }
+
     public String getAttribute(Attribute attribute) {
 
         if (attribute == null) {
@@ -95,13 +103,14 @@ public class EntityPotionEffects implements Property {
         // @group attribute
         // @mechanism dEntity.potion_effects
         // @description
-        // Returns the list of active potion effects on the entity, in the format: li@TYPE,AMPLIFIER,DURATION|...
+        // Returns the list of active potion effects on the entity, in the format: li@TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON|...
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
+        // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
         // -->
         if (attribute.startsWith("list_effects")) {
             dList effects = new dList();
             for (PotionEffect effect : getEffectsList()) {
-                effects.add(effect.getType().getName() + "," + effect.getAmplifier() + "," + effect.getDuration());
+                effects.add(stringify(effect));
             }
             return effects.getAttribute(attribute.fulfill(1));
         }
@@ -141,9 +150,10 @@ public class EntityPotionEffects implements Property {
         // @input dList
         // @description
         // Set the entity's active potion effects.
-        // Each item in the list is formatted as: TYPE,AMPLIFIER,DURATION
+        // Each item in the list is formatted as: TYPE,AMPLIFIER,DURATION,IS_AMBIENT,HAS_PARTICLES,HAS_ICON
         // Note that AMPLIFIER is a number representing the level, and DURATION is a number representing the time, in ticks, it will last for.
-        // For example: SPEED,0,120 would give the entity a swiftness potion for 120 ticks.
+        // IS_AMBIENT, HAS_PARTICLES, and HAS_ICON are booleans.
+        // For example: SPEED,0,120,false,true,true would give the entity a swiftness potion for 120 ticks.
         // @tags
         // <e@entity.list_effects>
         // -->
@@ -151,7 +161,7 @@ public class EntityPotionEffects implements Property {
             dList effects = dList.valueOf(mechanism.getValue().asString());
             for (String effect : effects) {
                 List<String> split = CoreUtilities.split(effect, ',');
-                if (split.size() != 3) {
+                if (split.size() < 3) {
                     // Maybe error message?
                     continue;
                 }
@@ -161,13 +171,25 @@ public class EntityPotionEffects implements Property {
                     continue;
                 }
                 try {
+                    PotionEffect actualEffect;
+                    if (split.size() >= 6) {
+                        actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
+                                Integer.valueOf(split.get(1)), split.get(3).equalsIgnoreCase("true"), split.get(4).equalsIgnoreCase("true"),
+                                split.get(5).equalsIgnoreCase("true"));
+                    }
+                    else if (split.size() >= 5) {
+                        actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
+                                Integer.valueOf(split.get(1)), split.get(3).equalsIgnoreCase("true"), split.get(4).equalsIgnoreCase("true"));
+                    }
+                    else {
+                         actualEffect = new PotionEffect(effectType, Integer.valueOf(split.get(2)),
+                                Integer.valueOf(split.get(1)));
+                    }
                     if (entity.isLivingEntity()) {
-                        entity.getLivingEntity().addPotionEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
-                                Integer.valueOf(split.get(1))));
+                        entity.getLivingEntity().addPotionEffect(actualEffect);
                     }
                     else if (entity.getBukkitEntity() instanceof TippedArrow) {
-                        ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(new PotionEffect(effectType, Integer.valueOf(split.get(2)),
-                                Integer.valueOf(split.get(1))), true);
+                        ((TippedArrow) entity.getBukkitEntity()).addCustomEffect(actualEffect, true);
                     }
                 }
                 catch (NumberFormatException ex) {
