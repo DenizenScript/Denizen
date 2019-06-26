@@ -11,8 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ItemCustomModel implements Property {
 
     public static boolean describes(dObject item) {
-        return item instanceof dItem
-                && ((dItem) item).getItemStack().hasItemMeta();
+        return item instanceof dItem;
     }
 
     public static ItemCustomModel getFrom(dObject _item) {

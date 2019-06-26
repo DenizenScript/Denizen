@@ -13,7 +13,6 @@ public class ItemRepairCost implements Property {
 
     public static boolean describes(dObject item) {
         return item instanceof dItem
-                && ((dItem) item).getItemStack().hasItemMeta()
                 && ((dItem) item).getItemStack().getItemMeta() instanceof Repairable;
     }
 
