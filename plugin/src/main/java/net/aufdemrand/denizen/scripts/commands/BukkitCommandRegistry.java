@@ -195,7 +195,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(SignCommand.class, "SIGN", "sign (type:{automatic}/sign_post/wall_sign) [\"<line>|...\"] [<location>] (direction:n/s/e/w)", 1);
         registerCoreMember(SitCommand.class, "SIT", "sit (<location>)", 0);
         registerCoreMember(SpawnCommand.class, "SPAWN", "spawn [<entity>|...] (<location>) (target:<entity>) (persistent)", 1);
-        registerCoreMember(SQLCommand.class, "SQL", "sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:true/{false})/query:<query>/update:<update>]", 2);
         if (Depends.citizens != null) {
             registerCoreMember(StandCommand.class, "STAND", "stand", 0);
         }
