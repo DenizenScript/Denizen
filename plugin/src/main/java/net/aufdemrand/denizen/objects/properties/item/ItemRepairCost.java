@@ -79,7 +79,7 @@ public class ItemRepairCost implements Property {
 
     @Override
     public String getPropertyId() {
-        return "durability";
+        return "repair_cost";
     }
 
     @Override
