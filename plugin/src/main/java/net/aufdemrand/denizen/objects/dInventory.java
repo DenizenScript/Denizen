@@ -984,6 +984,37 @@ public class dInventory implements dObject, Notable, Adjustable {
         return leftovers;
     }
 
+    public int countByMaterial(Material material) {
+        if (inventory == null) {
+            return 0;
+        }
+        int qty = 0;
+        for (ItemStack invStack : inventory) {
+            if (invStack != null) {
+                if (invStack.getType() == material) {
+                    qty += invStack.getAmount();
+                }
+            }
+        }
+        return qty;
+    }
+
+    public int countByScriptName(String scriptName) {
+        if (inventory == null) {
+            return 0;
+        }
+        int qty = 0;
+        for (ItemStack invStack : inventory) {
+            if (invStack != null) {
+                dItem item = new dItem(invStack);
+                if (item.isItemscript() && item.getScriptName().equalsIgnoreCase(scriptName)) {
+                    qty += invStack.getAmount();
+                }
+            }
+        }
+        return qty;
+    }
+
     /**
      * Count the number or quantities of stacks that
      * match an item in an inventory.
@@ -993,7 +1024,6 @@ public class dInventory implements dObject, Notable, Adjustable {
      *               instead of item quantities
      * @return The number of stacks or quantity of items
      */
-
     public int count(ItemStack item, boolean stacks) {
         if (inventory == null) {
             return 0;
@@ -2009,6 +2039,29 @@ public class dInventory implements dObject, Notable, Adjustable {
                 return null;
             }
             return location.getAttribute(attribute.fulfill(1));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.quantity.scriptname[<script>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the combined quantity of itemstacks that have the specified script name.
+        // -->
+        if (attribute.startsWith("quantity.scriptname") && attribute.hasContext(2)) {
+            return new Element(countByScriptName(attribute.getContext(2)))
+                    .getAttribute(attribute.fulfill(2));
+        }
+
+        // <--[tag]
+        // @attribute <in@inventory.quantity.material[<material>]>
+        // @returns Element(Number)
+        // @description
+        // Returns the combined quantity of itemstacks that have the specified material.
+        // -->
+        if (attribute.startsWith("quantity.material")
+                && attribute.hasContext(2) && dMaterial.matches(attribute.getContext(2))) {
+            return new Element(countByMaterial(dMaterial.valueOf(attribute.getContext(2)).getMaterial()))
+                    .getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
