@@ -171,7 +171,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
         registerCoreMember(PushCommand.class, "PUSH", "push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)", 1);
         registerCoreMember(PushableCommand.class, "PUSHABLE", "pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)", 0);
-        registerCoreMember(RandomCommand.class, "RANDOM", "random [<#>/<commands>]", 0);
         registerCoreMember(RemoveCommand.class, "REMOVE", "remove [<entity>|...] (<world>)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(RenameCommand.class, "RENAME", "rename [<name>]", 1);
