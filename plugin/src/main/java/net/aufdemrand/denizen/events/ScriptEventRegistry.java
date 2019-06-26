@@ -25,6 +25,7 @@ public class ScriptEventRegistry {
 
         // Entity events
         ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
+        ScriptEvent.registerScriptEvent(new DragonPhaseChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityAirLevelChangeScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
         ScriptEvent.registerScriptEvent(new EntityBreedScriptEvent());
