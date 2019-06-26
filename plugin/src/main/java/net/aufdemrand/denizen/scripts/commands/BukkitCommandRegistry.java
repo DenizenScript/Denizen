@@ -136,7 +136,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(KickCommand.class, "KICK", "kick [<player>|...] (reason:<text>)", 1);
         registerCoreMember(LeashCommand.class, "LEASH", "leash (cancel) [<entity>|...] (holder:<entity>/<location>)", 1);
         registerCoreMember(LightCommand.class, "LIGHT", "light [<location>] [<#>/reset] (duration:<duration>)", 2);
-        registerCoreMember(LogCommand.class, "LOG", "log [<text>] (type:{info}/severe/warning/fine/finer/finest/none/clear) [file:<name>]", 2);
         registerCoreMember(LookCommand.class, "LOOK", "look (<entity>|...) [<location>] (duration:<duration>)", 1);
         if (Depends.citizens != null) {
             registerCoreMember(LookcloseCommand.class, "LOOKCLOSE", "lookclose (<npc>) (state:<true/false>) (range:<#>) (realistic)", 0);

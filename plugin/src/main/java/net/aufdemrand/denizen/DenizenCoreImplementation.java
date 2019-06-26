@@ -449,4 +449,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public int whileMaxLoops() {
         return Settings.whileMaxLoops();
     }
+
+    @Override
+    public boolean allowLogging() {
+        return Settings.allowLogging();
+    }
 }
