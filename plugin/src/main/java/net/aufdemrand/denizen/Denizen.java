@@ -758,7 +758,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ScriptEvent.registerScriptEvent(new WorldSavesScriptEvent());
             ScriptEvent.registerScriptEvent(new WorldUnloadsScriptEvent());
 
-
             ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
             dBiome.registerTags(); // TODO: Automate this once all classes have tag registries
             ObjectFetcher.registerWithObjectFetcher(dChunk.class);     // ch@
@@ -785,7 +784,6 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             ObjectFetcher.registerWithObjectFetcher(dTrade.class);     // trade@
             ObjectFetcher.registerWithObjectFetcher(dWorld.class);     // w@
             dWorld.registerTags(); // TODO: Automate this once all classes have tag registries
-
 
             // Register Core dObjects with the ObjectFetcher
             ObjectFetcher._registerCoreObjects();
@@ -893,6 +891,7 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             PropertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
             PropertyParser.registerProperty(ItemPotion.class, dItem.class);
             PropertyParser.registerProperty(ItemQuantity.class, dItem.class);
+            PropertyParser.registerProperty(ItemRepairCost.class, dItem.class);
             PropertyParser.registerProperty(ItemScript.class, dItem.class);
             PropertyParser.registerProperty(ItemSignContents.class, dItem.class);
             PropertyParser.registerProperty(ItemSkullskin.class, dItem.class);
