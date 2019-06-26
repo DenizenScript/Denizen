@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class EllipsoidTags {
 
-    public EllipsoidTags(Denizen denizen) {
+    public EllipsoidTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

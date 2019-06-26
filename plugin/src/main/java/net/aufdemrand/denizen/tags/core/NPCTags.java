@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.tags.core;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.core.NPCNavigationSmartEvent;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
 import net.aufdemrand.denizen.objects.dLocation;
@@ -25,6 +24,7 @@ import net.citizensnpcs.api.ai.event.NavigationBeginEvent;
 import net.citizensnpcs.api.ai.event.NavigationCancelEvent;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.ai.event.NavigationStuckEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,9 +37,9 @@ import java.util.Map;
 
 public class NPCTags implements Listener {
 
-    public NPCTags(Denizen denizen) {
+    public NPCTags() {
         if (Depends.citizens != null) {
-            denizen.getServer().getPluginManager().registerEvents(this, denizen);
+            Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
             TagManager.registerTagHandler(new TagRunnable.RootForm() {
                 @Override
                 public void run(ReplaceableTagEvent event) {

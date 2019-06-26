@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerTags implements Listener {
 
-    public PlayerTags(Denizen denizen) {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+    public PlayerTags() {
+        Bukkit.getServer().getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

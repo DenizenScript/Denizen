@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class InventoryTags {
 
-    public InventoryTags(Denizen denizen) {
+    public InventoryTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

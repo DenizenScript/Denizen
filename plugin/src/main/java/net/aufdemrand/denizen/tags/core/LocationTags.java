@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.debugging.SlowWarning;
 
 public class LocationTags {
 
-    public LocationTags(Denizen denizen) {
+    public LocationTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

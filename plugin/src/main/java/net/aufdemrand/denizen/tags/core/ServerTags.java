@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
 
 public class ServerTags {
 
-    public ServerTags(Denizen denizen) {
+    public ServerTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

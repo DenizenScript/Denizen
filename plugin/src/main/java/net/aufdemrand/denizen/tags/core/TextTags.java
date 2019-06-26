@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 
 public class TextTags {
 
-    public TextTags(Denizen denizen) {
+    public TextTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

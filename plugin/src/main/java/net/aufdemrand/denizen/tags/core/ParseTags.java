@@ -12,7 +12,7 @@ public class ParseTags {
 
     // TODO: Move me to the core
 
-    public ParseTags(Denizen denizen) {
+    public ParseTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

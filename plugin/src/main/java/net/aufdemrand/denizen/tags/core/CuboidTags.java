@@ -11,7 +11,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class CuboidTags {
 
-    public CuboidTags(Denizen denizen) {
+    public CuboidTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

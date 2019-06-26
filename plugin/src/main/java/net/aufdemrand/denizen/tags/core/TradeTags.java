@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class TradeTags {
 
-    public TradeTags(Denizen denizen) {
+    public TradeTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

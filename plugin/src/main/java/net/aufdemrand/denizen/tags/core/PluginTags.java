@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class PluginTags {
 
-    public PluginTags(Denizen denizen) {
+    public PluginTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {

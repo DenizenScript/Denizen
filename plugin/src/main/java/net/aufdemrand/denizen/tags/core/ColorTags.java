@@ -10,7 +10,7 @@ import net.aufdemrand.denizencore.utilities.CoreUtilities;
 
 public class ColorTags {
 
-    public ColorTags(Denizen denizen) {
+    public ColorTags() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {
             @Override
             public void run(ReplaceableTagEvent event) {
