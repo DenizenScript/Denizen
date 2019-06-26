@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dPlugin;
 import net.aufdemrand.denizen.objects.dWorld;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.scripts.commands.core.SQLCommand;
+import net.aufdemrand.denizencore.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.scripts.containers.core.CommandScriptHelper;
