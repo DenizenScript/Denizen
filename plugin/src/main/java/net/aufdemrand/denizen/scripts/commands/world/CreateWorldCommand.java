@@ -16,6 +16,39 @@ import java.io.File;
 
 public class CreateWorldCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name CreateWorld
+    // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)
+    // @Required 1
+    // @Short Creates a new world, or loads an existing world.
+    // @Group world
+    //
+    // @Description
+    // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
+    // TODO: Document Command Details (generator)
+    // It accepts a world type which can be specified with 'worldtype:'.
+    // If a worldtype is not specified it will create a world with a world type of NORMAL.
+    // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
+    // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
+    // Optionally, specify an existing world to copy files from.
+    //
+    // @Tags
+    // <server.list_world_types>
+    // <server.list_worlds>
+    //
+    // @Usage
+    // Use to create a normal world with name 'survival'
+    // - createworld survival
+    //
+    // @Usage
+    // Use to create a flat world with the name 'superflat'
+    // - createworld superflat worldtype:FLAT
+    //
+    // @Usage
+    // Use to create an end world with the name 'space'
+    // - createworld space environment:THE_END
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

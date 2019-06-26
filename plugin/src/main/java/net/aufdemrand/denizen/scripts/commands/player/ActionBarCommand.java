@@ -19,6 +19,34 @@ import java.util.List;
 
 public class ActionBarCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name ActionBar
+    // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
+    // @Required 1
+    // @Short Sends a message to a player's action bar.
+    // @group player
+    //
+    // @Description
+    // Sends a message to the target's action bar area. If no target is specified it will default to the attached
+    // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+    // format script.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to send a message to the player's action bar.
+    // - actionbar "Hey there <player.name>!"
+    //
+    // @Usage
+    // Use to send a message to a list of players.
+    // - actionbar "Hey, welcome to the server!" targets:p@Fortifier42|p@mcmonkey4eva|p@Morphan1
+    //
+    // @Usage
+    // Use to send a message to a list of players, with a formatted message.
+    // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

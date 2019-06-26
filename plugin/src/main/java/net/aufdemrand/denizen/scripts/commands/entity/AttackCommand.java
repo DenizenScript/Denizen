@@ -16,6 +16,44 @@ import java.util.List;
 
 public class AttackCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Attack
+    // @Syntax attack (<entity>|...) (target:<entity>/cancel)
+    // @Required 0
+    // @Short Makes an entity, or list of entities, attack a target.
+    // @Group entity
+    //
+    // @Description
+    // By itself, the 'attack' command will act as an NPC command in the sense that an attached
+    // NPC will attack the attached player, or specified target. It can also accept a specified entity,
+    // or list of entities, to fulfill the command, just specify a 'fetchable' entity object. This includes
+    // player objects (dPlayers) and NPC objects (dNPCs). To specify the target, prefix the entity
+    // object with 'target:' or 't:'.
+    //
+    // To cancel an attack, use the 'cancel' argument instead of specifying a target.
+    //
+    // @Tags
+    // <n@npc.navigator.is_fighting>
+    // <n@npc.navigator.attack_strategy>
+    // <n@npc.navigator.target_entity>
+    //
+    // @Usage
+    // Use to make an NPC attack a player in an interact script.
+    // - attack
+    //
+    // @Usage
+    // Use to make an NPC attack a nearby entity.
+    // - attack target:<npc.location.find.living_entities.within[10].random>
+    //
+    // @Usage
+    // Use to make a specific entity attack an entity, including players or npcs.
+    // - attack <player.location.find.living_entities.within[10].random> target:<player>
+    //
+    // @Usage
+    // Use to stop an attack
+    // - attack n@Herobrine stop
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

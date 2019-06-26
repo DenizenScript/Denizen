@@ -16,6 +16,41 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
  */
 public class CooldownCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Cooldown
+    // @Syntax cooldown [<duration>] (global) (s:<script>)
+    // @Required 1
+    // @Short Temporarily disables a script-container from meeting requirements.
+    // @Group core
+    //
+    // @Description
+    // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
+    // requirements check allowing the next highest priority script to trigger. If any other type of script, a
+    // manual requirements check (<s@script_name.requirements.check>) will also return false until the cooldown
+    // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
+    // a valid link to a dPlayer if using player-type cooldown.
+    //
+    // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
+    //
+    // @Tags
+    // <s@script_name.cooled_down[player]>
+    // <s@script_name.cooldown>
+    // <s@requirements.check>
+    //
+    // @Usage
+    // Use to keep the current interact script from meeting requirements.
+    // - cooldown 20m
+    //
+    // @Usage
+    // Use to keep a player from activating a script for a specified duration.
+    // - cooldown 11h s:s@bonus_script
+    // - cooldown 5s s:s@hit_indicator
+    //
+    // @Usage
+    // Use the 'global' argument to indicate the script to be on cooldown for all players.
+    // - cooldown global 24h s:s@daily_treasure_offering
+    // -->
+
     private enum Type {GLOBAL, PLAYER}
 
     @Override

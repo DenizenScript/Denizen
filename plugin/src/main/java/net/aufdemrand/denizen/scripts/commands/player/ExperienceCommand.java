@@ -11,6 +11,43 @@ import org.bukkit.entity.Player;
 
 public class ExperienceCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Experience
+    // @Syntax experience [{set}/give/take] (level) [<#>]
+    // @Required 2
+    // @Short Gives or takes experience points to the player.
+    // @Group player
+    //
+    // @Description
+    // This command allows modification of a players experience points.
+    // Experience can be modified in terms of XP points, or by levels.
+    // Note that the "set" command does not affect levels, but xp bar fullness.
+    // (E.g. setting experience to 0 will not change a players level, but will
+    // set the players experience bar to 0)
+    //
+    // @Tags
+    // <p@player.xp>
+    // <p@player.xp.to_next_level>
+    // <p@player.xp.total>
+    // <p@player.xp.level>
+    //
+    // @Usage
+    // Use to set a player's experience bar to 0.
+    // - experience set 0
+    //
+    // @Usage
+    // Use give give a player 1 level.
+    // - experience give level 1
+    //
+    // @Usage
+    // Use to take 1 level from a player.
+    //
+    // - experience take level 1
+    // @Usage
+    // Use to give a player with the name Morphan1 10 experience points.
+    // - experience give 10 player:p@Morphan1
+    // -->
+
     private enum Type {SET, GIVE, TAKE}
 
     public static void setTotalExperience(Player player, int exp) {

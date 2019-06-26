@@ -13,10 +13,39 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import java.util.List;
 
 
-/**
- * Sets the ages of a list of entities, optionally locking them in those ages.
- */
 public class AgeCommand extends AbstractCommand {
+
+    // <--[command]
+    // @Name Age
+    // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)
+    // @Required 1
+    // @Short Sets the ages of a list of entities, optionally locking them in those ages.
+    // @Group entity
+    //
+    // @Description
+    // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
+    // as a baby or an adult. Using the 'age' command allows modification of an entity's age. Specify an entity and
+    // either 'baby', 'adult', or an integer age to set the age of an entity. Using the 'lock' argument will
+    // keep the entity from increasing its age automatically. NPCs which use ageable entity types can also be
+    // specified.
+    //
+    // @Tags
+    // <e@entity.age>
+    //
+    // @Usage
+    // Use to make an ageable entity a permanant baby.
+    // - age e@50 baby lock
+    // ...or a mature adult.
+    // - age e@50 adult lock
+    //
+    // @Usage
+    // Use to make a baby entity an adult.
+    // - age n@puppy adult
+    //
+    // @Usage
+    // Use to mature an animals so that it is old enough to breed.
+    // - age <player.location.find.entities.within[20]> 10
+    // -->
 
     private enum AgeType {ADULT, BABY}
 

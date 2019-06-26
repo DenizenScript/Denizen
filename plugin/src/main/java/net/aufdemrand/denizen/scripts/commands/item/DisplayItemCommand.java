@@ -24,6 +24,39 @@ import java.util.UUID;
 
 public class DisplayItemCommand extends AbstractCommand implements Listener {
 
+    // <--[command]
+    // @Name DisplayItem
+    // @Syntax displayitem [<item>] [<location>] (duration:<value>)
+    // @Required 2
+    // @Short Makes a non-touchable item spawn for players to view.
+    // @Group item
+    //
+    // @Description
+    // This command drops an item at the specified location which cannot be picked up by players.
+    // It accepts a duration which determines how long the item will stay for until disappearing.
+    // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
+    //
+    // @Tags
+    // <e@entity.item>
+    // <entry[saveName].dropped> returns a dEntity of the spawned item.
+    //
+    // @Usage
+    // Use to display a stone block dropped at a players location
+    // - displayitem i@stone <player.location>
+    //
+    // @Usage
+    // Use to display a diamond sword dropped at 12,64,-847 in world survival
+    // - displayitem i@diamond_sword l@12,64,-847,survival
+    //
+    // @Usage
+    // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
+    // - displayitem i@redstone l@-54,100,-87,creative duration:10s
+    //
+    // @Usage
+    // Use to save the dropped item to save entry 'item_dropped'
+    // - displayitem i@redstone l@-54,100,-87,creative duration:10s save:item_dropped
+    // -->
+
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, DenizenAPI.getCurrentInstance());

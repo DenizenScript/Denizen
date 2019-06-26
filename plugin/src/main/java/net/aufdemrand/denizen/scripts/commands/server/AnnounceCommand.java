@@ -16,6 +16,45 @@ import org.bukkit.entity.Player;
 
 public class AnnounceCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Announce
+    // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
+    // @Required 1
+    // @Short Announces a message for everyone online to read.
+    // @Group server
+    //
+    // @Description
+    // Announce sends a raw message to players. Simply using announce with text will send
+    // the message to all online players. Specifing the 'to_ops' argument will narrow down the players
+    // in which the message is sent to ops only. Alternatively, using the 'to_flagged' argument
+    // will send the message to players only if the specified flag does not equal true. You can also
+    // use the 'to_console' argument to make it so it only shows in the server console. Announce
+    // can also utilize a format script with the 'format' argument. See the format script-container
+    // for more information.
+    //
+    // Note that the default announce mode (that shows for all players) relies on the Bukkit broadcast
+    // system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to send an important message to your players.
+    // - announce 'Warning! This server will restart in 5 minutes!'
+    //
+    // @Usage
+    // Use to send a message to a specific 'group' of players.
+    // - announce to_flagged:clan_subang '[<player.name>] Best clan ever!'
+    //
+    // @Usage
+    // Use to easily send a message to all online ops.
+    // - announce to_ops '<player.name> requires help!'
+    //
+    // @Usage
+    // Use to send a message to just the console (Primarily for debugging / logging).
+    // - announce to_console 'Warning- <player.name> broke a mob spawner at location <player.location>'
+    // -->
+
     enum AnnounceType {ALL, TO_OPS, TO_FLAGGED, TO_CONSOLE}
 
     @Override

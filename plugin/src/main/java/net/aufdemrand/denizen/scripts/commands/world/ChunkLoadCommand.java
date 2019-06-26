@@ -27,6 +27,41 @@ import java.util.Map;
 
 public class ChunkLoadCommand extends AbstractCommand implements Listener {
 
+    // <--[command]
+    // @Name ChunkLoad
+    // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
+    // @Required 1
+    // @Short Keeps a chunk actively loaded and allowing activity.
+    // @Group world
+    //
+    // @Description
+    // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.
+    // This will not over server restarts.
+    // If no duration is specified it defaults to 0 (forever).
+    // While a chunk is loaded all normal activity such as crop growth and npc activity continues,
+    // other than activity that requires a nearby player.
+    //
+    // @Tags
+    // <w@world.loaded_chunks>
+    // <ch@chunk.is_loaded>
+    //
+    // @Usage
+    // Use to load a chunk.
+    // - chunkload ch@0,0,world
+    //
+    // @Usage
+    // Use to temporarily load a chunk.
+    // - chunkload ch@0,0,world duration:5m
+    //
+    // @Usage
+    // Use to stop loading a chunk.
+    // - chunkload remove ch@0,0,world
+    //
+    // @Usage
+    // Use to stop loading all chunks.
+    // - chunkload removeall
+    // -->
+
     @Override
     public void onEnable() {
         Denizen denizen = DenizenAPI.getCurrentInstance();

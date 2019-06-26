@@ -20,6 +20,30 @@ import java.util.List;
 
 public class CopyBlockCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name CopyBlock
+    // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
+    // @Required 1
+    // @Short Copies a block or cuboid to another location, keeping metadata when possible.
+    // @Group world
+    //
+    // @Description
+    // Copies a block or cuboid to another location.
+    // You may also use the 'remove_original' argument to delete the original block.
+    // This effectively moves the block to the target location.
+    //
+    // @Tags
+    // <l@location.material>
+    //
+    // @Usage
+    // Use to copy the block the player is looking at to their current location
+    // - copyblock <player.location.cursor_on> to:<player.location>
+    //
+    // @Usage
+    // Use to move the block the player is looking at to their current location (removing it from its original location)
+    // - copyblock <player.location.cursor_on> to:<player.location> remove_original
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

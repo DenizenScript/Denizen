@@ -18,6 +18,41 @@ import java.util.List;
 
 public class CastCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Cast
+    // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)
+    // @Required 1
+    // @Short Casts a potion effect to a list of entities.
+    // @Group entity
+    //
+    // @Description
+    // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
+    // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
+    // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
+    // of '1639s' (1639 seconds) or greater. While it may display as infinite, it will still wear off.
+    //
+    // If no player is specified, the command will target the player. If no player is present, the
+    // command will target the NPC. If an NPC is not present, there will be an error!
+    //
+    // Optionally, specify "no_ambient" to hide some translucent additional particles, while still
+    // rendering the main particles.
+    // Optionally, specify "hide_particles" to remove the particle effects entirely.
+    //
+    // @Tags
+    // <e@entity.has_effect[<effect>]>
+    // <server.list_potion_effects>
+    //
+    // @Usage
+    // Use to cast an effect onto the player for 120 seconds with a power of 3.
+    // - cast jump d:120 p:3
+    //
+    // @Usage
+    // Use to remove an effect from the player.
+    // - if <player.has_effect[jump]> {
+    //   - cast jump remove <player>
+    //   }
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

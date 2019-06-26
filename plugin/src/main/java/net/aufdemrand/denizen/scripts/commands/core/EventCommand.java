@@ -16,6 +16,39 @@ import java.util.Map;
 
 public class EventCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Event
+    // @Syntax event [<event name>|...] (context:<name>|<object>|...)
+    // @Required 1
+    // @Short Manually fires a world event.
+    // @Group core
+    //
+    // @Description
+    // This command will trigger a world event (an event within a 'world' type script) exactly the same
+    // as if an actual serverside event had caused it.
+    // You can specify as many event names as you want in the list, they will all be fired. It will also automatically
+    // fire a duplicate of each event name with object identifiers (eg 'i@', see <@link language dobject>) removed.
+    // The script's linked player and NPC will automatically be sent through to the event.
+    // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
+    // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
+    // To do this, the best way is to just escape the list value (see <@link language property escaping>).
+    //
+    // NOTE: This command is outdated and bound to be updated.
+    //
+    // @Tags
+    // <server.has_event[<event_name>]>
+    // <server.event_handlers[<event_name>]>
+    // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
+    //
+    // @Usage
+    // Use to trigger a custom event
+    // - event "player triggers custom event"
+    //
+    // @Usage
+    // Use to trigger multiple custom events with context
+    // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

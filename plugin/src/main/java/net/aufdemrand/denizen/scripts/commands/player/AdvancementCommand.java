@@ -24,6 +24,51 @@ import java.util.Map;
 
 public class AdvancementCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Advancement
+    // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
+    // @Required 1
+    // @Short Controls a custom advancement.
+    // @Group player
+    //
+    // @Description
+    // Controls custom Minecraft player advancements. You should generally create advancements manually on server start.
+    // Currently, the ID argument may only refer to advancements added through this command.
+    // The default action is to create and register a new advancement.
+    // You may also delete an existing advancement, in which case do not provide any further arguments.
+    // You may grant or revoke an advancement for a list of players, in which case do not provide any further arguments.
+    // The parent argument sets the root advancement in the advancements menu, in the format "namespace:key".
+    // If no namespace is specified, the parent is assumed to have been created through this command.
+    // The icon argument sets the icon displayed in toasts and the advancements menu.
+    // The title argument sets the title that will show on toasts and in the advancements menu.
+    // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
+    // The background argument sets the image to use if the advancement goes to a new tab.
+    // If the background is unspecified, defaults to "minecraft:textures/gui/advancements/backgrounds/stone.png".
+    // The frame argument sets the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
+    // The toast argument sets whether the advancement should display a toast message when a player completes it. Default is true.
+    // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
+    // The hidden argument sets whether the advancement should be hidden until it is completed.
+    // The x and y arguments are offsets based on the size of an advancement icon in the menu. They are required for custom tabs to look reasonable.
+    //
+    // WARNING: Failure to re-create advancements on every server start may result in loss of data.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Creates a new advancement that has a potato icon.
+    // - advancement "id:hello_world" "icon:baked_potato" "title:Hello World" "description:You said hello to the world."
+    //
+    // @Usage
+    // Creates a new advancement with the parent "hello_world" and a CHALLENGE frame. Hidden until it is completed.
+    // - advancement "id:hello_universe" "parent:hello_world" "icon:ender_pearl" "title:Hello Universe" "description:You said hello to the UNIVERSE." "frame:challenge" "hidden:true" "x:1"
+    //
+    // @Usage
+    // Grants the "hello_world" advancement to the current player.
+    // - advancement "id:hello_world" "grant:<player>"
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

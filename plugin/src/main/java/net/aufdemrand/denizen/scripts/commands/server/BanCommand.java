@@ -17,6 +17,68 @@ import java.util.List;
 
 public class BanCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Ban
+    // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)
+    // @Required 1
+    // @Short Ban or un-ban players or ip addresses.
+    // @Group server
+    //
+    // @Description
+    // Add or remove player or ip address bans from the server. Banning a player will also kick them from the server.
+    // You may optionally specify both a list of players and list of addresses.
+    // Options are:
+    // reason: Sets the ban reason. Defaults to "Banned.".
+    // duration: Sets the duration of the temporary ban. This will be a permanent ban if not specified.
+    // source: Sets the source of the ban. Defaults to "(Unknown)".
+    //
+    // @Tags
+    // <p@player.is_banned>
+    // <p@player.ban_info.reason>
+    // <p@player.ban_info.expiration>
+    // <p@player.ban_info.created>
+    // <p@player.ban_info.source>
+    // <server.is_banned[<address>]>
+    // <server.ban_info[<address>].expiration>
+    // <server.ban_info[<address>].reason>
+    // <server.ban_info[<address>].created>
+    // <server.ban_info[<address>].source>
+    // <server.list_banned_addresses>
+    // <server.list_banned_players>
+    //
+    // @Usage
+    // Use to ban a player.
+    // - ban p@mcmonkey4eva
+    //
+    // @Usage
+    // Use to ban a list of players with a reason.
+    // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes."
+    //
+    // @Usage
+    // Use to ban a list of players for 10 minutes with a reason.
+    // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes." duration:10m
+    //
+    // @Usage
+    // Use to ban a player with a source.
+    // - ban p@Mergu "reason:Grew too many potatoes." source:<player.name>
+    //
+    // @Usage
+    // Use to ban an ip address.
+    // - ban addresses:127.0.0.1
+    //
+    // @Usage
+    // Use to temporarily ip ban all online players.
+    // - ban addresses:<server.list_online_players.parse[ip]> duration:5m
+    //
+    // @Usage
+    // Use to unban a list of players.
+    // - ban remove p@mcmonkey4eva|p@Morphan1
+    //
+    // @Usage
+    // Use to unban an ip address.
+    // - ban remove addresses:127.0.0.1
+    // -->
+
     public enum Actions {
         ADD, REMOVE
     }

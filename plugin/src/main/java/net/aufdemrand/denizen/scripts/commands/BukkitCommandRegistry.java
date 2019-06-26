@@ -41,224 +41,25 @@ public class BukkitCommandRegistry extends CommandRegistry {
 
         registerCoreCommands();
 
-        // <--[command]
-        // @Name Action
-        // @Syntax action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)
-        // @Required 1
-        // @Short Manually fires an NPC action.
-        // @Group npc
-        //
-        // @Description
-        // This command will trigger an NPC action (an action within an 'assignment' type script attached to the NPC) exactly the same
-        // as if an actual serverside event had caused it.
-        // You can specify as many action names as you want in the list, they will all be fired.
-        // You may also specify as many NPCs as you would like to run the action on, in a list.
-        // If no NPCs are specified, the NPC linked to the script will be assumed.
-        // The script's linked player and the specified NPC will automatically be sent through to the action.
-        // To add context information (tags like <context.location>) to the action, simply specify all context values in a list.
-        // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
-        // To do this, the best way is to just escape the list value (see <@link language property escaping>).
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to trigger a custom action
-        // - action "custom action"
-        //
-        // @Usage
-        // Use to trigger multiple custom action with context on a different NPC
-        // - action "player dances|target enemy" n@10 context:action|custom|target|<player.selected_npc>
-        // -->
         registerCoreMember(ActionCommand.class,
                 "ACTION", "action [<action name>|...] (<npc>|...) (context:<name>|<object>|...)", 1);
 
 
-        // <--[command]
-        // @Name ActionBar
-        // @Syntax actionbar [<text>] (targets:<player>|...) (format:<name>)
-        // @Required 1
-        // @Short Sends a message to a player's action bar.
-        // @group player
-        //
-        // @Description
-        // Sends a message to the target's action bar area. If no target is specified it will default to the attached
-        // player. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
-        // format script.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to send a message to the player's action bar.
-        // - actionbar "Hey there <player.name>!"
-        //
-        // @Usage
-        // Use to send a message to a list of players.
-        // - actionbar "Hey, welcome to the server!" targets:p@Fortifier42|p@mcmonkey4eva|p@Morphan1
-        //
-        // @Usage
-        // Use to send a message to a list of players, with a formatted message.
-        // - actionbar "Hey there!" targets:p@Fortifier42|p@mcmonkey4eva format:ServerChat
-        // -->
         registerCoreMember(ActionBarCommand.class,
                 "ACTIONBAR", "actionbar [<text>] (targets:<player>|...)", 1);
 
 
-        // <--[command]
-        // @Name Advancement
-        // @Syntax advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>) (x:<offset>) (y:<offset>)
-        // @Required 1
-        // @Short Controls a custom advancement.
-        // @Group player
-        //
-        // @Description
-        // Controls custom Minecraft player advancements. You should generally create advancements manually on server start.
-        // Currently, the ID argument may only refer to advancements added through this command.
-        // The default action is to create and register a new advancement.
-        // You may also delete an existing advancement, in which case do not provide any further arguments.
-        // You may grant or revoke an advancement for a list of players, in which case do not provide any further arguments.
-        // The parent argument sets the root advancement in the advancements menu, in the format "namespace:key".
-        // If no namespace is specified, the parent is assumed to have been created through this command.
-        // The icon argument sets the icon displayed in toasts and the advancements menu.
-        // The title argument sets the title that will show on toasts and in the advancements menu.
-        // The description argument sets the information that will show when scrolling over a chat announcement or in the advancements menu.
-        // The background argument sets the image to use if the advancement goes to a new tab.
-        // If the background is unspecified, defaults to "minecraft:textures/gui/advancements/backgrounds/stone.png".
-        // The frame argument sets the type of advancement - valid arguments are CHALLENGE, GOAL, and TASK.
-        // The toast argument sets whether the advancement should display a toast message when a player completes it. Default is true.
-        // The announce argument sets whether the advancement should display a chat message to the server when a player completes it. Default is true.
-        // The hidden argument sets whether the advancement should be hidden until it is completed.
-        // The x and y arguments are offsets based on the size of an advancement icon in the menu. They are required for custom tabs to look reasonable.
-        //
-        // WARNING: Failure to re-create advancements on every server start may result in loss of data.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Creates a new advancement that has a potato icon.
-        // - advancement "id:hello_world" "icon:baked_potato" "title:Hello World" "description:You said hello to the world."
-        //
-        // @Usage
-        // Creates a new advancement with the parent "hello_world" and a CHALLENGE frame. Hidden until it is completed.
-        // - advancement "id:hello_universe" "parent:hello_world" "icon:ender_pearl" "title:Hello Universe" "description:You said hello to the UNIVERSE." "frame:challenge" "hidden:true" "x:1"
-        //
-        // @Usage
-        // Grants the "hello_world" advancement to the current player.
-        // - advancement "id:hello_world" "grant:<player>"
-        //
-        // -->
         registerCoreMember(AdvancementCommand.class,
                 "ADVANCEMENT", "advancement [id:<name>] (delete/grant:<players>/revoke:<players>/{create}) (parent:<name>) (icon:<item>) (title:<text>) (description:<text>) (background:<key>) (frame:<type>) (toast:<boolean>) (announce:<boolean>) (hidden:<boolean>)", 1);
 
-        // <--[command]
-        // @Name Age
-        // @Syntax age [<entity>|...] (adult/baby/<age>) (lock)
-        // @Required 1
-        // @Short Sets the ages of a list of entities, optionally locking them in those ages.
-        // @Group entity
-        //
-        // @Description
-        // Some living entity types are 'ageable' which can affect an entities ability to breed, or whether they appear
-        // as a baby or an adult. Using the 'age' command allows modification of an entity's age. Specify an entity and
-        // either 'baby', 'adult', or an integer age to set the age of an entity. Using the 'lock' argument will
-        // keep the entity from increasing its age automatically. NPCs which use ageable entity types can also be
-        // specified.
-        //
-        // @Tags
-        // <e@entity.age>
-        //
-        // @Usage
-        // Use to make an ageable entity a permanant baby.
-        // - age e@50 baby lock
-        // ...or a mature adult.
-        // - age e@50 adult lock
-        //
-        // @Usage
-        // Use to make a baby entity an adult.
-        // - age n@puppy adult
-        //
-        // @Usage
-        // Use to mature an animals so that it is old enough to breed.
-        // - age <player.location.find.entities.within[20]> 10
-        // -->
         registerCoreMember(AgeCommand.class,
                 "AGE", "age [<entity>|...] (adult/baby/<age>) (lock)", 1);
 
 
-        // <--[command]
-        // @Name Anchor
-        // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
-        // @Required 2
-        // @Short Controls an NPC's Anchor Trait.
-        // @Group npc
-        //
-        // @Description
-        // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'. The anchor
-        // command can add and remove new anchors, as well as the ability to teleport NPCs to anchors with the 'assume'
-        // argument.
-        // The Anchors Trait can also be used as a sort of 'waypoints' system. For ease of use, the anchor command
-        // provides function for NPCs to walk to or walk near an anchor.
-        // As the Anchor command is an NPC specific command, a valid npc object must be referenced in the script entry.
-        // If none is provided by default, the use of the 'npc:n@id' argument, replacing the id with the npcid of the
-        // NPC desired, can create a link, or alternatively override the default linked npc.
-        //
-        // @Tags
-        // <n@npc.anchor[anchor_name]>
-        // <n@npc.anchor.list>
-        // <n@npc.has_anchors>
-        //
-        // @Usage
-        // Use to add and remove anchors to an NPC.
-        // - define location_name <context.message>
-        // - chat "I have saved this location as <def[location_name]>.'
-        // - anchor add <npc.location> "id:<def[location_name]>"
-        //
-        // @Usage
-        // Use to make an NPC walk to or walk near a saved anchor.
-        // - anchor walkto i:waypoint_1
-        // - anchor walknear i:waypoint_2 r:5
-        // -->
         registerCoreMember(AnchorCommand.class,
                 "ANCHOR", "anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]", 2);
 
 
-        // <--[command]
-        // @Name Animate
-        // @Syntax animate [<entity>|...] [animation:<name>]
-        // @Required 2
-        // @Plugin Citizens
-        // @Short Makes a list of entities perform a certain animation.
-        // @Group entity
-        //
-        // @Description
-        // Minecraft implements several player and entity animations which the animate command can use, just
-        // specify an entity and an animation.
-        //
-        // Player animations require a Player-type entity or NPC. Available player animations include:
-        // ARM_SWING, CRIT, HURT, and MAGIC_CRIT, SIT, SLEEP, SNEAK, STOP_SITTING, STOP_SLEEPING, STOP_SNEAKING,
-        // START_USE_MAINHAND_ITEM, START_USE_OFFHAND_ITEM, STOP_USE_ITEM, EAT_FOOD, ARM_SWING_OFFHAND
-        //
-        // All entities also have available Bukkit's entity effect list:
-        // <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/EntityEffect.html>
-        //
-        // In addition, Denizen adds a few new entity animations:
-        // SKELETON_START_SWING_ARM, SKELETON_STOP_SWING_ARM, POLAR_BEAR_START_STANDING, POLAR_BEAR_STOP_STANDING
-        //
-        // Note that the above list only applies where logical, EG 'WOLF_' animations only apply to wolves.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to make a player appear to get hurt.
-        // - animate <player> animation:hurt
-        //
-        // @Usage
-        // Use to make a wolf NPC shake
-        // - animate '<n@aufdemrand's wolf>' animation:wolf_shake
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(AnimateCommand.class,
                     "ANIMATE", "animate [<entity>|...] [animation:<name>]", 2);
@@ -268,119 +69,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name AnimateChest
-        // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
-        // @Required 1
-        // @Short Makes a chest appear to open or close.
-        // @Group world
-        //
-        // @Description
-        // This command animates a chest in the world to open or close at a specified location.
-        // The command by default will open the chest. It accepts a sound argument which specifies whether
-        // the open or close sound will play aswell as the animation. The sound plays by default and
-        // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
-        // allowing only selected players to see the chest animate as opened or closed.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to animate a chest to open at 15,89,-45 in world: world
-        // - animatechest l@15,89,-45,world
-        //
-        // @Usage
-        // To then close the chest at 15,89,-45 in world: world
-        // - animatechest l@15,89,-45,world close
-        //
-        // @Usage
-        // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
-        // - animatechest l@12,12,-64,peter sound:false
-        //
-        // @Usage
-        // If only a player by the name of Morphan1 should see the chest open
-        // - animatechest l@12,12,-64,peter sound:false p@Morphan1
-        //
-        // @Usage
-        // The command also accepts a list of players to view the animation
-        // - animatechest l@12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
-        // -->
         registerCoreMember(AnimateChestCommand.class,
                 "ANIMATECHEST", "animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)", 1);
 
 
-        // <--[command]
-        // @Name Announce
-        // @Syntax announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)
-        // @Required 1
-        // @Short Announces a message for everyone online to read.
-        // @Group server
-        //
-        // @Description
-        // Announce sends a raw message to players. Simply using announce with text will send
-        // the message to all online players. Specifing the 'to_ops' argument will narrow down the players
-        // in which the message is sent to ops only. Alternatively, using the 'to_flagged' argument
-        // will send the message to players only if the specified flag does not equal true. You can also
-        // use the 'to_console' argument to make it so it only shows in the server console. Announce
-        // can also utilize a format script with the 'format' argument. See the format script-container
-        // for more information.
-        //
-        // Note that the default announce mode (that shows for all players) relies on the Bukkit broadcast
-        // system, which requires the permission "bukkit.broadcast.user" to see broadcasts.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to send an important message to your players.
-        // - announce 'Warning! This server will restart in 5 minutes!'
-        //
-        // @Usage
-        // Use to send a message to a specific 'group' of players.
-        // - announce to_flagged:clan_subang '[<player.name>] Best clan ever!'
-        //
-        // @Usage
-        // Use to easily send a message to all online ops.
-        // - announce to_ops '<player.name> requires help!'
-        //
-        // @Usage
-        // Use to send a message to just the console (Primarily for debugging / logging).
-        // - announce to_console 'Warning- <player.name> broke a mob spawner at location <player.location>'
-        // -->
         registerCoreMember(AnnounceCommand.class,
                 "ANNOUNCE", "announce [<text>] (to_ops/to_console/to_flagged:<flag_name>) (format:<name>)", 1);
 
 
-        // <--[command]
-        // @Name Assignment
-        // @Syntax assignment [set/remove] (script:<name>)
-        // @Required 1
-        // @Plugin Citizens
-        // @Short Changes an NPC's assignment.
-        // @Group npc
-        //
-        // @Description
-        // Changes an NPC's assignment as though you used the '/npc assignment' command.
-        // Uses the script: argument, which accepts an assignment script type. For this command to work an npc must
-        // be attached to the script queue or an npc specified with npc:n@npc.
-        //
-        // @Tags
-        // <n@npc.script>
-        // <n@npc.has_script>
-        // <server.list_npcs_assigned[<assignment_script>]>
-        //
-        // @Usage
-        // Use to assign an npc with an assignment script named 'Bob the Builder'.
-        // - assignment set "script:Bob the Builder"
-        //
-        // @Usage
-        // Use to give an npc with the id of 3 an assignment.
-        // - assignment set "script:Bob the Builder" npc:n@3
-        //
-        // @Usage
-        // Use to remove an npc's assignment.
-        // - assignment remove
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(AssignmentCommand.class,
                     "ASSIGNMENT", "assignment [set/remove] (script:<name>)", 1);
@@ -390,174 +86,18 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name Attack
-        // @Syntax attack (<entity>|...) (target:<entity>/cancel)
-        // @Required 0
-        // @Short Makes an entity, or list of entities, attack a target.
-        // @Group entity
-        //
-        // @Description
-        // By itself, the 'attack' command will act as an NPC command in the sense that an attached
-        // NPC will attack the attached player, or specified target. It can also accept a specified entity,
-        // or list of entities, to fulfill the command, just specify a 'fetchable' entity object. This includes
-        // player objects (dPlayers) and NPC objects (dNPCs). To specify the target, prefix the entity
-        // object with 'target:' or 't:'.
-        //
-        // To cancel an attack, use the 'cancel' argument instead of specifying a target.
-        //
-        // @Tags
-        // <n@npc.navigator.is_fighting>
-        // <n@npc.navigator.attack_strategy>
-        // <n@npc.navigator.target_entity>
-        //
-        // @Usage
-        // Use to make an NPC attack a player in an interact script.
-        // - attack
-        //
-        // @Usage
-        // Use to make an NPC attack a nearby entity.
-        // - attack target:<npc.location.find.living_entities.within[10].random>
-        //
-        // @Usage
-        // Use to make a specific entity attack an entity, including players or npcs.
-        // - attack <player.location.find.living_entities.within[10].random> target:<player>
-        //
-        // @Usage
-        // Use to stop an attack
-        // - attack n@Herobrine stop
-        // -->
         registerCoreMember(AttackCommand.class,
                 "ATTACK", "attack (<entity>|...) (target:<entity>/cancel)", 0);
 
 
-        // <--[command]
-        // @Name Ban
-        // @Syntax ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)
-        // @Required 1
-        // @Short Ban or un-ban players or ip addresses.
-        // @Group server
-        //
-        // @Description
-        // Add or remove player or ip address bans from the server. Banning a player will also kick them from the server.
-        // You may optionally specify both a list of players and list of addresses.
-        // Options are:
-        // reason: Sets the ban reason. Defaults to "Banned.".
-        // duration: Sets the duration of the temporary ban. This will be a permanent ban if not specified.
-        // source: Sets the source of the ban. Defaults to "(Unknown)".
-        //
-        // @Tags
-        // <p@player.is_banned>
-        // <p@player.ban_info.reason>
-        // <p@player.ban_info.expiration>
-        // <p@player.ban_info.created>
-        // <p@player.ban_info.source>
-        // <server.is_banned[<address>]>
-        // <server.ban_info[<address>].expiration>
-        // <server.ban_info[<address>].reason>
-        // <server.ban_info[<address>].created>
-        // <server.ban_info[<address>].source>
-        // <server.list_banned_addresses>
-        // <server.list_banned_players>
-        //
-        // @Usage
-        // Use to ban a player.
-        // - ban p@mcmonkey4eva
-        //
-        // @Usage
-        // Use to ban a list of players with a reason.
-        // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes."
-        //
-        // @Usage
-        // Use to ban a list of players for 10 minutes with a reason.
-        // - ban p@mcmonkey4eva|p@Morphan1 "reason:Didn't grow enough potatoes." duration:10m
-        //
-        // @Usage
-        // Use to ban a player with a source.
-        // - ban p@Mergu "reason:Grew too many potatoes." source:<player.name>
-        //
-        // @Usage
-        // Use to ban an ip address.
-        // - ban addresses:127.0.0.1
-        //
-        // @Usage
-        // Use to temporarily ip ban all online players.
-        // - ban addresses:<server.list_online_players.parse[ip]> duration:5m
-        //
-        // @Usage
-        // Use to unban a list of players.
-        // - ban remove p@mcmonkey4eva|p@Morphan1
-        //
-        // @Usage
-        // Use to unban an ip address.
-        // - ban remove addresses:127.0.0.1
-        // -->
         registerCoreMember(BanCommand.class,
                 "BAN", "ban ({add}/remove) [<player>|.../addresses:<address>|...] (reason:<text>) (duration:<duration>) (source:<text>)", 1);
 
 
-        // <--[command]
-        // @Name BlockCrack
-        // @Syntax blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)
-        // @Required 2
-        // @Short Shows the player(s) a block cracking animation.
-        // @Group world
-        //
-        // @Description
-        // You must specify a progress number between 1 and 10, where 1 is the first stage and 10 is the last.
-        // To remove the animation, you must specify any number outside of that range. For example, 0.
-        // Optionally, you can stack multiple effects
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to show a crack in a block to the currently attached player.
-        // - blockcrack l@12,43,20,world progress:4
-        //
-        // @Usage
-        // Use to stop showing a crack in a block to all online players.
-        // - blockcrack l@12,43,20,world progress:0 players:<server.list_online_players>
-        //
-        // @Usage
-        // Use to show all 10 layers of block cracking at the same time.
-        // - repeat 10:
-        //   - blockcrack l@12,43,20,world progress:<def[value]> stack
-        // -->
         registerCoreMember(BlockCrackCommand.class,
                 "BLOCKCRACK", "blockcrack [<location>] [progress:<#>] (stack) (players:<player>|...)", 2);
 
 
-        // <--[command]
-        // @Name Break
-        // @Syntax break [<location>] (<npc>) (radius:<#.#>)
-        // @Required 1
-        // @Plugin Citizens
-        // @Short Makes an NPC walk over and break a block.
-        // @Group world
-        //
-        // @Description
-        // By itself, the 'break' command will act as an NPC command in the sense that an attached
-        // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
-        // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
-        // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
-        //
-        // @Tags
-        // <n@npc.navigator.is_navigating>
-        // <n@npc.navigator.target_location>
-        //
-        // @Usage
-        // Use to make the npc break a block at 17,64,-87 in world.
-        // - break l@17,64,-87,world
-        //
-        // @Usage
-        // Use to make an npc with the id 12 break a block at 17,64,-87 in world.
-        // - break l@17,64,-87,world n@12
-        //
-        // @Usage
-        // Use to make an npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away.
-        // - break l@17,64,-87,world n@bob radius:5
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(BreakCommand.class,
                     "BREAK", "break [<location>] (<npc>) (radius:<#.#>)", 1);
@@ -567,163 +107,17 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name BossBar
-        // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
-        // @Required 1
-        // @Short Shows players a boss bar.
-        // @Group server
-        //
-        // @Description
-        // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
-        // values and remove the bar.
-        //
-        // Requires an ID. Progress must be between 0 and 1.
-        //
-        // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
-        // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
-        // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
-        //
-        // @Tags
-        // <server.current_bossbars>
-        //
-        // @Usage
-        // Shows a message to all online players.
-        // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
-        //
-        // @Usage
-        // Update the boss bar's color and progress.
-        // - bossbar update MyMessageID color:blue progress:0.2
-        //
-        // @Usage
-        // Add more players to the boss bar.
-        // - bossbar update MyMessageID players:<server.flag[new_players]>
-        //
-        // @Usage
-        // Remove a player from the boss bar.
-        // - bossbar remove MyMessageID players:<server.match_player[BlackCoyote]>
-        //
-        // @Usage
-        // Delete the boss bar.
-        // - bossbar remove MyMessageID
-        // -->
         registerCoreMember(BossBarCommand.class,
                 "BOSSBAR", "bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)", 1);
 
 
-        // <--[command]
-        // @Name Burn
-        // @Syntax burn [<entity>|...] (duration:<value>)
-        // @Required 1
-        // @Short Sets a list of entities on fire.
-        // @Group entity
-        //
-        // @Description
-        // Burn will set a list of entities on fire. Just specify a list of entities (or a single entity) and
-        // optionally, a duration. Normal mobs and players will see damage afflicted, but NPCs will block damage
-        // from a burn unless 'vulnerable'. Since this command sets the total time of fire, it can also be used
-        // to cancel fire on a burning entity by specifying a duration of 0. Specifying no duration will result
-        // in a 5 second burn.
-        //
-        // @Tags
-        // <e@entity.fire_time>
-        //
-        // @Usage
-        // Use to set an entity on fire.
-        // - burn <player> duration:10s
-        //
-        // @Usage
-        // Use to cancel fire on entities.
-        // - burn <player.location.find.living_entities.within[10]> duration:0
-        // -->
         registerCoreMember(BurnCommand.class,
                 "BURN", "burn [<entity>|...] (duration:<value>)", 1);
 
 
-        // <--[command]
-        // @Name Cast
-        // @Syntax cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)
-        // @Required 1
-        // @Short Casts a potion effect to a list of entities.
-        // @Group entity
-        //
-        // @Description
-        // Casts or removes a potion effect to or from a list of entities. If you don't specify a duration,
-        // it defaults to 60 seconds. If you don't specify a power level, it defaults to 1.
-        // To cast an effect with a duration which displays as '**:**' or 'infinite' use a duration
-        // of '1639s' (1639 seconds) or greater. While it may display as infinite, it will still wear off.
-        //
-        // If no player is specified, the command will target the player. If no player is present, the
-        // command will target the NPC. If an NPC is not present, there will be an error!
-        //
-        // Optionally, specify "no_ambient" to hide some translucent additional particles, while still
-        // rendering the main particles.
-        // Optionally, specify "hide_particles" to remove the particle effects entirely.
-        //
-        // @Tags
-        // <e@entity.has_effect[<effect>]>
-        // <server.list_potion_effects>
-        //
-        // @Usage
-        // Use to cast an effect onto the player for 120 seconds with a power of 3.
-        // - cast jump d:120 p:3
-        //
-        // @Usage
-        // Use to remove an effect from the player.
-        // - if <player.has_effect[jump]> {
-        //   - cast jump remove <player>
-        //   }
-        // -->
         registerCoreMember(CastCommand.class,
                 "CAST", "cast [<effect>] (remove) (duration:<value>) (power:<#>) (<entity>|...) (no_ambient) (hide_particles)", 1);
 
-        // TODO: Should the chat command be in the NPC group instead?
-        // <--[command]
-        // @Name Chat
-        // @Syntax chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)
-        // @Required 1
-        // @Plugin Citizens
-        // @Short Causes an NPC/NPCs to send a chat message to nearby players.
-        // @Group player
-        //
-        // @Description
-        // Chat uses an NPCs DenizenSpeechController provided by Denizen, typically inside 'interact' or 'task'
-        // script-containers. Typically there is already player and NPC context inside a queue that is using
-        // the 'chat' command. In this case, only a text input is required. Alternatively, target entities
-        // can be specified to have any Entity chat to a different target/targets, or specify 'no_target' to
-        // not send the message to any specific target.
-        //
-        // Chat from an NPC is formatted by the settings present in Denizen's config.yml. Players being chatted
-        // to see a slightly different message than surrounding players. By default, a 'chat' will allow other
-        // players nearby to also see the conversation. For example:
-        // <code>
-        // - chat 'Hello!'
-        // </code>
-        // The player being chatted to, by default the attached Player to the script queue, will see a message
-        // 'Jack says to you, Hello!', however surrounding entities will see something along the lines of
-        // 'Jack says to aufdemrand, Hello!'. The format for this is configurable.
-        //
-        // If sending messages to the Player without any surrounding entities hearing the message is desirable,
-        // it is often times recommended to instead use the 'narrate' command. Alternatively, on a server-wide scale,
-        // the configuration node for the 'range' can be set to 0, however this is discouraged.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to emulate an NPC talking out loud to a Player within an interact script-container.
-        // - chat "Hello, <player.name>! Nice day, eh?"
-        //
-        // @Usage
-        // Use to have an NPC talk to a group of individuals.
-        // - flag <npc> talk_targets:!
-        // - foreach <npc.location.find.players.within[6]> {
-        //     - if <def[value].has_flag[clan_initiate]> {
-        //       - flag <npc> talk_targets:->:<def[value]>
-        //     }
-        //   }
-        // - chat targets:<npc.flag[talk_targets].as_list> "Welcome, initiate!"
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(ChatCommand.class,
                     "CHAT", "chat [<text>] (no_target/targets:<entity>|...) (talkers:<entity>|...) (range:<#.#>)", 1);
@@ -733,170 +127,22 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name ChunkLoad
-        // @Syntax chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)
-        // @Required 1
-        // @Short Keeps a chunk actively loaded and allowing activity.
-        // @Group world
-        //
-        // @Description
-        // Forces a chunk to load and stay loaded in the world for the duration specified or until removed.
-        // This will not over server restarts.
-        // If no duration is specified it defaults to 0 (forever).
-        // While a chunk is loaded all normal activity such as crop growth and npc activity continues,
-        // other than activity that requires a nearby player.
-        //
-        // @Tags
-        // <w@world.loaded_chunks>
-        // <ch@chunk.is_loaded>
-        //
-        // @Usage
-        // Use to load a chunk.
-        // - chunkload ch@0,0,world
-        //
-        // @Usage
-        // Use to temporarily load a chunk.
-        // - chunkload ch@0,0,world duration:5m
-        //
-        // @Usage
-        // Use to stop loading a chunk.
-        // - chunkload remove ch@0,0,world
-        //
-        // @Usage
-        // Use to stop loading all chunks.
-        // - chunkload removeall
-        // -->
         registerCoreMember(ChunkLoadCommand.class,
                 "CHUNKLOAD", "chunkload ({add}/remove/removeall) [<chunk>] (duration:<value>)", 1);
 
 
-        // <--[command]
-        // @Name Compass
-        // @Syntax compass [<location>/reset]
-        // @Required 1
-        // @Short Redirects the player's compass to target the given location.
-        // @Group player
-        //
-        // @Description
-        // Redirects the compass of the player, who is attached to the script queue.
-        //
-        // This is not the compass item, but the command is controlling the pointer the item should direct at.
-        // This means that all item compasses will point the same direction but differently for each player.
-        //
-        // The y-axis is not used but its fine to be included in the location argument.
-        //
-        // Reset argument will turn the direction to default (spawn or bed)
-        //
-        // @Tags
-        // <p@player.compass_target>
-        //
-        // @Usage
-        // Use to reset the compass direction to its default
-        // - compass reset
-        //
-        // @Usage
-        // Use to point with a compass to the player's current location
-        // - compass <player.location>
-        //
-        // @Usage
-        // Use to point with a compass to the world's spawn location
-        // - compass <w@world.spawn_location>
-        // -->
         registerCoreMember(CompassCommand.class,
                 "COMPASS", "compass [<location>/reset]", 1);
 
 
-        // <--[command]
-        // @Name Cooldown
-        // @Syntax cooldown [<duration>] (global) (s:<script>)
-        // @Required 1
-        // @Short Temporarily disables a script-container from meeting requirements.
-        // @Group core
-        //
-        // @Description
-        // Cools down a script-container. If an interact-container, when on cooldown, scripts will not pass a
-        // requirements check allowing the next highest priority script to trigger. If any other type of script, a
-        // manual requirements check (<s@script_name.requirements.check>) will also return false until the cooldown
-        // period is completed. Cooldown requires a type (player or global), a script, and a duration. It also requires
-        // a valid link to a dPlayer if using player-type cooldown.
-        //
-        // Cooldown periods are persistent through a server restart as they are saved in the saves.yml.
-        //
-        // @Tags
-        // <s@script_name.cooled_down[player]>
-        // <s@script_name.cooldown>
-        // <s@requirements.check>
-        //
-        // @Usage
-        // Use to keep the current interact script from meeting requirements.
-        // - cooldown 20m
-        //
-        // @Usage
-        // Use to keep a player from activating a script for a specified duration.
-        // - cooldown 11h s:s@bonus_script
-        // - cooldown 5s s:s@hit_indicator
-        //
-        // @Usage
-        // Use the 'global' argument to indicate the script to be on cooldown for all players.
-        // - cooldown global 24h s:s@daily_treasure_offering
-        // -->
         registerCoreMember(CooldownCommand.class,
                 "COOLDOWN", "cooldown [<duration>] (global) (s:<script>)", 1);
 
 
-        // <--[command]
-        // @Name CopyBlock
-        // @Syntax copyblock [<location>/<cuboid>] [to:<location>] (remove_original)
-        // @Required 1
-        // @Short Copies a block or cuboid to another location, keeping metadata when possible.
-        // @Group world
-        //
-        // @Description
-        // Copies a block or cuboid to another location.
-        // You may also use the 'remove_original' argument to delete the original block.
-        // This effectively moves the block to the target location.
-        //
-        // @Tags
-        // <l@location.material>
-        //
-        // @Usage
-        // Use to copy the block the player is looking at to their current location
-        // - copyblock <player.location.cursor_on> to:<player.location>
-        //
-        // @Usage
-        // Use to move the block the player is looking at to their current location (removing it from its original location)
-        // - copyblock <player.location.cursor_on> to:<player.location> remove_original
-        // -->
         registerCoreMember(CopyBlockCommand.class,
                 "COPYBLOCK", "copyblock [<location>/<cuboid>] [to:<location>] (remove_original)", 1);
 
 
-        // <--[command]
-        // @Name Create
-        // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
-        // @Required 1
-        // @Plugin Citizens
-        // @Short Creates a new NPC, and optionally spawns it at a location.
-        // @Group npc
-        //
-        // @Description
-        // Creates an npc which the entity type specified, or specify an existing npc to create a copy. If no location
-        // is specified the npc is created despawned. Use the 'save:<savename>' argument to return the npc for later
-        // use in a script.
-        //
-        // @Tags
-        // <server.list_npcs>
-        // <entry[saveName].created_npc> returns the NPC that was created.
-        //
-        // @Usage
-        // Use to create a despawned NPC for later usage.
-        // - create player Bob
-        //
-        // @Usage
-        // Use to create an NPC and spawn it immediately.
-        // - create spider Joe <player.location>
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(CreateCommand.class,
                     "CREATE", "create [<entity>] [<name>] (<location>)", 1);
@@ -906,66 +152,10 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name CreateWorld
-        // @Syntax createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)
-        // @Required 1
-        // @Short Creates a new world, or loads an existing world.
-        // @Group world
-        //
-        // @Description
-        // This command creates a new minecraft world with the specified name, or loads an existing world by thet name.
-        // TODO: Document Command Details (generator)
-        // It accepts a world type which can be specified with 'worldtype:'.
-        // If a worldtype is not specified it will create a world with a world type of NORMAL.
-        // For all world types, see: <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/WorldType.html>
-        // An environment is expected and will be defaulted to NORMAL. Alternatives are NETHER and THE_END.
-        // Optionally, specify an existing world to copy files from.
-        //
-        // @Tags
-        // <server.list_world_types>
-        // <server.list_worlds>
-        //
-        // @Usage
-        // Use to create a normal world with name 'survival'
-        // - createworld survival
-        //
-        // @Usage
-        // Use to create a flat world with the name 'superflat'
-        // - createworld superflat worldtype:FLAT
-        //
-        // @Usage
-        // Use to create an end world with the name 'space'
-        // - createworld space environment:THE_END
-        // -->
         registerCoreMember(CreateWorldCommand.class,
                 "CREATEWORLD", "createworld [<name>] (g:<generator>) (worldtype:<type>) (environment:<environment>) (copy_from:<world>) (seed:<seed>)", 1);
 
 
-        // <--[command]
-        // @Name Despawn
-        // @Syntax despawn (<npc>|...)
-        // @Plugin Citizens
-        // @Required 0
-        // @Short Temporarily despawns the linked NPC or a list of NPCs.
-        // @Group npc
-        //
-        // @Description
-        // This command will temporarily despawn either the linked NPC or
-        // a list of other NPCs. Despawning means they are no longer visible
-        // or interactable, but they still exist and can be respawned.
-        //
-        // @Tags
-        // <n@npc.is_spawned>
-        //
-        // @Usage
-        // Use to despawn the linked NPC.
-        // - despawn
-        //
-        // @Usage
-        // Use to despawn several NPCs.
-        // - despawn <npc>|<player.selected_npc>|n@32
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(DespawnCommand.class,
                     "DESPAWN", "despawn (<npc>)", 0);
@@ -975,40 +165,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name Disengage
-        // @Syntax disengage
-        // @Required 0
-        // @Plugin Citizens
-        // @Short Enables an NPCs triggers that have been temporarily disabled by the engage command.
-        // @Group npc
-        //
-        // @Description
-        // Re-enables any toggled triggers that have been disabled by disengage. Using
-        // disengage inside scripts must have an NPC to reference, or one may be specified
-        // by supplying a valid dNPC object with the npc argument.
-        //
-        // This is mostly regarded as an 'interact script command', though it may be used inside
-        // other script types. This is because disengage works with the trigger system, which is an
-        // interact script-container feature.
-        //
-        // NPCs that are interacted with while engaged will fire an 'on unavailable' assignment
-        // script-container action.
-        //
-        // See <@link command Engage>
-        //
-        // @Tags
-        // <n@npc.is_engaged>
-        //
-        // @Usage
-        // Use to reenable an NPC's triggers, disabled via 'engage'.
-        // - engage
-        // - chat 'Be right there!'
-        // - walk <player.location>
-        // - wait 5s
-        // - disengage
-        //
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(DisengageCommand.class,
                     "DISENGAGE", "disengage", 0);
@@ -1018,127 +174,14 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name DisplayItem
-        // @Syntax displayitem [<item>] [<location>] (duration:<value>)
-        // @Required 2
-        // @Short Makes a non-touchable item spawn for players to view.
-        // @Group item
-        //
-        // @Description
-        // This command drops an item at the specified location which cannot be picked up by players.
-        // It accepts a duration which determines how long the item will stay for until disappearing.
-        // If no duration is specified the item will stay for 1 minute, after which the item will disappear.
-        //
-        // @Tags
-        // <e@entity.item>
-        // <entry[saveName].dropped> returns a dEntity of the spawned item.
-        //
-        // @Usage
-        // Use to display a stone block dropped at a players location
-        // - displayitem i@stone <player.location>
-        //
-        // @Usage
-        // Use to display a diamond sword dropped at 12,64,-847 in world survival
-        // - displayitem i@diamond_sword l@12,64,-847,survival
-        //
-        // @Usage
-        // Use to display redstone dust dropped at -54,100,-87 in world creative disappear after 10 seconds
-        // - displayitem i@redstone l@-54,100,-87,creative duration:10s
-        //
-        // @Usage
-        // Use to save the dropped item to save entry 'item_dropped'
-        // - displayitem i@redstone l@-54,100,-87,creative duration:10s save:item_dropped
-        // -->
         registerCoreMember(DisplayItemCommand.class,
                 "DISPLAYITEM", "displayitem [<item>] [<location>] (duration:<value>)", 2);
 
 
-        // <--[command]
-        // @Name Drop
-        // @Syntax drop [<entity_type>/xp/<item>|...] (<location>) (quantity:<#>) (speed:<#.#>) (delay:<duration>)
-        // @Required 1
-        // @Short Drops an item, entity, or experience orb on a location.
-        // @Group world
-        //
-        // @Description
-        // To drop an item, just specify a valid item object. To drop
-        // an entity, specify a generic entity object. Drop can also reward players
-        // with experience orbs by using the 'xp' argument.
-        //
-        // For all three usages, you can optionally specify an integer with 'quantity:'
-        // prefix to drop multiple items/entities/xp.
-        // For items, you can add 'speed:' to modify the launch velocity.
-        // You can also add 'delay:' to set the pickup delay of the item.
-        //
-        // @Tags
-        // <e@entity.item>
-        // <entry[saveName].dropped_entities> returns a list of entities that were dropped.
-        //
-        // @Usage
-        // Use to drop some loot around the player.
-        // - drop i@gold_nugget <cuboid[cu@<player.location.add[-2,-2,-2]>|<player.location.add[2,2,2]>].spawnable_blocks.random>
-        //
-        // @Usage
-        // Use to reward a player with 500 xp.
-        // - drop xp quantity:500 <player.location>
-        //
-        // @Usage
-        // Use to drop a nasty surprise (exploding TNT).
-        // - drop e@primed_tnt <player.location>
-        //
-        // @Usage
-        // Use to drop an item with a pickup delay at the player's location.
-        // - drop i@diamond_sword <player.location> delay:20s
-        // -->
         registerCoreMember(DropCommand.class,
                 "DROP", "drop [<entity_type>/xp/<item>|...] (<location>) (qty:<#>) (speed:<#.#>) (delay:<duration>)", 1);
 
 
-        // <--[command]
-        // @Name Engage
-        // @Syntax engage (<duration>)
-        // @Required 0
-        // @Plugin Citizens
-        // @Short Temporarily disables an NPCs toggled interact script-container triggers.
-        // @Group npc
-        //
-        // @Description
-        // Engaging an NPC will temporarily disable any interact script-container triggers. To reverse
-        // this behavior, use either the disengage command, or specify a duration in which the engage
-        // should timeout. Specifying an engage without a duration will render the NPC engaged until
-        // a disengage is used on the NPC. Engaging an NPC affects all players attempting to interact
-        // with the NPC.
-        //
-        // While engaged, all triggers and actions associated with triggers will not 'fire', except
-        // the 'on unavailable' assignment script-container action, which will fire for triggers that
-        // were enabled previous to the engage command.
-        //
-        // Engage can be useful when NPCs are carrying out a task that shouldn't be interrupted, or
-        // to provide a good way to avoid accidental 'retrigger'.
-        //
-        // See <@link command Disengage>
-        //
-        // @Tags
-        // <n@npc.is_engaged>
-        //
-        // @Usage
-        // Use to make an NPC appear 'busy'.
-        // - engage
-        // - chat 'Give me a few minutes while I mix you a potion!'
-        // - walk <npc.anchor[mixing_station]>
-        // - wait 10s
-        // - walk <npc.anchor[service_station]>
-        // - chat 'Here you go!'
-        // - give potion <player>
-        // - disengage
-        //
-        // @Usage
-        // Use to avoid 'retrigger'.
-        // - engage 5s
-        // - take quest_item
-        // - flag player finished_quests:->:super_quest
-        // -->
         if (Depends.citizens != null) {
             registerCoreMember(EngageCommand.class,
                     "ENGAGE", "engage (<duration>)", 0);
@@ -1148,186 +191,21 @@ public class BukkitCommandRegistry extends CommandRegistry {
         }
 
 
-        // <--[command]
-        // @Name Equip
-        // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
-        // @Required 1
-        // @Short Equips items and armor on a list of entities.
-        // @Group entity
-        //
-        // @Description
-        // This command equips an item or armor to an entity or list of entities to the specified slot(s).
-        // Set the item to 'i@air' to unequip any slot.
-        //
-        // @Tags
-        // <e@entity.equipment>
-        // <e@entity.equipment.helmet>
-        // <e@entity.equipment.chestplate>
-        // <e@entity.equipment.leggings>
-        // <e@entity.equipment.boots>
-        // <in@inventory.equipment>
-        //
-        // @Usage
-        // Use to equip a stone block on the player's head.
-        // - equip <player> head:i@stone
-        //
-        // @Usage
-        // Use to equip a iron helmet on two players named Bob and Steve.
-        // - equip p@bob|p@steve head:i@iron_helmet
-        //
-        // @Usage
-        // Use to unequip all armor off the player.
-        // - equip <player> head:i@air chest:i@air legs:i@air boots:i@air
-        //
-        // @Usage
-        // Use to equip a saddle on a horse.
-        // - equip e@horse saddle:i@saddle
-        //
-        // @Usage
-        // Use to equip a saddle on a pig.
-        // - equip e@pig saddle:i@saddle
-        // -->
         registerCoreMember(EquipCommand.class,
                 "EQUIP", "equip (<entity>|...) (offhand:<item>) (hand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)", 1);
 
 
-        // <--[command]
-        // @Name Event
-        // @Syntax event [<event name>|...] (context:<name>|<object>|...)
-        // @Required 1
-        // @Short Manually fires a world event.
-        // @Group core
-        //
-        // @Description
-        // This command will trigger a world event (an event within a 'world' type script) exactly the same
-        // as if an actual serverside event had caused it.
-        // You can specify as many event names as you want in the list, they will all be fired. It will also automatically
-        // fire a duplicate of each event name with object identifiers (eg 'i@', see <@link language dobject>) removed.
-        // The script's linked player and NPC will automatically be sent through to the event.
-        // To add context information (tags like <context.location>) to the event, simply specify all context values in a list.
-        // Note that there are some inherent limitations... EG, you can't directly add a list to the context currently.
-        // To do this, the best way is to just escape the list value (see <@link language property escaping>).
-        //
-        // NOTE: This command is outdated and bound to be updated.
-        //
-        // @Tags
-        // <server.has_event[<event_name>]>
-        // <server.event_handlers[<event_name>]>
-        // <entry[saveName].determinations> returns a list of the determined values (if any) from the event.
-        //
-        // @Usage
-        // Use to trigger a custom event
-        // - event "player triggers custom event"
-        //
-        // @Usage
-        // Use to trigger multiple custom events with context
-        // - event "player triggers custom event|player causes event" context:event|custom|npc|<player.selected_npc>
-        // -->
         registerCoreMember(EventCommand.class,
                 "EVENT", "event [<event name>|...] (context:<name>|<object>|...)", 1);
 
 
-        // <--[command]
-        // @Name Execute
-        // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)
-        // @Required 2
-        // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
-        // @Group server
-        //
-        // @Description
-        // Allows the execution of server commands through a Denizen Script. Commands can be executed as the server,
-        // as an npc, an op or as a player, as though it was typed by the respective source.
-        //
-        // @Tags
-        // <entry[saveName].output> returns the output to an as_server sender.
-        //
-        // @Usage
-        // Use to execute the save-all command as the server.
-        // - execute as_server "save-all"
-        //
-        // @Usage
-        // Use to make the linked (non-op) player execute a command that normally only ops can use.
-        // - execute as_op "staffsay hi"
-        // -->
         registerCoreMember(ExecuteCommand.class,
                 "EXECUTE", "execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)", 2);
 
-
-        // <--[command]
-        // @Name Experience
-        // @Syntax experience [{set}/give/take] (level) [<#>]
-        // @Required 2
-        // @Short Gives or takes experience points to the player.
-        // @Group player
-        //
-        // @Description
-        // This command allows modification of a players experience points.
-        // Experience can be modified in terms of XP points, or by levels.
-        // Note that the "set" command does not affect levels, but xp bar fullness.
-        // (E.g. setting experience to 0 will not change a players level, but will
-        // set the players experience bar to 0)
-        //
-        // @Tags
-        // <p@player.xp>
-        // <p@player.xp.to_next_level>
-        // <p@player.xp.total>
-        // <p@player.xp.level>
-        //
-        // @Usage
-        // Use to set a player's experience bar to 0.
-        // - experience set 0
-        //
-        // @Usage
-        // Use give give a player 1 level.
-        // - experience give level 1
-        //
-        // @Usage
-        // Use to take 1 level from a player.
-        //
-        // - experience take level 1
-        // @Usage
-        // Use to give a player with the name Morphan1 10 experience points.
-        // - experience give 10 player:p@Morphan1
-        // -->
         registerCoreMember(ExperienceCommand.class,
                 "EXPERIENCE", "experience [{set}/give/take] (level) [<#>]", 2);
 
 
-        // <--[command]
-        // @Name Explode
-        // @Syntax explode (power:<#.#>) (<location>) (fire) (breakblocks)
-        // @Required 0
-        // @Short Causes an explosion at the location.
-        // @Group world
-        //
-        // @Description
-        // This command causes an explosion at the location specified (or the npc / player location) which does not
-        // destroy blocks or set fire to blocks within the explosion. It accepts a 'fire' option which will set blocks
-        // on fire within the explosion radius. It also accepts a 'breakblocks' option which will cause the explosion to
-        // break blocks within the power radius as well as creating an animation and sounds.
-        // Default power: 1
-        // Default location: npc.location, or if no NPC link, player.location.
-        // It is highly recommended you specify a location to be safe.
-        //
-        // @Tags
-        // None
-        //
-        // @Usage
-        // Use to create an explosion at a player's location.
-        // - explode <player.location>
-        //
-        // @Usage
-        // Use to create an explosion at a player, which breaks blocks and causes fire with a power of 5.
-        // - explode power:5 <player.location> fire breakblocks
-        //
-        // @Usage
-        // Use to create an explosion with a power radius of 3 at an NPC's location.
-        // - explode power:3 <npc.location>
-        //
-        // @Usage
-        // Use to create an explosion with a power radius of 3 at a 12,12,-1297 in a world called survival which breaks blocks.
-        // - explode power:3 l@12,12,-1297,survival breakblocks
-        // -->
         registerCoreMember(ExplodeCommand.class,
                 "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
 

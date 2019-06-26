@@ -11,6 +11,37 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class AssignmentCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Assignment
+    // @Syntax assignment [set/remove] (script:<name>)
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Changes an NPC's assignment.
+    // @Group npc
+    //
+    // @Description
+    // Changes an NPC's assignment as though you used the '/npc assignment' command.
+    // Uses the script: argument, which accepts an assignment script type. For this command to work an npc must
+    // be attached to the script queue or an npc specified with npc:n@npc.
+    //
+    // @Tags
+    // <n@npc.script>
+    // <n@npc.has_script>
+    // <server.list_npcs_assigned[<assignment_script>]>
+    //
+    // @Usage
+    // Use to assign an npc with an assignment script named 'Bob the Builder'.
+    // - assignment set "script:Bob the Builder"
+    //
+    // @Usage
+    // Use to give an npc with the id of 3 an assignment.
+    // - assignment set "script:Bob the Builder" npc:n@3
+    //
+    // @Usage
+    // Use to remove an npc's assignment.
+    // - assignment remove
+    // -->
+
     private enum Action {SET, REMOVE}
 
     @Override

@@ -25,6 +25,46 @@ import java.util.Map;
 
 public class EquipCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Equip
+    // @Syntax equip (<entity>|...) (hand:<item>) (offhand:<item>) (head:<item>) (chest:<item>) (legs:<item>) (boots:<item>) (saddle:<item>) (horse_armor:<item>)
+    // @Required 1
+    // @Short Equips items and armor on a list of entities.
+    // @Group entity
+    //
+    // @Description
+    // This command equips an item or armor to an entity or list of entities to the specified slot(s).
+    // Set the item to 'i@air' to unequip any slot.
+    //
+    // @Tags
+    // <e@entity.equipment>
+    // <e@entity.equipment.helmet>
+    // <e@entity.equipment.chestplate>
+    // <e@entity.equipment.leggings>
+    // <e@entity.equipment.boots>
+    // <in@inventory.equipment>
+    //
+    // @Usage
+    // Use to equip a stone block on the player's head.
+    // - equip <player> head:i@stone
+    //
+    // @Usage
+    // Use to equip a iron helmet on two players named Bob and Steve.
+    // - equip p@bob|p@steve head:i@iron_helmet
+    //
+    // @Usage
+    // Use to unequip all armor off the player.
+    // - equip <player> head:i@air chest:i@air legs:i@air boots:i@air
+    //
+    // @Usage
+    // Use to equip a saddle on a horse.
+    // - equip e@horse saddle:i@saddle
+    //
+    // @Usage
+    // Use to equip a saddle on a pig.
+    // - equip e@pig saddle:i@saddle
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -17,6 +17,32 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class CreateCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Create
+    // @Syntax create [<entity>] [<name>] (<location>) (traits:<trait>|...)
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Creates a new NPC, and optionally spawns it at a location.
+    // @Group npc
+    //
+    // @Description
+    // Creates an npc which the entity type specified, or specify an existing npc to create a copy. If no location
+    // is specified the npc is created despawned. Use the 'save:<savename>' argument to return the npc for later
+    // use in a script.
+    //
+    // @Tags
+    // <server.list_npcs>
+    // <entry[saveName].created_npc> returns the NPC that was created.
+    //
+    // @Usage
+    // Use to create a despawned NPC for later usage.
+    // - create player Bob
+    //
+    // @Usage
+    // Use to create an NPC and spawn it immediately.
+    // - create spider Joe <player.location>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

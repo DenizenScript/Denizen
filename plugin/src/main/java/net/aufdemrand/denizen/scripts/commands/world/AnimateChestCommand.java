@@ -20,6 +20,44 @@ import java.util.List;
 
 public class AnimateChestCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name AnimateChest
+    // @Syntax animatechest [<location>] ({open}/close) (sound:{true}/false) (<player>|...)
+    // @Required 1
+    // @Short Makes a chest appear to open or close.
+    // @Group world
+    //
+    // @Description
+    // This command animates a chest in the world to open or close at a specified location.
+    // The command by default will open the chest. It accepts a sound argument which specifies whether
+    // the open or close sound will play aswell as the animation. The sound plays by default and
+    // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
+    // allowing only selected players to see the chest animate as opened or closed.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to animate a chest to open at 15,89,-45 in world: world
+    // - animatechest l@15,89,-45,world
+    //
+    // @Usage
+    // To then close the chest at 15,89,-45 in world: world
+    // - animatechest l@15,89,-45,world close
+    //
+    // @Usage
+    // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
+    // - animatechest l@12,12,-64,peter sound:false
+    //
+    // @Usage
+    // If only a player by the name of Morphan1 should see the chest open
+    // - animatechest l@12,12,-64,peter sound:false p@Morphan1
+    //
+    // @Usage
+    // The command also accepts a list of players to view the animation
+    // - animatechest l@12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
+    // -->
+
     enum ChestAction {OPEN, CLOSE}
 
     @Override

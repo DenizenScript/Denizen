@@ -18,6 +18,40 @@ import java.util.Arrays;
 
 public class AnchorCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Anchor
+    // @Syntax anchor [id:<name>] [assume/remove/add <location>/walkto/walknear (r:#)]
+    // @Required 2
+    // @Short Controls an NPC's Anchor Trait.
+    // @Group npc
+    //
+    // @Description
+    // The anchor system inside Citizens2 allows locations to be 'bound' to an NPC, saved by an 'id'. The anchor
+    // command can add and remove new anchors, as well as the ability to teleport NPCs to anchors with the 'assume'
+    // argument.
+    // The Anchors Trait can also be used as a sort of 'waypoints' system. For ease of use, the anchor command
+    // provides function for NPCs to walk to or walk near an anchor.
+    // As the Anchor command is an NPC specific command, a valid npc object must be referenced in the script entry.
+    // If none is provided by default, the use of the 'npc:n@id' argument, replacing the id with the npcid of the
+    // NPC desired, can create a link, or alternatively override the default linked npc.
+    //
+    // @Tags
+    // <n@npc.anchor[anchor_name]>
+    // <n@npc.anchor.list>
+    // <n@npc.has_anchors>
+    //
+    // @Usage
+    // Use to add and remove anchors to an NPC.
+    // - define location_name <context.message>
+    // - chat "I have saved this location as <def[location_name]>.'
+    // - anchor add <npc.location> "id:<def[location_name]>"
+    //
+    // @Usage
+    // Use to make an NPC walk to or walk near a saved anchor.
+    // - anchor walkto i:waypoint_1
+    // - anchor walknear i:waypoint_2 r:5
+    // -->
+
     private enum Action {ADD, REMOVE, ASSUME, WALKTO, WALKNEAR}
 
     @Override

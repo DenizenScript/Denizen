@@ -25,6 +25,29 @@ import java.util.UUID;
 
 public class ExecuteCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Execute
+    // @Syntax execute [as_player/as_op/as_npc/as_server] [<Bukkit command>] (silent)
+    // @Required 2
+    // @Short Executes an arbitrary server command as if the player, NPC, or server typed it in.
+    // @Group server
+    //
+    // @Description
+    // Allows the execution of server commands through a Denizen Script. Commands can be executed as the server,
+    // as an npc, an op or as a player, as though it was typed by the respective source.
+    //
+    // @Tags
+    // <entry[saveName].output> returns the output to an as_server sender.
+    //
+    // @Usage
+    // Use to execute the save-all command as the server.
+    // - execute as_server "save-all"
+    //
+    // @Usage
+    // Use to make the linked (non-op) player execute a command that normally only ops can use.
+    // - execute as_op "staffsay hi"
+    // -->
+
     enum Type {AS_SERVER, AS_NPC, AS_PLAYER, AS_OP}
 
     public DenizenCommandSender dcs = new DenizenCommandSender();

@@ -21,6 +21,37 @@ import java.util.HashMap;
 
 public class BreakCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name Break
+    // @Syntax break [<location>] (<npc>) (radius:<#.#>)
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Makes an NPC walk over and break a block.
+    // @Group npc
+    //
+    // @Description
+    // By itself, the 'break' command will act as an NPC command in the sense that an attached
+    // NPC will navigate to and break the block at the attached location. It can also accept a specified npc,
+    // to fulfill the command, just specify a 'fetchable' npc object. It can also accept a radius to start
+    // breaking the block from within. To specify the radius, prefix the radius with 'radius:'.
+    //
+    // @Tags
+    // <n@npc.navigator.is_navigating>
+    // <n@npc.navigator.target_location>
+    //
+    // @Usage
+    // Use to make the npc break a block at 17,64,-87 in world.
+    // - break l@17,64,-87,world
+    //
+    // @Usage
+    // Use to make an npc with the id 12 break a block at 17,64,-87 in world.
+    // - break l@17,64,-87,world n@12
+    //
+    // @Usage
+    // Use to make an npc with the name bob break a block at 17,64,-87 and start digging from 5 blocks away.
+    // - break l@17,64,-87,world n@bob radius:5
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

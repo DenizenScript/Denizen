@@ -23,6 +23,47 @@ import java.util.Map;
 
 public class BossBarCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name BossBar
+    // @Syntax bossbar ({create}/update/remove) [<id>] (players:<player>|...) (title:<title>) (progress:<#.#>) (color:<color>) (style:<style>) (flags:<flag>|...)
+    // @Required 1
+    // @Short Shows players a boss bar.
+    // @Group server
+    //
+    // @Description
+    // Displays a boss bar at the top of the screen of the specified player(s). You can also update the
+    // values and remove the bar.
+    //
+    // Requires an ID. Progress must be between 0 and 1.
+    //
+    // Valid colors: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW.
+    // Valid styles: SEGMENTED_10, SEGMENTED_12, SEGMENTED_20, SEGMENTED_6, SOLID.
+    // Valid flags: CREATE_FOG, DARKEN_SKY, PLAY_BOSS_MUSIC.
+    //
+    // @Tags
+    // <server.current_bossbars>
+    //
+    // @Usage
+    // Shows a message to all online players.
+    // - bossbar MyMessageID players:<server.list_online_players> "title:HI GUYS" color:red
+    //
+    // @Usage
+    // Update the boss bar's color and progress.
+    // - bossbar update MyMessageID color:blue progress:0.2
+    //
+    // @Usage
+    // Add more players to the boss bar.
+    // - bossbar update MyMessageID players:<server.flag[new_players]>
+    //
+    // @Usage
+    // Remove a player from the boss bar.
+    // - bossbar remove MyMessageID players:<server.match_player[BlackCoyote]>
+    //
+    // @Usage
+    // Delete the boss bar.
+    // - bossbar remove MyMessageID
+    // -->
+
     private enum Action {
         CREATE, UPDATE, REMOVE
     }
