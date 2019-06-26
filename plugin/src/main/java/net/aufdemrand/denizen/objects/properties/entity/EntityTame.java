@@ -30,7 +30,7 @@ public class EntityTame implements Property {
     }
 
     public static final String[] handledTags = new String[] {
-            "is_tamed", "get_owner"
+            "is_tamed", "get_owner", "owner"
     };
 
     public static final String[] handledMechs = new String[] {
@@ -99,14 +99,14 @@ public class EntityTame implements Property {
         }
 
         // <--[tag]
-        // @attribute <e@entity.get_owner>
+        // @attribute <e@entity.owner>
         // @returns dPlayer
         // @mechanism dEntity.owner
         // @group properties
         // @description
         // Returns the owner of a tamed entity.
         // -->
-        if (attribute.startsWith("get_owner")) {
+        if (attribute.startsWith("owner") || attribute.startsWith("get_owner")) {
             if (((Tameable) entity.getBukkitEntity()).isTamed()) {
                 return new dPlayer((OfflinePlayer) ((Tameable) entity.getBukkitEntity()).getOwner())
                         .getAttribute(attribute.fulfill(1));
@@ -161,7 +161,7 @@ public class EntityTame implements Property {
         // @tags
         // <e@entity.is_tamed>
         // <e@entity.is_tameable>
-        // <e@entity.get_owner>
+        // <e@entity.owner>
         // -->
 
         if (mechanism.matches("owner")) {

@@ -2446,7 +2446,7 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
         // Returns whether the entity is tameable.
         // If this returns true, it will enable access to:
         // <@link mechanism dEntity.tame>, <@link mechanism dEntity.owner>,
-        // <@link tag e@entity.is_tamed>, and <@link tag e@entity.get_owner>
+        // <@link tag e@entity.is_tamed>, and <@link tag e@entity.owner>
         // -->
         if (attribute.startsWith("tameable") || attribute.startsWith("is_tameable")) {
             return new Element(EntityTame.describes(this))
