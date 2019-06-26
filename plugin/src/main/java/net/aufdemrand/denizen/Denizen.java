@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen;
 
+import net.aufdemrand.denizen.events.ScriptEventRegistry;
 import net.aufdemrand.denizen.events.block.*;
 import net.aufdemrand.denizen.events.bukkit.SavesReloadEvent;
 import net.aufdemrand.denizen.events.bukkit.ScriptReloadEvent;
@@ -21,6 +22,7 @@ import net.aufdemrand.denizen.npc.speech.DenizenChat;
 import net.aufdemrand.denizen.npc.traits.*;
 import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.properties.PropertyRegistry;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitElementProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitListProperties;
 import net.aufdemrand.denizen.objects.properties.bukkit.BukkitQueueProperties;
@@ -603,160 +605,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
             OldEventManager.registerSmartEvent(new NPCNavigationSmartEvent());
             eventManager().registerCoreMembers();
 
-            ScriptEvent.registerScriptEvent(new BiomeEnterExitScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockBuiltScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockBurnsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockDispensesScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockFadesScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockFallsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockFormsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockGrowsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockIgnitesScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockPhysicsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BlockSpreadsScriptEvent());
-            ScriptEvent.registerScriptEvent(new BrewsScriptEvent());
-            ScriptEvent.registerScriptEvent(new ChatScriptEvent());
-            ScriptEvent.registerScriptEvent(new ChunkLoadScriptEvent());
-            ScriptEvent.registerScriptEvent(new ChunkUnloadScriptEvent());
-            ScriptEvent.registerScriptEvent(new CreeperPoweredScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityBreaksHangingScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityBreedScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityChangesBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityCombustsScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityCreatePortalScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityDamagedScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityDeathScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityDespawnScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityEntersPortalScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityEntersVehicleScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityExitsPortalScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityExitsVehicleScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityExplodesScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityExplosionPrimesScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityFoodLevelChangeScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityFormsBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityGlideScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityHealsScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityInteractScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityKilledScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityResurrectScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityShootsBowEvent());
-            ScriptEvent.registerScriptEvent(new EntitySpawnerSpawnScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntitySpawnScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                ScriptEvent.registerScriptEvent(new EntitySwimScriptEvent());
-            }
-            ScriptEvent.registerScriptEvent(new EntityTamesScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityTargetsScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityTeleportScriptEvent());
-            ScriptEvent.registerScriptEvent(new EntityUnleashedScriptEvent());
-            ScriptEvent.registerScriptEvent(new FireworkBurstsScriptEvent());
-            ScriptEvent.registerScriptEvent(new FurnaceBurnsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new FurnaceSmeltsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new HangingBreaksScriptEvent());
-            ScriptEvent.registerScriptEvent(new HorseJumpsScriptEvent());
-            ScriptEvent.registerScriptEvent(new InventoryPicksUpItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemDespawnsScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemMoveScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemRecipeFormedScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemScrollScriptEvent());
-            ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
-            ScriptEvent.registerScriptEvent(new LeafDecaysScriptEvent());
-            ScriptEvent.registerScriptEvent(new LightningStrikesScriptEvent());
-            ScriptEvent.registerScriptEvent(new LingeringPotionSplashScriptEvent());
-            ScriptEvent.registerScriptEvent(new LiquidSpreadScriptEvent());
-            ScriptEvent.registerScriptEvent(new ListPingScriptEvent());
-            ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PistonExtendsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PistonRetractsScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
-            }
-            ScriptEvent.registerScriptEvent(new PlayerAnimatesScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerBreaksBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerBreaksItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerChangesGamemodeScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerChangesSignScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerChangesWorldScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerChangesXPScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerClicksBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerClosesInvScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerCompletesAdvancementScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerConsumesScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerCraftsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerDamagesBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerDragsInInvScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerDropsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerEditsBookScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerEmptiesBucketScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerEntersBedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerEquipsArmorScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerFillsBucketScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerFishesScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerFlyingScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerItemTakesDamageScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerJoinsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerJumpScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerKickedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLeashesEntityScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLeavesBedScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLevelsUpScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerLoginScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerMendsItemScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerOpensInvScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerPicksUpScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerPlacesBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerPlacesHangingScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerPreparesAnvilCraftScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerQuitsScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                ScriptEvent.registerScriptEvent(new PlayerReceivesCommandsScriptEvent());
-            }
-            ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerRightClicksAtEntityScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerSwapsItemsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerShearsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerSneakScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerSprintScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerStandsOnScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerStatisticIncrementsScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerSteersEntityScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerStepsOnScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerTabCompleteScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerTakesFromFurnaceScriptEvent());
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
-                ScriptEvent.registerScriptEvent(new PlayerTakesFromLecternScriptEvent());
-            }
-            ScriptEvent.registerScriptEvent(new PlayerThrowsEggScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerUsesPortalScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerWalkScriptEvent());
-            ScriptEvent.registerScriptEvent(new PlayerWalksOverScriptEvent());
-            ScriptEvent.registerScriptEvent(new PortalCreateScriptEvent());
-            ScriptEvent.registerScriptEvent(new PotionSplashScriptEvent());
-            ScriptEvent.registerScriptEvent(new ProjectileHitsScriptEvent());
-            ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
-            ScriptEvent.registerScriptEvent(new RedstoneScriptEvent());
-            ScriptEvent.registerScriptEvent(new ResourcePackStatusScriptEvent());
-            ScriptEvent.registerScriptEvent(new SheepDyedScriptEvent());
-            ScriptEvent.registerScriptEvent(new SheepRegrowsScriptEvent());
-            ScriptEvent.registerScriptEvent(new SlimeSplitsScriptEvent());
-            ScriptEvent.registerScriptEvent(new SpawnChangeScriptEvent());
-            ScriptEvent.registerScriptEvent(new StructureGrowsScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleCollidesBlockScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleCollidesEntityScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleCreatedScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleDamagedScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleDestroyedScriptEvent());
-            ScriptEvent.registerScriptEvent(new VehicleMoveScriptEvent());
-            ScriptEvent.registerScriptEvent(new WeatherChangesScriptEvent());
-            ScriptEvent.registerScriptEvent(new WorldInitsScriptEvent());
-            ScriptEvent.registerScriptEvent(new WorldLoadsScriptEvent());
-            ScriptEvent.registerScriptEvent(new WorldSavesScriptEvent());
-            ScriptEvent.registerScriptEvent(new WorldUnloadsScriptEvent());
+            // Register all the modern script events
+            ScriptEventRegistry.registermainEvents();
 
             ObjectFetcher.registerWithObjectFetcher(dBiome.class);     // b@
             dBiome.registerTags(); // TODO: Automate this once all classes have tag registries
@@ -795,122 +645,8 @@ public class Denizen extends JavaPlugin implements DenizenImplementation {
         try {
             // Initialize old Materials helper
             OldMaterialsHelper._initialize();
-
-            // register properties that add Bukkit code to core objects
-            PropertyParser.registerProperty(BukkitScriptProperties.class, dScript.class);
-            PropertyParser.registerProperty(BukkitQueueProperties.class, ScriptQueue.class);
-            PropertyParser.registerProperty(BukkitElementProperties.class, Element.class);
-            PropertyParser.registerProperty(BukkitListProperties.class, dList.class);
-
-            // register core dEntity properties
-            PropertyParser.registerProperty(EntityAge.class, dEntity.class);
-            PropertyParser.registerProperty(EntityAI.class, dEntity.class);
-            PropertyParser.registerProperty(EntityAnger.class, dEntity.class);
-            PropertyParser.registerProperty(EntityAngry.class, dEntity.class);
-            PropertyParser.registerProperty(EntityAreaEffectCloud.class, dEntity.class);
-            PropertyParser.registerProperty(EntityArmorBonus.class, dEntity.class);
-            PropertyParser.registerProperty(EntityArrowDamage.class, dEntity.class);
-            PropertyParser.registerProperty(EntityInvulnerable.class, dEntity.class);
-            PropertyParser.registerProperty(EntityBoatType.class, dEntity.class);
-            PropertyParser.registerProperty(EntityArmorPose.class, dEntity.class);
-            PropertyParser.registerProperty(EntityArms.class, dEntity.class);
-            PropertyParser.registerProperty(EntityBasePlate.class, dEntity.class);
-            PropertyParser.registerProperty(EntityBeamTarget.class, dEntity.class);
-            PropertyParser.registerProperty(EntityBodyArrows.class, dEntity.class);
-            PropertyParser.registerProperty(EntityBoundingBox.class, dEntity.class);
-            PropertyParser.registerProperty(EntityChestCarrier.class, dEntity.class);
-            PropertyParser.registerProperty(EntityColor.class, dEntity.class);
-            PropertyParser.registerProperty(EntityCritical.class, dEntity.class);
-            PropertyParser.registerProperty(EntityCustomName.class, dEntity.class);
-            PropertyParser.registerProperty(EntityDisabledSlots.class, dEntity.class);
-            PropertyParser.registerProperty(EntityPotionEffects.class, dEntity.class);
-            PropertyParser.registerProperty(EntityElder.class, dEntity.class);
-            PropertyParser.registerProperty(EntityEquipment.class, dEntity.class);
-            PropertyParser.registerProperty(EntityExplosionFire.class, dEntity.class);
-            PropertyParser.registerProperty(EntityExplosionRadius.class, dEntity.class);
-            PropertyParser.registerProperty(EntityFirework.class, dEntity.class);
-            PropertyParser.registerProperty(EntityFramed.class, dEntity.class);
-            PropertyParser.registerProperty(EntityGravity.class, dEntity.class);
-            PropertyParser.registerProperty(EntityHealth.class, dEntity.class);
-            PropertyParser.registerProperty(EntityInfected.class, dEntity.class);
-            PropertyParser.registerProperty(EntityInventory.class, dEntity.class);
-            PropertyParser.registerProperty(EntityIsShowingBottom.class, dEntity.class);
-            PropertyParser.registerProperty(EntityItem.class, dEntity.class);
-            PropertyParser.registerProperty(EntityJumpStrength.class, dEntity.class);
-            PropertyParser.registerProperty(EntityKnockback.class, dEntity.class);
-            PropertyParser.registerProperty(EntityMarker.class, dEntity.class);
-            PropertyParser.registerProperty(EntityMaxFuseTicks.class, dEntity.class);
-            PropertyParser.registerProperty(EntityPainting.class, dEntity.class);
-            PropertyParser.registerProperty(EntityPickupStatus.class, dEntity.class);
-            PropertyParser.registerProperty(EntityPotion.class, dEntity.class);
-            PropertyParser.registerProperty(EntityPowered.class, dEntity.class);
-            PropertyParser.registerProperty(EntityProfession.class, dEntity.class);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                PropertyParser.registerProperty(EntityRiptide.class, dEntity.class);
-            }
-            PropertyParser.registerProperty(EntityRotation.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySmall.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySilent.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySitting.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySize.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySkeleton.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySpeed.class, dEntity.class);
-            PropertyParser.registerProperty(EntitySpell.class, dEntity.class);
-            PropertyParser.registerProperty(EntityTame.class, dEntity.class);
-            PropertyParser.registerProperty(EntityTrades.class, dEntity.class);
-            PropertyParser.registerProperty(EntityVisible.class, dEntity.class);
-
-            // register core dInventory properties
-            PropertyParser.registerProperty(InventoryHolder.class, dInventory.class); // Holder must be loaded first to initiate correctly
-            PropertyParser.registerProperty(InventorySize.class, dInventory.class); // Same with size... (too small for contents)
-            PropertyParser.registerProperty(InventoryContents.class, dInventory.class);
-            PropertyParser.registerProperty(InventoryTitle.class, dInventory.class);
-
-            // register core dItem properties
-            PropertyParser.registerProperty(ItemApple.class, dItem.class);
-            PropertyParser.registerProperty(ItemBaseColor.class, dItem.class);
-            PropertyParser.registerProperty(ItemBook.class, dItem.class);
-            PropertyParser.registerProperty(ItemDisplayname.class, dItem.class);
-            PropertyParser.registerProperty(ItemDurability.class, dItem.class);
-            PropertyParser.registerProperty(ItemCanDestroy.class, dItem.class);
-            PropertyParser.registerProperty(ItemCanPlaceOn.class, dItem.class);
-            PropertyParser.registerProperty(ItemColor.class, dItem.class);
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_14_R1)) {
-                PropertyParser.registerProperty(ItemCustomModel.class, dItem.class);
-                PropertyParser.registerProperty(ItemChargedProjectile.class, dItem.class);
-            }
-            PropertyParser.registerProperty(ItemEnchantments.class, dItem.class);
-            PropertyParser.registerProperty(ItemFirework.class, dItem.class);
-            PropertyParser.registerProperty(ItemFlags.class, dItem.class);
-            PropertyParser.registerProperty(ItemInventory.class, dItem.class);
-            PropertyParser.registerProperty(ItemLock.class, dItem.class);
-            PropertyParser.registerProperty(ItemLore.class, dItem.class);
-            PropertyParser.registerProperty(ItemMap.class, dItem.class);
-            PropertyParser.registerProperty(ItemNBT.class, dItem.class);
-            PropertyParser.registerProperty(ItemAttributeNBT.class, dItem.class);
-            PropertyParser.registerProperty(ItemPatterns.class, dItem.class);
-            PropertyParser.registerProperty(ItemPlantgrowth.class, dItem.class);
-            PropertyParser.registerProperty(ItemPotion.class, dItem.class);
-            PropertyParser.registerProperty(ItemQuantity.class, dItem.class);
-            PropertyParser.registerProperty(ItemRepairCost.class, dItem.class);
-            PropertyParser.registerProperty(ItemScript.class, dItem.class);
-            PropertyParser.registerProperty(ItemSignContents.class, dItem.class);
-            PropertyParser.registerProperty(ItemSkullskin.class, dItem.class);
-            PropertyParser.registerProperty(ItemSpawnEgg.class, dItem.class);
-            PropertyParser.registerProperty(ItemUnbreakable.class, dItem.class);
-
-            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                // register core dMaterial properties
-                PropertyParser.registerProperty(MaterialAge.class, dMaterial.class);
-                PropertyParser.registerProperty(MaterialLevel.class, dMaterial.class);
-            }
-
-            // register core dTrade properties
-            PropertyParser.registerProperty(TradeHasXp.class, dTrade.class);
-            PropertyParser.registerProperty(TradeInputs.class, dTrade.class);
-            PropertyParser.registerProperty(TradeMaxUses.class, dTrade.class);
-            PropertyParser.registerProperty(TradeResult.class, dTrade.class);
-            PropertyParser.registerProperty(TradeUses.class, dTrade.class);
+            // Initialize all properties
+            PropertyRegistry.registermainProperties();
         }
         catch (Exception e) {
             dB.echoError(e);
