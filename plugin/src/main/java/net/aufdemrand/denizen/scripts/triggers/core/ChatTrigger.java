@@ -15,7 +15,7 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
-import net.aufdemrand.denizencore.scripts.commands.core.DetermineCommand;
+import net.aufdemrand.denizencore.scripts.commands.queue.DetermineCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
