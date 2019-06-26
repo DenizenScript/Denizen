@@ -178,7 +178,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         else {
             AutoNoCitizensCommand.registerFor("RENAME");
         }
-        registerCoreMember(RepeatCommand.class, "REPEAT", "repeat [stop/next/<amount>] [<commands>] (as:<name>)", 1);
         registerCoreMember(ResetCommand.class, "RESET", "reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)", 1);
         registerCoreMember(RotateCommand.class, "ROTATE", "rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)", 0);
         registerCoreMember(RunCommand.class, "RUN", "run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)", 1);
