@@ -12,6 +12,34 @@ import java.util.List;
 
 public class RepeatCommand extends BracedCommand {
 
+    // <--[command]
+    // @Name Repeat
+    // @Syntax repeat [stop/next/<amount>] [<commands>] (as:<name>)
+    // @Required 1
+    // @Short Runs a series of braced commands several times.
+    // @Group core
+    // @Video /denizen/vids/Loops
+    //
+    // @Description
+    // Loops through a series of braced commands a specified number of times.
+    // To get the number of loops so far, you can use <def[value]>.
+    //
+    // Optionally, specify "as:<name>" to change the definition name to something other than "value".
+    //
+    // To stop a repeat loop, do - repeat stop
+    //
+    // To jump immediately to the next number in the loop, do - repeat next
+    //
+    // @Tags
+    // <def[value]> to get the number of loops so far
+    //
+    // @Usage
+    // Use to loop through a command several times
+    // - repeat 5 {
+    //     - announce "Announce Number <def[value]>"
+    //   }
+    // -->
+
     private class RepeatData {
         public int index;
         public int target;

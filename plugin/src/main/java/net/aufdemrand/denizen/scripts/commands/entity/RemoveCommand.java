@@ -18,6 +18,37 @@ import java.util.List;
 
 public class RemoveCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Remove
+    // @Syntax remove [<entity>|...] (world:<world>)
+    // @Required 1
+    // @Short Despawns an entity or list of entities, permanently removing any NPCs.
+    // @Group entity
+    // @Description
+    // Removes the selected entity. May also take a list of entities to remove.
+    // Any NPC removed this way is completely removed, as if by '/npc remove'.
+    // If a generic entity name is given (see: <@link language entities>)
+    // it will remove all entities of that type from the given world.
+    // Optionally, you may specifiy a world to target.
+    // (Defaults to the world of the player running the command)
+    //
+    //
+    // @Tags
+    // <e@entity.is_spawned>
+    //
+    // @Usage
+    // Use to remove the entity the player is looking at.
+    // - remove <player.target>
+    //
+    // @Usage
+    // Use to remove all nearby entities around the player, excluding the player itself.
+    // - remove <player.location.find.entities.within[10].exclude[<player>]>
+    //
+    // @Usage
+    // Use to remove all dropped items in the world called cookies.
+    // - remove dropped_item world:cookies
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

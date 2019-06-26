@@ -17,6 +17,39 @@ import java.util.List;
 
 public class SpawnCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Spawn
+    // @Syntax spawn [<entity>|...] [<location>] (target:<entity>) (persistent)
+    // @Required 2
+    // @Short Spawns a list of entities at a certain location.
+    // @Group entity
+    //
+    // @Description
+    // Spawn an entity or list of entities at the specified location. Accepts the 'target:<entity>' argument which
+    // will cause all spawned entities to follow and attack the targetted entity.
+    // If the persistent argument is present, the entity will not despawn when no players are within range, causing
+    // the enity to remain until killed.
+    //
+    // @Tags
+    // <e@entity.is_spawned>
+    // <server.entity_is_spawned[<entity>]>
+    // <server.list_entity_types>
+    // <entry[saveName].spawned_entities> returns a list of entities that were spawned.
+    // <entry[saveName].spawned_entity> returns the entity that was spawned (if you only spawned one).
+    //
+    // @Usage
+    // Use to spawn a spider at the player's location.
+    // - spawn spider <player.location>
+    //
+    // @Usage
+    // Use to spawn a spider at the player's location which will automatically target the player.
+    // - spawn spider <player.location> target:<player>
+    //
+    // @Usage
+    // Use to spawn a swarm of creepers around the npc, which will not despawn until killed.
+    // - spawn creeper|creeper|creeper|creeper|creeper <npc.location> persistent
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

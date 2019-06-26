@@ -16,6 +16,61 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PauseCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Pause
+    // @Syntax pause [waypoints/activity] (<duration>)
+    // @Required 1
+    // @Short Pauses an NPC's waypoint navigation or goal activity temporarily or indefinitely.
+    // @Group npc
+    //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <n@npc.navigator.is_navigating>
+    //
+    // @Usage
+    // Use to pause an NPC's waypoint navigation indefinitely.
+    //
+    // @Usage
+    // - pause waypoints
+    // Use to pause an NPC's goal activity temporarily.
+    // - pause activity 1m
+    //
+    // @Usage
+    // Use to pause an NPC's waypoint navigation and then resume it.
+    // - pause waypoints
+    // - resume waypoints
+    // -->
+
+    // <--[command]
+    // @Name Resume
+    // @Syntax resume [waypoints/activity] (<duration>)
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Resumes an NPC's waypoint navigation or goal activity temporarily or indefinitely.
+    // @Group npc
+    //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <n@npc.navigator.is_navigating>
+    //
+    // @Usage
+    // Use to pause an NPC's waypoint navigation indefinitely.
+    //
+    // @Usage
+    // - pause waypoints
+    // Use to pause an NPC's goal activity temporarily.
+    // - pause activity 1m
+    //
+    // @Usage
+    // Use to pause an NPC's waypoint navigation and then resume it.
+    // - pause waypoints
+    // - resume waypoints
+    // -->
+
     private Map<String, Integer> durations = new ConcurrentHashMap<>(8, 0.9f, 1);
 
     enum PauseType {ACTIVITY, WAYPOINTS, NAVIGATION}

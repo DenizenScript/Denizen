@@ -15,6 +15,29 @@ import java.util.ArrayList;
 
 public class ItemCooldownCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name ItemCooldown
+    // @Syntax itemcooldown [<material>|...] (duration:<duration>)
+    // @Required 1
+    // @Short Places a cooldown on a material in a player's inventory.
+    // @Group player
+    //
+    // @Description
+    // Places a cooldown on a material in a player's inventory.
+    //
+    // @Tags
+    // <p@player.item_cooldown[<material>]>
+    //
+    // @Usage
+    // Places a 1 second cooldown on using an ender pearl.
+    // - itemcooldown ender_pearl
+    //
+    // @Usage
+    // Places a 10 minute cooldown on using golden apples.
+    // - itemcooldown golden_apple d:10m
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

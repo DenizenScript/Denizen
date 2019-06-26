@@ -20,6 +20,37 @@ import java.util.List;
 
 public class TeleportCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Teleport
+    // @Syntax teleport (<entity>|...) [<location>]
+    // @Required 1
+    // @Short Teleports the entity(s) to a new location.
+    // @Group entity
+    //
+    // @Description
+    // Teleports the entity or entities to the new location. Entities can be teleported between worlds using this
+    // command, assuming the location is valid.
+    //
+    // @Tags
+    // <e@entity.location>
+    //
+    // @Usage
+    // Use to teleport a player to the location its cursor is pointing on
+    // - teleport <player> <player.location.cursor_on>
+    //
+    // @Usage
+    // Use to teleport a player high above
+    // - teleport <player> <player.location.add[0,200,0]>
+    //
+    // @Usage
+    // Use to teleport to a random online player
+    // - teleport <player> <server.list_online_players.random.location>
+    //
+    // @Usage
+    // Use to teleport all players to your location
+    // - teleport <server.list_online_players> <player.location>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

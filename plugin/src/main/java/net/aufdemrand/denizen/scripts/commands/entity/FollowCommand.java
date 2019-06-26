@@ -14,6 +14,26 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class FollowCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Follow
+    // @Syntax follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)
+    // @Required 0
+    // @Short Causes a list of entities to follow a target.
+    // @Group entity
+    //
+    // @Description
+    // TODO: Document Command Details
+    // The 'max' and 'allow_wander' arguments can only be used on non-NPC entities.
+    //
+    // @Tags
+    // <n@npc.navigator.target_entity> returns the entity the npc is following.
+    //
+    // @Usage
+    // To make an NPC follow the player in an interact script
+    // - follow followers:<npc> target:<player>
+    // TODO: Document Command Details
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -12,6 +12,49 @@ import net.aufdemrand.denizencore.scripts.queues.core.Delayable;
 
 public class QueueCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Queue
+    // @Syntax queue (<queue>) [clear/stop/pause/resume/delay:<#>]
+    // @Required 1
+    // @Short Modifies the current state of a script queue.
+    // @Group core
+    //
+    // @Description
+    // Allows queues to be modified during their run. It can also be used to modify other queues currently running
+    // Clearing a queue will remove it and not run any of the next commands in the queue.
+    // It is possible to pause a queue but it will try to finish its last command that was executed.
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <queue>
+    // <queue.id>
+    // <queue.size>
+    // <queue.list>
+    // <queue.stats>
+    // <queue.exists[queue_id]>
+    // <s@script.list_queues>
+    //
+    // @Usage
+    // Use to clear the current queue.
+    // - queue clear
+    //
+    // @Usage
+    // Use to force-stop a given queue.
+    // - queue <server.flag[OtherQueue]> clear
+    //
+    // @Usage
+    // Use to delay the current queue (use <@link command wait> instead!)
+    // - queue delay:5t
+    //
+    // @Usage
+    // Use to pause the given queue.
+    // - queue <server.flag[OtherQueue]> pause
+    //
+    // @Usage
+    // Use to resume the given queue.
+    // - queue <server.flag[OtherQueue]> resume
+    // -->
+
     private enum Action {CLEAR, DELAY, PAUSE, RESUME, STOP}
 
     @Override

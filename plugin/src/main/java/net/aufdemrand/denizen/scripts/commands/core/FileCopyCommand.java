@@ -15,6 +15,28 @@ import java.nio.file.Files;
 
 public class FileCopyCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name FileCopy
+    // @Syntax filecopy [origin:<origin>] [destination:<destination>] (overwrite)
+    // @Required 2
+    // @Short Copies a file from one location to another.
+    // @Group core
+    //
+    // @Description
+    // Copies a file from one location to another.
+    // The starting directory is server/plugins/Denizen.
+    // May overwrite existing copies of files.
+    //
+    // @Tags
+    // <entry[saveName].success> returns whether the copy succeeded (if not, either an error or occurred, or there is an existing file in the destination.)
+    //
+    // @Usage
+    // Use to copy a custom YAML data file to a backup folder, overwriting any old backup of it that exists.
+    // - filecopy o:data/custom.yml d:data/backup.yml overwrite save:copy
+    // - narrate "Copy success<&co> <entry[copy].success>"
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

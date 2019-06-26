@@ -24,6 +24,38 @@ import java.util.UUID;
 
 public class ToastCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Toast
+    // @Syntax toast [<text>] (targets:<player>|...) (icon:<item>) (frame:{task}/challenge/goal) (background:<texture>)
+    // @Required 1
+    // @Short Shows the player a custom advancement toast.
+    // @Group player
+    //
+    // @Description
+    // Displays a client-side custom advancement "toast" notification popup to the player(s).
+    // If no target is specified it will default to the attached player.
+    // The icon argument changes the icon displayed in the toast pop-up notification.
+    // The frame argument changes the type of advancement.
+    // The background texture can be specified as a file path with an optional namespace key prefix.
+    // By default, the background texture is "minecraft:textures/gui/advancements/backgrounds/adventure.png"
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Welcomes the player with an advancement toast.
+    // - toast "Welcome <player.name>!"
+    //
+    // @Usage
+    // Sends the player an advancement toast with a custom icon.
+    // - toast "Diggy Diggy Hole" icon:iron_spade
+    //
+    // @Usage
+    // Sends the player a "Challenge Complete!" type advancement toast.
+    // - toast "You finished a challenge!" frame:challenge icon:diamond
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

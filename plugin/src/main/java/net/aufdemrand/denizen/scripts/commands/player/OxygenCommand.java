@@ -11,6 +11,34 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class OxygenCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Oxygen
+    // @Syntax oxygen [<#>] (type:{remaining}/maximum) (mode:{set}/add/remove)
+    // @Required 1
+    // @Short Gives or takes breath from the player.
+    // @Group player
+    //
+    // @Description
+    // Used to add to, remove from or set the amount of current oxygen of a player. Also allows for the changing of the
+    // player's maximum oxygen level. Value is in ticks, so 30 equals to 1 bubble.
+    //
+    // @Tags
+    // <p@player.oxygen>
+    // <p@player.oxygen.max>
+    //
+    // @Usage
+    // Use to set the player's current oxygen level to 5 bubbles.
+    // - oxygen 150
+    //
+    // @Usage
+    // Use to add 1 bubble to the player's current oxygen level.
+    // - oxygen 30 mode:add
+    //
+    // @Usage
+    // Use to set the player's maximum oxygen level to 20 bubbles.
+    // - oxygen 600 type:maximum
+    // -->
+
     public enum Type {MAXIMUM, REMAINING}
 
     public enum Mode {SET, ADD, REMOVE}

@@ -13,6 +13,33 @@ import java.util.List;
 
 public class KickCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name kick
+    // @Syntax kick [<player>|...] (reason:<text>)
+    // @Required 1
+    // @Short Kicks a player from the server.
+    // @Group player
+    //
+    // @Description
+    // Kick a player or a list of players from the server and optionally specify a reason.
+    // If no reason is specified it defaults to "Kicked."
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to kick the player with the default reason.
+    // - kick <player>
+    //
+    // @Usage
+    // Use to kick the player with a reason.
+    // - kick <player> "reason:Because I can."
+    //
+    // @Usage
+    // Use to kick another player with a reason.
+    // - kick p@mcmonkey4eva "reason:Because I can."
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

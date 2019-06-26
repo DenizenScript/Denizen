@@ -36,6 +36,49 @@ import java.util.List;
 
 public class ModifyBlockCommand extends AbstractCommand implements Listener, Holdable {
 
+    // <--[command]
+    // @Name ModifyBlock
+    // @Syntax modifyblock [<location>|.../<ellipsoid>/<cuboid>] [<material>|...] (radius:<#>) (height:<#>) (depth:<#>) (no_physics/naturally) (delayed) (<script>) (<percent chance>|...)
+    // @Required 2
+    // @Short Modifies blocks.
+    // @Group world
+    //
+    // @Description
+    // Changes blocks in the world based on the criteria given. Specifying no radius/height/depth will result
+    // in only the specified blocks being changed. Use 'no_physics' to place the blocks without
+    // physics taking over the modified blocks. This is useful for block types such as portals. This does NOT
+    // control physics for an extended period of time.
+    // Specify (<percent chance>|...) to give a chance of each material being placed (in any material at all).
+    // Use 'naturally' when setting a block to air to break it naturally, meaning that it will drop items.
+    // Use 'delayed' to make the modifyblock slowly edit blocks at a time pace roughly equivalent to the server's limits.
+    // Note that specify a list of locations will take more time in parsing than in the actual block modification.
+    // Optionally, specify a script to be ran after the delayed edits finish. (Doesn't fire if delayed is not set.)
+    // This command is ~holdable.
+    //
+    // @Tags
+    // <l@location.material>
+    //
+    // @Usage
+    // Use to change the block a player is looking at to stone.
+    // - modifyblock <player.location.cursor_on> stone
+    //
+    // @Usage
+    // Use to modify an entire cuboid to half stone, half dirt.
+    // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt
+    //
+    // @Usage
+    // Use to modify an entire cuboid to some stone, some dirt, and some left as it is.
+    // - modifyblock cu@<player.location>|<player.location.cursor_on> li@stone|dirt li@25|25
+    //
+    // @Usage
+    // Use to clear the area around the player and drop their respective items.
+    // - modifyblock <player.location> air radius:5 naturally delayed
+    //
+    // @Usage
+    // Use to modify the ground beneath the player's feet.
+    // - modifyblock cu@<player.location.add[2,-1,2]>|<player.location.add[-2,-1,-2]> WOOL,14
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

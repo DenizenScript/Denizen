@@ -22,6 +22,38 @@ import java.util.List;
 
 public class MidiCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name Midi
+    // @Syntax midi (cancel) [<file>] (<location>/<entity>|...) (tempo:<#.#>) (volume:<#.#>)
+    // @Required 1
+    // @Short Plays a midi file at a given location or to a list of players using note block sounds.
+    // @Group world
+    //
+    // @Description
+    // This will fully load a midi song file stored in the '../plugins/Denizen/midi/' folder. The file
+    // must be a valid midi file with the extension '.mid'. It will continuously play the song as
+    // noteblock songs at the given location or group of players until the song ends. If no location or
+    // entity is specified, by default this will play for the attached player.
+    //
+    // Also, an example Midi song file has been included: "Denizen" by Black Coyote. He made it just for us!
+    // Check out more of his amazing work at: http://www.youtube.com/user/BlaCoyProductions
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to play a midi song file on the current player.
+    // - midi file:Denizen
+    //
+    // @Usage
+    // Use to play a midi song file at a given location.
+    // - midi file:Denizen <player.location>
+    //
+    // @Usage
+    // Use to play a midi song file at a given location to the specified player(s), and wait for it to finish.
+    // - ~midi file:Denizen <server.list_online_players>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

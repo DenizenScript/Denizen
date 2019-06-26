@@ -13,6 +13,31 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class TriggerCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Trigger
+    // @Syntax trigger [name:chat/click/damage/proximity] (state:{toggle}/true/false) (cooldown:<duration>) (radius:<#>)
+    // @Required 1
+    // @Short Enables or disables a trigger.
+    // @Group npc
+    //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <n@npc.has_trigger[<trigger>]>
+    //
+    // @Usage
+    // Use to enable the click trigger.
+    // - trigger name:click state:true
+    //
+    // @Usage
+    // Use to enable the chat trigger with a 10-second cooldown and a radius of 5 blocks.
+    // - trigger name:chat state:true cooldown:10s radius:5
+    //
+    // @Usage
+    // TODO: Document Command Details
+    // -->
+
     private enum Toggle {TOGGLE, TRUE, FALSE}
 
     @Override

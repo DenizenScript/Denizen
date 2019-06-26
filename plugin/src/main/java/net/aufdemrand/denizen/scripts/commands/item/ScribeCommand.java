@@ -21,6 +21,104 @@ import org.bukkit.inventory.ItemStack;
 
 public class ScribeCommand extends AbstractCommand {
 
+    /*
+     * <b>dScript Usage:</b><br>
+     * <pre>Scribe [SCRIPT:book_script] (GIVE|{DROP}|EQUIP) (LOCATION:x,y,z,world) (ITEM:ITEMSTACK.name)</pre>
+     *
+     * <ol><tt>Arguments: [] - Required () - Optional  {} - Default</ol></tt>
+     *
+     * <ol><tt>[SCRIPT:book_script]</tt><br>
+     *         The name of the 'Book Script'. See below for format.</ol>
+     *
+     * <ol><tt>[GIVE|{DROP}|EQUIP]</tt><br>
+     *         What to do with the book after it is written. If not specified, it will default
+     *         to dropping the book near the NPC. Note: When using BOOK with an 'ITEMSTACK.name',
+     *         no default action is set allowing other commands to modify the book.</ol>
+     *
+     * <ol><tt>(LOCATION:x,y,z,world)</tt><br>
+     *         When using DROP, a location may be specified. Default location, if unspecified,
+     *         is the attached NPC.</ol>
+     *
+     * <ol><tt>(ITEM:ITEMSTACK.name)</tt><br>
+     *         Allows the use of a specific BOOK created with a 'saved ITEMSTACK' from the NEW
+     *         command. If not specified, a new book will be used.</ol>
+     *
+     *
+     * <br><b>Sample Book Script:</b><br>
+     * <ol><pre>
+     * "Cosmos Book":<br>
+     *   Type: Book<br>
+     *   Title: Cosmos, a Personal Voyage<br>
+     *   Author: Carl Sagan<br>
+     *   Text:<br>
+     *   - Every one of us is, in the cosmic perspective, precious. If a human disagrees with<br>
+     *     you, let him live. In a hundred billion galaxies, you will not find another<br>
+     *   - The nitrogen in our DNA, the calcium in our teeth, the iron in our blood, the <br>
+     *     carbon in our apple pies were made in the interiors of collapsing stars. We are <br>
+     *     made of starstuff.<br>
+     * </pre></ol>
+     *
+     * <p>Note: ScribeCommand also implements a replaceable tag for &#60;P>, which creates a new
+     * paragraph in a written book's text.</p>
+     *
+     * <br><b>Example Usage:</b><br>
+     * <ol><tt>
+     *  - SCRIBE SCRIPT:Cosmos DROP<br>
+     *  - SCRIBE ITEM:ITEMSTACK.ImportantBook 'SCRIPT:Spellbook of Haste'<br>
+     * </ol></tt>
+     *
+     * <br><b>Extended Usage:</b><br>
+     * <ol><tt>
+     *  Script: <br>
+     *  - ENGAGE NOW DURATION:10 <br>
+     *  - LOOKCLOSE TOGGLE:TRUE DURATION:10 <br>
+     *  - CHAT 'Use this book with care, as it is very powerful and could cause great harm<br>
+     *    if put into the wrong hands!' <br>
+     *  - WAIT 2 <br>
+     *  - ^ANIMATE ANIMATION:ARM_SWING <br>
+     *  - ^NEW ITEMSTACK ITEM:book ID:&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+     *  - ^SCRIBE ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook SCRIPT:silk_touch_description <br>
+     *  - ^ENCHANT ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook ENCHANTMENT:SILKTOUCH<br>
+     *  - ^LORE ADD ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook 'A spell of Silk-touch, level 1'<br>
+     *  - DROP ITEM:ITEMSTACK.&#60;PLAYER.NAME>s_enchanted_spellbook<br>
+     *  - NARRATE '&#60;NPC.NAME> drops an old book.' <br>
+     * </ol></tt>
+     *
+     */
+    // TODO: Combine the above outdated information with the new meta tags below
+
+    // <--[command]
+    // @Name Scribe
+    // @Syntax scribe [<script>] (<item>/give/equip/{drop <location>})
+    // @Required 1
+    // @Short Writes information to a book from a book-type script or a book item.
+    // @Group item
+    //
+    // @Description
+    // Create a book item from a book-type script or book item.
+    // This can then be directly given to a player, or dropped at a specific location
+    // Read more about book-scripts here: <@link language book script containers>
+    //
+    // @Tags
+    // <i@item.book.author>
+    // <i@item.book.title>
+    // <i@item.book.page_count>
+    // <i@item.book.page[<#>]>
+    // <i@item.book.pages>
+    //
+    //
+    // @Usage
+    // Gives the book "Cosmos Book" to the player
+    // - scribe "Cosmos Book" give
+    //
+    // @Usage
+    // Drops the "Cosmos Book" at the players location
+    // - scribe "Cosmos Book" drop <player.location>
+    //
+    // @Usage
+    // Puts the "Cosmos Book" in the players hand
+    // - scribe "Cosmos Book" equip
+    // -->
 
     private enum BookAction {GIVE, DROP, EQUIP, NONE}
 

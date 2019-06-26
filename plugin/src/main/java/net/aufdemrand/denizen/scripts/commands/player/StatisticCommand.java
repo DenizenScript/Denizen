@@ -17,6 +17,27 @@ import org.bukkit.entity.EntityType;
 
 public class StatisticCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Statistic
+    // @Syntax statistic [<statistic>] [add/take/set] (<#>) (qualifier:<material>/<entity>)
+    // @Required 2
+    // @Short Changes the specified statistic value for a player.
+    // @Group player
+    //
+    // @Description
+    // Changes the specified statistic for the player.
+    // For more info on statistics, see https://minecraft.gamepedia.com/Statistics
+    // For statistic names, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Statistic.html
+    //
+    //
+    // @Tags
+    // <p@player.statistic[<statistic>]>
+    // <p@player.statistic[<statistic>].qualifier[<material>/<entity>]>
+    //
+    // @Usage
+    // TODO: Document Command Details
+    // -->
+
     private enum Action {ADD, TAKE, SET}
 
     @Override

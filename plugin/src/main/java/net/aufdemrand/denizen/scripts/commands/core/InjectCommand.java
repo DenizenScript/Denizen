@@ -10,11 +10,29 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 import java.util.List;
 
-/**
- * Injects a task script in the current ScriptQueue.
- * This replaces the now-deprecated runtask command without the queue argument.
- */
 public class InjectCommand extends AbstractCommand {
+
+    // <--[command]
+    // @Name Inject
+    // @Syntax inject (locally) [<script>] (path:<name>) (instantly)
+    // @Required 1
+    // @Short Runs a script in the current ScriptQueue.
+    // @Video /denizen/vids/Run%20And%20Inject
+    // @Group core
+    //
+    // @Description
+    // Injects a script into the current ScriptQueue.
+    // This means this task will run with all of the original queue's definitions and tags.
+    // It will also now be part of the queue, so any delays or definitions used in the injected script will be
+    // accessible in the original queue.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Injects the InjectedTask task into the current queue
+    // - inject InjectedTask
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

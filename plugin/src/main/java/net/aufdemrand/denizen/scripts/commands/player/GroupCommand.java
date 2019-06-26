@@ -14,6 +14,41 @@ import org.bukkit.World;
 
 public class GroupCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Group
+    // @Syntax group [add/remove/set] [<group>] (<world>)
+    // @Required 2
+    // @Short Adds a player to, removes a player from, or sets a player's permissions group.
+    // @Group player
+    // @Plugin Vault
+    //
+    // @Description
+    // Controls a player's permission groups, which the ability to add, remove or set a player's groups.
+    // The 'add' argument adds the player to the group and any parent groups, while the remove command does
+    // the opposite, removing the player from the group and any inheriting groups. The set command removes all
+    // existing groups and sets the player's group.
+    // Note: This requires a permissions plugin.
+    //
+    // @Tags
+    // <p@player.in_group[<group>]>
+    // <p@player.in_group[<group>].global>
+    // <p@player.in_group[<group>].world>
+    // <p@player.groups>
+    // <server.list_permission_groups>
+    //
+    // @Usage
+    // Use to add a player to the Admin group.
+    // - group add Admin
+    //
+    // @Usage
+    // Use to remove a player from the Moderator group.
+    // - group remove Moderator
+    //
+    // @Usage
+    // Use to set a player to the Member group in the Creative world.
+    // - group set Member w@Creative
+    // -->
+
     private enum Action {ADD, REMOVE, SET}
 
     @Override

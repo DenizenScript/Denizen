@@ -12,6 +12,39 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class TimeCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Time
+    // @Syntax time ({global}/player) [<time duration>] (<world>)
+    // @Required 1
+    // @Short Changes the current time in the minecraft world.
+    // @Group world
+    //
+    // @Description
+    // Changes the current time in a world or the time that a player sees the world in.
+    // If no world is specified, defaults to the NPCs world. If no NPC is available,
+    // defaults to the player's world. If no player is available, an error will be thrown.
+    // If a player is specified, it will change their personal time.
+    // This is separate from the global time, and does not affect other players.
+    // When that player logs off, their time will be reset to the global time.
+    //
+    // @Tags
+    // <w@world.time>
+    // <w@world.time.period>
+    //
+    // @Usage
+    // Use to set the time in the NPC or Player's world.
+    // - time 500t
+    //
+    // @Usage
+    // Use to make the player see a different time than everyone else.
+    // - time player 500t
+    //
+    // @Usage
+    // Use to set the time in a specific world.
+    // - time 500t w@myworld
+    //
+    // -->
+
     private enum Type {GLOBAL, PLAYER}
 
     @Override

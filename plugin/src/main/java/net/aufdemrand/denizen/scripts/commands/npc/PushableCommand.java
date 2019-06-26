@@ -13,6 +13,28 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class PushableCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Pushable
+    // @Syntax pushable (state:true/false/{toggle}) (delay:<duration>) (returnable:true/false)
+    // @Required 0
+    // @Short Edits the pushable trait for NPCs.
+    // @Group npc
+    //
+    // @Description
+    // Enables, disables, toggles, or edits the Pushable trait on the attached NPC.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to toggle the Pushable trait for a specified NPC.
+    // - pushable npc:n@321
+    //
+    // @Usage
+    // Use to enable the Pushable trait and return after 2 seconds.
+    // - pushable state:true delay:2s returnable:true
+    // -->
+
     private enum Toggle {TOGGLE, TRUE, FALSE, ON, OFF}
 
     @Override

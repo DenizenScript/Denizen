@@ -19,6 +19,30 @@ import java.util.List;
 
 public class NarrateCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Narrate
+    // @Syntax narrate [<text>] (targets:<player>|...) (format:<name>)
+    // @Required 1
+    // @Short Shows some text to the player.
+    // @Group player
+    //
+    // @Description
+    // Prints some text into the target's chat area. If no target is specified it will default to the attached player
+    // or the console. Accepts the 'format:<name>' argument, which will reformat the text according to the specified
+    // format script.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to narrate text to the player.
+    // - narrate "Hello World!"
+    //
+    // @Usage
+    // Use to narrate text to a list of players.
+    // - narrate "Hello there." targets:p@mcmonkey4eva|p@Morphan1|p@Fortifier42
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

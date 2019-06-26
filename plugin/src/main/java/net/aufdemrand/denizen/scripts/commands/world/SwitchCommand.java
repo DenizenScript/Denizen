@@ -30,6 +30,36 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SwitchCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Switch
+    // @Syntax switch [<location>|...] (state:[{toggle}/on/off]) (duration:<value>)
+    // @Required 1
+    // @Short Switches state of the block.
+    // @Group world
+    //
+    // @Description
+    // Changes the state of a block at the given location.
+    // Can specify a duration before it returns to the previous state.
+    // By default, will toggle the state (on to off, or off to on).
+    // Works on any interactable blocks.
+    //
+    // @Tags
+    // <l@location.switched>
+    //
+    // @Usage
+    // At the player's location, switch the state of the block to on, no matter what state it was in before.
+    // - switch <player.location> state:on
+    //
+    // @Usage
+    // Opens a door that the player is looking at.
+    // - switch <player.location.cursor_on> state:on
+    //
+    // @Usage
+    // Toggle a block at the player's location.
+    // - switch <player.location>
+    //
+    // -->
+
     private enum SwitchState {ON, OFF, TOGGLE}
 
     private Map<Location, Integer> taskMap = new ConcurrentHashMap<>(8, 0.9f, 1);

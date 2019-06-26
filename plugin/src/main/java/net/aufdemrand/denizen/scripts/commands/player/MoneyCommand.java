@@ -17,6 +17,40 @@ import java.util.List;
 
 public class MoneyCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Money
+    // @Syntax money [give/take/set] (quantity:<#.#>) (players:<player>|...)
+    // @Required 1
+    // @Short Manage a player's money.
+    // @Group player
+    // @Plugin Vault
+    //
+    // @Description
+    // Give money to, take money from, and set the balance of a player.
+    // If no quantity is specified it defaults to '1'. You can specify a list of
+    // players to give to or take from. If no player(s) are specified defaults to the attached player.
+    // NOTE: This requires an economy plugin. May work for offline players depending on economy plugin.
+    //
+    // @Tags
+    // <p@player.money>
+    //
+    // @Usage
+    // Use to give 1 money to the player.
+    // - money give
+    //
+    // @Usage
+    // Use to take 10 money from a player.
+    // - money take quantity:10 from:p@mcmonkey4eva
+    //
+    // @Usage
+    // Use to give all players on the server 100 money.
+    // - money give quantity:100 to:<server.list_players>
+    //
+    // @Usage
+    // Use to set the money of all online players to 250.
+    // - money set quantity:250 players:<server.list_online_players>
+    // -->
+
     enum Action {
         GIVE,
         TAKE,

@@ -20,6 +20,81 @@ import java.util.List;
 
 public class ScoreboardCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Scoreboard
+    // @Syntax scoreboard ({add}/remove) (viewers:<player>|...) (lines:<player>/<text>|...) (id:<value>/{main}) (objective:<value>) (criteria:<criteria>/{dummy}) (score:<#>) (displayslot:<value>/{sidebar}/none)
+    // @Required 1
+    // @Short Add or removes viewers, objectives and scores from scoreboards.
+    // @Group server
+    //
+    // @Description
+    // Lets you make players see a certain scoreboard and then a certain objective in that scoreboard.
+    //
+    // There are currently three slots where objectives can be displayed: in the sidebar on the right of
+    // the screen, below player names and in the player list that shows up when you press Tab. The names
+    // of these slots can be found here:
+    // http://jd.bukkit.org/rb/apidocs/org/bukkit/scoreboard/DisplaySlot.html
+    //
+    // Every objective has several lines of scores. Technically, the lines track players, but fake player
+    // names can be used by Denizen to let you call the lines anything you want.
+    //
+    // When using the sidebar as the display slot, all the scores set for an objective will be displayed
+    // there, but you will need to put actual player names in the lines to be able to use the below_name
+    // display slot (which displays each player's score underneath his/her name) and the player_list
+    // display slot (which displays each player's score to the right of his/her name in the player list).
+    //
+    // If you do not specify a display slot, the sidebar will be used. You can also use "none" as the
+    // display slot if you want to add a hidden objective without automatically making it get displayed.
+    //
+    // You can set scores manually, or you can use different Minecraft criteria that set and update the
+    // scores automatically. A list of these criteria can be found here:
+    // http://minecraft.gamepedia.com/Scoreboard#Objectives
+    //
+    // You can use the "remove" argument to remove different parts of scoreboards. The more arguments
+    // you use with it, the more specific your removal will be. For example, if you only use the "remove"
+    // argument and the "id" argument, you will completely remove all the objectives in a scoreboard,
+    // but if you specify an objective as well, you will only delete that one objective from that
+    // scoreboard, and if you also specify certain lines, you will only delete those specific lines from
+    // that objective. Similarly, if you use the "remove" argument along with the "id" and "viewers"
+    // arguments, you will only remove those viewers from the scoreboard, not the entire scoreboard.
+    //
+    // @Tags
+    // <server.scoreboard[(<board>)].exists>
+    // <server.scoreboard[(<board>)].team_members[<team>]>
+    //
+    // @Usage
+    // Add a score for the player "mythan" to the default scoreboard under the objective "cookies" and let him see it
+    // - scoreboard add obj:cookies lines:mythan score:1000 viewers:p@mythan
+    //
+    // @Usage
+    // Add a new current objective called "food" to the "test" scoreboard with 3 lines that each have a score of 50:
+    // - scoreboard add id:test obj:food lines:Cookies|Donuts|Cake score:50
+    //
+    // @Usage
+    // Make a list of players see the scoreboard that has the id "test":
+    // - scoreboard add viewers:p@Goma|p@mythan|p@Ares513 id:test
+    //
+    // @Usage
+    // Change the value of one of the scores in the "food" objective:
+    // - scoreboard add id:test obj:food lines:Cake score:9000
+    //
+    // @Usage
+    // Remove one of the lines from the "food" objective in the "test" scoreboard
+    // - scoreboard remove obj:food lines:Donuts
+    //
+    // @Usage
+    // Remove one of the viewers of the "test" scoreboard:
+    // - scoreboard remove viewers:p@mythan
+    //
+    // @Usage
+    // Make the player "dimensionZ" see the health of other players below their names
+    // - scoreboard add viewers:p@dimensionZ id:test obj:anything criteria:health displayslot:below_name
+    //
+    // @Usage
+    // Make all the players on the world "survival" see each other's number of entity kills in the player list when pressing Tab
+    // - scoreboard add "viewers:<w@survival.players>" id:test obj:anything criteria:totalKillCount displayslot:player_list
+    // -->
+
     private enum Action {ADD, REMOVE}
 
     @Override

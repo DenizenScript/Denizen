@@ -21,6 +21,34 @@ import java.util.List;
 
 public class HeadCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Head
+    // @Syntax head (<entity>|...) [skin:<player_name>]
+    // @Required 1
+    // @Short Makes players or NPCs wear a specific player's head.
+    // @Group entity
+    //
+    // @Description
+    // Equips a player's head onto the player(s) or npc(s) specified. If no player or npc is specified, it defaults
+    // to the player attached to the script queue. It accepts a single entity or list of entities.
+    //
+    // @Tags
+    // <i@item.skin>
+    // <i@item.has_skin>
+    //
+    // @Usage
+    // Use to stick an awesome head on your head with the head command.
+    // - head <player> skin:mcmonkey4eva
+    //
+    // @Usage
+    // Use to equip an npc with id 5 with your own head.
+    // - head n@5 skin:<player.name>
+    //
+    // @Usage
+    // Use to equip all online players with Notch's head.
+    // - head <server.list_online_players> skin:Notch
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

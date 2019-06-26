@@ -14,6 +14,41 @@ import org.bukkit.WeatherType;
 
 public class WeatherCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Weather
+    // @Syntax weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)
+    // @Required 1
+    // @Short Changes the current weather in the minecraft world.
+    // @Group world
+    //
+    // @Description
+    // Changes the weather in the specified world.
+    // You can also set weather for the attached player, where that player will experience personal
+    // weather that is different from the global weather.
+    // Logging off will reset personal weather.
+    //
+    // @Tags
+    // <b@biome.downfall_type>
+    // <p@player.weather>
+    // <w@world.has_storm>
+    // <w@world.weather_duration>
+    // <w@world.thundering>
+    // <w@world.thunder_duration>
+    //
+    // @Usage
+    // Makes the weather sunny
+    // - weather sunny
+    //
+    // @Usage
+    // Makes the weather storm in world "cookies"
+    // - weather storm world:cookies
+    //
+    // @Usage
+    // Make the weather storm for the attached player.
+    // - weather type:player storm
+    //
+    // -->
+
     private enum Type {GLOBAL, PLAYER}
 
     private enum Value {SUNNY, STORM, THUNDER}

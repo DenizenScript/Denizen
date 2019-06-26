@@ -11,6 +11,23 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class ResetCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Reset
+    // @Syntax reset (<player>|...) [cooldown/saves/global_cooldown] (<script>)
+    // @Required 1
+    // @Short Resets various parts of Denizen's saves.yml, including a script's cooldowns or general player saves.
+    // @Group core
+    //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // TODO: Document Command Details
+    // -->
+
     private enum Type {PLAYER_COOLDOWN, GLOBAL_COOLDOWN, SAVES}
 
     @Override

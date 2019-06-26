@@ -21,6 +21,36 @@ import org.bukkit.block.Sign;
 
 public class SignCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Sign
+    // @Syntax sign (type:{automatic}/sign_post/wall_sign) ["<line>|..."] [<location>] (direction:n/e/w/s)
+    // @Required 1
+    // @Short Modifies a sign.
+    // @Group world
+    //
+    // @Description
+    // Modifies a sign that replaces the text shown on it. If no sign is at the location, it replaces the location with the modified sign.
+    // The direction arguement tells which direction the text shown. If a direction is not specified, it defaults to south.
+    // Specify 'automatic' as a type to use whatever sign type and direction is already placed there.
+    // If there is not already a sign there, defaults to a sign_post.
+    //
+    // @Tags
+    // <l@location.block.sign_contents>
+    //
+    // @Usage
+    // Use to edit some text on a sign
+    // - sign type:automatic "Hello|this is|some|text" <player.location>
+    //
+    // @Usage
+    // Use to show the time on a sign that points north
+    // - sign type:automatic "I point|North.|System Time<&co>|<util.date.time>" l@233,65,123,world direction:n
+    //
+    // @Usage
+    // Use to force a sign to be a wall_sign if no sign is found.
+    // - sign type:wall_sign "Player<&co>|<player.name>|Online Players<&co>|<server.list_online_players.size>" l@233,65,123,world
+    //
+    // -->
+
     private enum Type {AUTOMATIC, SIGN_POST, WALL_SIGN}
 
     @Override

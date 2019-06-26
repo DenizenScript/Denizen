@@ -18,14 +18,90 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.event.Listener;
 
-/**
- * Sets a server or player/npc 'flag'. Flags can hold information to check against
- * with the FLAGGED requirement, or store important information.
- *
- * @version 1.0
- */
-
 public class FlagCommand extends AbstractCommand implements Listener {
+
+    // <--[command]
+    // @Name Flag
+    // @Syntax flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)
+    // @Required 1
+    // @Short Sets or modifies a flag on the player, NPC, entity, or server.
+    // @Group core
+    //
+    // @Description
+    // The flag command sets or modifies custom value storage database entries connected to
+    // each player, each NPC, each entity, and the server.
+    // Flags can have operations performed upon them, such as:
+    // Increment a flag:
+    // - flag player counter:++
+    // Increase a flag by 3:
+    // - flag player counter:+:3
+    // Decrease a flag by 2:
+    // - flag player counter:-:2
+    //
+    // See <@link language flags> for more info.
+    //
+    // All the flag values are stored by default in "plugins/denizen/saves.yml" file.
+    // For an alternative way of storing values, use either yaml (See <@link command yaml>)
+    // or sql (See <@link command sql>)
+    //
+    //
+    // @Tags
+    // <p@player.flag[<flag>]>
+    // <p@player.has_flag[<flag_name>]>
+    // <p@player.list_flags[(regex:)<search>]>
+    // <n@npc.flag[<flag>]>
+    // <n@npc.has_flag[<flag_name>]>
+    // <n@npc.list_flags[(regex:)<search>]>
+    // <e@entity.flag[<flag_name>]>
+    // <e@entity.has_flag[<flag_name>]>
+    // <e@entity.list_flags[(regex:)<search>]>
+    // <server.flag[<flag>]>
+    // <server.has_flag[<flag_name>]>
+    // <server.list_flags[(regex:)<search>]>
+    // <server.list_online_players_flagged[<flag_name>]>
+    // <server.list_players_flagged[<flag_name>]>
+    // <server.list_spawned_npcs_flagged[<flag_name>]>
+    // <server.list_npcs_flagged[<flag_name>]>
+    // <fl@flag_name.is_expired>
+    // <fl@flag_name.expiration>
+    // <fl@flag_name.as_list>
+    //
+    // @Usage
+    // Use to create or set a flag on a player.
+    // - flag player playstyle:agressive
+    //
+    // @Usage
+    // Use to flag an npc with a given tag value.
+    // - flag npc location:<npc.location>
+    //
+    // @Usage
+    // Use to apply mathematical changes to a flag's value on a unique object.
+    // - flag <context.damager> damage_dealt:+:<context.damage>
+    //
+    // @Usage
+    // Use to add an item to a server flag as a new value without removing existing values.
+    // - flag server cool_people:->:p@TheBlackCoyote
+    //
+    // @Usage
+    // Use to add both multiple items as individual new values to a server flag.
+    // - flag server cool_people:|:p@mcmonkey4eva|p@morphan1
+    //
+    // @Usage
+    // Use to remove an entry from a server flag.
+    // - flag server cool_people:<-:p@morphan1
+    //
+    // @Usage
+    // Use to clear a flag and fill it with a new list of values.
+    // - flag server cool_people:!|:p@mcmonkey4eva|p@morphan1|p@xenmai
+    //
+    // @Usage
+    // Use to completely remove a flag.
+    // - flag server cool_people:!
+    //
+    // @Usage
+    // Use to modify a specific index in a list flag.
+    // - flag server myflag[3]:HelloWorld
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

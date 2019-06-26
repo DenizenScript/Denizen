@@ -11,6 +11,25 @@ import net.aufdemrand.denizencore.scripts.queues.core.Delayable;
 
 public class WaitCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Wait
+    // @Syntax wait (<duration>) (queue:<name>)
+    // @Required 0
+    // @Short Delays a script for a specified amount of time.
+    // @Group core
+    //
+    // @Description
+    // Pauses the script queue for the duration specified. If no duration is specified it defaults to 3 seconds.
+    // Accepts the 'queue:<name>' argument which allows the delay of a different queue.
+    //
+    // @Tags
+    // <q@queue.speed>
+    //
+    // @Usage
+    // Use to delay the current queue for 1 minute.
+    // - wait 1m
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

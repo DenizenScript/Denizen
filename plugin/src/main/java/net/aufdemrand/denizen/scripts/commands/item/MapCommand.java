@@ -23,6 +23,39 @@ import java.util.List;
 
 public class MapCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Map
+    // @Syntax map [<#>/new:<world>] [reset:<location>/image:<file> (resize)/script:<script>] (x:<#>) (y:<#>)
+    // @Required 2
+    // @Short Modifies a new or existing map by adding images or text.
+    // @Group item
+    //
+    // @Description
+    // This command modifies an existing map, or creates a new one. Using this will override existing
+    // non-Denizen map renderers with Denizen's custom map renderer.
+    // You can reset this at any time by using the 'reset:<location>' argument, which will remove all
+    // images and texts on the map and show the default world map at the specified location.
+    // Note that all maps have a size of 128x128.
+    // The file path is relative to the 'plugins/Denizen/images/' folder.
+    // Use escaping to let the image and text arguments have tags based on the player viewing the map.
+    // Custom maps will persist over restarts using the 'maps.yml' save file in the Denizen plugins folder.
+    //
+    // @Tags
+    // <entry[saveName].created_map> returns the map created by the 'new:' argument if used.
+    //
+    // @Usage
+    // Use to add an auto-resized background image to map 3
+    // - map 3 image:my_map_images/my_background.png resize
+    //
+    // @Usage
+    // Use to add an image with the top-left corner at the center of a new map
+    // - map new:w@world image:my_map_images/my_center_image.png x:64 y:64
+    //
+    // @Usage
+    // Reset map to have the center at the player's location
+    // - map 3 reset:<player.location>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

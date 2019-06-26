@@ -16,6 +16,34 @@ import org.bukkit.potion.PotionEffectType;
 
 public class InvisibleCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Invisible
+    // @Syntax invisible [<entity>] (state:true/false/toggle)
+    // @Required 1
+    // @Short Makes an NPC or entity go invisible
+    // @Group entity
+    //
+    // @Description
+    // For non-armor stand entities, applies a maximum duration invisibility potion.
+    // For armor stands, toggles them invisible.
+    // Applies the 'invisible' trait to NPCs.
+    //
+    // NPCs can't be made invisible if not added to the playerlist.
+    // (The invisible trait adds the NPC to the playerlist when set)
+    // See <@link language invisible trait>)
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // - invisible <player> state:true
+    // Makes the player invisible
+    //
+    // @Usage
+    // - invisible <npc> state:toggle
+    // Makes the attached NPC visible if previously invisible, and invisible if not
+    // -->
+
     enum Action {TRUE, FALSE, TOGGLE}
 
     @Override

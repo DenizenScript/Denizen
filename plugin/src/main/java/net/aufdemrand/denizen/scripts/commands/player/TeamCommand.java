@@ -14,6 +14,34 @@ import org.bukkit.scoreboard.Team;
 
 public class TeamCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Team
+    // @Syntax team (id:<scoreboard>/{main}) [name:<team>] (add:<entry>|...) (remove:<entry>|...) (prefix:<prefix>) (suffix:<suffix>)
+    // @Required 2
+    // @Short Controls scoreboard teams.
+    // @Group player
+    //
+    // @Description
+    // The Team command allows you to add modify a team's prefix and suffix, as well as adding to
+    // and removing entries from teams.
+    // NOTE: Prefixes and suffixes cannot be longer than 16 characters!
+    //
+    // @Tags
+    // <server.scoreboard[(<board>)].team_members[<team>]>
+    //
+    // @Usage
+    // Use to add a player to a team.
+    // - team name:red add:<player.name>
+    //
+    // @Usage
+    // Use to add an NPC to a team.
+    // - team name:blue add:<npc.name>
+    //
+    // @Usage
+    // Use to change the prefix for a team.
+    // - team name:red "prefix:[<red>Red Team<reset>]"
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -23,6 +23,44 @@ import java.util.List;
 
 public class FireworkCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Firework
+    // @Syntax firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)
+    // @Required 0
+    // @Short Launches a firework with specific coloring
+    // @Group world
+    //
+    // @Description
+    // This command launches a firework from the specified location. The power option, which defaults to 1
+    // if left empty, specifies how high the firework will go before exploding. The type option
+    // which specifies the shape the firework will explode with. The primary option specifies what colour the
+    // firework will initially explode as. The fade option specifies what colour the firework will
+    // fade into after exploding. The flicker option means the firework will leave a trail behind it, and the
+    // flicker option means the firework will explode with a flicker effect.
+    //
+    // @Tags
+    // <e@entity.firework_item>
+    // <i@item.is_firework>
+    // <i@item.firework>
+    // <entry[saveName].launched_firework> returns a dEntity of the firework that was launched.
+    //
+    // @Usage
+    // Use to launch a star firework which explodes yellow and fades to white afterwards at the player's location
+    // - firework <player.location> star primary:yellow fade:white
+    //
+    // @Usage
+    // Use to make the firework launch double the height before exploding
+    // - firework <player.location> power:2 star primary:yellow fade:white
+    //
+    // @Usage
+    // Use to launch a firework which leaves a trail
+    // - firework <player.location> random trail
+    //
+    // @Usage
+    // Use to launch a firework which leaves a trail and explodes with a flicker effect at 10,43,-76 in world
+    // - firework l@10,43,-76,world random trail flicker
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

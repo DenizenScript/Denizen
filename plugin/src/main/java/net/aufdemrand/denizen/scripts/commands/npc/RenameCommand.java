@@ -13,6 +13,32 @@ import org.bukkit.Location;
 
 public class RenameCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Rename
+    // @Syntax rename [<name>]
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Renames the linked NPC.
+    // @Group npc
+    //
+    // @Description
+    // Renames the linked NPC.
+    // Functions like the '/npc rename' command.
+    // NPC names may exceed the 16 character limit of normal Minecraft names.
+    //
+    // @Tags
+    // <n@npc.name>
+    // <n@npc.name.nickname>
+    //
+    // @Usage
+    // Use to rename the linked NPC.
+    // - rename Bob
+    //
+    // @Usage
+    // Use to rename a different NPC.
+    // - rename Bob npc:n@32
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

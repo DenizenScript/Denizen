@@ -11,6 +11,29 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class GameRuleCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Gamerule
+    // @Syntax gamerule [<world>] [<rule>] [<value>]
+    // @Required 3
+    // @Short Sets a gamerule on the world.
+    // @Group world
+    //
+    // @Description
+    // Sets a gamerule on the world. A list of valid gamerules can be found here: http://minecraft.gamepedia.com/Commands#gamerule
+    // Note: Be careful, gamerules are CASE SENSITIVE.
+    //
+    // @Tags
+    // TODO: Add tags and then document them!
+    //
+    // @Usage
+    // Use to disable fire spreading in world "Adventure".
+    // - gamerule w@Adventure doFireTick false
+    //
+    // @Usage
+    // Use to avoid mobs from destroying blocks (creepers, endermen...) and picking items up (zombies, skeletons...) in world "Adventure".
+    // - gamerule w@Adventure mobGriefing false
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

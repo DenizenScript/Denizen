@@ -19,7 +19,31 @@ import java.util.List;
 
 public class LookCommand extends AbstractCommand {
 
-    // look (<entity>) [<location>]
+    // <--[command]
+    // @Name Look
+    // @Syntax look (<entity>|...) [<location>] (duration:<duration>)
+    // @Required 1
+    // @Short Causes the NPC or other entity to look at a target location.
+    // @Group entity
+    //
+    // @Description
+    // Makes the entity look towards the location, can be used on players. If a duration is set, the entity cannot
+    // look away from the location until the duration has expired unless they are forces to look at a different
+    // location.
+    //
+    // @Tags
+    // <l@location.yaw>
+    // <l@location.pitch>
+    //
+    // @Usage
+    // Use to point an npc towards a spot.
+    // - look <npc> <player.location>
+    //
+    // @Usage
+    // Use to force a player to stare at a spot for some time.
+    // - look <player> <npc.location> duration:10s
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -25,9 +25,25 @@ import java.util.List;
 
 public class WalkCommand extends AbstractCommand implements Holdable {
 
-    //                        percentage
-    // walk [location] (speed:#.#) (auto_range)
+    // <--[command]
+    // @Name Walk
+    // @Syntax walk (<entity>|...) [<location>/stop] (speed:<#.#>) (auto_range) (radius:<#.#>) (lookat:<location>)
+    // @Required 1
+    // @Short Causes an entity or list of entities to walk to another location.
+    // @Group entity
     //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <n@npc.navigator.is_navigating>
+    // <n@npc.navigator.speed>
+    // <n@npc.navigator.range>
+    // <n@npc.navigator.target_location>
+    //
+    // @Usage
+    // TODO: Document Command Details
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

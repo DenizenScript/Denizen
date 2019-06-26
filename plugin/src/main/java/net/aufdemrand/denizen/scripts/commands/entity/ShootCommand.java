@@ -36,6 +36,41 @@ import java.util.UUID;
 
 public class ShootCommand extends AbstractCommand implements Listener, Holdable {
 
+    // <--[command]
+    // @Name Shoot
+    // @Syntax shoot [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (height:<#.#>) (speed:<#.#>) (script:<name>) (def:<element>|...) (shooter:<entity>) (spread:<#.#>) (lead:<location>) (no_rotate)
+    // @Required 1
+    // @Short Shoots an entity through the air, useful for things like firing arrows.
+    // @Group entity
+    //
+    // @Description
+    // Shoots an entity through the air up to a certain height, optionally triggering a script on impact with a target.
+    //
+    // Generally, use the "speed" argument to send an entity exactly the direction you input,
+    // and don't include it to have the entity automatically attempt to land exactly on the destination.
+    //
+    // If the origin is not an entity, specify a shooter so the damage handling code knows how to assume shot the projectile.
+    // Normally, a list of entities will spawn mounted on top of each other. To have them instead fire separately and spread out,
+    // specify the 'spread' argument with a decimal number indicating how wide to spread the entities.
+    // In the script ran when the arrow lands, the following definitions will be available:
+    // <def[shot_entities]> for all shot entities, <def[last_entity]> for the last one (The controlling entity),
+    // <def[location]> for the last known location of the last shot entity, and
+    // <def[hit_entities]> for a list of any entities that were hit by fired projectiles.
+    // Optionally, specify a speed and 'lead' value to use the experimental arrow-aiming system.
+    // Optionally, add 'no_rotate' to prevent the shoot command from rotating launched entities.
+    //
+    // @Tags
+    // <entry[saveName].shot_entities> returns a dList of entities that were shot.
+    //
+    // @Usage
+    // Use to shoot an arrow from the NPC to perfectly hit the player.
+    // - shoot arrow origin:<npc> destination:<player.location>
+    //
+    // @Usage
+    // Use to shoot an arrow out of the player with a given speed.
+    // - shoot arrow origin:<player> speed:2
+    // -->
+
     Map<UUID, dEntity> arrows = new HashMap<>();
 
     @Override

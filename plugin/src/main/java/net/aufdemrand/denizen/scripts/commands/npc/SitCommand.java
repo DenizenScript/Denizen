@@ -12,6 +12,26 @@ import org.bukkit.entity.*;
 
 public class SitCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Sit
+    // @Syntax sit (<location>)
+    // @Required 0
+    // @Short Causes the NPC to sit. To make them stand, see <@link command Stand>.
+    // @Group npc
+    //
+    // @Description
+    // Makes the linked NPC sit at the specified location.
+    // Use <@link command Stand> to make the NPC stand up again.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Make the linked NPC sit at the player's cursor location.
+    // - sit <player.location.cursor_on>
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

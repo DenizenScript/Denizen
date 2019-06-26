@@ -18,6 +18,38 @@ import java.util.List;
 
 public class LeashCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Leash
+    // @Syntax leash (cancel) [<entity>|...] (holder:<entity>/<location>)
+    // @Required 1
+    // @Short Sticks a leash on target entity, held by a fence or another entity.
+    // @Group entity
+    //
+    // @Description
+    // Attaches a leash to the specified entity.
+    // The leash may be attached to a fence, or another entity.
+    // Players and Player NPCs may not be leashed.
+    // Note that releasing a mob from a fence post may leave the leash attached to that fence post.
+    //
+    // Non-player NPCs can be leashed if '/npc leashable' is enabled.
+    //
+    // @Tags
+    // <e@entity.is_leashed>
+    // <e@entity.leash_holder>
+    //
+    // @Usage
+    // Use to attach a leash to the player's target.
+    // - leash <player.target> holder:<player>
+    //
+    // @Usage
+    // Use to attach the closest cow in 10 blocks to the fence the player is looking at.
+    // - leash <player.location.find.entities[cow].within[10].first> holder:<player.location.cursor_on>
+    //
+    // @Usage
+    // Use to release the target entity.
+    // - leash cancel <player.target>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

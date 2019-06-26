@@ -17,6 +17,31 @@ import java.util.List;
 
 public class TitleCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Title
+    // @Syntax title (title:<text>) (subtitle:<text>) (fade_in:<duration>/{1s}) (stay:<duration>/{3s}) (fade_out:<duration>/{1s}) (targets:<player>|...)
+    // @Required 1
+    // @Short Displays a title to specified players.
+    // @Group player
+    //
+    // @Description
+    // Shows the players a large, noticeable wall of text in the center of the screen.
+    // You can also show a "subtitle" below that title.
+    // You may add timings for fading in, staying there, and fading out.
+    // The defaults for these are: 1 second, 3 seconds, and 1 second, respectively.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to alert players of impending server restart.
+    // - title "title:<red>Server Restarting" "subtitle:<red>In 1 minute!" stay:1m targets:<server.list_online_players>
+    //
+    // @Usage
+    // Use to inform the player about the area they have just entered.
+    // - title "title:<green>Tatooine" "subtitle:<gold>What a desolate place this is."
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

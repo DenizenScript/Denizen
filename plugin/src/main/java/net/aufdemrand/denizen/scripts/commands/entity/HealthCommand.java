@@ -16,6 +16,43 @@ import java.util.List;
 
 public class HealthCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Health
+    // @Syntax health ({npc}/<entity>|...) [<#>] (state:{true}/false/toggle)
+    // @Required 1
+    // @Short Changes the target's maximum health.
+    // @Group entity
+    //
+    // @Description
+    // Use this command to modify an entity's maximum health. If the target is an NPC,
+    // you can use the 'state' argument to enable, disable, or toggle the Health trait
+    // (which is used to track the NPC's health, and handle actions such as 'on death')
+    // the Health trait will be enabled by default.
+    // By default, this command will target the linked NPC but can be set to target any
+    // other living entity, such as a player or mob.
+    // Additionally, you may input a list of entities, each one will calculate the effects
+    // explained above.
+    //
+    // @Tags
+    // <e@entity.health>
+    // <n@npc.has_trait[health]>
+    //
+    // @Usage
+    // Use to set the NPC's maximum health to 50.
+    // - health 50
+    //
+    // @Usage
+    // Use to disable tracking of health value on the NPC.
+    // - health state:false
+    //
+    // @Usage
+    // Use to change a player's health limit to 50.
+    // - health <player> 50
+    //
+    // @Usage
+    // Use to change a list of entities' health limits all to 50.
+    // - health <player.location.find.living_entities.within[10]> 50
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

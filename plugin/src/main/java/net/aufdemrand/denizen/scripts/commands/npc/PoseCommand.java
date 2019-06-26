@@ -14,6 +14,37 @@ import org.bukkit.entity.Player;
 
 public class PoseCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Pose
+    // @Syntax pose (add/remove/{assume}) [id:<name>] (player/{npc}) (<location>)
+    // @Required 1
+    // @Plugin Citizens
+    // @Short Rotates the player or NPC to match a pose, or adds/removes an NPC's poses.
+    // @Group npc
+    //
+    // @Description
+    // Makes a player or NPC assume the position of a pose saved on an NPC, removes a
+    // pose with a specified ID from the current linked NPC, or adds a pose to the NPC
+    // with an ID and a location, although the only thing that matters in the location
+    // is the pitch and yaw.
+    //
+    // @Tags
+    // <n@npc.has_pose[<name>]>
+    // <n@npc.pose[<name>]>
+    //
+    // @Usage
+    // Make an NPC assume a pose.
+    // - pose id:MyPose1
+    //
+    // @Usage
+    // Add a pose to an NPC. (Note that only the last 2 numbers matter)
+    // - pose add id:MyPose2 l@0,0,0,-2.3,5.4,world
+    //
+    // @Usage
+    // Remove a pose from an NPC.
+    // - pose remove id:MyPose1
+    // -->
+
     private enum TargetType {NPC, PLAYER}
 
     private enum Action {ADD, REMOVE, ASSUME}

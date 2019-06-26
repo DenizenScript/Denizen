@@ -11,6 +11,30 @@ import net.citizensnpcs.api.npc.NPC;
 
 public class VulnerableCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Vulnerable
+    // @Syntax vulnerable (state:{true}/false/toggle)
+    // @Required 0
+    // @Plugin Citizens
+    // @Short Sets whether an NPC is vulnerable.
+    // @Group npc
+    //
+    // @Description
+    // Toggles whether an NPC can be hurt or not.
+    //
+    // @Tags
+    // <n@npc.invulnerable>
+    //
+    // @Usage
+    // Makes an NPC vulnerable.
+    // - vulnerable state:true
+    //
+    // @Usage
+    // Makes an NPC vulnerable if it is not, and invulnerable if it is.
+    // - vulnerable
+    //
+    // -->
+
     enum Toggle {TRUE, FALSE, TOGGLE}
 
     @Override

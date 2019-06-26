@@ -16,6 +16,33 @@ import org.bukkit.inventory.ItemStack;
 
 public class FishCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Fish
+    // @Syntax fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)
+    // @Required 1
+    // @Short Causes an NPC to begin fishing around a specified location.
+    // @Group npc
+    //
+    // @Description
+    // Causes an NPC to begin fishing at the specified location.
+    // Setting catch determines what items the NPC may fish up, and
+    // the chance is the odds of the NPC fishing up an item.
+    //
+    // Also note that it seems you must specify the same location initially chosen for the NPC to fish at
+    // when stopping it.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Makes the NPC throw their fishing line out to where the player is looking, with a 50% chance of catching fish
+    // - fish <player.location.cursor_on> catch:fish chance:50
+    //
+    // @Usage
+    // Makes the NPC stop fishing
+    // - fish <player.location.cursor_on> stop
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

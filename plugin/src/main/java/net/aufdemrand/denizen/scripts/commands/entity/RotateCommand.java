@@ -19,6 +19,42 @@ import java.util.*;
 
 public class RotateCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name Rotate
+    // @Syntax rotate (cancel) (<entity>|...) (yaw:<#.#>) (pitch:<#.#>) (infinite/duration:<duration>) (frequency:<duration>)
+    // @Required 1
+    // @Short Rotates a list of entities.
+    // @Group entity
+    //
+    // @Description
+    // Induces incremental rotation on a list of entities over a period of time.
+    //
+    // The yaw and pitch arguments specify how much the entity will rotate each step. Default to 10 and 0 respectively.
+    //
+    // The frequency argument specifies how long it takes between each rotation step. Defaults to 1t.
+    //
+    // The duration argument specifies how long the whole rotation process will last. Defaults to 1s.
+    // Alternatively, use "infinite" if you want the entity to spin forever.
+    //
+    // You can use "cancel" to prematurely stop the ongoing rotation (useful when set to infinite)
+    //
+    // @Tags
+    // <e@entity.location.yaw>
+    // <e@entity.location.pitch>
+    //
+    // @Usage
+    // Use to rotate the player's yaw by 10 every tick for 3 seconds total
+    // - rotate <player> duration:3s
+    //
+    // @Usage
+    // Use to rotate the player's pitch by 20 every 5 ticks for a second total
+    // - rotate <player> yaw:0.0 pitch:20.0 frequency:5t
+    //
+    // @Usage
+    // Use to prematurely stop the player's rotation
+    // - rotate cancel <player>
+    // -->
+
     public static Set<UUID> rotatingEntities = new HashSet<>();
 
     @Override

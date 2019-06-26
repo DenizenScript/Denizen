@@ -14,6 +14,55 @@ import java.util.List;
 
 public class RandomCommand extends BracedCommand {
 
+    // <--[command]
+    // @Name Random
+    // @Syntax random [<#>/<commands>]
+    // @Required 0
+    // @Short Selects a random choice from the following script commands.
+    // @Group core
+    //
+    // @Description
+    // The random command picks one of the following script command
+    // and skips all the other script commands that are in range.
+    //
+    // Specifying a number as argument will get the next following
+    // scripts commands in the queue to be picked at random.
+    // Example "- random 3" will get the next 3 commands
+    // in the current queue and pick one of those 3 to run,
+    // the other 2 commands, that was in range, will be skipped.
+    //
+    // If braces are used for argument, then it is for every
+    // denizen command, in the brace, one of them will be picked
+    // and the rest, in the brace, will be skipped.
+    //
+    // @Tags
+    // <entry[saveName].possibilities> returns an Element of the possibility count.
+    // <entry[saveName].selected> returns an Element of the selected number.
+    //
+    // @Usage
+    // Use to choose randomly from the following commands
+    // - random 3
+    // - narrate "hi"
+    // - narrate "hello"
+    // - narrate "hey"
+    //
+    // @Usage
+    // Use to choose randomly from a braced set of commands
+    // - random:
+    //   - narrate "hi"
+    //   - narrate "hello"
+    //   - narrate "hey"
+    //
+    // @Usage
+    // Use to perform multiple commands randomly
+    // - random:
+    //   - repeat 1:
+    //     - narrate "Hello"
+    //     - narrate "How are you?"
+    //   - repeat 1:
+    //     - narrate "Hey"
+    //     - narrate "It is a nice day."
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

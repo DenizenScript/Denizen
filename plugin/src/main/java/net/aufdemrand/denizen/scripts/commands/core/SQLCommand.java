@@ -19,6 +19,65 @@ import java.util.Properties;
 
 public class SQLCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name SQL
+    // @Syntax sql [id:<ID>] [disconnect/connect:<server> (username:<username>) (password:<password>) (ssl:true/{false})/query:<query>/update:<update>]
+    // @Required 2
+    // @Short Interacts with a MySQL server.
+    // @Group core
+    //
+    // @Description
+    // This command is used to interact with a MySQL server. It can update the database or query it for information.
+    // The general usage order is connect -> update/query -> disconnect.
+    // It is not required that you disconnect right after using, and in fact encouraged that you keep a connection open where possible.
+    // When connecting, the server format is IP:Port/Database, EG 'localhost:3306/test'.
+    // You can switch whether SSL is used for the connection (defaults to false).
+    // Note that when using tag, it is recommended you escape unusual inputs to avoid SQL injection.
+    // The SQL command is merely a wrapper for SQL queries, and further usage details should be gathered from an official
+    // MySQL query reference rather than from Denizen command help.
+    // SQL connections are not instant - they can take several seconds, or just never connect at all.
+    // It is recommended you hold the connection command by doing "- ~sql ..." rather than just "- sql ..."
+    // as this will delay the commands following the connect command until after the connection is established.
+    //
+    // @Tags
+    // <entry[saveName].result> returns a dList of all rows from a query or update command, of the form li@escaped_text/escaped_text|escaped_text/escaped_text
+    // <entry[saveName].affected_rows> returns how many rows were affected by an update command.
+    //
+    // @Usage
+    // Use to connect to an SQL server.
+    // - ~sql id:name connect:localhost:3306/test username:space password:space
+    //
+    // @Usage
+    // Use to connect to an SQL server over an SSL connection.
+    // - ~sql id:name connect:localhost:3306/test username:space password:space ssl:true
+    //
+    // @Usage
+    // Use to connect to an SQL server with a UTF8 text encoding.
+    // - ~sql id:name connect:localhost:3306/test?characterEncoding=utf8 username:space password:space
+    //
+    // @Usage
+    // Use to update an SQL server.
+    // - sql id:name "update:CREATE table things(id int,column_name1 varchar(255),column_name2 varchar(255));"
+    //
+    // @Usage
+    // Use to update an SQL server.
+    // - sql id:name "update:INSERT INTO things VALUES (3, 'hello', 'space');"
+    //
+    // @Usage
+    // Use to query an SQL server.
+    // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things;" save:saveName
+    // - narrate <entry[saveName].result>
+    //
+    // @Usage
+    // Use to query an SQL server.
+    // - sql id:name "query:SELECT id,column_name1,column_name2 FROM things WHERE id=3;" save:saveName2
+    // - narrate <entry[saveName2].result>
+    //
+    // @Usage
+    // Use to disconnect from an SQL server.
+    // - sql disconnect id:name
+    // -->
+
     public static Map<String, Connection> connections = new HashMap<>();
 
     @Override

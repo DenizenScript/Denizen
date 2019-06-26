@@ -19,6 +19,32 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ZapCommand extends AbstractCommand implements Listener {
 
+    // <--[command]
+    // @Name Zap
+    // @Syntax zap (<script>) [<step>] (<duration>)
+    // @Required 0
+    // @Short Changes the current script step.
+    // @Group core
+    //
+    // @Description
+    // TODO: Document Command Details
+    //
+    // @Tags
+    // <s@script.step[<player>]>
+    //
+    // @Usage
+    // Use to change the step to 2
+    // - zap 2
+    //
+    // @Usage
+    // Use to change the step to 3 in a script called Interact_Example.
+    // - zap 3 s@Interact_Example
+    //
+    // @Usage
+    // Use to change the step to 1 for player bob in a script called InteractScript.
+    // - zap 1 s@InteractScript player:p@bob
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
         for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {

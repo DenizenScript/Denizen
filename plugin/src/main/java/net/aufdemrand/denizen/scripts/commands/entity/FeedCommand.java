@@ -14,6 +14,32 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class FeedCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Feed
+    // @Syntax feed (amount:<#>) (target:<entity>)
+    // @Required 0
+    // @Short Feed the player or npc.
+    // @Group entity
+    //
+    // @Description
+    // Feeds the player or npc specified. By default targets the player attached to the script queue and feeds
+    // a full amount. Accepts the 'amount:' argument, which is in half bar increments, for a total of 20 food
+    // points. Also accepts the 'target:<entity>' argument to specify the entity which will be fed the amount.
+    // NOTE: This command is outdated and bound to be updated.
+    //
+    // @Tags
+    // <p@player.food_level>
+    // <p@player.food_level.formatted>
+    //
+    // @Usage
+    // Use to feed the player for 5 foodpoints or 2.5 bars.
+    // - feed amount:5
+    //
+    // @Usage
+    // Use to feed an npc with id 5 for 10 foodpoints or 5 bars.
+    // - feed amount:10 target:n@5
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

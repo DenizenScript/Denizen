@@ -14,6 +14,43 @@ import org.bukkit.World;
 
 public class PermissionCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Permission
+    // @Syntax permission [add/remove] [permission] (group:<name>) (<world>)
+    // @Required 2
+    // @Short Gives or takes a permission node to/from the player or group.
+    // @Group player
+    // @Plugin Vault
+    //
+    // @Description
+    // Adds or removes a permission node from a player or group. Accepts a world for world-based permissions
+    // plugins. By default changes the attached player's permissions. Accepts the 'group:<name>' argument to change
+    // a group's permission nodes rather than a player's.
+    // Note: This requires a permissions plugin.
+    //
+    // @Tags
+    // <p@player.has_permission[permission.node]>
+    // <p@player.has_permission[permission.node].global>
+    // <p@player.has_permission[permission.node].world[<world>]>
+    // <server.has_permissions>
+    //
+    // @Usage
+    // Use to give the player a permissions node.
+    // - permission add bukkit.version
+    //
+    // @Usage
+    // Use to remove a permissions node from a player.
+    // - permission remove bukkit.version
+    //
+    // @Usage
+    // Use to give the group 'Members' a permission node.
+    // - permission add bukkit.version group:Members
+    //
+    // @Usage
+    // Use to remove a permissions node from the group 'Members' in the Creative world.
+    // - permission remove bukkit.version group:Members w@Creative
+    // -->
+
     private enum Action {ADD, REMOVE}
 
     @Override

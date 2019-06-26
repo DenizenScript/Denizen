@@ -37,6 +37,46 @@ public class PlayEffectCommand extends AbstractCommand {
     // - RANDOM (chooses a random visual effect from the list starting with 'huge_explosion')
     // -->
 
+    // <--[command]
+    // @Name PlayEffect
+    // @Syntax playeffect [effect:<name>] [at:<location>|...] (data:<#.#>) (special_data:<data>) (visibility:<#.#>) (quantity:<#>) (offset:<#.#>,<#.#>,<#.#>) (targets:<player>|...)
+    // @Required 2
+    // @Short Plays a visible or audible effect at the location.
+    // @Group world
+    //
+    // @Description
+    // Allows the playing of particle effects anywhere without the need of the source it comes from originally.
+    // The particles you may use, can come from sources such as a potion effect or a portal/Enderman with their particles respectively.
+    // Some particles have different data which may include different behavior depending on the data. Default data is 0
+    // Specifying a visibility value changes the sight radius of the effect. For example if visibility is 15; Targeted players won't see it unless they are 15 blocks or closer.
+    // You can add a quantity value that allow multiple of the same effect played at the same time. If an offset is set, each particle will be played at a different location in the offset area.
+    // Everyone will see the particle effects unless a target has been specified.
+    // See <@link language Particle Effects> for a list of valid effect names.
+    //
+    // Version change note: The original PlayEffect command raised all location inputs 1 block-height upward to avoid effects playing underground when played at eg a player's location.
+    // This was found to cause too much confusion, so it is no longer on by default. However, it will still happen for older commands.
+    // The distinction is in whether you include the (now expected to use) "at:" prefix on your location argument.
+    // If you do not have this prefix, the system will assume your command is older, and will apply the 1-block height offset.
+    //
+    // Some particles will require input to the "special_data" argument. The data input is unique per particle.
+    // - For REDSTONE particles, the input is of format: <size>|<color>, for example: "1.2|red". Color input is any valid dColor object.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to create a fake explosion.
+    // - playeffect effect:EXPLOSION_HUGE at:<player.location> visibility:500 quantity:10 offset:2.0
+    //
+    // @Usage
+    // Use to play a cloud effect.
+    // - playeffect effect:CLOUD at:<player.location.add[0,5,0]> quantity:20 data:1 offset:0.0
+    //
+    // @Usage
+    // Use to play some effects at spawn.
+    // - playeffect effect:FIREWORKS_SPARK at:<w@world.spawn_location> visibility:100 quantity:375 data:0 offset:50.0
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -34,6 +34,55 @@ import java.util.Map;
 
 public class SchematicCommand extends AbstractCommand implements Holdable, Listener {
 
+    // <--[command]
+    // @Name Schematic
+    // @Syntax schematic [create/load/unload/rotate/paste/save/flip_x/flip_y/flip_z] [name:<name>] (filename:<name>) (angle:<#>) (<location>) (<cuboid>) (delayed) (noair)
+    // @Group World
+    // @Required 2
+    // @Short Creates, loads, pastes, and saves schematics (Sets of blocks).
+    //
+    // @Description
+    // Creates, loads, pastes, and saves schematics. Schematics are files containing info about
+    // blocks and the order of those blocks.
+    //
+    // Denizen offers a number of tools to manipulate and work with schematics.
+    // Schematics can be rotated, flipped, pasted with no air, or pasted with a delay.
+    // The "noair" option skips air blocks in the pasted schematics- this means those air blocks will not replace
+    // any blocks in the target location.
+    // The "delayed" option delays how many blocks can be pasted at once. This is recommended for large schematics.
+    //
+    // @Tags
+    // <schematic[<name>].height>
+    // <schematic[<name>].length>
+    // <schematic[<name>].width>
+    // <schematic[<name>].block[<location>]>
+    // <schematic[<name>].origin>
+    // <schematic[<name>].blocks>
+    // <schematic[<name>].exists>
+    // <schematic[<name>].cuboid[<origin location>]>
+    // <schematic.list>
+    //
+    // @Usage
+    // Use to create a new schematic from a cuboid and an origin location
+    // - schematic create name:MySchematic cu@<player.location.sub[5,5,5]>|<player.location.add[5,5,5]> <player.location>
+    //
+    // @Usage
+    // Use to load a schematic
+    // - schematic load name:MySchematic
+    //
+    // @Usage
+    // Use to unload a schematic
+    // - schematic unload name:MySchematic
+    //
+    // @Usage
+    // Use to paste a loaded schematic with no air blocks
+    // - schematic paste name:MySchematic <player.location> noair
+    //
+    // @Usage
+    // Use to save a created schematic
+    // - schematic save name:MySchematic
+    // -->
+
     @Override
     public void onEnable() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {

@@ -29,6 +29,70 @@ import java.util.UUID;
 
 public class SidebarCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Sidebar
+    // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
+    // @Required 1
+    // @Short Controls clientside-only sidebars.
+    // @Group player
+    //
+    // @Description
+    // This command was created as a simpler replacement for using the Scoreboard command to display
+    // per-player sidebars. By using packets and dummies, it enables you to have non-flickering, fully
+    // functional sidebars without wasting processing speed and memory on creating new Scoreboards for
+    // every single player.
+    //
+    // Using this command, you can add, remove, or set lines on the scoreboard. The 'lines' parameter
+    // is used to specify which line you want to set using 'values:' or remove. It can also be used to
+    // add lines in between existing lines. To change multiple lines at once, simply use a list in both
+    // the 'lines:' and 'values:' arguments and have each index correspond with the other.
+    //
+    // Setting the title of the sidebar is extremely simple, and can be done by using the 'title:'
+    // parameter in any case where the action is 'set'.
+    //
+    // To control which score numbers are shown, use the 'start:' and 'increment:' arguments in any case
+    // where the action is 'set'. 'Start' is the score where the first line will be shown with. The default
+    // 'start' value is determined by how many items are specified in 'values:'. 'Increment' is the difference
+    // between each score and the default is -1. Using the default values of these, the sidebar displays each
+    // line in order with the score counting down from the total number of lines to 1.
+    //
+    // The per_player argument is also available, and helps to reduce the number of loops required for
+    // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
+    // on each individual player in the players list. So, for example, you could have <player.name> on a
+    // lines and it will show each player specified their name on that line.
+    //
+    // @Tags
+    // <p@player.sidebar.lines>
+    // <p@player.sidebar.title>
+    // <p@player.sidebar.scores>
+    // <p@player.sidebar.start>
+    // <p@player.sidebar.increment>
+    //
+    // @Usage
+    // Show all online players a sidebar.
+    // - sidebar set "title:Hello World!" "values:This is|My Message!|Wee!" "players:<server.list_online_players>"
+    //
+    // @Usage
+    // Show a few players their ping.
+    // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
+    //
+    // @Usage
+    // Set a line on the sidebar a player is viewing.
+    // - sidebar set "line:2" "value:This is my line now!"
+    //
+    // @Usage
+    // Add a line to the bottom of the sidebar.
+    // - sidebar add "value:This is the bottom!"
+    //
+    // @Usage
+    // Remove multiple lines from the sidebar.
+    // - sidebar remove "lines:2|4|6"
+    //
+    // @Usage
+    // Stop showing the sidebar.
+    // - sidebar remove
+    // -->
+
     // TODO: Clean me!
 
     private enum Action {ADD, REMOVE, SET}

@@ -16,6 +16,40 @@ import java.util.List;
 
 public class MountCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Mount
+    // @Syntax mount (cancel) [<entity>|...] (<location>)
+    // @Required 0
+    // @Short Mounts one entity onto another.
+    // @Group entity
+    //
+    // @Description
+    // Mounts an entity onto another as though in a vehicle. Can be used to force a player into a vehicle or to
+    // mount an entity onto another entity. e.g. a player onto an npc. If the entity(s) don't exist they will be
+    // spawned. Accepts a location, which the entities will be teleported to on mounting.
+    //
+    // @Tags
+    // <e@entity.vehicle>
+    // <e@entity.inside_vehicle>
+    // <entry[saveName].mounted_entities> returns a list of entities that were mounted.
+    //
+    // @Usage
+    // Use to mount an NPC on top of a player.
+    // - mount <npc>|<player>
+    //
+    // @Usage
+    // Use to spawn a mutant pile of mobs.
+    // - mount cow|pig|sheep|chicken
+    //
+    // @Usage
+    // Use to place a diamond block above a player's head.
+    // - mount falling_block,diamond_block|<player>
+    //
+    // @Usage
+    // Use to force an entity in a vehicle.
+    // - mount <player>|boat
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

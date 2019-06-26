@@ -16,12 +16,58 @@ import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
 
 import java.util.List;
 
-/**
- * Runs a task script in a new ScriptQueue.
- * This replaces the now-deprecated runtask command with queue argument.
- */
-
 public class RunCommand extends AbstractCommand implements Holdable {
+
+    // <--[command]
+    // @Name Run
+    // @Syntax run (locally) [<script>] (path:<name>) (def:<element>|...) (id:<name>) (instantly) (speed:<value>) (delay:<value>)
+    // @Required 1
+    // @Short Runs a script in a new ScriptQueue.
+    // @Video /denizen/vids/Run%20And%20Inject
+    // @Group core
+    //
+    // @Description
+    // Runs a new script queue, either in the local script or in a different task script.
+    //
+    // You can set the queue speed using the speed argument
+    // this makes the queue run each script command with a delay.
+    // Specifying the "instantly" argument will run the queue instantly
+    // (speed at 0 ticks; queue running in total of 1 tick, just like an event script)
+    // If no speed or "instantly" argument are applied,
+    // it assumes the default script speed that are configured.
+    //
+    // Specifying definitions as argument
+    // allows the transfer of definitions to the new queue.
+    // Definitions are not carried over if not specified.
+    // (See <@link command define>)
+    //
+    // Specifying a player argument will run the queue with a player attached
+    // to that queue. The same can be done to attach an npc.
+    // Player and npc are not carried over to the new queue if not specified.
+    //
+    // @Tags
+    // <entry[saveName].created_queue> returns the queue that was started by the run command.
+    //
+    // @Usage
+    // Use to run a new queue instant
+    // - run MyNewTask instantly
+    //
+    // @Usage
+    // Use to run a new queue instant
+    // - run MyNewTask instantly def:4|20|true
+    //
+    // @Usage
+    // Use to run a new queue with an attached player and npc with a definition
+    // - run MyNewTask def:friends player:p@bob npc:<player.selected_npc>
+    //
+    // @Usage
+    // Use to run a new queue instant with the same attached player
+    // - run MyNewTask instantly player:<player>
+    //
+    // @Usage
+    // Use to run a new queue from a local script
+    // - run locally MyNewTask
+    // -->
 
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {

@@ -18,6 +18,48 @@ import java.util.List;
 
 public class HurtCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Hurt
+    // @Syntax hurt (<#.#>) ({player}/<entity>|...) (cause:<cause>)
+    // @Required 0
+    // @Short Hurts the player or a list of entities.
+    // @Group entity
+    //
+    // @Description
+    // Does damage to a list of entities, or to any single entity.
+    //
+    // If no entities are specified: if there is a linked player, the command targets that. If there is no linked
+    // player but there is a linked NPC, the command targets the NPC. If neither is available, the command will error.
+    //
+    // Does a specified amount of damage usually, but, if no damage is specified, does precisely 1HP worth of damage
+    // (half a heart).
+    // Optionally, specify (source:<entity>) to make the system treat that entity as the attacker,
+    // be warned this does not always work as intended, and is liable to glitch.
+    // You may also optionally specify a damage cause to fire a proper damage event with the given cause,
+    // only doing the damage if the event wasn't cancelled. Calculates the 'final damage' rather
+    // than using the raw damage input number. See <@link language damage cause> for damage causes.
+    // To make the source only be included in the initial damage event, and not the application of damage, specify 'source_once'.
+    //
+    // @Tags
+    // <e@entity.health>
+    // <e@entity.last_damage.amount>
+    // <e@entity.last_damage.cause>
+    // <e@entity.last_damage.duration>
+    // <e@entity.last_damage.max_duration>
+    //
+    // @Usage
+    // Use to hurt the player for 1 HP.
+    // - hurt
+    //
+    // @Usage
+    // Use to hurt the NPC for 5 HP.
+    // - hurt 5 <npc>
+    //
+    // @Usage
+    // Use to cause the player to hurt the NPC for all its health (if unarmored).
+    // - hurt <npc.health> <npc> cause:CUSTOM source:<player>
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

@@ -21,6 +21,31 @@ import java.util.UUID;
 
 public class GlowCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Glow
+    // @Syntax glow [<entity>|...] (<should glow>)
+    // @Required 1
+    // @Short Makes the linked player see the chosen entities as glowing.
+    // @Group player
+    //
+    // @Description
+    // Makes the link player see the chosen entities as glowing.
+    // BE WARNED, THIS COMMAND IS HIGHLY EXPERIMENTAL AND MAY NOT WORK AS EXPECTED.
+    // This command works by globally enabling the glow effect, then whitelisting who is allowed to see it.
+    // This command does it's best to disable glow effect when the entity is unloaded, but does not guarantee it.
+    //
+    // @Tags
+    // <e@entity.glowing>
+    //
+    // @Usage
+    // Use to make the player's target glow.
+    // - glow <player.target>
+    //
+    // @Usage
+    // Use to make the player's target not glow.
+    // - glow <player.target> false
+    // -->
+
     public static HashMap<Integer, HashSet<UUID>> glowViewers = new HashMap<>();
 
     public static void unGlow(LivingEntity e) {

@@ -24,6 +24,31 @@ import java.util.List;
 
 public class FakeItemCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name FakeItem
+    // @Syntax fakeitem [<item>|...] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)
+    // @Required 2
+    // @Short Show a fake item in a player's inventory.
+    // @Group item
+    //
+    // @Description
+    // This command allows you to display an item in an inventory that is not really there.
+    // To make it automatically disappear at a specific time, use the 'duration:' argument.
+    // By default, it will use any inventory the player currently has open. To force it to use only the player's
+    // inventory, use the 'player_only' argument.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Use to show a clientside-only pumpkin on the player's head.
+    // - fakeitem i@pumpkin slot:head
+    //
+    // @Usage
+    // Use to show a fake book in the player's hand for 1 tick.
+    // - fakeitem "i@written_book[book=author|Morphan1|title|My Book|pages|This is my book!]" slot:<player.item_in_hand.slot> duration:1t
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

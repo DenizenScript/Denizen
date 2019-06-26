@@ -16,6 +16,47 @@ import java.util.List;
 
 public class PlaySoundCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name PlaySound
+    // @Syntax playsound [<location>|.../<player>|...] [sound:<name>] (volume:<#.#>) (pitch:<#.#>) (custom) (sound_category:<category name>)
+    // @Required 2
+    // @Short Plays a sound at the location or to a list of players.
+    // @Group world
+    //
+    // @Description
+    // Plays a sound to a player or nearby players at a location.
+    // The sound is played through the player's client just like
+    // any other sounds in Minecraft. Sounds are respecfully played
+    // with their sound types.
+    // For example; zombie sounds are under the type: Mobs/Animals
+    //
+    // Specifying a player or list of players will only play
+    // the sound for them for each of their current location.
+    // Sounds are played at fixed locations and will not
+    // follow a player while playing.
+    // If a location is specified, it will play the sound for
+    // all players if they are nearby that location specified.
+    //
+    // Optionally, specify 'custom' to play a custom sound added by a resource pack, changing the sound name to something like 'random.click'
+    //
+    // For a list of all sounds, check <@link url https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>
+    //
+    // For a list of all valid sound categories, check <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/SoundCategory.html>
+    //
+    // @Tags
+    // <server.list_sounds>
+    //
+    // @Usage
+    // Use to play a sound for a player
+    // - playsound <player> sound:ENTITY_EXPERIENCE_ORB_PICKUP pitch:1
+    // @Usage
+    // Use to play a sound at a location for all nearby
+    // - playsound <player.location> sound:ENTITY_PLAYER_LEVELUP
+    // @Usage
+    // Use to notify all players with a sound
+    // - playsound <server.list_online_players> sound:ENTITY_PLAYER_LEVELUP volume:0.5 pitch:0.8
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

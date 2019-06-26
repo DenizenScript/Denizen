@@ -13,6 +13,33 @@ import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 
 public class LightCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Light
+    // @Syntax light [<location>] [<#>/reset] (duration:<duration>)
+    // @Required 2
+    // @Short Creates a light source at the location with a specified brightness.
+    // @Group world
+    //
+    // @Description
+    // This command can create and reset a light source at a specified location, regardless of the type
+    // of block. It will be shown to all players near the location until it is reset.
+    // The brightness must be between 0 and 15, inclusive.
+    // Optionally, specify the amount of time the light should exist before being removed.
+    // WARNING: May cause lag spikes, use carefully.
+    //
+    // @Tags
+    // <l@location.light>
+    // <l@location.light.blocks>
+    //
+    // @Usage
+    // Use to create a bright light at a noted location.
+    // - light l@MyFancyLightOfWool 15
+    //
+    // @Usage
+    // Use to reset the brightness of the location to its original state.
+    // - light l@MyFancyLightOfWool reset
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

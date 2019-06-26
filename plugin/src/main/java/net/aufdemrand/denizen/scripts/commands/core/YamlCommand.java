@@ -25,6 +25,69 @@ import java.util.*;
 
 public class YamlCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name Yaml
+    // @Syntax yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key> (to_id:<name>)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]
+    // @Required 2
+    // @Short Edits a YAML configuration file.
+    // @Group core
+    //
+    // @Description
+    // Edits a YAML configuration file.
+    // This can be used for interacting with other plugins' configuration files.
+    // It can also be used for storing your own script's data.
+    // TODO: Document Command Details
+    // When loading a script, optionally add 'fix_formatting' to run the file through
+    // Denizen's built in script preparser to correct common YAML errors,
+    // such as tabs instead of spaces or comments inside braced blocks.
+    // Use holdable syntax ("- ~yaml load:...") with load or savefile actions to avoid locking up the server during file IO.
+    //
+    // For loading and saving, the starting path is within 'plugins/Denizen'.
+    // Note that the '.yml' extension is not automatically appended, and you will have to include that in filenames.
+    //
+    // @Tags
+    // <yaml[<idname>].contains[<path>]>
+    // <yaml[<idname>].read[<path>]>
+    // <yaml[<idname>].read[<path>].as_list>
+    // <yaml[<idname>].list_keys[<path>]>
+    //
+    // @Usage
+    // Use to create a new YAML file.
+    // - yaml create id:myfile
+    //
+    // @Usage
+    // Use to load a YAML file from disk.
+    // - yaml load:myfile.yml id:myfile
+    //
+    // @Usage
+    // Use to modify a YAML file similarly to a flag.
+    // - yaml id:myfile set my.key:HelloWorld
+    //
+    // @Usage
+    // Use to save a YAML file to disk.
+    // - yaml savefile:myfile.yml id:myfile
+    //
+    // @Usage
+    // Use to unload a YAML file from memory.
+    // - yaml unload id:myfile
+    //
+    // @Usage
+    // Use to modify a YAML file similarly to a flag.
+    // - yaml id:myfile set my.key:+:2
+    //
+    // @Usage
+    // Use to modify a YAML file similarly to a flag.
+    // - yaml id:myfile set my.key[2]:hello
+    //
+    // @Usage
+    // Use to modify a copy the contents of one YAML key to a new owning key.
+    // - yaml id:myfile copykey:my.first.key my.new.key
+    //
+    // @Usage
+    // Use to modify a copy the contents of one YAML key to a new owning key on a different YAML file.
+    // - yaml id:myfile copykey:my.first.key my.new.key to_id:myotherfile
+    // -->
+
     @Override
     public void onEnable() {
         TagManager.registerTagHandler(new TagRunnable.RootForm() {

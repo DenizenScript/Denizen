@@ -12,6 +12,27 @@ import org.bukkit.entity.*;
 
 public class StandCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Stand
+    // @Syntax stand
+    // @Required 0
+    // @Plugin Citizens
+    // @Short Causes the NPC to stand. To make them sit, see <@link command Sit>.
+    // @Group npc
+    //
+    // @Description
+    // Makes the linked NPC stop sitting.
+    // To make them sit, see <@link command Sit>.
+    //
+    // @Tags
+    // None
+    //
+    // @Usage
+    // Make the linked NPC stand up.
+    // - stand
+    //
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry)
             throws InvalidArgumentsException {

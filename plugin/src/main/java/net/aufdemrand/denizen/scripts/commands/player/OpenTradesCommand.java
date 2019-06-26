@@ -21,6 +21,39 @@ import java.util.List;
 
 public class OpenTradesCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name OpenTrades
+    // @Syntax opentrades [<entity>/<trade>|...] (title:<title>) (players:<player>|...)
+    // @Required 1
+    // @Short Opens the specified villager entity's trading inventory or a list of trades.
+    // @Group player
+    //
+    // @Description
+    // Forces a player to open a villager's trading inventory or a virtual trading inventory.
+    // If an entity is specified, only one player can be specified.
+    // Otherwise, if a list of trades is specified, more than one player can be specified.
+    // If the title is not specified, no title will be applied to the virtual trading inventory.
+    // If no player is specified, by default the attached player will be forced to trade.
+    //
+    // @Tags
+    // <p@player.selected_trade_index>
+    // <e@entity.is_trading>
+    // <e@entity.trades>
+    // <e@entity.trading_with>
+    //
+    // @Usage
+    // Use to open an unusable trade.
+    // - opentrades trade@trade
+    //
+    // @Usage
+    // Use to open a list of trades with an optional title.
+    // - opentrades trade@trade[result=i@stone;inputs=li@i@stone;max_uses=9999]|trade@trade[result=i@barrier] "title:Useless Trades"
+    //
+    // @Usage
+    // Use to force a player to trade with a villager.
+    // - opentrades <def[villager_entity]>
+    // -->
+
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
         for (aH.Argument arg : aH.interpretArguments(scriptEntry.aHArgs)) {

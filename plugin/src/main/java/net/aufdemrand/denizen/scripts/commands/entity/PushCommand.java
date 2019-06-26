@@ -28,6 +28,32 @@ import java.util.List;
 
 public class PushCommand extends AbstractCommand implements Holdable {
 
+    // <--[command]
+    // @Name Push
+    // @Syntax push [<entity>|...] (origin:<entity>/<location>) (destination:<location>) (speed:<#.#>) (<duration>) (script:<name>) (def:<element>|...) (force_along) (precision:<#>) (no_rotate) (no_damage)
+    // @Required 1
+    // @Short Pushes entities through the air in a straight line.
+    // @Group entity
+    //
+    // @Description
+    // Pushes entities through the air in a straight line at a certain speed and for a certain duration,
+    // triggering a script when they hit an obstacle or stop flying. You can specify the script to be run
+    // with the (script:<name>) argument, and optionally specify definitions to be available in this script
+    // with the (def:<element>|...) argument. Using the 'no_damage' argument causes the entity to receive no damage
+    // when they stop moving.
+    //
+    // @Tags
+    // <e@entity.velocity>
+    //
+    // @Usage
+    // Use to launch an arrow straight towards a target
+    // - push arrow destination:<player.location>
+    //
+    // @Usage
+    // Use to launch an entity into the air
+    // - push cow
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

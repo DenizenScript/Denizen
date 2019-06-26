@@ -16,6 +16,33 @@ import java.util.List;
 
 public class HealCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Heal
+    // @Syntax heal (<#.#>) ({player}/<entity>|...)
+    // @Required 0
+    // @Short Heals the player or list of entities.
+    // @Group entity
+    //
+    // @Description
+    // This command heals a player, list of players, entity or list of entities. If no amount is specified it will
+    // heal the specified player(s)/entity(s) fully.
+    //
+    // @Tags
+    // <e@entity.health>
+    //
+    // @Usage
+    // Use to fully heal a player.
+    // - heal
+    //
+    // @Usage
+    // Use to heal a player 5 hearts.
+    // - heal 10
+    //
+    // @Usage
+    // Use to heal a player by the name of Morphan1 fully.
+    // - heal p@Morphan1
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 

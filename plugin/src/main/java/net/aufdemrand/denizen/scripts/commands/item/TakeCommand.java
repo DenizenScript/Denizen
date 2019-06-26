@@ -20,6 +20,39 @@ import java.util.List;
 
 public class TakeCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name Take
+    // @Syntax take [money/iteminhand/scriptname:<name>/bydisplay:<name>/bycover:<title>|<author>/slot:<slot>/nbt:<key>/<item>|...] (quantity:<#>) (from:<inventory>)
+    // @Required 1
+    // @Short Takes an item from the player.
+    // @Group item
+    //
+    // @Description
+    // Takes items from a player or inventory.
+    // If the player or inventory does not have the item being taken, nothing happens.
+    // Specifying a slot will take the items from that specific slot.
+    // Specifying 'nbt' with a key will take items with the specified NBT key, as see by <@link command nbt>.
+    // If an economy is registered, specifying money instead of a item will take money from the player's economy.
+    // If no quantity is specified, exactly 1 item will be taken.
+    //
+    // @Tags
+    // <p@player.item_in_hand>
+    // <p@player.money>
+    //
+    // @Usage
+    // Use to take money from the player
+    // - take money quantity:10
+    // @Usage
+    // Use to take an arrow from the player's enderchest
+    // - take arrow from:<player.enderchest>
+    // @Usage
+    // Use to take the current holding item from the player's hand
+    // - take iteminhand
+    // @Usage
+    // Use to take 5 emeralds from the player's inventory
+    // - take emerald quantity:5
+    // -->
+
     private enum Type {MONEY, ITEMINHAND, ITEM, INVENTORY, BYDISPLAY, SLOT, BYCOVER, SCRIPTNAME, NBT}
 
     @Override

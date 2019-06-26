@@ -18,6 +18,49 @@ import java.util.List;
 
 public class WorldBorderCommand extends AbstractCommand {
 
+    // <--[command]
+    // @Name WorldBorder
+    // @Syntax worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)
+    // @Required 2
+    // @Short Modifies a world border.
+    // @Group world
+    //
+    // @Description
+    // Modifies the world border of a specified world or a list of players.
+    // NOTE: Modifying player world borders is client-side and will reset on death, relog, or other actions.
+    // Options are:
+    // center: Sets the center of the world border.
+    // size: Sets the new size of the world border.
+    // current_size: Sets the initial size of the world border when resizing it over a duration.
+    // damage: Sets the amount of damage a player takes when outside the world border buffer radius.
+    // damagebuffer: Sets the radius a player may safely be outside the world border before taking damage.
+    // warningdistance: Causes the screen to be tinted red when the player is within the specified radius from the world border.
+    // warningtime: Causes the screen to be tinted red when a contracting world border will reach the player within the specified time.
+    // duration: Causes the world border to grow or shrink from its current size to its new size over the specified duration.
+    // reset: Resets the world border to its vanilla defaults for a world, or to the current world border for players.
+    //
+    // @Tags
+    // <l@location.is_within_border>
+    // <w@world.border_size>
+    // <w@world.border_center>
+    // <w@world.border_damage>
+    // <w@world.border_damage_buffer>
+    // <w@world.border_warning_distance>
+    // <w@world.border_warning_time>
+    //
+    // @Usage
+    // Use to set the size of a world border.
+    // - worldborder <player.location.world> size:4
+    //
+    // @Usage
+    // Use to update a world border's center, and then the size over the course of 10 seconds.
+    // - worldborder <def[world]> center:<def[world].spawn_location> size:100 duration:10s
+    //
+    // @Usage
+    // Use to show a client-side world border to the attached player.
+    // - worldborder <player> center:<player.location> size:10
+    // -->
+
     @Override
     public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 
