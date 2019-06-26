@@ -469,4 +469,9 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public File getDataFolder() {
         return DenizenAPI.getCurrentInstance().getDataFolder();
     }
+
+    @Override
+    public boolean allowStrangeYAMLSaves() {
+        return Settings.allowStrangeYAMLSaves();
+    }
 }

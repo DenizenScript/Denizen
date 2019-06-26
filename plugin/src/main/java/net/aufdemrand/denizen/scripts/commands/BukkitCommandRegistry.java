@@ -219,7 +219,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(WalkCommand.class, "WALK", "walk (<entity>|...) [<location>/stop] (speed:<#>) (auto_range) (radius:<#.#>) (lookat:<location>)", 1);
         registerCoreMember(WeatherCommand.class, "WEATHER", "weather [type:{global}/player] [sunny/storm/thunder] (world:<name>)", 1);
         registerCoreMember(WorldBorderCommand.class, "WORLDBORDER", "worldborder [<world>/<player>|...] (center:<location>) (size:<#.#>) (current_size:<#.#>) (damage:<#.#>) (damagebuffer:<#.#>) (warningdistance:<#>) (warningtime:<duration>) (duration:<duration>) (reset)", 2);
-        registerCoreMember(YamlCommand.class, "YAML", "yaml [create]/[load:<file> (fix_formatting)]/[loadtext:<text> (fix_formatting)]/[unload]/[savefile:<file>]/[copykey:<source key> <target key> (to_id:<name>)]/[set <key>([<#>])(:<action>):<value>] [id:<name>]", 2);
         registerCoreMember(ZapCommand.class, "ZAP", "zap (<script>) [<step>] (<duration>)", 0);
 
         dB.echoApproval("Loaded core commands: " + instances.keySet().toString());
