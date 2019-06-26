@@ -115,7 +115,6 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(ExplodeCommand.class, "EXPLODE", "explode (power:<#.#>) (<location>) (fire) (breakblocks)", 0);
         registerCoreMember(FakeItemCommand.class, "FAKEITEM", "fakeitem [<item>] [slot:<slot>] (duration:<duration>) (players:<player>|...) (player_only)", 2);
         registerCoreMember(FeedCommand.class, "FEED", "feed (amt:<#>) (target:<entity>)", 0);
-        registerCoreMember(FileCopyCommand.class, "filecopy", "filecopy [origin:<origin>] [destination:<destination>] (overwrite)", 2);
         registerCoreMember(FireworkCommand.class, "FIREWORK", "firework (<location>) (power:<#>) (<type>/random) (primary:<color>|...) (fade:<color>|...) (flicker) (trail)", 0);
         registerCoreMember(FishCommand.class, "FISH", "fish [<location>] (catch:{none}/default/junk/treasure/fish) (stop) (chance:<#>)", 1);
         registerCoreMember(FlagCommand.class, "FLAG", "flag ({player}/npc/server/<entity>) [<name>([<#>])](:<action>)[:<value>] (duration:<value>)", 1);

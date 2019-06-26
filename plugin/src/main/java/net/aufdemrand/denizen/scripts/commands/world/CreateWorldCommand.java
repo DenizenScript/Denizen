@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -132,7 +132,7 @@ public class CreateWorldCommand extends AbstractCommand {
                     dB.echoError(scriptEntry.getResidingQueue(), "Invalid copy from world folder - does not exist!");
                     return;
                 }
-                Utilities.copyDirectory(folder, newFolder);
+                CoreUtilities.copyDirectory(folder, newFolder);
                 File file = new File(worldName.asString() + "/uid.dat");
                 if (file.exists()) {
                     file.delete();

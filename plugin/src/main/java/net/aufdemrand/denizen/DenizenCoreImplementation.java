@@ -454,4 +454,19 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public boolean allowLogging() {
         return Settings.allowLogging();
     }
+
+    @Override
+    public boolean canReadFile(File f) {
+        return Utilities.canReadFile(f);
+    }
+
+    @Override
+    public boolean allowFileCopy() {
+        return Settings.allowFilecopy();
+    }
+
+    @Override
+    public File getDataFolder() {
+        return DenizenAPI.getCurrentInstance().getDataFolder();
+    }
 }

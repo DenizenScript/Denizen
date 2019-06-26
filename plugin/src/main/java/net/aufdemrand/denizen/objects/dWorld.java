@@ -1,7 +1,6 @@
 package net.aufdemrand.denizen.objects;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.*;
 import net.aufdemrand.denizencore.tags.Attribute;
@@ -1056,7 +1055,7 @@ public class dWorld implements dObject, Adjustable {
             File folder = new File(getWorld().getName());
             Bukkit.getServer().unloadWorld(getWorld(), false);
             try {
-                Utilities.deleteDirectory(folder);
+                CoreUtilities.deleteDirectory(folder);
             }
             catch (Exception ex) {
                 dB.echoError(ex);
