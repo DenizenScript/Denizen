@@ -6,7 +6,6 @@ import net.aufdemrand.denizen.nms.impl.jnbt.CompoundTag_v1_13_R2;
 import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
 import net.aufdemrand.denizen.nms.util.jnbt.ListTag;
-import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.minecraft.server.v1_13_R2.*;

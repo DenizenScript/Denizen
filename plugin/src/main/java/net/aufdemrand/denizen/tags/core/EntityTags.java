@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.tags.core;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizencore.objects.TagRunnable;
 import net.aufdemrand.denizencore.tags.Attribute;

@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.events.OldEventManager;
 import net.aufdemrand.denizencore.interfaces.RegistrationableInstance;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntry;
-import net.aufdemrand.denizencore.scripts.queues.ScriptQueue;
 import net.aufdemrand.denizencore.scripts.queues.core.TimedQueue;
 import net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement;
 import net.citizensnpcs.api.CitizensAPI;

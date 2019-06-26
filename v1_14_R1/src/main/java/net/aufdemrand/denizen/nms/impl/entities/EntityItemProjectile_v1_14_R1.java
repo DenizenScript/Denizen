@@ -98,6 +98,7 @@ public class EntityItemProjectile_v1_14_R1 extends EntityItem implements IProjec
         float f = MathHelper.sqrt(b(vec3d));
         this.yaw = (float) (MathHelper.d(vec3d.x, vec3d.z) * 57.2957763671875D);
 
+        // TODO: what is this???
         for (this.pitch = (float) (MathHelper.d(vec3d.y, (double) f) * 57.2957763671875D); this.pitch - this.lastPitch < -180.0F; this.lastPitch -= 360.0F) {
         }
 

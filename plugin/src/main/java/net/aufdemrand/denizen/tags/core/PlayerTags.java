@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.tags.core;
 
-import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;

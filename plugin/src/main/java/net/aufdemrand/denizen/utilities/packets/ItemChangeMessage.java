@@ -31,6 +31,7 @@ public class ItemChangeMessage implements Listener {
         // If the player is holding air, force a light gray stained glass pane,
         // which is probably the least intrusive
         if (item == null || item.getType() == Material.AIR) {
+            item = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         }
         else {
             item = item.clone();

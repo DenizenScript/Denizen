@@ -14,7 +14,6 @@ import net.aufdemrand.denizen.nms.util.jnbt.Tag;
 import net.aufdemrand.denizencore.utilities.debugging.dB;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

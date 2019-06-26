@@ -132,7 +132,6 @@ public class ScribeCommand extends AbstractCommand {
             return;
         }
         // drop it if inventory has no empty slots
-        emptySpot = inv.firstEmpty();
         dB.log("emptySpot: " + emptySpot);
 
         if (emptySpot == -1) {

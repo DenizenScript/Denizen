@@ -3,7 +3,6 @@ package net.aufdemrand.denizen.nms.interfaces;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.nms.util.jnbt.CompoundTag;
-import net.aufdemrand.denizencore.objects.dList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
