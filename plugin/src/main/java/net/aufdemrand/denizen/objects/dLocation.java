@@ -2483,7 +2483,24 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("other_block")) {
             BlockState state = getBlockState();
-            if (state instanceof Chest) {
+            if (state instanceof Chest
+                    && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                Vector direction = DirectionalBlocksHelper.getFacing(getBlock());
+                if (DirectionalBlocksHelper.isLeftHalf(getBlock())) {
+                    direction = new Vector(-direction.getZ(), 0, direction.getX());
+                }
+                else if (DirectionalBlocksHelper.isRightHalf(getBlock())) {
+                    direction = new Vector(direction.getZ(), 0, -direction.getX());
+                }
+                else {
+                    if (!attribute.hasAlternative()) {
+                        dB.echoError("Block is a single-block chest.");
+                    }
+                    return null;
+                }
+                return new dLocation(this.clone().add(direction)).getAttribute(attribute.fulfill(1));
+            }
+            else if (state instanceof Chest) {
                 // There is no remotely sane API for this.
                 InventoryHolder holder = ((Chest) state).getBlockInventory().getHolder();
                 if (holder instanceof DoubleChest) {
@@ -2500,7 +2517,7 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
             else if (state instanceof Bed
                     && NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
                 // There's no pre-1.13 API for this *at all*, and the new API isn't very sane, but can be used.
-                boolean isTop = DirectionalBlocksHelper.isBedTopHalf(getBlock());
+                boolean isTop = DirectionalBlocksHelper.isTopHalf(getBlock());
                 BlockFace direction = DirectionalBlocksHelper.getFace(getBlock());
                 if (!isTop) {
                     direction = direction.getOppositeFace();
