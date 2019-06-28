@@ -154,7 +154,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     public void debugQueueExecute(ScriptEntry entry, String queue, String execute) {
         Consumer<String> altDebug = entry.getResidingQueue().debugOutput;
         entry.getResidingQueue().debugOutput = null;
-        dB.echoDebug(entry, ChatColor.DARK_GRAY + "Queue '" + queue + ChatColor.DARK_GRAY + "' Executing: " + execute);
+        dB.echoDebug(entry, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement.Header,
+                ChatColor.LIGHT_PURPLE + "Queue '" + queue + ChatColor.LIGHT_PURPLE + "' Executing: " + execute);
         entry.getResidingQueue().debugOutput = altDebug;
     }
 
@@ -165,24 +166,18 @@ public class DenizenCoreImplementation implements DenizenImplementation {
     }
 
     @Override
-    public void debugCommandHeader(ScriptEntry scriptEntry) {
-        if (!dB.shouldDebug(scriptEntry)) {
-            return;
+    public String queueHeaderInfo(ScriptEntry scriptEntry) {
+        BukkitScriptEntryData data = ((BukkitScriptEntryData) scriptEntry.entryData);
+        if (data.hasPlayer() && data.hasNPC()) {
+            return " with player '" + data.getPlayer().getName() + "' and NPC '" + data.getNPC().getId() + "/" + data.getNPC().getName() + "'";
         }
-        if (scriptEntry.getOriginalArguments() == null ||
-                scriptEntry.getOriginalArguments().size() == 0 ||
-                !scriptEntry.getOriginalArguments().get(0).equals("\0CALLBACK")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-                dB.echoDebug(scriptEntry, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement.Header,
-                        "Executing dCommand: " + scriptEntry.getCommandName() + "/p@" +
-                                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName());
-            }
-            else {
-                dB.echoDebug(scriptEntry, net.aufdemrand.denizencore.utilities.debugging.dB.DebugElement.Header, "Executing dCommand: " +
-                        scriptEntry.getCommandName() + (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ?
-                        "/n@" + ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getName() : ""));
-            }
+        else if (data.hasPlayer()) {
+            return " with player '" + data.getPlayer().getName() + "'";
         }
+        else if (data.hasNPC()) {
+            return " with NPC '" + data.getNPC().getId() + "/" + data.getNPC().getName() + "'";
+        }
+        return "";
     }
 
     @Override
