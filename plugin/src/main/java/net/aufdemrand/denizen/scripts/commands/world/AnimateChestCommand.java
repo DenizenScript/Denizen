@@ -28,34 +28,37 @@ public class AnimateChestCommand extends AbstractCommand {
     // @Group world
     //
     // @Description
-    // This command animates a chest in the world to open or close at a specified location.
-    // The command by default will open the chest. It accepts a sound argument which specifies whether
-    // the open or close sound will play aswell as the animation. The sound plays by default and
-    // can be disabled with 'sound:false' It also accepts a player or list of players to animate the chest to,
-    // allowing only selected players to see the chest animate as opened or closed.
+    // This command animates a chest at a specified location in the world opening or closing.
+    // By default, the chest will animate opening.
+    // Optionally, specify whether to play a sound with the animation. By default this will play.
+    // Optionally, specify a player or list of players that the animation should be visible to.
+    // By default, only the linked player can see the animation.
+    //
+    // Note that this uses a generic 'block action' packet internally,
+    // which means other block types may also react to this command.
     //
     // @Tags
     // None
     //
     // @Usage
-    // Use to animate a chest to open at 15,89,-45 in world: world
+    // Use to animate a chest opening, which only the linked player will see.
     // - animatechest l@15,89,-45,world
     //
     // @Usage
-    // To then close the chest at 15,89,-45 in world: world
+    // Use to then animate a chest closing, which only the linked player will see.
     // - animatechest l@15,89,-45,world close
     //
     // @Usage
-    // Use to animate a chest to open with no sound at 12,12,-64 in world: peter
-    // - animatechest l@12,12,-64,peter sound:false
+    // Use to animate a chest opening with no sound, which only the linked player will see.
+    // - animatechest l@12,12,-64,space sound:false
     //
     // @Usage
-    // If only a player by the name of Morphan1 should see the chest open
-    // - animatechest l@12,12,-64,peter sound:false p@Morphan1
+    // Use to animate a chest opening that only a single specific player will see.
+    // - animatechest l@12,12,-64,space sound:false p@Morphan1
     //
     // @Usage
-    // The command also accepts a list of players to view the animation
-    // - animatechest l@12,12,-64,peter sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
+    // Use to animate a chest opening that only a list of specific players will see.
+    // - animatechest l@12,12,-64,space sound:false p@Morphan1|p@mcmonkey4eva|p@Fortifier42
     // -->
 
     enum ChestAction {OPEN, CLOSE}
