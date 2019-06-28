@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -10,6 +11,7 @@ import net.aufdemrand.denizencore.scripts.containers.ScriptContainer;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
@@ -19,15 +21,11 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // <--[event]
     // @Events
     // player right clicks entity
-    // player right clicks entity in <area>
-    // player right clicks entity in notable cuboid
     // player right clicks <entity>
-    // player right clicks <entity> in <area>
-    // player right clicks <entity> in notable cuboid
     //
     // @Regex ^on player right clicks [^\s]+$
-    // @Switch in <area>
     //
+    // @Switch in <area>
     // @Switch with <item>
     //
     // @Cancellable true
@@ -37,8 +35,8 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     // @Context
     // <context.entity> returns the dEntity the player is clicking on.
     // <context.item> returns the dItem the player is clicking with.
-    // <context.cuboids> NOTE: DEPRECATED IN FAVOR OF <context.entity.location.cuboids>
     // <context.location> returns a dLocation of the clicked entity. NOTE: DEPRECATED IN FAVOR OF <context.entity.location>
+    // <context.click_position> returns a dLocation of the click position (as a world-less vector, relative to the entity's center). This is only available when clicking armor stands.
     //
     // -->
 
@@ -47,31 +45,28 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
     dEntity entity;
     dItem item;
     dLocation location;
-    dList cuboids;
 
     @Override
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
-        return lower.startsWith("player right clicks") && !CoreUtilities.getXthArg(3, lower).equals("at");
+        return lower.startsWith("player right clicks");
     }
 
     @Override
     public boolean matches(ScriptPath path) {
-
-        if (!tryEntity(entity, path.eventArgLowerAt(3))) {
+        boolean isAt = path.eventArgLowerAt(3).equals("at");
+        if (!tryEntity(entity, path.eventArgLowerAt(isAt ? 4 : 3))) {
             return false;
         }
         if (!runInCheck(path, event.getPlayer().getLocation())) {
             return false;
         }
-        if (!runWithCheck(path, new dItem(event.getPlayer().getItemInHand()))) {
+        if (!runWithCheck(path, item)) {
             return false;
         }
         // Deprecated in favor of with: format
-        if (path.eventArgLowerAt(4).equals("with")) {
-            if (!tryItem(new dItem(event.getPlayer().getItemInHand()), path.eventArgLowerAt(5))) {
-                return false;
-            }
+        if (path.eventArgLowerAt(isAt ? 5 : 4).equals("with") && !tryItem(item, path.eventArgLowerAt(isAt ? 6 : 5))) {
+            return false;
         }
         return true;
     }
@@ -103,16 +98,23 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         else if (name.equals("location")) {
             return location;
         }
+        else if (name.equals("click_position") && event instanceof PlayerInteractAtEntityEvent) {
+            return new dLocation(((PlayerInteractAtEntityEvent) event).getClickedPosition());
+        }
         else if (name.equals("cuboids")) {
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.addObject(cuboid);
             }
             return cuboids;
         }
         return super.getContext(name);
+    }
+
+    @EventHandler
+    public void playerRightClicksAtEntity(PlayerInteractAtEntityEvent event) {
+        playerRightClicksEntity(event);
     }
 
     @EventHandler
@@ -123,7 +125,6 @@ public class PlayerRightClicksEntityScriptEvent extends BukkitScriptEvent implem
         entity = new dEntity(event.getRightClicked());
         item = new dItem(event.getPlayer().getItemInHand());
         location = new dLocation(event.getRightClicked().getLocation());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

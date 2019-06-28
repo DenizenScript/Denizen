@@ -127,7 +127,6 @@ public class ScriptEventRegistry {
         }
         ScriptEvent.registerScriptEvent(new PlayerReceivesMessageScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRespawnsScriptEvent());
-        ScriptEvent.registerScriptEvent(new PlayerRightClicksAtEntityScriptEvent());
         ScriptEvent.registerScriptEvent(new PlayerRightClicksEntityScriptEvent());
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             ScriptEvent.registerScriptEvent(new PlayerRiptideScriptEvent());
