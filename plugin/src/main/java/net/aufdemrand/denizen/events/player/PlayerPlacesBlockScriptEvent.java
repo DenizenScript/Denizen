@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -33,7 +34,6 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
     // <context.location> returns the dLocation of the block that was placed.
     // <context.material> returns the dMaterial of the block that was placed.
     // <context.old_material> returns the dMaterial of the block that was replaced.
-    // <context.cuboids> DEPRECATED.
     // <context.item_in_hand> returns the dItem of the item in hand.
     // <context.hand> returns the name of the hand that the block was in (HAND or OFF_HAND).
     //
@@ -109,7 +109,8 @@ public class PlayerPlacesBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("hand")) {
             return hand;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
             dList cuboids = new dList();
             for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
                 cuboids.add(cuboid.identifySimple());

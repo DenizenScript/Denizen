@@ -123,7 +123,6 @@ public class CommandSmartEvent implements OldSmartEvent, Listener {
     // <context.server> returns true if the command was run from the console.
     // <context.command_block_location> returns the command block's location (if the command was run from one).
     // <context.command_minecart> returns the dEntity of the command minecart (if the command was run from one).
-    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // "FULFILLED" to tell Bukkit the command was handled.

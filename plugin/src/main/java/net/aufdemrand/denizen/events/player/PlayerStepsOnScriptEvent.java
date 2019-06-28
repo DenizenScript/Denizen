@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -31,7 +32,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     //
     // @Context
     // <context.location> returns a dLocation of the block the player is stepping on.
-    // <context.cuboids> DEPRECATED.
     // <context.previous_location> returns a dLocation of where the player was before stepping onto the block.
     // <context.new_location> returns a dLocation of where the player is now.
     //
@@ -45,7 +45,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
     public dLocation location;
     public dLocation previous_location;
     public dLocation new_location;
-    public dList cuboids;
     public PlayerMoveEvent event;
 
     @Override
@@ -95,12 +94,11 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("new_location")) {
             return new_location;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -118,7 +116,6 @@ public class PlayerStepsOnScriptEvent extends BukkitScriptEvent implements Liste
         location = new dLocation(event.getTo().clone().subtract(0, 1, 0));
         previous_location = new dLocation(event.getFrom());
         new_location = new dLocation(event.getTo());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

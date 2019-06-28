@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -36,7 +37,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     // <context.new> returns the new sign text as a dList.
     // <context.old> returns the old sign text as a dList.
     // <context.material> returns the dMaterial of the sign.
-    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // dList to change the lines (Uses escaping, see <@link language Property Escaping>)
@@ -52,7 +52,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
     public dList new_sign;
     public dList old_sign;
     public dMaterial material;
-    public dList cuboids;
     public dList new_text;
     public SignChangeEvent event;
 
@@ -114,12 +113,11 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("old")) {
             return old_sign;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -138,7 +136,6 @@ public class PlayerChangesSignScriptEvent extends BukkitScriptEvent implements L
         Sign sign = (Sign) state;
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = null;
         old_sign = new dList(Arrays.asList(sign.getLines()));
         new_sign = new dList(Arrays.asList(event.getLines()));
         new_text = null;

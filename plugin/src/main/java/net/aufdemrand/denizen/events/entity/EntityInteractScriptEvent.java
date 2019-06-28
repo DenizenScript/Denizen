@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -33,7 +34,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     //
     // @Context
     // <context.location> returns a dLocation of the block being interacted with.
-    // <context.cuboids> DEPRECATED.
     // <context.entity> returns a dEntity of the entity doing the interaction.
     //
     // -->
@@ -46,7 +46,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
     public dEntity entity;
     public dLocation location;
     private dMaterial material;
-    private dList cuboids;
     public EntityInteractEvent event;
 
     @Override
@@ -96,12 +95,11 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         else if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -113,7 +111,6 @@ public class EntityInteractScriptEvent extends BukkitScriptEvent implements List
         entity = new dEntity(event.getEntity());
         location = new dLocation(event.getBlock().getLocation());
         material = new dMaterial(event.getBlock());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

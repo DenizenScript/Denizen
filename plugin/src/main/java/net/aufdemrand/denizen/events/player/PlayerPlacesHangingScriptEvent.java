@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -34,7 +35,6 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
     // @Context
     // <context.hanging> returns the dEntity of the hanging.
     // <context.location> returns the dLocation of the block the hanging was placed on.
-    // <context.cuboids> DEPRECATED.
     //
     // -->
 
@@ -44,7 +44,6 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
 
     public static PlayerPlacesHangingScriptEvent instance;
     public dEntity hanging;
-    public dList cuboids;
     public dLocation location;
     public HangingPlaceEvent event;
 
@@ -88,12 +87,11 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         else if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -109,7 +107,6 @@ public class PlayerPlacesHangingScriptEvent extends BukkitScriptEvent implements
         dEntity.rememberEntity(hangingEntity);
         hanging = new dEntity(hangingEntity);
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = null;
         this.event = event;
         fire(event);
         dEntity.forgetEntity(hangingEntity);

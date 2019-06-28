@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -35,8 +36,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     // <context.cause> returns the cause of the entity breaking. Causes list: <@link url http://bit.ly/1BeqxPX>
     // <context.breaker> returns the dEntity that broke the hanging entity, if any.
     // <context.hanging> returns the dEntity of the hanging.
-    // <context.cuboids> DEPRECATED.
-    // <context.location> DEPRECATED.
     //
     // @Player when the breaker is a player.
     //
@@ -52,7 +51,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
     public Element cause;
     public dEntity breaker;
     public dEntity hanging;
-    public dList cuboids;
     public dLocation location;
     public HangingBreakByEntityEvent event;
 
@@ -118,12 +116,11 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         else if (name.equals("hanging")) {
             return hanging;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -139,7 +136,6 @@ public class EntityBreaksHangingScriptEvent extends BukkitScriptEvent implements
         cause = new Element(event.getCause().name());
         location = new dLocation(hanging.getLocation());
         breaker = new dEntity(event.getRemover());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

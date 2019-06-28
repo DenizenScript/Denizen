@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptEntryData;
@@ -29,7 +30,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     // @Context
     // <context.location> returns the dLocation the block that was damaged.
     // <context.material> returns the dMaterial of the block that was damaged.
-    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // "INSTABREAK" to make the block get broken instantly.
@@ -43,7 +43,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
     public static PlayerDamagesBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
-    public dList cuboids;
     public Boolean instabreak;
     public BlockDamageEvent event;
 
@@ -97,12 +96,11 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -116,7 +114,6 @@ public class PlayerDamagesBlockScriptEvent extends BukkitScriptEvent implements 
         }
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = null;
         instabreak = event.getInstaBreak();
         this.event = event;
         fire(event);

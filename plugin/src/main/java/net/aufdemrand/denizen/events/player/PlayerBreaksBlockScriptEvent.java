@@ -3,6 +3,7 @@ package net.aufdemrand.denizen.events.player;
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dList;
@@ -38,7 +39,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     // @Context
     // <context.location> returns the dLocation the block was broken at.
     // <context.material> returns the dMaterial of the block that was broken.
-    // <context.cuboids> DEPRECATED.
     // <context.xp> returns how much XP will be dropped.
     //
     // @Determine
@@ -55,7 +55,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
     public static PlayerBreaksBlockScriptEvent instance;
     public dLocation location;
     public dMaterial material;
-    public dList cuboids;
     public Element xp;
     public BlockBreakEvent event;
 
@@ -127,12 +126,11 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         else if (name.equals("material")) {
             return material;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -149,7 +147,6 @@ public class PlayerBreaksBlockScriptEvent extends BukkitScriptEvent implements L
         }
         material = new dMaterial(event.getBlock());
         location = new dLocation(event.getBlock().getLocation());
-        cuboids = null;
         xp = new Element(event.getExpToDrop());
         this.event = event;
         fire(event);

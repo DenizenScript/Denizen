@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -33,7 +34,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     // <context.entity> returns the targeting entity.
     // <context.reason> returns the reason the entity changed targets.
     // <context.target> returns the targeted entity.
-    // <context.cuboids> DEPRECATED.
     //
     // @Determine
     // dEntity to make the entity target a different entity instead.
@@ -50,7 +50,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
     public dEntity entity;
     public Element reason;
     public dEntity target;
-    public dList cuboids;
     private dLocation location;
     public EntityTargetEvent event;
 
@@ -110,12 +109,11 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         else if (name.equals("reason")) {
             return reason;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -131,7 +129,6 @@ public class EntityTargetsScriptEvent extends BukkitScriptEvent implements Liste
         reason = new Element(event.getReason().toString());
         target = event.getTarget() != null ? new dEntity(event.getTarget()) : null;
         location = new dLocation(event.getEntity().getLocation());
-        cuboids = null;
         this.event = event;
         fire(event);
     }

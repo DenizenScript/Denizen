@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.objects.dCuboid;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.dList;
 import net.aufdemrand.denizencore.objects.dObject;
@@ -37,7 +38,6 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     // @Context
     // <context.entity> returns the dEntity that spawned.
     // <context.location> returns the location the entity will spawn at.
-    // <context.cuboids> DEPRECATED.
     // <context.reason> returns the reason the entity spawned.
     // Reasons: <@link url https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html>
     //
@@ -50,7 +50,6 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
     public static EntitySpawnScriptEvent instance;
     public dEntity entity;
     public dLocation location;
-    public dList cuboids;
     public Element reason;
     public CreatureSpawnEvent event;
 
@@ -103,12 +102,11 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         else if (name.equals("location")) {
             return location;
         }
-        else if (name.equals("cuboids")) { // NOTE: Deprecated in favor of context.location.cuboids
-            if (cuboids == null) {
-                cuboids = new dList();
-                for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
-                    cuboids.add(cuboid.identifySimple());
-                }
+        else if (name.equals("cuboids")) {
+            dB.echoError("context.cuboids tag is deprecated in " + getName() + " script event");
+            dList cuboids = new dList();
+            for (dCuboid cuboid : dCuboid.getNotableCuboidsContaining(location)) {
+                cuboids.add(cuboid.identifySimple());
             }
             return cuboids;
         }
@@ -123,7 +121,6 @@ public class EntitySpawnScriptEvent extends BukkitScriptEvent implements Listene
         Entity entity = event.getEntity();
         this.entity = new dEntity(entity);
         location = new dLocation(event.getLocation());
-        cuboids = null;
         reason = new Element(event.getSpawnReason().name());
         this.event = event;
         dEntity.rememberEntity(entity);
