@@ -145,7 +145,7 @@ public class SignCommand extends AbstractCommand {
                 }
             }
         }
-        else if (MaterialCompat.isAnySign(sign.getType())) {
+        else if (!MaterialCompat.isAnySign(sign.getType())) {
             if (sign.getRelative(BlockFace.DOWN).getType().isSolid()) {
                 // TODO: 1.14 - allow new sign types?
                 sign.setType(MaterialCompat.SIGN, false);
