@@ -122,12 +122,11 @@ public class AnimateChestCommand extends AbstractCommand {
         List<dPlayer> players = (List<dPlayer>) scriptEntry.getObject("players");
 
         if (scriptEntry.dbCallShouldDebug()) {
-
             dB.report(scriptEntry, getName(), location.debug()
+                    + aH.debugObj("block type", location.getBlock().getType().name())
                     + action.debug()
                     + sound.debug()
                     + aH.debugObj("players", players.toString()));
-
         }
 
         PacketHelper packetHelper = NMSHandler.getInstance().getPacketHelper();
