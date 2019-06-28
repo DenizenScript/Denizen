@@ -238,7 +238,7 @@ public class Handler_v1_14_R1 extends NMSHandler {
                 dB.echoError(e);
             }
         }
-        return null;
+        return "Chest";
     }
 
     public static final Class MINECRAFT_INVENTORY;
