@@ -5,6 +5,7 @@ import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
 import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
+import net.aufdemrand.denizen.objects.properties.material.MaterialHalf;
 import net.aufdemrand.denizen.objects.properties.material.MaterialLevel;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.OldMaterialsHelper;
@@ -503,6 +504,23 @@ public class dMaterial implements dObject, Adjustable {
             @Override
             public String run(Attribute attribute, dObject object) {
                 return new Element(MaterialAge.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <m@material.is_bisected>
+        // @returns Element(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a bisected material.
+        // When this returns true, <@link tag m@material.half>,
+        // and <@link mechanism dMaterial.half> are accessible.
+        // -->
+        registerTag("is_bisected", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(MaterialHalf.describes(object))
                         .getAttribute(attribute.fulfill(1));
             }
         });

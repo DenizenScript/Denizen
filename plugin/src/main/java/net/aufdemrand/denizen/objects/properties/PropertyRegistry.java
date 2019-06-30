@@ -14,6 +14,7 @@ import net.aufdemrand.denizen.objects.properties.inventory.InventorySize;
 import net.aufdemrand.denizen.objects.properties.inventory.InventoryTitle;
 import net.aufdemrand.denizen.objects.properties.item.*;
 import net.aufdemrand.denizen.objects.properties.material.MaterialAge;
+import net.aufdemrand.denizen.objects.properties.material.MaterialHalf;
 import net.aufdemrand.denizen.objects.properties.material.MaterialLevel;
 import net.aufdemrand.denizen.objects.properties.trade.*;
 import net.aufdemrand.denizencore.objects.Element;
@@ -131,6 +132,7 @@ public class PropertyRegistry {
         // register core dMaterial properties
         if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
             PropertyParser.registerProperty(MaterialAge.class, dMaterial.class);
+            PropertyParser.registerProperty(MaterialHalf.class, dMaterial.class);
             PropertyParser.registerProperty(MaterialLevel.class, dMaterial.class);
         }
 
