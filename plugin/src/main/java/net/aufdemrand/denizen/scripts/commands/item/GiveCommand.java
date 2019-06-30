@@ -23,22 +23,19 @@ public class GiveCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Give
-    // @Syntax give [money/xp/<item>|...] (quantity:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
+    // @Syntax give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)
     // @Required 1
     // @Short Gives the player an item, xp, or money.
     // @Group item
     //
     // @Description
-    // Gives the linked player or inventory any form of giveable object, including items, xp, or money.
+    // Gives the linked player or inventory items, xp, or money.
     // If the player's inventory if full, the item will be dropped at the inventory location.
-    // Specifying a slot will give the player the item to that slot.
-    // If an item is already in that slot, the item will not be given
-    // unless they are exactly the same items, then it will stack.
+    // Optionally specify a slot to put the items into. If the slot is already filled, the next available slot will be used.
+    // If the player's inventory is full, the items will be dropped on the ground.
     // Specifying "unlimit_stack_size" will allow an item to stack up to 64. This is useful for stacking items
-    // with a max stack size that is less than 64 (for example, most weapon and armor items have a stack size
-    // of 1).
+    // with a max stack size that is less than 64 (for example, most weapon and armor items have a stack size of 1).
     // If an economy is registered, specifying money instead of a item will give money to the player's economy.
-    // TODO: Document Command Details
     //
     // @Tags
     // <p@player.money>

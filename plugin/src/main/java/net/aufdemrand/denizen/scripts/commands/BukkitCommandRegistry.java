@@ -121,7 +121,7 @@ public class BukkitCommandRegistry extends CommandRegistry {
         registerCoreMember(FlyCommand.class, "FLY", "fly (cancel) [<entity>|...] (controller:<player>) (origin:<location>) (destinations:<location>|...) (speed:<#.#>) (rotationthreshold:<#.#>)", 1);
         registerCoreMember(FollowCommand.class, "FOLLOW", "follow (followers:<entity>|...) (stop) (lead:<#.#>) (max:<#.#>) (speed:<#.#>) (target:<entity>) (allow_wander)", 0);
         registerCoreMember(GameRuleCommand.class, "GAMERULE", "gamerule [<world>] [<rule>] [<value>]", 3);
-        registerCoreMember(GiveCommand.class, "GIVE", "give [money/xp/<item>|...] (qty:<#>) (engrave) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
+        registerCoreMember(GiveCommand.class, "GIVE", "give [money/xp/<item>|...] (quantity:<#>) (unlimit_stack_size) (to:<inventory>) (slot:<slot>)", 1);
         registerCoreMember(GlowCommand.class, "GLOW", "glow [<entity>|...] (<should glow>)", 1);
         registerCoreMember(GroupCommand.class, "GROUP", "group [add/remove/set] [<group>] (<world>)", 2);
         registerCoreMember(HeadCommand.class, "HEAD", "head (<entity>|...) [skin:<player_name>]", 1);
