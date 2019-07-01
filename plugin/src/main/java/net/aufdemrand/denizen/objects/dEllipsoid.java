@@ -293,6 +293,19 @@ public class dEllipsoid implements dObject, Notable {
             }
         });
 
+        // <--[tag]
+        // @attribute <ellipsoid@ellipsoid.type>
+        // @returns Element
+        // @description
+        // Always returns 'Ellipsoid' for dEllipsoid objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Ellipsoid").getAttribute(attribute.fulfill(1));
+            }
+        });
     }
 
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();

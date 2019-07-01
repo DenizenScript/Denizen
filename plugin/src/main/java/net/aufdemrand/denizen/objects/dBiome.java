@@ -269,6 +269,20 @@ public class dBiome implements dObject, Adjustable {
                 return list.getAttribute(hasAttribute ? attribute.fulfill(1) : attribute);
             }
         });
+
+        // <--[tag]
+        // @attribute <b@biome.type>
+        // @returns Element
+        // @description
+        // Always returns 'Biome' for dBiome objects. All objects fetchable by the Object Fetcher will return the
+        // type of object that is fulfilling this attribute.
+        // -->
+        registerTag("type", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element("Biome").getAttribute(attribute.fulfill(1));
+            }
+        });
     }
 
     public static HashMap<String, TagRunnable> registeredTags = new HashMap<>();
