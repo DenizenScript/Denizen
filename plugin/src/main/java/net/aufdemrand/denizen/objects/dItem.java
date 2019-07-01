@@ -954,39 +954,6 @@ public class dItem implements dObject, Notable, Adjustable {
             }
         });
 
-        registerTag("prefix", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dItem) object).prefix)
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-
-        registerTag("debug.log", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                dB.log(object.debug());
-                return new Element(Boolean.TRUE.toString())
-                        .getAttribute(attribute.fulfill(2));
-            }
-        });
-
-        registerTag("debug.no_color", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(ChatColor.stripColor(object.debug()))
-                        .getAttribute(attribute.fulfill(2));
-            }
-        });
-
-        registerTag("debug", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(object.debug())
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-
         // <--[tag]
         // @attribute <i@item.type>
         // @returns Element

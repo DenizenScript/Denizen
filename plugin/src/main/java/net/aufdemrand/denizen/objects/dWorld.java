@@ -794,24 +794,6 @@ public class dWorld implements dObject, Adjustable {
             }
         });
 
-        /////////////////////
-        //   DEBUG TAGS
-        /////////////////
-
-        // <--[tag]
-        // @attribute <w@world.prefix>
-        // @returns Element
-        // @description
-        // Returns the prefix of the world dObject.
-        // -->
-        registerTag("prefix", new TagRunnable() {
-            @Override
-            public String run(Attribute attribute, dObject object) {
-                return new Element(((dWorld) object).prefix)
-                        .getAttribute(attribute.fulfill(1));
-            }
-        });
-
         // <--[tag]
         // @attribute <w@world.type>
         // @returns Element

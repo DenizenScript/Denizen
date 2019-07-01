@@ -1301,59 +1301,6 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
             return null;
         }
 
-        /////////////////////
-        //   DEBUG ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <e@entity.debug.log>
-        // @returns Element(Boolean)
-        // @group debug
-        // @description
-        // Debugs the entity in the log and returns true.
-        // -->
-        if (attribute.startsWith("debug.log")) {
-            dB.log(debug());
-            return new Element(Boolean.TRUE.toString())
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.debug.no_color>
-        // @returns Element
-        // @group debug
-        // @description
-        // Returns the entity's debug with no color.
-        // -->
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.debug>
-        // @returns Element
-        // @group debug
-        // @description
-        // Returns the entity's debug.
-        // -->
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <e@entity.prefix>
-        // @returns Element
-        // @group debug
-        // @description
-        // Returns the prefix of the entity.
-        // -->
-        if (attribute.startsWith("prefix")) {
-            return new Element(prefix)
-                    .getAttribute(attribute.fulfill(1));
-        }
-
         // <--[tag]
         // @attribute <e@entity.type>
         // @returns Element

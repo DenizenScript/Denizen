@@ -650,59 +650,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
         }
 
         /////////////////////
-        //   DEBUG ATTRIBUTES
-        /////////////////
-
-        // <--[tag]
-        // @attribute <p@player.debug.log>
-        // @returns Element(Boolean)
-        // @description
-        // Debugs the player in the log and returns true.
-        // Works with offline players.
-        // -->
-        if (attribute.startsWith("debug.log")) {
-            dB.log(debug());
-            return new Element(true).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.debug.no_color>
-        // @returns Element
-        // @description
-        // Returns the player's debug with no color.
-        // Works with offline players.
-        // -->
-        if (attribute.startsWith("debug.no_color")) {
-            return new Element(ChatColor.stripColor(debug()))
-                    .getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.debug>
-        // @returns Element
-        // @description
-        // Returns the player's debug.
-        // Works with offline players.
-        // -->
-        if (attribute.startsWith("debug")) {
-            return new Element(debug())
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.prefix>
-        // @returns Element
-        // @description
-        // Returns the dObject's prefix.
-        // Works with offline players.
-        // -->
-        if (attribute.startsWith("prefix")) {
-            return new Element(prefix)
-                    .getAttribute(attribute.fulfill(1));
-        }
-
-
-        /////////////////////
         //   DENIZEN ATTRIBUTES
         /////////////////
 
