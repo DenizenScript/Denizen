@@ -30,9 +30,8 @@ public class GiveCommand extends AbstractCommand {
     //
     // @Description
     // Gives the linked player or inventory items, xp, or money.
-    // If the player's inventory if full, the item will be dropped at the inventory location.
     // Optionally specify a slot to put the items into. If the slot is already filled, the next available slot will be used.
-    // If the player's inventory is full, the items will be dropped on the ground.
+    // If the player's inventory is full, the items will be dropped on the ground at the inventory's location.
     // Specifying "unlimit_stack_size" will allow an item to stack up to 64. This is useful for stacking items
     // with a max stack size that is less than 64 (for example, most weapon and armor items have a stack size of 1).
     // If an economy is registered, specifying money instead of a item will give money to the player's economy.
