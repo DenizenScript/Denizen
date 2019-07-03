@@ -9,15 +9,17 @@ import org.bukkit.Chunk;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 
 public class ChunkHelper_v1_14_R1 implements ChunkHelper {
 
     public final static Field chunkProviderServerThreadField;
+    public final static MethodHandle chunkProviderServerThreadFieldSetter;
 
     static {
         chunkProviderServerThreadField = ReflectionHelper.getFields(ChunkProviderServer.class).get("serverThread");
-        ReflectionHelper.fixFinal(chunkProviderServerThreadField);
+        chunkProviderServerThreadFieldSetter = ReflectionHelper.getFinalSetter(ChunkProviderServer.class, "serverThread");
     }
 
     Thread resetServerThread;
@@ -30,9 +32,9 @@ public class ChunkHelper_v1_14_R1 implements ChunkHelper {
         ChunkProviderServer provider = ((CraftWorld) world).getHandle().getChunkProvider();
         try {
             resetServerThread = (Thread) chunkProviderServerThreadField.get(provider);
-            chunkProviderServerThreadField.set(provider, Thread.currentThread());
+            chunkProviderServerThreadFieldSetter.invoke(provider, Thread.currentThread());
         }
-        catch (IllegalAccessException ex) {
+        catch (Throwable ex) {
             dB.echoError(ex);
         }
     }
@@ -44,10 +46,10 @@ public class ChunkHelper_v1_14_R1 implements ChunkHelper {
         }
         ChunkProviderServer provider = ((CraftWorld) world).getHandle().getChunkProvider();
         try {
-            chunkProviderServerThreadField.set(provider, resetServerThread);
+            chunkProviderServerThreadFieldSetter.invoke(provider, resetServerThread);
             resetServerThread = null;
         }
-        catch (IllegalAccessException ex) {
+        catch (Throwable ex) {
             dB.echoError(ex);
         }
     }

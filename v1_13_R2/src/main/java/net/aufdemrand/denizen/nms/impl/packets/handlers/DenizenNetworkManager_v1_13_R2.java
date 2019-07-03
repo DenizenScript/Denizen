@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import javax.crypto.SecretKey;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
 import java.util.UUID;
@@ -414,17 +415,15 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
     ///////////
 
     private static final Field protocolDirectionField;
-    private static final Field networkManagerField;
+    private static final MethodHandle networkManagerField;
 
     static {
         Field directionField = null;
-        Field managerField = null;
+        MethodHandle managerField = null;
         try {
             directionField = NetworkManager.class.getDeclaredField("h");
             directionField.setAccessible(true);
-            managerField = PlayerConnection.class.getDeclaredField("networkManager");
-            managerField.setAccessible(true);
-            ReflectionHelper.fixFinal(managerField);
+            managerField = ReflectionHelper.getFinalSetter(PlayerConnection.class, "networkManager");
         }
         catch (Exception e) {
             dB.echoError(e);
@@ -446,10 +445,10 @@ public class DenizenNetworkManager_v1_13_R2 extends NetworkManager {
 
     private static void setNetworkManager(PlayerConnection playerConnection, NetworkManager networkManager) {
         try {
-            networkManagerField.set(playerConnection, networkManager);
+            networkManagerField.invoke(playerConnection, networkManager);
         }
-        catch (Exception e) {
-            dB.echoError(e);
+        catch (Throwable ex) {
+            dB.echoError(ex);
         }
     }
 }
