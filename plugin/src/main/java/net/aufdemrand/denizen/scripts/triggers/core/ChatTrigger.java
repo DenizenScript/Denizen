@@ -17,6 +17,7 @@ import net.aufdemrand.denizencore.objects.aH;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.commands.queue.DetermineCommand;
 import net.aufdemrand.denizencore.tags.TagManager;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -58,13 +59,21 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
     //   - chat "<context.message> eh?"
     // # You can list as many as you want
     // 2:
+    //   # You can have multi-option triggers, separated by pipes (the "|" symbol). This example matches if player types 'hi', 'hello', OR 'hey'.
+    //   trigger: /hi|hello|hey/
+    //   script:
+    //   - wait 1
+    //   # use "<context.keyword>" for the specific word that was said.
+    //   # this example will respond to players that said 'hi' with "hi there buddy!", 'hello' with "hello there buddy!", etc.
+    //   - chat "<context.keyword> there buddy!"
+    // 3:
     //   # You can have regex triggers. This example matches when the player types any numbers.
     //   trigger: /regex:\d+/
     //   script:
     //   - wait 1
     //   # use "<context.keyword>" for the text matched by the regex matcher.
     //   - chat "<context.keyword> eh?"
-    // 3:
+    // 4:
     //   # Use '*' as the trigger to match anything at all.
     //   trigger: /*/
     //   # Add this line to hide the "[Player -> NPC]: hi" initial trigger message.
@@ -250,6 +259,8 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         String regexId = null;
         String regexMessage = null;
 
+        String messageLow = CoreUtilities.toLowerCase(message);
+
         // Use TreeMap to sort chat triggers alphabetically
         TreeMap<String, String> idMap = new TreeMap<>();
         idMap.putAll(script.getIdMapFor(ChatTrigger.class, denizenPlayer));
@@ -284,9 +295,10 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                         keyword = split[0];
                         replace = split[1];
                     }
+                    String keywordLow = CoreUtilities.toLowerCase(keyword);
                     // Check if the trigger is REGEX, but only if we don't have a REGEX
                     // match already (thus using alphabetical priority for triggers)
-                    if (regexId == null && isKeywordRegex(keyword)) {
+                    if (regexId == null && keywordLow.startsWith("regex:")) {
                         Pattern pattern = Pattern.compile(keyword.substring(6));
                         Matcher m = pattern.matcher(message);
                         if (m.find()) {
@@ -301,9 +313,22 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
                             }
                         }
                     }
+                    else if (keyword.contains("|")) {
+                        for (String subkeyword : CoreUtilities.split(keywordLow, '|')) {
+                            if (messageLow.contains(keywordLow)) {
+                                id = entry.getKey();
+                                replacementText = triggerText.replace("/", "");
+                                matched = true;
+                                context.put("keyword", new Element(subkeyword));
+                                if (replace != null) {
+                                    replacementText = replace;
+                                }
+                            }
+                        }
+                    }
                     else if (keyword.equals("*")
-                            || (isKeywordStrict(keyword) && message.toUpperCase().equalsIgnoreCase(keyword.toUpperCase()))
-                            || message.toUpperCase().contains(keyword.toUpperCase())) {
+                            || (keywordLow.startsWith("strict:") && messageLow.equals(keywordLow.substring("strict:".length())))
+                            || messageLow.contains(keywordLow)) {
                         // Trigger matches
                         id = entry.getKey();
                         replacementText = triggerText.replace("/", "");
@@ -417,14 +442,6 @@ public class ChatTrigger extends AbstractTrigger implements Listener {
         if (chat.hasChanges()) {
             event.setMessage(chat.getChanges());
         }
-    }
-
-    private boolean isKeywordRegex(String keyWord) {
-        return keyWord.toUpperCase().startsWith("REGEX:");
-    }
-
-    private boolean isKeywordStrict(String keyWord) {
-        return keyWord.toUpperCase().startsWith("STRICT:");
     }
 
 
