@@ -85,24 +85,11 @@ public class ServerTags {
         }, "server", "svr", "global");
     }
 
-    public SlowWarning mathShorthand = new SlowWarning("Short-named tags are hard to read. Please use 'math' instead of 'm' as a root tag.");
-
-    // <--[tag]
-    // @attribute <math:<calculation>>
-    // @returns Element(Decimal)
-    // @description
-    // Returns a calculated result of the math placed after the :
-    // Examples: '<math:1 + 1>' or '<math:sin(<npc.id>)>'.
-    // Since this is a 'value' tag, to get an int value, you will need to do '<math.as_int:calc>',
-    // and similar for all other element tags.
-    // -->
-    public void mathTag(ReplaceableTagEvent event) { // TODO: Core
+    public void mathTag(ReplaceableTagEvent event) {
         if (!event.matches("math", "m")) {
             return;
         }
-        if (event.matches("m")) {
-            mathShorthand.warn(event.getScriptEntry());
-        }
+        dB.echoError("'math:' tags have been non-recommended for years. Please use modern element math tags like 'element.add[...]', etc.");
         try {
             Double evaluation = new DoubleEvaluator().evaluate(event.getValue());
             event.setReplaced(new Element(String.valueOf(evaluation)).getAttribute(event.getAttributes().fulfill(1)));
