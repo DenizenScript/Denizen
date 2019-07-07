@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.events.player.*;
 import net.aufdemrand.denizen.events.world.*;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
+import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.events.ScriptEvent;
 
 public class ScriptEventRegistry {
@@ -66,6 +67,9 @@ public class ScriptEventRegistry {
         ScriptEvent.registerScriptEvent(new ItemEnchantedScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemMergesScriptEvent());
         ScriptEvent.registerScriptEvent(new ItemSpawnsScriptEvent());
+        if (Depends.citizens != null) {
+            ScriptEvent.registerScriptEvent(new NPCSpawnScriptEvent());
+        }
         ScriptEvent.registerScriptEvent(new PigZappedScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileHitsScriptEvent());
         ScriptEvent.registerScriptEvent(new ProjectileLaunchedScriptEvent());
