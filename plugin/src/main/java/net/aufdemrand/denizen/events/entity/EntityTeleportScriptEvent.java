@@ -23,7 +23,9 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     // <entity> teleports
     //
     // @Regex ^on [^\s]+ teleports$
+    //
     // @Switch in <area>
+    // @Switch cause <cause>
     //
     // @Triggers when an entity teleports.
     //
@@ -68,6 +70,10 @@ public class EntityTeleportScriptEvent extends BukkitScriptEvent implements List
     public boolean matches(ScriptPath path) {
 
         if (!tryEntity(entity, path.eventArgLowerAt(0))) {
+            return false;
+        }
+
+        if (!runGenericSwitchCheck(path, "cause", cause)) {
             return false;
         }
 
