@@ -125,18 +125,20 @@ public class dMaterial implements dObject, Adjustable {
             }
             return OldMaterialsHelper.getMaterialFrom(m, data);
         }
-        dMaterial mat = OldMaterialsHelper.all_dMaterials.get(string);
-        if (mat != null) {
-            if ((context == null || context.debug) && index >= 0) {
-                dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
-            }
-            if (data == 0) {
-                if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
-                    return new dMaterial(mat.material);
+        if (OldMaterialsHelper.all_dMaterials != null) {
+            dMaterial mat = OldMaterialsHelper.all_dMaterials.get(string);
+            if (mat != null) {
+                if ((context == null || context.debug) && index >= 0) {
+                    dB.log("Material ID and data magic number support is deprecated and WILL be removed in a future release. Use relevant properties instead.");
                 }
-                return mat;
+                if (data == 0) {
+                    if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)) {
+                        return new dMaterial(mat.material);
+                    }
+                    return mat;
+                }
+                return OldMaterialsHelper.getMaterialFrom(mat.material, data);
             }
-            return OldMaterialsHelper.getMaterialFrom(mat.material, data);
         }
         int matid = aH.getIntegerFrom(string);
         if (matid != 0) {

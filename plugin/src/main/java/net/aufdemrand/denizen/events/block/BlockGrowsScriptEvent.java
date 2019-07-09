@@ -42,10 +42,15 @@ public class BlockGrowsScriptEvent extends BukkitScriptEvent implements Listener
     public boolean couldMatch(ScriptContainer scriptContainer, String s) {
         String lower = CoreUtilities.toLowerCase(s);
         String cmd = CoreUtilities.getXthArg(1, lower);
+        if (!cmd.equals("grows")) {
+            return false;
+        }
         String block = CoreUtilities.getXthArg(0, lower);
+        if (block.equals("block")) {
+            return true;
+        }
         dMaterial mat = dMaterial.valueOf(block);
-        return cmd.equals("grows")
-                && (block.equals("block") || (mat != null && !mat.isStructure()));
+        return mat != null && !mat.isStructure();
     }
 
     @Override
