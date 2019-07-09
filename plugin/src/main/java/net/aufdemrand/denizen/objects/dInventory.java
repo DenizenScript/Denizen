@@ -1319,13 +1319,6 @@ public class dInventory implements dObject, Notable, Adjustable {
         return this;
     }
 
-
-    @Override
-    public String debug() {
-        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
-    }
-
-
     @Override
     public String identify() {
         if (isUnique()) {

@@ -165,11 +165,6 @@ public class dWorld implements dObject, Adjustable {
     }
 
     @Override
-    public String debug() {
-        return (prefix + "='<A>" + identify() + "<G>'  ");
-    }
-
-    @Override
     public boolean isUnique() {
         return true;
     }

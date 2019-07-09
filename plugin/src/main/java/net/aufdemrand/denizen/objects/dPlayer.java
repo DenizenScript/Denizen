@@ -599,8 +599,8 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
     }
 
     @Override
-    public String debug() {
-        return (prefix + "='<A>" + identifySimple() + "<G>'  ");
+    public String debuggable() {
+        return "p@" + offlinePlayer.getUniqueId().toString() + " (" + offlinePlayer.getName() + ")";
     }
 
     @Override
@@ -1606,7 +1606,7 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
             if (sidebar == null) {
                 return null;
             }
-            return new dList(sidebar.getLines()).getAttribute(attribute.fulfill(2));
+            return new dList(sidebar.getLinesText()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]
@@ -1640,34 +1640,6 @@ public class dPlayer implements dObject, Adjustable, EntityFormObject {
                 scores.add(String.valueOf(score));
             }
             return scores.getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.sidebar.start>
-        // @returns Element(Number)
-        // @description
-        // Returns the current start score set on the player's Sidebar via the Sidebar command.
-        // -->
-        if (attribute.startsWith("sidebar.start")) {
-            Sidebar sidebar = SidebarCommand.getSidebar(this);
-            if (sidebar == null) {
-                return null;
-            }
-            return new Element(sidebar.getStart()).getAttribute(attribute.fulfill(2));
-        }
-
-        // <--[tag]
-        // @attribute <p@player.sidebar.increment>
-        // @returns Element(Number)
-        // @description
-        // Returns the current score increment set on the player's Sidebar via the Sidebar command.
-        // -->
-        if (attribute.startsWith("sidebar.increment")) {
-            Sidebar sidebar = SidebarCommand.getSidebar(this);
-            if (sidebar == null) {
-                return null;
-            }
-            return new Element(sidebar.getIncrement()).getAttribute(attribute.fulfill(2));
         }
 
         // <--[tag]

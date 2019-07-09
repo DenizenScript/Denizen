@@ -131,10 +131,6 @@ public class dTrade implements dObject, Adjustable {
         return this;
     }
 
-    public String debug() {
-        return getPrefix() + "='<A>" + identify() + "<G>'  ";
-    }
-
     public boolean isUnique() {
         return false;
     }

@@ -201,11 +201,6 @@ public class dChunk implements dObject, Adjustable {
     }
 
     @Override
-    public String debug() {
-        return ("<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
-    }
-
-    @Override
     public boolean isUnique() {
         return true;
     }

@@ -796,15 +796,15 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         return this;
     }
 
-
     @Override
-    public String debug() {
-        return (isUnique()
-                ? "<G>" + prefix + "='<A>" + NotableManager.getSavedId(this)
-                + "(<Y>" + identify() + "<A>)<G>'  "
-                : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
+    public String debuggable() {
+        if (isUnique()) {
+            return "cu@" + NotableManager.getSavedId(this) + " (" + identifyFull() + ")";
+        }
+        else {
+            return identifyFull();
+        }
     }
-
 
     @Override
     public String identify() {

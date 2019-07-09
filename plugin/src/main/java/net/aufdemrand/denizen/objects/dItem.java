@@ -602,11 +602,6 @@ public class dItem implements dObject, Notable, Adjustable {
     }
 
     @Override
-    public String debug() {
-        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
-    }
-
-    @Override
     public String identify() {
 
         if (item == null || item.getType() == Material.AIR) {

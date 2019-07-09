@@ -414,8 +414,8 @@ public class dNPC implements dObject, Adjustable, InventoryHolder, EntityFormObj
     }
 
     @Override
-    public String debug() {
-        return (prefix + "='<A>" + identify() + "<G>'  ");
+    public String debuggable() {
+        return "n@" + npcid + " (" + getName() + ")";
     }
 
     @Override

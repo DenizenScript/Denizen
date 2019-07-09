@@ -177,11 +177,6 @@ public class dColor implements dObject {
     }
 
     @Override
-    public String debug() {
-        return (prefix + "='<A>" + identify() + "<G>'  ");
-    }
-
-    @Override
     public boolean isUnique() {
         return false;
     }

@@ -179,8 +179,13 @@ public class dEllipsoid implements dObject, Notable {
     }
 
     @Override
-    public String debug() {
-        return (prefix + "='<A>" + identify() + "<G>'  ");
+    public String debuggable() {
+        if (isUnique()) {
+            return "cu@" + NotableManager.getSavedId(this) + " (" + identifyFull() + ")";
+        }
+        else {
+            return identifyFull();
+        }
     }
 
     @Override

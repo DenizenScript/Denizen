@@ -125,11 +125,6 @@ public class dPlugin implements dObject {
     }
 
     @Override
-    public String debug() {
-        return String.format("<G>%s='<Y>%s<G>'  ", prefix, identify());
-    }
-
-    @Override
     public boolean isUnique() {
         return true;
     }

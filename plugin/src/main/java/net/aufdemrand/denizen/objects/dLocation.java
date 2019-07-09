@@ -557,9 +557,13 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
     }
 
     @Override
-    public String debug() {
-        return (isUnique() ? "<G>" + prefix + "='<A>" + identify() + "(<Y>" + identifyRaw() + "<A>)<G>'  "
-                : "<G>" + prefix + "='<Y>" + identify() + "<G>'  ");
+    public String debuggable() {
+        if (!raw && isUnique()) {
+            return "l@" + getSaved(this);
+        }
+        else {
+            return identifyRaw().replace(",", ", ");
+        }
     }
 
     @Override

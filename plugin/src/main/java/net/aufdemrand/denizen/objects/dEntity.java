@@ -1140,8 +1140,25 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
     }
 
     @Override
-    public String debug() {
-        return "<G>" + prefix + "='<Y>" + identify() + "<G>'  ";
+    public String debuggable() {
+        if (npc != null) {
+            return npc.debuggable();
+        }
+        if (entity != null) {
+            if (isPlayer()) {
+                return getDenizenPlayer().debuggable();
+            }
+            if (isSpawned() || rememberedEntities.containsKey(entity.getUniqueId())) {
+                return "e@ " + entity.getUniqueId().toString() + "(" + entity.getType().name() + "/" + entity.getName() + ")";
+            }
+        }
+        if (entityScript != null) {
+            return "e@" + entityScript;
+        }
+        if (entity_type != null) {
+            return identify();
+        }
+        return "null";
     }
 
     @Override
