@@ -21,17 +21,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SidebarCommand extends AbstractCommand {
 
     // <--[command]
     // @Name Sidebar
-    // @Syntax sidebar (add/remove/{set}) (title:<title>) (lines:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
+    // @Syntax sidebar (add/remove/{set}) (title:<title>) (scores:<#>|...) (values:<line>|...) (start:<#>/{num_of_lines}) (increment:<#>/{-1}) (players:<player>|...) (per_player)
     // @Required 1
     // @Short Controls clientside-only sidebars.
     // @Group player
@@ -42,19 +38,19 @@ public class SidebarCommand extends AbstractCommand {
     // functional sidebars without wasting processing speed and memory on creating new Scoreboards for
     // every single player.
     //
-    // Using this command, you can add, remove, or set lines on the scoreboard. The 'lines' parameter
-    // is used to specify which line you want to set using 'values:' or remove. It can also be used to
-    // add lines in between existing lines. To change multiple lines at once, simply use a list in both
-    // the 'lines:' and 'values:' arguments and have each index correspond with the other.
+    // Using this command, you can add, remove, or set lines on the scoreboard.
     //
-    // Setting the title of the sidebar is extremely simple, and can be done by using the 'title:'
-    // parameter in any case where the action is 'set'.
+    // To set the title of the sidebar, use the 'title:' parameter in any case where the action is 'set'.
     //
-    // To control which score numbers are shown, use the 'start:' and 'increment:' arguments in any case
-    // where the action is 'set'. 'Start' is the score where the first line will be shown with. The default
-    // 'start' value is determined by how many items are specified in 'values:'. 'Increment' is the difference
-    // between each score and the default is -1. Using the default values of these, the sidebar displays each
-    // line in order with the score counting down from the total number of lines to 1.
+    // By default, the score numbers descend from the total line count to 1.
+    // To customize the automatic score values, use the 'start:' and 'increment:' arguments in any case where the action is 'set'.
+    // 'Start' is the score where the first line will be shown with. The default 'start' value is determined by how many items are specified in 'values:'.
+    // 'Increment' is the difference between each score and the default is -1.
+    //
+    // To instead set entirely custom numbers, use the 'scores:' input with a list of numbers,
+    // where each number is the score to use with the value at the same place in the 'values:' list.
+    //
+    // You can remove by line value text, or by score number.
     //
     // The per_player argument is also available, and helps to reduce the number of loops required for
     // updating multiple players' sidebars. When it is specified, all tags in the command will fill based
@@ -65,8 +61,6 @@ public class SidebarCommand extends AbstractCommand {
     // <p@player.sidebar.lines>
     // <p@player.sidebar.title>
     // <p@player.sidebar.scores>
-    // <p@player.sidebar.start>
-    // <p@player.sidebar.increment>
     //
     // @Usage
     // Show all online players a sidebar.
@@ -77,8 +71,8 @@ public class SidebarCommand extends AbstractCommand {
     // - sidebar set "title:Info" "value:Ping<&co> <player.ping>" "players:p@Morphan1|p@mcmonkey4eva|p@Matterom" per_player
     //
     // @Usage
-    // Set a line on the sidebar a player is viewing.
-    // - sidebar set "line:2" "value:This is my line now!"
+    // Set a sidebar with the score values indicating information to the user.
+    // - sidebar set "line:<server.list_online_players.size>|<server.max_players>" "value:Players online|Players allowed"
     //
     // @Usage
     // Add a line to the bottom of the sidebar.
@@ -120,8 +114,8 @@ public class SidebarCommand extends AbstractCommand {
                 scriptEntry.addObject("title", arg.asElement());
             }
             else if (!scriptEntry.hasObject("lines")
-                    && arg.matchesPrefix("lines", "line", "l")) {
-                scriptEntry.addObject("lines", arg.asElement());
+                    && arg.matchesPrefix("scores", "score", "lines", "line", "l")) {
+                scriptEntry.addObject("scores", arg.asElement());
             }
             else if (!scriptEntry.hasObject("value")
                     && arg.matchesPrefix("value", "values", "val", "v")) {
@@ -154,8 +148,8 @@ public class SidebarCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify at least one of: value(s), title, increment, or start for that action!");
         }
 
-        if (action == Action.SET && scriptEntry.hasObject("lines") && !scriptEntry.hasObject("value")) {
-            throw new InvalidArgumentsException("Must specify value(s) when setting lines!");
+        if (action == Action.SET && scriptEntry.hasObject("scores") && !scriptEntry.hasObject("value")) {
+            throw new InvalidArgumentsException("Must specify value(s) when setting scores!");
         }
 
         scriptEntry.addObject("action", new Element(action.name()));
@@ -170,7 +164,7 @@ public class SidebarCommand extends AbstractCommand {
 
         Element action = scriptEntry.getElement("action");
         Element elTitle = scriptEntry.getElement("title");
-        Element elLines = scriptEntry.getElement("lines");
+        Element elScores = scriptEntry.getElement("scores");
         Element elValue = scriptEntry.getElement("value");
         Element elIncrement = scriptEntry.getElement("increment");
         Element elStart = scriptEntry.getElement("start");
@@ -181,13 +175,13 @@ public class SidebarCommand extends AbstractCommand {
         boolean per_player = elPerPlayer.asBoolean();
 
         String perTitle = null;
-        String perLines = null;
+        String perScores = null;
         String perValue = null;
         String perIncrement = null;
         String perStart = null;
 
         Element title = null;
-        dList lines = null;
+        dList scores = null;
         dList value = null;
         Element increment = null;
         Element start = null;
@@ -198,8 +192,8 @@ public class SidebarCommand extends AbstractCommand {
             if (elTitle != null) {
                 perTitle = elTitle.asString();
             }
-            if (elLines != null) {
-                perLines = elLines.asString();
+            if (elScores != null) {
+                perScores = elScores.asString();
             }
             if (elValue != null) {
                 perValue = elValue.asString();
@@ -210,21 +204,19 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 perStart = elStart.asString();
             }
-            debug = action.debug() +
-                    (elTitle != null ? elTitle.debug() : "") +
-                    (elLines != null ? elLines.debug() : "") +
+            debug = (elTitle != null ? elTitle.debug() : "") +
+                    (elScores != null ? elScores.debug() : "") +
                     (elValue != null ? elValue.debug() : "") +
                     (elIncrement != null ? elIncrement.debug() : "") +
-                    (elStart != null ? elStart.debug() : "") +
-                    players.debug();
+                    (elStart != null ? elStart.debug() : "");
         }
         else {
             BukkitTagContext context = (BukkitTagContext) DenizenCore.getImplementation().getTagContextFor(scriptEntry, false);
             if (elTitle != null) {
                 title = new Element(TagManager.tag(elTitle.asString(), context));
             }
-            if (elLines != null) {
-                lines = dList.valueOf(TagManager.tag(elLines.asString(), context));
+            if (elScores != null) {
+                scores = dList.valueOf(TagManager.tag(elScores.asString(), context));
             }
             if (elValue != null) {
                 value = dList.valueOf(TagManager.tag(elValue.asString(), context));
@@ -235,19 +227,15 @@ public class SidebarCommand extends AbstractCommand {
             if (elStart != null) {
                 start = new Element(TagManager.tag(elStart.asString(), context));
             }
-            debug = action.debug() +
-                    (title != null ? title.debug() : "") +
-                    (lines != null ? lines.debug() : "") +
-                    (value != null ? value.debug() : "") +
+            debug = (title != null ? title.debug() : "") +
+                    (scores != null ? aH.debugObj("scores", scores) : "") +
+                    (value != null ? aH.debugObj("value", value) : "") +
                     (increment != null ? increment.debug() : "") +
-                    (start != null ? start.debug() : "") +
-                    players.debug();
+                    (start != null ? start.debug() : "");
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
-
-            dB.report(scriptEntry, getName(), debug);
-
+            dB.report(scriptEntry, getName(), action.debug() + debug + aH.debugObj("players", players.debug()));
         }
 
         switch (Action.valueOf(action.asString())) {
@@ -262,30 +250,26 @@ public class SidebarCommand extends AbstractCommand {
                     if (sidebar == null) {
                         continue;
                     }
-                    List<String> current = sidebar.getLines();
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         value = dList.valueOf(TagManager.tag(perValue, context));
-                        if (perLines != null) {
-                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        if (perScores != null) {
+                            scores = dList.valueOf(TagManager.tag(perScores, context));
                         }
                     }
-                    if (lines != null) {
-                        try {
-                            for (int i = 0; i < lines.size(); i++) {
-                                int index = Integer.valueOf(lines.get(i)) - 1;
-                                String line = value.get(i);
-                                current.add(index, line);
-                            }
-                        }
-                        catch (Exception e) {
-                            dB.echoError(e);
-                            continue;
+                    try {
+                        int index = start != null ? start.asInt() : (current.size() > 0 ? current.get(current.size() - 1).score : value.size());
+                        int incr = increment != null ? increment.asInt() : -1;
+                        for (int i = 0; i < value.size(); i++, index += incr) {
+                            int score = (scores != null && i < scores.size()) ? Integer.valueOf(scores.get(i)) : index;
+                            current.add(new Sidebar.SidebarLine(value.get(i), score));
                         }
                     }
-                    else {
-                        current.addAll(value);
+                    catch (Exception e) {
+                        dB.echoError(e);
+                        continue;
                     }
                     sidebar.setLines(current);
                     sidebar.sendUpdate();
@@ -302,24 +286,26 @@ public class SidebarCommand extends AbstractCommand {
                     if (sidebar == null) {
                         continue;
                     }
-                    List<String> current = sidebar.getLines();
+                    List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));
                         }
-                        if (perLines != null) {
-                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        if (perScores != null) {
+                            scores = dList.valueOf(TagManager.tag(perScores, context));
                         }
                     }
-                    if (lines != null) {
+                    if (scores != null) {
                         try {
-                            int offset = 0;
-                            for (String line : lines) {
-                                int index = Integer.valueOf(line) - 1 - offset;
-                                current.remove(index);
-                                offset++;
+                            for (String scoreString : scores) {
+                                int score = Integer.valueOf(scoreString);
+                                for (int i = 0; i < current.size(); i++) {
+                                    if (current.get(i).score == score) {
+                                        current.remove(i--);
+                                    }
+                                }
                             }
                         }
                         catch (Exception e) {
@@ -329,28 +315,13 @@ public class SidebarCommand extends AbstractCommand {
                         sidebar.setLines(current);
                         sidebar.sendUpdate();
                     }
-                    else if (value != null) {
-                        try {
-                            Iterator<String> it = current.iterator();
-                            while (it.hasNext()) {
-                                String next = it.next();
-                                for (String line : value) {
-                                    if (next.equalsIgnoreCase(line)) {
-                                        it.remove();
-                                    }
+                    if (value != null) {
+                        for (String line : value) {
+                            for (int i = 0; i < current.size(); i++) {
+                                if (current.get(i).text.equalsIgnoreCase(line)) {
+                                    current.remove(i--);
                                 }
                             }
-                            for (String line : value) {
-                                for (int i = 0; i < current.size(); i++) {
-                                    if (current.get(i).equalsIgnoreCase(line)) {
-                                        current.remove(i--);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception e) {
-                            dB.echoError(e);
-                            continue;
                         }
                         sidebar.setLines(current);
                         sidebar.sendUpdate();
@@ -372,7 +343,7 @@ public class SidebarCommand extends AbstractCommand {
                     if (sidebar == null) {
                         continue;
                     }
-                    List<String> current = sidebar.getLines();
+                    List<Sidebar.SidebarLine> current = new ArrayList<>();
                     boolean currEdited = false;
                     if (per_player) {
                         TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
@@ -380,8 +351,8 @@ public class SidebarCommand extends AbstractCommand {
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));
                         }
-                        if (perLines != null) {
-                            lines = dList.valueOf(TagManager.tag(perLines, context));
+                        if (perScores != null) {
+                            scores = dList.valueOf(TagManager.tag(perScores, context));
                         }
                         if (perStart != null) {
                             start = new Element(TagManager.tag(perStart, context));
@@ -393,35 +364,19 @@ public class SidebarCommand extends AbstractCommand {
                             title = new Element(TagManager.tag(perTitle, context));
                         }
                     }
-                    if (lines != null) {
+                    if (value != null) {
                         try {
-                            for (int i = 0; i < lines.size(); i++) {
-                                int index = Integer.valueOf(lines.get(i)) - 1;
-                                String line = value.get(i);
-                                if (index > current.size()) {
-                                    current.add(line);
-                                }
-                                else {
-                                    current.set(index, line);
-                                }
+                            int index = start != null ? start.asInt() : value.size();
+                            int incr = increment != null ? increment.asInt() : -1;
+                            for (int i = 0; i < value.size(); i++, index += incr) {
+                                int score = (scores != null && i < scores.size()) ? Integer.valueOf(scores.get(i)) : index;
+                                current.add(new Sidebar.SidebarLine(value.get(i), score));
                             }
                         }
                         catch (Exception e) {
                             dB.echoError(e);
                             continue;
                         }
-                        currEdited = true;
-                    }
-                    else if (value != null) {
-                        current = value;
-                        currEdited = true;
-                    }
-                    if (start != null) {
-                        sidebar.setStart(start.asInt());
-                        currEdited = true;
-                    }
-                    if (increment != null) {
-                        sidebar.setIncrement(increment.asInt());
                         currEdited = true;
                     }
                     if (title != null) {

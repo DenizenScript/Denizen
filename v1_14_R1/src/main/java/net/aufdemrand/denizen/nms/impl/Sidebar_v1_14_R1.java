@@ -40,7 +40,6 @@ public class Sidebar_v1_14_R1 extends Sidebar {
             ScoreboardScore score = new ScoreboardScore(dummyScoreboard, this.obj1, line);
             score.setScore(this.scores[i]);
             // CraftScoreboardManager setPlayerBoard
-            // new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, scoreboardscore.getObjective().getName(), scoreboardscore.getPlayerName(), scoreboardscore.getScore()));
             PacketHelper_v1_14_R1.sendPacket(player, new PacketPlayOutScoreboardScore(ScoreboardServer.Action.CHANGE, score.getObjective().getName(), score.getPlayerName(), score.getScore()));
         }
         PacketHelper_v1_14_R1.sendPacket(player, new PacketPlayOutScoreboardDisplayObjective(1, this.obj1));
