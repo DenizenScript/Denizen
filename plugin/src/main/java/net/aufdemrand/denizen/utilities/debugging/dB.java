@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.utilities.debugging;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.DenizenCoreImplementation;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizencore.events.OldEventManager;
@@ -403,6 +404,9 @@ public class dB {
             if (canGetClass) {
                 Class[] classes = new SecurityManagerTrick().getClassContext();
                 Class caller = classes.length > 2 ? classes[2] : dB.class;
+                if (caller == DenizenCoreImplementation.class) {
+                    caller = classes.length > 4 ? classes[4] : dB.class;
+                }
                 callerName = classNameCache.get(caller);
                 if (callerName == null) {
                     classNameCache.put(caller, callerName = caller.getSimpleName());
