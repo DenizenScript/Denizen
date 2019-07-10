@@ -6,6 +6,7 @@ import net.aufdemrand.denizencore.objects.Mechanism;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.properties.Property;
 import net.aufdemrand.denizencore.tags.Attribute;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Switch;
 
 public class MaterialSwitchFace implements Property {
@@ -70,6 +71,19 @@ public class MaterialSwitchFace implements Property {
     @Override
     public String getPropertyString() {
         return getSwitch().getFace().name();
+    }
+
+    public BlockFace getAttachedTo() {
+        switch (getSwitch().getFace()) {
+            case WALL:
+                return getSwitch().getFacing().getOppositeFace();
+            case FLOOR:
+                return BlockFace.DOWN;
+            case CEILING:
+                return BlockFace.UP;
+            default:
+                return BlockFace.SELF;
+        }
     }
 
     @Override

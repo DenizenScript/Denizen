@@ -7,6 +7,8 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
+import net.aufdemrand.denizen.objects.properties.material.MaterialDirectional;
+import net.aufdemrand.denizen.objects.properties.material.MaterialSwitchFace;
 import net.aufdemrand.denizen.scripts.commands.world.SwitchCommand;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
@@ -2468,9 +2470,16 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         // -->
         if (attribute.startsWith("attached_to")) {
             BlockFace face = BlockFace.SELF;
-            MaterialData data = getBlockState().getData();
-            if (data instanceof Attachable) {
-                face = ((Attachable) data).getAttachedFace();
+            dMaterial material = new dMaterial(getBlock());
+            if (NMSHandler.getVersion().isAtLeast(NMSVersion.v1_13_R2)
+                && MaterialSwitchFace.describes(material)) {
+                face = MaterialSwitchFace.getFrom(material).getAttachedTo();
+            }
+            else {
+                MaterialData data = getBlockState().getData();
+                if (data instanceof Attachable) {
+                    face = ((Attachable) data).getAttachedFace();
+                }
             }
             if (face != BlockFace.SELF) {
                 return new dLocation(getBlock().getRelative(face).getLocation())
