@@ -133,6 +133,7 @@ public class PropertyRegistry {
             PropertyParser.registerProperty(MaterialDirectional.class, dMaterial.class);
             PropertyParser.registerProperty(MaterialHalf.class, dMaterial.class);
             PropertyParser.registerProperty(MaterialLevel.class, dMaterial.class);
+            PropertyParser.registerProperty(MaterialSwitchFace.class, dMaterial.class);
         }
 
         // register core dTrade properties
