@@ -24,8 +24,8 @@ import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.debugging.Debuggable;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
@@ -899,6 +899,22 @@ public class dItem implements dObject, Notable, Adjustable {
             public String run(Attribute attribute, dObject object) {
                 return new Element(NMSHandler.getInstance().getItemHelper().getJsonString(((dItem) object).item))
                         .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
+        // @attribute <i@item.bukkit_serial>
+        // @returns Element
+        // @group conversion
+        // @description
+        // Returns a YAML text section representing the Bukkit serialization of the item, under subkey "item".
+        // -->
+        registerTag("bukkit_serial", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                YamlConfiguration config = new YamlConfiguration();
+                config.set("item", ((dItem) object).getItemStack());
+                return new Element(config.saveToString()).getAttribute(attribute.fulfill(1));
             }
         });
 

@@ -6,11 +6,7 @@ import net.aufdemrand.denizen.events.BukkitScriptEvent;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.npc.traits.AssignmentTrait;
-import net.aufdemrand.denizen.objects.dEntity;
-import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
-import net.aufdemrand.denizen.objects.dPlugin;
-import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.objects.*;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
 import net.aufdemrand.denizencore.scripts.commands.core.SQLCommand;
 import net.aufdemrand.denizen.scripts.commands.server.BossBarCommand;
@@ -43,20 +39,24 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCursor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -159,6 +159,28 @@ public class ServerTags {
             int slotId = SlotHelper.nameToIndex(attribute.getContext(1));
             if (slotId != -1) {
                 event.setReplaced(new Element(slotId).getAttribute(attribute.fulfill(1)));
+            }
+            return;
+        }
+
+        // <--[tag]
+        // @attribute <server.parse_bukkit_item[<serial>]>
+        // @returns dItem
+        // @description
+        // Returns the dItem resultant from parsing Bukkit item serialization data (under subkey "item").
+        // -->
+        if (attribute.startsWith("parse_bukkit_item")
+                && attribute.hasContext(1)) {
+            YamlConfiguration config = new YamlConfiguration();
+            try {
+                config.loadFromString(attribute.getContext(1));
+                ItemStack item = config.getItemStack("item");
+                if (item != null) {
+                    event.setReplaced(new dItem(item).getAttribute(attribute.fulfill(1)));
+                }
+            }
+            catch (Exception ex) {
+                dB.echoError(ex);
             }
             return;
         }
