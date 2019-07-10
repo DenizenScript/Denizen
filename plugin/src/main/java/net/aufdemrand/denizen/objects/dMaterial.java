@@ -506,6 +506,23 @@ public class dMaterial implements dObject, Adjustable {
         });
 
         // <--[tag]
+        // @attribute <m@material.is_directional>
+        // @returns Element(Boolean)
+        // @group properties
+        // @description
+        // Returns whether the material is a is_directional material.
+        // When this returns true, <@link tag m@material.direction>, <@link tag m@material.valid_directions>,
+        // and <@link mechanism dMaterial.direction> are accessible.
+        // -->
+        registerTag("is_bisected", new TagRunnable() {
+            @Override
+            public String run(Attribute attribute, dObject object) {
+                return new Element(MaterialHalf.describes(object))
+                        .getAttribute(attribute.fulfill(1));
+            }
+        });
+
+        // <--[tag]
         // @attribute <m@material.is_bisected>
         // @returns Element(Boolean)
         // @group properties
