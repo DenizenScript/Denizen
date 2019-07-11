@@ -1383,14 +1383,16 @@ public class dEntity implements dObject, Adjustable, EntityFormObject {
 
         // <--[tag]
         // @attribute <e@entity.scriptname>
-        // @returns Element(Boolean)
+        // @returns Element
         // @group data
         // @description
         // Returns the name of the entity script that spawned this entity, if any.
         // -->
-        if (attribute.startsWith("script")) {
-            // TODO: Maybe return legit null?
-            return new Element(entityScript == null ? "null" : entityScript)
+        if (attribute.startsWith("scriptname")) {
+            if (entityScript == null) {
+                return null;
+            }
+            return new Element(entityScript)
                     .getAttribute(attribute.fulfill(1));
         }
 
