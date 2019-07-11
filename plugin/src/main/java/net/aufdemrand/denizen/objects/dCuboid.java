@@ -508,8 +508,7 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
         }
         dMaterial mat = new dMaterial(loc.getBlock());
         for (dMaterial material : materials) {
-            if (mat.equals(material) || (mat.getMaterial() == material.getMaterial()
-                    && (material.getData() == null || material.getData() == 0))) { // TODO: only if null?
+            if (mat.equals(material) || mat.getMaterial() == material.getMaterial()) {
                 return true;
             }
         }
