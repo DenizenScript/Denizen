@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -123,16 +123,16 @@ public class ExperienceCommand extends AbstractCommand {
 
             dB.report(scriptEntry, name, aH.debugObj("Type", type.toString())
                     + aH.debugObj("Quantity", level ? quantity + " levels" : quantity)
-                    + aH.debugObj("Player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName()));
+                    + aH.debugObj("Player", Utilities.getEntryPlayer(scriptEntry).getName()));
 
         }
 
-        Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+        Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 
         switch (type) {
             case SET:
                 if (level) {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().setLevel(quantity);
+                    Utilities.getEntryPlayer(scriptEntry).setLevel(quantity);
                 }
                 else {
                     setTotalExperience(player, quantity);

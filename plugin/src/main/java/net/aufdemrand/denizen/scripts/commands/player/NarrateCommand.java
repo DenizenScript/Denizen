@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -83,7 +83,7 @@ public class NarrateCommand extends AbstractCommand {
         // to the targets
         if (!scriptEntry.hasObject("targets")) {
             scriptEntry.addObject("targets",
-                    (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) : null));
+                    (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry)) : null));
         }
 
         if (!scriptEntry.hasObject("text")) {

@@ -1,11 +1,11 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -180,9 +180,9 @@ public class InventoryCommand extends AbstractCommand {
         scriptEntry.defaultObject("slot", new Element(1));
 
         scriptEntry.defaultObject("destination",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
+                Utilities.entryHasPlayer(scriptEntry) ?
                         new AbstractMap.SimpleEntry<>(0,
-                                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity().getInventory()) : null);
+                                Utilities.getEntryPlayer(scriptEntry).getDenizenEntity().getInventory()) : null);
 
         if (!scriptEntry.hasObject("destination")) {
             throw new InvalidArgumentsException("Must specify a Destination Inventory!");
@@ -227,18 +227,18 @@ public class InventoryCommand extends AbstractCommand {
                     // Use special method to make opening workbenches work properly
                     if (destination.getIdType().equals("workbench")
                             || destination.getIdHolder().equalsIgnoreCase("workbench")) {
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity()
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity()
                                 .openWorkbench(null, true);
                     }
                     // Otherwise, open inventory as usual
                     else {
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().openInventory(destination.getInventory());
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().openInventory(destination.getInventory());
                     }
                     break;
 
                 // Make the attached player close any open inventory
                 case CLOSE:
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().closeInventory();
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().closeInventory();
                     break;
 
                 // Turn destination's contents into a copy of origin's

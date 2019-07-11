@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -79,7 +79,7 @@ public class TriggerCommand extends AbstractCommand {
             scriptEntry.addObject("toggle", new Element("TOGGLE"));
         }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !scriptEntry.hasObject("npc")) {
+        if (!Utilities.entryHasNPC(scriptEntry) && !scriptEntry.hasObject("npc")) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
 
@@ -92,7 +92,7 @@ public class TriggerCommand extends AbstractCommand {
         Element trigger = scriptEntry.getElement("trigger");
         Element radius = scriptEntry.getElement("radius");
         Duration cooldown = (Duration) scriptEntry.getObject("cooldown");
-        dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
+        dNPC npc = scriptEntry.hasObject("npc") ? (dNPC) scriptEntry.getObject("npc") : Utilities.getEntryNPC(scriptEntry);
 
         if (scriptEntry.dbCallShouldDebug()) {
 

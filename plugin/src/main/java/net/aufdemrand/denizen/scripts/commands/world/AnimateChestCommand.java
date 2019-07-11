@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -103,8 +103,8 @@ public class AnimateChestCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("players")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-                scriptEntry.addObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+            if (Utilities.entryHasPlayer(scriptEntry)) {
+                scriptEntry.addObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
             }
             else // TODO: Perhaps instead add all players in sight range?
             {

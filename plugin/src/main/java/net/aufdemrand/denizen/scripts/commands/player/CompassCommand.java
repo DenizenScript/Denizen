@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -82,7 +82,7 @@ public class CompassCommand extends AbstractCommand {
 
         dLocation location = scriptEntry.getdObject("location");
         Element reset = scriptEntry.getElement("reset");
-        Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+        Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
 
 
         // Debug the execution

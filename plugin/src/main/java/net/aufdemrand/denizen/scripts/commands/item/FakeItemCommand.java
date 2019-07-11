@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
 import net.aufdemrand.denizencore.DenizenCore;
@@ -92,7 +92,7 @@ public class FakeItemCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("duration", Duration.ZERO).defaultObject("player_only", new Element(false))
-                .defaultObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+                .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
 

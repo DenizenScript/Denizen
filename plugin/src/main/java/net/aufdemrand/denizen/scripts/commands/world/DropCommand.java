@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
@@ -116,8 +116,8 @@ public class DropCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("location")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null && ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline()) {
-                scriptEntry.addObject("location", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation().setPrefix("location"));
+            if (Utilities.getEntryPlayer(scriptEntry) != null && Utilities.getEntryPlayer(scriptEntry).isOnline()) {
+                scriptEntry.addObject("location", Utilities.getEntryPlayer(scriptEntry).getLocation().setPrefix("location"));
                 dB.echoDebug(scriptEntry, "Did not specify a location, assuming Player's location.");
 
             }

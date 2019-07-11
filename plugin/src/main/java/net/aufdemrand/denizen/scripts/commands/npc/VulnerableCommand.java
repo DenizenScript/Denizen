@@ -1,6 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -51,7 +52,7 @@ public class VulnerableCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("action", new Element("toggle"));
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+        if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
     }

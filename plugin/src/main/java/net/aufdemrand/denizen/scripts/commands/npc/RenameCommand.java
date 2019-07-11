@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -54,7 +54,7 @@ public class RenameCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a name!");
         }
 
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid()) {
+        if (Utilities.getEntryNPC(scriptEntry) == null || !Utilities.getEntryNPC(scriptEntry).isValid()) {
             throw new InvalidArgumentsException("Must have a NPC attached!");
         }
     }
@@ -70,7 +70,7 @@ public class RenameCommand extends AbstractCommand {
 
         }
 
-        NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
+        NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
 
         Location prev = npc.isSpawned() ? npc.getEntity().getLocation() : null;
         npc.despawn(DespawnReason.PENDING_RESPAWN);

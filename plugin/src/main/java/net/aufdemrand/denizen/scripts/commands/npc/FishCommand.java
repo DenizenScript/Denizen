@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.interfaces.FishingHelper;
 import net.aufdemrand.denizen.npc.traits.FishingTrait;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -77,7 +77,7 @@ public class FishCommand extends AbstractCommand {
                 .defaultObject("stop", new Element(false))
                 .defaultObject("percent", new Element(65));
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
+        if (!Utilities.entryHasNPC(scriptEntry) || !Utilities.getEntryNPC(scriptEntry).isSpawned()) {
             throw new InvalidArgumentsException("This command requires a linked and spawned NPC!");
         }
 
@@ -91,7 +91,7 @@ public class FishCommand extends AbstractCommand {
         Element stop = scriptEntry.getElement("stop");
         Element percent = scriptEntry.getElement("percent");
 
-        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
+        dNPC npc = Utilities.getEntryNPC(scriptEntry);
         FishingTrait trait = npc.getFishingTrait();
 
         if (scriptEntry.dbCallShouldDebug()) {

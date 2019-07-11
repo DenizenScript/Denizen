@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -79,10 +79,10 @@ public class TimeCommand extends AbstractCommand {
         // world, or default to "world" if necessary
         if (!scriptEntry.hasObject("world")) {
             scriptEntry.addObject("world",
-                    ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ?
-                            new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) :
-                            (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ?
-                                    new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null));
+                    Utilities.entryHasNPC(scriptEntry) ?
+                            new dWorld(Utilities.getEntryNPC(scriptEntry).getWorld()) :
+                            (Utilities.entryHasPlayer(scriptEntry) ?
+                                    new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null));
         }
 
         scriptEntry.defaultObject("type", new Element("GLOBAL"));
@@ -111,11 +111,11 @@ public class TimeCommand extends AbstractCommand {
             world.getWorld().setTime(value.getTicks());
         }
         else {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
                 dB.echoError("Must have a valid player link!");
             }
             else {
-                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()
+                Utilities.getEntryPlayer(scriptEntry)
                         .getPlayerEntity().setPlayerTime(value.getTicks(), true);
             }
         }

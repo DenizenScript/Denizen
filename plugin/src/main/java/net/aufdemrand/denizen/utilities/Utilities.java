@@ -1,5 +1,6 @@
 package net.aufdemrand.denizen.utilities;
 
+import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
@@ -9,6 +10,7 @@ import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.blocks.DirectionalBlocksHelper;
+import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.tags.TagContext;
 import net.aufdemrand.denizencore.tags.TagManager;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
@@ -496,5 +498,25 @@ public class Utilities {
             ret += String.valueOf(ChatColor.COLOR_CHAR) + colorsLimited.charAt(CoreUtilities.getRandom().nextInt(colorsLimited.length())) + ".";
         }
         return ret;
+    }
+
+    public static BukkitScriptEntryData getEntryData(ScriptEntry entry) {
+        return (BukkitScriptEntryData) entry.entryData;
+    }
+
+    public static boolean entryHasPlayer(ScriptEntry entry) {
+        return getEntryData(entry).hasPlayer();
+    }
+
+    public static boolean entryHasNPC(ScriptEntry entry) {
+        return getEntryData(entry).hasNPC();
+    }
+
+    public static dPlayer getEntryPlayer(ScriptEntry entry) {
+        return getEntryData(entry).getPlayer();
+    }
+
+    public static dNPC getEntryNPC(ScriptEntry entry) {
+        return getEntryData(entry).getNPC();
     }
 }

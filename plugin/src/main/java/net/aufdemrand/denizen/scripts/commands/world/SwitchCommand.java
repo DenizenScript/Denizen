@@ -1,6 +1,5 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.NMSVersion;
 import net.aufdemrand.denizen.nms.abstracts.ModernBlockData;
@@ -8,6 +7,7 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -99,7 +99,7 @@ public class SwitchCommand extends AbstractCommand {
         long duration = ((Duration) scriptEntry.getObject("duration")).getTicks();
         final SwitchState switchState = SwitchState.valueOf(scriptEntry.getElement("switchstate").asString());
 
-        final Player player = ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity() : null;
+        final Player player = Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getPlayerEntity() : null;
         // Switch the Block
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), interactLocations.debug()

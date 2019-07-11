@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -78,7 +78,7 @@ public class GlowCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("glowing", new Element("true"));
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+        if (!Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsException("Must have a valid player link!");
         }
 
@@ -101,7 +101,7 @@ public class GlowCommand extends AbstractCommand {
 
         boolean shouldGlow = glowing.asBoolean();
 
-        final UUID puuid = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer().getUniqueId();
+        final UUID puuid = Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer().getUniqueId();
 
         if (puuid == null) {
             dB.echoError(scriptEntry.getResidingQueue(), "Invalid/non-spawned player link!");

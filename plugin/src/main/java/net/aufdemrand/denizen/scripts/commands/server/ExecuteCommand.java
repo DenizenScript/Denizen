@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.server;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.PlayerHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.DenizenCommandSender;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -61,21 +61,21 @@ public class ExecuteCommand extends AbstractCommand {
 
             if (arg.matches("ASPLAYER", "AS_PLAYER", "PLAYER")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+                if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_PLAYER.");
                 }
                 scriptEntry.addObject("type", new Element("AS_PLAYER"));
             }
             else if (arg.matches("ASOPPLAYER", "ASOP", "AS_OP", "AS_OP_PLAYER", "OP")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+                if (!Utilities.entryHasPlayer(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a Player link when using AS_OP.");
                 }
                 scriptEntry.addObject("type", new Element("AS_OP"));
             }
             else if (arg.matches("ASNPC", "AS_NPC", "NPC")
                     && !scriptEntry.hasObject("type")) {
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+                if (!Utilities.entryHasNPC(scriptEntry)) {
                     throw new InvalidArgumentsException("Must have a NPC link when using AS_NPC.");
                 }
                 scriptEntry.addObject("type", new Element("AS_NPC"));
@@ -129,11 +129,11 @@ public class ExecuteCommand extends AbstractCommand {
 
             case AS_PLAYER:
                 try {
-                    PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), "/" + command);
+                    PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity(), "/" + command);
                     Bukkit.getPluginManager().callEvent(pcpe);
                     if (!pcpe.isCancelled()) {
                         boolean silentBool = silent.asBoolean();
-                        Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                        Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
                         if (silentBool) {
                             silencedPlayers.add(player.getUniqueId());
                         }
@@ -155,7 +155,7 @@ public class ExecuteCommand extends AbstractCommand {
                     dB.echoError("Please use as_server to execute 'stop'.");
                     return;
                 }
-                Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
                 PlayerHelper playerHelper = NMSHandler.getInstance().getPlayerHelper();
                 boolean isOp = player.isOp();
                 if (!isOp) {
@@ -186,23 +186,23 @@ public class ExecuteCommand extends AbstractCommand {
                 break;
 
             case AS_NPC:
-                if (!((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
+                if (!Utilities.getEntryNPC(scriptEntry).isSpawned()) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Spawned.");
                     return;
                 }
-                if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity().getType() != EntityType.PLAYER) {
+                if (Utilities.getEntryNPC(scriptEntry).getEntity().getType() != EntityType.PLAYER) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Cannot EXECUTE AS_NPC unless the NPC is Player-Type.");
                     return;
                 }
-                ((Player) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setOp(true);
+                ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(true);
                 try {
-                    ((Player) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).performCommand(command);
+                    ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).performCommand(command);
                 }
                 catch (Throwable e) {
                     dB.echoError(scriptEntry.getResidingQueue(), "Exception while executing command as NPC-OP.");
                     dB.echoError(scriptEntry.getResidingQueue(), e);
                 }
-                ((Player) ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity()).setOp(false);
+                ((Player) Utilities.getEntryNPC(scriptEntry).getEntity()).setOp(false);
                 break;
 
             case AS_SERVER:

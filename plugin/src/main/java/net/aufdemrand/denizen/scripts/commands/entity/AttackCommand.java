@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -83,12 +83,12 @@ public class AttackCommand extends AbstractCommand {
 
         // Use the player as the target if one is not specified
         if (!scriptEntry.hasObject("target")) {
-            scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity() : null);
+            scriptEntry.addObject("target", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getDenizenEntity() : null);
         }
 
         // Use the NPC as the attacking entity if one is not specified
         scriptEntry.defaultObject("entities",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null);
+                Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null);
 
         // Check to make sure required arguments have been filled
         if (!scriptEntry.hasObject("entities")) {

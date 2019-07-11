@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.flags.FlagManager;
 import net.aufdemrand.denizen.flags.FlagManager.Flag;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -122,7 +122,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("npc", "denizen")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+                scriptEntry.addObject("flag_target", Utilities.getEntryNPC(scriptEntry));
 
             }
             else if (!scriptEntry.hasObject("flag_target")
@@ -134,7 +134,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
             else if (!scriptEntry.hasObject("flag_target")
                     && arg.matches("player")) {
                 specified_target = true;
-                scriptEntry.addObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+                scriptEntry.addObject("flag_target", Utilities.getEntryPlayer(scriptEntry));
             }
 
             // Allow a p@player or n@npc entity to specify the target to be flagged.
@@ -254,7 +254,7 @@ public class FlagCommand extends AbstractCommand implements Listener {
 
         // Set defaults
         if (!specified_target) {
-            scriptEntry.defaultObject("flag_target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+            scriptEntry.defaultObject("flag_target", Utilities.getEntryPlayer(scriptEntry));
         }
 
         // Check required arguments

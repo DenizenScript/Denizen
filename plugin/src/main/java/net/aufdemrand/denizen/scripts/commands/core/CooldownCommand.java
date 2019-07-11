@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -109,14 +109,14 @@ public class CooldownCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), aH.debugObj("Type", type.name())
                     + script.debug()
-                    + (type.name().equalsIgnoreCase("player") ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
+                    + (type.name().equalsIgnoreCase("player") ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                     + duration.debug());
         }
 
         // Perform cooldown
         switch (type) {
             case PLAYER:
-                setCooldown(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(),
+                setCooldown(Utilities.getEntryPlayer(scriptEntry),
                         duration,
                         script.getName(),
                         false);

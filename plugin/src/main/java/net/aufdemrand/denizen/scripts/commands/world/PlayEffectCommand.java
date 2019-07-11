@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.abstracts.ParticleHelper;
 import net.aufdemrand.denizen.nms.interfaces.Particle;
 import net.aufdemrand.denizen.objects.*;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -200,8 +200,8 @@ public class PlayEffectCommand extends AbstractCommand {
 
         // Use default values if necessary
         scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation()) : null,
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation()) : null);
+                Utilities.entryHasNPC(scriptEntry) && Utilities.getEntryNPC(scriptEntry).isSpawned() ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getLocation()) : null,
+                Utilities.entryHasPlayer(scriptEntry) && Utilities.getEntryPlayer(scriptEntry).isOnline() ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getLocation()) : null);
         scriptEntry.defaultObject("data", new Element(0));
         scriptEntry.defaultObject("radius", new Element(15));
         scriptEntry.defaultObject("qty", new Element(1));

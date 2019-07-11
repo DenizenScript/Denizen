@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -98,11 +98,11 @@ public class HurtCommand extends AbstractCommand {
 
         if (!scriptEntry.hasObject("entities")) {
             List<dEntity> entities = new ArrayList<>();
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null) {
-                entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
+            if (Utilities.getEntryPlayer(scriptEntry) != null) {
+                entities.add(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
-            else if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() != null) {
-                entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
+            else if (Utilities.getEntryNPC(scriptEntry) != null) {
+                entities.add(Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
             }
             else {
                 throw new InvalidArgumentsException("No valid target entities found.");

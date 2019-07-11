@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dColor;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.utilities.Conversion;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -108,8 +108,8 @@ public class FireworkCommand extends AbstractCommand {
 
         // Use the NPC or player's locations as the location if one is not specified
         scriptEntry.defaultObject("location",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation() : null,
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getLocation() : null);
+                Utilities.entryHasNPC(scriptEntry) ? Utilities.getEntryNPC(scriptEntry).getLocation() : null,
+                Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getLocation() : null);
 
         scriptEntry.defaultObject("type", new Element("ball"));
         scriptEntry.defaultObject("power", new Element(1));
@@ -123,7 +123,7 @@ public class FireworkCommand extends AbstractCommand {
 
         final dLocation location = scriptEntry.hasObject("location") ?
                 (dLocation) scriptEntry.getObject("location") :
-                ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getLocation();
+                Utilities.getEntryNPC(scriptEntry).getLocation();
 
         Element type = (Element) scriptEntry.getObject("type");
         Element power = (Element) scriptEntry.getObject("power");

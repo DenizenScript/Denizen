@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
@@ -119,7 +119,7 @@ public class TakeCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("inventory")
                     && arg.matches("npc")) {
-                scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity().getInventory());
+                scriptEntry.addObject("inventory", Utilities.getEntryNPC(scriptEntry).getDenizenEntity().getInventory());
             }
 
         }
@@ -130,7 +130,7 @@ public class TakeCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
 
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
-            scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getInventory() : null);
+            scriptEntry.addObject("inventory", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getInventory() : null);
         }
 
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
@@ -182,25 +182,25 @@ public class TakeCommand extends AbstractCommand {
             }
 
             case ITEMINHAND: {
-                int inHandAmt = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().getAmount();
+                int inHandAmt = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getItemInHand().getAmount();
                 int theAmount = (int) qty.asDouble();
                 ItemStack newHandItem = new ItemStack(Material.AIR);
                 if (theAmount > inHandAmt) {
                     dB.echoDebug(scriptEntry, "...player did not have enough of the item in hand, so Denizen just took as many as it could. To avoid this situation, use an IF <PLAYER.ITEM_IN_HAND.QTY>.");
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                 }
                 else {
 
                     // amount is just right!
                     if (theAmount == inHandAmt) {
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
                     }
                     else {
                         // amount is less than what's in hand, need to make a new itemstack of what's left...
-                        newHandItem = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().getItemInHand().clone();
+                        newHandItem = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().getItemInHand().clone();
                         newHandItem.setAmount(inHandAmt - theAmount);
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setItemInHand(newHandItem);
-                        ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setItemInHand(newHandItem);
+                        Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
                     }
                 }
                 break;
@@ -208,7 +208,7 @@ public class TakeCommand extends AbstractCommand {
 
             case MONEY: {
                 if (Depends.economy != null) {
-                    Depends.economy.withdrawPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer(), qty.asDouble());
+                    Depends.economy.withdrawPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
                 }
                 else {
                     dB.echoError(scriptEntry.getResidingQueue(), "No economy loaded! Have you installed Vault and a compatible economy plugin?");

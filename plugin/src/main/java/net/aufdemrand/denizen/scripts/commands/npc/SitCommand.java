@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.npc.traits.SittingTrait;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -44,7 +44,7 @@ public class SitCommand extends AbstractCommand {
                 arg.reportUnhandled();
             }
         }
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+        if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
 
@@ -53,28 +53,28 @@ public class SitCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
         dLocation location = (dLocation) scriptEntry.getObject("location");
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() != EntityType.PLAYER
-                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() != EntityType.OCELOT
-                && ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntityType() != EntityType.WOLF) {
+        if (Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.PLAYER
+                && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.OCELOT
+                && Utilities.getEntryNPC(scriptEntry).getEntityType() != EntityType.WOLF) {
             dB.echoError(scriptEntry.getResidingQueue(), "...only Player, ocelot, or wolf type NPCs can sit!");
             return;
         }
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), aH.debugObj("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC())
+            dB.report(scriptEntry, getName(), aH.debugObj("npc", Utilities.getEntryNPC(scriptEntry))
                     + (location != null ? location.debug() : ""));
 
         }
 
-        Entity entity = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getEntity();
+        Entity entity = Utilities.getEntryNPC(scriptEntry).getEntity();
         if (entity instanceof Sittable) {
             ((Sittable) entity).setSitting(true);
         }
         else {
-            SittingTrait trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(SittingTrait.class);
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().hasTrait(SittingTrait.class)) {
-                ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().addTrait(SittingTrait.class);
+            SittingTrait trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getTrait(SittingTrait.class);
+            if (!Utilities.getEntryNPC(scriptEntry).getCitizen().hasTrait(SittingTrait.class)) {
+                Utilities.getEntryNPC(scriptEntry).getCitizen().addTrait(SittingTrait.class);
                 dB.echoDebug(scriptEntry, "...added sitting trait");
             }
 

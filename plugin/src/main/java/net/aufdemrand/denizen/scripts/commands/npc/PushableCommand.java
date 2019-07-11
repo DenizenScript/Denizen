@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.npc.traits.PushableTrait;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -64,7 +64,7 @@ public class PushableCommand extends AbstractCommand {
     @Override
     public void execute(ScriptEntry scriptEntry) {
 
-        dNPC denizenNPC = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
+        dNPC denizenNPC = Utilities.getEntryNPC(scriptEntry);
         if (denizenNPC == null) {
             dB.echoError("No valid NPC attached to this queue!");
             return;

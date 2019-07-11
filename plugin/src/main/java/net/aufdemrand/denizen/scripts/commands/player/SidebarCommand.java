@@ -6,6 +6,7 @@ import net.aufdemrand.denizen.nms.abstracts.Sidebar;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.DenizenCore;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -252,7 +253,7 @@ public class SidebarCommand extends AbstractCommand {
                     }
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         value = dList.valueOf(TagManager.tag(perValue, context));
                         if (perScores != null) {
@@ -288,7 +289,7 @@ public class SidebarCommand extends AbstractCommand {
                     }
                     List<Sidebar.SidebarLine> current = sidebar.getLines();
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));
@@ -346,7 +347,7 @@ public class SidebarCommand extends AbstractCommand {
                     List<Sidebar.SidebarLine> current = new ArrayList<>();
                     boolean currEdited = false;
                     if (per_player) {
-                        TagContext context = new BukkitTagContext(player, ((BukkitScriptEntryData) scriptEntry.entryData).getNPC(),
+                        TagContext context = new BukkitTagContext(player, Utilities.getEntryNPC(scriptEntry),
                                 false, scriptEntry, scriptEntry.shouldDebug(), scriptEntry.getScript());
                         if (perValue != null) {
                             value = dList.valueOf(TagManager.tag(perValue, context));

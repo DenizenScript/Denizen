@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -111,9 +111,9 @@ public class EquipCommand extends AbstractCommand {
             else if (arg.matchesArgumentType(dItem.class)) {
                 equipment.put("hand", dItem.valueOf(arg.getValue(), scriptEntry.entryData.getTagContext()));
             }
-            else if (arg.matches("player") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+            else if (arg.matches("player") && Utilities.entryHasPlayer(scriptEntry)) {
                 // Player arg for compatibility with old scripts
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
+                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else {
                 arg.reportUnhandled();
@@ -128,8 +128,8 @@ public class EquipCommand extends AbstractCommand {
         scriptEntry.addObject("equipment", equipment);
 
         // Use player or NPC as default entity
-        scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
-                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
+        scriptEntry.defaultObject("entities", (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null),
+                (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null));
 
     }
 

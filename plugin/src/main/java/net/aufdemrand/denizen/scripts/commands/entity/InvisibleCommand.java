@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.npc.traits.InvisibleTrait;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -56,13 +56,13 @@ public class InvisibleCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("PLAYER")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-                scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
+                    && Utilities.entryHasPlayer(scriptEntry)) {
+                scriptEntry.addObject("target", Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matches("NPC")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
-                scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity());
+                    && Utilities.entryHasNPC(scriptEntry)) {
+                scriptEntry.addObject("target", Utilities.getEntryNPC(scriptEntry).getDenizenEntity());
             }
             else if (!scriptEntry.hasObject("target")
                     && arg.matchesArgumentType(dEntity.class)) {

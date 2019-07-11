@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -71,7 +71,7 @@ public class PoseCommand extends AbstractCommand {
         }
 
         // Even if the target is a player, this command requires an NPC to get the pose from.
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+        if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires an NPC!");
         }
 
@@ -90,7 +90,7 @@ public class PoseCommand extends AbstractCommand {
             if (scriptEntry.getObject("action") != Action.ASSUME) {
                 throw new InvalidArgumentsException("You cannot add or remove poses from a player.");
             }
-            else if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+            else if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("This command requires a linked player!");
             }
         }
@@ -102,7 +102,7 @@ public class PoseCommand extends AbstractCommand {
 
         // Get objects
         TargetType target = (TargetType) scriptEntry.getObject("target");
-        dNPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC();
+        dNPC npc = Utilities.getEntryNPC(scriptEntry);
         Action action = (Action) scriptEntry.getObject("action");
         String id = (String) scriptEntry.getObject("pose_id");
         dLocation pose_loc = (dLocation) scriptEntry.getObject("pose_loc");
@@ -111,7 +111,7 @@ public class PoseCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
                     aH.debugObj("Target", target.toString())
-                            + (target == TargetType.PLAYER ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
+                            + (target == TargetType.PLAYER ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + npc.debug()
                             + aH.debugObj("Action", action.toString())
                             + aH.debugObj("Id", id)
@@ -135,7 +135,7 @@ public class PoseCommand extends AbstractCommand {
                     poses.assumePose(id);
                 }
                 else {
-                    Player player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity();
+                    Player player = Utilities.getEntryPlayer(scriptEntry).getPlayerEntity();
                     Location location = player.getLocation();
                     location.setYaw(poses.getPose(id).getYaw());
                     location.setPitch(poses.getPose(id).getPitch());

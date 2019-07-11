@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptHelper;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -84,7 +84,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         scriptEntry.defaultObject("script", scriptEntry.getScript());
 
         // Check if player is valid
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isValid()) {
+        if (!Utilities.entryHasPlayer(scriptEntry) || !Utilities.getEntryPlayer(scriptEntry).isValid()) {
             throw new InvalidArgumentsException("Must have player context!");
         }
     }
@@ -100,7 +100,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() + script.debug()
+            dB.report(scriptEntry, getName(), Utilities.getEntryPlayer(scriptEntry).debug() + script.debug()
                     + (scriptEntry.hasObject("step")
                     ? scriptEntry.getElement("step").debug() : aH.debugObj("step", "++ (inc)"))
                     + (duration != null ? duration.debug() : ""));
@@ -110,7 +110,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         String step = scriptEntry.hasObject("step") ? scriptEntry.getElement("step").asString() : null;
 
         // Let's get the current step for reference.
-        String currentStep = InteractScriptHelper.getCurrentStep(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), script.getName());
+        String currentStep = InteractScriptHelper.getCurrentStep(Utilities.getEntryPlayer(scriptEntry), script.getName());
 
         // Special-case for backwards compatibility: ability to use ZAP to count up steps.
         if (step == null) {
@@ -134,9 +134,9 @@ public class ZapCommand extends AbstractCommand implements Listener {
         // If the durationsMap already contains an entry for this player/script combination,
         // cancel the task since it's probably not desired to change back anymore if another
         // ZAP for this script is taking place.
-        if (durations.containsKey(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName())) {
+        if (durations.containsKey(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName())) {
             try {
-                DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName()));
+                DenizenAPI.getCurrentInstance().getServer().getScheduler().cancelTask(durations.get(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName()));
             }
             catch (Exception e) {
             }
@@ -159,13 +159,13 @@ public class ZapCommand extends AbstractCommand implements Listener {
 
             // Set delayed task and put id in a map
             dB.log("Setting delayed task 'RESET ZAP' for '" + script.identify() + "'");
-            durations.put(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName(),
+            durations.put(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName(),
                     DenizenAPI.getCurrentInstance().getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),
                             new Runnable() {
                                 @Override
                                 public void run() {
                                     dB.log("Running delayed task 'RESET ZAP' for '" + script.identify() + "'");
-                                    durations.remove(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName() + "," + script.getName().toUpperCase());
+                                    durations.remove(Utilities.getEntryPlayer(scriptEntry).getSaveName() + "," + script.getName().toUpperCase());
                                     execute(scriptEntry);
                                 }
                             }, delay));
@@ -175,7 +175,7 @@ public class ZapCommand extends AbstractCommand implements Listener {
         // FINALLY! ZAP! Change the step in Saves... your step is now ZAPPED!
         // Fun fact: ZAP is named in homage of ZZT-OOPs ZAP command. Google it.
         //
-        DenizenAPI.getCurrentInstance().getSaves().set("Players." + ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getSaveName()
+        DenizenAPI.getCurrentInstance().getSaves().set("Players." + Utilities.getEntryPlayer(scriptEntry).getSaveName()
                 + ".Scripts." + script.getName().toUpperCase() + "." + "Current Step", step);
     }
 }

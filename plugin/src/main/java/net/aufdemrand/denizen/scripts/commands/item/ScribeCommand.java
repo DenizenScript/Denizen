@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dItem;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.scripts.containers.core.BookScriptContainer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.TagRunnable;
@@ -181,7 +181,7 @@ public class ScribeCommand extends AbstractCommand {
 
         BookScriptContainer bookScript = (BookScriptContainer) script.getContainer();
 
-        book = bookScript.writeBookTo(book, ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer(), ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+        book = bookScript.writeBookTo(book, Utilities.getEntryPlayer(scriptEntry), Utilities.getEntryNPC(scriptEntry));
 
         // Post-write action? Can be NONE.
         switch (action) {
@@ -190,15 +190,15 @@ public class ScribeCommand extends AbstractCommand {
                 break;
 
             case GIVE:
-                giveBook(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
+                giveBook(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
                 break;
 
             case EQUIP:
-                equipBook(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity(), book.getItemStack());
+                equipBook(Utilities.getEntryPlayer(scriptEntry).getPlayerEntity(), book.getItemStack());
                 // Update player's inventory
-                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().updateInventory();
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().updateInventory();
                 break;
 
             case NONE:

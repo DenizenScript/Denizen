@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechContext;
 import net.aufdemrand.denizen.npc.speech.DenizenSpeechController;
 import net.aufdemrand.denizen.objects.dEntity;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -105,13 +105,13 @@ public class ChatCommand extends AbstractCommand {
         }
 
         // Add default recipient as the attached Player if no recipients set otherwise
-        if (!scriptEntry.hasObject("targets") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_targets) {
-            scriptEntry.defaultObject("targets", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
+        if (!scriptEntry.hasObject("targets") && Utilities.entryHasPlayer(scriptEntry) && !specified_targets) {
+            scriptEntry.defaultObject("targets", new dList(Utilities.getEntryPlayer(scriptEntry).identify()));
         }
 
         // Add default talker as the attached NPC if no recipients set otherwise
-        if (!scriptEntry.hasObject("talkers") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() && !specified_talker) {
-            scriptEntry.defaultObject("talkers", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
+        if (!scriptEntry.hasObject("talkers") && Utilities.entryHasNPC(scriptEntry) && !specified_talker) {
+            scriptEntry.defaultObject("talkers", new dList(Utilities.getEntryNPC(scriptEntry).identify()));
         }
 
         // Verify essential fields are set

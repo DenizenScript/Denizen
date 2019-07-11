@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -67,8 +67,8 @@ public class TeleportCommand extends AbstractCommand {
             }
 
             // NPC arg for compatibility with old scripts
-            else if (arg.matches("npc") && ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
+            else if (arg.matches("npc") && Utilities.entryHasNPC(scriptEntry)) {
+                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
             else {
                 arg.reportUnhandled();
@@ -81,8 +81,8 @@ public class TeleportCommand extends AbstractCommand {
 
         // Use player or NPC as default entity
         if (!scriptEntry.hasObject("entities")) {
-            scriptEntry.defaultObject("entities", (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null),
-                    (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null));
+            scriptEntry.defaultObject("entities", (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null),
+                    (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null));
         }
 
     }

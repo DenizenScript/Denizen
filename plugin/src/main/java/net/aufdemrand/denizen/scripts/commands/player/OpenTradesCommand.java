@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.objects.dTrade;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -86,7 +86,7 @@ public class OpenTradesCommand extends AbstractCommand {
         }
 
         scriptEntry.defaultObject("title", new Element(""))
-                .defaultObject("players", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+                .defaultObject("players", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
 

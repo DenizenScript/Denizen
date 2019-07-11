@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.item;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dInventory;
 import net.aufdemrand.denizen.objects.dItem;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizen.utilities.inventory.SlotHelper;
@@ -116,7 +116,7 @@ public class GiveCommand extends AbstractCommand {
         Type type = (Type) scriptEntry.getObject("type");
 
         if (type != Type.MONEY && scriptEntry.getObject("inventory") == null) {
-            scriptEntry.addObject("inventory", ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getInventory() : null);
+            scriptEntry.addObject("inventory", Utilities.entryHasPlayer(scriptEntry) ? Utilities.getEntryPlayer(scriptEntry).getInventory() : null);
         }
 
         if (!scriptEntry.hasObject("inventory") && type != Type.MONEY) {
@@ -163,7 +163,7 @@ public class GiveCommand extends AbstractCommand {
 
             case MONEY:
                 if (Depends.economy != null) {
-                    Depends.economy.depositPlayer(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getOfflinePlayer(), qty.asDouble());
+                    Depends.economy.depositPlayer(Utilities.getEntryPlayer(scriptEntry).getOfflinePlayer(), qty.asDouble());
                 }
                 else {
                     dB.echoError("No economy loaded! Have you installed Vault and a compatible economy plugin?");
@@ -171,7 +171,7 @@ public class GiveCommand extends AbstractCommand {
                 break;
 
             case EXP:
-                ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().giveExp(qty.asInt());
+                Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().giveExp(qty.asInt());
                 break;
 
             case ITEM:
@@ -188,7 +188,7 @@ public class GiveCommand extends AbstractCommand {
                     }
                     // TODO: Should engrave be kept?
                     if (engrave.asBoolean()) {
-                        is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getName(), CustomNBT.KEY_DENIZEN);
+                        is = CustomNBT.addCustomNBT(item.getItemStack(), "owner", Utilities.getEntryPlayer(scriptEntry).getName(), CustomNBT.KEY_DENIZEN);
                     }
                     int slotId = SlotHelper.nameToIndex(slot.asString());
                     if (slotId == -1) {

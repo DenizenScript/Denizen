@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -70,7 +70,7 @@ public class ItemCooldownCommand extends AbstractCommand {
 
         ArrayList<dMaterial> materials = (ArrayList<dMaterial>) scriptEntry.getObject("materials");
         Duration duration = scriptEntry.getdObject("duration");
-        dPlayer player = ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer();
+        dPlayer player = Utilities.getEntryPlayer(scriptEntry);
 
         if (player == null) {
             dB.echoError("Invalid linked player.");

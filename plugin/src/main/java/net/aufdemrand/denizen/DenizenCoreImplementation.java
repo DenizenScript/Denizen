@@ -182,8 +182,8 @@ public class DenizenCoreImplementation implements DenizenImplementation {
 
     @Override
     public TagContext getTagContextFor(ScriptEntry scriptEntry, boolean b) {
-        dPlayer player = scriptEntry != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() : null;
-        dNPC npc = scriptEntry != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getNPC() : null;
+        dPlayer player = scriptEntry != null ? Utilities.getEntryPlayer(scriptEntry) : null;
+        dNPC npc = scriptEntry != null ? Utilities.getEntryNPC(scriptEntry) : null;
         return new BukkitTagContext(player, npc, b, scriptEntry,
                 scriptEntry != null ? scriptEntry.shouldDebug() : true,
                 scriptEntry != null ? scriptEntry.getScript() : null);

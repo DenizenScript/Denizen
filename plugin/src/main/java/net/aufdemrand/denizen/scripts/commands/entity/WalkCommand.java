@@ -1,12 +1,12 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
 import com.google.common.base.Function;
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -96,14 +96,14 @@ public class WalkCommand extends AbstractCommand implements Holdable {
         }
 
         if (!scriptEntry.hasObject("entities")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null
-                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isValid()
-                    || !((BukkitScriptEntryData) scriptEntry.entryData).getNPC().isSpawned()) {
+            if (Utilities.getEntryNPC(scriptEntry) == null
+                    || !Utilities.getEntryNPC(scriptEntry).isValid()
+                    || !Utilities.getEntryNPC(scriptEntry).isSpawned()) {
                 throw new InvalidArgumentsException("Must have a valid spawned NPC attached.");
             }
             else {
                 scriptEntry.addObject("entities",
-                        Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()));
+                        Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()));
             }
         }
 

@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.nms.interfaces.PacketHelper;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -85,7 +85,7 @@ public class BlockCrackCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a valid location!");
         }
 
-        scriptEntry.defaultObject("players", Collections.singletonList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()))
+        scriptEntry.defaultObject("players", Collections.singletonList(Utilities.getEntryPlayer(scriptEntry)))
                 .defaultObject("stack", new Element(false));
     }
 

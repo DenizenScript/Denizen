@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.FormatScriptContainer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -73,7 +74,7 @@ public class ActionBarCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Must specify a message!");
         }
 
-        if (!scriptEntry.hasObject("targets") && !((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+        if (!scriptEntry.hasObject("targets") && !Utilities.entryHasPlayer(scriptEntry)) {
             throw new InvalidArgumentsException("Must specify target(s).");
         }
 

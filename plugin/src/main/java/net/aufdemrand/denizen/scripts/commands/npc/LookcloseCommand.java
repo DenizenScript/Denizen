@@ -2,6 +2,7 @@ package net.aufdemrand.denizen.scripts.commands.npc;
 
 import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -67,7 +68,7 @@ public class LookcloseCommand extends AbstractCommand {
 
         // Only required thing is a valid NPC. This may be an already linked
         // NPC, or one specified by arguments
-        if (((BukkitScriptEntryData) scriptEntry.entryData).getNPC() == null) {
+        if (Utilities.getEntryNPC(scriptEntry) == null) {
             throw new InvalidArgumentsException("NPC linked was missing or invalid.");
         }
 
@@ -78,7 +79,7 @@ public class LookcloseCommand extends AbstractCommand {
 
         if (scriptEntry.dbCallShouldDebug()) {
 
-            dB.report(scriptEntry, getName(), ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug()
+            dB.report(scriptEntry, getName(), Utilities.getEntryNPC(scriptEntry).debug()
                     + aH.debugObj("realistic", scriptEntry.getObject("realistic"))
                     + aH.debugObj("range", scriptEntry.getObject("range"))
                     + aH.debugObj("toggle", scriptEntry.getObject("toggle")));
@@ -86,7 +87,7 @@ public class LookcloseCommand extends AbstractCommand {
         }
 
         // Get the instance of the trait that belongs to the target NPC
-        LookClose trait = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen().getTrait(LookClose.class);
+        LookClose trait = Utilities.getEntryNPC(scriptEntry).getCitizen().getTrait(LookClose.class);
 
         // Handle toggle
         if (scriptEntry.hasObject("toggle")) {

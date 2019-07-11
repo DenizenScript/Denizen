@@ -1,10 +1,10 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -81,8 +81,8 @@ public class BreakCommand extends AbstractCommand implements Holdable {
 
         // Use the NPC or the Player as the default entity
         if (!scriptEntry.hasObject("npc")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
-                scriptEntry.addObject("npc", ((BukkitScriptEntryData) scriptEntry.entryData).getNPC());
+            if (Utilities.entryHasNPC(scriptEntry)) {
+                scriptEntry.addObject("npc", Utilities.getEntryNPC(scriptEntry));
             }
             else {
                 throw new InvalidArgumentsException("Must specify a valid NPC!");

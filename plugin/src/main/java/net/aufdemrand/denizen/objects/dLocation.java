@@ -7,7 +7,6 @@ import net.aufdemrand.denizen.nms.interfaces.BlockData;
 import net.aufdemrand.denizen.nms.interfaces.EntityHelper;
 import net.aufdemrand.denizen.nms.util.PlayerProfile;
 import net.aufdemrand.denizen.objects.notable.NotableManager;
-import net.aufdemrand.denizen.objects.properties.material.MaterialDirectional;
 import net.aufdemrand.denizen.objects.properties.material.MaterialSwitchFace;
 import net.aufdemrand.denizen.scripts.commands.world.SwitchCommand;
 import net.aufdemrand.denizen.tags.BukkitTagContext;

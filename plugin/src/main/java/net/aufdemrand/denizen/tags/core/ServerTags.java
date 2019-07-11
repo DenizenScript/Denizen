@@ -53,10 +53,8 @@ import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.Scoreboard;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;

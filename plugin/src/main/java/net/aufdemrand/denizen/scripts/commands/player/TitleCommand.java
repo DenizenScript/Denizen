@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Duration;
@@ -78,7 +78,7 @@ public class TitleCommand extends AbstractCommand {
 
         scriptEntry.defaultObject("fade_in", new Duration(1)).defaultObject("stay", new Duration(3))
                 .defaultObject("fade_out", new Duration(1))
-                .defaultObject("targets", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+                .defaultObject("targets", Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
 
     }
 

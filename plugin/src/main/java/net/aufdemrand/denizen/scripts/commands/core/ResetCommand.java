@@ -1,8 +1,8 @@
 package net.aufdemrand.denizen.scripts.commands.core;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.*;
@@ -61,7 +61,7 @@ public class ResetCommand extends AbstractCommand {
 
         // Use attached player if none is specified, and we're not resetting GLOBAL_COOLDOWN
         if (!scriptEntry.getObject("type").equals(Type.GLOBAL_COOLDOWN)) {
-            scriptEntry.defaultObject("players", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer());
+            scriptEntry.defaultObject("players", Utilities.getEntryPlayer(scriptEntry));
         }
 
         // Must specify a script unless resetting SAVES

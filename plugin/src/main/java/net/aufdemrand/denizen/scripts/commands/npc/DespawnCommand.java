@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.aH;
@@ -56,8 +56,8 @@ public class DespawnCommand extends AbstractCommand {
         }
 
         if (!scriptEntry.hasObject("npcs")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
-                scriptEntry.addObject("npcs", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC()));
+            if (Utilities.entryHasNPC(scriptEntry)) {
+                scriptEntry.addObject("npcs", Arrays.asList(Utilities.getEntryNPC(scriptEntry)));
             }
             else {
                 throw new InvalidArgumentsException("Must specify a valid list of NPCs!");

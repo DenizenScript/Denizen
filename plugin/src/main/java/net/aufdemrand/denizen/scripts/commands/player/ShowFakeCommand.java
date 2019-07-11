@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.blocks.FakeBlock;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
@@ -100,16 +100,16 @@ public class ShowFakeCommand extends AbstractCommand {
 
         }
 
-        if (entities.isEmpty() && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-            entities.add(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify());
+        if (entities.isEmpty() && Utilities.entryHasPlayer(scriptEntry)) {
+            entities.add(Utilities.getEntryPlayer(scriptEntry).identify());
         }
 
         if (locations.isEmpty()) {
             throw new InvalidArgumentsException("Must specify at least one valid location!");
         }
 
-        if (!added_entities && (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()
-                || !((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().isOnline())) {
+        if (!added_entities && (!Utilities.entryHasPlayer(scriptEntry)
+                || !Utilities.getEntryPlayer(scriptEntry).isOnline())) {
             throw new InvalidArgumentsException("Must have a valid, online player attached!");
         }
 

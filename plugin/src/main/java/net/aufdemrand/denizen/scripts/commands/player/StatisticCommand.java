@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -100,8 +100,8 @@ public class StatisticCommand extends AbstractCommand {
             }
         }
 
-        if (!scriptEntry.hasObject("players") && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() && !specified_players) {
-            scriptEntry.addObject("players", new dList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().identify()));
+        if (!scriptEntry.hasObject("players") && Utilities.entryHasPlayer(scriptEntry) && !specified_players) {
+            scriptEntry.addObject("players", new dList(Utilities.getEntryPlayer(scriptEntry).identify()));
         }
 
         if (!scriptEntry.hasObject("players")) {

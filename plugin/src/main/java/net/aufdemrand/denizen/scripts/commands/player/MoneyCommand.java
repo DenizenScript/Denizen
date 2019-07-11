@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.player;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dPlayer;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.depends.Depends;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -84,12 +84,12 @@ public class MoneyCommand extends AbstractCommand {
         scriptEntry.defaultObject("quantity", new Element(1));
 
         if (!scriptEntry.hasObject("players")) {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
+            if (!Utilities.entryHasPlayer(scriptEntry)) {
                 throw new InvalidArgumentsException("This command must have a player attached!");
             }
             else {
                 scriptEntry.addObject("players",
-                        Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()));
+                        Arrays.asList(Utilities.getEntryPlayer(scriptEntry)));
             }
         }
         else if (!scriptEntry.hasObject("action")) {

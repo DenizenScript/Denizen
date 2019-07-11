@@ -1,7 +1,7 @@
 package net.aufdemrand.denizen.scripts.commands.world;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dWorld;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -10,7 +10,6 @@ import net.aufdemrand.denizencore.scripts.ScriptEntry;
 import net.aufdemrand.denizencore.scripts.commands.AbstractCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
-
 
 public class WeatherCommand extends AbstractCommand {
 
@@ -84,8 +83,8 @@ public class WeatherCommand extends AbstractCommand {
         // If the world has not been specified, try to use the NPC's or player's
         // world, or default to "world" if necessary
         scriptEntry.defaultObject("world",
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getWorld()) : null,
-                ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? new dWorld(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getWorld()) : null,
+                Utilities.entryHasNPC(scriptEntry) ? new dWorld(Utilities.getEntryNPC(scriptEntry).getWorld()) : null,
+                Utilities.entryHasPlayer(scriptEntry) ? new dWorld(Utilities.getEntryPlayer(scriptEntry).getWorld()) : null,
                 Bukkit.getWorlds().get(0));
     }
 
@@ -102,7 +101,7 @@ public class WeatherCommand extends AbstractCommand {
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(), aH.debugObj("type", type.name()) +
                     (type.name().equalsIgnoreCase("player") ?
-                            aH.debugObj("player", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer()) : "") +
+                            aH.debugObj("player", Utilities.getEntryPlayer(scriptEntry)) : "") +
                     (type.name().equalsIgnoreCase("global") ?
                             aH.debugObj("world", world) : "") +
                     aH.debugObj("value", value));
@@ -115,7 +114,7 @@ public class WeatherCommand extends AbstractCommand {
                     world.getWorld().setThundering(false);
                 }
                 else {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setPlayerWeather(WeatherType.CLEAR);
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.CLEAR);
                 }
 
                 break;
@@ -125,7 +124,7 @@ public class WeatherCommand extends AbstractCommand {
                     world.getWorld().setStorm(true);
                 }
                 else {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
                 }
 
                 break;
@@ -136,7 +135,7 @@ public class WeatherCommand extends AbstractCommand {
                     world.getWorld().setThundering(true);
                 }
                 else {
-                    ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
+                    Utilities.getEntryPlayer(scriptEntry).getPlayerEntity().setPlayerWeather(WeatherType.DOWNFALL);
                 }
 
                 break;

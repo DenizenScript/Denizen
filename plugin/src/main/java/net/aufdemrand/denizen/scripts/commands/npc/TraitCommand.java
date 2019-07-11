@@ -1,6 +1,6 @@
 package net.aufdemrand.denizen.scripts.commands.npc;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -54,7 +54,7 @@ public class TraitCommand extends AbstractCommand {
             throw new InvalidArgumentsException("Missing trait argument!");
         }
 
-        if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+        if (!Utilities.entryHasNPC(scriptEntry)) {
             throw new InvalidArgumentsException("This command requires a linked NPC!");
         }
 
@@ -67,14 +67,14 @@ public class TraitCommand extends AbstractCommand {
 
         Element toggle = scriptEntry.getElement("state");
         Element traitName = scriptEntry.getElement("trait");
-        NPC npc = ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getCitizen();
+        NPC npc = Utilities.getEntryNPC(scriptEntry).getCitizen();
 
         if (scriptEntry.dbCallShouldDebug()) {
 
             dB.report(scriptEntry, getName(),
                     traitName.debug() +
                             toggle.debug() +
-                            ((BukkitScriptEntryData) scriptEntry.entryData).getNPC().debug());
+                            Utilities.getEntryNPC(scriptEntry).debug());
 
         }
 

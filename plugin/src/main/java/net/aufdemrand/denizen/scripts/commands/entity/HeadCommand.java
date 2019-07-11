@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dMaterial;
 import net.aufdemrand.denizen.utilities.MaterialCompat;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -65,8 +65,8 @@ public class HeadCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matches("player")
-                    && ((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-                scriptEntry.addObject("entities", Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()));
+                    && Utilities.entryHasPlayer(scriptEntry)) {
+                scriptEntry.addObject("entities", Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()));
             }
             else if (!scriptEntry.hasObject("entities")
                     && arg.matchesArgumentList(dEntity.class)) {
@@ -79,8 +79,8 @@ public class HeadCommand extends AbstractCommand {
 
         // Use the NPC or the Player as the default entity
         scriptEntry.defaultObject("entities",
-                (((BukkitScriptEntryData) scriptEntry.entryData).hasNPC() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().getDenizenEntity()) : null),
-                (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer() ? Arrays.asList(((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity()) : null));
+                (Utilities.entryHasNPC(scriptEntry) ? Arrays.asList(Utilities.getEntryNPC(scriptEntry).getDenizenEntity()) : null),
+                (Utilities.entryHasPlayer(scriptEntry) ? Arrays.asList(Utilities.getEntryPlayer(scriptEntry).getDenizenEntity()) : null));
 
         if (!scriptEntry.hasObject("skin") && !scriptEntry.hasObject("material")) {
             throw new InvalidArgumentsException("Must specify a skin or material!");

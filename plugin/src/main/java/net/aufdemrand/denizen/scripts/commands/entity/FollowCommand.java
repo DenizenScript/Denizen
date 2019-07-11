@@ -1,9 +1,9 @@
 package net.aufdemrand.denizen.scripts.commands.entity;
 
-import net.aufdemrand.denizen.BukkitScriptEntryData;
 import net.aufdemrand.denizen.nms.NMSHandler;
 import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dNPC;
+import net.aufdemrand.denizen.utilities.Utilities;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizencore.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizencore.objects.Element;
@@ -76,20 +76,20 @@ public class FollowCommand extends AbstractCommand {
             }
         }
         if (!scriptEntry.hasObject("target")) {
-            if (((BukkitScriptEntryData) scriptEntry.entryData).hasPlayer()) {
-                scriptEntry.addObject("target", ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().getDenizenEntity());
+            if (Utilities.entryHasPlayer(scriptEntry)) {
+                scriptEntry.addObject("target", Utilities.getEntryPlayer(scriptEntry).getDenizenEntity());
             }
             else {
                 throw new InvalidArgumentsException("This command requires a linked player!");
             }
         }
         if (!scriptEntry.hasObject("entities")) {
-            if (!((BukkitScriptEntryData) scriptEntry.entryData).hasNPC()) {
+            if (!Utilities.entryHasNPC(scriptEntry)) {
                 throw new InvalidArgumentsException("This command requires a linked NPC!");
             }
             else {
                 scriptEntry.addObject("entities",
-                        new dList(((BukkitScriptEntryData) scriptEntry.entryData).getNPC().identify()));
+                        new dList(Utilities.getEntryNPC(scriptEntry).identify()));
             }
         }
 
@@ -110,7 +110,7 @@ public class FollowCommand extends AbstractCommand {
         // Report to dB
         if (scriptEntry.dbCallShouldDebug()) {
             dB.report(scriptEntry, getName(),
-                    (((BukkitScriptEntryData) scriptEntry.entryData).getPlayer() != null ? ((BukkitScriptEntryData) scriptEntry.entryData).getPlayer().debug() : "")
+                    (Utilities.getEntryPlayer(scriptEntry) != null ? Utilities.getEntryPlayer(scriptEntry).debug() : "")
                             + (!stop.asBoolean() ? aH.debugObj("Action", "FOLLOW") : aH.debugObj("Action", "STOP"))
                             + (lead != null ? lead.debug() : "")
                             + (maxRange != null ? maxRange.debug() : "")
