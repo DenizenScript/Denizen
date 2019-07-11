@@ -104,9 +104,9 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     @Note("Locations")
     public String getSaveObject() {
-        return (getBlockX() + 0.5)
-                + "," + getBlockY()
-                + "," + (getBlockZ() + 0.5)
+        return (getX())
+                + "," + getY()
+                + "," + (getZ())
                 + "," + getPitch()
                 + "," + getYaw()
                 + "," + getWorldName();
@@ -114,13 +114,19 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
 
     public static String getSaved(dLocation location) {
         for (dLocation saved : NotableManager.getAllType(dLocation.class)) {
-            if (saved.getBlockX() != location.getX()) {
+            if (saved.getX() != location.getX()) {
                 continue;
             }
-            if (saved.getBlockY() != location.getY()) {
+            if (saved.getY() != location.getY()) {
                 continue;
             }
-            if (saved.getBlockZ() != location.getZ()) {
+            if (saved.getZ() != location.getZ()) {
+                continue;
+            }
+            if (saved.getYaw() != location.getYaw()) {
+                continue;
+            }
+            if (saved.getPitch() != location.getPitch()) {
                 continue;
             }
             if ((saved.getWorldName() == null && location.getWorldName() == null)
