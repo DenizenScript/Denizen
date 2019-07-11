@@ -1,39 +1,27 @@
 package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
-import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dLocation;
 import net.aufdemrand.denizen.objects.dNPC;
-import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.tags.BukkitTagContext;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizencore.objects.Duration;
-import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
-import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.tags.TagManager;
-import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByBlockEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.UUID;
 
 public class HealthTrait extends Trait implements Listener {
 
@@ -92,11 +80,13 @@ public class HealthTrait extends Trait implements Listener {
     @Persist("respawnlocation")
     private String respawnLocation = "<npc.flag[respawn_location] || <npc.location>>";
 
+    @Persist("blockdrops")
+    private boolean blockDrops = Settings.healthTraitBlockDrops();
+
     // internal
-    private dPlayer player = null;
     private boolean dying = false;
     private Location loc;
-    private int entityId = -1;
+    private UUID entityId = null;
 
 
     public Duration getRespawnDelay() {
@@ -254,32 +244,17 @@ public class HealthTrait extends Trait implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDeath(EntityDeathEvent event) {
 
-        if (event.getEntity().getEntityId() != entityId) {
+        if (entityId == null || !event.getEntity().getUniqueId().equals(entityId)) {
             return;
         }
 
-        event.getDrops().clear();
+        if (blockDrops) {
+            event.getDrops().clear();
+        }
     }
 
-    // <--[action]
-    // @Actions
-    // death
-    // death by entity
-    // death by <entity>
-    // death by block
-    // death by <cause>
-    //
-    // @Triggers when the NPC dies. (Requires Health Trait)
-    //
-    // @Context
-    // <context.killer> returns the entity that killed the NPC (if any)
-    // <context.shooter> returns the shooter of the killing projectile (if any)
-    //
-    // -->
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
-        // Don't use NPCDamageEvent because it doesn't work well
-
         // Check if the event pertains to this NPC
         if (event.getEntity() != npc.getEntity() || dying) {
             return;
@@ -291,67 +266,10 @@ public class HealthTrait extends Trait implements Listener {
         }
 
         dying = true;
-        player = null;
 
         // Save entityId for EntityDeath event
-        entityId = npc.getEntity().getEntityId();
+        entityId = npc.getEntity().getUniqueId();
 
-        String deathCause = CoreUtilities.toLowerCase(event.getCause().toString()).replace('_', ' ');
-        Map<String, dObject> context = new HashMap<>();
-        context.put("damage", new Element(event.getDamage()));
-        context.put("death_cause", new Element(deathCause));
-
-
-        // Check if the entity has been killed by another entity
-        if (event instanceof EntityDamageByEntityEvent) {
-            Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
-            context.put("killer", new dEntity(killerEntity));
-
-            // Check if the damager was a player and, if so, attach
-            // that player to the action's ScriptEntry
-            if (killerEntity instanceof Player) {
-                player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
-            }
-
-            // If the damager was a projectile, take its shooter into
-            // account as well
-            else if (killerEntity instanceof Projectile) {
-                ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
-                if (shooter != null && shooter instanceof LivingEntity) {
-
-                    context.put("shooter", new dEntity((LivingEntity) shooter));
-                    if (shooter instanceof Player) {
-                        player = dPlayer.mirrorBukkitPlayer((Player) shooter);
-                    }
-
-                    DenizenAPI.getDenizenNPC(npc).action("death by " +
-                            ((LivingEntity) shooter).getType().toString(), player, context);
-                }
-                // TODO: Handle other shooter source thingy types
-            }
-
-            DenizenAPI.getDenizenNPC(npc).action("death by entity", player, context);
-            DenizenAPI.getDenizenNPC(npc).action("death by " +
-                    killerEntity.getType().toString(), player, context);
-
-        }
-        // If not, check if the entity has been killed by a block
-        else if (event instanceof EntityDamageByBlockEvent) {
-            DenizenAPI.getDenizenNPC(npc).action("death by block", player, context);
-
-            // TODO:
-            // The line of code below should work, but a Bukkit bug makes the damager
-            // return null. Uncomment it once the bug is fixed.
-
-            // DenizenAPI.getDenizenNPC(npc).action("death by " +
-            // ((EntityDamageByBlockEvent) event).getDamager().getType().name(), null);
-        }
-
-        DenizenAPI.getDenizenNPC(npc).action("death", player, context);
-        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player, context);
-
-        // One of the actions above may have removed the NPC, so check if the
-        // NPC's entity still exists before proceeding
         if (npc.getEntity() == null) {
             return;
         }
@@ -374,7 +292,7 @@ public class HealthTrait extends Trait implements Listener {
 
         }
 
-        die();
+        //die();
 
         if (respawn && (Duration.valueOf(respawnDelay).getTicks() > 0)) {
             Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(DenizenAPI.getCurrentInstance(),

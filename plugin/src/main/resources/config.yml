@@ -44,10 +44,15 @@ Scripts:
 Traits:
   Health:
     Enabled: false
+    # Whether to block drops from NPCs that have the health trait by default.
+    Block drops: false
     Respawn:
+      # Whether the health trait should control respawn by default.
       Enabled: false
+      # How long after death before ethe NPC should respawn by default.
       Delay: 10s
     Animated death:
+      # Whether the NPC should play a death animation by default.
       Enabled: false
 
 # Whether triggers are on by default, and their individual settings

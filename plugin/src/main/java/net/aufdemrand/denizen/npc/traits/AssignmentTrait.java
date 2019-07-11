@@ -2,14 +2,19 @@ package net.aufdemrand.denizen.npc.traits;
 
 import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.npc.dNPCRegistry;
+import net.aufdemrand.denizen.objects.dEntity;
 import net.aufdemrand.denizen.objects.dPlayer;
 import net.aufdemrand.denizen.scripts.containers.core.AssignmentScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
+import net.aufdemrand.denizencore.objects.Element;
 import net.aufdemrand.denizencore.objects.aH;
+import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.scripts.ScriptRegistry;
+import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import net.aufdemrand.denizencore.utilities.text.StringHolder;
 import net.citizensnpcs.api.command.exception.CommandException;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -18,12 +23,21 @@ import net.citizensnpcs.api.util.Paginator;
 import net.citizensnpcs.util.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.projectiles.ProjectileSource;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class AssignmentTrait extends Trait {
 
@@ -219,6 +233,74 @@ public class AssignmentTrait extends Trait {
         }
     }
 
+    public void onSpawn(NPCSpawnEvent event) {
+        if (event.getNPC().getId() == npc.getId()) {
+            entityId = npc.getEntity().getUniqueId();
+        }
+    }
+
+    // <--[action]
+    // @Actions
+    // death
+    // death by entity
+    // death by <entity>
+    // death by block
+    // death by <cause>
+    //
+    // @Triggers when the NPC dies.
+    //
+    // @Context
+    // <context.killer> returns the entity that killed the NPC (if any)
+    // <context.shooter> returns the shooter of the killing projectile (if any)
+    // <context.damage> returns the last amount of damage applied (if any)
+    // <context.death_cause> returns the last damage cause (if any)
+    //
+    // -->
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onDeath(EntityDeathEvent deathEvent) {
+        if (!deathEvent.getEntity().getUniqueId().equals(entityId)) {
+            return;
+        }
+        EntityDamageEvent event = deathEvent.getEntity().getLastDamageCause();
+        String deathCause = event == null ? "unknown" : CoreUtilities.toLowerCase(event.getCause().toString()).replace('_', ' ');
+        Map<String, dObject> context = new HashMap<>();
+        context.put("damage", new Element(event == null ? 0 : event.getDamage()));
+        context.put("death_cause", new Element(deathCause));
+        dPlayer player = null;
+        if (event instanceof EntityDamageByEntityEvent) {
+            Entity killerEntity = ((EntityDamageByEntityEvent) event).getDamager();
+            context.put("killer", new dEntity(killerEntity));
+            if (killerEntity instanceof Player) {
+                player = dPlayer.mirrorBukkitPlayer((Player) killerEntity);
+            }
+            else if (killerEntity instanceof Projectile) {
+                ProjectileSource shooter = ((Projectile) killerEntity).getShooter();
+                if (shooter != null && shooter instanceof LivingEntity) {
+
+                    context.put("shooter", new dEntity((LivingEntity) shooter));
+                    if (shooter instanceof Player) {
+                        player = dPlayer.mirrorBukkitPlayer((Player) shooter);
+                    }
+
+                    DenizenAPI.getDenizenNPC(npc).action("death by " +
+                            ((LivingEntity) shooter).getType().toString(), player, context);
+                }
+            }
+            DenizenAPI.getDenizenNPC(npc).action("death by entity", player, context);
+            DenizenAPI.getDenizenNPC(npc).action("death by " +
+                    killerEntity.getType().toString(), player, context);
+        }
+        else if (event instanceof EntityDamageByBlockEvent) {
+            DenizenAPI.getDenizenNPC(npc).action("death by block", player, context);
+        }
+        DenizenAPI.getDenizenNPC(npc).action("death", player, context);
+        DenizenAPI.getDenizenNPC(npc).action("death by " + deathCause, player, context);
+
+    }
+
+    private UUID entityId;
+
 
     // <--[action]
     // @Actions
@@ -245,6 +327,10 @@ public class AssignmentTrait extends Trait {
     // Listen for this NPC's hits on entities
     @EventHandler(priority = EventPriority.MONITOR)
     public void onHit(EntityDamageByEntityEvent event) {
+
+        if (!npc.isSpawned()) {
+            return;
+        }
 
         // Check if the damager is this NPC
         if (event.getDamager() != npc.getEntity()) {

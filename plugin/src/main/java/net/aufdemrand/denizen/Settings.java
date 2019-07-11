@@ -42,6 +42,7 @@ public class Settings {
         cache_healthTraitRespawnEnabled = config.getBoolean("Traits.Health.Respawn.Enabled", true);
         cache_healthTraitAnimatedDeathEnabled = config.getBoolean("Traits.Health.Animated death.Enabled", true);
         cache_healthTraitRespawnDelay = config.getString("Traits.Health.Respawn.Delay", "10s");
+        cache_healthTraitBlockDrops = config.getBoolean("Traits.Health.Block drops", false);
         cache_engageTimeoutInSeconds = config.getString("Commands.Engage.Timeout", "150s");
         cache_whileMaxLoops = config.getInt("Commands.While.Max loops", 10000);
         cache_allowWebget = config.getBoolean("Commands.Webget.Allow", true);
@@ -81,7 +82,7 @@ public class Settings {
             cache_defaultDebugMode, cache_healthTraitEnabledByDefault, cache_healthTraitAnimatedDeathEnabled,
             cache_healthTraitRespawnEnabled, cache_allowWebget, cache_allowFilecopy, cache_allowDelete,
             cache_allowServerStop, cache_allowServerRestart, cache_allowLogging, cache_allowStrangeYAMLSaves,
-            cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
+            cache_healthTraitBlockDrops, cache_chatAsynchronous, cache_chatMustSeeNPC, cache_chatMustLookAtNPC,
             cache_chatGloballyIfFailedChatTriggers, cache_chatGloballyIfNoChatTriggers,
             cache_chatGloballyIfUninteractable, cache_worldScriptChatEventAsynchronous,
             cache_tagTimeoutSilent, cache_packetInterception;
@@ -167,41 +168,21 @@ public class Settings {
         return cache_scriptQueueSpeed;
     }
 
-    /*
-
-    # Whether the Health trait should be enabled by default
-
-    */
-
     public static boolean healthTraitEnabledByDefault() {
         return cache_healthTraitEnabledByDefault;
     }
 
-    /*
-
-    # Whether NPCs with the Health trait should respawn after being killed
-
-    */
+    public static boolean healthTraitBlockDrops() {
+        return cache_healthTraitBlockDrops;
+    }
 
     public static boolean healthTraitRespawnEnabled() {
         return cache_healthTraitRespawnEnabled;
     }
 
-    /*
-
-    # Whether NPCs with the Health trait should have a death animation
-
-    */
-
     public static boolean healthTraitAnimatedDeathEnabled() {
         return cache_healthTraitAnimatedDeathEnabled;
     }
-
-    /*
-
-    # How long it should take for NPCs with the Health trait to respawn
-
-    */
 
     public static String healthTraitRespawnDelay() {
         return cache_healthTraitRespawnDelay;
