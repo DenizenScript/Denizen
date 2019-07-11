@@ -213,8 +213,11 @@ public class ModifyBlockCommand extends AbstractCommand implements Listener, Hol
         }
         final List<Float> percs = percentages;
 
-        if ((locations == null || locations.size() == 0) && (location_list == null || location_list.size() == 0)) {
+        if (locations == null && location_list == null) {
             dB.echoError("Must specify a valid location!");
+            return;
+        }
+        if ((location_list != null && location_list.size() == 0) || (locations != null && locations.size() == 0)) {
             return;
         }
         if (materialList.size() == 0) {
