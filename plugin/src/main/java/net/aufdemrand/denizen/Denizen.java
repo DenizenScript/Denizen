@@ -515,12 +515,6 @@ public class Denizen extends JavaPlugin {
         }
         savesConfig = YamlConfiguration.loadConfiguration(savesConfigFile);
 
-        // Reload dLocations from saves.yml, load them into NotableManager // TODO: probably remove this
-        dLocation._recallLocations();
-
-        // Update saves from name to UUID
-        updateSaves();
-
         if (scoreboardsConfigFile == null) {
             scoreboardsConfigFile = new File(getDataFolder(), "scoreboards.yml");
         }
@@ -539,80 +533,6 @@ public class Denizen extends JavaPlugin {
         DenizenMapManager.reloadMaps();
 
         Bukkit.getServer().getPluginManager().callEvent(new SavesReloadEvent());
-    }
-
-    public void updateSaves() {
-        int saves_version = 1;
-        if (savesConfig.contains("a_saves.version")) {
-            saves_version = savesConfig.getInt("a_saves.version");
-        }
-
-        if (saves_version == 1) {
-            dB.log("Updating saves from v1 to v2...");
-            ConfigurationSection section = savesConfig.getConfigurationSection("Players");
-            if (section != null) {
-                ArrayList<String> keyList = new ArrayList<>(section.getKeys(false));
-                // Remove UPPERCASE cooldown saves from the list - handled manually
-                for (int i = 0; i < keyList.size(); i++) {
-                    String key = keyList.get(i);
-                    if (!key.equals(key.toUpperCase()) && keyList.contains(key.toUpperCase())) {
-                        keyList.remove(key.toUpperCase());
-                    }
-                }
-                // Handle all actual player saves
-                for (int i = 0; i < keyList.size(); i++) {
-                    String key = keyList.get(i);
-                    try {
-                        // Flags
-                        ConfigurationSection playerSection = savesConfig.getConfigurationSection("Players." + key);
-                        if (playerSection == null) {
-                            dB.echoError("Can't update saves for player '" + key + "' - broken YAML section!");
-                            continue;
-                        }
-                        Map<String, Object> keys = playerSection.getValues(true);
-                        if (!key.equals(key.toUpperCase()) && savesConfig.contains("Players." + key.toUpperCase())) {
-                            // Cooldowns
-                            keys.putAll(savesConfig.getConfigurationSection("Players." + key.toUpperCase()).getValues(true));
-                            savesConfig.set("Players." + key.toUpperCase(), null);
-                        }
-                        dPlayer player = dPlayer.valueOf(key);
-                        if (player == null) {
-                            dB.echoError("Can't update saves for player '" + key + "' - invalid name!");
-                            savesConfig.createSection("PlayersBACKUP." + key, keys);
-                            // TODO: READ FROM BACKUP AT LOG IN
-                        }
-                        else {
-                            savesConfig.createSection("Players." + player.getSaveName(), keys);
-                        }
-                        savesConfig.set("Players." + key, null);
-                    }
-                    catch (Exception ex) {
-                        dB.echoError(ex);
-                    }
-                }
-            }
-            section = savesConfig.getConfigurationSection("Listeners");
-            if (section != null) {
-                for (String key : section.getKeys(false)) {
-                    try {
-                        dPlayer player = dPlayer.valueOf(key);
-                        if (player == null) {
-                            dB.log("Warning: can't update listeners for player '" + key + "' - invalid name!");
-                        }
-                        else // Listeners
-                        {
-                            savesConfig.createSection("Listeners." + player.getSaveName(), savesConfig.getConfigurationSection("Listeners." + key).getValues(true));
-                        }
-                        savesConfig.set("Listeners." + key, null);
-                    }
-                    catch (Exception ex) {
-                        dB.echoError(ex);
-                    }
-                }
-            }
-            savesConfig.set("a_saves.version", "2");
-            dB.log("Done!");
-        }
     }
 
     public FileConfiguration getSaves() {

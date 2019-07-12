@@ -141,22 +141,6 @@ public class dLocation extends org.bukkit.Location implements dObject, Notable, 
         NotableManager.remove(this);
     }
 
-    /*
-     * Called on server startup or /denizen reload locations. Should probably not be called manually.
-     */
-    public static void _recallLocations() {
-        List<String> loclist = DenizenAPI.getCurrentInstance().getSaves().getStringList("dScript.Locations");
-        for (String location : loclist) {
-            Matcher m = notablePattern.matcher(location);
-            if (m.matches()) {
-                String id = m.group(1);
-                dLocation loc = valueOf(m.group(2));
-                NotableManager.saveAs(loc, id);
-            }
-        }
-        DenizenAPI.getCurrentInstance().getSaves().set("dScript.Locations", null);
-    }
-
 
     //////////////////
     //    OBJECT FETCHER
