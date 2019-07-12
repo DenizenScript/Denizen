@@ -142,8 +142,8 @@ public class dCuboid implements dObject, Cloneable, Notable, Adjustable {
                     }
                     return null;
                 }
-                // Must have valid worlds
-                if (pos_1.getWorld() == null || pos_2.getWorld() == null) {
+                // Must have worlds
+                if (pos_1.getWorldName() == null || pos_2.getWorldName() == null) {
                     if (context == null || context.debug) {
                         dB.echoError("valueOf in dCuboid returning null (null worlds): '" + string + "'.");
                     }
