@@ -8,6 +8,7 @@ import net.aufdemrand.denizencore.objects.ObjectFetcher;
 import net.aufdemrand.denizencore.objects.dObject;
 import net.aufdemrand.denizencore.objects.notable.Notable;
 import net.aufdemrand.denizencore.objects.notable.Note;
+import net.aufdemrand.denizencore.tags.core.EscapeTags;
 import net.aufdemrand.denizencore.utilities.CoreUtilities;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -145,13 +146,14 @@ public class NotableManager {
                 continue;
             }
 
-            for (String notable : section.getKeys(false)) {
-                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notable), Utilities.noDebugContext);
+            for (String notableRaw : section.getKeys(false)) {
+                String notable = EscapeTags.unEscape(notableRaw.replace("DOT", "."));
+                Notable obj = (Notable) ObjectFetcher.getObjectFrom(clazz, section.getString(notableRaw), Utilities.noDebugContext);
                 if (obj != null) {
-                    obj.makeUnique(notable.replace("DOT", "."));
+                    obj.makeUnique(notable);
                 }
                 else {
-                    dB.echoError("Notable '" + notable.replace("DOT", ".") + "' failed to load!");
+                    dB.echoError("Notable '" + notable + "' failed to load!");
                 }
             }
 
@@ -172,7 +174,7 @@ public class NotableManager {
         for (Map.Entry<String, Notable> notable : notableObjects.entrySet()) {
 
             try {
-                notables.set(getClassId(getClass(notable.getValue())) + "." + CoreUtilities.toLowerCase(notable.getKey()).replace(".", "DOT"),
+                notables.set(getClassId(getClass(notable.getValue())) + "." + EscapeTags.escape(CoreUtilities.toLowerCase(notable.getKey())),
                         notable.getValue().getSaveObject());
             }
             catch (Exception e) {
