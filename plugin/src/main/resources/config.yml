@@ -1,7 +1,9 @@
 # Denizen config.
 
 Debug:
-  # Whether debug information about Denizen should appear in the server console
+  # Whether debug information about Denizen should EVER appear in the server console by default
+  # NOTE: You almost ALWAYS want this ON! Leave it at 'true'! To hide debug from scripts, set "debug: false" on the script containers that work fine.
+  # Disabling this can prevent your logs from showing error messages and other important notices!
   Show: true
   # Whether the '/ex' command should tell you to check debug when you use it.
   Ex command help: true
